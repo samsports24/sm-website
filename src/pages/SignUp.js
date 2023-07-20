@@ -1,18 +1,15 @@
 import { useState } from 'react'
-import { Form, Input, Button, Row, Col, Checkbox } from 'antd'
+import { Form, Input, Button, Row, Col, Checkbox, Select } from 'antd'
 // import { useDispatch } from 'react-redux'
 // import { useNavigate } from 'react-router-dom'
 
 // import { authLogin } from '../redux'
-import R from '../assets/r.svg'
-import UserIcon from '../assets/user-icon.svg'
-import PasswordIcon from '../assets/password-icon.svg'
 import Insta from '../assets/insta.svg'
 import FB from '../assets/fb.svg'
 import Twitter from '../assets/twitter.svg'
 import YouTube from '../assets/youtube.svg'
 import Banner from '../assets/login-pic-1.png'
-const SignIn = () => {
+const SignUp = () => {
   const [loading, setLoading] = useState(false)
   // const navigate = useNavigate()
   // const dispatch = useDispatch()
@@ -42,17 +39,14 @@ const SignIn = () => {
               <div className='form-div'>
                 <Form name='login' className='login-form' layout='vertical' onFinish={onFinish}>
                   <div className='title'>
-                    <h1>SAMSPORTS<span><img src={R} /></span></h1>
+                    <h1>SAMSPORTS</h1>
                     {/* <img src={logo} /> */}
-                    <p>Welcome</p>
-                    <h2>to the game!</h2>
+                    <h2>Registration</h2>
                   </div>
                   <Form.Item
-                    name='userName'
+                    name='fullName'
                     rules={[
-                      // {
-                      //   type: 'string',
-                      // },
+                      
                       {
                         required: true,
                         message: 'The entered user name is not valid!',
@@ -60,7 +54,33 @@ const SignIn = () => {
                     ]}
                     requiredMark="optional"
                   >
-                    <Input autoComplete='off' type='text'  placeholder='Username' prefix={<img src={UserIcon} />} />
+                    <Input autoComplete='off' type='text'  placeholder='Full Name*' />
+                  </Form.Item>
+                  <Form.Item
+                    name='email'
+                    rules={[
+                      
+                      {
+                        required: true,
+                        message: 'The entered user name is not valid!',
+                      },
+                    ]}
+                    requiredMark="optional"
+                  >
+                    <Input autoComplete='off' type='text'  placeholder='E-mail*'  />
+                  </Form.Item>
+                  <Form.Item
+                    name='country'
+                    rules={[
+                      
+                      {
+                        required: true,
+                        message: 'The entered user name is not valid!',
+                      },
+                    ]}
+                    requiredMark="optional"
+                  >
+                    <Select   placeholder='Select Country*'  />
                   </Form.Item>
                   <Form.Item
                     name='password'
@@ -72,26 +92,44 @@ const SignIn = () => {
                     ]}
                     requiredMark="optional"
                   >
-                    <Input type='password' placeholder='Password' prefix={<img src={PasswordIcon} />} />
+                    <Input type='password' placeholder='Password'  />
+                  </Form.Item>
+                  <Form.Item
+                    name='confirmPassword'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Password is Required',
+                      },
+                    ]}
+                    requiredMark="optional"
+                  >
+                    <Input type='password' placeholder='Confirm Password'  />
                   </Form.Item>
                   <Form.Item
                     name='remember'
                     requiredMark="optional"
                   >
                     <div className='remember'>
-                      <Checkbox onChange={onChange}>Remember me</Checkbox>
-                      <p>Forgot password?</p>
+                      <Checkbox onChange={onChange}>I agree to the <span className='highlight'>Terms and Conditions</span> </Checkbox>
                     </div>
                   </Form.Item>
-
+                  <Form.Item
+                    name='remember'
+                    requiredMark="optional"
+                  >
+                    <div className='remember'>
+                      <Checkbox onChange={onChange}>I agree to the Privacy Policy</Checkbox>
+                    </div>
+                  </Form.Item>
                   <Form.Item>
                     <Button loading={loading} type='primary' htmlType='submit'>
-                      Login
+                      Create Account
                     </Button>
                   </Form.Item>
                 </Form>
                 <div className='create-account'>
-                  <p>Don{"'"}t have an account? <span className='highlight'>CREATE ACCOUNT</span></p>
+                  <p>Already Registered <span className='highlight'>SIGN IN</span></p>
                 </div>
                 <div className='icons'>
                   <img src={Insta} />
@@ -103,7 +141,7 @@ const SignIn = () => {
             </Col>
             <Col xs={24} md={12} lg={15}>
               <div className='banner' style={{backgroundImage: `url(${Banner})`}}>
-                {/* <img src={Banner} /> */}
+                
               </div>
             </Col>
           </Row>
@@ -114,4 +152,4 @@ const SignIn = () => {
   // }
 }
 
-export default SignIn
+export default SignUp

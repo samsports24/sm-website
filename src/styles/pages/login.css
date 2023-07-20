@@ -1,39 +1,189 @@
 .signin {
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  width: 45%;
-  margin: auto;
-}
-.signin .login-form {
-  height: auto;
-  margin: 20px 0;
-  /* border: 1px #ddd solid; */
-  box-shadow: var(--boxShadow);
-  background-color: white;
-  padding: 20px;
-  border-radius: 2px;
+  /* height: 100vh; */
   width: 100%;
-}
-.signin .login-form img {
-  margin: 0 auto;
-  display: flex;
+  margin: auto;
+  /* background-color: white; */
+  background: var(--secondaryBackground);
+  padding: 95px 0 125px 0;
 }
 
-.signin .login-form h2 {
-  font-weight: bold;
-  text-align: center;
+.width90 {
+  width: 90%;
 }
+
+.signin .form-div {
+  background: #080611;
+  padding: 60px;
+  /* height: 100%; */
+}
+
+.signin .form-div .title {}
+
+.signin .form-div .title h1 {
+  color: var(--heading);
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: normal;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-bottom: 63.5px;
+}
+
+.signin .form-div .title p {
+  color: var(--text);
+  /* font-family: Poppins; */
+  font-size: 34px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 44px;
+}
+
+.signin .form-div .title h2 {
+  color: var(--text);
+  /* font-family: Poppins; */
+  font-size: 34px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 44px;
+  margin-bottom: 24px;
+}
+
+.signin .login-form {
+  height: auto;
+  /* margin: 20px 0; */
+  /* border: 1px #ddd solid; */
+  /* padding: 20px; */
+  /* box-shadow: var(--boxShadow); */
+  /* border-radius: 2px; */
+  width: 100%;
+}
+
+.signin .login-form .ant-input-affix-wrapper {
+  border: 2px solid var(--text);
+  border-radius: 12px;
+  background-color: var(--secondaryBackground);
+
+}
+
+.signin .login-form .ant-input {
+  /* background-color: var(--secondaryBackground) !important; */
+
+}
+
+/* .signin .login-form img {
+  margin: 0 auto;
+  display: flex;
+} */
+.signin .login-form .remember {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* .signin .login-form .remember .ant-form label {
+  color: var(--text) !important;
+} */
+
+.signin .login-form .remember p {
+  margin: 0;
+  color: var(--text);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px
+}
+.signin .login-form.remember .ant-checkbox-wrapper{
+  color: #fff !important;
+}
+
 .signin .login-form button {
   width: 100%;
-  height: 45px;
+  height: 40px;
   border: none;
-  font-weight: bold;
+  font-weight: 600;
   letter-spacing: 1px;
   background-color: var(--primary-color);
+  line-height: normal;
+  border-radius: 20px;
+
 }
+
+.signin .form-div .create-account {
+  margin-bottom: 24px;
+
+}
+
+.signin .form-div .create-account p {
+  text-align: center;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  color: var(--text);
+}
+
+.signin .form-div .icons {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.signin .form-div .icons img {
+  width: 21.709px;
+  height: 20.733px;
+  margin-right: 20.54px;
+}
+
+.signin .banner {
+  display: flex;
+  justify-content: flex-start;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  height: 100%;
+  /* width: 100%; */
+}
+
+.signin .banner img {
+  width: 100%;
+  height: 100%;
+}
+
+.signin .banner h3 {
+  color: var(--text);
+  text-shadow: 0px 4px 30px 0px rgba(0, 0, 0, 0.14);
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 60px;
+  letter-spacing: 1.92px;
+  text-transform: uppercase;
+  margin-top: 383px;
+  margin-left: 113px;
+}
+.signin .banner p{
+  color: var(--text);
+  color: #FFF;
+  text-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.12);
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 60px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  margin-top: 103px;
+  margin-left: 113px;
+}
+.highlight {
+  color: var(--primary);
+  cursor: pointer;
+}
+
 /* .signin .for-signup {
   text-align: center;
   width: 100%;
@@ -103,6 +253,7 @@
 /* media queries */
 
 @media (max-width: 770px) {
+
   .signin,
   .signin-forget .forget-inner,
   .signup {
@@ -111,6 +262,7 @@
 }
 
 @media (max-width: 550px) {
+
   .signin,
   .signup,
   .signin-forget .forget-inner {

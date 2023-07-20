@@ -11,8 +11,8 @@ import Insta from '../assets/insta.svg'
 import FB from '../assets/fb.svg'
 import Twitter from '../assets/twitter.svg'
 import YouTube from '../assets/youtube.svg'
-import Banner from '../assets/login-pic-1.png'
-const SignIn = () => {
+import Banner from '../assets/login-pic-2.png'
+const SignIn2 = () => {
   const [loading, setLoading] = useState(false)
   // const navigate = useNavigate()
   // const dispatch = useDispatch()
@@ -103,7 +103,14 @@ const SignIn = () => {
             </Col>
             <Col xs={24} md={12} lg={15}>
               <div className='banner' style={{backgroundImage: `url(${Banner})`}}>
-                {/* <img src={Banner} /> */}
+                <div className='heading'>
+                    <h3>WHERE <span className='highlight'>LEGENDS</span> 
+                    <br />
+                    ARE MADE!
+                    </h3>
+                    <p>SAM ULTIMATE FOOTBALL</p>
+
+                </div>
               </div>
             </Col>
           </Row>
@@ -114,4 +121,4 @@ const SignIn = () => {
   // }
 }
 
-export default SignIn
+export default SignIn2

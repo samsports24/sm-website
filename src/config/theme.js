@@ -34,7 +34,9 @@ export const light = {
 
 export const dark = {
   background: '#30215D',
-  primary: '#F55139',
+  secondaryBackground: '#1E1D24',
+  heading:'#289FC9',
+  primary: '#00A7E5',
   secondary: '#B85B22',
   iconBg: 'rgba(255, 255, 255, 0.164)',
   sidebar: '#30195E',
