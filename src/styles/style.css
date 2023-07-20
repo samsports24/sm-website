@@ -12,6 +12,8 @@
 
 /* Component CSS */
 @import './components/table.css';
+@import "./components/popularLeagueCard.css";
+@import "./components/homePageBanner.css";
 
 /* Page CSS */
 @import './pages/login.css';

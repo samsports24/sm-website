@@ -32,6 +32,15 @@ p {
 .space-between {
   justify-content: space-between;
 }
+
+.align-items-end {
+  align-items: flex-end;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
 .m-20 {
   margin: 20px 0;
 }

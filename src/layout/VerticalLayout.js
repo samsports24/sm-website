@@ -8,7 +8,7 @@ import { Layout } from 'antd'
 // import BlueLogo from '../assets/blueLogo.png'
 import MainMenu from './MainMenu'
 // import { toggleTheme } from '../redux'
-import Logo from '../assets/Logo.svg';
+import Logo from '../assets/Logo.svg'
 import Insta from '../assets/insta.svg'
 import Fb from '../assets/fb.svg'
 import Twitter from '../assets/twitter.svg'
@@ -52,16 +52,14 @@ const VerticalLayout = ({ children, active }) => {
               <img src={Twitter} />
               <img src={YouTube} />
             </div>
-            <div className='caution'> 
-            <p>API • Privacy • Terms • Jobs 
-• Responsible Play</p>
-
+            <div className='caution'>
+              <p>API • Privacy • Terms • Jobs • Responsible Play</p>
             </div>
           </div>
         </Sider>
         <Layout className='site-layout' style={{ marginLeft: 256 }}>
           <Header className='mainHeader'>
-            <h3 className='company-title'>Decotechs Admin</h3>
+            <h3 className='company-title'>Header</h3>
 
             {/* <Switch
               className='themeSwitch'
