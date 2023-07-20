@@ -1,10 +1,11 @@
 .sidebar-menu {
   background-color: transparent !important;
   color: var(--text) !important;
-  font-size: 18px;
+  font-size: 14px;
 }
-.sidebar-menu svg {
-  font-size: 20px !important;
+.sidebar-menu img {
+  width: 24px;
+height: 24px;
 }
 .ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected {
   border-right: 4px solid var(--primary) !important;

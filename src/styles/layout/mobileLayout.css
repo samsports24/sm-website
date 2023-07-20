@@ -27,11 +27,11 @@
   width: 100%;
   align-items: center;
   justify-content: center;
-  height: 10vh;
-  margin-bottom: 10px;
+  /* height: 10vh; */
+  /* margin-bottom: 10px; */
 }
 .v-layout .company-logo img {
-  width: 70%;
+  /* width: 70%; */
 }
 .v-layout .company-title {
   font-size: 22px;

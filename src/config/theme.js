@@ -33,15 +33,15 @@ export const light = {
 }
 
 export const dark = {
-  background: '#212528',
+  background: '#30215D',
   primary: '#F55139',
   secondary: '#B85B22',
   iconBg: 'rgba(255, 255, 255, 0.164)',
-  sidebar: '#282c31',
+  sidebar: '#30195E',
   menuicon: 'gray',
   headerSpan: 'white',
   secondaryText: 'gray',
-  text: '#EBE7D9',
+  text: '#FFF',
   borderLight: '#555',
   cardColor: '#282c31',
   lightCard: '#212528',
