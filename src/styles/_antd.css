@@ -1,0 +1,182 @@
+.ant-btn-link {
+  font-weight: bold !important;
+  padding: 4px 0;
+}
+.ant-btn-primary {
+  border-radius: 5px;
+  font-weight: bold;
+  /* letter-spacing: 2px; */
+  height: 40px;
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+.ant-input,
+.ant-picker {
+  height: 37px;
+  /* border-radius: 4px; */
+}
+.ant-form-item-label label {
+  letter-spacing: 1px;
+}
+.ant-checkbox-wrapper {
+  padding: 5px 0;
+}
+.ant-divider-vertical {
+  height: auto;
+  /* border-left: 2px solid rgba(0, 0, 0, 0.06); */
+  border-left: 1px solid rgba(138, 27, 106, 0.5);
+}
+
+.ant-pagination-total-text {
+  display: flex;
+  margin-right: auto;
+}
+
+.ant-modal-content {
+  background-color: var(--cardColor) !important;
+}
+.ant-modal-close-x {
+  color: var(--text) !important;
+}
+.ant-modal-header {
+  background-color: var(--cardColor) !important;
+}
+.ant-modal-title {
+  color: var(--text) !important;
+}
+.ant-form-item-label label {
+  color: var(--text) !important;
+}
+.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  height: 37px;
+  border-radius: 4px;
+}
+
+.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+  font-size: 20px;
+  color: var(--primary-color);
+}
+.ant-input {
+  background-color: transparent !important;
+  border: 1.6px solid var(--borderLight);
+  border-radius: 4px;
+  color: var(--text) !important;
+}
+.ant-form-item-has-error :not(.ant-input-disabled):not(.ant-input-borderless).ant-input {
+  background-color: transparent !important;
+}
+.ant-select-dropdown {
+  background-color: var(--cardColor) !important;
+  color: var(--text) !important;
+}
+.ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+  background-color: var(--borderLight);
+}
+.ant-select-item {
+  color: var(--text);
+}
+.ant-select-multiple .ant-select-selection-item {
+  background-color: var(--background) !important;
+  color: var(--text) !important;
+  border-color: var(--borderLight) !important;
+}
+.ant-select-multiple .ant-select-selection-item-remove {
+  color: var(--text) !important;
+}
+
+tr.ant-table-expanded-row > td,
+tr.ant-table-expanded-row:hover > td {
+  background: transparent !important;
+}
+.ant-table-row-expand-icon {
+  color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+/* Select Box */
+.ant-select .ant-select-selection-placeholder {
+  color: var(--text) !important;
+}
+.ant-select-dropdown .ant-select-item-option-content {
+  color: var(--text) !important;
+}
+.ant-select-dropdown .ant-select-item-option-selected {
+  background-color: transparent !important;
+}
+.ant-select-dropdown .ant-select-item-option-selected .ant-select-item-option-content {
+  color: var(--primary) !important;
+}
+.ant-select-open span {
+  color: var(--text) !important;
+}
+
+/* Input */
+.ant-input::placeholder {
+  color: var(--text) !important;
+}
+
+/* Table */
+.ant-table-wrapper .ant-table-tbody > tr.ant-table-placeholder {
+  background-color: var(--background) !important;
+}
+.ant-table-wrapper .ant-table-thead > tr > td {
+  background-color: var(--cardColor) !important;
+  border-color: var(--borderLight) !important;
+}
+.ant-table-wrapper .ant-table-sticky-holder {
+  background-color: transparent !important;
+}
+
+/* Picker */
+.ant-picker {
+  background-color: var(--background) !important;
+}
+.ant-picker-suffix {
+  color: gray !important;
+}
+.ant-picker-input > input {
+  color: var(--text) !important;
+}
+.ant-picker-input > input::placeholder {
+  color: var(--text) !important;
+}
+
+/* Calendar */
+.ant-picker-calendar {
+  background-color: var(--cardColor) !important;
+}
+.ant-picker-calendar.ant-picker-calendar-full .ant-picker-panel {
+  background-color: var(--cardColor) !important;
+}
+.ant-picker-calendar.ant-picker-calendar-full
+  .ant-picker-cell-in-view.ant-picker-cell-selected
+  .ant-picker-calendar-date {
+  background-color: var(--cardColor) !important;
+}
+.ant-picker-calendar .ant-picker-content th {
+  color: var(--text) !important;
+}
+.ant-picker-calendar .ant-picker-cell {
+  color: gray !important;
+}
+.ant-picker-calendar .ant-picker-cell-in-view {
+  color: var(--text) !important;
+}
+.ant-picker-calendar.ant-picker-calendar-full
+  .ant-picker-cell-selected
+  .ant-picker-calendar-date
+  .ant-picker-calendar-date-value {
+  color: var(--text) !important;
+}
+
+.ant-picker-calendar.ant-picker-calendar-full
+  .ant-picker-calendar-date-today
+  .ant-picker-calendar-date-value {
+  color: var(--text) !important;
+}
+
+/* Tabs */
+.ant-tabs .ant-tabs-tab {
+  color: var(--text);
+  font-weight: 500;
+}

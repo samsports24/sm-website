@@ -1,0 +1,17 @@
+/* Third Party CSS */
+
+/* Theme CSS */
+@import './_general.css';
+@import './_antd.css';
+
+/* Layout CSS */
+@import './layout/verticalLayout.css';
+@import './layout/MainMenu.css';
+@import './layout/layout.css';
+@import './layout/mobileLayout.css';
+
+/* Component CSS */
+@import './components/table.css';
+
+/* Page CSS */
+@import './pages/login.css';

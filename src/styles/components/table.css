@@ -1,0 +1,71 @@
+.ant-table {
+  background-color: var(--cardColor) !important;
+  color: var(--text) !important;
+}
+.ant-table-thead > tr > th {
+  background-color: var(--cardColor) !important;
+  color: var(--text) !important;
+}
+.ant-spin-dot {
+  font-size: 40px;
+}
+.ant-spin-nested-loading > div > .ant-spin .ant-spin-dot {
+  position: absolute;
+  top: 54%;
+  left: 49%;
+}
+.ant-table .ant-table-expanded-row-fixed {
+  min-height: 300px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ant-empty-img-simple-path,
+.ant-empty-img-simple-ellipse {
+  fill: var(--tableHeader) !important;
+}
+.ant-empty-description {
+  color: var(--text) !important;
+}
+.ant-table-tbody > tr:hover:not(.ant-table-expanded-row) > td {
+  background-color: var(--cardColor) !important;
+}
+.ant-pagination-prev .ant-pagination-item-link {
+  background-color: transparent !important;
+  color: var(--text) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ant-pagination-item {
+  background-color: transparent !important;
+}
+.ant-pagination-item a {
+  color: var(--text) !important;
+}
+.ant-pagination-next .ant-pagination-item-link {
+  background-color: transparent !important;
+  color: var(--text) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ant-pagination-item-active {
+  background-color: transparent !important;
+  color: var(--text) !important;
+}
+.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  background-color: transparent !important;
+  color: var(--text) !important;
+}
+.ant-select-arrow {
+  color: var(--text) !important;
+}
+.ant-pagination-options {
+  margin-right: 1rem;
+}
+/* .ant-tabs-top > .ant-tabs-nav::before , */
+.ant-table-thead > tr > th,
+.ant-table-tbody > tr > td {
+  border-color: var(--borderLight) !important;
+}

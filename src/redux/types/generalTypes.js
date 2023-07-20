@@ -1,0 +1,3 @@
+export const GET_ALL_EMPLOYEES = 'GET_ALL_EMPLOYEES'
+export const GET_ALL_PROJECTS = 'GET_ALL_PROJECTS'
+export const GET_ALL_TASKS = 'GET_ALL_TASKS'

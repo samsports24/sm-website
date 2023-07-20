@@ -1,0 +1,38 @@
+.ant-menu-dark .ant-menu-sub {
+  background: var(--sidebar);
+}
+
+.ant-layout-sider::-webkit-scrollbar {
+  display: none;
+}
+.ant-switch-checked {
+  background-color: var(--primary) !important;
+}
+.ant-switch-handle {
+  top: 3px !important;
+  width: 15px !important;
+  height: 15px !important;
+  left: 7px;
+}
+.ant-switch-checked .ant-switch-inner {
+  margin-left: 3px !important;
+}
+.ant-drawer-content-wrapper {
+  width: 100% !important;
+}
+.v-layout .company-logo {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  height: 10vh;
+  margin-bottom: 10px;
+}
+.v-layout .company-logo img {
+  width: 70%;
+}
+.v-layout .company-title {
+  font-size: 22px;
+  color: var(--text) !important;
+  text-transform: uppercase;
+}

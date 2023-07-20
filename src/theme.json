@@ -1,0 +1,8 @@
+{
+  "primary-color": "#FF5733",
+  "secondary-color": "#B85B22",
+  "co-primary-color": "#22243c",
+  "dark-primary-color": "#043d41",
+  "table-row-hover-bg": "#eff7ff",
+  "boxShadow": "0 0 8px 0 rgba(17, 22, 26, 0.16), 0 4px 8px 0 rgba(17, 22, 26, 0.08), 0 8px 16px 0 rgba(17, 22, 26, 0.08)"
+}

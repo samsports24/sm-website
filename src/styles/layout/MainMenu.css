@@ -1,0 +1,17 @@
+.sidebar-menu {
+  background-color: transparent !important;
+  color: var(--text) !important;
+  font-size: 18px;
+}
+.sidebar-menu svg {
+  font-size: 20px !important;
+}
+.ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected {
+  border-right: 4px solid var(--primary) !important;
+  border-radius: 0 !important;
+  width: calc(100% - 4px) !important;
+}
+.ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected span,
+.ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected svg {
+  color: var(--siderbarActive) !important;
+}
