@@ -1,0 +1,50 @@
+.american-football-banner {
+  margin: 48px 0px;
+  background: url('../../assets/rectangle-9.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  min-height: 450px;
+  max-height: auto;
+  width: 100%;
+  position: relative;
+}
+.football-banner-content {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+.football-banner-content .row {
+  width: 43%;
+  display: flex;
+  padding: 0px 0px 72px 68px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  /* border: 1px solid #fff; */
+}
+
+.football-banner-content .row .col1 {
+}
+.football-banner-content .row .col2 {
+  color: var(--colors-theme-link-color, #289fc9);
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 28px; /* 70% */
+}
+
+.football-banner-content h3 {
+  color: var(--colors-theme-white-color, #fff);
+  font-size: 34px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+}
+.football-banner-content p {
+  color: var(--colors-theme-white-color, #fff);
+  width: 380px;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px; /* 155.556% */
+}

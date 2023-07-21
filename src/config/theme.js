@@ -33,9 +33,11 @@ export const light = {
 }
 
 export const dark = {
-  background: '#30215D',
+  background: '#080611',
+  primaryPurple: '#261b46',
+  secondaryPurple: '#312160',
   secondaryBackground: '#1E1D24',
-  heading:'#289FC9',
+  heading: '#289FC9',
   primary: '#00A7E5',
   secondary: '#B85B22',
   iconBg: 'rgba(255, 255, 255, 0.164)',

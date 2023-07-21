@@ -1,9 +1,9 @@
 import { Menu } from 'antd'
 import { useNavigate } from 'react-router-dom'
 // import { TbLayoutDashboard } from 'react-icons/tb'
-import NewsIcon from '../assets/news-icon.svg';
+import NewsIcon from '../assets/news-icon.svg'
 import ScoreIcon from '../assets/score-icon.svg'
-import ScheduleIcon from '../assets/schedule-icon.svg';
+import ScheduleIcon from '../assets/schedule-icon.svg'
 import TeamIcon from '../assets/team-icon.svg'
 import PlayerIcon from '../assets/player-icon.svg'
 import StatIcon from '../assets/stats-icon.svg'
@@ -18,7 +18,8 @@ const MainMenu = ({ active }) => {
       mode={'inline'}
       defaultSelectedKeys={[active]}
       style={{
-        background: 'var(--sidebar)',
+        background: "#140F26",
+        // background: 'var(--sidebar)',
         minHeight: '83vh',
       }}
     >

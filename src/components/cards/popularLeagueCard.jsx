@@ -17,8 +17,8 @@ const PopularLeagueCard = ({ data }) => {
         }}
       >
         <div className='content'>
-          <h1>American Football 1</h1>
-          <h3>Season Starts in Sept</h3>
+          <h1>{data?.title || ''}</h1>
+          <h3>{data?.description}</h3>
         </div>
       </div>
       <div className='container2'>

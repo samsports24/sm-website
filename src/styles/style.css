@@ -13,7 +13,10 @@
 /* Component CSS */
 @import './components/table.css';
 @import "./components/popularLeagueCard.css";
+@import "./components/popularSportCard.css";
 @import "./components/homePageBanner.css";
+@import "./components/americanFootballBanner.css";
+@import "./components/feedbackCard.css";
 
 /* Page CSS */
 @import './pages/login.css';

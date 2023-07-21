@@ -18,13 +18,17 @@
 
 .container1 .content {
   position: absolute;
-  bottom: 10px;
-  left: 15px;
+  bottom: 0px;
+  left: 0px;
   color: var(--colors-theme-white-color, #fff);
   font-size: 12px;
   font-style: normal;
   font-weight: 500;
   line-height: 28px; /* 233.333% */
+  width: 100%;
+  background: linear-gradient(360deg, #1e1d24 0%, rgba(30, 29, 36, 0) 100%);
+  padding-bottom: 15px;
+  padding-left: 15px;
 }
 
 .container1 .content h1 {
@@ -44,7 +48,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 20px;
-  background-color: #605582;
+  background-color: var(--primaryPurple);
 }
 
 .league-card .row1 {
@@ -120,7 +124,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-
+  background-color: var(--secondaryPurple);
   border-radius: 0px 0px 16px 16px;
   /* align-self: stretch; */
 }

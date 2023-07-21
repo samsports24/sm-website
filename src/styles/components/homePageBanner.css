@@ -1,11 +1,13 @@
 .home-main-banner {
   border-radius: 16px;
-  background: url('../../assets/rectangle-3.png');
+  background: url('../../assets/rectangle-3.png'), #30215d 50% / cover no-repeat;
   background-blend-mode: color-dodge;
   background-repeat: no-repeat;
-  padding: 88px 88px 35px 88px;
-  min-height: auto;
-  background-size: 100% 100%;
+  padding: 88px 10px 0 88px;
+  min-height: 450px;
+  /* background-size: 100% 100; */
+  /* background-size: 100% 100%; */
+background-size:cover;
   width: 100%;
 }
 
@@ -15,6 +17,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 24px;
+  padding-right: 10px;
 }
 
 .home-main-banner .banner-content h3 {
@@ -35,17 +38,31 @@
 }
 .home-main-banner .banner-content p {
   color: var(--colors-theme-white-color, #fff);
-
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
   line-height: 36px; /* 200% */
 }
 
-.main-banner-image {
-  width: 100%;
+.home-main-banner button {
+  border-radius: 20px;
+  padding: 5px 28px;
+}
+
+.image-div {
+  position: relative;
   height: 100%;
-  margin-left: 20%;
-  /* object-fit: cover; */
-  /* border: 2px solid #fff; */
+  width: 100%;
+}
+
+.main-banner-image {
+  position: absolute;
+  top: -80px;
+  bottom: 0;
+  right: -50px;
+  width: auto;
+  height: 100%;
+  /* scale: 1.25; */
+  z-index: 9999;
+  object-fit: contain;
 }
