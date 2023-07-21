@@ -6,6 +6,10 @@ import PrivateWrapper from './PrivateRoutes'
 // import Layout from '../layout/Layout'
 import Login2 from '../pages/Login2'
 import SignUp from '../pages/SignUp'
+import ForgotPassword from '../pages/ForgotPassword'
+import Authentication from '../pages/Authentication'
+import EditProfile from '../pages/EditProfile'
+import Players from '../pages/Players'
 // import PrivateWrapper from './PrivateRoutes'
 
 const Routers = () => {
@@ -26,6 +30,14 @@ const Routers = () => {
         <Route path='/login' element={<Login />} />
         <Route path='/login-screen2' element={<Login2 />} />
         <Route path='/sign-up' element={<SignUp />} />
+        <Route path='/forgot-password' element={<ForgotPassword />} />
+        <Route path='/authentication' element={<Authentication />} />
+        <Route path='/edit-profile' element={<EditProfile />} />
+        <Route path='/players' element={<Players />} />
+
+
+
+
 
 
       </Routes>

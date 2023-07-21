@@ -66,4 +66,6 @@ export const dark = {
   loaderBg: 'rgba(0, 0, 0, 0.322)',
   dateCard: '#282c31b9',
   dateText: 'rgb(145, 145, 145)',
+  borderColor: 'rgba(110, 105, 128, 0.40)',
+  grayColor: "#3B3B44",
 }

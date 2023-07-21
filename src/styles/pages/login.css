@@ -35,6 +35,19 @@
   margin-bottom: 63.5px;
 }
 
+.signin .form-div .reset-password{
+margin-bottom: 24px;
+}
+
+.signin .form-div .reset-password p{
+  color: var(--text);
+font-size: 14px;
+font-style: normal;
+font-weight: 400;
+line-height: 22px;
+}
+
+
 .signin .form-div .title p {
   color: var(--text);
   /* font-family: Poppins; */
@@ -86,7 +99,7 @@
   align-items: center;
 }
 
-/* .signin .login-form .remember .ant-form label {
+/* .signin .login-form .remember .ant-checkbox-span {
   color: var(--text) !important;
 } */
 
@@ -98,7 +111,21 @@
   font-weight: 400;
   line-height: 22px
 }
-.signin .login-form.remember .ant-checkbox-wrapper{
+.signin .form-div .login-form .signin-btn{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.signin .form-div .login-form .signin-btn p{
+  color: var(--primary);
+  font-size: 16px;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+text-transform: uppercase;
+}
+.ant-checkbox-wrapper{
   color: #fff !important;
 }
 

@@ -34,7 +34,6 @@ const SignIn = () => {
   //   // return <Navigate replace to="/home" />;
   // } else {
   return (
-    <>
       <div className='signin'>
         <div className='width90'>
           <Row>
@@ -109,7 +108,6 @@ const SignIn = () => {
           </Row>
         </div>
       </div>
-    </>
   )
   // }
 }
