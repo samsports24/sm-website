@@ -11,11 +11,11 @@
   background-color: var(--primary) !important;
   border-color: var(--primary) !important;
   padding: 10px 20px;
-    border-radius: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--text);
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text);
 }
 .ant-input,
 .ant-picker {
@@ -63,7 +63,7 @@
   font-size: 20px;
   color: var(--primary-color);
 }
-.ant-picker{
+.ant-picker {
   width: 100%;
   border-radius: 12px;
   border: 2px solid var(--text);

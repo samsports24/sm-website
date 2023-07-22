@@ -18,7 +18,7 @@ const MainMenu = ({ active }) => {
       mode={'inline'}
       defaultSelectedKeys={[active]}
       style={{
-        background: "#140F26",
+        background: '#140F26',
         // background: 'var(--sidebar)',
         minHeight: '83vh',
       }}
@@ -59,7 +59,7 @@ const MainMenu = ({ active }) => {
         // key='dashboard'
         className={'sidebar-menu'}
         icon={<img src={PlayerIcon} />}
-        onClick={() => navigate('/')}
+        onClick={() => navigate('/teams')}
       >
         Players
       </Menu.Item>

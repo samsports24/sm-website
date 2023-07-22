@@ -10,6 +10,7 @@ import ForgotPassword from '../pages/ForgotPassword'
 import Authentication from '../pages/Authentication'
 import EditProfile from '../pages/EditProfile'
 import Players from '../pages/Players'
+import Teams from '../pages/Teams'
 // import PrivateWrapper from './PrivateRoutes'
 
 const Routers = () => {
@@ -22,8 +23,8 @@ const Routers = () => {
         {/* Uncommit next line to apply token security */}
         <Route element={<PrivateWrapper />}>
           {/* <Layout active={'dashboard'}> */}
-            <Route path='/' element={<Dashboard />} />
-            <Route path='*' element={<Navigate to='/' />} />
+          <Route path='/' element={<Dashboard />} />
+          <Route path='*' element={<Navigate to='/' />} />
           {/* </Layout> */}
         </Route>
 
@@ -34,12 +35,7 @@ const Routers = () => {
         <Route path='/authentication' element={<Authentication />} />
         <Route path='/edit-profile' element={<EditProfile />} />
         <Route path='/players' element={<Players />} />
-
-
-
-
-
-
+        <Route path='/teams' element={<Teams />} />
       </Routes>
     </BrowserRouter>
   )

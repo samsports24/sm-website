@@ -17,7 +17,9 @@
 @import "./components/homePageBanner.css";
 @import "./components/americanFootballBanner.css";
 @import "./components/feedbackCard.css";
+@import "./components/teamCard.css";
 
 /* Page CSS */
 @import './pages/login.css';
 @import './pages/EditProfile.css';
+@import './pages/teams.css';
