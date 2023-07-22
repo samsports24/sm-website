@@ -13,6 +13,7 @@ import Insta from '../assets/insta.svg'
 import Fb from '../assets/fb.svg'
 import Twitter from '../assets/twitter.svg'
 import YouTube from '../assets/youtube.svg'
+import { Footer } from 'antd/es/layout/layout'
 
 const VerticalLayout = ({ children, active }) => {
   // const dispatch = useDispatch()
@@ -58,6 +59,7 @@ const VerticalLayout = ({ children, active }) => {
           </div>
         </Sider>
         <Layout className='site-layout' style={{ marginLeft: 256 }}>
+
           <Header className='mainHeader'>
             <h3 className='company-title'>Header</h3>
 
@@ -72,6 +74,9 @@ const VerticalLayout = ({ children, active }) => {
             /> */}
           </Header>
           <Content className='main-content'>{children}</Content>
+          <Footer className='mainFooter'>
+          © Sam Sports, Inc. All rights reserved.
+          </Footer>
         </Layout>
       </Layout>
     </div>

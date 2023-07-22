@@ -4,8 +4,8 @@ import { MenuOutlined } from '@ant-design/icons'
 import { BiArrowBack } from 'react-icons/bi'
 
 import MainMenu from './MainMenu'
-import WhiteLogo from '../assets/Logo.png'
-import BlueLogo from '../assets/blueLogo.png'
+import WhiteLogo from '../assets/Logo.svg'
+// import BlueLogo from '../assets/Logo.svg'
 import { useSelector } from 'react-redux'
 
 const MenuStyle = {
@@ -50,7 +50,7 @@ const MenuDrawer = ({ active }) => {
               {theme === 'dark' ? (
                 <img src={WhiteLogo} alt='logo' className='logo' />
               ) : (
-                <img src={BlueLogo} alt='logo' className='logo' />
+                <img src={WhiteLogo} alt='logo' className='logo' />
               )}
             </div>
             <BiArrowBack onClick={() => setVisible(false)} className='back-arrow' />

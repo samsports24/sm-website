@@ -18,6 +18,8 @@
 @import "./components/americanFootballBanner.css";
 @import "./components/feedbackCard.css";
 @import "./components/teamCard.css";
+@import "./components/dashboardBanner1.css";
+@import "./components/upcomingMatchCard.css";
 
 /* Page CSS */
 @import './pages/login.css';

@@ -34,14 +34,17 @@ export const light = {
 
 export const dark = {
   background: '#080611',
+  backgroundGradient1: '#291c4a',
+
   primaryPurple: '#261b46',
   secondaryPurple: '#312160',
   secondaryBackground: '#1E1D24',
+  white: '#FFF',
   heading: '#289FC9',
   primary: '#00A7E5',
   secondary: '#B85B22',
   iconBg: 'rgba(255, 255, 255, 0.164)',
-  sidebar: '#30195E',
+  sidebar: "#140F26", // '#30195E'
   menuicon: 'gray',
   headerSpan: 'white',
   secondaryText: 'gray',
@@ -69,5 +72,5 @@ export const dark = {
   dateCard: '#282c31b9',
   dateText: 'rgb(145, 145, 145)',
   borderColor: 'rgba(110, 105, 128, 0.40)',
-  grayColor: "#3B3B44",
+  grayColor: '#3B3B44',
 }

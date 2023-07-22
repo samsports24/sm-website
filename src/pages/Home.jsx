@@ -6,10 +6,8 @@ import PopularSportCard from '../components/cards/popularSportCard'
 import HomeMainBanner from '../components/banners/homeMainBanner'
 import AmericalFootballBanner from '../components/banners/americanFootballBanner'
 import FeedbackCard from '../components/cards/feedbackCard'
-import DashboardBannerOne from '../components/banners/DashboardBannerOne'
-import UpcomingMatchCard from '../components/cards/upcomingMatchCard'
 
-const Dashboard = () => {
+const Home = () => {
   let popularLeagues = [
     {
       title: 'American Football 1',
@@ -83,43 +81,13 @@ const Dashboard = () => {
       clientName: 'Brandi Redd',
     },
   ]
-  let upcomingMatches = [
-    {
-      date: new Date(),
-      location: 'Django Stadium',
-      opponents: [require('../assets/beast-square-1.png'), require('../assets/blitz-square-1.png')],
-    },
-    {
-      date: new Date(),
-      location: 'Django Stadium',
-      opponents: [require('../assets/beast-square-2.png'), require('../assets/blitz-square-2.png')],
-    },
-    {
-      date: new Date(),
-      location: 'Django Stadium',
-      opponents: [require('../assets/beast-square-3.png'), require('../assets/blitz-square-3.png')],
-    },
-  ]
   return (
     <div className='home-page'>
-      <DashboardBannerOne />
-      <h2 style={{ marginTop: '50px', marginBottom: '20px', color: 'var(--white)' }}>
-        Upcoming Matches
-      </h2>
-      <Row gutter={[30, 20]} style={{marginBottom:"70px"}}>
-        {upcomingMatches?.map((value, index) => (
-          <Col lg={12} xl={12} xxl={8} key={index}>
-            <UpcomingMatchCard data={{ ...value, index }} />
-          </Col>
-        ))}
-      </Row>
-
       {/* main banner */}
       <HomeMainBanner />
       <div style={{ height: '81px' }}></div>
-
       {/* popular leagues */}
-      <h2 style={{ marginBottom: '24px', color: 'var(--white)' }}>Popular Leagues</h2>
+      <h2 style={{ marginBottom: '24px', color: '#fff' }}>Popular Leagues</h2>
       <Row gutter={[20, 20]}>
         {popularLeagues?.map((value, index) => (
           <Col lg={12} xl={8} xxl={6} key={index}>
@@ -129,11 +97,8 @@ const Dashboard = () => {
       </Row>
 
       <AmericalFootballBanner />
-
       {/* popular sport */}
-      <h2 style={{ marginTop: '80px', marginBottom: '24px', color: 'var(--white)' }}>
-        Popular Sports
-      </h2>
+      <h2 style={{ marginTop: '80px', marginBottom: '24px', color: '#fff' }}>Popular Sports</h2>
       <Row gutter={[20, 20]}>
         {popularSports?.map((value, index) => (
           <Col lg={12} xl={8} xxl={6} key={index}>
@@ -141,12 +106,8 @@ const Dashboard = () => {
           </Col>
         ))}
       </Row>
-
-      <h2 style={{ marginTop: '80px', marginBottom: '24px', color: 'var(--white)' }}>
-        Client Feedback
-      </h2>
-
-      <h4 style={{ marginTop: '20px', marginBottom: '54px', color: 'var(--white)' }}>
+      <h2 style={{ marginTop: '80px', marginBottom: '24px', color: '#fff' }}>Client Feedback</h2>
+      <h4 style={{ marginTop: '20px', marginBottom: '54px', color: '#fff' }}>
         See what millions of users say about us
       </h4>
       <Row gutter={[20, 20]}>
@@ -162,4 +123,4 @@ const Dashboard = () => {
   // return <Layout active={'Home'}></Layout>
 }
 
-export default Dashboard
+export default Home

@@ -22,7 +22,7 @@ const MainMenu = ({ active }) => {
       style={{
         background: '#140F26',
         // background: 'var(--sidebar)',
-        minHeight: '83vh',
+        minHeight: '65vh',
       }}
     >
       <Menu.Item

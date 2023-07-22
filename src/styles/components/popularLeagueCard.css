@@ -20,7 +20,8 @@
   position: absolute;
   bottom: 0px;
   left: 0px;
-  color: var(--colors-theme-white-color, #fff);
+
+  color: var(--white);
   font-size: 12px;
   font-style: normal;
   font-weight: 500;
@@ -33,7 +34,7 @@
 
 .container1 .content h1 {
   width: 114.535px;
-  color: var(--colors-theme-white-color, #fff);
+  color: var(--white);
   /* Headings/H2 */
   font-size: 22px;
   font-style: normal;
@@ -71,15 +72,16 @@
 }
 
 .league-card .row1 .col span {
-  color: var(--colors-theme-white-color, #fff);
+  color: var(--white);
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
   text-transform: uppercase;
+  opacity: 0.5;
 }
 .league-card .row1 .col p {
-  color: var(--colors-theme-white-color, #fff);
+  color: var(--white);
 }
 
 .league-card .row2 {
@@ -88,7 +90,7 @@
 }
 
 .league-card .row2 p {
-  color: var(--colors-theme-white-color, #fff);
+  color: var(--white);
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
@@ -104,7 +106,7 @@
 }
 .league-card .row2 .labels .d-flex {
   align-items: center;
-  color: var(--colors-theme-white-color, #fff);
+  color: var(--white);
   font-size: 14px;
   font-style: normal;
   font-weight: 700;
@@ -129,7 +131,7 @@
   /* align-self: stretch; */
 }
 .container3 span {
-  color: var(--colors-theme-white-color, #fff);
+  color: var(--white);
   text-align: right;
   font-size: 12px;
   font-style: normal;

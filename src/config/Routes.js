@@ -1,6 +1,4 @@
 import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom'
-import { useEffect } from 'react'
-import Dashboard from '../pages/Dashboard'
 import Login from '../pages/Login'
 import PrivateWrapper from './PrivateRoutes'
 // import Layout from '../layout/Layout'
@@ -12,19 +10,19 @@ import EditProfile from '../pages/EditProfile'
 import Players from '../pages/Players'
 import Teams from '../pages/Teams'
 import LeagueScore from '../pages/LeagueScore'
+import Home from '../pages/Home'
+import Dashboard from '../pages/Dashboard'
 // import PrivateWrapper from './PrivateRoutes'
 
 const Routers = () => {
-  useEffect(() => {
-    localStorage.setItem('token', 'some value')
-  }, [])
   return (
     <BrowserRouter>
       <Routes>
         {/* Uncommit next line to apply token security */}
         <Route element={<PrivateWrapper />}>
           {/* <Layout active={'dashboard'}> */}
-          <Route path='/' element={<Dashboard />} />
+          <Route path='/' element={<Home />} />
+          <Route path='/dashboard' element={<Dashboard />} />
           <Route path='*' element={<Navigate to='/' />} />
           {/* </Layout> */}
         </Route>
