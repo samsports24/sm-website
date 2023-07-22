@@ -1,9 +1,11 @@
 .league_container {
   width: 100%;
+  padding: 40px 20px;
 }
 
 .league_container header {
   width: 100%;
+  /* min-height: 250px; */
   display: flex;
   flex-direction: row;
   gap: 30px;
@@ -13,20 +15,220 @@
   border: 1px solid #6e6980;
 }
 
+/* LEFT */
 .league_container header .left {
   width: 170px;
+  text-align: center;
 }
-
-.league_container header .left p {
+.league_container header .left .image_div {
+  border: 1px solid #6e6980;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+.league_container header .left p span {
   color: var(--colors-theme-white-color, #fff);
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
   line-height: 22px;
+  opacity: 0.5;
+}
+
+/* CENTER */
+.league_container header .center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.league_container header .center .title_box {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border: 1px solid #6e6980;
+  border-radius: 8px;
+}
+.league_container header .center .title_box h1 {
+  color: var(--text);
+  font-size: 34px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+}
+.league_container header .center .title_box p span {
+  color: var(--colors-theme-white-color, #fff);
+  text-align: right;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  opacity: 0.5;
+}
+
+.league_container header .center .button_and_team_box {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.league_container header .center .button_and_team_box .button_box {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.league_container header .center .button_and_team_box .button_box button {
+  background-color: transparent !important;
+  border: 1px solid #6e6980;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1;
+  height: 45px;
+  min-width: 160px;
+  width: 200px;
+}
+
+.league_container header .center .button_and_team_box .team_financials_box {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #6e6980;
+  border-radius: 8px;
+  flex: 1;
+  padding: 10px;
+  gap: 10px;
+}
+.league_container header .center .button_and_team_box .team_financials_box p {
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+.league_container header .center .button_and_team_box .team_financials_box div {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+.league_container header .center .button_and_team_box .team_financials_box div p {
+  color: var(--text);
+  text-align: right;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  opacity: 0.5;
+}
+.league_container header .center .button_and_team_box .team_financials_box div span {
+  color: var(--text);
+  text-align: right;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1;
+  width: 70px;
+}
+
+/* RIGHT */
+.league_container header .right {
+  width: 250px;
+  text-align: center;
+}
+.league_container header .right h1 {
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  text-align: right;
+  margin-top: 10px;
+}
+.league_container header .right .content {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 20px 30px;
+  border: 1px solid #6e6980;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+.league_container header .right .top {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.league_container header .right .top span {
+  color: var(--text) !important;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1;
+}
+.league_container header .right .top p {
+  color: var(--text);
+  text-align: right;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  opacity: 0.5;
+}
+.league_container header .right .content .content2 {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+.league_container header .right .content .content2 .image_div {
+  width: 120px;
+}
+.league_container header .right .content .content2 .content3 {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+.league_container header .right .content .content2 .content3 .top {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.league_container header .right .content .content2 .content3 .top span {
+  color: var(--text) !important;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1;
+}
+.league_container header .right .content .content2 .content3 .top p {
+  color: var(--text);
+  text-align: right;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  opacity: 0.5;
 }
 
 /* SCORE CARD */
-.score_card_container{
-    width: 100%;
+.league_container .score_card_container {
+  width: 100%;
+  margin-top: 50px;
 }
-
+.league_container .score_card_container h1 {
+  color: var(--text);
+  font-size: 34px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+  margin-bottom: 30px;
+}
