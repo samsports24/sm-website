@@ -10,6 +10,7 @@ import ForgotPassword from '../pages/ForgotPassword'
 import Authentication from '../pages/Authentication'
 import EditProfile from '../pages/EditProfile'
 import Players from '../pages/Players'
+import PlayerDetails from '../pages/PlayerDetails'
 // import PrivateWrapper from './PrivateRoutes'
 
 const Routers = () => {
@@ -34,6 +35,7 @@ const Routers = () => {
         <Route path='/authentication' element={<Authentication />} />
         <Route path='/edit-profile' element={<EditProfile />} />
         <Route path='/players' element={<Players />} />
+        <Route path='/player-details' element={<PlayerDetails />} />
 
 
 

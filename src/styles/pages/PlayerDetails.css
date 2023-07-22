@@ -1,0 +1,108 @@
+.player-profile {
+    border: 1px solid var(--borderColor);
+border-radius: 16px;
+
+}
+
+.player-profile .player-pic {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    border-right: 1px solid var(--borderColor);
+    border-radius: 16px 0px 0px 16px;
+    background: var(--secondaryPurple);
+    height: 100%;
+}
+
+.player-profile .player-pic img {
+    width: 398px;
+    height: 471px;
+}
+
+.player-profile .player-details {
+    padding: 30px 61px 52px 61px;
+    background: var(--primaryPurple);
+    height: 100%;
+}
+
+.player-profile .player-details .title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--borderColor);
+    padding-bottom: 11px;
+    margin-bottom: 38px;
+}
+
+.player-profile .player-details .title h2 {
+    color: var(--text);
+    font-size: 34px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
+}
+
+.player-profile .player-details .title .active {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.player-profile .player-details .title .active .active-btn {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 14px;
+    background: linear-gradient(150deg, #68FE6E 0%, #00C008 100%);
+    /* filter: drop-shadow(0px 0px 20px rgba(4, 203, 12, 0.25)); */
+
+}
+
+.player-profile .player-details .title .active p {
+    color: var(--text);
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.player-profile .player-details .player-info {}
+
+.player-profile .player-details .player-info p {
+    color: var(--grayText);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 50px;
+    margin: 0;
+}
+
+.player-profile .player-details .player-info .bold {
+    color: var(--text);
+}
+
+.player-profile .player-details .about-player {
+    border-top: 1px solid var(--borderColor);
+    margin-top: 40px;
+    padding-top: 42px;
+}
+
+.player-profile .player-details .about-player p{
+    color: var(--grayText);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 28px;
+}
+.player-data{
+padding-top: 109px;
+padding-bottom: 128px;
+}
+
+.player-data .ant-table-wrapper table {
+    /* border: 1px solid var(--borderColor); */
+    border-radius: 16px 16px 0px 0px !important;
+    
+}
+
+/* .player-data . */

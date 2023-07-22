@@ -160,7 +160,7 @@
     align-items: center;
 }
 
-.profile-container .bottom-div{
+.bottom-div{
     padding: 38px 0;
     display: flex;
     justify-content: center;
@@ -169,7 +169,7 @@
     border-top: 1px solid var(--borderColor);
 }
 
-.profile-container .bottom-div p{
+.bottom-div p{
     color: var(--text);
 text-align: center;
 font-size: 14px;
