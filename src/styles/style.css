@@ -12,14 +12,15 @@
 
 /* Component CSS */
 @import './components/table.css';
-@import "./components/popularLeagueCard.css";
-@import "./components/popularSportCard.css";
-@import "./components/homePageBanner.css";
-@import "./components/americanFootballBanner.css";
-@import "./components/feedbackCard.css";
-@import "./components/teamCard.css";
-@import "./components/dashboardBanner1.css";
-@import "./components/upcomingMatchCard.css";
+@import './components/popularLeagueCard.css';
+@import './components/popularSportCard.css';
+@import './components/homePageBanner.css';
+@import './components/americanFootballBanner.css';
+@import './components/feedbackCard.css';
+@import './components/teamCard.css';
+@import './components/dashboardBanner1.css';
+@import './components/upcomingMatchCard.css';
+@import './components/leagueScoreCard.css';
 
 /* Page CSS */
 @import './pages/login.css';

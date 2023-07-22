@@ -2,13 +2,54 @@
 import Layout from '../layout/Layout'
 
 // Third
-import { Button, Image } from 'antd'
+import { Button, Col, Image, Row } from 'antd'
 
 // Image, Icon
 import bellIcon from '../assets/bell-icon.svg'
 import circaImage from '../assets/teams/circa_sports_trout.png'
+import LeagueScoreCard from '../components/cards/leagueScoreCard'
 
 const LeagueScore = () => {
+  let scores = [
+    {
+      image: require('../assets/heat-wave-square-1.png'),
+      title: 'Hear Wave Square',
+      date: new Date(),
+      scores: [1, 2],
+    },
+    {
+      image: require('../assets/heat-wave-square-1.png'),
+      title: 'Hear Wave Square',
+      date: new Date(),
+      scores: [1, 2],
+    },
+
+    {
+      image: require('../assets/heat-wave-square-1.png'),
+      title: 'Hear Wave Square',
+      date: new Date(),
+      scores: [1, 2],
+    },
+    {
+      image: require('../assets/heat-wave-square-1.png'),
+      title: 'Hear Wave Square',
+      date: new Date(),
+      scores: [1, 2],
+    },
+    {
+      image: require('../assets/heat-wave-square-1.png'),
+      title: 'Hear Wave Square',
+      date: new Date(),
+      scores: [1, 2],
+    },
+
+    {
+      image: require('../assets/heat-wave-square-1.png'),
+      title: 'Hear Wave Square',
+      date: new Date(),
+      scores: [1, 2],
+    },
+  ]
   return (
     <Layout>
       <div className='league_container'>
@@ -43,7 +84,15 @@ const LeagueScore = () => {
           </div>
           <div className='right'>right</div>
         </header>
-        <section className='score_card_container'></section>
+        <section className='score_card_container'>
+          <Row gutter={[30, 20]}>
+            {scores?.map((value, index) => (
+              <Col lg={12} xl={12} xxl={8} key={index}>
+                <LeagueScoreCard data={{ ...value, index }} />
+              </Col>
+            ))}
+          </Row>
+        </section>
       </div>
     </Layout>
   )

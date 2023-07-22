@@ -1,0 +1,52 @@
+.league-score-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1 0 0;
+  background: var(--primaryPurple);
+  border-radius: 16px;
+
+  /* min-width: 510px; */
+  /* max-width: 510px; */
+  width: 100%;
+  padding: 15px 20px;
+
+}
+.league-score-card h2 {
+  color: var(--white);
+}
+.league-score-card h2 span {
+  font-weight: 400;
+}
+
+.line {
+  min-width: 100%;
+  height: 1px;
+  background: rgba(110, 105, 128, 0.4);
+}
+
+.score-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+  color: var(--white);
+}
+.score-row p {
+  opacity: 0.8;
+}
+.score-row h6 {
+  color: var(--white);
+  text-align: right;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  opacity: 0.5;
+}
+
+.score-row h6 span {
+  font-weight: 700;
+  line-height: normal;
+}
