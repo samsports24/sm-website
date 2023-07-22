@@ -11,6 +11,7 @@ import Authentication from '../pages/Authentication'
 import EditProfile from '../pages/EditProfile'
 import Players from '../pages/Players'
 import Teams from '../pages/Teams'
+import LeagueScore from '../pages/LeagueScore'
 // import PrivateWrapper from './PrivateRoutes'
 
 const Routers = () => {
@@ -36,6 +37,7 @@ const Routers = () => {
         <Route path='/edit-profile' element={<EditProfile />} />
         <Route path='/players' element={<Players />} />
         <Route path='/teams' element={<Teams />} />
+        <Route path='/leagueScore' element={<LeagueScore />} />
       </Routes>
     </BrowserRouter>
   )

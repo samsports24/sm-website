@@ -9,6 +9,8 @@ import PlayerIcon from '../assets/player-icon.svg'
 import StatIcon from '../assets/stats-icon.svg'
 import StandingIcon from '../assets/standing-icon.svg'
 import EventIcon from '../assets/event-icon.svg'
+import LeagueIcon from '../assets/league-icon.svg'
+
 const MainMenu = ({ active }) => {
   const navigate = useNavigate()
 
@@ -54,6 +56,14 @@ const MainMenu = ({ active }) => {
         onClick={() => navigate('/')}
       >
         Teams
+      </Menu.Item>
+      <Menu.Item
+        // key='dashboard'
+        className={'sidebar-menu'}
+        icon={<img src={LeagueIcon} />}
+        onClick={() => navigate('/leagueScore')}
+      >
+        League
       </Menu.Item>
       <Menu.Item
         // key='dashboard'
