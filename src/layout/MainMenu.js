@@ -53,7 +53,7 @@ const MainMenu = ({ active }) => {
         // key='dashboard'
         className={'sidebar-menu'}
         icon={<img src={TeamIcon} />}
-        onClick={() => navigate('/')}
+        onClick={() => navigate('/teams')}
       >
         Teams
       </Menu.Item>
@@ -61,7 +61,7 @@ const MainMenu = ({ active }) => {
         // key='dashboard'
         className={'sidebar-menu'}
         icon={<img src={LeagueIcon} />}
-        onClick={() => navigate('/leagueScore')}
+        onClick={() => navigate('/')}
       >
         League
       </Menu.Item>
@@ -69,7 +69,7 @@ const MainMenu = ({ active }) => {
         // key='dashboard'
         className={'sidebar-menu'}
         icon={<img src={PlayerIcon} />}
-        onClick={() => navigate('/teams')}
+        onClick={() => navigate('/players')}
       >
         Players
       </Menu.Item>
@@ -77,7 +77,7 @@ const MainMenu = ({ active }) => {
         // key='dashboard'
         className={'sidebar-menu'}
         icon={<img src={StatIcon} />}
-        onClick={() => navigate('/')}
+        onClick={() => navigate('/dashboard')}
       >
         Stats
       </Menu.Item>

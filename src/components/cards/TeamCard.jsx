@@ -1,9 +1,11 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { Button, Image } from 'antd'
 
 const TeamCard = ({ data }) => {
   const { text, direction, imageUrl, title, link } = data
+  const navigate = useNavigate()
   return (
     <div className='team_card_box'>
       <div className='header'>
@@ -21,7 +23,11 @@ const TeamCard = ({ data }) => {
         <Button type='default' className='outlined_button'>
           RULEBOOK
         </Button>
-        <Button type='primary' className='contained_button'>
+        <Button
+          type='primary'
+          className='contained_button'
+          onClick={() => navigate('/leagueScore')}
+        >
           SHOP NOW
         </Button>
       </div>
