@@ -72,5 +72,8 @@ export const dark = {
   dateCard: '#282c31b9',
   dateText: 'rgb(145, 145, 145)',
   borderColor: 'rgba(110, 105, 128, 0.40)',
-  grayColor: '#3B3B44',
+  grayColor: "#3B3B44",
+  secColor: "#30215D",
+  grayText: "rgba(255, 255, 255, 0.40)",
+  lightGrayText: "rgba(255, 255, 255, 0.60)",
 }

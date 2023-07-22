@@ -138,6 +138,9 @@ tr.ant-table-expanded-row:hover > td {
 .ant-table-wrapper .ant-table-sticky-holder {
   background-color: transparent !important;
 }
+:where(.css-dev-only-do-not-override-1jqvr6p).ant-table-wrapper .ant-table-thead >tr>th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before{
+  background-color: transparent !important;
+}
 
 /* Picker */
 .ant-picker {

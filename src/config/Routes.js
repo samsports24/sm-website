@@ -12,6 +12,7 @@ import Teams from '../pages/Teams'
 import LeagueScore from '../pages/LeagueScore'
 import Home from '../pages/Home'
 import Dashboard from '../pages/Dashboard'
+import PlayerDetails from '../pages/PlayerDetails'
 // import PrivateWrapper from './PrivateRoutes'
 
 const Routers = () => {
@@ -36,6 +37,13 @@ const Routers = () => {
         <Route path='/players' element={<Players />} />
         <Route path='/teams' element={<Teams />} />
         <Route path='/leagueScore' element={<LeagueScore />} />
+        <Route path='/player-details' element={<PlayerDetails />} />
+
+
+
+
+
+
       </Routes>
     </BrowserRouter>
   )

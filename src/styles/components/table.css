@@ -1,9 +1,9 @@
 .ant-table {
-  background-color: var(--cardColor) !important;
+  background-color: transparent !important;
   color: var(--text) !important;
 }
 .ant-table-thead > tr > th {
-  background-color: var(--cardColor) !important;
+  background-color: var(--primaryPurple) !important;
   color: var(--text) !important;
 }
 .ant-spin-dot {

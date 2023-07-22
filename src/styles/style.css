@@ -21,9 +21,12 @@
 @import './components/dashboardBanner1.css';
 @import './components/upcomingMatchCard.css';
 @import './components/leagueScoreCard.css';
+@import "./components/PlayerCard.css";
 
 /* Page CSS */
 @import './pages/login.css';
 @import './pages/EditProfile.css';
 @import './pages/teams.css';
 @import './pages/leagueScore.css';
+@import './pages/Players.css';
+@import './pages/PlayerDetails.css';
