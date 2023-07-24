@@ -24,7 +24,7 @@ const LeagueScoreCard = ({ data }) => {
       ))}
       <div className='line'></div>
       <Button type='primary' style={{ alignSelf: 'end' }}>
-        Game Details <AiOutlineArrowRight className='button-icon' />
+        Game Details &nbsp; <AiOutlineArrowRight className='button-icon' size={16} />
       </Button>
     </div>
   )

@@ -19,13 +19,11 @@
 .league-score-card h2 span {
   font-weight: 400;
 }
-
 .line {
   min-width: 100%;
   height: 1px;
   background: rgba(110, 105, 128, 0.4);
 }
-
 .score-row {
   display: flex;
   justify-content: space-between;
@@ -45,7 +43,6 @@
   line-height: 22px;
   opacity: 0.5;
 }
-
 .score-row h6 span {
   font-weight: 700;
   line-height: normal;
