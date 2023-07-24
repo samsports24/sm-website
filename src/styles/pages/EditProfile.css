@@ -38,7 +38,7 @@
     font-style: normal;
     font-weight: 400;
     line-height: 28px;
-    text-align: center;
+    text-align: left;
     margin-bottom: 7px;
 }
 
@@ -176,4 +176,36 @@ font-size: 14px;
 font-style: normal;
 font-weight: 400;
 line-height: 22px;
+}
+
+@media (max-width: 1050px){
+    .profile-container .profile .profile-form .profile-pic p{
+        font-size: 12px;
+    }
+    .profile-container .profile .profile-form .profile-pic img {
+        width: 100px;
+        height: 100px;
+    }
+    .profile-container .profile .profile-form .profile-pic{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        margin-bottom: 24px;
+    }
+    .profile-container .setting-container .setting{
+        gap: 80px;
+    }
+}
+
+@media (max-width: 550px){
+    .profile-container .setting-container .setting-flex{
+        flex-direction: column;
+    }
+    .profile-container .setting-container .setting{
+        margin-bottom: 24px;
+    }
+    .profile-container .setting-container .setting .options .color-div{
+        align-items: center;
+    }
 }
