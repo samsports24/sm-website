@@ -1,4 +1,3 @@
-
 import { Row, Col, Table } from 'antd'
 import PlayerImage from '../assets/player-img-3.png'
 const PlayerDetails = () => {
@@ -104,15 +103,15 @@ const PlayerDetails = () => {
     <>
       <div className='player-profile'>
         <Row>
-          <Col xs={24} md={6} lg={8}>
+          <Col xs={24} md={6} lg={10} xl={6}>
             <div className='player-pic'>
               <img src={PlayerImage} />
             </div>
           </Col>
-          <Col xs={24} md={18} lg={16}>
+          <Col xs={24} md={18} lg={14} xl={18}>
             <div className='player-details'>
               <Row gutter={[20, 0]}>
-                <Col xs={24} md={12} lg={24}>
+                <Col xs={24} md={24} lg={24}>
                   <div className='title'>
                     <h2>A{"'"}Shawn Robinson</h2>
                     <div className='active'>
@@ -121,28 +120,28 @@ const PlayerDetails = () => {
                     </div>
                   </div>
                 </Col>
-                <Col xs={24} md={12} lg={8}>
+                <Col xs={24} md={12} lg={12} xl={8}>
                   <div className='player-info'>
                     <p>
                       Owner: <span className='bold'> Gridiron Seals (UFAFL)</span>
                     </p>
                   </div>
                 </Col>
-                <Col xs={24} md={12} lg={8}>
+                <Col xs={24} md={12} lg={12} xl={8}>
                   <div className='player-info'>
                     <p>
                       Position <span className='bold'> Gridiron Seals (UFAFL)</span>
                     </p>
                   </div>
                 </Col>
-                <Col xs={24} md={12} lg={8}>
+                <Col xs={24} md={12} lg={12} xl={8}>
                   <div className='player-info'>
                     <p>
                       Age: <span className='bold'> 28 (Mar 21, 1995)v</span>
                     </p>
                   </div>
                 </Col>
-                <Col xs={24} md={12} lg={8}>
+                <Col xs={24} md={12} lg={12} xl={8}>
                   <div className='player-info'>
                     <p>
                       Height:{' '}
@@ -153,28 +152,28 @@ const PlayerDetails = () => {
                   </div>
                 </Col>
 
-                <Col xs={24} md={12} lg={8}>
+                <Col xs={24} md={12} lg={12} xl={8}>
                   <div className='player-info'>
                     <p>
                       Weight: <span className='bold'> 330 lbs</span>
                     </p>
                   </div>
                 </Col>
-                <Col xs={24} md={12} lg={8}>
+                <Col xs={24} md={12} lg={12} xl={8}>
                   <div className='player-info'>
                     <p>
                       Nationality: <span className='bold'> USA</span>
                     </p>
                   </div>
                 </Col>
-                <Col xs={24} md={12} lg={8}>
+                <Col xs={24} md={12} lg={12} xl={8}>
                   <div className='player-info'>
                     <p>
                       Hometown: <span className='bold'> Alabama</span>
                     </p>
                   </div>
                 </Col>
-                <Col xs={24} md={12} lg={8}>
+                <Col xs={24} md={12} lg={12} xl={8}>
                   <div className='player-info'>
                     <p>
                       Date Registered: <span className='bold'> Sep 10, 2021</span>
@@ -198,7 +197,14 @@ const PlayerDetails = () => {
         </Row>
       </div>
       <div className='player-data'>
-        <Table dataSource={dataSource} columns={columns} bordered={false} pagination={false} />;
+        <Table
+          dataSource={dataSource}
+          columns={columns}
+          bordered={false}
+          pagination={false}
+          scroll={{ x: 'auto' }}
+        />
+        ;
       </div>
     </>
   )
