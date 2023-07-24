@@ -106,3 +106,29 @@ padding-bottom: 128px;
 }
 
 /* .player-data . */
+@media (max-width: 1300px){
+    .player-profile .player-details .player-info p{
+        font-size: 10px;
+    }
+}
+@media (max-width: 1200px){
+    .player-profile .player-details .player-info{
+        margin-bottom: 24px;
+    }
+    .player-profile .player-details .player-info p{
+        line-height: 15px;
+    }
+    .player-profile .player-details .about-player p{
+        font-size: 14px;
+        line-height: 20px;
+    }
+}
+@media (max-width: 1050px){
+    .player-profile .player-pic{
+        align-items: center;
+    }
+    .player-profile .player-pic img{
+        width: 100%;
+        height: auto;
+    }
+}

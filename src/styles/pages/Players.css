@@ -3,6 +3,7 @@
 .player-container .banner {
     background: var(--primaryPurple);
     border-radius: 16px;
+    border: 1px solid var(--borderColor);
     width: 100%;
     margin-bottom: 75px;
 }
@@ -11,6 +12,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .player-container .banner .left-banner {
@@ -131,4 +133,18 @@
     font-weight: 700;
     line-height: 28px;
     opacity: 0.5;
+}
+
+@media (max-width: 1460px){
+    .player-container .banner .right-banner{
+        display: none;
+    }
+
+    .player-container .banner .left-banner{
+        background-image: url(../../assets/unnamed.png);
+        width: 100%;
+        background-position: right;
+        background-repeat: no-repeat;
+        background-size: auto 100%;
+    }
 }
