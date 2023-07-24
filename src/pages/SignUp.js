@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Form, Input, Button, Row, Col, Checkbox, Select } from 'antd'
 // import { useDispatch } from 'react-redux'
-// import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 // import { authLogin } from '../redux'
 import Insta from '../assets/insta.svg'
@@ -11,7 +11,7 @@ import YouTube from '../assets/youtube.svg'
 import Banner from '../assets/login-pic-1.png'
 const SignUp = () => {
   const [loading, setLoading] = useState(false)
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
   // const dispatch = useDispatch()
 
   // const onFinish = async (values) => {
@@ -34,7 +34,7 @@ const SignUp = () => {
       <div className='signin'>
         <div className='width90'>
           <Row>
-            <Col xs={24} md={12} lg={9}>
+          <Col xs={24} md={24} lg={10} xl={11}>
               <div className='form-div'>
                 <Form name='login' className='login-form' layout='vertical' onFinish={onFinish}>
                   <div className='title'>
@@ -128,7 +128,7 @@ const SignUp = () => {
                   </Form.Item>
                 </Form>
                 <div className='create-account'>
-                  <p>Already Registered <span className='highlight'>SIGN IN</span></p>
+                  <p>Already Registered <span className='highlight' onClick={() => navigate('/login')} >SIGN IN</span></p>
                 </div>
                 <div className='icons'>
                   <img src={Insta} />
@@ -138,7 +138,7 @@ const SignUp = () => {
                 </div>
               </div>
             </Col>
-            <Col xs={24} md={12} lg={15}>
+            <Col xs={24} md={24} lg={14} xl={13}>
               <div className='banner' style={{backgroundImage: `url(${Banner})`}}>
                 
               </div>

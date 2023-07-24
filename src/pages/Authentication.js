@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Form, Input, Button, Row, Col } from 'antd'
 // import { useDispatch } from 'react-redux'
-// import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 // import { authLogin } from '../redux'
 import R from '../assets/r.svg'
@@ -12,7 +12,7 @@ import YouTube from '../assets/youtube.svg'
 import Banner from '../assets/login-pic-1.png'
 const Authentication = () => {
     const [loading, setLoading] = useState(false)
-    // const navigate = useNavigate()
+    const navigate = useNavigate()
     // const dispatch = useDispatch()
 
     // const onFinish = async (values) => {
@@ -32,7 +32,7 @@ const Authentication = () => {
         <div className='signin'>
             <div className='width90'>
                 <Row>
-                    <Col xs={24} md={12} lg={9}>
+                <Col xs={24} md={24} lg={10} xl={11}>
                         <div className='form-div'>
                             <Form name='login' className='login-form' layout='vertical' onFinish={onFinish}>
                                 <div className='title'>
@@ -65,7 +65,7 @@ const Authentication = () => {
                                 </Form.Item>
                                 <Form.Item>
                                     <div className='signin-btn'>
-                                        <p>SIGN IN</p>
+                                        <p onClick={() => navigate('/login')}>SIGN IN</p>
                                     </div>
                                 </Form.Item>
                             </Form>
@@ -77,7 +77,7 @@ const Authentication = () => {
                             </div>
                         </div>
                     </Col>
-                    <Col xs={24} md={12} lg={15}>
+                    <Col xs={24} md={24} lg={14} xl={13}>
                         <div className='banner' style={{ backgroundImage: `url(${Banner})` }}>
                         </div>
                     </Col>
