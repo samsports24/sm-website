@@ -1,4 +1,4 @@
-import Layout from '../layout/Layout'
+
 import { Row, Col, Table } from 'antd'
 import PlayerImage from '../assets/player-img-3.png'
 const PlayerDetails = () => {
@@ -101,7 +101,7 @@ const PlayerDetails = () => {
     },
   ]
   return (
-    <Layout>
+    <>
       <div className='player-profile'>
         <Row>
           <Col xs={24} md={6} lg={8}>
@@ -200,10 +200,7 @@ const PlayerDetails = () => {
       <div className='player-data'>
         <Table dataSource={dataSource} columns={columns} bordered={false} pagination={false} />;
       </div>
-      {/* <div className='bottom-div'>
-                <p>© Sam Sports, Inc. All rights reserved.</p>
-            </div> */}
-    </Layout>
+    </>
   )
 }
 

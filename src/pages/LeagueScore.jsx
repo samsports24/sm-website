@@ -1,8 +1,4 @@
 import { useState } from 'react'
-
-// Layout
-import Layout from '../layout/Layout'
-
 // Third
 import { Button, Col, Image, Row, Pagination } from 'antd'
 
@@ -73,7 +69,7 @@ const LeagueScore = () => {
     },
   ]
   return (
-    <Layout>
+
       <div className='league_container'>
         {/* HEADER */}
         <header>
@@ -200,7 +196,6 @@ const LeagueScore = () => {
           </Row>
         </section>
       </div>
-    </Layout>
   )
 }
 
