@@ -51,6 +51,8 @@
   padding: 10px 16px;
   border: 1px solid #6e6980;
   border-radius: 8px;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 .league_container header .center .title_box h1 {
   color: var(--text);
@@ -227,6 +229,7 @@
   flex-direction: row;
   gap: 20px;
   margin: 0;
+  padding: 0;
 }
 .league_container .schedule_box1 .week_pagination_ul li {
   color: var(--text);
@@ -327,4 +330,49 @@
 .league_container .score_card_container {
   width: 100%;
   margin-top: 30px;
+}
+
+@media (max-width: 1440px) {
+  .league_container header .center .button_and_team_box .button_box button {
+    width: 160px;
+    min-width: 160px;
+  }
+}
+@media (max-width: 1300px) {
+  .league_container header .center .button_and_team_box .button_box button {
+    width: 100%;
+  }
+  .league_container header .center .button_and_team_box {
+    flex-direction: column;
+  }
+}
+@media (max-width: 1200px) {
+  .league_container header {
+    flex-direction: column;
+    align-items: center;
+  }
+  .league_container header .center {
+    width: 100%;
+  }
+  .league_container header .center .button_and_team_box {
+    flex-direction: row;
+  }
+}
+@media (max-width: 600px) {
+  .league_container header .center .button_and_team_box {
+    flex-direction: column;
+  }
+  .league_container {
+    padding: 0;
+  }
+  .league_container header .center .title_box h1 {
+    font-size: 22px;
+  }
+  .league_container .schedule_box2 {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+  }
+  .league_container .schedule_box1 .week_pagination_ul {
+    overflow: scroll;
+  }
 }

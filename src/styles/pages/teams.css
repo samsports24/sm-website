@@ -34,6 +34,10 @@
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
+.teams_container header .center img {
+  width: 200px;
+  height: 200px;
+}
 .teams_container header .center h1 {
   color: #fff;
   font-size: 34px;
@@ -80,16 +84,62 @@
   margin-top: 50px;
 }
 
+@media (max-width: 1600px) {
+  .teams_container header .center img {
+    width: 130px;
+    height: 130px;
+  }
+}
+@media (max-width: 1400px) {
+  .teams_container header .center h1 {
+    font-size: 22px;
+    width: 30vw;
+  }
+}
+@media (max-width: 1024px) {
+  .teams_container header .center {
+    flex-direction: column;
+    gap: 0px;
+    z-index: 999;
+  }
+  .teams_container header .center h1 {
+    font-size: 18px;
+    width: 280px;
+    text-align: center;
+    margin-top: -10px;
+  }
+  .teams_container header .center img {
+    width: 60px;
+    height: 60px;
+  }
+}
 @media (max-width: 900px) {
   .teams_container .button_section .button_group {
     gap: 10px;
   }
+  .teams_container header .header_corner_image1 {
+    width: 45vw;
+  }
+  .teams_container header .header_corner_image2 {
+    width: 34.6vw;
+  }
 }
 @media (max-width: 450px) {
+  .teams_container {
+    width: 100%;
+    padding: 40px 0px;
+  }
+  .teams_container header {
+    height: 150px;
+  }
   .teams_container .button_section button {
     padding: 10px 17px !important;
   }
   .teams_container .button_section .button_group {
     flex-wrap: wrap;
+  }
+  .teams_container header .center h1 {
+    font-size: 16px;
+    width: 80vw;
   }
 }

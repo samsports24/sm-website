@@ -193,7 +193,7 @@ const LeagueScore = () => {
         <section className='score_card_container'>
           <Row gutter={[30, 20]}>
             {scores?.map((value, index) => (
-              <Col lg={12} xl={12} xxl={8} key={index}>
+              <Col xs={24} lg={12} xl={12} xxl={8} key={index}>
                 <LeagueScoreCard data={{ ...value, index }} />
               </Col>
             ))}
