@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Form, Input, Button, Row, Col, Checkbox } from 'antd'
 // import { useDispatch } from 'react-redux'
-// import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 // import { authLogin } from '../redux'
 import R from '../assets/r.svg'
@@ -14,7 +14,7 @@ import YouTube from '../assets/youtube.svg'
 import Banner from '../assets/login-pic-2.png'
 const SignIn2 = () => {
   const [loading, setLoading] = useState(false)
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
   // const dispatch = useDispatch()
 
   // const onFinish = async (values) => {
@@ -38,7 +38,7 @@ const SignIn2 = () => {
       <div className='signin'>
         <div className='width90'>
           <Row>
-            <Col xs={24} md={12} lg={9}>
+          <Col xs={24} md={24} lg={10} xl={11}>
               <div className='form-div'>
                 <Form name='login' className='login-form' layout='vertical' onFinish={onFinish}>
                   <div className='title'>
@@ -80,7 +80,7 @@ const SignIn2 = () => {
                   >
                     <div className='remember'>
                       <Checkbox onChange={onChange}>Remember me</Checkbox>
-                      <p>Forgot password?</p>
+                      <p onClick={() => navigate('/forgot-password')}>Forgot password?</p>
                     </div>
                   </Form.Item>
 
@@ -91,7 +91,7 @@ const SignIn2 = () => {
                   </Form.Item>
                 </Form>
                 <div className='create-account'>
-                  <p>Don{"'"}t have an account? <span className='highlight'>CREATE ACCOUNT</span></p>
+                  <p>Don{"'"}t have an account? <span className='highlight' onClick={() => navigate('/sign-up')}>CREATE ACCOUNT</span></p>
                 </div>
                 <div className='icons'>
                   <img src={Insta} />
@@ -101,7 +101,7 @@ const SignIn2 = () => {
                 </div>
               </div>
             </Col>
-            <Col xs={24} md={12} lg={15}>
+            <Col xs={24} md={24} lg={14} xl={13}>
               <div className='banner' style={{backgroundImage: `url(${Banner})`}}>
                 <div className='heading'>
                     <h3>WHERE <span className='highlight'>LEGENDS</span> 

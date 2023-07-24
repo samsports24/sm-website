@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 import { Form, Input, Button, Row, Col, Checkbox } from 'antd'
 // import { useDispatch } from 'react-redux'
 // import { useNavigate } from 'react-router-dom'
@@ -12,9 +14,10 @@ import FB from '../assets/fb.svg'
 import Twitter from '../assets/twitter.svg'
 import YouTube from '../assets/youtube.svg'
 import Banner from '../assets/login-pic-1.png'
+
 const SignIn = () => {
   const [loading, setLoading] = useState(false)
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
   // const dispatch = useDispatch()
 
   // const onFinish = async (values) => {
@@ -34,11 +37,11 @@ const SignIn = () => {
   //   // return <Navigate replace to="/home" />;
   // } else {
   return (
-      <div className='signin'>
+      <div className='signin' >
         <div className='width90'>
           <Row>
-            <Col xs={24} md={12} lg={9}>
-              <div className='form-div'>
+            <Col xs={24} md={24} lg={10} xl={11}>
+              <div className='form-div' style={{background: "#080611"}}>
                 <Form name='login' className='login-form' layout='vertical' onFinish={onFinish}>
                   <div className='title'>
                     <h1>SAMSPORTS<span><img src={R} /></span></h1>
@@ -79,7 +82,7 @@ const SignIn = () => {
                   >
                     <div className='remember'>
                       <Checkbox onChange={onChange}>Remember me</Checkbox>
-                      <p>Forgot password?</p>
+                      <p onClick={() => navigate('/forgot-password')}>Forgot password?</p>
                     </div>
                   </Form.Item>
 
@@ -90,7 +93,7 @@ const SignIn = () => {
                   </Form.Item>
                 </Form>
                 <div className='create-account'>
-                  <p>Don{"'"}t have an account? <span className='highlight'>CREATE ACCOUNT</span></p>
+                  <p>Don{"'"}t have an account? <span className='highlight'  onClick={() => navigate('/sign-up')}>CREATE ACCOUNT</span></p>
                 </div>
                 <div className='icons'>
                   <img src={Insta} />
@@ -100,7 +103,7 @@ const SignIn = () => {
                 </div>
               </div>
             </Col>
-            <Col xs={24} md={12} lg={15}>
+            <Col xs={24} md={24} lg={14} xl={13}>
               <div className='banner' style={{backgroundImage: `url(${Banner})`}}>
                 {/* <img src={Banner} /> */}
               </div>
