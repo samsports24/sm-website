@@ -103,6 +103,7 @@
   display: flex;
   justify-content: space-between;
   margin: 2px 0px;
+  flex-wrap: wrap;
 }
 .league-card .row2 .labels .d-flex {
   align-items: center;

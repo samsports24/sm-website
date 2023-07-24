@@ -90,7 +90,7 @@ const Home = () => {
       <h2 style={{ marginBottom: '24px', color: '#fff' }}>Popular Leagues</h2>
       <Row gutter={[20, 20]}>
         {popularLeagues?.map((value, index) => (
-          <Col lg={12} xl={8} xxl={6} key={index}>
+         <Col xs={24} sm={12} xl={8} xxl={6} key={index}>
             <PopularLeagueCard data={value} />
           </Col>
         ))}
@@ -101,7 +101,7 @@ const Home = () => {
       <h2 style={{ marginTop: '80px', marginBottom: '24px', color: '#fff' }}>Popular Sports</h2>
       <Row gutter={[20, 20]}>
         {popularSports?.map((value, index) => (
-          <Col lg={12} xl={8} xxl={6} key={index}>
+          <Col xs={24} sm={12} xl={8} xxl={6} key={index}>
             <PopularSportCard data={{ ...value, index }} />
           </Col>
         ))}
@@ -112,7 +112,7 @@ const Home = () => {
       </h4>
       <Row gutter={[20, 20]}>
         {clientFeedbacks?.map((value, index) => (
-          <Col lg={12} xl={12} xxl={8} key={index}>
+          <Col xs={24} sm={24} lg={12} xl={12} xxl={8} key={index}>
             <FeedbackCard data={{ ...value, index }} />
           </Col>
         ))}

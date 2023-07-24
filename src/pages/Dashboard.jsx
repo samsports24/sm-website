@@ -106,9 +106,9 @@ const Dashboard = () => {
       <h2 style={{ marginTop: '50px', marginBottom: '20px', color: 'var(--white)' }}>
         Upcoming Matches
       </h2>
-      <Row gutter={[30, 20]} style={{marginBottom:"70px"}}>
+      <Row gutter={[30, 20]} style={{ marginBottom: '70px' }}>
         {upcomingMatches?.map((value, index) => (
-          <Col lg={12} xl={12} xxl={8} key={index}>
+          <Col xs={24} sm={24} lg={12} xl={12} xxl={8} key={index}>
             <UpcomingMatchCard data={{ ...value, index }} />
           </Col>
         ))}
@@ -122,7 +122,7 @@ const Dashboard = () => {
       <h2 style={{ marginBottom: '24px', color: 'var(--white)' }}>Popular Leagues</h2>
       <Row gutter={[20, 20]}>
         {popularLeagues?.map((value, index) => (
-          <Col lg={12} xl={8} xxl={6} key={index}>
+          <Col xs={24} sm={12} xl={8} xxl={6} key={index}>
             <PopularLeagueCard data={value} />
           </Col>
         ))}
@@ -136,7 +136,7 @@ const Dashboard = () => {
       </h2>
       <Row gutter={[20, 20]}>
         {popularSports?.map((value, index) => (
-          <Col lg={12} xl={8} xxl={6} key={index}>
+        <Col xs={24} sm={12} xl={8} xxl={6} key={index}>
             <PopularSportCard data={{ ...value, index }} />
           </Col>
         ))}

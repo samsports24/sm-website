@@ -42,7 +42,7 @@
 }
 .football-banner-content p {
   color: var(--colors-theme-white-color, #fff);
-  width: 380px;
+  width: 90%; /*380px  */
   font-size: 18px;
   font-style: normal;
   font-weight: 400;

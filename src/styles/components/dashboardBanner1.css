@@ -5,9 +5,6 @@
   margin: 20px 0px;
 }
 
-.dashboard-banner-1 .center-div {
-}
-
 .dashboard-banner-1 .row {
   padding: 10px 0px;
   display: flex;
@@ -50,4 +47,24 @@
 
 .dashboard-banner-1 .row img {
   height: auto;
+}
+
+@media (max-width: 425px) {
+  .dashboard-banner-1 .row img {
+    width: 40%;
+    height: auto;
+  }
+  .dashboard-banner-1 .row h1 {
+    font-size: 48px;
+  }
+  .dashboard-banner-1 .row p {
+    font-size: 14px;
+  }
+  .dashboard-banner-1 .center-div .container {
+    width: 50px;
+    height: 50px;
+  }
+  .dashboard-banner-1 .center-div  img{
+width: 60%;
+  }
 }

@@ -4,7 +4,9 @@
   background: var(--primaryPurple);
   padding: 37px 34px 37px 64px;
   margin: 40px 10px 0px 0px;
-  width: 476.407px;
+  /* width: 476.407px; */
+  margin-left: 20px;
+  width: 95%;
 }
 
 .feedback-card p {

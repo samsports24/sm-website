@@ -1,5 +1,5 @@
 import React from 'react'
-import { Layout } from 'antd'
+import { Button, Layout } from 'antd'
 
 // import { MdOutlineDarkMode, MdDarkMode } from 'react-icons/md'
 // import { useDispatch, useSelector } from 'react-redux'
@@ -14,11 +14,20 @@ import Fb from '../assets/fb.svg'
 import Twitter from '../assets/twitter.svg'
 import YouTube from '../assets/youtube.svg'
 import { Footer } from 'antd/es/layout/layout'
+import { useNavigate } from 'react-router-dom'
 
 const VerticalLayout = ({ children, active }) => {
-  // const dispatch = useDispatch()
   const { Header, Sider, Content } = Layout
+  const navigate = useNavigate()
   // const theme = useSelector((state) => state.theme.theme)
+
+  const login = () => {
+    navigate('/login')
+  }
+  const signup = () => {
+    navigate('/sign-up')
+  }
+
   return (
     <div className='v-layout'>
       <Layout>
@@ -59,9 +68,15 @@ const VerticalLayout = ({ children, active }) => {
           </div>
         </Sider>
         <Layout className='site-layout' style={{ marginLeft: 256 }}>
-
           <Header className='mainHeader'>
-            <h3 className='company-title'>Header</h3>
+            <div></div>
+            {/* <h3 className='company-title'>Header</h3> */}
+            <div className='auth-buttons'>
+              <Button type='default' onClick={login}>
+                Login
+              </Button>
+              <Button type='primary' onClick={signup}>Sign Up</Button>
+            </div>
 
             {/* <Switch
               className='themeSwitch'
@@ -74,9 +89,7 @@ const VerticalLayout = ({ children, active }) => {
             /> */}
           </Header>
           <Content className='main-content'>{children}</Content>
-          <Footer className='mainFooter'>
-          © Sam Sports, Inc. All rights reserved.
-          </Footer>
+          <Footer className='mainFooter'>© Sam Sports, Inc. All rights reserved.</Footer>
         </Layout>
       </Layout>
     </div>

@@ -40,3 +40,19 @@
   font-weight: 700;
   line-height: normal;
 }
+
+@media (max-width: 1024px) {
+  .match-card img {
+    width: 90px;
+    height: 90px;
+  }
+  .match-card .content h5 {
+    font-size: 14px;
+  }
+  .match-card .content h1 {
+    font-size: 34px;
+  }
+  .match-card .content h4 {
+    font-size: 14px;
+  }
+}
