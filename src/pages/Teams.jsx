@@ -1,6 +1,3 @@
-// Layout
-import Layout from '../layout/Layout'
-
 // Third
 import { Button, Col, Image, Row } from 'antd'
 
@@ -157,7 +154,7 @@ const Teams = () => {
   ]
 
   return (
-    <Layout>
+
       <div className='teams_container'>
         {/* HEADER */}
         <header>
@@ -204,7 +201,6 @@ const Teams = () => {
           </Row>
         </section>
       </div>
-    </Layout>
   )
 }
 

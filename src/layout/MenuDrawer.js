@@ -34,7 +34,12 @@ const MenuDrawer = ({ active }) => {
     <>
       <div className='m-header'>
         <Button onClick={showDrawer} style={MenuStyle}>
-          <MenuOutlined />
+          <MenuOutlined
+            style={{
+              color: 'var(--white)',
+              opacity: 0.5,
+            }}
+          />
         </Button>
       </div>
       <Drawer
@@ -42,7 +47,7 @@ const MenuDrawer = ({ active }) => {
         placement='left'
         closable={false}
         onClose={onClose}
-        visible={visible}
+        open={visible}
       >
         <div>
           <div className='m-drawer'>

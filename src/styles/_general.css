@@ -3,7 +3,6 @@ body {
   padding: 0;
   font-family: 'Poppins', sans-serif;
   background-color: #eaeaea;
-  
 }
 
 .swal-text {
@@ -44,4 +43,33 @@ p {
 
 .m-20 {
   margin: 20px 0;
+}
+
+.login-btn {
+  background: transparent;
+  border: 2px solid var(--white);
+  padding: 10px 28px;
+  height: auto;
+  border-radius: 50px;
+  color: var(--white);
+  font-weight: bold;
+  margin: 5px;
+  cursor: pointer;
+  outline: none;
+}
+
+.signup-btn {
+  background: var(--white);
+  border: 2px solid var(--white);
+  color: var(--backgroundGradient1);
+}
+
+.mobile {
+  display: none;
+}
+
+@media (max-width: 800px) {
+  .mobile {
+    display: flex;
+  }
 }

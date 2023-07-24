@@ -1,4 +1,4 @@
-import Layout from '../layout/Layout'
+
 import { Row, Col } from 'antd'
 import Trout from '../assets/trout-square-1.png'
 import UFAFL from '../assets/leagueid-a.png'
@@ -178,7 +178,6 @@ const Players = () => {
     },
   ]
   return (
-    <Layout>
       <div className='player-container'>
         <div className='banner'>
           <div className='flex'>
@@ -240,7 +239,6 @@ const Players = () => {
                     <p>© Sam Sports, Inc. All rights reserved.</p>
                 </div> */}
       </div>
-    </Layout>
   )
 }
 

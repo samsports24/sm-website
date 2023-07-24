@@ -1,4 +1,4 @@
-import { Menu } from 'antd'
+import { Button, Menu } from 'antd'
 import { useNavigate } from 'react-router-dom'
 // import { TbLayoutDashboard } from 'react-icons/tb'
 import NewsIcon from '../assets/news-icon.svg'
@@ -13,91 +13,101 @@ import LeagueIcon from '../assets/league-icon.svg'
 
 const MainMenu = ({ active }) => {
   const navigate = useNavigate()
+  const login = () => navigate('/login')
+  const signUp = () => navigate('/sign-up')
 
   return (
-    <Menu
-      theme='dark'
-      mode={'inline'}
-      defaultSelectedKeys={[active]}
-      style={{
-        background: '#140F26',
-        // background: 'var(--sidebar)',
-        minHeight: '65vh',
-      }}
-    >
-      <Menu.Item
-        // key='dashboard'
-        className={'sidebar-menu'}
-        icon={<img src={NewsIcon} />}
-        onClick={() => navigate('/')}
+    <>
+      <Menu
+        theme='dark'
+        mode={'inline'}
+        defaultSelectedKeys={[active]}
+        style={{
+          background: '#140F26',
+          // background: 'var(--sidebar)',
+          minHeight: '65vh',
+        }}
       >
-        News
-      </Menu.Item>
-      <Menu.Item
-        // key='dashboard'
-        className={'sidebar-menu'}
-        icon={<img src={ScoreIcon} />}
-        onClick={() => navigate('/')}
-      >
-        Scores
-      </Menu.Item>
-      <Menu.Item
-        // key='dashboard'
-        className={'sidebar-menu'}
-        icon={<img src={ScheduleIcon} />}
-        onClick={() => navigate('/')}
-      >
-        Schedule
-      </Menu.Item>
-      <Menu.Item
-        // key='dashboard'
-        className={'sidebar-menu'}
-        icon={<img src={TeamIcon} />}
-        onClick={() => navigate('/teams')}
-      >
-        Teams
-      </Menu.Item>
-      <Menu.Item
-        // key='dashboard'
-        className={'sidebar-menu'}
-        icon={<img src={LeagueIcon} />}
-        onClick={() => navigate('/')}
-      >
-        League
-      </Menu.Item>
-      <Menu.Item
-        // key='dashboard'
-        className={'sidebar-menu'}
-        icon={<img src={PlayerIcon} />}
-        onClick={() => navigate('/players')}
-      >
-        Players
-      </Menu.Item>
-      <Menu.Item
-        // key='dashboard'
-        className={'sidebar-menu'}
-        icon={<img src={StatIcon} />}
-        onClick={() => navigate('/dashboard')}
-      >
-        Stats
-      </Menu.Item>
-      <Menu.Item
-        // key='dashboard'
-        className={'sidebar-menu'}
-        icon={<img src={StandingIcon} />}
-        onClick={() => navigate('/')}
-      >
-        Standings
-      </Menu.Item>
-      <Menu.Item
-        // key='dashboard'
-        className={'sidebar-menu'}
-        icon={<img src={EventIcon} />}
-        onClick={() => navigate('/')}
-      >
-        Events
-      </Menu.Item>
-    </Menu>
+        <Menu.Item
+          // key='dashboard'
+          className={'sidebar-menu'}
+          icon={<img src={NewsIcon} />}
+          onClick={() => navigate('/')}
+        >
+          News
+        </Menu.Item>
+        <Menu.Item
+          // key='dashboard'
+          className={'sidebar-menu'}
+          icon={<img src={ScoreIcon} />}
+          onClick={() => navigate('/')}
+        >
+          Scores
+        </Menu.Item>
+        <Menu.Item
+          // key='dashboard'
+          className={'sidebar-menu'}
+          icon={<img src={ScheduleIcon} />}
+          onClick={() => navigate('/')}
+        >
+          Schedule
+        </Menu.Item>
+        <Menu.Item
+          // key='dashboard'
+          className={'sidebar-menu'}
+          icon={<img src={TeamIcon} />}
+          onClick={() => navigate('/teams')}
+        >
+          Teams
+        </Menu.Item>
+        <Menu.Item
+          // key='dashboard'
+          className={'sidebar-menu'}
+          icon={<img src={LeagueIcon} />}
+          onClick={() => navigate('/')}
+        >
+          League
+        </Menu.Item>
+        <Menu.Item
+          // key='dashboard'
+          className={'sidebar-menu'}
+          icon={<img src={PlayerIcon} />}
+          onClick={() => navigate('/players')}
+        >
+          Players
+        </Menu.Item>
+        <Menu.Item
+          // key='dashboard'
+          className={'sidebar-menu'}
+          icon={<img src={StatIcon} />}
+          onClick={() => navigate('/dashboard')}
+        >
+          Stats
+        </Menu.Item>
+        <Menu.Item
+          // key='dashboard'
+          className={'sidebar-menu'}
+          icon={<img src={StandingIcon} />}
+          onClick={() => navigate('/')}
+        >
+          Standings
+        </Menu.Item>
+        <Menu.Item
+          // key='dashboard'
+          className={'sidebar-menu'}
+          icon={<img src={EventIcon} />}
+          onClick={() => navigate('/')}
+        >
+          Events
+        </Menu.Item>
+      </Menu>
+      <Button className='login-btn mobile' onClick={login}>
+        Login 
+      </Button>
+      <Button className='login-btn signup-btn mobile' onClick={signUp}>
+        Sign Up
+      </Button>
+    </>
   )
 }
 

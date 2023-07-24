@@ -1,11 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-
 import { Form, Input, Button, Row, Col, Checkbox } from 'antd'
-// import { useDispatch } from 'react-redux'
-// import { useNavigate } from 'react-router-dom'
-
-// import { authLogin } from '../redux'
 import R from '../assets/r.svg'
 import UserIcon from '../assets/user-icon.svg'
 import PasswordIcon from '../assets/password-icon.svg'
@@ -14,7 +9,6 @@ import FB from '../assets/fb.svg'
 import Twitter from '../assets/twitter.svg'
 import YouTube from '../assets/youtube.svg'
 import Banner from '../assets/login-pic-1.png'
-
 const SignIn = () => {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
@@ -29,10 +23,12 @@ const SignIn = () => {
     setLoading(true)
     console.log(values)
     setLoading(false)
+    localStorage.setItem('token', 'This is temporary token')
+    navigate('/dashboard')
   }
   const onChange = (e) => {
-    console.log(`checked = ${e.target.checked}`);
-  };
+    console.log(`checked = ${e.target.checked}`)
+  }
   // if (localStorage.hasOwnProperty("token")) {
   //   // return <Navigate replace to="/home" />;
   // } else {
@@ -107,10 +103,10 @@ const SignIn = () => {
               <div className='banner' style={{backgroundImage: `url(${Banner})`}}>
                 {/* <img src={Banner} /> */}
               </div>
-            </Col>
-          </Row>
-        </div>
+          </Col>
+        </Row>
       </div>
+    </div>
   )
   // }
 }
