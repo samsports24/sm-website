@@ -2,6 +2,7 @@ export const light = {
   background: '#fbfbfb',
   primary: '#F55139',
   secondary: '#B85B22',
+  border: '#433A5D',
   iconBg: 'rgba(0, 0, 0, 0.062)',
   sidebar: '#FFFFFF',
   menuicon: 'gray',
@@ -35,7 +36,7 @@ export const light = {
 export const dark = {
   background: '#080611',
   backgroundGradient1: '#291c4a',
-
+  border: '#433A5D',
   primaryPurple: '#261b46',
   secondaryPurple: '#312160',
   secondaryBackground: '#1E1D24',
@@ -44,7 +45,7 @@ export const dark = {
   primary: '#00A7E5',
   secondary: '#B85B22',
   iconBg: 'rgba(255, 255, 255, 0.164)',
-  sidebar: "#140F26", // '#30195E'
+  sidebar: '#140F26', // '#30195E'
   menuicon: 'gray',
   headerSpan: 'white',
   secondaryText: 'gray',
@@ -72,8 +73,8 @@ export const dark = {
   dateCard: '#282c31b9',
   dateText: 'rgb(145, 145, 145)',
   borderColor: 'rgba(110, 105, 128, 0.40)',
-  grayColor: "#3B3B44",
-  secColor: "#30215D",
-  grayText: "rgba(255, 255, 255, 0.40)",
-  lightGrayText: "rgba(255, 255, 255, 0.60)",
+  grayColor: '#3B3B44',
+  secColor: '#30215D',
+  grayText: 'rgba(255, 255, 255, 0.40)',
+  lightGrayText: 'rgba(255, 255, 255, 0.60)',
 }

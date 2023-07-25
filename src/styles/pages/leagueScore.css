@@ -279,52 +279,7 @@
   font-weight: bold;
   line-height: normal;
 }
-.league_container .schedule_box2 .pagination_box {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.league_container .schedule_box2 .pagination_box h2 {
-  color: var(--text);
-  font-weight: 700;
-  font-size: 22px;
-  line-height: 28px;
-}
-.league_container .schedule_box2 .pagination_box ul li {
-  border: 1px solid #6e6980;
-}
-.league_container .schedule_box2 .pagination_box .ant-pagination-next button,
-.league_container .schedule_box2 .pagination_box .ant-pagination-prev button {
-  color: #6e6980 !important;
-  border: none;
-  font-size: 15px;
-}
-.league_container .schedule_box2 .pagination_box .ant-pagination-next button:hover,
-.league_container .schedule_box2 .pagination_box .ant-pagination-prev button:hover {
-  color: var(--primary) !important;
-}
-
-.league_container .schedule_box2 .pagination_box .ant-pagination-next:hover,
-.league_container .schedule_box2 .pagination_box .ant-pagination-prev:hover {
-  border-color: #fff;
-}
-
-.league_container .schedule_box2 .ant-pagination-item a {
-  color: #6e6980 !important;
-}
-.league_container .schedule_box2 .ant-pagination-item-active {
-  background-color: var(--primary) !important;
-  border: 1px solid var(--primary) !important;
-}
-.league_container .schedule_box2 .ant-pagination-item-active a {
-  color: var(--text) !important;
-}
-.league_container .schedule_box2 .ant-pagination-item-ellipsis {
-  color: #6e6980 !important;
-  font-size: 10px;
-}
+/* PAGINATION CSS in seprate file pagination.css */
 
 /* SCORE CARD */
 .league_container .score_card_container {

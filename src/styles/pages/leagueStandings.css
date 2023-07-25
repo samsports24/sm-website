@@ -1,0 +1,49 @@
+.standing_container {
+  width: 100%;
+  padding: 40px 20px;
+}
+
+/* League Standings */
+.standing_container .heading_box {
+  margin-top: 40px;
+  background-color: var(--primaryPurple);
+  border-radius: 10px 10px 0px 0px;
+}
+.standing_container .heading_box h2 {
+  color: var(--text);
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 28px;
+  padding: 19px 24px;
+}
+
+.standing_container .league_standing_card_container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-height: 750px;
+  overflow-y: auto;
+}
+
+/* SCROLL */
+/* width */
+.standing_container .league_standing_card_container::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Track */
+.standing_container .league_standing_card_container::-webkit-scrollbar-track {
+  background: var(--border);
+}
+
+/* Handle */
+.standing_container .league_standing_card_container::-webkit-scrollbar-thumb {
+  background: var(--primaryPurple);
+}
+
+/* Handle on hover */
+.standing_container .league_standing_card_container::-webkit-scrollbar-thumb:hover {
+  /* background: #555; */
+}

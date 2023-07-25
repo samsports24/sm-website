@@ -64,7 +64,6 @@
 .ant-pagination-options {
   margin-right: 1rem;
 }
-/* .ant-tabs-top > .ant-tabs-nav::before , */
 .ant-table-thead > tr > th,
 .ant-table-tbody > tr > td {
   border-color: var(--borderLight) !important;

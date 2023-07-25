@@ -14,6 +14,7 @@ import Home from '../pages/Home'
 import Dashboard from '../pages/Dashboard'
 import PlayerDetails from '../pages/PlayerDetails'
 import Layout from '../layout/Layout'
+import LeagueStandings from '../pages/LeagueStandings'
 
 // import PrivateWrapper from './PrivateRoutes'
 
@@ -42,6 +43,7 @@ const Routers = () => {
           <Route path='/player-details' element={<PlayerDetails />} />
           <Route path='/edit-profile' element={<EditProfile />} />
           <Route path='/players' element={<Players />} />
+          <Route path='/league-standings' element={<LeagueStandings />} />
           {/* </Layout> */}
         </Route>
 

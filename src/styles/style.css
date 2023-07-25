@@ -22,6 +22,9 @@
 @import './components/upcomingMatchCard.css';
 @import './components/leagueScoreCard.css';
 @import "./components/PlayerCard.css";
+@import "./components/pagination.css";
+@import "./components/leagueStandingCard.css";
+@import "./components/standingHeader.css";
 
 /* Page CSS */
 @import './pages/login.css';
@@ -30,3 +33,4 @@
 @import './pages/leagueScore.css';
 @import './pages/Players.css';
 @import './pages/PlayerDetails.css';
+@import './pages/leagueStandings.css';

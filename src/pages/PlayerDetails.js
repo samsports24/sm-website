@@ -204,7 +204,6 @@ const PlayerDetails = () => {
           pagination={false}
           scroll={{ x: 'auto' }}
         />
-        ;
       </div>
     </>
   )

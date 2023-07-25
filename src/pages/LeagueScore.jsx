@@ -1,6 +1,6 @@
 import { useState } from 'react'
 // Third
-import { Button, Col, Image, Row, Pagination } from 'antd'
+import { Button, Col, Image, Row } from 'antd'
 
 // Image, Icon
 import bellIcon from '../assets/bell-icon.svg'
@@ -10,6 +10,7 @@ import { FiArrowRight, FiArrowLeft } from 'react-icons/fi'
 
 // Component
 import LeagueScoreCard from '../components/cards/leagueScoreCard'
+import Pagination from '../components/Pagination'
 
 const LeagueScore = () => {
   const [weekPagination, setWeekPagination] = useState(1)
@@ -69,133 +70,129 @@ const LeagueScore = () => {
     },
   ]
   return (
-
-      <div className='league_container'>
-        {/* HEADER */}
-        <header>
-          <div className='left'>
-            <div className='image_div'>
-              <Image preview={false} src={circaImage} />
-            </div>
+    <div className='league_container'>
+      {/* HEADER */}
+      <header>
+        <div className='left'>
+          <div className='image_div'>
+            <Image preview={false} src={circaImage} />
+          </div>
+          <p>
+            <span>League Notification</span> <img src={bellIcon} alt='Icon' />
+          </p>
+        </div>
+        <div className='center'>
+          <div className='title_box'>
+            <h1>Circa Sports Trout</h1>
             <p>
-              <span>League Notification</span> <img src={bellIcon} alt='Icon' />
+              <span>Live Player Auction</span> <img src={bellIcon} alt='Icon' />
             </p>
           </div>
-          <div className='center'>
-            <div className='title_box'>
-              <h1>Circa Sports Trout</h1>
-              <p>
-                <span>Live Player Auction</span> <img src={bellIcon} alt='Icon' />
-              </p>
+          <div className='button_and_team_box'>
+            <div className='button_box'>
+              <Button>Overall Record</Button>
+              <Button>Division Record</Button>
             </div>
-            <div className='button_and_team_box'>
-              <div className='button_box'>
-                <Button>Overall Record</Button>
-                <Button>Division Record</Button>
+            <div className='team_financials_box'>
+              <p>Team Financials</p>
+              <div>
+                <p>Live Player Auction</p>
+                <span>---</span>
               </div>
-              <div className='team_financials_box'>
-                <p>Team Financials</p>
-                <div>
-                  <p>Live Player Auction</p>
-                  <span>---</span>
+              <div>
+                <p>Live Player Auction</p>
+                <span>---</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='right'>
+          <div className='content'>
+            <div className='top'>
+              <span>23&apos;</span>
+              <p> Same year Price-Pool</p>
+            </div>
+            <div className='content2'>
+              <div className='image_div'>
+                <Image preview={false} src={UfaflImage} alt='UFAFL' />
+              </div>
+              <div className='content3'>
+                <div className='top'>
+                  <span>23&apos;</span>
+                  <p>Price-Pool</p>
                 </div>
-                <div>
-                  <p>Live Player Auction</p>
-                  <span>---</span>
+                <div className='top'>
+                  <span>23&apos;</span>
+                  <p>Price-Pool</p>
                 </div>
               </div>
             </div>
           </div>
-          <div className='right'>
-            <div className='content'>
-              <div className='top'>
-                <span>23&apos;</span>
-                <p> Same year Price-Pool</p>
-              </div>
-              <div className='content2'>
-                <div className='image_div'>
-                  <Image preview={false} src={UfaflImage} alt='UFAFL' />
-                </div>
-                <div className='content3'>
-                  <div className='top'>
-                    <span>23&apos;</span>
-                    <p>Price-Pool</p>
-                  </div>
-                  <div className='top'>
-                    <span>23&apos;</span>
-                    <p>Price-Pool</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <h1>UFAFL Price_Pools</h1>
+          <h1>UFAFL Price_Pools</h1>
+        </div>
+      </header>
+
+      {/* SCHEDULE ONE */}
+      <section className='schedule_box1'>
+        <h2>2023 Team Schedule:</h2>
+        <ul className='week_pagination_ul'>
+          <li
+            onClick={() => handleWeekPagination(1)}
+            className={`${weekPagination === 1 && 'active_week'}`}
+          >
+            Week One
+          </li>
+          <li
+            onClick={() => handleWeekPagination(2)}
+            className={`${weekPagination === 2 && 'active_week'}`}
+          >
+            Week Two
+          </li>
+          <li
+            onClick={() => handleWeekPagination(3)}
+            className={`${weekPagination === 3 && 'active_week'}`}
+          >
+            Week Three
+          </li>
+          <li
+            onClick={() => handleWeekPagination(4)}
+            className={`${weekPagination === 4 && 'active_week'}`}
+          >
+            Week Four
+          </li>
+          <div className='pre_next_box'>
+            <button className='previous' onClick={() => handleWeekPagination('previous')}>
+              <FiArrowLeft />
+            </button>
+            <button className='next' onClick={() => handleWeekPagination('next')}>
+              <FiArrowRight />
+            </button>
           </div>
-        </header>
+        </ul>
+      </section>
 
-        {/* SCHEDULE ONE */}
-        <section className='schedule_box1'>
-          <h2>2023 Team Schedule:</h2>
-          <ul className='week_pagination_ul'>
-            <li
-              onClick={() => handleWeekPagination(1)}
-              className={`${weekPagination === 1 && 'active_week'}`}
-            >
-              Week One
-            </li>
-            <li
-              onClick={() => handleWeekPagination(2)}
-              className={`${weekPagination === 2 && 'active_week'}`}
-            >
-              Week Two
-            </li>
-            <li
-              onClick={() => handleWeekPagination(3)}
-              className={`${weekPagination === 3 && 'active_week'}`}
-            >
-              Week Three
-            </li>
-            <li
-              onClick={() => handleWeekPagination(4)}
-              className={`${weekPagination === 4 && 'active_week'}`}
-            >
-              Week Four
-            </li>
-            <div className='pre_next_box'>
-              <button className='previous' onClick={() => handleWeekPagination('previous')}>
-                <FiArrowLeft />
-              </button>
-              <button className='next' onClick={() => handleWeekPagination('next')}>
-                <FiArrowRight />
-              </button>
-            </div>
-          </ul>
-        </section>
+      {/* SCHEDULE TWO */}
+      <section className='schedule_box2'>
+        <h1>League Scores </h1>
+        <Pagination
+          title='Go To Week:'
+          defaultCurrent={1}
+          total={180}
+          onChange={handlePagination}
+        />
+      </section>
 
-        {/* SCHEDULE TWO */}
-        <section className='schedule_box2'>
-          <h1>League Scores </h1>
-          <div className='pagination_box'>
-            <h2>Go To Week:</h2>
-            <Pagination
-              defaultCurrent={1}
-              total={180}
-              showSizeChanger={false}
-              onChange={handlePagination}
-            />
-          </div>
-        </section>
-
-        {/* CARDS */}
-        <section className='score_card_container'>
-          <Row gutter={[30, 20]}>
-            {scores?.map((value, index) => (
-              <Col xs={24} lg={12} xl={12} xxl={8} key={index}>
-                <LeagueScoreCard data={{ ...value, index }} />
-              </Col>
-            ))}
-          </Row>
-        </section>
-      </div>
+      {/* CARDS */}
+      <section className='score_card_container'>
+        <Row gutter={[30, 20]}>
+          {scores?.map((value, index) => (
+            <Col xs={24} lg={12} xl={12} xxl={8} key={index}>
+              <LeagueScoreCard data={{ ...value, index }} />
+            </Col>
+          ))}
+        </Row>
+      </section>
+    </div>
   )
 }
 
