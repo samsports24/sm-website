@@ -25,6 +25,7 @@
 @import "./components/pagination.css";
 @import "./components/leagueStandingCard.css";
 @import "./components/standingHeader.css";
+@import "./components/statsCard.css";
 
 /* Page CSS */
 @import './pages/login.css';
@@ -35,3 +36,4 @@
 @import './pages/PlayerDetails.css';
 @import './pages/leagueStandings.css';
 @import './pages/standingDetail.css';
+@import './pages/playerStats.css';

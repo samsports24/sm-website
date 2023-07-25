@@ -1,0 +1,80 @@
+.player_stats_container {
+  width: 100%;
+  padding: 40px 20px;
+}
+
+/* FILTERS */
+.player_stats_container .filter_box {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 50px;
+}
+.player_stats_container .filter_box h2 {
+  color: var(--text);
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 28px;
+}
+.player_stats_container .filter_box ul {
+  list-style-type: none;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  margin-bottom: 0px;
+}
+.player_stats_container .filter_box ul li {
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  opacity: 0.5;
+  cursor: pointer;
+  padding-block: 3px;
+}
+.player_stats_container .filter_box ul .active {
+  color: var(--primary);
+  opacity: 1;
+  border-bottom: 1px solid var(--primary);
+}
+
+/* STATS */
+.player_stats_container .stats_container{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+  gap: 30px;
+  overflow-y: auto;
+  max-height: 1000px;
+}
+
+.player_stats_container .stats_table .ant-table {
+  color: var(--text);
+}
+.player_stats_container .stats_table tr > td {
+  border-bottom: none;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300 !important;
+  line-height: 28px;
+  opacity: 0.4;
+  padding-block: 28px;
+}
+.player_stats_container .stats_table .ant-table-thead > tr > th {
+  background-color: var(--primaryPurple) !important;
+  border-bottom: 1px solid var(--border) !important;
+  border-top: 1px solid var(--border) !important;
+}
+.player_stats_container .stats_table .ant-table-thead > tr > th:first-child {
+  border-top-left-radius: 0px !important;
+  border-left: 1px solid var(--border) !important;
+
+}
+.player_stats_container .stats_table .ant-table-thead > tr > th:last-child {
+  border-top-right-radius: 0px !important;
+  border-right: 1px solid var(--border) !important;
+}

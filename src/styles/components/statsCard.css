@@ -1,0 +1,46 @@
+.stats_card_container {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.stats_card_container header {
+  padding: 30px 60px;
+  border-bottom: 1px solid var(--border);
+}
+.stats_card_container header h3 {
+  color: var(--text);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.stats_card_container .center {
+  padding: 30px 60px;
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+}
+.stats_card_container .center div {
+  min-width: 180px;
+}
+.stats_card_container .center div .text1 {
+  color: #6e6980;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400 !important;
+  line-height: 28px;
+}
+.stats_card_container .center div .text2 {
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700 !important;
+  line-height: normal;
+}
+
+/* STATS TABLE */
+.stats_card_container .stats_table {
+  width: 100%;
+}
