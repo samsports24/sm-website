@@ -47,3 +47,10 @@
 .standing_container .league_standing_card_container::-webkit-scrollbar-thumb:hover {
   /* background: #555; */
 }
+
+
+@media (max-width: 768px) {
+  .standing_container {
+    padding: 40px 0px;
+  }
+}

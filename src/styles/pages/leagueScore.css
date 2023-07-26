@@ -201,6 +201,14 @@
   gap: 10px;
 }
 
+.league_container .wrapper {
+  width: 100%;
+  margin-top: 36px;
+  max-height: 800px;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+}
+
 /* SCHEDULE */
 .league_container .schedule_box1,
 .league_container .schedule_box2 {
@@ -211,9 +219,6 @@
   justify-content: space-between;
   gap: 20px;
   flex-wrap: wrap;
-}
-.league_container .schedule_box1 {
-  margin-top: 36px;
 }
 .league_container .schedule_box2 {
   margin-top: 40px;

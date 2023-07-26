@@ -44,3 +44,23 @@
 .stats_card_container .stats_table {
   width: 100%;
 }
+
+@media (max-width: 1440px){
+  .stats_card_container .center {
+   flex-wrap: wrap;
+  }
+  .stats_card_container .center div {
+    min-width: 0px;
+  }
+}
+@media (max-width: 768px) {
+  .stats_card_container header {
+    padding: 20px;
+  }
+  .stats_card_container .center {
+    padding: 20px;
+  }
+  .stats_card_container .center div {
+    min-width: 80px;
+  }
+}

@@ -42,7 +42,6 @@ const LeagueScore = () => {
       date: new Date(),
       scores: [1, 2],
     },
-
     {
       image: require('../assets/heat-wave-square-1.png'),
       title: 'Hear Wave Square',
@@ -61,7 +60,42 @@ const LeagueScore = () => {
       date: new Date(),
       scores: [1, 2],
     },
-
+    {
+      image: require('../assets/heat-wave-square-1.png'),
+      title: 'Hear Wave Square',
+      date: new Date(),
+      scores: [1, 2],
+    },
+    {
+      image: require('../assets/heat-wave-square-1.png'),
+      title: 'Hear Wave Square',
+      date: new Date(),
+      scores: [1, 2],
+    },
+    {
+      image: require('../assets/heat-wave-square-1.png'),
+      title: 'Hear Wave Square',
+      date: new Date(),
+      scores: [1, 2],
+    },
+    {
+      image: require('../assets/heat-wave-square-1.png'),
+      title: 'Hear Wave Square',
+      date: new Date(),
+      scores: [1, 2],
+    },
+    {
+      image: require('../assets/heat-wave-square-1.png'),
+      title: 'Hear Wave Square',
+      date: new Date(),
+      scores: [1, 2],
+    },
+    {
+      image: require('../assets/heat-wave-square-1.png'),
+      title: 'Hear Wave Square',
+      date: new Date(),
+      scores: [1, 2],
+    },
     {
       image: require('../assets/heat-wave-square-1.png'),
       title: 'Hear Wave Square',
@@ -132,66 +166,68 @@ const LeagueScore = () => {
         </div>
       </header>
 
-      {/* SCHEDULE ONE */}
-      <section className='schedule_box1'>
-        <h2>2023 Team Schedule:</h2>
-        <ul className='week_pagination_ul'>
-          <li
-            onClick={() => handleWeekPagination(1)}
-            className={`${weekPagination === 1 && 'active_week'}`}
-          >
-            Week One
-          </li>
-          <li
-            onClick={() => handleWeekPagination(2)}
-            className={`${weekPagination === 2 && 'active_week'}`}
-          >
-            Week Two
-          </li>
-          <li
-            onClick={() => handleWeekPagination(3)}
-            className={`${weekPagination === 3 && 'active_week'}`}
-          >
-            Week Three
-          </li>
-          <li
-            onClick={() => handleWeekPagination(4)}
-            className={`${weekPagination === 4 && 'active_week'}`}
-          >
-            Week Four
-          </li>
-          <div className='pre_next_box'>
-            <button className='previous' onClick={() => handleWeekPagination('previous')}>
-              <FiArrowLeft />
-            </button>
-            <button className='next' onClick={() => handleWeekPagination('next')}>
-              <FiArrowRight />
-            </button>
-          </div>
-        </ul>
-      </section>
+      <main className='wrapper'>
+        {/* SCHEDULE ONE */}
+        <section className='schedule_box1'>
+          <h2>2023 Team Schedule:</h2>
+          <ul className='week_pagination_ul'>
+            <li
+              onClick={() => handleWeekPagination(1)}
+              className={`${weekPagination === 1 && 'active_week'}`}
+            >
+              Week One
+            </li>
+            <li
+              onClick={() => handleWeekPagination(2)}
+              className={`${weekPagination === 2 && 'active_week'}`}
+            >
+              Week Two
+            </li>
+            <li
+              onClick={() => handleWeekPagination(3)}
+              className={`${weekPagination === 3 && 'active_week'}`}
+            >
+              Week Three
+            </li>
+            <li
+              onClick={() => handleWeekPagination(4)}
+              className={`${weekPagination === 4 && 'active_week'}`}
+            >
+              Week Four
+            </li>
+            <div className='pre_next_box'>
+              <button className='previous' onClick={() => handleWeekPagination('previous')}>
+                <FiArrowLeft />
+              </button>
+              <button className='next' onClick={() => handleWeekPagination('next')}>
+                <FiArrowRight />
+              </button>
+            </div>
+          </ul>
+        </section>
 
-      {/* SCHEDULE TWO */}
-      <section className='schedule_box2'>
-        <h1>League Scores </h1>
-        <Pagination
-          title='Go To Week:'
-          defaultCurrent={1}
-          total={180}
-          onChange={handlePagination}
-        />
-      </section>
+        {/* SCHEDULE TWO */}
+        <section className='schedule_box2'>
+          <h1>League Scores </h1>
+          <Pagination
+            title='Go To Week:'
+            defaultCurrent={1}
+            total={180}
+            onChange={handlePagination}
+          />
+        </section>
 
-      {/* CARDS */}
-      <section className='score_card_container'>
-        <Row gutter={[30, 20]}>
-          {scores?.map((value, index) => (
-            <Col xs={24} lg={12} xl={12} xxl={8} key={index}>
-              <LeagueScoreCard data={{ ...value, index }} />
-            </Col>
-          ))}
-        </Row>
-      </section>
+        {/* CARDS */}
+        <section className='score_card_container'>
+          <Row gutter={[30, 20]}>
+            {scores?.map((value, index) => (
+              <Col xs={24} lg={12} xl={12} xxl={8} key={index}>
+                <LeagueScoreCard data={{ ...value, index }} />
+              </Col>
+            ))}
+          </Row>
+        </section>
+      </main>
     </div>
   )
 }
