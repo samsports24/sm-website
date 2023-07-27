@@ -1,6 +1,5 @@
 .standing_detail_container {
   width: 100%;
-  padding: 40px 20px;
 }
 
 .standing_detail_container .heading {
@@ -98,9 +97,6 @@
   }
 }
 @media (max-width: 768px) {
-  .standing_detail_container {
-    padding: 40px 0px;
-  }
   .standing_detail_container .detail_container .image_box {
     width: 250px;
   }

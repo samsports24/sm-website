@@ -1,134 +1,157 @@
 .player-profile {
-    border: 1px solid var(--borderColor);
-border-radius: 16px;
-
+  border: 1px solid var(--borderColor);
+  border-radius: 16px;
 }
 
 .player-profile .player-pic {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    border-right: 1px solid var(--borderColor);
-    border-radius: 16px 0px 0px 16px;
-    background: var(--secondaryPurple);
-    height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  border-right: 1px solid var(--borderColor);
+  border-radius: 16px 0px 0px 16px;
+  background: var(--secondaryPurple);
+  height: 100%;
 }
 
 .player-profile .player-pic img {
-    width: 398px;
-    height: 471px;
+  width: 398px;
+  height: 471px;
 }
 
 .player-profile .player-details {
-    padding: 30px 61px 52px 61px;
-    background: var(--primaryPurple);
-    height: 100%;
+  padding: 30px 61px 52px 61px;
+  background: var(--primaryPurple);
+  height: 100%;
+  border-radius: 0px 16px 16px 0px;
 }
 
 .player-profile .player-details .title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--borderColor);
-    padding-bottom: 11px;
-    margin-bottom: 38px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--borderColor);
+  padding-bottom: 11px;
+  margin-bottom: 38px;
+  gap: 20px;
+  flex-wrap: wrap;
 }
-
 .player-profile .player-details .title h2 {
-    color: var(--text);
-    font-size: 34px;
-    font-style: normal;
-    font-weight: 800;
-    line-height: normal;
+  color: var(--text);
+  font-size: 34px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
 }
-
 .player-profile .player-details .title .active {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
-
 .player-profile .player-details .title .active .active-btn {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    margin-right: 14px;
-    background: linear-gradient(150deg, #68FE6E 0%, #00C008 100%);
-    /* filter: drop-shadow(0px 0px 20px rgba(4, 203, 12, 0.25)); */
-
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 14px;
+  background: linear-gradient(150deg, #68fe6e 0%, #00c008 100%);
+  /* filter: drop-shadow(0px 0px 20px rgba(4, 203, 12, 0.25)); */
 }
-
 .player-profile .player-details .title .active p {
-    color: var(--text);
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
+  color: var(--text);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
 }
 
-.player-profile .player-details .player-info {}
-
+.player-profile .player-details .player-info {
+}
 .player-profile .player-details .player-info p {
-    color: var(--grayText);
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 50px;
-    margin: 0;
+  color: var(--grayText);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 50px;
+  margin: 0;
 }
-
 .player-profile .player-details .player-info .bold {
-    color: var(--text);
+  color: var(--text);
 }
 
 .player-profile .player-details .about-player {
-    border-top: 1px solid var(--borderColor);
-    margin-top: 40px;
-    padding-top: 42px;
+  border-top: 1px solid var(--borderColor);
+  margin-top: 40px;
+  padding-top: 42px;
 }
-
-.player-profile .player-details .about-player p{
-    color: var(--grayText);
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 28px;
+.player-profile .player-details .about-player p {
+  color: var(--grayText);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
 }
-.player-data{
-padding-top: 109px;
-padding-bottom: 128px;
+.player-data {
+  padding-bottom: 128px;
 }
 
 .player-data .ant-table-wrapper table {
-    /* border: 1px solid var(--borderColor); */
-    border-radius: 16px 16px 0px 0px !important;
-    
+  /* border: 1px solid var(--borderColor); */
+  border-radius: 16px 16px 0px 0px !important;
+}
+
+.player_info_heading {
+  margin-top: 50px;
+  margin-bottom: 30px;
+  color: var(--text);
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 28px;
 }
 
 /* .player-data . */
-@media (max-width: 1300px){
-    .player-profile .player-details .player-info p{
-        font-size: 10px;
-    }
+@media (max-width: 1300px) {
+  .player-profile .player-details .player-info p {
+    font-size: 10px;
+  }
 }
-@media (max-width: 1200px){
-    .player-profile .player-details .player-info{
-        margin-bottom: 24px;
-    }
-    .player-profile .player-details .player-info p{
-        line-height: 15px;
-    }
-    .player-profile .player-details .about-player p{
-        font-size: 14px;
-        line-height: 20px;
-    }
+@media (max-width: 1200px) {
+  .player-profile .player-details .player-info {
+    margin-bottom: 24px;
+  }
+  .player-profile .player-details .player-info p {
+    line-height: 15px;
+  }
+  .player-profile .player-details .about-player p {
+    font-size: 14px;
+    line-height: 20px;
+  }
 }
-@media (max-width: 1050px){
-    .player-profile .player-pic{
-        align-items: center;
-    }
-    .player-profile .player-pic img{
-        width: 100%;
-        height: auto;
-    }
+@media (max-width: 1050px) {
+  .player-profile .player-pic {
+    align-items: center;
+  }
+  .player-profile .player-pic img {
+    width: 100%;
+    height: auto;
+  }
+}
+@media (max-width: 767px) {
+    .player-profile .player-pic {
+        border-radius: 16px 16px 0px 0px;
+      }
+  .player-profile .player-details {
+    border-radius: 0px 0px 16px 16px;
+  }
+}
+@media (max-width: 550px) {
+  .player-profile .player-pic {
+    border-radius: 16px 16px 0px 0px;
+  }
+  .player-profile .player-details {
+    padding: 30px 15px 52px 15px;
+    border-radius: 0px 0px 16px 16px;
+  }
+  .player-profile .player-details .title h2 {
+    font-size: 26px;
+  }
 }

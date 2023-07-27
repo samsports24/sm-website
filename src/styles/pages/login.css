@@ -1,14 +1,11 @@
 .signin {
   display: flex;
-  /* flex-direction: column; */
   align-items: center;
   justify-content: center;
   min-height: 100vh;
   width: 100%;
   margin: auto;
-  /* background-color: white; */
   background: var(--secondaryBackground);
-  /* padding: 95px 0 125px 0; */
 }
 
 .width90 {
@@ -16,15 +13,11 @@
 }
 
 .signin .form-div {
-  
   background: linear-gradient(180deg, #291c4a 0%, #080611 100%);
-  
   padding: 60px;
-  /* height: 80vh; */
-  /* height: 100%; */
 }
 
-.signin .form-div .title span{
+.signin .form-div .title span {
   display: flex;
 }
 
@@ -40,18 +33,17 @@
   margin-bottom: 63.5px;
 }
 
-.signin .form-div .reset-password{
-margin-bottom: 24px;
+.signin .form-div .reset-password {
+  margin-bottom: 24px;
 }
 
-.signin .form-div .reset-password p{
+.signin .form-div .reset-password p {
   color: var(--text);
-font-size: 14px;
-font-style: normal;
-font-weight: 400;
-line-height: 22px;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
 }
-
 
 .signin .form-div .title p {
   color: var(--text);
@@ -86,12 +78,10 @@ line-height: 22px;
   border: 2px solid var(--text);
   border-radius: 12px;
   background-color: var(--secondaryBackground);
-
 }
 
 .signin .login-form .ant-input {
   /* background-color: var(--secondaryBackground) !important; */
-
 }
 
 /* .signin .login-form img {
@@ -117,22 +107,22 @@ line-height: 22px;
   line-height: 22px;
   cursor: pointer;
 }
-.signin .form-div .login-form .signin-btn{
+.signin .form-div .login-form .signin-btn {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.signin .form-div .login-form .signin-btn p{
+.signin .form-div .login-form .signin-btn p {
   color: var(--primary);
   font-size: 16px;
-font-style: normal;
-font-weight: 600;
-line-height: normal;
-text-transform: uppercase;
-cursor: pointer;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  text-transform: uppercase;
+  cursor: pointer;
 }
-.ant-checkbox-wrapper{
+.ant-checkbox-wrapper {
   color: #fff !important;
 }
 
@@ -145,12 +135,10 @@ cursor: pointer;
   background-color: var(--primary-color);
   line-height: normal;
   border-radius: 20px;
-
 }
 
 .signin .form-div .create-account {
-  margin-bottom: 24px;
-
+  margin-bottom: 60px;
 }
 
 .signin .form-div .create-account p {
@@ -178,8 +166,9 @@ cursor: pointer;
   display: flex;
   justify-content: flex-start;
   background-repeat: no-repeat;
-  background-size: 100% 100%;
+  background-size: cover;
   height: 100%;
+  background-position: center;
   /* width: 100%; */
 }
 
@@ -200,9 +189,9 @@ cursor: pointer;
   margin-top: 383px;
   margin-left: 113px;
 }
-.signin .banner p{
+.signin .banner p {
   color: var(--text);
-  color: #FFF;
+  color: #fff;
   text-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.12);
   font-size: 20px;
   font-style: normal;
@@ -216,6 +205,11 @@ cursor: pointer;
 .highlight {
   color: var(--primary);
   cursor: pointer;
+  font-weight: 900;
+}
+
+.signin .ant-checkbox-inner {
+  background-color: transparent;
 }
 
 /* .signin .for-signup {
@@ -303,3 +297,31 @@ cursor: pointer;
     width: 90%;
   }
 } */
+@media (max-width: 1024px) {
+  .signin .banner h3 {
+    font-size: 38px;
+  }
+}
+@media (max-width: 992px) {
+  .signin .form-div .icons {
+    justify-content: center;
+  }
+}
+@media (max-width: 600px) {
+  .signin .form-div {
+    padding: 60px 6vw;
+  }
+  .signin .banner h3 {
+    font-size: 28px;
+    margin-top: 100px;
+    margin-left: 20px;
+    line-height: 40px;
+  }
+  .signin .banner p {
+    font-size: 14px;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    margin-left: 20px;
+    line-height: 20px;
+  }
+}

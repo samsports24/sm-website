@@ -1136,10 +1136,10 @@ const PlayerStats = () => {
             'Top Receivers',
             'Top Kickers',
             'Top Defenses',
-          ].map((v) => {
+          ].map((v, i) => {
             return (
               <li
-                key={v}
+                key={i}
                 className={`${activeFilter === v && 'active'}`}
                 onClick={() => setActiveFilter(v)}
               >

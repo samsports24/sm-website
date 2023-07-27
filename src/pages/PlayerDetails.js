@@ -196,6 +196,7 @@ const PlayerDetails = () => {
           </Col>
         </Row>
       </div>
+      <h2 className='player_info_heading'>PLAYER INFO</h2>
       <div className='player-data'>
         <Table
           dataSource={dataSource}

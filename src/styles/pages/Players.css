@@ -1,150 +1,173 @@
-.player-container {}
-
-.player-container .banner {
-    background: var(--primaryPurple);
-    border-radius: 16px;
-    border: 1px solid var(--borderColor);
-    width: 100%;
-    margin-bottom: 75px;
+.player-container {
+  width: 100%;
 }
 
+.player-container .banner {
+  background: var(--primaryPurple);
+  border-radius: 16px;
+  border: 1px solid var(--borderColor);
+  width: 100%;
+  margin-bottom: 75px;
+}
 .player-container .banner .flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .player-container .banner .left-banner {
-    display: flex;
-    padding: 20px 32px;
-    align-items: center;
+  display: flex;
+  padding: 20px 32px;
+  align-items: center;
 }
-
 .player-container .banner .left-banner .banner-image {
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    margin-right: 30px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-right: 30px;
 }
-
 .player-container .banner .left-banner .banner-image img {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
-
 .player-container .banner .left-banner .text h3 {
-    color: var(--text);
-    font-size: 22px;
-    margin-bottom: 10px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 28px;
+  color: var(--text);
+  font-size: 22px;
+  margin-bottom: 10px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 28px;
+  text-shadow: 2px 2px 2px var(--primaryPurple);
 }
-
 .player-container .banner .left-banner .text p {
-    color: var(--grayText);
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    margin-bottom: 15px;
+  color: var(--grayText);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-bottom: 15px;
+  text-shadow: 2px 2px 2px var(--primaryPurple);
 }
-
 .player-container .banner .left-banner .text .bold {
-    color: var(--text);
+  color: var(--text);
 }
-
 .player-container .banner .left-banner .text h2 {
-    color: var(--text);
-    font-size: 34px;
-    margin-bottom: 10px;
+  color: var(--text);
+  font-size: 34px;
+  margin-bottom: 10px;
 
-    font-style: normal;
-    font-weight: 800;
-    line-height: normal;
-    margin-top: 14px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+  margin-top: 14px;
 }
 
 .player-container .banner .right-banner {
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  position: relative;
 }
-
 .player-container .banner .right-banner .image {
-    position: absolute;
-    left: 20px;
-    top: 20px;
+  position: absolute;
+  left: 20px;
+  top: 20px;
 }
-
 .player-container .banner .right-banner .image img {
-    width: 108px;
-    height: 108px;
+  width: 108px;
+  height: 108px;
 }
-
 .player-container .banner .right-banner .small-image img {
-    width: 108px;
-    height: 108px;
+  width: 108px;
+  height: 108px;
 }
-
 .player-container .banner .right-banner .large-image img {
-    width: 505.792px;
-    height: 250px;
-    border-radius: 0 0 16px 0;
+  width: 505.792px;
+  height: 250px;
+  border-radius: 0 0 16px 0 !important;
 }
 
 .player-container .frame {
-    border-radius: 16px 16px 0px 0px;
-    border: 1px solid var(--borderColor);
-    background: var(--SecColor);
-    margin-bottom: 31px;
+  border-radius: 16px 16px 0px 0px;
+  border: 1px solid var(--borderColor);
+  background: var(--SecColor);
 }
-
 .player-container .frame .title {
-    padding: 4px 0 5px 20px;
-    background: var(--primaryPurple);
-    border: 1px solid var(--borderColor);
-    border-radius: 16px 16px 0 0;
+  padding: 4px 0 5px 20px;
+  background: var(--primaryPurple);
+  border: 1px solid var(--borderColor);
+  border-radius: 16px 16px 0 0;
 }
-
 .player-container .frame .title h2 {
-    color: var(--text);
-    font-size: 34px;
-    font-style: normal;
-    font-weight: 800;
-    line-height: normal;
-    opacity: 1;
+  color: var(--text);
+  font-size: 34px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+  opacity: 1;
 }
-
 .player-container .frame .player-div {
-    padding: 30px 20px 20px 20px;
+  padding: 30px 20px 20px 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 800px;
 }
-
 .player-container .frame .player-div .tag-line {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
-
 .player-container .frame .player-div .tag-line p {
-    color: var(--text);
-    font-size: 22px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 28px;
-    opacity: 0.5;
+  color: var(--text);
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 28px;
+  opacity: 0.5;
 }
 
-@media (max-width: 1460px){
-    .player-container .banner .right-banner{
-        display: none;
-    }
-
-    .player-container .banner .left-banner{
-        background-image: url(../../assets/unnamed.png);
-        width: 100%;
-        background-position: right;
-        background-repeat: no-repeat;
-        background-size: auto 100%;
-    }
+@media (max-width: 1460px) {
+  .player-container .banner .right-banner {
+    display: none;
+  }
+  .player-container .banner .left-banner {
+    background-image: url(../../assets/unnamed.png);
+    width: 100%;
+    background-position: right;
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+    border-bottom-right-radius: 16px;
+  }
+}
+@media (max-width: 1240px) {
+  .player-container .banner .left-banner .banner-image {
+    width: 150px;
+  }
+}
+@media (max-width: 1024px) {
+  .player-container .banner .left-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    background-size: auto;
+    background-position-y: bottom;
+    min-height: 650px;
+  }
+  .player-container .banner .left-banner .banner-image {
+    align-self: center;
+  }
+}
+@media (max-width: 500px) {
+  .player-container .banner .left-banner {
+    min-height: 670px;
+    border-bottom-left-radius: 16px;
+    padding: 20px 20px;
+  }
+  .player-container .banner .left-banner .text h2 {
+    font-size: 24px;
+  }
+  .player-container .frame .player-div {
+    padding: 30px 0px 20px 0px;
+  }
+  .player-container .frame .player-div .tag-line {
+    padding-inline: 20px;
+  }
 }

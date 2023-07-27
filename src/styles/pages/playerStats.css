@@ -1,6 +1,5 @@
 .player_stats_container {
   width: 100%;
-  padding: 40px 20px;
 }
 
 /* FILTERS */
@@ -76,7 +75,7 @@
   margin-top: 30px;
   gap: 30px;
   overflow-y: auto;
-  max-height: 1000px;
+  max-height: 800px;
 }
 
 .player_stats_container .stats_table .ant-table {
@@ -103,10 +102,4 @@
 .player_stats_container .stats_table .ant-table-thead > tr > th:last-child {
   border-top-right-radius: 0px !important;
   border-right: 1px solid var(--border) !important;
-}
-
-@media (max-width: 768px) {
-  .player_stats_container {
-    padding: 40px 0px;
-  }
 }

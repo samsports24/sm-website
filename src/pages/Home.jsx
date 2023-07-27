@@ -1,5 +1,3 @@
-// import Layout from '../layout/Layout'
-
 import { Col, Row } from 'antd'
 import PopularLeagueCard from '../components/cards/popularLeagueCard'
 import PopularSportCard from '../components/cards/popularSportCard'
@@ -81,24 +79,29 @@ const Home = () => {
       clientName: 'Brandi Redd',
     },
   ]
+
   return (
     <div className='home-page'>
       {/* main banner */}
       <HomeMainBanner />
+
       <div style={{ height: '81px' }}></div>
+
       {/* popular leagues */}
       <h2 style={{ marginBottom: '24px', color: '#fff' }}>Popular Leagues</h2>
       <Row gutter={[20, 20]}>
         {popularLeagues?.map((value, index) => (
-         <Col xs={24} sm={12} xl={8} xxl={6} key={index}>
+          <Col xs={24} sm={12} xl={8} xxl={6} key={index}>
             <PopularLeagueCard data={value} />
           </Col>
         ))}
       </Row>
 
       <AmericalFootballBanner />
+
       {/* popular sport */}
       <h2 style={{ marginTop: '80px', marginBottom: '24px', color: '#fff' }}>Popular Sports</h2>
+
       <Row gutter={[20, 20]}>
         {popularSports?.map((value, index) => (
           <Col xs={24} sm={12} xl={8} xxl={6} key={index}>
@@ -106,10 +109,13 @@ const Home = () => {
           </Col>
         ))}
       </Row>
+
       <h2 style={{ marginTop: '80px', marginBottom: '24px', color: '#fff' }}>Client Feedback</h2>
+
       <h4 style={{ marginTop: '20px', marginBottom: '54px', color: '#fff' }}>
         See what millions of users say about us
       </h4>
+
       <Row gutter={[20, 20]}>
         {clientFeedbacks?.map((value, index) => (
           <Col xs={24} sm={24} lg={12} xl={12} xxl={8} key={index}>
@@ -117,10 +123,10 @@ const Home = () => {
           </Col>
         ))}
       </Row>
+
       <div style={{ height: '80px' }}></div>
     </div>
   )
-  // return <Layout active={'Home'}></Layout>
 }
 
 export default Home

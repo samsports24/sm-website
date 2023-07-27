@@ -77,20 +77,23 @@ p {
 
 /* width */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 7px;
+  height: 7px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
   background: var(--border);
+  border-radius: 16px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: var(--primaryPurple);
+  border-radius: 16px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  /* background: #555; */
+  background: var(--primary);
 }

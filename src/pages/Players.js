@@ -210,6 +210,7 @@ const Players = () => {
           </div>
         </div>
       </div>
+
       <div className='frame'>
         <div className='title'>
           <h2>Roster</h2>
@@ -234,9 +235,6 @@ const Players = () => {
           </Row>
         </div>
       </div>
-      {/* <div className='bottom-div'>
-                    <p>© Sam Sports, Inc. All rights reserved.</p>
-                </div> */}
     </div>
   )
 }

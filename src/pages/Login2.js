@@ -28,8 +28,8 @@ const SignIn2 = () => {
     setLoading(false)
   }
   const onChange = (e) => {
-    console.log(`checked = ${e.target.checked}`);
-  };
+    console.log(`checked = ${e.target.checked}`)
+  }
   // if (localStorage.hasOwnProperty("token")) {
   //   // return <Navigate replace to="/home" />;
   // } else {
@@ -38,11 +38,16 @@ const SignIn2 = () => {
       <div className='signin'>
         <div className='width90'>
           <Row>
-          <Col xs={24} md={24} lg={10} xl={11}>
+            <Col xs={24} md={24} lg={10} xl={11}>
               <div className='form-div'>
                 <Form name='login' className='login-form' layout='vertical' onFinish={onFinish}>
                   <div className='title'>
-                    <h1>SAMSPORTS<span><img src={R} /></span></h1>
+                    <h1>
+                      SAMSPORTS
+                      <span>
+                        <img src={R} />
+                      </span>
+                    </h1>
                     {/* <img src={logo} /> */}
                     <p>Welcome</p>
                     <h2>to the game!</h2>
@@ -58,9 +63,14 @@ const SignIn2 = () => {
                         message: 'The entered user name is not valid!',
                       },
                     ]}
-                    requiredMark="optional"
+                    requiredMark='optional'
                   >
-                    <Input autoComplete='off' type='text'  placeholder='Username' prefix={<img src={UserIcon} />} />
+                    <Input
+                      autoComplete='off'
+                      type='text'
+                      placeholder='Username'
+                      prefix={<img src={UserIcon} />}
+                    />
                   </Form.Item>
                   <Form.Item
                     name='password'
@@ -70,14 +80,15 @@ const SignIn2 = () => {
                         message: 'Password is Required',
                       },
                     ]}
-                    requiredMark="optional"
+                    requiredMark='optional'
                   >
-                    <Input type='password' placeholder='Password' prefix={<img src={PasswordIcon} />} />
+                    <Input
+                      type='password'
+                      placeholder='Password'
+                      prefix={<img src={PasswordIcon} />}
+                    />
                   </Form.Item>
-                  <Form.Item
-                    name='remember'
-                    requiredMark="optional"
-                  >
+                  <Form.Item name='remember' requiredMark='optional'>
                     <div className='remember'>
                       <Checkbox onChange={onChange}>Remember me</Checkbox>
                       <p onClick={() => navigate('/forgot-password')}>Forgot password?</p>
@@ -91,7 +102,12 @@ const SignIn2 = () => {
                   </Form.Item>
                 </Form>
                 <div className='create-account'>
-                  <p>Don{"'"}t have an account? <span className='highlight' onClick={() => navigate('/sign-up')}>CREATE ACCOUNT</span></p>
+                  <p>
+                    Don{"'"}t have an account?{' '}
+                    <span className='highlight' onClick={() => navigate('/sign-up')}>
+                      CREATE ACCOUNT
+                    </span>
+                  </p>
                 </div>
                 <div className='icons'>
                   <img src={Insta} />
@@ -102,14 +118,14 @@ const SignIn2 = () => {
               </div>
             </Col>
             <Col xs={24} md={24} lg={14} xl={13}>
-              <div className='banner' style={{backgroundImage: `url(${Banner})`}}>
+              <div className='banner' style={{ backgroundImage: `url(${Banner})` }}>
                 <div className='heading'>
-                    <h3>WHERE <span className='highlight'>LEGENDS</span> 
+                  <h3>
+                    WHERE <span className='highlight'>LEGENDS</span>
                     <br />
                     ARE MADE!
-                    </h3>
-                    <p>SAM ULTIMATE FOOTBALL</p>
-
+                  </h3>
+                  <p>SAM ULTIMATE FOOTBALL</p>
                 </div>
               </div>
             </Col>

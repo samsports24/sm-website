@@ -1,5 +1,3 @@
-// import Layout from '../layout/Layout'
-
 import { Col, Row } from 'antd'
 import PopularLeagueCard from '../components/cards/popularLeagueCard'
 import PopularSportCard from '../components/cards/popularSportCard'
@@ -100,12 +98,15 @@ const Dashboard = () => {
       opponents: [require('../assets/beast-square-3.png'), require('../assets/blitz-square-3.png')],
     },
   ]
+
   return (
     <div className='home-page'>
       <DashboardBannerOne />
+
       <h2 style={{ marginTop: '50px', marginBottom: '20px', color: 'var(--white)' }}>
         Upcoming Matches
       </h2>
+
       <Row gutter={[30, 20]} style={{ marginBottom: '70px' }}>
         {upcomingMatches?.map((value, index) => (
           <Col xs={24} sm={24} lg={12} xl={12} xxl={8} key={index}>
@@ -116,10 +117,12 @@ const Dashboard = () => {
 
       {/* main banner */}
       <HomeMainBanner />
+
       <div style={{ height: '81px' }}></div>
 
       {/* popular leagues */}
       <h2 style={{ marginBottom: '24px', color: 'var(--white)' }}>Popular Leagues</h2>
+
       <Row gutter={[20, 20]}>
         {popularLeagues?.map((value, index) => (
           <Col xs={24} sm={12} xl={8} xxl={6} key={index}>
@@ -134,9 +137,10 @@ const Dashboard = () => {
       <h2 style={{ marginTop: '80px', marginBottom: '24px', color: 'var(--white)' }}>
         Popular Sports
       </h2>
+
       <Row gutter={[20, 20]}>
         {popularSports?.map((value, index) => (
-        <Col xs={24} sm={12} xl={8} xxl={6} key={index}>
+          <Col xs={24} sm={12} xl={8} xxl={6} key={index}>
             <PopularSportCard data={{ ...value, index }} />
           </Col>
         ))}
@@ -149,6 +153,7 @@ const Dashboard = () => {
       <h4 style={{ marginTop: '20px', marginBottom: '54px', color: 'var(--white)' }}>
         See what millions of users say about us
       </h4>
+
       <Row gutter={[20, 20]}>
         {clientFeedbacks?.map((value, index) => (
           <Col lg={12} xl={12} xxl={8} key={index}>
@@ -156,10 +161,10 @@ const Dashboard = () => {
           </Col>
         ))}
       </Row>
+
       <div style={{ height: '80px' }}></div>
     </div>
   )
-  // return <Layout active={'Home'}></Layout>
 }
 
 export default Dashboard

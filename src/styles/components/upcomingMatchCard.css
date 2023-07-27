@@ -56,3 +56,9 @@
     font-size: 14px;
   }
 }
+@media (max-width: 550px) {
+  .match-card {
+    flex-direction: column;
+    gap: 20px;
+  }
+}

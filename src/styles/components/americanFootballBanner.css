@@ -1,50 +1,42 @@
 .american-football-banner {
-  margin: 48px 0px;
-  background: url('../../assets/rectangle-9.png');
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  min-height: 450px;
-  max-height: auto;
+  margin-top: 48px;
   width: 100%;
+  height: auto;
   position: relative;
 }
-.football-banner-content {
-  position: absolute;
-  bottom: 0;
+.american-football-banner img {
   width: 100%;
-}
-.football-banner-content .row {
-  width: 43%;
-  display: flex;
-  padding: 0px 0px 72px 68px;
-  align-items: center;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  /* border: 1px solid #fff; */
+  height: auto;
 }
 
-.football-banner-content .row .col1 {
+.american-football-banner .content_wrapper {
+  position: absolute;
+  bottom: 4vw;
+  left: 3.4vw;
 }
-.football-banner-content .row .col2 {
-  color: var(--colors-theme-link-color, #289fc9);
-  font-size: 40px;
-  font-style: normal;
-  font-weight: 800;
-  line-height: 28px; /* 70% */
-}
-
-.football-banner-content h3 {
-  color: var(--colors-theme-white-color, #fff);
+.american-football-banner .content_wrapper .left h1 {
+  color: var(--text);
   font-size: 34px;
   font-style: normal;
   font-weight: 800;
   line-height: normal;
 }
-.football-banner-content p {
-  color: var(--colors-theme-white-color, #fff);
-  width: 90%; /*380px  */
+.american-football-banner .content_wrapper .left p {
+  color: var(--text);
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
-  line-height: 28px; /* 155.556% */
+  line-height: 28px;
+  width: 370px;
+}
+
+.american-football-banner .play_now_text {
+  position: absolute;
+  color: var(--primary);
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 28px;
+  bottom: 6.2vw;
+  left: 26.4vw;
 }
