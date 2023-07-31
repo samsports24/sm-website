@@ -23,13 +23,13 @@
 @import './components/dashboardBanner1.css';
 @import './components/upcomingMatchCard.css';
 @import './components/leagueScoreCard.css';
-@import "./components/PlayerCard.css";
-@import "./components/pagination.css";
-@import "./components/leagueStandingCard.css";
-@import "./components/standingHeader.css";
-@import "./components/statsCard.css";
-@import "./components/scoreCardTeam.css";
-@import "./components/scoreCardPlayer.css";
+@import './components/PlayerCard.css';
+@import './components/pagination.css';
+@import './components/leagueStandingCard.css';
+@import './components/standingHeader.css';
+@import './components/statsCard.css';
+@import './components/scoreCardTeam.css';
+@import './components/scoreCardPlayer.css';
 
 /* Page CSS */
 @import './pages/login.css';

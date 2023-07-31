@@ -102,7 +102,7 @@ const MainMenu = ({ active }) => {
         </Menu.Item>
       </Menu>
       <Button className='login-btn mobile' onClick={login}>
-        Login 
+        Login
       </Button>
       <Button className='login-btn signup-btn mobile' onClick={signUp}>
         Sign Up

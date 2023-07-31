@@ -11,8 +11,8 @@
   align-items: flex-end;
   column-gap: 10px;
 }
-.sc-player .top .left .player-img{
-    margin-bottom: -16px;
+.sc-player .top .left .player-img {
+  margin-bottom: -16px;
 }
 .sc-player .top .position {
   color: var(--text);

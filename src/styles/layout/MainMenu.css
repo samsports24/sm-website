@@ -5,7 +5,7 @@
 }
 .sidebar-menu img {
   width: 24px;
-height: 24px;
+  height: 24px;
 }
 .ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected {
   border-right: 4px solid var(--primary) !important;
