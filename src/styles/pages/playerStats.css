@@ -201,18 +201,18 @@
     font-size: 15px;
   }
   .player_stats_container .dropdown_container {
-  gap: 15px;
-}
-.player_stats_container .dropdown_container .select_box .ant-select {
-  height: 35px !important;
-}
-.player_stats_container .dropdown_container .select_box .ant-select .ant-select-selector {
-  height: 35px !important;
-}
-.player_stats_container .dropdown_container .now_btn {
-  height: 35px;
-}
-.player_stats_container .dropdown_container .advance_btn {
-  height: 35px;
-}
+    gap: 15px;
+  }
+  .player_stats_container .dropdown_container .select_box .ant-select {
+    height: 35px !important;
+  }
+  .player_stats_container .dropdown_container .select_box .ant-select .ant-select-selector {
+    height: 35px !important;
+  }
+  .player_stats_container .dropdown_container .now_btn {
+    height: 35px;
+  }
+  .player_stats_container .dropdown_container .advance_btn {
+    height: 35px;
+  }
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Image } from 'antd'
+import { Button, Image, Select } from 'antd'
 
 // Image, Icon
 import AtlantaLogo from '../assets/AtlantaLegionLogo.png'
@@ -78,6 +78,19 @@ const GameDetails = () => {
 
         <section className='starters-sec'>
           <h3>Starters</h3>
+          <div className='select_box'>
+            <Select
+              defaultValue='week-1'
+              style={{ minWidth: 140 }}
+              // onChange={handleChange}
+              options={[
+                {
+                  value: 'week-1',
+                  label: 'WK. 1',
+                },
+              ]}
+            />
+          </div>
         </section>
 
         {/* PLAYER COMPARISION */}
