@@ -63,14 +63,14 @@
   overflow-y: auto;
   max-height: 800px; */
 }
-.transactions_container .transactions_table_container .header{
+.transactions_container .transactions_table_container .header {
   width: 100%;
   border-radius: 20px 20px 0px 0px;
   border: 1px solid var(--border);
   padding: 30px 60px;
   background-color: var(--primaryPurple);
 }
-.transactions_container .transactions_table_container .header h3{
+.transactions_container .transactions_table_container .header h3 {
   color: var(--text);
   font-size: 18px;
   font-style: normal;
@@ -78,7 +78,7 @@
   line-height: normal;
 }
 
-.transactions_container .transactions_table_container .main_table{
+.transactions_container .transactions_table_container .main_table {
   width: 100%;
   overflow-y: auto;
   max-height: 800px;

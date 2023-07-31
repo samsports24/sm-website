@@ -113,8 +113,8 @@
   bottom: calc(500 / 1590 * 33%);
   left: calc(500 / 1590 * 195%);
 }
-@media (min-width: 1000px){
-  .american-football-banner-tab{
+@media (min-width: 1000px) {
+  .american-football-banner-tab {
     display: none;
   }
 }
@@ -194,9 +194,8 @@
     font-size: 13px;
   }
 }
-@media (min-width: 550px){
-  .american-football-banner-mobile{
+@media (min-width: 550px) {
+  .american-football-banner-mobile {
     display: none;
   }
 }
-
