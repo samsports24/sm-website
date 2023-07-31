@@ -136,9 +136,9 @@
   }
 }
 @media (max-width: 767px) {
-    .player-profile .player-pic {
-        border-radius: 16px 16px 0px 0px;
-      }
+  .player-profile .player-pic {
+    border-radius: 16px 16px 0px 0px;
+  }
   .player-profile .player-details {
     border-radius: 0px 0px 16px 16px;
   }

@@ -1,0 +1,64 @@
+.schedule_box1 {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.schedule_box1 h2 {
+  color: var(--text);
+  font-weight: 700;
+  line-height: 22px;
+}
+.schedule_box1 .week_pagination_ul {
+  list-style-type: none;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+}
+.schedule_box1 .week_pagination_ul li {
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  opacity: 0.5;
+  text-align: center;
+  cursor: pointer;
+  min-width: 90px;
+}
+
+.schedule_box1 .week_pagination_ul .pre_next_box {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+.schedule_box1 .week_pagination_ul .pre_next_box .previous,
+.schedule_box1 .week_pagination_ul .pre_next_box .next {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: #fff;
+  border: 1px solid #fff;
+  opacity: 0.5;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: transparent;
+}
+.schedule_box1 .week_pagination_ul .pre_next_box .previous:hover,
+.schedule_box1 .week_pagination_ul .pre_next_box .next:hover {
+  opacity: 1;
+}
+.schedule_box1 .week_pagination_ul .active_week {
+  color: var(--primary);
+  opacity: 1;
+  border-bottom: 3px solid var(--primary);
+}

@@ -10,6 +10,7 @@ import EditProfile from '../pages/EditProfile'
 import Players from '../pages/Players'
 import Teams from '../pages/Teams'
 import LeagueScore from '../pages/LeagueScore'
+import GameDetails from '../pages/GameDetails'
 import Home from '../pages/Home'
 import Dashboard from '../pages/Dashboard'
 import PlayerDetails from '../pages/PlayerDetails'
@@ -42,6 +43,7 @@ const Routers = () => {
           <Route path='*' element={<Navigate to='/' />} />
           <Route path='/teams' element={<Teams />} />
           <Route path='/leagueScore' element={<LeagueScore />} />
+          <Route path='/game-details' element={<GameDetails />} />
           <Route path='/player-details' element={<PlayerDetails />} />
           <Route path='/edit-profile' element={<EditProfile />} />
           <Route path='/players' element={<Players />} />

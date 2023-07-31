@@ -2,139 +2,6 @@
   width: 100%;
 }
 
-.league_container header {
-  width: 100%;
-  /* min-height: 250px; */
-  display: flex;
-  flex-direction: row;
-  gap: 30px;
-  padding: 20px;
-  border-radius: 16px;
-  background-color: var(--secondaryPurple);
-  border: 1px solid #6e6980;
-}
-
-/* LEFT */
-.league_container header .left {
-  width: 170px !important;
-  text-align: center;
-}
-.league_container header .left .image_div {
-  border: 1px solid #6e6980;
-  margin-bottom: 10px;
-  border-radius: 8px;
-}
-.league_container header .left p span {
-  color: var(--colors-theme-white-color, #fff);
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 22px;
-  opacity: 0.5;
-}
-
-/* CENTER */
-.league_container header .center {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  /* justify-content: space-between; */
-  gap: 20px;
-}
-.league_container header .center .title_box {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px;
-  border: 1px solid #6e6980;
-  border-radius: 8px;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-.league_container header .center .title_box h1 {
-  color: var(--text);
-  font-size: 34px;
-  font-style: normal;
-  font-weight: 800;
-  line-height: normal;
-}
-.league_container header .center .title_box p span {
-  color: var(--colors-theme-white-color, #fff);
-  text-align: right;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 22px;
-  opacity: 0.5;
-}
-
-.league_container header .center .button_and_team_box {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-}
-
-.league_container header .center .button_and_team_box .button_box {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-.league_container header .center .button_and_team_box .button_box button {
-  background-color: transparent !important;
-  border: 1px solid #6e6980;
-  border-radius: 8px;
-  color: var(--text);
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 1;
-  height: 45px;
-  width: 20vw;
-  min-width: 160px;
-}
-
-.league_container header .center .button_and_team_box .team_financials_box {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #6e6980;
-  border-radius: 8px;
-  flex: 1;
-  padding: 10px 20px;
-  gap: 10px;
-}
-.league_container header .center .button_and_team_box .team_financials_box p {
-  color: var(--text);
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-}
-.league_container header .center .button_and_team_box .team_financials_box div {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-}
-.league_container header .center .button_and_team_box .team_financials_box div p {
-  color: var(--text);
-  text-align: right;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 22px;
-  opacity: 0.5;
-}
-.league_container header .center .button_and_team_box .team_financials_box div span {
-  color: var(--text);
-  text-align: right;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 1;
-  width: 70px;
-}
-
 /* RIGHT */
 .league_container .top {
   display: flex;
@@ -159,47 +26,6 @@
   opacity: 0.5;
 }
 
-.league_container header .right {
-  width: 255px;
-  text-align: center;
-}
-.league_container header .right h1 {
-  color: var(--text);
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 1;
-  text-transform: uppercase;
-  text-align: right;
-  margin-top: 10px;
-}
-.league_container header .right .content {
-  width: 100%;
-  margin-bottom: 10px;
-  padding: 20px 30px;
-  border: 1px solid #6e6980;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-}
-.league_container header .right .content .content2 {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-}
-.league_container header .right .content .content2 .image_div {
-  width: 120px;
-}
-.league_container header .right .content .content2 .content3 {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 10px;
-}
-
 .league_container .wrapper {
   width: 100%;
   margin-top: 36px;
@@ -209,7 +35,6 @@
 }
 
 /* SCHEDULE */
-.league_container .schedule_box1,
 .league_container .schedule_box2 {
   width: 100%;
   display: flex;
@@ -218,65 +43,7 @@
   justify-content: space-between;
   gap: 20px;
   flex-wrap: wrap;
-}
-.league_container .schedule_box2 {
   margin-top: 40px;
-}
-.league_container .schedule_box1 h2 {
-  color: var(--text);
-  font-weight: 700;
-  line-height: 22px;
-}
-.league_container .schedule_box1 .week_pagination_ul {
-  list-style-type: none;
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  margin: 0;
-  padding: 0;
-  overflow-x: auto;
-
-}
-.league_container .schedule_box1 .week_pagination_ul li {
-  color: var(--text);
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-  opacity: 0.5;
-  text-align: center;
-  cursor: pointer;
-  min-width: 90px;
-}
-
-.league_container .schedule_box1 .week_pagination_ul .pre_next_box {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-}
-.league_container .schedule_box1 .week_pagination_ul .pre_next_box .previous,
-.league_container .schedule_box1 .week_pagination_ul .pre_next_box .next {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  color: #fff;
-  border: 1px solid #fff;
-  opacity: 0.5;
-  border-radius: 6px;
-  font-size: 16px;
-  cursor: pointer;
-  background-color: transparent;
-}
-.league_container .schedule_box1 .week_pagination_ul .pre_next_box .previous:hover,
-.league_container .schedule_box1 .week_pagination_ul .pre_next_box .next:hover {
-  opacity: 1;
-}
-.league_container .schedule_box1 .week_pagination_ul .active_week {
-  color: var(--primary);
-  opacity: 1;
-  border-bottom: 3px solid var(--primary);
 }
 
 .league_container .schedule_box2 h1 {
@@ -294,39 +61,7 @@
   margin-top: 30px;
 }
 
-@media (max-width: 1440px) {
-  .league_container header .center .button_and_team_box .button_box button {
-    width: 160px;
-    min-width: 160px;
-  }
-}
-@media (max-width: 1300px) {
-  .league_container header .center .button_and_team_box .button_box button {
-    width: 100%;
-  }
-  .league_container header .center .button_and_team_box {
-    flex-direction: column;
-  }
-}
-@media (max-width: 1200px) {
-  .league_container header {
-    flex-direction: column;
-    align-items: center;
-  }
-  .league_container header .center {
-    width: 100%;
-  }
-  .league_container header .center .button_and_team_box {
-    flex-direction: row;
-  }
-}
 @media (max-width: 600px) {
-  .league_container header .center .button_and_team_box {
-    flex-direction: column;
-  }
-  .league_container header .center .title_box h1 {
-    font-size: 22px;
-  }
   .league_container .schedule_box2 {
     flex-direction: column-reverse;
     align-items: flex-start;

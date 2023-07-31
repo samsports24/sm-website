@@ -11,6 +11,8 @@
 @import './layout/mobileLayout.css';
 
 /* Component CSS */
+@import './components/header.css';
+@import './components/scheduleBox.css';
 @import './components/table.css';
 @import './components/popularLeagueCard.css';
 @import './components/popularSportCard.css';
@@ -21,17 +23,20 @@
 @import './components/dashboardBanner1.css';
 @import './components/upcomingMatchCard.css';
 @import './components/leagueScoreCard.css';
-@import "./components/PlayerCard.css";
-@import "./components/pagination.css";
-@import "./components/leagueStandingCard.css";
-@import "./components/standingHeader.css";
-@import "./components/statsCard.css";
+@import './components/PlayerCard.css';
+@import './components/pagination.css';
+@import './components/leagueStandingCard.css';
+@import './components/standingHeader.css';
+@import './components/statsCard.css';
+@import './components/scoreCardTeam.css';
+@import './components/scoreCardPlayer.css';
 
 /* Page CSS */
 @import './pages/login.css';
 @import './pages/EditProfile.css';
 @import './pages/teams.css';
 @import './pages/leagueScore.css';
+@import './pages/gameDetails.css';
 @import './pages/Players.css';
 @import './pages/PlayerDetails.css';
 @import './pages/leagueStandings.css';

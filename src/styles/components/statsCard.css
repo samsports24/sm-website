@@ -45,9 +45,9 @@
   width: 100%;
 }
 
-@media (max-width: 1440px){
+@media (max-width: 1440px) {
   .stats_card_container .center {
-   flex-wrap: wrap;
+    flex-wrap: wrap;
   }
   .stats_card_container .center div {
     min-width: 0px;

@@ -78,7 +78,7 @@ const VerticalLayout = ({ children, active }) => {
         <Layout className='site-layout' style={{ marginLeft: 256 }}>
           <Header className='mainHeader'>
             <div></div>
-            {localStorage.getItem("token") ? (
+            {localStorage.getItem('token') ? (
               <div className='auth-buttons'>
                 <Dropdown
                   menu={{
