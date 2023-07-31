@@ -1,0 +1,10 @@
+.playoff-container {
+  width: 100%;
+}
+.playoff-container .wrapper {
+  width: 100%;
+  margin-top: 36px;
+  max-height: 800px;
+  overflow-y: auto !important;
+  overflow-x: auto;
+}

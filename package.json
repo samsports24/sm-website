@@ -6,6 +6,7 @@
     "@ant-design/charts": "1.2.10",
     "@ant-design/graphs": "^1.4.0",
     "@ant-design/plots": "^1.2.5",
+    "@g-loot/react-tournament-brackets": "^1.0.30",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
