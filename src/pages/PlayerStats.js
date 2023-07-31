@@ -1,10 +1,11 @@
 // Component
-import { useState } from 'react'
+// import { useState } from 'react'
+import { Button, Select } from 'antd'
 import StandingHeader from '../components/StandingHeader'
 import StatsCard from '../components/StatsCard'
 
 const PlayerStats = () => {
-  const [activeFilter, setActiveFilter] = useState('Top Performers')
+  // const [activeFilter, setActiveFilter] = useState('Top Performers')
 
   const data = [
     {
@@ -1125,7 +1126,7 @@ const PlayerStats = () => {
       <StandingHeader />
 
       {/* FILTERS */}
-      <section className='filter_box'>
+      {/* <section className='filter_box'>
         <h2>Standard Reports:</h2>
         <ul>
           {[
@@ -1148,6 +1149,102 @@ const PlayerStats = () => {
             )
           })}
         </ul>
+      </section> */}
+      <h2 className='heading'>STANDARD REPORTS:</h2>
+
+      <div className='link_box'>
+        <h2>TOP PERFORMERS</h2> | <h2>TOP FREE AGENTS</h2> | <h2>TOP PASSERS</h2> |{' '}
+        <h2>TOP RUSHERS</h2> |<h2>TOP RECEIVERS</h2> | <h2>TOP KICKERS</h2> | <h2>TOP DEFENSES</h2>
+      </div>
+
+      {/* DROPDOWN */}
+      <section className='dropdown_container'>
+        <div className='select_box'>
+          <p>Show me the top</p>
+          <Select
+            defaultValue='32'
+            style={{ minWidth: 130 }}
+            // onChange={handleChange}
+            options={[
+              {
+                value: '32',
+                label: '32',
+              },
+            ]}
+          />
+        </div>
+        <div className='select_box'>
+          <p>Year</p>
+          <Select
+            defaultValue='2022'
+            style={{ minWidth: 110 }}
+            // onChange={handleChange}
+            options={[
+              {
+                value: '2022',
+                label: '2022',
+              },
+            ]}
+          />
+        </div>
+        <div className='select_box'>
+          <p>Week</p>
+          <Select
+            defaultValue='1'
+            style={{ minWidth: 110 }}
+            // onChange={handleChange}
+            options={[
+              {
+                value: '1',
+                label: '1',
+              },
+            ]}
+          />
+        </div>
+        <div className='select_box'>
+          <p>Through Week</p>
+          <Select
+            defaultValue='28'
+            style={{ minWidth: 130 }}
+            // onChange={handleChange}
+            options={[
+              {
+                value: '28',
+                label: '28',
+              },
+            ]}
+          />
+        </div>
+        <div className='select_box'>
+          <p>Search By</p>
+          <Select
+            defaultValue='Overall'
+            style={{ minWidth: 130 }}
+            // onChange={handleChange}
+            options={[
+              {
+                value: 'Overall',
+                label: 'Overall',
+              },
+            ]}
+          />
+        </div>
+        <div className='select_box'>
+          <p>Search By</p>
+          <Select
+            defaultValue='Player'
+            style={{ minWidth: 130 }}
+            // onChange={handleChange}
+            options={[
+              {
+                value: 'Player',
+                label: 'Player',
+              },
+            ]}
+          />
+        </div>
+        <Button className='now_btn'>Now</Button>
+        <Button className='advance_btn'>Advance Search</Button>
       </section>
 
       {/* STATS */}

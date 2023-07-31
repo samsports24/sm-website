@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Image, Table } from 'antd'
 
-const LeagueStandingCard = ({ data }) => {
+const LeagueStandingCard = ({ data, index }) => {
   // Table Column
   const columns = [
     {
@@ -58,7 +58,7 @@ const LeagueStandingCard = ({ data }) => {
   ]
 
   return (
-    <div className='league_standing_card'>
+    <div className='league_standing_card' style={{ marginTop: index === 0 && '0px' }}>
       <h3 className='text'>{data?.mainTitle}</h3>
       {data?.data?.map((v, i) => {
         return (

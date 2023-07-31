@@ -13,6 +13,9 @@
   font-style: normal;
   font-weight: 600;
   line-height: normal;
+  padding: 10px 20px;
+  background-color: var(--primaryPurple);
+  width: max-content;
 }
 .league_standing_card .table_card {
   width: 100%;

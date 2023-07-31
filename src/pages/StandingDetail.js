@@ -251,7 +251,18 @@ const StandingDetail = () => {
       {/* HEADER */}
       <StandingHeader />
 
-      <h2 className='heading'>RED ZONE DRAGONS: MAIN </h2>
+      <p className='hint_text'>
+        Hint: For privacy reasons, owner email addresses, phone/fax numbers, and other owner contact
+        information is only displayed to people who have logged into this league.
+      </p>
+
+      <h2 className='heading'>RED ZONE DRAGONS:</h2>
+
+      <div className='link_box'>
+        <h2>MAIN</h2> | <h2>ROSTER</h2> | <h2>ROSTER W/STATS</h2> | <h2>SCORING HISTORY</h2> |
+        <h2>TRANSACTIONS</h2> | <h2>SCHEDULE</h2> | <h2>ACCOUNTING</h2> | <h2>SERIES RECORDS</h2> |
+        <h2>BOX SCORE</h2>
+      </div>
 
       <section className='detail_container'>
         <div className='image_box'>

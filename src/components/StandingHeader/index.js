@@ -5,7 +5,7 @@ import { Button } from 'antd'
 // Component
 import Pagination from '../Pagination'
 
-const StandingHeader = () => {
+const StandingHeader = ({ pagination = false }) => {
   const [activeBtn, setActiveBtn] = useState('Standings')
 
   const handlePagination = (page) => {
@@ -38,14 +38,16 @@ const StandingHeader = () => {
           </Button>
         ))}
       </div>
-      <div className='pagination_box'>
-        <Pagination
-          title='Standings as of Week:'
-          defaultCurrent={1}
-          total={180}
-          onChange={handlePagination}
-        />
-      </div>
+      {pagination && (
+        <div className='pagination_box'>
+          <Pagination
+            title='Standings as of Week:'
+            defaultCurrent={1}
+            total={180}
+            onChange={handlePagination}
+          />
+        </div>
+      )}
     </header>
   )
 }

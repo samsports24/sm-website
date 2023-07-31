@@ -657,7 +657,7 @@ const LeagueStandings = () => {
   return (
     <div className='standing_container'>
       {/* HEADER */}
-      <StandingHeader />
+      <StandingHeader pagination={true} />
 
       <div className='heading_box'>
         <h2>League Standings</h2>
@@ -665,7 +665,7 @@ const LeagueStandings = () => {
 
       <div className='league_standing_card_container' style={{ width: '100%' }}>
         {data.map((v, i) => (
-          <LeagueStandingCard key={i} data={v} />
+          <LeagueStandingCard key={i} data={v} index={i} />
         ))}
       </div>
     </div>

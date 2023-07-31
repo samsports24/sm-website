@@ -5,8 +5,9 @@
 /* League Standings */
 .standing_container .heading_box {
   margin-top: 40px;
-  background-color: var(--primaryPurple);
-  border-radius: 10px 10px 0px 0px;
+  margin-bottom: 20px;
+  /* background-color: var(--primaryPurple);
+  border-radius: 10px 10px 0px 0px; */
 }
 .standing_container .heading_box h2 {
   color: var(--text);
@@ -14,7 +15,6 @@
   font-style: normal;
   font-weight: 700;
   line-height: 28px;
-  padding: 19px 24px;
 }
 
 .standing_container .league_standing_card_container {
