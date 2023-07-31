@@ -30,6 +30,7 @@
 @import './components/statsCard.css';
 @import './components/scoreCardTeam.css';
 @import './components/scoreCardPlayer.css';
+@import './components/liveScoreCard.css';
 
 /* Page CSS */
 @import './pages/login.css';
@@ -43,3 +44,4 @@
 @import './pages/standingDetail.css';
 @import './pages/playerStats.css';
 @import './pages/transactions.css';
+@import './pages/liveScore.css';

@@ -1,0 +1,54 @@
+.standing_container {
+  width: 100%;
+}
+
+.standing_container .heading_box {
+  margin-top: 80px;
+  margin-bottom: 26px;
+}
+.standing_container .heading_box h2 {
+  color: var(--text);
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 28px;
+  text-transform: uppercase;
+}
+
+.standing_container .live_score_card_container {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+.standing_container .live_score_card_container header {
+  width: 100%;
+  background-color: var(--primaryPurple);
+  border-radius: 16px 16px 0px 0px;
+  padding: 14px 42px;
+}
+.standing_container .live_score_card_container header h3 {
+  color: var(--text);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+}
+
+.standing_container .live_score_card_container .card_container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-height: 800px;
+  overflow-y: auto;
+  padding: 34px 24px;
+}
+
+@media (max-width: 550px) {
+  .standing_container .live_score_card_container header {
+    padding: 14px 32px;
+  }
+  .standing_container .live_score_card_container .card_container {
+    padding: 34px 10px;
+  }
+}

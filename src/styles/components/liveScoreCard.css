@@ -1,0 +1,49 @@
+.live_score_card {
+  width: 100%;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background-color: var(--primaryPurple);
+}
+.live_score_card .header {
+  width: 100%;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  padding: 10px 20px;
+}
+.live_score_card .header h3 {
+  color: var(--text);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+}
+.live_score_card .content {
+  width: 100%;
+  padding: 8px 24px;
+}
+.live_score_card .content .row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: space-between;
+  padding-block: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.live_score_card .content .row .name {
+  color: var(--text);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  opacity: 0.4;
+}
+.live_score_card .content .row .value {
+  color: var(--text);
+  text-align: right;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+

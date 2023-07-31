@@ -19,6 +19,7 @@ import LeagueStandings from '../pages/LeagueStandings'
 import StandingDetail from '../pages/StandingDetail'
 import PlayerStats from '../pages/PlayerStats'
 import Transactions from '../pages/Transactions'
+import LiveScore from '../pages/LiveScore'
 
 // import PrivateWrapper from './PrivateRoutes'
 
@@ -52,6 +53,7 @@ const Routers = () => {
           <Route path='/standing-detail' element={<StandingDetail />} />
           <Route path='/player-stats' element={<PlayerStats />} />
           <Route path='/transactions' element={<Transactions />} />
+          <Route path='/live-score' element={<LiveScore />} />
           {/* </Layout> */}
         </Route>
 
