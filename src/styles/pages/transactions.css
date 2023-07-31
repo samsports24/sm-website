@@ -1,0 +1,126 @@
+.transactions_container {
+  width: 100%;
+}
+
+.transactions_container .hint_text {
+  color: var(--text);
+  margin-top: 40px;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+}
+
+/* DROPDOWN */
+.transactions_container .dropdown_container {
+  width: 100%;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+.transactions_container .dropdown_container .select_box p {
+  color: var(--text);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  margin-bottom: 5px;
+}
+.transactions_container .dropdown_container .select_box .ant-select {
+  height: 48px !important;
+}
+.transactions_container .dropdown_container .select_box .ant-select .ant-select-selector {
+  height: 48px !important;
+  align-items: center;
+  border: 2px solid #fff;
+  border-radius: 12px;
+}
+.transactions_container .dropdown_container .now_btn {
+  height: 48px;
+  align-self: flex-end;
+  border-radius: 20px;
+  background-color: var(--primary);
+  border: none;
+  padding-inline: 40px;
+  color: var(--text);
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+/* TABLE TRANSACTIONS */
+.transactions_container .transactions_table_container {
+  width: 100%;
+  /* display: flex;
+  flex-direction: column;
+  gap: 30px;
+  overflow-y: auto;
+  max-height: 800px; */
+}
+.transactions_container .transactions_table_container .header{
+  width: 100%;
+  border-radius: 20px 20px 0px 0px;
+  border: 1px solid var(--border);
+  padding: 30px 60px;
+  background-color: var(--primaryPurple);
+}
+.transactions_container .transactions_table_container .header h3{
+  color: var(--text);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.transactions_container .transactions_table_container .main_table{
+  width: 100%;
+  overflow-y: auto;
+  max-height: 800px;
+}
+
+.transactions_container .transactions_table_container .ant-table {
+  color: var(--text);
+}
+.transactions_container .transactions_table_container tr > td {
+  border-bottom: none;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300 !important;
+  line-height: 28px;
+  opacity: 0.4;
+  padding-block: 28px;
+}
+.transactions_container .transactions_table_container .ant-table-thead > tr > th {
+  background-color: var(--primaryPurple) !important;
+  border-bottom: 1px solid var(--border) !important;
+  border-top: 1px solid var(--border) !important;
+}
+.transactions_container .transactions_table_container .ant-table-thead > tr > th:first-child {
+  border-top-left-radius: 0px !important;
+  border-left: 1px solid var(--border) !important;
+}
+.transactions_container .transactions_table_container .ant-table-thead > tr > th:last-child {
+  border-top-right-radius: 0px !important;
+  border-right: 1px solid var(--border) !important;
+}
+
+@media (max-width: 768px) {
+  .transactions_container .dropdown_container {
+    gap: 15px;
+  }
+  .transactions_container .dropdown_container .select_box .ant-select {
+    height: 35px !important;
+  }
+  .transactions_container .dropdown_container .select_box .ant-select .ant-select-selector {
+    height: 35px !important;
+  }
+  .transactions_container .dropdown_container .now_btn {
+    height: 35px;
+  }
+}
