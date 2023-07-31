@@ -1,42 +1,202 @@
-.american-football-banner {
+/* DESKTOP */
+.american-football-banner-dekstop {
   margin-top: 48px;
   width: 100%;
   height: auto;
   position: relative;
 }
-.american-football-banner img {
+.american-football-banner-dekstop img {
   width: 100%;
   height: auto;
 }
-
-.american-football-banner .content_wrapper {
+.american-football-banner-dekstop .content_wrapper {
   position: absolute;
-  bottom: 4vw;
-  left: 3.4vw;
+  top: calc(500 / 1590 * 200%);
+  left: calc(500 / 1590 * 13%);
 }
-.american-football-banner .content_wrapper .left h1 {
+.american-football-banner-dekstop .content_wrapper .left h1 {
   color: var(--text);
   font-size: 34px;
   font-style: normal;
   font-weight: 800;
   line-height: normal;
 }
-.american-football-banner .content_wrapper .left p {
+.american-football-banner-dekstop .content_wrapper .left p {
   color: var(--text);
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
-  line-height: 28px;
-  width: 370px;
+  line-height: 20px;
+  width: 90%;
+  margin-top: 10px;
 }
-
-.american-football-banner .play_now_text {
+.american-football-banner-dekstop .play_now_text {
   position: absolute;
   color: var(--primary);
   font-size: 40px;
   font-style: normal;
   font-weight: 800;
   line-height: 28px;
-  bottom: 6.2vw;
-  left: 26.4vw;
+  bottom: calc(500 / 1590 * 76%);
+  left: calc(500 / 1590 * 102%);
 }
+@media (max-width: 1700px) {
+  .american-football-banner-dekstop .content_wrapper .left h1 {
+    font-size: 22px;
+  }
+  .american-football-banner-dekstop .play_now_text {
+    font-size: 32px;
+  }
+  .american-football-banner-dekstop .content_wrapper .left p {
+    font-size: 14px;
+    width: 80%;
+  }
+}
+@media (max-width: 1250px) {
+  .american-football-banner-dekstop .content_wrapper .left h1 {
+    font-size: 15px;
+  }
+  .american-football-banner-dekstop .play_now_text {
+    font-size: 22px;
+  }
+  .american-football-banner-dekstop .content_wrapper .left p {
+    font-size: 10px;
+    width: 70%;
+    line-height: 1.5;
+    margin-top: 5px;
+  }
+}
+@media (max-width: 1000px) {
+  .american-football-banner-dekstop {
+    display: none;
+  }
+}
+
+/* TABLET */
+.american-football-banner-tab {
+  margin-top: 48px;
+  width: 100%;
+  height: auto;
+  position: relative;
+}
+.american-football-banner-tab img {
+  width: 100%;
+  height: auto;
+}
+.american-football-banner-tab .content_wrapper {
+  position: absolute;
+  top: calc(500 / 1590 * 255%);
+  left: calc(500 / 1590 * 20%);
+}
+.american-football-banner-tab .content_wrapper .left h1 {
+  color: var(--text);
+  font-size: 26px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+}
+.american-football-banner-tab .content_wrapper .left p {
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
+  width: 80%;
+}
+.american-football-banner-tab .play_now_text {
+  position: absolute;
+  color: var(--primary);
+  font-size: 26px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 28px;
+  bottom: calc(500 / 1590 * 33%);
+  left: calc(500 / 1590 * 195%);
+}
+@media (min-width: 1000px){
+  .american-football-banner-tab{
+    display: none;
+  }
+}
+@media (max-width: 850px) {
+  .american-football-banner-tab .content_wrapper .left h1 {
+    font-size: 22px;
+  }
+  .american-football-banner-tab .play_now_text {
+    font-size: 22px;
+  }
+  .american-football-banner-tab .content_wrapper .left p {
+    font-size: 16px;
+    width: 70%;
+    line-height: 1.5;
+    margin-top: 5px;
+  }
+}
+@media (max-width: 550px) {
+  .american-football-banner-tab {
+    display: none;
+  }
+}
+
+/* TABLET */
+.american-football-banner-mobile {
+  margin-top: 48px;
+  width: 100%;
+  height: auto;
+  position: relative;
+}
+.american-football-banner-mobile img {
+  width: 100%;
+  height: auto;
+}
+.american-football-banner-mobile .content_wrapper {
+  position: absolute;
+  top: calc(500 / 1590 * 235%);
+  left: calc(500 / 1590 * 28%);
+}
+.american-football-banner-mobile .content_wrapper .left h1 {
+  color: var(--text);
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+.american-football-banner-mobile .content_wrapper .left p {
+  color: var(--text);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 15px;
+  width: 100%;
+}
+.american-football-banner-mobile .play_now_text {
+  position: absolute;
+  color: var(--primary);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  bottom: calc(500 / 1590 * 25%);
+  left: calc(500 / 1590 * 28%);
+}
+@media (max-width: 400px) {
+  .american-football-banner-mobile .content_wrapper {
+    position: absolute;
+    top: calc(500 / 1590 * 230%);
+  }
+  .american-football-banner-mobile .content_wrapper .left h1 {
+    font-size: 16px;
+  }
+  .american-football-banner-mobile .play_now_text {
+    font-size: 16px;
+  }
+  .american-football-banner-mobile .content_wrapper .left p {
+    font-size: 13px;
+  }
+}
+@media (min-width: 550px){
+  .american-football-banner-mobile{
+    display: none;
+  }
+}
+
