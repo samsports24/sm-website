@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@ant-design/charts": "1.2.10",
+    "@ant-design/charts": "^1.2.10",
     "@ant-design/graphs": "^1.4.0",
     "@ant-design/plots": "^1.2.5",
     "@g-loot/react-tournament-brackets": "^1.0.30",
