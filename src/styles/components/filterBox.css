@@ -1,0 +1,39 @@
+.filter_box {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: var(--text);
+  font-size: 22px;
+}
+
+.filter_box .filter_box_text {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.filter_box .filter_box_text h2 {
+  color: var(--text);
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-decoration-line: underline;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.filter_box .filter_box_text .activeFilter {
+  text-decoration-line: none;
+}
+
+@media (max-width: 768px) {
+  .filter_box {
+    font-size: 15px;
+  }
+  .filter_box h2 {
+    font-size: 15px;
+  }
+}

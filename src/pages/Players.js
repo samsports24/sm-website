@@ -1,181 +1,17 @@
 import { Row, Col } from 'antd'
+
+// Images
 import Trout from '../assets/trout-square-1.png'
 import UFAFL from '../assets/leagueid-a.png'
-import PlayerCard from '../components/cards/PlayerCard'
-
-import Player1 from '../assets/player-img-1.png'
-import Player2 from '../assets/player-img-2.png'
-import Player3 from '../assets/player-img-3.png'
-import Player4 from '../assets/player-img-4.png'
-import Player5 from '../assets/player-img-5.png'
-import Player6 from '../assets/player-img-6.png'
-import Player7 from '../assets/player-img-7.png'
-import Player8 from '../assets/player-img-8.png'
 import Image1 from '../assets/unnamed.png'
 
+// Component
+import PlayerCard from '../components/cards/PlayerCard'
+
+// Mock Data
+import { playerData } from './mockData'
+
 const Players = () => {
-  const PlayerData = [
-    {
-      Image: Player1,
-      playerName: 'Chase Daniel (QB)',
-      Owner: 'Circa Trout',
-      Positon: 'Linebacker',
-      Age: '31 years',
-      Date: 'Sep 10, 2021',
-    },
-    {
-      Image: Player2,
-      playerName: 'Justin Herbert (QB)',
-      Owner: 'Circa Trout',
-      Positon: 'Linebacker',
-      Age: '31 years',
-      Date: 'Sep 10, 2021',
-    },
-    {
-      Image: Player3,
-      playerName: 'Najee Harris (RB)',
-      Owner: 'Circa Trout',
-      Positon: 'Linebacker',
-      Age: '31 years',
-      Date: 'Sep 10, 2021',
-    },
-    {
-      Image: Player4,
-      playerName: 'Rhamondre Stevenson (RB)',
-      Owner: 'Circa Trout',
-      Positon: 'Linebacker',
-      Age: '31 years',
-      Date: 'Sep 10, 2021',
-    },
-    {
-      Image: Player5,
-      playerName: 'Damien Harris (RB)',
-      Owner: 'Circa Trout',
-      Positon: 'Linebacker',
-      Age: '31 years',
-      Date: 'Sep 10, 2021',
-    },
-    {
-      Image: Player6,
-      playerName: 'Dare Ogunbowale (RB)',
-      Owner: 'Circa Trout',
-      Positon: 'Linebacker',
-      Age: '31 years',
-      Date: 'Sep 10, 2021',
-    },
-    {
-      Image: Player7,
-      playerName: 'Rachaad White (RB)',
-      Owner: 'Circa Trout',
-      Positon: 'Linebacker',
-      Age: '31 years',
-      Date: 'Sep 10, 2021',
-    },
-    {
-      Image: Player8,
-      playerName: 'Breece Hall (RB)',
-      Owner: 'Circa Trout',
-      Positon: 'Linebacker',
-      Age: '31 years',
-      Date: 'Sep 10, 2021',
-    },
-    {
-      Image: Player1,
-      playerName: 'Jaylen Waddle (WR)',
-      Owner: 'Circa Trout',
-      Positon: 'Linebacker',
-      Age: '31 years',
-      Date: 'Sep 10, 2021',
-    },
-    {
-      Image: Player2,
-      playerName: 'Rondale Moore (WR)',
-      Owner: 'Circa Trout',
-      Positon: 'Linebacker',
-      Age: '31 years',
-      Date: 'Sep 10, 2021',
-    },
-    {
-      Image: Player3,
-      playerName: 'DeVonta Smith (WR)',
-      Owner: 'Circa Trout',
-      Positon: 'Linebacker',
-      Age: '31 years',
-      Date: 'Sep 10, 2021',
-    },
-    {
-      Image: Player4,
-      playerName: 'Tutu Atwell (WR)',
-      Owner: 'Circa Trout',
-      Positon: 'Linebacker',
-      Age: '31 years',
-      Date: 'Sep 10, 2021',
-    },
-    {
-      Image: Player5,
-      playerName: 'Amon-Ra St. Brown (WR)',
-      Owner: 'Circa Trout',
-      Positon: 'Linebacker',
-      Age: '31 years',
-      Date: 'Sep 10, 2021',
-    },
-    {
-      Image: Player6,
-      playerName: 'Allen Robinson II (WR)',
-      Owner: 'Circa Trout',
-      Positon: 'Linebacker',
-      Age: '31 years',
-      Date: 'Sep 10, 2021',
-    },
-    {
-      Image: Player7,
-      playerName: 'Rashard Higgins (WR)',
-      Owner: 'Circa Trout',
-      Positon: 'Linebacker',
-      Age: '31 years',
-      Date: 'Sep 10, 2021',
-    },
-    {
-      Image: Player8,
-      playerName: 'Garrett Wilson (WR)',
-      Owner: 'Circa Trout',
-      Positon: 'Linebacker',
-      Age: '31 years',
-      Date: 'Sep 10, 2021',
-    },
-    {
-      Image: Player1,
-      playerName: 'Jaylen Waddle (WR)',
-      Owner: 'Circa Trout',
-      Positon: 'Linebacker',
-      Age: '31 years',
-      Date: 'Sep 10, 2021',
-    },
-    {
-      Image: Player2,
-      playerName: 'Rondale Moore (WR)',
-      Owner: 'Circa Trout',
-      Positon: 'Linebacker',
-      Age: '31 years',
-      Date: 'Sep 10, 2021',
-    },
-    {
-      Image: Player3,
-      playerName: 'DeVonta Smith (WR)',
-      Owner: 'Circa Trout',
-      Positon: 'Linebacker',
-      Age: '31 years',
-      Date: 'Sep 10, 2021',
-    },
-    {
-      Image: Player4,
-      playerName: 'Tutu Atwell (WR)',
-      Owner: 'Circa Trout',
-      Positon: 'Linebacker',
-      Age: '31 years',
-      Date: 'Sep 10, 2021',
-    },
-  ]
   return (
     <div className='player-container'>
       <div className='banner'>
@@ -220,16 +56,9 @@ const Players = () => {
             <p>Player</p>
           </div>
           <Row gutter={[30, 30]}>
-            {PlayerData.map((data, i) => (
+            {playerData?.map((data, i) => (
               <Col xs={24} md={12} lg={12} xl={6} key={i}>
-                <PlayerCard
-                  Image={data.Image}
-                  PlayerName={data.playerName}
-                  Owner={data.Owner}
-                  Positon={data.Positon}
-                  Age={data.Age}
-                  Date={data.Date}
-                />
+                <PlayerCard data={data} />
               </Col>
             ))}
           </Row>

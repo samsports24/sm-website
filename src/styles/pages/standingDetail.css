@@ -54,6 +54,7 @@
   padding: 45px 24px;
   border-radius: 16px;
   border: 1px solid var(--border);
+  margin-top: 50px;
 }
 
 .standing_detail_container .detail_container .image_box {

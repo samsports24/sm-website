@@ -1,8 +1,10 @@
 import React from 'react'
 
 import { Image, Table } from 'antd'
+import { useNavigate } from 'react-router-dom'
 
 const LeagueStandingCard = ({ data, index }) => {
+  const navigate = useNavigate()
   // Table Column
   const columns = [
     {
@@ -58,7 +60,11 @@ const LeagueStandingCard = ({ data, index }) => {
   ]
 
   return (
-    <div className='league_standing_card' style={{ marginTop: index === 0 && '0px' }}>
+    <div
+      onClick={() => navigate('/standing-detail')}
+      className='league_standing_card'
+      style={{ marginTop: index === 0 && '0px' }}
+    >
       <h3 className='text'>{data?.mainTitle}</h3>
       {data?.data?.map((v, i) => {
         return (

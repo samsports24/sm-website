@@ -6,11 +6,11 @@ import { Button } from 'antd'
 // Component
 import Pagination from '../Pagination'
 
-const StandingHeader = ({ pagination = false }) => {
+const StandingHeader = ({ pagination = false, handlePagination = () => {} }) => {
   const navigate = useNavigate()
   let location = useLocation()
 
-  const [activeBtn, setActiveBtn] = useState('Main')
+  const [activeBtn, setActiveBtn] = useState('')
 
   const getActivePage = (key) => {
     switch (key) {
@@ -26,6 +26,8 @@ const StandingHeader = ({ pagination = false }) => {
         return 'Player Stats'
       case '/league-standings':
         return 'Standings'
+      case '/standing-detail':
+        return 'Standings'
       case '/transactions':
         return 'Transactions'
       case '/live-score':
@@ -33,17 +35,13 @@ const StandingHeader = ({ pagination = false }) => {
       case '/schedule':
         return 'Schedule'
       default:
-        return 'Main'
+        return ''
     }
   }
 
   useEffect(() => {
     setActiveBtn(getActivePage(location.pathname))
   }, [location])
-
-  const handlePagination = (page) => {
-    console.log(page)
-  }
 
   const buttons = [
     {
@@ -80,7 +78,7 @@ const StandingHeader = ({ pagination = false }) => {
     },
     {
       btnName: 'Schedule',
-      navigateTo: '/',
+      navigateTo: '/schedule',
     },
   ]
 

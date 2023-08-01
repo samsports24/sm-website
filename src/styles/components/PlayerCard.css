@@ -9,6 +9,7 @@
   flex-direction: column;
   background: var(--primaryPurple);
   position: relative;
+  cursor: pointer;
 }
 
 .player-card .player-image {

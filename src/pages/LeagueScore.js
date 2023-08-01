@@ -10,85 +10,14 @@ import ScheduleBox from '../components/ScheduleBox'
 import LeagueScoreCard from '../components/cards/leagueScoreCard'
 import Pagination from '../components/Pagination'
 
+// Mock Data
+import { leagueScoreData } from './mockData'
+
 const LeagueScore = () => {
   const handlePagination = (page) => {
     console.log(page)
   }
 
-  let scores = [
-    {
-      image: require('../assets/heat-wave-square-1.png'),
-      title: 'Hear Wave Square',
-      date: new Date(),
-      scores: [1, 2],
-    },
-    {
-      image: require('../assets/heat-wave-square-1.png'),
-      title: 'Hear Wave Square',
-      date: new Date(),
-      scores: [1, 2],
-    },
-    {
-      image: require('../assets/heat-wave-square-1.png'),
-      title: 'Hear Wave Square',
-      date: new Date(),
-      scores: [1, 2],
-    },
-    {
-      image: require('../assets/heat-wave-square-1.png'),
-      title: 'Hear Wave Square',
-      date: new Date(),
-      scores: [1, 2],
-    },
-    {
-      image: require('../assets/heat-wave-square-1.png'),
-      title: 'Hear Wave Square',
-      date: new Date(),
-      scores: [1, 2],
-    },
-    {
-      image: require('../assets/heat-wave-square-1.png'),
-      title: 'Hear Wave Square',
-      date: new Date(),
-      scores: [1, 2],
-    },
-    {
-      image: require('../assets/heat-wave-square-1.png'),
-      title: 'Hear Wave Square',
-      date: new Date(),
-      scores: [1, 2],
-    },
-    {
-      image: require('../assets/heat-wave-square-1.png'),
-      title: 'Hear Wave Square',
-      date: new Date(),
-      scores: [1, 2],
-    },
-    {
-      image: require('../assets/heat-wave-square-1.png'),
-      title: 'Hear Wave Square',
-      date: new Date(),
-      scores: [1, 2],
-    },
-    {
-      image: require('../assets/heat-wave-square-1.png'),
-      title: 'Hear Wave Square',
-      date: new Date(),
-      scores: [1, 2],
-    },
-    {
-      image: require('../assets/heat-wave-square-1.png'),
-      title: 'Hear Wave Square',
-      date: new Date(),
-      scores: [1, 2],
-    },
-    {
-      image: require('../assets/heat-wave-square-1.png'),
-      title: 'Hear Wave Square',
-      date: new Date(),
-      scores: [1, 2],
-    },
-  ]
   return (
     <div className='league_container'>
       {/* HEADER */}
@@ -112,7 +41,7 @@ const LeagueScore = () => {
         {/* CARDS */}
         <section className='score_card_container'>
           <Row gutter={[30, 20]}>
-            {scores?.map((value, index) => (
+            {leagueScoreData?.map((value, index) => (
               <Col xs={24} lg={12} xl={12} xxl={8} key={index}>
                 <LeagueScoreCard data={{ ...value, index }} />
               </Col>

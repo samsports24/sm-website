@@ -3,217 +3,18 @@ import { Col, Row } from 'antd'
 import StandingHeader from '../components/StandingHeader'
 import LiveScoreCard from '../components/cards/LiveScoreCard'
 
+// Mock Data
+import { liveScoreData } from './mockData'
+
 const LiveScore = () => {
-  const data = [
-    {
-      title: 'PARADISE BLACK HAWKS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'PARADISE BLACK HAWKS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-    {
-      title: 'GRIDIRON SEALS',
-      starters: '',
-      starter: 0,
-      nonStarter: '',
-    },
-  ]
+  const handlePagination = (page) => {
+    console.log(page)
+  }
+
   return (
     <div className='standing_container'>
       {/* HEADER */}
-      <StandingHeader pagination={true} />
+      <StandingHeader pagination={true} handlePagination={handlePagination} />
 
       <div className='heading_box'>
         <h2>Aggregated Weekly Results: Last 3 Weeks</h2>
@@ -225,7 +26,7 @@ const LiveScore = () => {
         </header>
         <div className='card_container'>
           <Row gutter={[30, 30]}>
-            {data?.map((v, i) => {
+            {liveScoreData?.map((v, i) => {
               return (
                 <Col key={i} xs={24} md={24} lg={12}>
                   <LiveScoreCard data={v} />

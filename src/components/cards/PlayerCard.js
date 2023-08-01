@@ -1,27 +1,28 @@
 import { useNavigate } from 'react-router-dom'
 
-const PlayerCard = ({ Image, PlayerName, Owner, Position, Age, Date }) => {
+const PlayerCard = ({ data }) => {
+  const { image, playerName, owner, position, age, date } = data
   const navigate = useNavigate()
 
   return (
     <div className='player-card' onClick={() => navigate('/player-details')}>
       <div className='player-image'>
-        <img src={Image} />
+        <img src={image} />
       </div>
       <div className='player-name'>
-        <h2>{PlayerName}</h2>
+        <h2>{playerName}</h2>
         <div className='player-details'>
           <p>
-            Owner:<span className='bold'> {Owner}</span>
+            Owner:<span className='bold'> {owner}</span>
           </p>
           <p>
-            Position:<span className='bold'> {Position}</span>
+            Position:<span className='bold'> {position}</span>
           </p>
           <p>
-            Age: <span className='bold'> {Age}</span>
+            Age: <span className='bold'> {age}</span>
           </p>
           <p>
-            Date Registered: <span className='bold'> {Date} </span>
+            Date Registered: <span className='bold'> {date} </span>
           </p>
         </div>
       </div>

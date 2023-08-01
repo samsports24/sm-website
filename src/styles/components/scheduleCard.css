@@ -1,0 +1,96 @@
+.schedule_card_box {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+/* TITLE HEADER */
+.schedule_card_box .schedule_title_header {
+  width: 100%;
+  padding: 10px 28px;
+  background-color: var(--primaryPurple);
+  border-radius: 16px 16px 0px 0px;
+}
+.schedule_card_box .schedule_title_header h3 {
+  color: var(--text);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+}
+
+/* CUSTOM TABLE HEADER */
+.schedule_card_box .schedule_header {
+  padding: 14px 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.schedule_card_box .schedule_header .heading1 {
+  color: var(--text);
+  text-align: left;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+.schedule_card_box .schedule_header .heading2 {
+  color: var(--text);
+  text-align: center;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  width: 100px;
+}
+
+.schedule_card_box .color_row {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--primaryPurple);
+}
+.schedule_card_box .content_row_wrapper {
+  padding: 10px 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.schedule_card_box .content_row_wrapper:last-child {
+  border-radius: 0px 0px 16px 16px;
+  border-bottom: none;
+}
+.schedule_card_box .content_row_wrapper .content_row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 20px;
+}
+.schedule_card_box .content_row_wrapper .content_row .text1 {
+  color: var(--text);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  text-align: left;
+}
+.schedule_card_box .content_row_wrapper .content_row .text2 {
+  color: var(--text);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  text-align: center;
+  width: 100px;
+}
+
+@media (max-width: 768px) {
+  .schedule_card_box .schedule_title_header {
+    padding: 10px 10px;
+  }
+  .schedule_card_box .schedule_header {
+    padding: 14px 10px;
+  }
+  .schedule_card_box .content_row_wrapper {
+    padding: 10px 10px;
+  }
+}
