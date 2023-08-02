@@ -1,10 +1,12 @@
 import { Button, Select, Table } from 'antd'
+
 import StandingHeader from '../components/StandingHeader'
+
 import moment from 'moment'
 
 import { transactionData } from './mockData'
 
-const Transactions = () => {
+const AdpReport = () => {
   const columns = [
     {
       title: '#',
@@ -50,12 +52,13 @@ const Transactions = () => {
       {/* HEADER */}
       <StandingHeader />
 
-      <p className='hint_text'>
+      {/* <p className='hint_text'>
         Hint: For privacy reasons, owner email addresses, phone/fax numbers, and other owner contact
         information is only displayed to people who have logged into this league.
-      </p>
+      </p> */}
 
       {/* DROPDOWN */}
+      {/* GENERAL CSS */}
       <section className='dropdown_container'>
         <div className='select_box'>
           <p>Show me</p>
@@ -102,10 +105,11 @@ const Transactions = () => {
         <Button className='now_btn'>Now</Button>
       </section>
 
-      {/* TRANSACTIONS TABLE */}
+      {/* TABLE */}
+      {/* GENERAL CSS */}
       <section className='main_table_container'>
         <div className='header'>
-          <h3>RECENT TRANSACTIONS</h3>
+          <h3>ADP REPORT</h3>
         </div>
         <div className='main_table'>
           <Table
@@ -122,4 +126,4 @@ const Transactions = () => {
   )
 }
 
-export default Transactions
+export default AdpReport

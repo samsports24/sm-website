@@ -96,3 +96,172 @@ p {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
 }
+
+/* HINT TEXT */
+.hint_text {
+  color: var(--text);
+  margin-top: 40px;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+}
+
+/* TABLE ROW COLOR */
+.odd-row {
+  background-color: var(--primaryPurple) !important;
+}
+.even-row {
+  background-color: transparent !important;
+}
+
+/* ------> START <------- */
+/* DROPDOWN, PLAYER STATS PAGE, TRANSACTIONS PAGE */
+.dropdown_container {
+  width: 100%;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+.dropdown_container .select_box p {
+  color: var(--text);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  margin-bottom: 5px;
+}
+.dropdown_container .select_box .ant-select {
+  height: 48px !important;
+}
+.dropdown_container .select_box .ant-select .ant-select-selector {
+  height: 48px !important;
+  align-items: center;
+  border: 2px solid #fff;
+  border-radius: 12px;
+}
+.dropdown_container .now_btn {
+  height: 48px;
+  align-self: flex-end;
+  border-radius: 20px;
+  background-color: var(--primary);
+  border: none;
+  padding-inline: 40px;
+  color: var(--text);
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+}
+.dropdown_container .advance_btn {
+  height: 48px;
+  align-self: flex-end;
+  padding-inline: 0px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
+}
+@media (max-width: 768px) {
+  .dropdown_container {
+    gap: 15px;
+  }
+  .dropdown_container .select_box .ant-select {
+    height: 35px !important;
+  }
+  .dropdown_container .select_box .ant-select .ant-select-selector {
+    height: 35px !important;
+  }
+  .dropdown_container .now_btn {
+    height: 35px;
+  }
+  .dropdown_container .advance_btn {
+    height: 35px;
+  }
+}
+@media (max-width: 500px) {
+  .dropdown_container .select_box {
+    width: calc(50% - 15px) !important;
+  }
+  .dropdown_container .select_box .ant-select {
+    width: 100% !important;
+  }
+  .dropdown_container .now_btn,
+  .dropdown_container .advance_btn {
+    margin-top: 10px;
+  }
+}
+@media (max-width: 320px) {
+  .dropdown_container {
+    flex-direction: column !important;
+  }
+  .dropdown_container .select_box {
+    width: calc(100%) !important;
+  }
+  .dropdown_container .now_btn,
+  .dropdown_container .advance_btn {
+    align-self: flex-start;
+  }
+}
+/* -------> END <-------*/
+
+/* ------> START <------- */
+/* TABLE, TRANSACTIONS PAGE, */
+.main_table_container {
+  width: 100%;
+}
+.main_table_container .header {
+  width: 100%;
+  border-radius: 20px 20px 0px 0px;
+  border: 1px solid var(--border);
+  padding: 30px 60px;
+  background-color: var(--primaryPurple);
+}
+.main_table_container .header h3 {
+  color: var(--text);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+.main_table_container .main_table {
+  width: 100%;
+  overflow-y: auto;
+  max-height: 800px;
+}
+.main_table_container .ant-table {
+  color: var(--text);
+}
+.main_table_container .ant-table-thead > tr > th {
+  background-color: transparent !important;
+  border: none !important;
+  color: #918ba0 !important;
+  padding-block: 20px;
+}
+.main_table_container tr > td {
+  border-bottom: none !important;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300 !important;
+  line-height: 28px;
+}
+.main_table_container ul {
+  margin: 0;
+  padding-inline: 20px;
+}
+@media (max-width: 768px) {
+  .main_table_container .header {
+    padding: 20px 20px;
+  }
+}
+/* -------> END <-------*/

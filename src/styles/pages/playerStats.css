@@ -14,61 +14,7 @@
 }
 
 /* DROPDOWN */
-.player_stats_container .dropdown_container {
-  width: 100%;
-  margin-top: 40px;
-  margin-bottom: 40px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 30px;
-  flex-wrap: wrap;
-}
-.player_stats_container .dropdown_container .select_box p {
-  color: var(--text);
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 22px;
-  margin-bottom: 5px;
-}
-.player_stats_container .dropdown_container .select_box .ant-select {
-  height: 48px !important;
-}
-.player_stats_container .dropdown_container .select_box .ant-select .ant-select-selector {
-  height: 48px !important;
-  align-items: center;
-  border: 2px solid #fff;
-  border-radius: 12px;
-}
-.player_stats_container .dropdown_container .now_btn {
-  height: 48px;
-  align-self: flex-end;
-  border-radius: 20px;
-  background-color: var(--primary);
-  border: none;
-  padding-inline: 40px;
-  color: var(--text);
-  text-align: center;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 20px;
-}
-.player_stats_container .dropdown_container .advance_btn {
-  height: 48px;
-  align-self: flex-end;
-  padding-inline: 0px;
-  background-color: transparent;
-  border: none;
-  outline: none;
-  box-shadow: none;
-  color: var(--text);
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 28px;
-}
+/* General Css */
 
 /* STATS */
 .player_stats_container .stats_container {
@@ -106,44 +52,3 @@
   border-right: 1px solid var(--border) !important;
 }
 
-@media (max-width: 768px) {
-  .player_stats_container .dropdown_container {
-    gap: 15px;
-  }
-  .player_stats_container .dropdown_container .select_box .ant-select {
-    height: 35px !important;
-  }
-  .player_stats_container .dropdown_container .select_box .ant-select .ant-select-selector {
-    height: 35px !important;
-  }
-  .player_stats_container .dropdown_container .now_btn {
-    height: 35px;
-  }
-  .player_stats_container .dropdown_container .advance_btn {
-    height: 35px;
-  }
-}
-@media (max-width: 500px) {
-  .player_stats_container .dropdown_container .select_box {
-    width: calc(50% - 15px) !important;
-  }
-  .player_stats_container .dropdown_container .select_box .ant-select {
-    width: 100% !important;
-  }
-  .player_stats_container .dropdown_container .now_btn,
-  .player_stats_container .dropdown_container .advance_btn {
-    margin-top: 10px;
-  }
-}
-@media (max-width: 320px) {
-  .player_stats_container .dropdown_container {
-    flex-direction: column !important;
-  }
-  .player_stats_container .dropdown_container .select_box {
-    width: calc(100%) !important;
-  }
-  .player_stats_container .dropdown_container .now_btn,
-  .player_stats_container .dropdown_container .advance_btn {
-    align-self: flex-start;
-  }
-}

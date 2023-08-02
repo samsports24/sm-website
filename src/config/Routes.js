@@ -22,6 +22,7 @@ import Transactions from '../pages/Transactions'
 import LiveScore from '../pages/LiveScore'
 import Playoff from '../pages/Playoff'
 import Schedule from '../pages/Schedule'
+import AdpReport from '../pages/AdpReport'
 
 // import PrivateWrapper from './PrivateRoutes'
 
@@ -58,6 +59,7 @@ const Routers = () => {
           <Route path='/live-score' element={<LiveScore />} />
           <Route path='/playoff' element={<Playoff />} />
           <Route path='/schedule' element={<Schedule />} />
+          <Route path='/adp-report' element={<AdpReport />} />
           {/* </Layout> */}
         </Route>
 
