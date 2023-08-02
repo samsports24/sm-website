@@ -2,7 +2,6 @@ import React from 'react'
 import { Image } from 'antd'
 
 const ScoreCardPlayer = ({ alignment, data }) => {
-  console.log(alignment)
   return (
     <div className='sc-player'>
       <div

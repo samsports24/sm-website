@@ -61,3 +61,15 @@
   line-height: 22px;
   opacity: 0.5;
 }
+
+@media (max-width: 1024px) {
+  .sc-player {
+    width: 100%;
+  }
+  .sc-player .top {
+    padding-inline: 12px !important;
+  }
+  .sc-player .bottom {
+    padding-inline: 12px !important;
+  }
+}

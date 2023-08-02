@@ -88,4 +88,7 @@
   .sc-team {
     width: 100%;
   }
+  .sc-team .team-card {
+    padding-inline: 12px !important;
+  }
 }
