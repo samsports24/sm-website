@@ -8,3 +8,17 @@
   overflow-y: auto !important;
   overflow-x: auto;
 }
+
+.bracket-wrapper{
+  width: 100%;
+  height: 600px;
+  position: relative;
+}
+
+.bracket-wrapper .super-bowl{
+  width: 270px;
+  height: auto;
+  position: absolute;
+  top: 0;
+  left: 41%;
+}

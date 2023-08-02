@@ -1,9 +1,12 @@
 import React from 'react'
 
+// Images
+import SuperBowl from '../assets/Super_Bowl_LIV.png'
+
 // Component
 import Header from '../components/Header'
 import ScheduleBox from '../components/ScheduleBox'
-import TournamentBracket from '../components/TournamentBracket'
+import Flow from '../components/TournamentBracket'
 
 const Playoff = () => {
   return (
@@ -16,7 +19,9 @@ const Playoff = () => {
         <ScheduleBox />
 
         <section className='bracket-wrapper'>
-          <TournamentBracket />
+          {/* <TournamentBracket /> */}
+          <img className='super-bowl' alt='super-bowl' src={SuperBowl} />
+          <Flow />
         </section>
       </main>
     </div>
