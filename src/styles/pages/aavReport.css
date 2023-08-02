@@ -1,0 +1,95 @@
+.aav_report_container {
+  width: 100%;
+}
+
+/* TABLE */
+.aav_report_container .adp_report_table {
+  border: 1px solid var(--border);
+  border-radius: 16px 16px 0px 0px;
+}
+.aav_report_container .adp_report_table .header {
+  border: none;
+  border-bottom: 1px solid var(--border);
+  padding-block: 20px;
+}
+
+/* FOOTER */
+.aav_report_container .footer_section {
+  margin-top: 30px;
+  padding-inline: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.aav_report_container .footer_section .center_content {
+  display: flex;
+  flex-direction: row;
+  gap: 25px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.aav_report_container .footer_section .center_content h3 {
+  color: var(--text);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+  margin-right: 85px;
+}
+.aav_report_container .footer_section .center_content .select_box_content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.aav_report_container .footer_section .center_content .select_box_content p {
+  color: var(--text);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+}
+.aav_report_container .footer_section .center_content .ant-select {
+  height: 48px !important;
+}
+.aav_report_container .footer_section .center_content .ant-select .ant-select-selector {
+  height: 48px !important;
+  align-items: center;
+  border: 2px solid #fff;
+  border-radius: 12px;
+}
+@media (max-width: 1440px) {
+  .aav_report_container .footer_section {
+    padding-inline: 0px;
+  }
+  .aav_report_container .footer_section .center_content h3 {
+    margin-right: 60px;
+  }
+  .aav_report_container .footer_section .center_content .ant-select {
+    height: 40px !important;
+  }
+  .aav_report_container .footer_section .center_content .ant-select .ant-select-selector {
+    height: 40px !important;
+  }
+}
+@media (max-width: 500px) {
+  .aav_report_container .footer_section {
+    padding-inline: 0px;
+  }
+  .aav_report_container .footer_section .center_content h3 {
+    margin-right: 0px;
+  }
+}
+@media (max-width: 375px) {
+  .aav_report_container .dropdown_container {
+    flex-direction: column !important;
+  }
+  .aav_report_container .dropdown_container .select_box {
+    width: calc(100%) !important;
+  }
+  .aav_report_container .dropdown_container .now_btn,
+  .aav_report_container .dropdown_container .advance_btn {
+    align-self: flex-start;
+  }
+}

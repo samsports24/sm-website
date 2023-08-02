@@ -66,3 +66,10 @@
 /* .player-card .player-name .player-details:hover{
     display: block;
 } */
+
+@media (max-width: 1440px){
+  .player-card .player-name h2 {
+    font-size: 16px;
+  }
+  
+}

@@ -57,7 +57,7 @@ export const dark = {
   secondaryText: 'gray',
   text: '#FFF',
   borderLight: '#555',
-  cardColor: '#282c31',
+  cardColor: '#191c1f', // '#282c31'
   lightCard: '#212528',
   cardShadow: '',
   tableHeader: '#282c31',

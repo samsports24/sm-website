@@ -57,7 +57,7 @@ const Players = () => {
           </div>
           <Row gutter={[30, 30]}>
             {playerData?.map((data, i) => (
-              <Col xs={24} md={12} lg={12} xl={6} key={i}>
+              <Col xs={24} md={12} lg={12} xl={8} xxl={6} key={i}>
                 <PlayerCard data={data} />
               </Col>
             ))}

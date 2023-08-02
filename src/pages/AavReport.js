@@ -7,7 +7,7 @@ import Pagination from '../components/Pagination'
 // Mock Data
 import { adpReportData } from './mockData'
 
-const AdpReport = () => {
+const AavReport = () => {
   const columns = [
     {
       title: 'RANK',
@@ -47,7 +47,7 @@ const AdpReport = () => {
   ]
 
   return (
-    <div className='adp_report_container'>
+    <div className='aav_report_container'>
       {/* HEADER */}
       <StandingHeader />
 
@@ -91,25 +91,6 @@ const AdpReport = () => {
           />
         </div>
         <div className='select_box'>
-          {/* Not Remove P Tag */}
-          <p></p>
-          <Select
-            defaultValue='Not Injured'
-            style={{ width: 160 }}
-            // onChange={handleChange}
-            options={[
-              {
-                value: 'Not Injured',
-                label: 'Not Injured',
-              },
-              {
-                value: 'Not Injured 2',
-                label: 'Not Injured 2',
-              },
-            ]}
-          />
-        </div>
-        <div className='select_box'>
           <p>Select in at least % of</p>
           <Select
             defaultValue='5'
@@ -133,25 +114,6 @@ const AdpReport = () => {
       <section className='dropdown_container' style={{ marginTop: '0px' }}>
         <div className='select_box'>
           <p>Leagues with</p>
-          <Select
-            defaultValue='5 Franchise'
-            style={{ width: 160 }}
-            // onChange={handleChange}
-            options={[
-              {
-                value: '5 Franchise',
-                label: '5 Franchise',
-              },
-              {
-                value: '6 Franchise',
-                label: '6 Franchise',
-              },
-            ]}
-          />
-        </div>
-        <div className='select_box'>
-          {/* Not Remove P Tag */}
-          <p></p>
           <Select
             defaultValue='PPR Scoring'
             style={{ width: 160 }}
@@ -188,25 +150,6 @@ const AdpReport = () => {
           />
         </div>
         <div className='select_box'>
-          {/* Not Remove P Tag */}
-          <p></p>
-          <Select
-            defaultValue='Exclude mock..'
-            style={{ width: 160 }}
-            // onChange={handleChange}
-            options={[
-              {
-                value: 'Exclude mock',
-                label: 'Exclude mock',
-              },
-              {
-                value: 'Exclude mock 2',
-                label: 'Exclude mock 2',
-              },
-            ]}
-          />
-        </div>
-        <div className='select_box'>
           <p>Starting</p>
           <Select
             defaultValue='All'
@@ -227,18 +170,16 @@ const AdpReport = () => {
         <Button className='now_btn'>Now</Button>
       </section>
 
-      <p className='warning_text' style={{ marginBottom: '40px' }}>
-        <b>Warning!</b> The data below comes from only 31 drafts, some of which may not even be
-        completed. Due to the small sample size it may not be useful. This can happen early in the
-        season when there are not enough completed drafts. You can widen your search by changing the
-        filters above.
+      <p className='hint_text' style={{ marginBottom: '40px' }}>
+        Note: Dollar values shown are based relative to $1000 available funds for all franchiess in
+        the league (i.e. the sum of all the franchises initial auction funds).
       </p>
 
       {/* TABLE */}
       {/* GENERAL CSS */}
       <section className='main_table_container adp_report_table'>
         <div className='header'>
-          <h3>ADP REPORT</h3>
+          <h3>AAV REPORT</h3>
         </div>
         <div className='main_table'>
           <Table
@@ -281,13 +222,9 @@ const AdpReport = () => {
             />
           </div>
         </div>
-        <p className='hint_text' style={{ margin: 0 }}>
-          Hint: Are you a developer who would like access to this data in industry-standard XML or
-          JSON format? Check out our Developer&apos;s Program.
-        </p>
       </section>
     </div>
   )
 }
 
-export default AdpReport
+export default AavReport

@@ -107,6 +107,15 @@ p {
   line-height: 28px;
 }
 
+/* WARNING TEXT */
+.warning_text {
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
+}
+
 /* TABLE ROW COLOR */
 .odd-row {
   background-color: var(--primaryPurple) !important;
@@ -134,6 +143,7 @@ p {
   font-weight: 400;
   line-height: 22px;
   margin-bottom: 5px;
+  min-height: 22px;
 }
 .dropdown_container .select_box .ant-select {
   height: 48px !important;
@@ -158,6 +168,10 @@ p {
   font-weight: 500;
   line-height: 20px;
 }
+.dropdown_container .now_btn:hover {
+  background-color: var(--primary);
+  color: var(--text);
+}
 .dropdown_container .advance_btn {
   height: 48px;
   align-self: flex-end;
@@ -171,6 +185,23 @@ p {
   font-style: normal;
   font-weight: 400;
   line-height: 28px;
+}
+@media (max-width: 1440px) {
+  .dropdown_container {
+    gap: 15px;
+  }
+  .dropdown_container .select_box .ant-select {
+    height: 40px !important;
+  }
+  .dropdown_container .select_box .ant-select .ant-select-selector {
+    height: 40px !important;
+  }
+  .dropdown_container .now_btn {
+    height: 40px;
+  }
+  .dropdown_container .advance_btn {
+    height: 40px;
+  }
 }
 @media (max-width: 768px) {
   .dropdown_container {
@@ -216,7 +247,7 @@ p {
 /* -------> END <-------*/
 
 /* ------> START <------- */
-/* TABLE, TRANSACTIONS PAGE, */
+/* TABLE, TRANSACTIONS, AAV REPORT, ADP REPORT, DRAFT PCIKS PAGE*/
 .main_table_container {
   width: 100%;
 }
@@ -258,6 +289,14 @@ p {
 .main_table_container ul {
   margin: 0;
   padding-inline: 20px;
+}
+.main_table_container .ant-table .ant-table-tbody > tr > td:first-child {
+  padding-left: 35px;
+}
+@media (max-width: 1440px) {
+  .main_table_container .header h3 {
+    font-size: 16px;
+  }
 }
 @media (max-width: 768px) {
   .main_table_container .header {

@@ -41,6 +41,12 @@
   justify-content: center;
 }
 
+@media (max-width: 1440px){
+  .standing_header_container .button_container button {
+    height: 40px;
+    width: 125px;
+  }
+}
 @media (max-width: 768px) {
   .standing_header_container h1 {
     font-size: 26px;

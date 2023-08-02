@@ -145,6 +145,7 @@ tr.ant-table-expanded-row:hover > td {
   background-color: transparent !important;
 }
 
+
 /* Picker */
 .ant-picker {
   background-color: var(--background) !important;

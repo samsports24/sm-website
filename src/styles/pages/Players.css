@@ -137,6 +137,13 @@
     background-size: auto 100%;
     border-bottom-right-radius: 16px;
   }
+  .player-container .frame .title h2 {
+    font-size: 22px;
+    padding: 8px 0 10px 0px;
+  }
+  .player-container .frame .player-div .tag-line p {
+    font-size: 20px;
+  }
 }
 @media (max-width: 1240px) {
   .player-container .banner .left-banner .banner-image {

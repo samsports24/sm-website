@@ -35,7 +35,7 @@
   background-color: var(--sidebar) !important;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
   .v-layout {
     display: none;
   }

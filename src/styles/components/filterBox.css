@@ -29,6 +29,14 @@
   text-decoration-line: none;
 }
 
+@media (max-width: 1440px) {
+  .filter_box {
+    font-size: 18px !important;
+  }
+  .filter_box h2 {
+    font-size: 18px !important;
+  }
+}
 @media (max-width: 768px) {
   .filter_box {
     font-size: 15px !important;

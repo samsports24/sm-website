@@ -23,6 +23,8 @@ import LiveScore from '../pages/LiveScore'
 import Playoff from '../pages/Playoff'
 import Schedule from '../pages/Schedule'
 import AdpReport from '../pages/AdpReport'
+import DraftPicks from '../pages/DraftPicks'
+import AavReport from '../pages/AavReport'
 
 // import PrivateWrapper from './PrivateRoutes'
 
@@ -60,6 +62,8 @@ const Routers = () => {
           <Route path='/playoff' element={<Playoff />} />
           <Route path='/schedule' element={<Schedule />} />
           <Route path='/adp-report' element={<AdpReport />} />
+          <Route path='/draft-picks' element={<DraftPicks />} />
+          <Route path='/aav-report' element={<AavReport />} />
           {/* </Layout> */}
         </Route>
 
