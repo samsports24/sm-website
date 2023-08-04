@@ -250,6 +250,7 @@ p {
 /* TABLE, TRANSACTIONS, AAV REPORT, ADP REPORT, DRAFT PCIKS PAGE*/
 .main_table_container {
   width: 100%;
+  overflow: hidden;
 }
 .main_table_container .header {
   width: 100%;
@@ -293,6 +294,28 @@ p {
 .main_table_container .ant-table .ant-table-tbody > tr > td:first-child {
   padding-left: 35px;
 }
+.main_table_container .main_table .second_table .ant-table-tbody > tr:first-child td {
+  border-top: none !important;
+}
+.main_table_container .table_center_heading {
+  color: var(--text);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+  padding: 10px 16px;
+  text-align: center;
+}
+.main_table_container .text_row {
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  opacity: 0.4;
+  padding: 22px 20px;
+  text-transform: uppercase;
+}
 @media (max-width: 1440px) {
   .main_table_container .header h3 {
     font-size: 16px;
@@ -304,3 +327,16 @@ p {
   }
 }
 /* -------> END <-------*/
+
+.ant-table-summary {
+  background-color: transparent !important;
+}
+.ant-table-summary .ant-table-cell {
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700 !important;
+  line-height: normal;
+  padding-inline: 20px;
+  border-top: 1px solid #fff;
+}

@@ -16,7 +16,7 @@ const StandingHeader = ({ pagination = false, handlePagination = () => {} }) => 
     switch (key) {
       case '/main':
         return 'Main'
-      case '/rosters':
+      case '/roster':
         return 'Rosters'
       case '/submit-lineup':
         return 'Submit Lineup'
@@ -50,7 +50,7 @@ const StandingHeader = ({ pagination = false, handlePagination = () => {} }) => 
     },
     {
       btnName: 'Rosters',
-      navigateTo: '/',
+      navigateTo: '/roster',
     },
     {
       btnName: 'Submit Lineup',

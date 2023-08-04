@@ -1,0 +1,105 @@
+.roster_stats_container {
+  width: 100%;
+}
+
+.roster_stats_container .heading {
+  color: var(--text);
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 28px;
+  margin-top: 35px;
+  margin-bottom: 35px;
+  text-transform: uppercase;
+}
+
+.roster_stats_container .format_filter_box {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.roster_stats_container .format_filter_box .display_text {
+  color: var(--text);
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+/* DROPDOWN */
+/* General Css */
+.roster_stats_container .dropdown_container .text {
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+/* TABLE TRANSACTIONS */
+/* General Css */
+.roster_stats_container .main_table_container {
+  border: 1px solid var(--border);
+  border-radius: 20px;
+}
+.roster_stats_container .main_table_container .header {
+  background-color: transparent;
+  padding: 20px 45px;
+  border: none;
+  border-bottom: 1px solid var(--border);
+}
+.roster_stats_container .ant-table {
+  color: #918ba0 !important;
+}
+.roster_stats_container .ant-table-thead > tr > th {
+  background-color: var(--primaryPurple) !important;
+  color: var(--text) !important;
+  font-size: 14px !important;
+  font-style: normal;
+  font-weight: 400 !important;
+  line-height: 22px;
+}
+.roster_stats_container .ant-table .ant-table-thead > tr > th:first-child {
+  border-radius: 0px !important ;
+  padding-left: 45px;
+}
+.roster_stats_container .ant-table .ant-table-thead > tr > th:last-child {
+  border-radius: 0px !important ;
+}
+.roster_stats_container .main_table_container .ant-table .ant-table-tbody > tr > td {
+  border-top: 1px solid var(--border);
+  font-size: 14px !important;
+  font-style: normal;
+  font-weight: 400 !important;
+  line-height: 22px;
+}
+.roster_stats_container .main_table_container .ant-table .ant-table-tbody > tr > td:first-child {
+  padding-left: 45px;
+}
+@media (max-width: 1440px) {
+  .roster_stats_container .format_filter_box .display_text {
+    font-size: 18px !important;
+  }
+}
+@media (max-width: 768px) {
+  .roster_stats_container .format_filter_box .display_text {
+    font-size: 15px !important;
+  }
+}
+@media (max-width: 570px) {
+  .roster_stats_container .format_filter_box {
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .roster_stats_container .dropdown_container .now_btn{
+    margin-top: 0px;
+  }
+}

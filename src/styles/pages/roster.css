@@ -1,0 +1,103 @@
+.roster_container {
+  width: 100%;
+}
+
+.roster_container .heading {
+  color: var(--text);
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 28px;
+  margin-top: 35px;
+  margin-bottom: 35px;
+  text-transform: uppercase;
+}
+
+.roster_container .image_section {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-block: 75px;
+  padding-inline: 20px;
+}
+.roster_container .image_box {
+  width: 50%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-block: 40px;
+  padding-inline: 20px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+.roster_container .image_box img {
+  width: 100%;
+  height: auto;
+}
+
+/* DROPDOWN */
+/* General Css */
+
+.roster_container .pagination_box {
+  padding: 60px 0px 150px 0px;
+  display: flex;
+  justify-content: center;
+}
+
+/* TABLE */
+/* General Css */
+.roster_container .main_table_container {
+  border: 1px solid var(--border);
+  border-radius: 20px 20px 0px 0px;
+}
+.roster_container .main_table_container .header {
+  padding: 20px 20px;
+  border: none;
+  border-bottom: 1px solid var(--border);
+}
+.roster_container .ant-table {
+  color: #918ba0 !important;
+}
+.roster_container .ant-table-thead > tr > th {
+  font-size: 16px !important;
+  font-style: normal;
+  font-weight: 700 !important;
+  line-height: 22px;
+}
+.roster_container .ant-table .ant-table-thead > tr > th:first-child {
+  border-radius: 0px !important ;
+  padding-left: 20px;
+}
+.roster_container .ant-table .ant-table-thead > tr > th:last-child {
+  border-radius: 0px !important ;
+  width: 200px;
+}
+.roster_container .main_table_container .ant-table .ant-table-tbody > tr > td:last-child {
+  width: 200px;
+}
+.roster_container .main_table_container .ant-table .ant-table-tbody > tr > td {
+  color: var(--text) !important;
+  font-size: 14px !important;
+  font-style: normal;
+  font-weight: 400 !important;
+  line-height: 22px;
+  border: none;
+}
+.roster_container .main_table_container .ant-table .ant-table-tbody > tr > td:first-child {
+  padding-left: 20px;
+}
+@media (max-width: 600px) {
+  .roster_container .image_section {
+    padding-inline: 0px;
+    padding-block: 0px;
+    padding-top: 40px;
+  }
+  .roster_container .image_box {
+    width: 100%;
+  }
+  .roster_container .pagination_box {
+    padding: 60px 0px 60px 0px;
+  }
+}

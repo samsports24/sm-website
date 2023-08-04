@@ -25,6 +25,9 @@ import Schedule from '../pages/Schedule'
 import AdpReport from '../pages/AdpReport'
 import DraftPicks from '../pages/DraftPicks'
 import AavReport from '../pages/AavReport'
+import RosterWStats from '../pages/RosterWStats'
+import Roster from '../pages/Roster'
+import RosterFullFormat from '../pages/RosterFullFormat'
 
 // import PrivateWrapper from './PrivateRoutes'
 
@@ -64,6 +67,9 @@ const Routers = () => {
           <Route path='/adp-report' element={<AdpReport />} />
           <Route path='/draft-picks' element={<DraftPicks />} />
           <Route path='/aav-report' element={<AavReport />} />
+          <Route path='/roster-wstats' element={<RosterWStats />} />
+          <Route path='/roster' element={<Roster />} />
+          <Route path='/roster-fullformat' element={<RosterFullFormat />} />
           {/* </Layout> */}
         </Route>
 
