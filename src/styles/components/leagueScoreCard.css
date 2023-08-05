@@ -6,9 +6,6 @@
   flex: 1 0 0;
   background: var(--primaryPurple);
   border-radius: 16px;
-
-  /* min-width: 510px; */
-  /* max-width: 510px; */
   width: 100%;
   padding: 15px 20px;
 }
@@ -45,4 +42,9 @@
 .score-row h6 span {
   font-weight: 700;
   line-height: normal;
+}
+
+.league-score-card button:hover {
+  background-color: transparent !important;
+  border: 2px solid var(--primary);
 }

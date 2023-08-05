@@ -29,6 +29,10 @@
   height: 50px;
   width: 150px;
 }
+.standing_header_container .button_container button:hover {
+  border: 2px solid var(--primary) !important;
+  background-color: transparent !important;
+}
 .standing_header_container .button_container .active_button {
   background: var(--primary);
   color: var(--text);
@@ -41,7 +45,7 @@
   justify-content: center;
 }
 
-@media (max-width: 1440px){
+@media (max-width: 1440px) {
   .standing_header_container .button_container button {
     height: 40px;
     width: 125px;

@@ -12,8 +12,13 @@ import Pagination from '../components/Pagination'
 
 // Mock Data
 import { leagueScoreData } from './mockData'
+import { useNavigate } from 'react-router-dom'
 
 const LeagueScore = () => {
+  const navigate = useNavigate()
+  const isAuthenticated = localStorage.getItem('token')
+  !isAuthenticated && navigate('/transactions')
+
   const handlePagination = (page) => {
     console.log(page)
   }

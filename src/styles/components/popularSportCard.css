@@ -126,7 +126,7 @@
   transform: translateY(30px);
   transition: 0.5s;
   background: transparent;
-  height: 60%;
+  height: 65%;
   width: 100%;
 }
 .card .info h1 {
@@ -150,6 +150,9 @@
   font-weight: 700;
   line-height: 28px;
   width: 50%;
+  padding-inline: 30px;
+  margin-bottom: 30px;
+  /* padding-bottom: 30px; */
 }
 .card .info .buttons-container {
   padding-inline: 30px;
@@ -167,10 +170,9 @@
   transition: 0.4s ease;
   margin: 5px 0px;
 }
-/* .card .info button:hover {
-  background: dodgerblue;
-  color: white;
-} */
+.card .info .buttons-container button:hover {
+  background: var(--colors-theme-link-color, #289fc9);
+}
 
 .card .front-side {
   position: absolute;

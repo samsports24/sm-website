@@ -1,15 +1,5 @@
-// import { useCallback } from 'react';
 import { Handle, Position } from 'reactflow'
-
-// import TeamLogo1 from '../../assets/Heat Wave Square 2.png'
-
-// const handleStyle = { left: 10 };
-
 function TextUpdaterNode({ data, isConnectable }) {
-  //   const onChange = useCallback((evt) => {
-  //     console.log(evt.target.value);
-  //   }, []);
-
   return (
     <div className='text-updater-node'>
       <Handle type='target' id='x' position={Position.Top} isConnectable={isConnectable} />

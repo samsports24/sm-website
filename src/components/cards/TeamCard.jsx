@@ -23,11 +23,7 @@ const TeamCard = ({ data }) => {
         <Button type='default' className='outlined_button'>
           RULEBOOK
         </Button>
-        <Button
-          type='primary'
-          className='contained_button'
-          onClick={() => navigate('/leagueScore')}
-        >
+        <Button type='default' className='outlined_button' onClick={() => navigate('/leagueScore')}>
           SHOP NOW
         </Button>
       </div>

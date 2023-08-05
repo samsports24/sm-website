@@ -1,17 +1,26 @@
 import { Button, Menu } from 'antd'
 import { useNavigate } from 'react-router-dom'
-// import { TbLayoutDashboard } from 'react-icons/tb'
-import NewsIcon from '../assets/news-icon.svg'
+
+// Icons Image
 import ScoreIcon from '../assets/score-icon.svg'
-import ScheduleIcon from '../assets/schedule-icon.svg'
 import TeamIcon from '../assets/team-icon.svg'
-import PlayerIcon from '../assets/player-icon.svg'
-import StatIcon from '../assets/stats-icon.svg'
 import StandingIcon from '../assets/standing-icon.svg'
-import EventIcon from '../assets/event-icon.svg'
 import LeagueIcon from '../assets/league-icon.svg'
+// import { TbLayoutDashboard } from 'react-icons/tb'
+// import NewsIcon from '../assets/news-icon.svg'
+// import ScheduleIcon from '../assets/schedule-icon.svg'
+// import PlayerIcon from '../assets/player-icon.svg'
+// import StatIcon from '../assets/stats-icon.svg'
+// import EventIcon from '../assets/event-icon.svg'
+
+// React Icons
+import { BsGlobe2 } from 'react-icons/bs'
+import { MdOutlineSportsRugby, MdStarOutline } from 'react-icons/md'
+import { GiBinoculars } from 'react-icons/gi'
+import { FiPhone } from 'react-icons/fi'
 
 const MainMenu = ({ active }) => {
+  const isAuthenticated = localStorage.getItem('token')
   const navigate = useNavigate()
   const login = () => navigate('/login')
   const signUp = () => navigate('/sign-up')
@@ -31,34 +40,36 @@ const MainMenu = ({ active }) => {
         <Menu.Item
           // key='dashboard'
           className={'sidebar-menu'}
-          icon={<img src={NewsIcon} />}
+          icon={<BsGlobe2 size={22} />}
           onClick={() => navigate('/')}
         >
-          News
+          Home
         </Menu.Item>
         <Menu.Item
           // key='dashboard'
           className={'sidebar-menu'}
-          icon={<img src={ScoreIcon} />}
-          onClick={() => navigate('/')}
+          icon={<MdOutlineSportsRugby size={22} />}
+          onClick={() => {
+            isAuthenticated ? navigate('/leagueScore') : navigate('/transactions')
+          }}
         >
-          Scores
+          Fantasy Leagues
         </Menu.Item>
         <Menu.Item
           // key='dashboard'
           className={'sidebar-menu'}
-          icon={<img src={ScheduleIcon} />}
+          icon={<GiBinoculars size={22} />}
           onClick={() => navigate('/')}
         >
-          Schedule
+          Scouting
         </Menu.Item>
         <Menu.Item
           // key='dashboard'
           className={'sidebar-menu'}
-          icon={<img src={TeamIcon} />}
+          icon={<img src={StandingIcon} />}
           onClick={() => navigate('/teams')}
         >
-          Teams
+          NFT Games
         </Menu.Item>
         <Menu.Item
           // key='dashboard'
@@ -71,34 +82,34 @@ const MainMenu = ({ active }) => {
         <Menu.Item
           // key='dashboard'
           className={'sidebar-menu'}
-          icon={<img src={PlayerIcon} />}
+          icon={<MdStarOutline size={22} />}
           onClick={() => navigate('/players')}
         >
-          Players
+          Legends
         </Menu.Item>
         <Menu.Item
           // key='dashboard'
           className={'sidebar-menu'}
-          icon={<img src={StatIcon} />}
+          icon={<img src={ScoreIcon} />}
           onClick={() => navigate('/dashboard')}
         >
-          Stats
+          SAM Sports Token
         </Menu.Item>
         <Menu.Item
           // key='dashboard'
           className={'sidebar-menu'}
-          icon={<img src={StandingIcon} />}
+          icon={<img src={TeamIcon} />}
           onClick={() => navigate('/')}
         >
-          Standings
+          About Us
         </Menu.Item>
         <Menu.Item
           // key='dashboard'
           className={'sidebar-menu'}
-          icon={<img src={EventIcon} />}
+          icon={<FiPhone size={22} />}
           onClick={() => navigate('/')}
         >
-          Events
+          Contact Us
         </Menu.Item>
       </Menu>
       <Button className='login-btn mobile' onClick={login}>

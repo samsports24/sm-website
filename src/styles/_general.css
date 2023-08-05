@@ -159,7 +159,6 @@ p {
   align-self: flex-end;
   border-radius: 20px;
   background-color: var(--primary);
-  border: none;
   padding-inline: 40px;
   color: var(--text);
   text-align: center;
@@ -167,10 +166,13 @@ p {
   font-style: normal;
   font-weight: 500;
   line-height: 20px;
+  border: 2px solid var(--primary);
+
 }
 .dropdown_container .now_btn:hover {
-  background-color: var(--primary);
+  background-color: transparent !important;
   color: var(--text);
+  border: 2px solid var(--primary);
 }
 .dropdown_container .advance_btn {
   height: 48px;
