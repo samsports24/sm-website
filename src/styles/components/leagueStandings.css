@@ -1,0 +1,92 @@
+.league_standings_box {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  max-height: 1320px;
+  overflow-y: auto;
+}
+
+.league_standings_box header {
+  width: 100%;
+  background-color: var(--primaryPurple);
+  border-radius: 16px 16px 0px 0px;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 17px;
+}
+.league_standings_box header h3 {
+  color: var(--text);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+}
+.league_standings_box header p {
+  color: var(--primary);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.league_standings_box .league_standings_body {
+  padding: 19px 17px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.league_standings_box .league_standings_body .card_box {
+  width: 100%;
+  border: 1px solid var(--border);
+}
+.league_standings_box .league_standings_body .card_box .header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--primary);
+  padding: 8px 12px;
+  background-color: var(--primaryPurple);
+}
+.league_standings_box .league_standings_body .card_box .header p {
+  color: var(--primary);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.league_standings_box .league_standings_body .card_box .content {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  padding: 12px;
+  justify-content: space-between;
+}
+
+.league_standings_box .league_standings_body .card_box .content .text1 {
+  color: var(--text);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+.league_standings_box .league_standings_body .card_box .content .text2 {
+  color: var(--text);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+

@@ -29,6 +29,7 @@ import RosterWStats from '../pages/RosterWStats'
 import Roster from '../pages/Roster'
 import RosterFullFormat from '../pages/RosterFullFormat'
 import FantasyLeague from '../pages/FantasyLeague'
+import ProfessionalLeague from '../pages/ProfessionalLeague'
 
 // import PrivateWrapper from './PrivateRoutes'
 
@@ -72,6 +73,7 @@ const Routers = () => {
           <Route path='/roster-wstats' element={<RosterWStats />} />
           <Route path='/roster' element={<Roster />} />
           <Route path='/roster-fullformat' element={<RosterFullFormat />} />
+          <Route path='/professional-league' element={<ProfessionalLeague />} />
           {/* </Layout> */}
         </Route>
 

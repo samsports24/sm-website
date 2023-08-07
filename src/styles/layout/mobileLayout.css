@@ -56,11 +56,6 @@
   line-height: normal;
   text-transform: uppercase;
 }
-@media (max-width: 1440px){
-  .v-layout div .header_title {
-    font-size: 32px;
-  }
-}
 .v-layout .mainHeader .auth-buttons {
   display: flex;
   align-items: center;
@@ -211,6 +206,11 @@
   /* border: 1px solid blue; */
 }
 
+@media (max-width: 1440px){
+  .v-layout div .header_title {
+    font-size: 26px;
+  }
+}
 @media (max-width: 500px) {
   .m-children {
     padding: 40px 15px !important;

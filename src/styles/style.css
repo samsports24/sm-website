@@ -34,6 +34,12 @@
 @import './components/scheduleCard.css';
 @import './components/filterBox.css';
 @import './components/buttonMenu.css';
+@import './components/leagueStandings.css';
+@import './components/powerRanking.css';
+@import './components/playerRanking.css';
+@import './components/matchUpOfTheWeek.css';
+@import './components/rollingNewsFeed.css';
+@import './components/transactionTracker.css';
 
 /* Page CSS */
 @import './pages/login.css';
@@ -56,3 +62,4 @@
 @import './pages/rosterWStats.css';
 @import './pages/roster.css';
 @import './pages/fantasyLeague.css';
+@import './pages/professionalLeague.css';

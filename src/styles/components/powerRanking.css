@@ -1,0 +1,79 @@
+.power_ranking_box {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  max-height: 650px;
+  overflow-y: auto;
+}
+
+.power_ranking_box header {
+  width: 100%;
+  background-color: var(--primaryPurple);
+  border-radius: 16px 16px 0px 0px;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 17px;
+}
+.power_ranking_box header h3 {
+  color: var(--text);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+}
+.power_ranking_box header p {
+  color: var(--primary);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.power_ranking_box .league_standings_body {
+  padding: 19px 17px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.power_ranking_box .league_standings_body .card_box {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--primaryPurple);
+  padding: 12px;
+}
+.power_ranking_box .league_standings_body .card_box h6 {
+  color: var(--text);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+  opacity: 0.5;
+}
+.power_ranking_box .league_standings_body .card_box img {
+  width: 40px
+}
+.power_ranking_box .league_standings_body .card_box h3 {
+  color: var(--primary);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  flex: 1;
+}
+.power_ranking_box .league_standings_body .card_box p {
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}

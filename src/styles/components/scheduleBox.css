@@ -12,7 +12,9 @@
   font-weight: 700;
   line-height: 22px;
 }
-.schedule_box1 .week_pagination_ul {
+
+/* Week Pagination */
+.week_pagination_ul {
   list-style-type: none;
   display: flex;
   flex-direction: row;
@@ -21,7 +23,7 @@
   padding: 0;
   overflow-x: auto;
 }
-.schedule_box1 .week_pagination_ul li {
+.week_pagination_ul li {
   color: var(--text);
   font-size: 16px;
   font-style: normal;
@@ -33,13 +35,13 @@
   min-width: 90px;
 }
 
-.schedule_box1 .week_pagination_ul .pre_next_box {
+.week_pagination_ul .pre_next_box {
   display: flex;
   flex-direction: row;
   gap: 10px;
 }
-.schedule_box1 .week_pagination_ul .pre_next_box .previous,
-.schedule_box1 .week_pagination_ul .pre_next_box .next {
+.week_pagination_ul .pre_next_box .previous,
+.week_pagination_ul .pre_next_box .next {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -53,11 +55,11 @@
   cursor: pointer;
   background-color: transparent;
 }
-.schedule_box1 .week_pagination_ul .pre_next_box .previous:hover,
-.schedule_box1 .week_pagination_ul .pre_next_box .next:hover {
+.week_pagination_ul .pre_next_box .previous:hover,
+.week_pagination_ul .pre_next_box .next:hover {
   opacity: 1;
 }
-.schedule_box1 .week_pagination_ul .active_week {
+.week_pagination_ul .active_week {
   color: var(--primary);
   opacity: 1;
   border-bottom: 3px solid var(--primary);

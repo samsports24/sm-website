@@ -1,0 +1,67 @@
+.pro_league_container {
+  width: 100%;
+}
+
+.pro_league_container .breadcrumb {
+  margin-bottom: 30px;
+}
+
+.pro_league_container .buttons_and_pagination {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 35px;
+  align-items: center;
+}
+
+.pro_league_container .buttons_and_pagination .buttons_group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pro_league_container .buttons_and_pagination .buttons_group button {
+  padding: 10px 28px;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  border: 2px solid var(--primary);
+}
+.pro_league_container .buttons_and_pagination .buttons_group button:hover {
+  background-color: transparent !important;
+}
+
+.pro_league_container .league_details_container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 27px;
+  margin-top: 50px;
+}
+
+.pro_league_container .league_details_container .left,
+.pro_league_container .league_details_container .right {
+  width: 400px;
+}
+.pro_league_container .league_details_container .right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.pro_league_container .league_details_container .center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+
+@media (max-width: 1440px) {
+  .pro_league_container .buttons_and_pagination .buttons_group button {
+    font-size: 15px;
+  }
+}

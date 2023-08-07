@@ -84,6 +84,11 @@ const VerticalLayout = ({ children, active }) => {
                   Fantasy <b>Leagues</b>
                 </h1>
               )}
+              {pathname === '/professional-league' && (
+                <h1 className='header_title'>
+                  Professional <b>Leagues</b>
+                </h1>
+              )}
             </div>
             {localStorage.getItem('token') ? (
               <div className='auth-buttons'>

@@ -1,0 +1,114 @@
+/* MATCH UP */
+.match_up_box {
+  width: 100%;
+  background-color: var(--primaryPurple);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+.match_up_box .header {
+  width: 100%;
+  padding: 0px 20px 6px 20px;
+}
+.match_up_box .header h1 {
+  color: var(--text);
+  font-size: 34px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+  text-align: center;
+}
+
+.match_up_box .date_and_time {
+  width: 100%;
+  background-color: #30215d;
+}
+.match_up_box .date_and_time h3 {
+  text-align: center;
+  color: var(--text);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+  padding: 2px 20px;
+}
+
+.match_up_box .teams {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 16px;
+  align-items: center;
+}
+
+.match_up_box .team1 {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+.match_up_box .team1 .image_div {
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+}
+.match_up_box .team1 .image_div img {
+  width: 100%;
+  height: auto;
+}
+
+.match_up_box .team1 .content h3 {
+  color: var(--text);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+}
+.match_up_box .team1 .content p {
+  color: var(--text);
+  font-size: 16px;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+.match_up_box .team1 .content span {
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
+  opacity: 0.5;
+}
+
+.match_up_box .team2 .content {
+  flex: 1;
+}
+.match_up_box .team2 .content h3,
+.match_up_box .team2 .content p {
+  text-align: right;
+}
+
+.match_up_box .versus {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+}
+
+.match_up_box .footer {
+  background-color: var(--primary);
+  border-radius: 0px 0px 16px 16px;
+  padding: 10px 28px;
+}
+.match_up_box .footer h3 {
+  color: var(--text);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+  text-align: center;
+}

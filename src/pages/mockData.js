@@ -4773,3 +4773,188 @@ export const clientFeedbacksData = [
     clientName: 'Brandi Redd',
   },
 ]
+
+export const proLeagueStandingsData = [
+  {
+    title: 'Red Zone Dragons',
+    wlt: '11-6-0',
+    avgPf: 308.6,
+    avgPa: 266.0,
+    divWlt: '5-1-0',
+    divWlt2: '9-3-0',
+  },
+  {
+    title: 'Paradise Black Hawks',
+    wlt: '11-6-0',
+    avgPf: 308.6,
+    avgPa: 266.0,
+    divWlt: '5-1-0',
+    divWlt2: '9-3-0',
+  },
+  {
+    title: 'Timberwolves',
+    wlt: '11-6-0',
+    avgPf: 308.6,
+    avgPa: 266.0,
+    divWlt: '5-1-0',
+    divWlt2: '9-3-0',
+  },
+  {
+    title: 'Surf Dogs',
+    wlt: '11-6-0',
+    avgPf: 308.6,
+    avgPa: 266.0,
+    divWlt: '5-1-0',
+    divWlt2: '9-3-0',
+  },
+  {
+    title: 'Gridiron Seals',
+    wlt: '11-6-0',
+    avgPf: 308.6,
+    avgPa: 266.0,
+    divWlt: '5-1-0',
+    divWlt2: '9-3-0',
+  },
+  {
+    title: 'Gridiron Seals',
+    wlt: '11-6-0',
+    avgPf: 308.6,
+    avgPa: 266.0,
+    divWlt: '5-1-0',
+    divWlt2: '9-3-0',
+  },
+  {
+    title: 'Tiger Sharks',
+    wlt: '11-6-0',
+    avgPf: 308.6,
+    avgPa: 266.0,
+    divWlt: '5-1-0',
+    divWlt2: '9-3-0',
+  },
+  {
+    title: 'Turf Monsters',
+    wlt: '11-6-0',
+    avgPf: 308.6,
+    avgPa: 266.0,
+    divWlt: '5-1-0',
+    divWlt2: '9-3-0',
+  },
+  {
+    title: 'Turf Monsters',
+    wlt: '11-6-0',
+    avgPf: 308.6,
+    avgPa: 266.0,
+    divWlt: '5-1-0',
+    divWlt2: '9-3-0',
+  },
+  {
+    title: 'Doom',
+    wlt: '11-6-0',
+    avgPf: 308.6,
+    avgPa: 266.0,
+    divWlt: '5-1-0',
+    divWlt2: '9-3-0',
+  },
+  {
+    title: 'Tiger Sharks',
+    wlt: '11-6-0',
+    avgPf: 308.6,
+    avgPa: 266.0,
+    divWlt: '5-1-0',
+    divWlt2: '9-3-0',
+  },
+]
+
+export const powerRankingData = [
+  {
+    imageUrl: require('../assets/teams/circa_sports_trout.png'),
+    title: 'Circa Sports Trout',
+    text1: 54.06,
+    text2: 0.937,
+  },
+  {
+    imageUrl: require('../assets/teams/doom.png'),
+    title: 'Doom',
+    text1: 54.06,
+    text2: 0.937,
+  },
+  {
+    imageUrl: require('../assets/teams/circa_sports_trout.png'),
+    title: 'Heat Wave',
+    text1: 54.06,
+    text2: 0.937,
+  },
+  {
+    imageUrl: require('../assets/teams/kingsmen.png'),
+    title: 'Kingsmen',
+    text1: 54.06,
+    text2: 0.937,
+  },
+  {
+    imageUrl: require('../assets/teams/circa_sports_trout.png'),
+    title: 'Hydra',
+    text1: 54.06,
+    text2: 0.937,
+  },
+  {
+    imageUrl: require('../assets/teams/gridiron_seals.png'),
+    title: 'Gridiron Seals',
+    text1: 54.06,
+    text2: 0.937,
+  },
+  {
+    imageUrl: require('../assets/teams/legion.png'),
+    title: 'Legion',
+    text1: 54.06,
+    text2: 0.937,
+  },
+  {
+    imageUrl: require('../assets/teams/kingsmen.png'),
+    title: 'Kingsmen',
+    text1: 54.06,
+    text2: 0.937,
+  },
+]
+
+export const playerRankingData = [
+  {
+    imageUrl: require('../assets/player-img-60x60.png'),
+    title: 'Mahomes, Patrick KCC QB',
+    amount: '650.300',
+  },
+  {
+    imageUrl: require('../assets/player-img-2-60x60.png'),
+    title: 'Allen, Josh BUF QB',
+    amount: '607.750',
+  },
+  {
+    imageUrl: require('../assets/player-img-12-PhotoRoom 1.png'),
+    title: 'Burrow, Joe CIN QB',
+    amount: '562.000',
+  },
+  {
+    imageUrl: require('../assets/player-img-60x60.png'),
+    title: 'Hurts, Jalen PHI QB',
+    amount: '548.500',
+  },
+  {
+    imageUrl: require('../assets/player-img-12-PhotoRoom 1.png'),
+    title: 'Smith, Geno SEA QB',
+    amount: '500.200',
+  },
+  {
+    imageUrl: require('../assets/player-img-60x60.png'),
+    title: 'Cousins, Kirk MIN QB',
+    amount: '486.750',
+  },
+  {
+    imageUrl: require('../assets/player-img-12-PhotoRoom 1.png'),
+    title: 'Herbert, Justin LAC QB',
+    amount: '486.750',
+  },
+  {
+    imageUrl: require('../assets/player-img-12-PhotoRoom 1.png'),
+    title: 'Herbert, Justin LAC QB',
+    amount: '486.750',
+  },
+]
