@@ -1,16 +1,29 @@
+.side_bar_menu_main {
+  background: #140f26;
+  min-height: 65vh;
+  padding-inline: 20px;
+}
 .sidebar-menu {
   background-color: transparent !important;
   color: var(--text) !important;
   font-size: 14px;
+  padding-block: 10px !important;
+  padding-inline: 20px !important;
+  border-radius: 20px !important;
+  margin-bottom: 10px !important;
 }
 .sidebar-menu img {
   width: 24px;
   height: 24px;
 }
+.sidebar-menu:hover {
+  background-color: var(--primaryPurple) !important;
+}
 .ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected {
-  border-right: 4px solid var(--primary) !important;
+  background-color: var(--primaryPurple) !important;
+  /* border-right: 4px solid var(--primary) !important;
   border-radius: 0 !important;
-  width: calc(100% - 4px) !important;
+  width: calc(100% - 4px) !important; */
 }
 .ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected span,
 .ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected svg {

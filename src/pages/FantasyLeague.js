@@ -7,10 +7,60 @@ import FeedbackCard from '../components/cards/feedbackCard'
 
 // Mock Data
 import { popularLeaguesData, popularSportsData, clientFeedbacksData } from './mockData'
+import ButtonMenu from '../components/ButtonMenu'
 
-const Home = () => {
+const FantasyLeague = () => {
   return (
-    <div className='home-page'>
+    <div className='fantasy_league_container'>
+      <section className='header_top_section'>
+        <h2>Sports:</h2>
+        <div className='button_menu_box'>
+          <ButtonMenu
+            data={{
+              buttonName: 'Football',
+              item: [
+                {
+                  name: 'Professional Leagues',
+                  navigate: '',
+                },
+                {
+                  name: 'Public Leagues',
+                  navigate: '',
+                },
+              ],
+            }}
+          />
+          <ButtonMenu
+            data={{
+              buttonName: 'Baseball',
+              item: [],
+            }}
+          />
+          <ButtonMenu
+            data={{
+              buttonName: 'Basketball',
+              item: [],
+            }}
+          />
+          <ButtonMenu
+            data={{
+              buttonName: 'Hockey',
+              item: [],
+            }}
+          />
+          <ButtonMenu
+            data={{
+              buttonName: (
+                <span>
+                  <span style={{ fontWeight: 400 }}>Coming</span>&nbsp;Soon
+                </span>
+              ),
+              item: [],
+            }}
+          />
+        </div>
+      </section>
+
       {/* main banner */}
       <HomeMainBanner />
 
@@ -58,4 +108,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default FantasyLeague

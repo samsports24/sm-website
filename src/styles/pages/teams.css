@@ -63,9 +63,9 @@
 }
 .teams_container .button_section button {
   padding: 10px 28px !important;
+  border: 2px solid var(--primary) !important;
 }
 .teams_container .button_section button:hover {
-  border: 2px solid var(--primary);
   background-color: transparent !important;
 }
 .teams_container .button_section h2 {

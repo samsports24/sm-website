@@ -6,18 +6,11 @@ import ScoreIcon from '../assets/score-icon.svg'
 import TeamIcon from '../assets/team-icon.svg'
 import StandingIcon from '../assets/standing-icon.svg'
 import LeagueIcon from '../assets/league-icon.svg'
-// import { TbLayoutDashboard } from 'react-icons/tb'
-// import NewsIcon from '../assets/news-icon.svg'
-// import ScheduleIcon from '../assets/schedule-icon.svg'
-// import PlayerIcon from '../assets/player-icon.svg'
-// import StatIcon from '../assets/stats-icon.svg'
-// import EventIcon from '../assets/event-icon.svg'
-
-// React Icons
-import { BsGlobe2 } from 'react-icons/bs'
-import { MdOutlineSportsRugby, MdStarOutline } from 'react-icons/md'
-import { GiBinoculars } from 'react-icons/gi'
-import { FiPhone } from 'react-icons/fi'
+import PlayerIcon from '../assets/player-icon.svg'
+import ScoutingIcon from '../assets/scouting-icon.svg'
+import StarIcon from '../assets/star-icon.svg'
+import PhoneIcon from '../assets/phone-icon.svg'
+import GlobeIcon from '../assets/globe-icon.svg'
 
 const MainMenu = ({ active }) => {
   const isAuthenticated = localStorage.getItem('token')
@@ -31,16 +24,12 @@ const MainMenu = ({ active }) => {
         theme='dark'
         mode={'inline'}
         defaultSelectedKeys={[active]}
-        style={{
-          background: '#140F26',
-          // background: 'var(--sidebar)',
-          minHeight: '65vh',
-        }}
+        className='side_bar_menu_main'
       >
         <Menu.Item
           // key='dashboard'
           className={'sidebar-menu'}
-          icon={<BsGlobe2 size={22} />}
+          icon={<img src={GlobeIcon} />}
           onClick={() => navigate('/')}
         >
           Home
@@ -48,7 +37,7 @@ const MainMenu = ({ active }) => {
         <Menu.Item
           // key='dashboard'
           className={'sidebar-menu'}
-          icon={<MdOutlineSportsRugby size={22} />}
+          icon={<img src={PlayerIcon} />}
           onClick={() => {
             isAuthenticated ? navigate('/leagueScore') : navigate('/transactions')
           }}
@@ -58,7 +47,7 @@ const MainMenu = ({ active }) => {
         <Menu.Item
           // key='dashboard'
           className={'sidebar-menu'}
-          icon={<GiBinoculars size={22} />}
+          icon={<img src={ScoutingIcon} />}
           onClick={() => navigate('/')}
         >
           Scouting
@@ -82,7 +71,7 @@ const MainMenu = ({ active }) => {
         <Menu.Item
           // key='dashboard'
           className={'sidebar-menu'}
-          icon={<MdStarOutline size={22} />}
+          icon={<img src={StarIcon} />}
           onClick={() => navigate('/players')}
         >
           Legends
@@ -106,7 +95,7 @@ const MainMenu = ({ active }) => {
         <Menu.Item
           // key='dashboard'
           className={'sidebar-menu'}
-          icon={<FiPhone size={22} />}
+          icon={<img src={PhoneIcon} />}
           onClick={() => navigate('/')}
         >
           Contact Us

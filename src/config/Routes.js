@@ -28,6 +28,7 @@ import AavReport from '../pages/AavReport'
 import RosterWStats from '../pages/RosterWStats'
 import Roster from '../pages/Roster'
 import RosterFullFormat from '../pages/RosterFullFormat'
+import FantasyLeague from '../pages/FantasyLeague'
 
 // import PrivateWrapper from './PrivateRoutes'
 
@@ -50,6 +51,7 @@ const Routers = () => {
         <Route element={<PrivateWrapper />}>
           {/* <Layout active={'dashboard'}> */}
           <Route path='/dashboard' element={<Dashboard />} />
+          <Route path='/fantasy-league' element={<FantasyLeague />} />
           <Route path='*' element={<Navigate to='/' />} />
           <Route path='/teams' element={<Teams />} />
           <Route path='/leagueScore' element={<LeagueScore />} />

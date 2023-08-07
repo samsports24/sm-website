@@ -8,12 +8,13 @@ import Fb from '../assets/fb.svg'
 import Twitter from '../assets/twitter.svg'
 import YouTube from '../assets/youtube.svg'
 import { Footer } from 'antd/es/layout/layout'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 // import { isAuthenticated } from '../functions/auth'
 
 const VerticalLayout = ({ children, active }) => {
   const { Header, Sider, Content } = Layout
   const navigate = useNavigate()
+  const { pathname } = useLocation()
 
   const logout = () => {
     navigate('/login')
@@ -77,7 +78,13 @@ const VerticalLayout = ({ children, active }) => {
         </Sider>
         <Layout className='site-layout' style={{ marginLeft: 256 }}>
           <Header className='mainHeader'>
-            <div></div>
+            <div>
+              {pathname === '/fantasy-league' && (
+                <h1 className='header_title'>
+                  Fantasy <b>Leagues</b>
+                </h1>
+              )}
+            </div>
             {localStorage.getItem('token') ? (
               <div className='auth-buttons'>
                 <Dropdown

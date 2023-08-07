@@ -4698,3 +4698,78 @@ export const rosterData = {
     ],
   },
 }
+
+// Home
+export const popularLeaguesData = [
+  {
+    title: 'American Football 1',
+    description: 'Season Starts in Sept',
+    players: [4, 32],
+    open: true,
+    image: require('../assets/rectangle-5.png'),
+  },
+  {
+    title: 'American Football 2',
+    description: 'Season Starts in Sept',
+    players: [4, 32],
+    open: true,
+    image: require('../assets/rectangle-6.png'),
+  },
+  {
+    title: 'American Football 3',
+    description: 'Season Starts in Sept',
+    players: [4, 32],
+    open: true,
+    image: require('../assets/rectangle-7.png'),
+  },
+  {
+    title: 'American Football 4',
+    description: 'Season Starts in Sept',
+    players: [4, 32],
+    open: true,
+    image: require('../assets/rectangle-8.png'),
+  },
+]
+export const popularSportsData = [
+  {
+    title: 'American Football',
+    icon: require('../assets/ufafl-02-png-369-trans-1.png'),
+    image: require('../assets/keith-johnston-vd-1-cz-99-sr-4-unsplash-1.png'),
+  },
+  {
+    title: 'American Football',
+    different: true,
+    icon: require('../assets/ufafl-02-png-369-trans-2.png'),
+    image: require('../assets/keith-johnston-vd-1-cz-99-sr-4-unsplash-2.png'),
+  },
+  {
+    title: 'American Football',
+    icon: require('../assets/ufafl-02-png-369-trans-0.png'),
+    image: require('../assets/keith-johnston-vd-1-cz-99-sr-4-unsplash-4.png'),
+  },
+  {
+    title: 'American Football',
+    icon: require('../assets/ufafl-02-png-369-trans-3.png'),
+    image: require('../assets/keith-johnston-vd-1-cz-99-sr-4-unsplash-3.png'),
+  },
+]
+export const clientFeedbacksData = [
+  {
+    image: require('../assets/frame-250.png'),
+    comment:
+      '“Ut enim ad minim veniam, quis nostrud exercit ation ullamco laboris nisi ut aliquip ex ea commodo consequat aute irure dolor in in velit esse  fugiat nulla pariatur.”',
+    clientName: 'Brandi Redd',
+  },
+  {
+    image: require('../assets/frame-251.png'),
+    comment:
+      '“ed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore.”',
+    clientName: 'John Torcasio',
+  },
+  {
+    image: require('../assets/frame-252.png'),
+    comment:
+      '“Ut enim ad minim veniam, quis nostrud exercit ation ullamco laboris nisi ut aliquip ex ea commodo consequat aute irure dolor in in velit esse  fugiat nulla pariatur.”',
+    clientName: 'Brandi Redd',
+  },
+]

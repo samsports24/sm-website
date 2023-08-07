@@ -48,6 +48,19 @@
   background-color: var(--backgroundGradient1) !important;
   border-bottom: 1px solid rgba(110, 105, 128, 0.4);
 }
+.v-layout div .header_title {
+  color: var(--text);
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  text-transform: uppercase;
+}
+@media (max-width: 1440px){
+  .v-layout div .header_title {
+    font-size: 32px;
+  }
+}
 .v-layout .mainHeader .auth-buttons {
   display: flex;
   align-items: center;
