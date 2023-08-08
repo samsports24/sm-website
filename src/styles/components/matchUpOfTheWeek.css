@@ -51,6 +51,9 @@
   width: 100px;
   height: 100px;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .match_up_box .team1 .image_div img {
   width: 100%;
@@ -63,6 +66,10 @@
   font-style: normal;
   font-weight: 600;
   line-height: 28px;
+  /* width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; */
 }
 .match_up_box .team1 .content p {
   color: var(--text);
@@ -103,6 +110,7 @@
   background-color: var(--primary);
   border-radius: 0px 0px 16px 16px;
   padding: 10px 28px;
+  cursor: pointer;
 }
 .match_up_box .footer h3 {
   color: var(--text);
@@ -111,4 +119,30 @@
   font-weight: 600;
   line-height: 28px;
   text-align: center;
+}
+
+@media (max-width: 768px) {
+  .match_up_box .teams {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .match_up_box .header {
+    padding-block: 20px;
+  }
+  .match_up_box .header h1 {
+    font-size: 22px;
+  }
+  .match_up_box .date_and_time h3 {
+    font-size: 15px;
+  }
+  .match_up_box .team1 .image_div {
+    width: 80px;
+    height: 80px;
+  }
+  .match_up_box .footer {
+    padding: 10px 10px;
+  }
+  .match_up_box .footer h3 {
+    font-size: 15px;
+  }
 }

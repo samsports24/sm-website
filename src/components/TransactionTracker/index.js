@@ -1,7 +1,9 @@
+import moment from 'moment'
 import React from 'react'
 import { BiRightArrowAlt } from 'react-icons/bi'
 
 // Mock Data
+import { transactionTrackerData } from '../../pages/mockData'
 
 const TransactionTracker = () => {
   return (
@@ -12,25 +14,30 @@ const TransactionTracker = () => {
           View All <BiRightArrowAlt size={18} />
         </p>
       </header>
-      <section className='league_standings_body'>
-        {['', '', ''].map((v, i) => {
+      <section className='transaction_tracker_body'>
+        {transactionTrackerData?.map((v, i) => {
           return (
             <div key={i} className='card_box'>
               <div>
                 <span className='text1'>Franchise:</span> &nbsp;
-                <span className='text2'>The Beast</span>
+                <span className='text2'>{v?.franchise}</span>
               </div>
               <div>
                 <span className='text1'>Type:</span> &nbsp;
-                <span className='text2'>Taxi Squad</span>
+                <span className='text2'>{v?.type}</span>
               </div>
               <div>
                 <span className='text1'>Date:</span> &nbsp;
-                <span className='text2'>Tue Jan 10 2:58:09 span.m. ET 2023</span>
+                <span className='text2'>
+                  {moment(v?.date).format('ddd MMM D h:mm:ss a. [ET] YYYY')}
+                </span>
               </div>
               <div>
                 <span className='text1'>Transaction::</span> &nbsp;
-                <span className='text2'>Demoted Bolton, Nick KCC LB; White, Kyzir PHI LB</span>
+                <span className='text2'>
+                  Demoted{' '}
+                  <span style={{ color: 'var(--primary)' }}>{v?.transaction?.join(', ')}</span>
+                </span>
               </div>
             </div>
           )

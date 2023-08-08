@@ -4855,14 +4855,6 @@ export const proLeagueStandingsData = [
     divWlt: '5-1-0',
     divWlt2: '9-3-0',
   },
-  {
-    title: 'Tiger Sharks',
-    wlt: '11-6-0',
-    avgPf: 308.6,
-    avgPa: 266.0,
-    divWlt: '5-1-0',
-    divWlt2: '9-3-0',
-  },
 ]
 
 export const powerRankingData = [
@@ -4908,12 +4900,6 @@ export const powerRankingData = [
     text1: 54.06,
     text2: 0.937,
   },
-  {
-    imageUrl: require('../assets/teams/kingsmen.png'),
-    title: 'Kingsmen',
-    text1: 54.06,
-    text2: 0.937,
-  },
 ]
 
 export const playerRankingData = [
@@ -4952,9 +4938,31 @@ export const playerRankingData = [
     title: 'Herbert, Justin LAC QB',
     amount: '486.750',
   },
+]
+
+export const transactionTrackerData = [
   {
-    imageUrl: require('../assets/player-img-12-PhotoRoom 1.png'),
-    title: 'Herbert, Justin LAC QB',
-    amount: '486.750',
+    franchise: 'The Beast',
+    type: 'Taxi Squad',
+    date: new Date(),
+    transaction: ['Bolton', 'Nick KCC LB', 'White', 'Kyzir PHI LB'],
+  },
+  {
+    franchise: 'The Beast',
+    type: 'Taxi Squad',
+    date: new Date(),
+    transaction: ['Bolton', 'Nick KCC LB', 'White', 'Kyzir PHI LB'],
+  },
+  {
+    franchise: 'The Beast',
+    type: 'Taxi Squad',
+    date: new Date(),
+    transaction: ['Bolton', 'Nick KCC LB', 'White', 'Kyzir PHI LB'],
+  },
+  {
+    franchise: 'The Beast',
+    type: 'Taxi Squad',
+    date: new Date(),
+    transaction: ['Bolton', 'Nick KCC LB', 'White', 'Kyzir PHI LB'],
   },
 ]

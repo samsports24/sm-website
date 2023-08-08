@@ -1,12 +1,10 @@
-.power_ranking_box {
+.player_ranking_box {
   width: 100%;
   border-radius: 16px;
   border: 1px solid var(--border);
-  max-height: 650px;
-  overflow-y: auto;
 }
 
-.power_ranking_box header {
+.player_ranking_box header {
   width: 100%;
   background-color: var(--primaryPurple);
   border-radius: 16px 16px 0px 0px;
@@ -17,14 +15,14 @@
   justify-content: space-between;
   padding: 11px 17px;
 }
-.power_ranking_box header h3 {
+.player_ranking_box header h3 {
   color: var(--text);
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
   line-height: 28px;
 }
-.power_ranking_box header p {
+.player_ranking_box header p {
   color: var(--primary);
   font-size: 14px;
   font-style: normal;
@@ -33,16 +31,19 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  cursor: pointer;
 }
 
-.power_ranking_box .league_standings_body {
-  padding: 19px 17px;
+.player_ranking_box .player_ranking_body {
+  padding: 21px 17px 21px 17px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  max-height: 516px;
+  overflow-y: auto;
 }
 
-.power_ranking_box .league_standings_body .card_box {
+.player_ranking_box .player_ranking_body .card_box {
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -51,7 +52,7 @@
   background-color: var(--primaryPurple);
   padding: 12px;
 }
-.power_ranking_box .league_standings_body .card_box h6 {
+.player_ranking_box .player_ranking_body .card_box h6 {
   color: var(--text);
   font-size: 18px;
   font-style: normal;
@@ -59,11 +60,15 @@
   line-height: 28px;
   opacity: 0.5;
 }
-.power_ranking_box .league_standings_body .card_box img {
+.player_ranking_box .player_ranking_body .card_box .image_box {
   height: 30px;
+  width: 30px;
+}
+.player_ranking_box .player_ranking_body .card_box img {
+  height: 100%;
   width: auto;
 }
-.power_ranking_box .league_standings_body .card_box h3 {
+.player_ranking_box .player_ranking_body .card_box h3 {
   color: var(--primary);
   font-size: 14px;
   font-style: normal;
@@ -71,10 +76,29 @@
   line-height: 22px;
   flex: 1;
 }
-.power_ranking_box .league_standings_body .card_box p {
+.player_ranking_box .player_ranking_body .card_box p {
   color: var(--text);
   font-size: 16px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+}
+
+@media (max-width: 768px) {
+  .player_ranking_box .player_ranking_body .card_box {
+    flex-wrap: wrap;
+  }
+  .player_ranking_box .player_ranking_body .card_box h3 {
+    min-width: 150px;
+  }
+  .player_ranking_box header {
+    flex-wrap: wrap;
+    gap: 0px;
+  }
+  .player_ranking_box header h3 {
+    font-size: 13px;
+  }
+  .player_ranking_box header p {
+    font-size: 12px;
+  }
 }
