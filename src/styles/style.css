@@ -10,6 +10,10 @@
 @import './layout/layout.css';
 @import './layout/mobileLayout.css';
 
+/* Modal */
+@import './modals/depthModal.css';
+
+
 /* Component CSS */
 @import './components/header.css';
 @import './components/scheduleBox.css';

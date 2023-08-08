@@ -61,10 +61,14 @@
   text-decoration: underline;
 }
 
-.depth_chart_container .depth_chart_cards {
-  width: 100%;
+.depth_chart_container .depth_chart_wrapper {
+  overflow: auto;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 30px;
+  justify-content: center;
 }
+.depth_chart_container .depth_chart_wrapper .depth_chart_cards {
+  width: 1600px;
+  position: relative;
+  min-height: 930px;
+}
+

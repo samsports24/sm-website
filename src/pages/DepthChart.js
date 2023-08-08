@@ -79,10 +79,12 @@ const DepthChart = () => {
         </h2>
       </section>
 
-      <section className='depth_chart_cards'>
-        {data?.map((v, i) => {
-          return <DepthCard key={i} data={v} index={i} />
-        })}
+      <section className='depth_chart_wrapper'>
+        <div className='depth_chart_cards'>
+          {data?.map((v, i) => {
+            return <DepthCard key={i} data={v} index={i} />
+          })}
+        </div>
       </section>
     </div>
   )

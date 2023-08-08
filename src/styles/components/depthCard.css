@@ -4,6 +4,7 @@
   border-radius: 10px;
   border: 1px solid var(--border);
   cursor: pointer;
+  position: absolute;
 }
 
 .depth_card_box .image_box {
@@ -54,4 +55,111 @@
   text-align: center;
   text-transform: uppercase;
   padding: 6px 0px 6px 0px;
+}
+
+
+/* DEFENCE */
+.defence_s {
+  top: 0px !important;
+  left: 1160px !important;
+}
+.defence_cbs {
+  top: 220px !important;
+  left: 156px !important;
+}
+.defence_lb-1 {
+  top: 260px !important;
+  left: 390px !important;
+}
+.defence_lb-2 {
+  top: 260px !important;
+  left: 680px !important;
+}
+.defence_lbcbs {
+  top: 260px !important;
+  left: 610px !important;
+}
+.defence_lbcbs {
+  top: 260px !important;
+  left: 920px !important;
+}
+.defence_cb-1 {
+  top: 580px !important;
+  left: 0px !important;
+}
+.defence_cb-2 {
+  top: 650px !important;
+  left: 1350px !important;
+}
+.defence_de {
+  top: 650px !important;
+  left: 290px !important;
+}
+.defence_dt {
+  top: 650px !important;
+  left: 520px !important;
+}
+.defence_dtde {
+  top: 650px !important;
+  left: 755px !important;
+}
+.defence_dtlb {
+  top: 650px !important;
+  left: 1005px !important;
+}
+
+/* OFFENCE */
+.offence_te{
+  top: 0 !important;
+  left: 150px !important;
+}
+.offence_ol-1{
+  top: 0 !important;
+  left: 350px !important;
+}
+.offence_ol-2{
+  top: 0 !important;
+  left: 550px !important;
+}
+.offence_ol-3{
+  top: 0 !important;
+  left: 750px !important;
+}
+.offence_ol-4{
+  top: 0 !important;
+  left: 950px !important;
+}
+.offence_ol-5{
+  top: 0 !important;
+  left: 1150px !important;
+}
+.offence_wr-1{
+  top: 300px !important;
+  left: 0px !important;
+}
+.offence_rbwrte{
+  top: 300px !important;
+  left: 290px !important;
+}
+.offence_qb{
+  top: 300px !important;
+  left: 760px !important;
+}
+.offence_rb{
+  top: 300px !important;
+  left: 970px !important;
+}
+.offence_wr-2{
+  top: 300px !important;
+  left: 1420px !important;
+}
+
+/* SPECIAL TEAM */
+.special_team_pk {
+  top: 0;
+  left: 550px;
+}
+.special_team_pn {
+  top: 0;
+  left: 870px;
 }
