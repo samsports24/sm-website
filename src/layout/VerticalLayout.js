@@ -89,6 +89,11 @@ const VerticalLayout = ({ children, active }) => {
                   Professional <b>Leagues</b>
                 </h1>
               )}
+              {pathname === '/depth-chart' && (
+                <h1 className='header_title'>
+                  depth - <b>chart</b>
+                </h1>
+              )}
             </div>
             {localStorage.getItem('token') ? (
               <div className='auth-buttons'>

@@ -1,0 +1,70 @@
+.depth_chart_container {
+  width: 100%;
+}
+
+.depth_chart_container .breadcrumb {
+  margin-bottom: 30px;
+}
+
+.depth_chart_container .buttons_and_pagination {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 35px;
+  align-items: center;
+}
+
+.depth_chart_container .buttons_and_pagination .buttons_group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.depth_chart_container .buttons_and_pagination .buttons_group button {
+  padding: 10px 28px;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  border: 2px solid var(--primary);
+}
+.depth_chart_container .buttons_and_pagination .buttons_group button:hover {
+  background-color: transparent !important;
+}
+
+.depth_chart_container .depth_chart_filter {
+  width: 100%;
+  margin-block: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.depth_chart_container .depth_chart_filter h2 {
+  color: #777185;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.depth_chart_container .depth_chart_filter p {
+  color: #777185;
+  font-size: 18px;
+}
+.depth_chart_container .depth_chart_filter .active {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.depth_chart_container .depth_chart_cards {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 30px;
+}

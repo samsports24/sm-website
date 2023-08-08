@@ -4966,3 +4966,133 @@ export const transactionTrackerData = [
     transaction: ['Bolton', 'Nick KCC LB', 'White', 'Kyzir PHI LB'],
   },
 ]
+
+export const depthCardData = [
+  {
+    imageUrl: require('../assets/player-img-2.png'),
+    name: 'Damien Harris',
+    text: 'te',
+    type: 'offence',
+  },
+  {
+    imageUrl: require('../assets/player-img-1.png'),
+    name: 'Damien Harris',
+    text: 'ol',
+    type: 'offence',
+  },
+  {
+    imageUrl: require('../assets/player-img-6.png'),
+    name: 'Damien Harris',
+    text: 'ol',
+    type: 'offence',
+  },
+  {
+    imageUrl: require('../assets/player-img-5.png'),
+    name: 'Damien Harris',
+    text: 'ol',
+    type: 'offence',
+  },
+  {
+    imageUrl: require('../assets/player-img-2.png'),
+    name: 'Damien Harris',
+    text: 'ol',
+    type: 'offence',
+  },
+  {
+    imageUrl: require('../assets/player-img-1.png'),
+    name: 'Damien Harris',
+    text: 'ol',
+    type: 'offence',
+  },
+  {
+    imageUrl: require('../assets/player-img-5.png'),
+    name: 'Damien Harris',
+    text: 'ol',
+    type: 'offence',
+  },
+  {
+    imageUrl: require('../assets/player-img-5.png'),
+    name: 'Damien Harris',
+    text: 'ol',
+    type: 'offence',
+  },
+  {
+    imageUrl: require('../assets/player-img-5.png'),
+    name: 'Damien Harris',
+    text: 'ol',
+    type: 'offence',
+  },
+  {
+    imageUrl: require('../assets/player-img-5.png'),
+    name: 'Damien Harris',
+    text: 'ol',
+    type: 'offence',
+  },
+  {
+    imageUrl: require('../assets/player-img-5.png'),
+    name: 'Damien Harris',
+    text: 'ol',
+    type: 'offence',
+  },
+  {
+    imageUrl: require('../assets/player-img-2.png'),
+    name: 'Damien Harris',
+    text: 'te',
+    type: 'defence',
+  },
+  {
+    imageUrl: require('../assets/player-img-1.png'),
+    name: 'Damien Harris',
+    text: 'ol',
+    type: 'defence',
+  },
+  {
+    imageUrl: require('../assets/player-img-6.png'),
+    name: 'Damien Harris',
+    text: 'ol',
+    type: 'defence',
+  },
+  {
+    imageUrl: require('../assets/player-img-2.png'),
+    name: 'Damien Harris',
+    text: 'ol',
+    type: 'defence',
+  },
+  {
+    imageUrl: require('../assets/player-img-1.png'),
+    name: 'Damien Harris',
+    text: 'ol',
+    type: 'defence',
+  },
+  {
+    imageUrl: require('../assets/player-img-5.png'),
+    name: 'Damien Harris',
+    text: 'ol',
+    type: 'defence',
+  },
+
+  {
+    imageUrl: require('../assets/player-img-5.png'),
+    name: 'Damien Harris',
+    text: 'ol',
+    type: 'defence',
+  },
+  {
+    imageUrl: require('../assets/player-img-5.png'),
+    name: 'Damien Harris',
+    text: 'ol',
+    type: 'defence',
+  },
+  {
+    imageUrl: require('../assets/player-img-2.png'),
+    name: 'Damien Harris',
+    text: 'te',
+    type: 'special team',
+  },
+  {
+    imageUrl: require('../assets/player-img-6.png'),
+    name: 'Damien Harris',
+    text: 'ol',
+    type: 'special team',
+  },
+]

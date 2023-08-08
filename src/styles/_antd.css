@@ -40,7 +40,12 @@
 }
 
 .ant-modal-content {
-  background-color: var(--cardColor) !important;
+  border-radius: 16px !important;
+  border: 1px solid var(--border) !important;
+  background: var(
+    --colors-theme-gradient,
+    linear-gradient(180deg, #291c4a 0%, #080611 100%)
+  ) !important;
 }
 .ant-modal-close-x {
   color: var(--text) !important;

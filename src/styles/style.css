@@ -40,6 +40,7 @@
 @import './components/matchUpOfTheWeek.css';
 @import './components/rollingNewsFeed.css';
 @import './components/transactionTracker.css';
+@import './components/depthCard.css';
 
 /* Page CSS */
 @import './pages/login.css';
@@ -63,3 +64,4 @@
 @import './pages/roster.css';
 @import './pages/fantasyLeague.css';
 @import './pages/professionalLeague.css';
+@import './pages/depthChart.css';
