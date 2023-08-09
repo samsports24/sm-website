@@ -6,20 +6,21 @@ import { Breadcrumb, Button } from 'antd'
 import Header from '../components/Header'
 import WeekPagination from '../components/WeekPagination'
 import DepthCard from '../components/DepthCard'
+import { ColorFilter } from '../components/FilterComponent'
 
 // Mock Data
 import { depthCardData } from './mockData'
 
 const DepthChart = () => {
-  const [activeFilter, setActiveFilter] = useState('Offence')
+  const [activeFilter, setActiveFilter] = useState('offence')
   const [data, setData] = useState([])
 
   const handleFilter = (value) => {
     setActiveFilter(value)
   }
   useEffect(() => {
-    const filterData = depthCardData?.filter((v) => v?.type === activeFilter?.toLocaleLowerCase())
-    setData(filterData)
+    const filterdData = depthCardData?.filter((v) => v?.type === activeFilter?.toLocaleLowerCase())
+    setData(filterdData)
   }, [activeFilter])
 
   return (
@@ -56,31 +57,15 @@ const DepthChart = () => {
         <WeekPagination />
       </section>
 
-      <section className='depth_chart_filter'>
-        <h2
-          onClick={() => handleFilter('Offence')}
-          className={activeFilter === 'Offence' && 'active'}
-        >
-          offence
-        </h2>
-        <p>|</p>
-        <h2
-          onClick={() => handleFilter('Defence')}
-          className={activeFilter === 'Defence' && 'active'}
-        >
-          defence
-        </h2>
-        <p>|</p>
-        <h2
-          onClick={() => handleFilter('Special Team')}
-          className={activeFilter === 'Special Team' && 'active'}
-        >
-          special team
-        </h2>
-      </section>
+      {/* FILTER */}
+      <ColorFilter data={['offence', 'defence', 'special team']} handleFilter={handleFilter} />
 
       <section className='depth_chart_wrapper'>
-        <div className='depth_chart_cards'>
+        <div
+          className={`depth_chart_cards ${
+            activeFilter === 'special team' ? 'special_team_container' : activeFilter + '_container'
+          }`}
+        >
           {data?.map((v, i) => {
             return <DepthCard key={i} data={v} index={i} />
           })}

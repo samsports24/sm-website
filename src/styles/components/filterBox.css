@@ -7,13 +7,11 @@
   color: var(--text);
   font-size: 22px;
 }
-
 .filter_box .filter_box_text {
   display: flex;
   flex-direction: row;
   gap: 10px;
 }
-
 .filter_box .filter_box_text h2 {
   color: var(--text);
   font-size: 22px;
@@ -24,7 +22,6 @@
   cursor: pointer;
   text-transform: uppercase;
 }
-
 .filter_box .filter_box_text .activeFilter {
   text-decoration-line: none;
 }
@@ -43,5 +40,56 @@
   }
   .filter_box h2 {
     font-size: 15px !important;
+  }
+}
+
+/* COLOR FILTER */
+.color_filter {
+  width: 100%;
+  margin-block: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.color_filter .wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.color_filter .wrapper h2 {
+  color: #777185;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.color_filter .wrapper p {
+  color: #777185;
+  font-size: 18px;
+  margin-left: 12px;
+}
+.color_filter .wrapper .active {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+@media (max-width: 1440px) {
+  .color_filter .wrapper h2 {
+    font-size: 18px;
+  }
+  .color_filter .wrapper p {
+    font-size: 14px;
+  }
+}
+@media (max-width: 768px) {
+  .color_filter .wrapper h2 {
+    font-size: 15px;
+  }
+  .color_filter .wrapper p {
+    font-size: 11px;
   }
 }

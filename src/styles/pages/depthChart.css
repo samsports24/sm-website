@@ -35,32 +35,6 @@
   background-color: transparent !important;
 }
 
-.depth_chart_container .depth_chart_filter {
-  width: 100%;
-  margin-block: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-}
-.depth_chart_container .depth_chart_filter h2 {
-  color: #777185;
-  font-size: 22px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-.depth_chart_container .depth_chart_filter p {
-  color: #777185;
-  font-size: 18px;
-}
-.depth_chart_container .depth_chart_filter .active {
-  color: var(--primary);
-  text-decoration: underline;
-}
-
 .depth_chart_container .depth_chart_wrapper {
   overflow: auto;
   display: flex;
@@ -69,6 +43,14 @@
 .depth_chart_container .depth_chart_wrapper .depth_chart_cards {
   width: 1600px;
   position: relative;
-  min-height: 930px;
 }
 
+.depth_chart_container .depth_chart_wrapper .offence_container {
+  height: 600px;
+}
+.depth_chart_container .depth_chart_wrapper .defence_container {
+  height: 930px;
+}
+.depth_chart_container .depth_chart_wrapper .special_team_container {
+  height: 400px;
+}
