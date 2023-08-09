@@ -1,0 +1,65 @@
+.player_roster_container .stats_container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  overflow-y: auto;
+  max-height: 800px;
+}
+
+.player_roster_container {
+  width: 100%;
+}
+
+.player_roster_container .breadcrumb {
+  margin-bottom: 30px;
+}
+
+.player_roster_container .buttons_and_pagination {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 35px;
+  align-items: center;
+}
+
+.player_roster_container .buttons_and_pagination .buttons_group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.player_roster_container .buttons_and_pagination .buttons_group button {
+  padding: 10px 28px;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  border: 2px solid var(--primary);
+}
+.player_roster_container .buttons_and_pagination .buttons_group button:hover {
+  background-color: transparent !important;
+}
+
+.player_roster_container .depth_chart_wrapper {
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+}
+.player_roster_container .depth_chart_wrapper .depth_chart_cards {
+  width: 1600px;
+  position: relative;
+}
+
+.player_roster_container .depth_chart_wrapper .offence_container {
+  height: 600px;
+}
+.player_roster_container .depth_chart_wrapper .defence_container {
+  height: 930px;
+}
+.player_roster_container .depth_chart_wrapper .special_team_container {
+  height: 400px;
+}

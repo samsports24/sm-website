@@ -31,6 +31,8 @@ import RosterFullFormat from '../pages/RosterFullFormat'
 import FantasyLeague from '../pages/FantasyLeague'
 import ProfessionalLeague from '../pages/ProfessionalLeague'
 import DepthChart from '../pages/DepthChart'
+import PlayerRoster from '../pages/PlayerRoster'
+import ComingSoon from '../pages/CommingSoon'
 
 // import PrivateWrapper from './PrivateRoutes'
 
@@ -73,9 +75,11 @@ const Routers = () => {
           <Route path='/aav-report' element={<AavReport />} />
           <Route path='/roster-wstats' element={<RosterWStats />} />
           <Route path='/roster' element={<Roster />} />
+          <Route path='/player-roster' element={<PlayerRoster />} />
           <Route path='/roster-fullformat' element={<RosterFullFormat />} />
           <Route path='/professional-league' element={<ProfessionalLeague />} />
           <Route path='/depth-chart' element={<DepthChart />} />
+          <Route path='/coming-soon' element={<ComingSoon />} />
           {/* </Layout> */}
         </Route>
 
