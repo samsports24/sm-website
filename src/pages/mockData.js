@@ -1493,7 +1493,7 @@ export const playerStatsData = [
 ]
 export const playerRosterData = [
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -1524,7 +1524,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -1555,7 +1555,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -1586,7 +1586,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -1617,7 +1617,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -1648,7 +1648,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -1679,7 +1679,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -1710,7 +1710,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -1741,7 +1741,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -1772,7 +1772,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -1803,7 +1803,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -1834,7 +1834,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -1865,7 +1865,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -1896,7 +1896,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -1927,7 +1927,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -1958,7 +1958,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -1989,7 +1989,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -2020,7 +2020,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -2051,7 +2051,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -2082,7 +2082,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -2113,7 +2113,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -2144,7 +2144,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -2175,7 +2175,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -2206,7 +2206,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -2237,7 +2237,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -2268,7 +2268,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -2299,7 +2299,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -2330,7 +2330,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -2361,7 +2361,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -2392,7 +2392,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -2423,7 +2423,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -2454,7 +2454,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -2485,7 +2485,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -2516,7 +2516,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -2547,7 +2547,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -2578,7 +2578,7 @@ export const playerRosterData = [
     ],
   },
   {
-     name: 'Mahomes, Patrick KCC QB',
+    name: 'Mahomes, Patrick KCC QB',
     pts: 650.3,
     age: 26,
     team: 'Paradise Block Hawks',
@@ -5815,6 +5815,153 @@ export const rosterData = {
       },
     ],
   },
+}
+
+// all reports
+export const stats = {
+  name: 'STATS',
+  data: [
+    {
+      name: 'Top Perfromers/Player Stats',
+    },
+    {
+      name: 'Project Stats',
+    },
+    {
+      name: 'Starter Pts - Position',
+    },
+    {
+      name: 'Starter Pts - Player',
+    },
+    {
+      name: 'Points Allowed - By Position',
+    },
+  ],
+}
+export const standings = {
+  title: 'STANDINGS',
+  data: [
+    {
+      name: 'Standings',
+    },
+    {
+      name: 'Power Rank',
+    },
+    {
+      name: 'Tiebreakers',
+    },
+    {
+      name: 'Victory Points Summary',
+    },
+  ],
+}
+
+export const players = {
+  name: 'PLAYERS',
+  data: [
+    {
+      name: 'FantasySharks.com Player Ranks',
+    },
+    {
+      name: 'Player Salaries and Contracts',
+    },
+    {
+      name: 'Salary Adjustments',
+    },
+    {
+      name: 'Top Adds/Drops/Starters',
+    },
+    {
+      name: 'Complete Free Agent Listing',
+    },
+    {
+      name: 'Player Search',
+    },
+
+    {
+      name: 'Player Additions and Positions Changes',
+    },
+  ],
+}
+export const playerNews = {
+  name: 'PLAYER NEWS',
+  data: [
+    {
+      name: 'Player News',
+    },
+  ],
+}
+
+export const draft = {
+  name: 'DRAFT',
+  data: [
+    {
+      name: 'ADP Report',
+    },
+    {
+      name: 'Future Draft Picks',
+    },
+  ],
+}
+
+export const auction = {
+  name: 'AUCTION',
+  data: [
+    {
+      name: 'AAV Report',
+    },
+  ],
+}
+
+export const scoreAndResults = {
+  name: 'SCORE AND RESULTS',
+  data: [
+    {
+      name: 'Live Scoring',
+    },
+    {
+      name: 'Fantasy Schedule',
+    },
+    {
+      name: 'Weekly Results',
+    },
+    {
+      name: 'Weekly Summary',
+    },
+    {
+      name: 'Starting Lineups',
+    },
+    {
+      name: 'Fantasy Previews',
+    },
+    {
+      name: 'Fantasy Recaps',
+    },
+    {
+      name: 'Bar Chart',
+    },
+    {
+      name: 'Fantasy Box Score',
+    },
+    {
+      name: 'Scoring History',
+    },
+  ],
+}
+
+export const leagueHistory = {
+  name: 'LEAGUE HISTORY',
+  data: [
+    {
+      name: 'League History',
+    },
+    {
+      name: 'League Champions',
+    },
+    {
+      name: 'League Awards',
+    },
+  ],
 }
 
 // Home
