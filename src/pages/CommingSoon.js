@@ -11,12 +11,12 @@ const ComingSoon = () => {
   const [activeFilter] = useState('Coming Soon')
   // const [ setData] = useState([])
 
-  const RemainingTime = () => {
+  const RemainingTime = ({ value, type }) => {
     return (
       <div className='remaining_time_container'>
         <div className='box'>
-          <h1>02</h1>
-          <p>DAYS</p>
+          <h1>{value}</h1>
+          <p>{type}</p>
         </div>
       </div>
     )
@@ -56,7 +56,10 @@ const ComingSoon = () => {
       <section className='coming_soon'>
         <img src={require('../assets/coming-soon.png')} />
         <div className='time_container'>
-          <RemainingTime />
+          <RemainingTime value={'02'} type={'DAYS'} />
+          <RemainingTime value={'05'} type={'HOURS'} />
+          <RemainingTime value={'30'} type={'MINUTES'} />
+          <RemainingTime value={'10'} type={'SECOND'} />
         </div>
       </section>
     </div>

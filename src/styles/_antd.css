@@ -223,3 +223,31 @@ tr.ant-table-expanded-row:hover > td {
 .ant-breadcrumb ol li:last-child span {
   color: var(--text) !important;
 }
+
+/* calendar general styling */
+.ant-picker-body {
+  padding: 0 !important;
+}
+.ant-picker-calendar .ant-picker-calendar-header {
+  display: none;
+}
+.ant-picker-calendar .ant-picker-content thead tr {
+  background: rgba(48, 33, 93, 0.1) !important;
+  height: 60px;
+}
+.ant-picker-calendar .ant-picker-content thead th {
+  padding: 0 10px !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+.ant-picker-calendar .ant-picker-content thead th,
+.ant-picker-calendar .ant-picker-content .ant-picker-cell {
+  border: 1px solid #443a61;
+}
+
+.ant-picker-calendar .ant-picker-content tbody tr:nth-child(odd) {
+  background-color: var(--primaryPurple) !important;
+}
+.ant-picker-calendar .ant-picker-content tbody tr:nth-child(even) {
+  /* background-color: transparent !important; */
+  background: rgba(48, 33, 93, 0.1) !important;
+}

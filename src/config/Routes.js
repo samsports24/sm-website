@@ -33,6 +33,8 @@ import ProfessionalLeague from '../pages/ProfessionalLeague'
 import DepthChart from '../pages/DepthChart'
 import PlayerRoster from '../pages/PlayerRoster'
 import ComingSoon from '../pages/CommingSoon'
+import LeagueRules from '../pages/LeagueRules'
+import LeagueCalendar from '../pages/LeagueCalendar'
 
 // import PrivateWrapper from './PrivateRoutes'
 
@@ -77,6 +79,8 @@ const Routers = () => {
           <Route path='/roster' element={<Roster />} />
           <Route path='/player-roster' element={<PlayerRoster />} />
           <Route path='/roster-fullformat' element={<RosterFullFormat />} />
+          <Route path='/league-rules' element={<LeagueRules />} />
+          <Route path='/league-calendar' element={<LeagueCalendar />} />
           <Route path='/professional-league' element={<ProfessionalLeague />} />
           <Route path='/depth-chart' element={<DepthChart />} />
           <Route path='/coming-soon' element={<ComingSoon />} />

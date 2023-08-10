@@ -342,3 +342,12 @@ p {
   border-top: 1px solid #fff;
 }
 
+/* calendar date cell render styling */
+.calendar-date-box .date-box {
+  width: 100%;
+  height: -webkit-fill-available;
+  color: var(--text);
+  padding-left: 10px;
+  font-size: 13px;
+  font-weight: 400;
+}
