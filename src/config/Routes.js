@@ -36,6 +36,8 @@ import ComingSoon from '../pages/CommingSoon'
 import LeagueRules from '../pages/LeagueRules'
 import LeagueCalendar from '../pages/LeagueCalendar'
 import AllReports from '../pages/AllReports'
+import PlayerInterface from '../pages/PlayerInterface'
+import PracticeSquad from '../pages/PracticeSquad'
 
 // import PrivateWrapper from './PrivateRoutes'
 
@@ -86,6 +88,8 @@ const Routers = () => {
           <Route path='/professional-league' element={<ProfessionalLeague />} />
           <Route path='/depth-chart' element={<DepthChart />} />
           <Route path='/coming-soon' element={<ComingSoon />} />
+          <Route path='/player-interface' element={<PlayerInterface />} />
+          <Route path='/practice-squad' element={<PracticeSquad />} />
           {/* </Layout> */}
         </Route>
 

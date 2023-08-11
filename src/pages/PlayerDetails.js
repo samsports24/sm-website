@@ -151,7 +151,6 @@ const PlayerDetails = () => {
                     </p>
                   </div>
                 </Col>
-
                 <Col xs={24} md={12} lg={12} xl={8}>
                   <div className='player-info'>
                     <p>

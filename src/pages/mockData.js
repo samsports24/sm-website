@@ -6378,3 +6378,71 @@ export const depthCardData = [
     type: 'special team',
   },
 ]
+
+export const playerInterfaceData = {
+  name: "A'Shawn Robinson",
+  status: 'Active Player',
+  position: 'Gridiron Seals (UFAFL)',
+  yearInLeague: '3 Years',
+  age: '28 (Mar 21, 1995)',
+  height: "6'4",
+  playerCollege: 'College Name',
+  pastYearStats: '2023 2022 2021',
+  positionRank: 56,
+  leagueRank: 22,
+  playerNews:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+  playerContractInfo:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+}
+
+export const practiceSquadData = [
+  {
+    title: 'Projected Spot',
+    position: 'kcc',
+    playerName: 'kcc',
+    age: 'kcc',
+    team: 'kcc',
+    bye: 'kcc',
+    playerCap: '7:05',
+    yearLeftExperation: '',
+    pointPerGame: '',
+    playerRank: '',
+  },
+  {
+    title: 'Projected Spot',
+    position: 'kcc',
+    playerName: 'kcc',
+    age: 'kcc',
+    team: 'kcc',
+    bye: 'kcc',
+    playerCap: '7:05',
+    yearLeftExperation: '',
+    pointPerGame: '',
+    playerRank: '',
+  },
+  {
+    title: 'Projected Spot',
+    position: 'kcc',
+    playerName: 'kcc',
+    age: 'kcc',
+    team: 'kcc',
+    bye: 'kcc',
+    playerCap: '7:05',
+    yearLeftExperation: '',
+    pointPerGame: '',
+    playerRank: '',
+  },
+  {
+    title: 'Un-projected Spot',
+    position: 'kcc',
+    playerName: 'kcc',
+    age: 'kcc',
+    team: 'kcc',
+    bye: 'kcc',
+    playerCap: '7:05',
+    yearLeftExperation: '',
+    pointPerGame: '',
+    playerRank: '',
+  },
+]

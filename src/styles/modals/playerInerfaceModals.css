@@ -1,0 +1,122 @@
+/* BUTTON */
+.modal_button_text {
+  color: var(--text);
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  cursor: pointer;
+  text-transform: uppercase;
+  opacity: 0.4;
+}
+
+/* CLOSE BUTTON */
+.close_modal_button {
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: -25px;
+  top: -20px;
+  cursor: pointer;
+}
+
+.player_interface_modals {
+  width: 850px !important;
+}
+.player_interface_modals .ant-modal-content {
+  padding: 38px 33px !important;
+  border-radius: 16px !important;
+  border: 1px solid #289fc9 !important;
+  background-color: rgba(48, 33, 93, 0.4) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+/* BODY */
+.player_interface_modals .modal_body {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+.player_interface_modals .modal_header_heading {
+  color: var(--text);
+  font-size: 34px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+  padding-left: 15px;
+}
+
+/* FOOTER */
+.player_interface_modals .modal_footer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+}
+.player_interface_modals .modal_footer button {
+  padding-inline: 40px;
+  height: 50px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  border: 1px solid var(--primary);
+  text-transform: uppercase;
+}
+.player_interface_modals .modal_footer .button_2 {
+  background-color: #fff !important;
+  color: var(--primary);
+}
+
+/* AUCTION PLAYER */
+.player_interface_modals .auction_button_groups {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.player_interface_modals .auction_button_groups button {
+  width: calc(50% - 10px);
+  border-radius: 8px;
+  border: 1px solid var(--colors-theme-border-color, rgba(110, 105, 128, 0.4));
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: uppercase;
+  background-color: transparent !important;
+  height: 45px;
+}
+
+/* RELEASE PLAYER */
+.player_interface_modals .release_player {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  align-items: center;
+  flex-direction: column;
+  padding-block: 10px;
+}
+.player_interface_modals .release_player p {
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  width: 65%;
+  text-align: center;
+}

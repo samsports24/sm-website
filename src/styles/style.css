@@ -12,6 +12,7 @@
 
 /* Modal */
 @import './modals/depthModal.css';
+@import './modals/playerInerfaceModals.css';
 
 
 /* Component CSS */
@@ -71,3 +72,5 @@
 @import './pages/depthChart.css';
 @import './pages/playerRoster.css';
 @import './pages/comingSoon.css';
+@import './pages/playerInterface.css';
+@import './pages/practiceSquad.css';

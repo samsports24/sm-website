@@ -1,0 +1,135 @@
+.practice_squad_container {
+  width: 100%;
+}
+
+.practice_squad_container .breadcrumb {
+  margin-bottom: 30px;
+}
+
+.practice_squad_container .buttons_and_pagination {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 35px;
+  align-items: center;
+}
+
+.practice_squad_container .buttons_and_pagination .buttons_group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.practice_squad_container .buttons_and_pagination .buttons_group button,
+.back_button {
+  padding: 10px 28px;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1;
+  border: 2px solid var(--primary);
+}
+.practice_squad_container .buttons_and_pagination .buttons_group button:hover,
+.back_button:hover {
+  background-color: transparent !important;
+}
+.back_button {
+  margin-bottom: 26px;
+}
+
+.practice_squad_container .divider {
+  color: #fff;
+  opacity: 0.4;
+  margin-block: 35px;
+}
+
+/* ----------------------------- */
+.squad_card_container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid var(--colors-theme-border-color, rgba(110, 105, 128, 0.4));
+  background: var(--colors-theme-gradient, linear-gradient(180deg, #291c4a 0%, #080611 100%));
+}
+.squad_card_container .squad_card_box {
+  width: 100%;
+}
+.squad_card_container .squad_card_box .squad_header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.squad_card_container .squad_card_box h2 {
+  color: var(--text);
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 28px;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+}
+.squad_card_container .squad_card_box .squad_content_body {
+  border-radius: 16px 16px 0px 0px;
+  border: 1px solid var(--border);
+  margin-top: 4px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  gap: 10px;
+  background-color: var(--primaryPurple);
+}
+.squad_card_container .squad_card_box .squad_content_body .squad_image_box {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.squad_card_container .squad_card_box .squad_content_body .squad_image_box img {
+  height: 100%;
+  width: auto;
+}
+.squad_card_container .squad_card_box .squad_content_body .squad_text1 {
+  color: var(--text);
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+.squad_card_container .squad_card_box .squad_content_body .squad_text2 {
+  color: var(--text);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  opacity: 0.5;
+  text-transform: uppercase;
+}
+
+@media (max-width: 1440px) {
+  .practice_squad_container .buttons_and_pagination .buttons_group button {
+    font-size: 15px;
+  }
+}
+@media (max-width: 768px) {
+  .squad_card_container .squad_card_box .squad_content_body .squad_text1 {
+    font-size: 14px;
+  }
+  .squad_card_container .squad_card_box .squad_content_body .squad_text2 {
+    font-size: 13px;
+  }
+}
+@media (max-width: 600px) {
+}
