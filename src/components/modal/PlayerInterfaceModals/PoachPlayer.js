@@ -24,9 +24,9 @@ const PoachPlayer = () => {
           x
         </div>
         <div className='modal_body'>
-          <h1 className='modal_header_heading'>Poach Player</h1>
+          <h1 className='modal_header_heading main_heading'>Poach Player</h1>
 
-          <div className='release_player'>
+          <div className='center_content poach_player'>
             <h1 className='modal_header_heading'>ARE YOU SURE?</h1>
             <p>IF YOU ARE SURE THAT YOU WISH TO STRAT POACHING PROCESS CLICK CONFIRM.</p>
             <p style={{ marginTop: '-15px' }}>

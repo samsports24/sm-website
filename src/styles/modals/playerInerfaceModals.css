@@ -55,6 +55,8 @@
   font-weight: 800;
   line-height: 1;
   text-transform: uppercase;
+}
+.player_interface_modals .modal_body .main_heading {
   padding-left: 15px;
 }
 
@@ -102,8 +104,8 @@
   height: 45px;
 }
 
-/* RELEASE PLAYER */
-.player_interface_modals .release_player {
+/* CENTER CONTENT */
+.player_interface_modals .center_content {
   display: flex;
   flex-direction: row;
   gap: 30px;
@@ -111,12 +113,137 @@
   flex-direction: column;
   padding-block: 10px;
 }
-.player_interface_modals .release_player p {
+.player_interface_modals .center_content p {
   color: var(--text);
   font-size: 16px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-  width: 65%;
   text-align: center;
+}
+
+/* RELEASE PLAYER */
+/* MOVE TO INJURED IR */
+/* ACTIVATE FROM PRACTICE SQUAD */
+/* MOVE TO PRACTICE SQUAD */
+/* POACH PLAYER */
+.player_interface_modals .release_player p:nth-of-type(1),
+.player_interface_modals .move_to_injured p:nth-of-type(1),
+.player_interface_modals .activate_from_practice_squad p:nth-of-type(1),
+.player_interface_modals .poach_player p:nth-of-type(1),
+.player_interface_modals .trade_player p:nth-of-type(1) {
+  width: 68%;
+}
+.player_interface_modals .move_to_injured p:nth-of-type(2),
+.player_interface_modals .activate_from_practice_squad p:nth-of-type(2),
+.player_interface_modals .move_to_practice_squad p:nth-of-type(2),
+.player_interface_modals .trade_player p:nth-of-type(2) {
+  width: 60%;
+}
+/* MOVE TO PRACTICE SQUAD */
+.player_interface_modals .move_to_practice_squad p:nth-of-type(1) {
+  width: 80%;
+}
+/* POACH PLAYER */
+.player_interface_modals .poach_player p:nth-of-type(2) {
+  width: 64%;
+}
+
+/* TRADE PLAYER */
+.player_interface_modals ._row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.player_interface_modals ._row p {
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: uppercase;
+}
+.player_interface_modals ._row p:nth-of-type(2) {
+  margin-right: 50px;
+}
+.player_interface_modals ._row button {
+  height: 50px;
+  padding-inline: 40px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  text-transform: uppercase;
+  border: 2px solid var(--primary);
+}
+.player_interface_modals ._row button:hover {
+  background-color: transparent !important;
+}
+
+@media (max-width: 1440px){
+  .player_interface_modals .modal_header_heading {
+    font-size: 26px;
+  }
+}
+@media (max-width: 900px) {
+  /* CLOSE BUTTON */
+  .close_modal_button {
+    display: none;
+  }
+  /* HEADING */
+  .player_interface_modals .modal_header_heading {
+    font-size: 24px;
+  }
+}
+@media (max-width: 600px) {
+  .player_interface_modals .ant-modal-content {
+    padding: 38px 15px !important;
+  }
+  /* HEADING */
+  .player_interface_modals .modal_header_heading {
+    font-size: 20px !important;
+    line-height: 1.5;
+  }
+  /* FOOTER */
+  .player_interface_modals .modal_footer {
+    flex-direction: column;
+  }
+  .player_interface_modals .modal_footer button {
+    height: 40px;
+    width: 100%;
+  }
+  /* AUCTION PLAYER */
+  .player_interface_modals .auction_button_groups {
+    flex-direction: column;
+  }
+  .player_interface_modals .auction_button_groups button {
+    width: 100%;
+  }
+  /* RELEASE PLAYER */
+  /* MOVE TO INJURED IR */
+  /* ACTIVATE FROM PRACTICE SQUAD */
+  /* MOVE TO PRACTICE SQUAD */
+  /* POACH PLAYER */
+  /* MOVE TO PRACTICE SQUAD */
+  /* POACH PLAYER */
+  .player_interface_modals .release_player p:nth-of-type(1),
+  .player_interface_modals .move_to_injured p:nth-of-type(1),
+  .player_interface_modals .activate_from_practice_squad p:nth-of-type(1),
+  .player_interface_modals .poach_player p:nth-of-type(1),
+  .player_interface_modals .move_to_practice_squad p:nth-of-type(1),
+  .player_interface_modals .move_to_injured p:nth-of-type(2),
+  .player_interface_modals .activate_from_practice_squad p:nth-of-type(2),
+  .player_interface_modals .move_to_practice_squad p:nth-of-type(2),
+  .player_interface_modals .poach_player p:nth-of-type(2),
+  .player_interface_modals .trade_player p:nth-of-type(1),
+  .player_interface_modals .trade_player p:nth-of-type(2) {
+    width: 90%;
+  }
+  .player_interface_modals ._row button {
+    height: 40px;
+  }
 }

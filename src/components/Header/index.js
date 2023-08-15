@@ -4,7 +4,7 @@ import { Image, Button } from 'antd'
 // Image
 import bellIcon from '../../assets/bell-icon.svg'
 import circaImage from '../../assets/teams/circa_sports_trout.png'
-import UfaflImage from '../../assets/ufafl.png'
+import logo from '../../assets/Logo.svg'
 
 const Header = () => {
   return (
@@ -50,10 +50,10 @@ const Header = () => {
           </div>
           <div className='content2'>
             <div className='image_div'>
-              <Image preview={false} src={UfaflImage} alt='UFAFL' />
+              <Image preview={false} src={logo} alt='UFAFL' />
             </div>
             <div className='content3'>
-              <div className='top'>
+              <div className='top' style={{ marginBottom: '12px' }}>
                 <span>23&apos;</span>
                 <p>Price-Pool</p>
               </div>

@@ -24,7 +24,7 @@ const AuctionPlayer = () => {
           x
         </div>
         <div className='modal_body'>
-          <h1 className='modal_header_heading'>Player Auction Creation</h1>
+          <h1 className='modal_header_heading main_heading'>Player Auction Creation</h1>
           <div className='auction_button_groups'>
             <Button type='default'>Auction Start Date</Button>
             <Button type='default'>Auction End Date</Button>

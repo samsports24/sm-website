@@ -84,7 +84,7 @@ const StandingHeader = ({ pagination = false, handlePagination = () => {} }) => 
 
   return (
     <header className='standing_header_container'>
-      <h1>Ultimate fantasy american football league</h1>
+      <h1>SAM FOOTBALL LEAGUE</h1>
       <div className='button_container'>
         {buttons?.map((v, i) => {
           return (

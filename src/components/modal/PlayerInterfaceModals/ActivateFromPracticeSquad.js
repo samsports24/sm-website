@@ -24,9 +24,9 @@ const ActivateFromPracticeSquad = () => {
           x
         </div>
         <div className='modal_body'>
-          <h1 className='modal_header_heading'>Activate From Practice Squad</h1>
+          <h1 className='modal_header_heading main_heading'>Activate From Practice Squad</h1>
 
-          <div className='release_player'>
+          <div className='center_content activate_from_practice_squad'>
             <h1 className='modal_header_heading'>ARE YOU SURE?</h1>
             <p>
               IF YOU ARE SURE THAT YOU WISH TO MOVE THIS PLAYER TO I.R., CLICK THE CONFIRM BUTTON OF

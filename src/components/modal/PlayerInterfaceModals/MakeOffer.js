@@ -1,7 +1,7 @@
 import { Button, Modal } from 'antd'
 import React, { useState } from 'react'
 
-const MoveToInjured = () => {
+const MakeOffer = () => {
   const [open, setOpen] = useState(false)
   const showModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
@@ -9,7 +9,7 @@ const MoveToInjured = () => {
   return (
     <>
       <h2 className='modal_button_text' onClick={showModal}>
-        MOVE TO INJURED RESERVE (I.R.)
+        Make Offer
       </h2>
       <Modal
         centered
@@ -24,32 +24,32 @@ const MoveToInjured = () => {
           x
         </div>
         <div className='modal_body'>
-          <h1 className='modal_header_heading main_heading'>MOVE TO INJURED RESERVE (I.R.)</h1>
+          <h1 className='modal_header_heading main_heading'>SEND PLAYER TO PRACTICE SQUAD</h1>
 
-          <div className='center_content move_to_injured'>
-            <h1 className='modal_header_heading'>ARE YOU SURE?</h1>
-            <p>
-              IF YOU ARE SURE THAT YOU WISH TO MOVE THIS PLAYER TO I.R., CLICK THE CONFIRM BUTTON OF
-              THE BOX.
-            </p>
+          <div className='center_content trade_player'>
+            <h1 className='modal_header_heading'>WHO IS GOING DOWN?</h1>
+            <p>YOU MUST SELECT A PLAYER FROM YOUR ROSTER TO SEND TO YOUR PRACTICE SQUAD</p>
             <p>
               INFO: This move will also remove the cap his of this player until he returns to your
               active roster.
             </p>
           </div>
 
-          <div className='modal_footer'>
-            <Button type='primary' className='button_1'>
-              MOVE TO INJURED I.R.
-            </Button>
-            <Button onClick={closeModal} type='primary' className='button_2'>
-              Cancel
-            </Button>
-          </div>
+          <h1 className='modal_header_heading'>TEAM ROSTER</h1>
+          {['', '', '', '', '']?.map((v, i) => {
+            return (
+              <div key={i} className='_row'>
+                <p>Position</p>
+                <p>Player Name</p>
+                <p>$Player Hit Cap</p>
+                <Button type='primary'>Select</Button>
+              </div>
+            )
+          })}
         </div>
       </Modal>
     </>
   )
 }
 
-export default MoveToInjured
+export default MakeOffer

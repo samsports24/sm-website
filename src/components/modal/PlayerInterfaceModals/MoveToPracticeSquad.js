@@ -1,7 +1,7 @@
 import { Button, Modal } from 'antd'
 import React, { useState } from 'react'
 
-const MoveToInjured = () => {
+const MoveToPracticeSquad = () => {
   const [open, setOpen] = useState(false)
   const showModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
@@ -9,7 +9,7 @@ const MoveToInjured = () => {
   return (
     <>
       <h2 className='modal_button_text' onClick={showModal}>
-        MOVE TO INJURED RESERVE (I.R.)
+        Move To Practice Squad
       </h2>
       <Modal
         centered
@@ -24,15 +24,15 @@ const MoveToInjured = () => {
           x
         </div>
         <div className='modal_body'>
-          <h1 className='modal_header_heading main_heading'>MOVE TO INJURED RESERVE (I.R.)</h1>
+          <h1 className='modal_header_heading main_heading'>Activate From Practice Squad</h1>
 
-          <div className='center_content move_to_injured'>
+          <div className='center_content move_to_practice_squad'>
             <h1 className='modal_header_heading'>ARE YOU SURE?</h1>
             <p>
-              IF YOU ARE SURE THAT YOU WISH TO MOVE THIS PLAYER TO I.R., CLICK THE CONFIRM BUTTON OF
-              THE BOX.
+              IF YOU ARE SURE THAT YOU WISH TO MAKE THIS MOVE YOU WILL HAVE TO SELECT A PLAYER FROM
+              YOUR PRACTICE SQUAD TO GO TO YOUR ACTIVE ROSTER IF YOU PRACTICE SQUAD IS FULL.
             </p>
-            <p>
+            <p style={{ marginTop: '-15px' }}>
               INFO: This move will also remove the cap his of this player until he returns to your
               active roster.
             </p>
@@ -40,7 +40,7 @@ const MoveToInjured = () => {
 
           <div className='modal_footer'>
             <Button type='primary' className='button_1'>
-              MOVE TO INJURED I.R.
+              Move To Practice Squad
             </Button>
             <Button onClick={closeModal} type='primary' className='button_2'>
               Cancel
@@ -52,4 +52,4 @@ const MoveToInjured = () => {
   )
 }
 
-export default MoveToInjured
+export default MoveToPracticeSquad
