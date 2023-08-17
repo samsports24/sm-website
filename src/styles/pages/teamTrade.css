@@ -1,0 +1,52 @@
+.team_trade_main .add-player {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.team_trade_main .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+.team_trade_main .header h2 {
+  color: white;
+  font-size: 25px;
+}
+.team_trade_main .header .left h2 {
+  margin-right: 10px;
+}
+.team_trade_main .header .right p {
+  margin-right: 10px;
+}
+
+.team_trade_main .header .left {
+  display: flex;
+  min-width: 60%;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.team_trade_main .add-player-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+}
+.team_trade_main .add-player-section p {
+  color: white;
+}
+
+/* team schedule */
+.team_trade_main .header .right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  color: white;
+}
+
+/* team settings */

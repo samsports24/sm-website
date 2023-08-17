@@ -38,6 +38,9 @@ import LeagueCalendar from '../pages/LeagueCalendar'
 import AllReports from '../pages/AllReports'
 import PlayerInterface from '../pages/PlayerInterface'
 import PracticeSquad from '../pages/PracticeSquad'
+import TeamTrade from '../pages/TeamTrade'
+import TeamSchedule from '../pages/TeamSchedule'
+import TeamSetting from '../pages/TeamSettings'
 
 // import PrivateWrapper from './PrivateRoutes'
 
@@ -90,6 +93,10 @@ const Routers = () => {
           <Route path='/coming-soon' element={<ComingSoon />} />
           <Route path='/player-interface' element={<PlayerInterface />} />
           <Route path='/practice-squad' element={<PracticeSquad />} />
+          <Route path='/practice-squad' element={<PracticeSquad />} />
+          <Route path='/team-trade' element={<TeamTrade />} />
+          <Route path='/team-schedule' element={<TeamSchedule />} />
+          <Route path='/team-setting' element={<TeamSetting />} />
           {/* </Layout> */}
         </Route>
 

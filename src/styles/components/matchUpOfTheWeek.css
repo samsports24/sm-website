@@ -7,7 +7,7 @@
 }
 .match_up_box .header {
   width: 100%;
-  padding: 0px 20px 6px 20px;
+  padding: 14px 20px 6px 20px;
 }
 .match_up_box .header h1 {
   color: var(--text);

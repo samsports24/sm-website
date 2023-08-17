@@ -46,7 +46,7 @@ const Header = () => {
         <div className='content'>
           <div className='top'>
             <span>23&apos;</span>
-            <p> Same year Price-Pool</p>
+            <p> Same year Prize-Pool</p>
           </div>
           <div className='content2'>
             <div className='image_div'>
@@ -55,11 +55,11 @@ const Header = () => {
             <div className='content3'>
               <div className='top' style={{ marginBottom: '12px' }}>
                 <span>23&apos;</span>
-                <p>Price-Pool</p>
+                <p>Prize-Pool</p>
               </div>
               <div className='top'>
                 <span>23&apos;</span>
-                <p>Price-Pool</p>
+                <p>Prize-Pool</p>
               </div>
             </div>
           </div>

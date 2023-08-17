@@ -28,7 +28,7 @@ const PoachPlayer = () => {
 
           <div className='center_content poach_player'>
             <h1 className='modal_header_heading'>ARE YOU SURE?</h1>
-            <p>IF YOU ARE SURE THAT YOU WISH TO STRAT POACHING PROCESS CLICK CONFIRM.</p>
+            <p>IF YOU ARE SURE THAT YOU WISH TO START POACHING PROCESS CLICK CONFIRM.</p>
             <p style={{ marginTop: '-15px' }}>
               INFO: This action will give the team owner of this player 24 hours to protect the
               player or to active the player to their 53-man rosters.

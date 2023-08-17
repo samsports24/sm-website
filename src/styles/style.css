@@ -14,7 +14,6 @@
 @import './modals/depthModal.css';
 @import './modals/playerInerfaceModals.css';
 
-
 /* Component CSS */
 @import './components/header.css';
 @import './components/scheduleBox.css';
@@ -74,3 +73,4 @@
 @import './pages/comingSoon.css';
 @import './pages/playerInterface.css';
 @import './pages/practiceSquad.css';
+@import './pages/teamTrade.css';
