@@ -1,0 +1,170 @@
+import React, { useState } from 'react'
+
+import { Button, Breadcrumb, Typography, Dropdown, Input } from 'antd'
+
+import Arrow from '../assets/arrow-right.svg'
+import { SearchOutlined } from '@ant-design/icons'
+
+// Component
+import Header from '../components/Header'
+import WeekPagination from '../components/WeekPagination'
+
+import barIcon from '../assets/bar-icon.svg'
+
+import { practiceSquadData } from './mockData'
+
+const items = [
+  {
+    key: '1',
+    label: <Typography.Title level={4}>FREE AGENTS</Typography.Title>,
+  },
+  {
+    key: '2',
+    label: (
+      <Typography.Title level={4} style={{ color: 'white' }}>
+        PLAYER AUCTIONS
+      </Typography.Title>
+    ),
+  },
+  {
+    key: '3',
+    label: (
+      <Typography.Title level={4} style={{ color: 'white' }}>
+        PLAYER STANDINGS
+      </Typography.Title>
+    ),
+  },
+]
+
+const FreeAgent = () => {
+  const [isEmpty] = useState(false)
+
+  return (
+    <div className='practice_squad_container team_trade_main'>
+      {/* BACK BUTTON */}
+      <Button className='back_button' type='primary'>
+        Back
+      </Button>
+
+      {/* BREADCRUMB */}
+      <section className='breadcrumb'>
+        <Breadcrumb
+          className='customize_breadcrumb'
+          separator={<img src={Arrow} />}
+          items={[
+            {
+              title: <p>Home</p>,
+            },
+            {
+              title: <p>Team</p>,
+            },
+            {
+              title: <p>Roster</p>,
+            },
+            {
+              title: <p>Player Interface</p>,
+            },
+          ]}
+        />
+      </section>
+
+      {/* HEADER */}
+      <Header />
+
+      <section className='buttons_and_pagination'>
+        <div className='buttons_group'>
+          <Button type='primary'>Home</Button>
+          <Button type='primary'>Team</Button>
+          <Dropdown menu={{ items }}>
+            <Button type='primary'>Players</Button>
+          </Dropdown>
+          <Button type='primary'>League</Button>
+        </div>
+        <WeekPagination />
+      </section>
+
+      <hr className='divider' />
+
+      <section className='squad_card_container transparent'>
+        <div className='header'>
+          <h2>FREE AGENT</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Input size='large' placeholder='SEARCH' prefix={<SearchOutlined />} />
+            <Button type='primary'>TEAM</Button>
+            <Button type='primary'>POSITION</Button>
+          </div>
+        </div>
+        {isEmpty && (
+          <div
+            style={{
+              minHeight: '70vh',
+              border: '1px solid rgba(255,255,255,0.4)',
+              padding: '30px',
+            }}
+          >
+            <Typography.Title level={5} style={{ color: 'white' }}>
+              I.R IS EMPTY
+            </Typography.Title>
+          </div>
+        )}
+        {!isEmpty &&
+          practiceSquadData?.map((v, i) => {
+            return (
+              <div key={i} className='squad_card_box'>
+                <div className='squad_header'>
+                  <h2>{v?.title}</h2>
+                </div>
+                <div className='squad_content_body'>
+                  <div className='squad_image_box'>
+                    <img src={require('../assets/player-img-6.png')} />
+                  </div>
+                  <div>
+                    <p className='squad_text1'>position</p>
+                    <p className='squad_text2'>{v?.position}</p>
+                  </div>
+                  <div>
+                    <p className='squad_text1'>player name</p>
+                    <p className='squad_text2'>{v?.playerName}</p>
+                  </div>
+                  <div>
+                    <p className='squad_text1'>age</p>
+                    <p className='squad_text2'>{v?.age}</p>
+                  </div>
+                  <div>
+                    <p className='squad_text1'>team</p>
+                    <p className='squad_text2'>{v?.team}</p>
+                  </div>
+                  <div>
+                    <p className='squad_text1'>bye</p>
+                    <p className='squad_text2'>{v?.bye}</p>
+                  </div>
+                  <div>
+                    <p className='squad_text1'>player cap #</p>
+                    <p className='squad_text2'>{v?.playerCap}</p>
+                  </div>
+                  <div>
+                    <p className='squad_text1'>
+                      year left <br /> experation
+                    </p>
+                  </div>
+                  <div>
+                    <p className='squad_text1'>
+                      point per <br /> game
+                    </p>
+                  </div>
+                  <div>
+                    <p className='squad_text1'>
+                      player <br /> rank
+                    </p>
+                  </div>
+                  <img src={barIcon} />
+                </div>
+              </div>
+            )
+          })}
+      </section>
+    </div>
+  )
+}
+
+export default FreeAgent

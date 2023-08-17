@@ -8,12 +8,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
   flex-wrap: wrap;
+}
+.team_trade_main .add-player .header {
+  margin-bottom: 30px;
 }
 .team_trade_main .header h2 {
   color: white;
-  font-size: 25px;
+  font-size: 34px;
+  font-weight: 800;
 }
 .team_trade_main .header .left h2 {
   margin-right: 10px;
@@ -48,5 +51,3 @@
   flex-wrap: wrap;
   color: white;
 }
-
-/* team settings */

@@ -243,3 +243,11 @@ tr.ant-table-expanded-row:hover > td {
   /* background-color: transparent !important; */
   background: rgba(48, 33, 93, 0.1) !important;
 }
+
+.ant-dropdown-menu.ant-dropdown-menu {
+  border-radius: 1rem;
+  padding: 15px;
+  border: 1px solid #289fc9;
+  background: rgba(48, 33, 93, 0.4);
+  backdrop-filter: blur(20px);
+}
