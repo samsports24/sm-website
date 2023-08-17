@@ -1,7 +1,7 @@
 import { Button, Modal } from 'antd'
 import React, { useState } from 'react'
 
-const MoveToPracticeSquad = () => {
+const MakeOffer = () => {
   const [open, setOpen] = useState(false)
   const showModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
@@ -24,32 +24,33 @@ const MoveToPracticeSquad = () => {
           x
         </div>
         <div className='modal_body'>
-          <h1 className='modal_header_heading main_heading'>Activate From Practice Squad</h1>
+          <h1 className='modal_header_heading main_heading'>SEND PLAYER TO PRACTICE SQUAD</h1>
 
-          <div className='center_content move_to_practice_squad'>
-            <h1 className='modal_header_heading'>ARE YOU SURE?</h1>
-            <p>
-              IF YOU ARE SURE THAT YOU WISH TO MAKE THIS MOVE YOU WILL HAVE TO SELECT A PLAYER FROM
-              YOUR PRACTICE SQUAD TO GO TO YOUR ACTIVE ROSTER IF YOU PRACTICE SQUAD IS FULL.
-            </p>
-            <p style={{ marginTop: '-15px' }}>
-              INFO: This move will also remove the cap his of this player until he returns to your
-              active roster.
+          <div className='center_content trade_player'>
+            <h1 className='modal_header_heading'>WHO IS GOING DOWN?</h1>
+            <p
+              style={{ textTransform: 'uppercase' }}
+            >{`You need to choose a player from your roster to assign to your practice squad.`}</p>
+            <p style={{ textTransform: 'uppercase' }}>
+              {`info: This action will lead to the player's Cap Hit being excluded from your team's overall total until the player is reinstated to your active roster.`}
             </p>
           </div>
 
-          <div className='modal_footer'>
-            <Button type='primary' className='button_1'>
-              Move To Practice Squad
-            </Button>
-            <Button onClick={closeModal} type='primary' className='button_2'>
-              Cancel
-            </Button>
-          </div>
+          <h1 className='modal_header_heading'>TEAM ROSTER</h1>
+          {['', '', '', '', '']?.map((v, i) => {
+            return (
+              <div key={i} className='_row'>
+                <p>Position</p>
+                <p>Player Name</p>
+                <p>$Player Hit Cap</p>
+                <Button type='primary'>Select</Button>
+              </div>
+            )
+          })}
         </div>
       </Modal>
     </>
   )
 }
 
-export default MoveToPracticeSquad
+export default MakeOffer

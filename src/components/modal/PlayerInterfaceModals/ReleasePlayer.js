@@ -28,10 +28,7 @@ const ReleasePlayer = () => {
 
           <div className='center_content release_player'>
             <h1 className='modal_header_heading'>ARE YOU SURE?</h1>
-            <p>
-              IF YOU ARE SURE THAT YOU WISH TO RELEASE THIS PLAYER, CLICK THE CONFIRM BUTTON OF THE
-              BOX.
-            </p>
+            <p>{`TO RELEASE THIS PLAYER, CLICK THE 'RELEASE' BUTTON ONCE YOU'RE SURE`}</p>
           </div>
 
           <div className='modal_footer'>

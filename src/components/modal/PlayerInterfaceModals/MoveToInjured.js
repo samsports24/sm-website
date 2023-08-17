@@ -28,13 +28,11 @@ const MoveToInjured = () => {
 
           <div className='center_content move_to_injured'>
             <h1 className='modal_header_heading'>ARE YOU SURE?</h1>
-            <p>
-              IF YOU ARE SURE THAT YOU WISH TO MOVE THIS PLAYER TO I.R., CLICK THE CONFIRM BUTTON OF
-              THE BOX.
+            <p style={{ textTransform: 'uppercase' }}>
+              {`To place this player on the Injured Reserve, click the "Move to I.R." button if you're sure.`}
             </p>
-            <p>
-              INFO: This move will also remove the cap his of this player until he returns to your
-              active roster.
+            <p style={{ textTransform: 'uppercase' }}>
+              {`info: This action will lead to the player's Cap Hit being excluded from your team's overall total until the player is reinstated to your active roster.`}
             </p>
           </div>
 

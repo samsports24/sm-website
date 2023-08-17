@@ -28,7 +28,7 @@ const AuctionPlayer = () => {
           <div className='auction_button_groups'>
             <Button type='default'>Auction Start Date</Button>
             <Button type='default'>Auction End Date</Button>
-            <Button type='default'>Opening Big Price</Button>
+            <Button type='default'>Opening Bid Price</Button>
             <Button type='default'>Reserve Bid Price</Button>
           </div>
           <div className='modal_footer'>

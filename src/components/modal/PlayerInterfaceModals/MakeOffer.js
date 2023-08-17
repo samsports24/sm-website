@@ -1,7 +1,7 @@
 import { Button, Modal } from 'antd'
 import React, { useState } from 'react'
 
-const MakeOffer = () => {
+const MoveToPracticeSquad = () => {
   const [open, setOpen] = useState(false)
   const showModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
@@ -9,7 +9,7 @@ const MakeOffer = () => {
   return (
     <>
       <h2 className='modal_button_text' onClick={showModal}>
-        Make Offer
+        make offer
       </h2>
       <Modal
         centered
@@ -24,32 +24,32 @@ const MakeOffer = () => {
           x
         </div>
         <div className='modal_body'>
-          <h1 className='modal_header_heading main_heading'>SEND PLAYER TO PRACTICE SQUAD</h1>
+          <h1 className='modal_header_heading main_heading'>Activate From Practice Squad</h1>
 
-          <div className='center_content trade_player'>
-            <h1 className='modal_header_heading'>WHO IS GOING DOWN?</h1>
-            <p>YOU MUST SELECT A PLAYER FROM YOUR ROSTER TO SEND TO YOUR PRACTICE SQUAD</p>
+          <div className='center_content move_to_practice_squad'>
+            <h1 className='modal_header_heading'>ARE YOU SURE?</h1>
             <p>
+              IF YOU ARE SURE THAT YOU WISH TO MAKE THIS MOVE YOU WILL HAVE TO SELECT A PLAYER FROM
+              YOUR PRACTICE SQUAD TO GO TO YOUR ACTIVE ROSTER IF YOU PRACTICE SQUAD IS FULL.
+            </p>
+            <p style={{ marginTop: '-15px' }}>
               INFO: This move will also remove the cap his of this player until he returns to your
               active roster.
             </p>
           </div>
 
-          <h1 className='modal_header_heading'>TEAM ROSTER</h1>
-          {['', '', '', '', '']?.map((v, i) => {
-            return (
-              <div key={i} className='_row'>
-                <p>Position</p>
-                <p>Player Name</p>
-                <p>$Player Hit Cap</p>
-                <Button type='primary'>Select</Button>
-              </div>
-            )
-          })}
+          <div className='modal_footer'>
+            <Button type='primary' className='button_1'>
+              Move To Practice Squad
+            </Button>
+            <Button onClick={closeModal} type='primary' className='button_2'>
+              Cancel
+            </Button>
+          </div>
         </div>
       </Modal>
     </>
   )
 }
 
-export default MakeOffer
+export default MoveToPracticeSquad
