@@ -17,6 +17,10 @@
   align-items: center;
   color: var(--text);
 }
+.ant-btn-primary:hover {
+  background-color: transparent !important;
+}
+
 .ant-input,
 .ant-picker {
   height: 37px;
