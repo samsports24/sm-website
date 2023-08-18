@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
 
-import { Breadcrumb, Button } from 'antd'
+import { Breadcrumb } from 'antd'
 import Arrow from '../assets/arrow-right.svg'
 // Component
 import DepthCard from '../components/DepthCard'
 import Header from '../components/Header'
-import WeekPagination from '../components/WeekPagination'
 
 // Mock Data
 import { depthCardData, playerRosterData } from './mockData'
 import PlayerRosterCard from '../components/PlayerRosterCard'
+import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
 const PlayerRoster = () => {
   const [activeFilter] = useState('Roster')
@@ -43,16 +43,7 @@ const PlayerRoster = () => {
 
       {/* HEADER */}
       <Header />
-
-      <section className='buttons_and_pagination'>
-        <div className='buttons_group'>
-          <Button type='primary'>Home</Button>
-          <Button type='primary'>Team</Button>
-          <Button type='primary'>Players</Button>
-          <Button type='primary'>League</Button>
-        </div>
-        <WeekPagination />
-      </section>
+      <ButtonsAndPagination />
 
       {/* FILTER */}
 
@@ -68,11 +59,10 @@ const PlayerRoster = () => {
         </div>
       </section>
 
-
       {/* STATS */}
       <section className='stats_container'>
         {playerRosterData?.map((v, i) => {
-          return <PlayerRosterCard style={{margin:"20px 0px"}} key={i} data={v} index={i} />
+          return <PlayerRosterCard style={{ margin: '20px 0px' }} key={i} data={v} index={i} />
         })}
       </section>
     </div>

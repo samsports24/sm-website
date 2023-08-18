@@ -5,7 +5,6 @@ import Twitter from '../assets/twitter.svg'
 
 // Component
 import Header from '../components/Header'
-import WeekPagination from '../components/WeekPagination'
 
 import {
   ActivateFromPracticeSquad,
@@ -19,6 +18,7 @@ import {
 } from '../components/modal/PlayerInterfaceModals'
 import GmCard from '../components/playerInterface/GmCard'
 import DonoughtChart from '../components/Charts/ColumnChart'
+import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 // import PlayerStats from '../components/playerInterface/PlayerStats'
 // import ContractInfo from '../components/playerInterface/ContractInfo'
 
@@ -78,15 +78,7 @@ const GmDashboard = () => {
       {/* HEADER */}
       <Header />
 
-      <section className='buttons_and_pagination'>
-        <div className='buttons_group'>
-          <Button type='primary'>Home</Button>
-          <Button type='primary'>Team</Button>
-          <Button type='primary'>Players</Button>
-          <Button type='primary'>League</Button>
-        </div>
-        <WeekPagination />
-      </section>
+      <ButtonsAndPagination />
 
       <hr className='divider' />
 

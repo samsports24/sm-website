@@ -63,12 +63,14 @@
 }
 .squad_card_container .squad_card_box {
   width: 100%;
+  margin-bottom: 20px;
 }
 .squad_card_container .squad_card_box .squad_header {
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 }
 .squad_card_container .squad_card_box h2 {
   color: var(--text);
@@ -122,6 +124,14 @@
   text-transform: uppercase;
 }
 
+.practice_squad_container .standing-table-bg {
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid rgba(110, 105, 128, 0.4);
+  background: linear-gradient(180deg, #291c4a 0%, #080611 100%);
+  overflow-x: auto;
+}
+
 @media (max-width: 1440px) {
   .practice_squad_container .buttons_and_pagination .buttons_group button {
     font-size: 15px;
@@ -135,5 +145,8 @@
     font-size: 13px;
   }
 }
-@media (max-width: 600px) {
+@media (max-width: 1200px) {
+  .squad_card_container .squad_card_box {
+    width: 1000px;
+  }
 }

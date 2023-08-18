@@ -6,8 +6,8 @@ import Arrow from '../assets/arrow-right.svg'
 
 // Component
 import Header from '../components/Header'
-import WeekPagination from '../components/WeekPagination'
 import MatchUpOfTheWeek from '../components/MatchUpOfTheWeek'
+import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
 const TeamSchedule = () => {
   return (
@@ -42,15 +42,7 @@ const TeamSchedule = () => {
       {/* HEADER */}
       <Header />
 
-      <section className='buttons_and_pagination'>
-        <div className='buttons_group'>
-          <Button type='primary'>Home</Button>
-          <Button type='primary'>Team</Button>
-          <Button type='primary'>Players</Button>
-          <Button type='primary'>League</Button>
-        </div>
-        <WeekPagination />
-      </section>
+      <ButtonsAndPagination />
 
       <hr className='divider' />
 

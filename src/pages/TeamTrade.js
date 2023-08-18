@@ -7,8 +7,8 @@ import Arrow from '../assets/arrow-right.svg'
 
 // Component
 import Header from '../components/Header'
-import WeekPagination from '../components/WeekPagination'
 import AddPlayerToTrade from '../components/modal/PlayerInterfaceModals/AddPlayerToTrade'
+import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
 // import barIcon from '../assets/bar-icon.svg'
 
@@ -47,15 +47,7 @@ const TeamTrade = () => {
       {/* HEADER */}
       <Header />
 
-      <section className='buttons_and_pagination'>
-        <div className='buttons_group'>
-          <Button type='primary'>Home</Button>
-          <Button type='primary'>Team</Button>
-          <Button type='primary'>Players</Button>
-          <Button type='primary'>League</Button>
-        </div>
-        <WeekPagination />
-      </section>
+      <ButtonsAndPagination />
 
       <hr className='divider' />
 

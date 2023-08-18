@@ -1,16 +1,16 @@
 import React from 'react'
 
-import { Button, Breadcrumb } from 'antd'
+import { Breadcrumb } from 'antd'
 
 // Component
 import Header from '../components/Header'
-import WeekPagination from '../components/WeekPagination'
 import LeagueStandings from '../components/LeagueStandings'
 import PowerRanking from '../components/PowerRanking'
 import PlayerRanking from '../components/PlayerRanking'
 import MatchUpOfTheWeek from '../components/MatchUpOfTheWeek'
 import RollingNewsFeed from '../components/RollingNewsFeed'
 import TransactionTracker from '../components/TransactionTracker'
+import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
 const ProfessionalLeague = () => {
   return (
@@ -37,15 +37,7 @@ const ProfessionalLeague = () => {
       {/* HEADER */}
       <Header />
 
-      <section className='buttons_and_pagination'>
-        <div className='buttons_group'>
-          <Button type='primary'>Home</Button>
-          <Button type='primary'>Team</Button>
-          <Button type='primary'>Players</Button>
-          <Button type='primary'>League</Button>
-        </div>
-        <WeekPagination />
-      </section>
+      <ButtonsAndPagination />
 
       <section className='league_details_container'>
         <div className='left'>

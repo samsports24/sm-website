@@ -45,6 +45,8 @@ import InjuredReserve from '../pages/InjuredReserve'
 import FreeAgent from '../pages/FreeAgent'
 import AgentPlayerInterface from '../pages/AgentPlayerInterface'
 import GmDashboard from '../pages/GmDashboard'
+import PlayerAuction from '../pages/PlayerAuction'
+import PlayerStandings from '../pages/PlayerStandings'
 
 // import PrivateWrapper from './PrivateRoutes'
 
@@ -105,6 +107,8 @@ const Routers = () => {
           <Route path='/team-setting' element={<TeamSetting />} />
           <Route path='/injured-reserve' element={<InjuredReserve />} />
           <Route path='/free-agent' element={<FreeAgent />} />
+          <Route path='/player-auction' element={<PlayerAuction />} />
+          <Route path='/player-standing' element={<PlayerStandings />} />
           {/* </Layout> */}
         </Route>
 

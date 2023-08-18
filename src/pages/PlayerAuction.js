@@ -12,7 +12,7 @@ import barIcon from '../assets/bar-icon.svg'
 import { practiceSquadData } from './mockData'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
-const InjuredReserve = () => {
+const PlayerAuction = () => {
   const [isEmpty] = useState(false)
 
   return (
@@ -53,7 +53,7 @@ const InjuredReserve = () => {
 
       <section className='squad_card_container transparent'>
         <div className='header'>
-          <h2>INJURED RESERVE</h2>
+          <h2>PLAYER AUCTION</h2>
         </div>
         {isEmpty && (
           <div
@@ -130,4 +130,4 @@ const InjuredReserve = () => {
   )
 }
 
-export default InjuredReserve
+export default PlayerAuction

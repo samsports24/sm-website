@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
 
-import { Breadcrumb, Button } from 'antd'
+import { Breadcrumb } from 'antd'
 
 // Component
 import Header from '../components/Header'
-import WeekPagination from '../components/WeekPagination'
 import DepthCard from '../components/DepthCard'
 import { ColorFilter } from '../components/FilterComponent'
 
 // Mock Data
 import { depthCardData } from './mockData'
+import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
 const DepthChart = () => {
   const [activeFilter, setActiveFilter] = useState('offence')
@@ -47,15 +47,7 @@ const DepthChart = () => {
       {/* HEADER */}
       <Header />
 
-      <section className='buttons_and_pagination'>
-        <div className='buttons_group'>
-          <Button type='primary'>Home</Button>
-          <Button type='primary'>Team</Button>
-          <Button type='primary'>Players</Button>
-          <Button type='primary'>League</Button>
-        </div>
-        <WeekPagination />
-      </section>
+      <ButtonsAndPagination />
 
       {/* FILTER */}
       <ColorFilter data={['offence', 'defence', 'special team']} handleFilter={handleFilter} />

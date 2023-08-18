@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Breadcrumb, Button } from 'antd'
+import { Breadcrumb } from 'antd'
 
 import Arrow from '../assets/arrow-right.svg'
 
@@ -10,6 +10,7 @@ import Header from '../components/Header'
 import { FiArrowLeft } from 'react-icons/fi'
 
 import moment from 'moment'
+import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
 // Mock Data
 
@@ -71,14 +72,7 @@ const ComingSoon = () => {
       {/* HEADER */}
       <Header />
 
-      <section className='buttons_and_pagination'>
-        <div className='buttons_group'>
-          <Button type='primary'>Home</Button>
-          <Button type='primary'>Team</Button>
-          <Button type='primary'>Players</Button>
-          <Button type='primary'>League</Button>
-        </div>
-      </section>
+      <ButtonsAndPagination noWeek />
 
       <section className='coming_soon'>
         <img src={require('../assets/coming-soon.png')} />
