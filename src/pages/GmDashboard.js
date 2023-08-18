@@ -1,6 +1,7 @@
 import { Button, Breadcrumb } from 'antd'
 
 import Arrow from '../assets/arrow-right.svg'
+import Twitter from '../assets/twitter.svg'
 
 // Component
 import Header from '../components/Header'
@@ -17,30 +18,31 @@ import {
   MakeOffer,
 } from '../components/modal/PlayerInterfaceModals'
 import GmCard from '../components/playerInterface/GmCard'
-import PlayerStats from '../components/playerInterface/PlayerStats'
-import ContractInfo from '../components/playerInterface/ContractInfo'
+import DonoughtChart from '../components/Charts/ColumnChart'
+// import PlayerStats from '../components/playerInterface/PlayerStats'
+// import ContractInfo from '../components/playerInterface/ContractInfo'
 
-const PlayerInterface = () => {
+const GmDashboard = () => {
   let infoData = [
     {
-      title: 'Postion',
-      value: 'Gridiron Seals (UFAFL)',
+      title: 'All Time Record',
+      value: '120',
     },
     {
-      title: 'Height',
-      value: `6'4"`,
+      title: 'Current Team Record',
+      value: `98`,
     },
     {
-      title: 'Years in League',
-      value: '3 Years',
+      title: 'All-Time Playoff Record',
+      value: '58',
     },
     {
-      title: 'Player College',
-      value: 'College Name',
+      title: 'Current Team Playoff Record',
+      value: '28',
     },
     {
-      title: 'Age',
-      value: '28 (Mar 21, 1995)',
+      title: <img src={Twitter} />,
+      value: '@ashawnrobinson',
     },
   ]
 
@@ -132,11 +134,16 @@ const PlayerInterface = () => {
       <hr className='divider' />
 
       <section className='player_info_container'>
-        <PlayerStats />
-        <ContractInfo />
+        <div className='player_info_card info_center'>
+          <h2>Team Financials</h2>
+        </div>
+        <div className='player_info_card info_right'>
+          <h2>Team Financials Projects Graph</h2>
+          <DonoughtChart />
+        </div>
       </section>
     </div>
   )
 }
 
-export default PlayerInterface
+export default GmDashboard

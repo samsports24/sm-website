@@ -1,92 +1,64 @@
-import React from 'react'
-import { Column } from '@ant-design/charts'
-import theme from '../../theme.json'
+import { Pie } from '@ant-design/plots'
 
-const ColumnChart = ({ data }) => {
-  const Arr = [
+const DonoughtChart = () => {
+  const data = [
     {
-      month: 'Jan',
-      cost: 10000,
+      type: 'type 1',
+      value: 30,
     },
     {
-      month: 'Feb',
-      cost: 12000,
+      type: 'type 2',
+      value: 40,
     },
     {
-      month: 'Mar',
-      cost: 11500,
+      type: 'type 3',
+      value: 15,
     },
     {
-      month: 'Apr',
-      cost: 20000,
-    },
-    {
-      month: 'May',
-      cost: 22000,
-    },
-    {
-      month: 'June',
-      cost: 16000,
-    },
-    {
-      month: 'July',
-      cost: 8000,
-    },
-    {
-      month: 'Aug',
-      cost: 8000,
-    },
-    {
-      month: 'Sept',
-      cost: 9000,
-    },
-    {
-      month: 'Oct',
-      cost: 26000,
-    },
-    {
-      month: 'Nov',
-      cost: 9600,
-    },
-    {
-      month: 'Dec',
-      cost: 30000,
+      type: 'type 4',
+      value: 15,
     },
   ]
-
-  console.log('Arr', Arr)
   const config = {
+    appendPadding: 10,
     data,
-    xField: 'month',
-    yField: 'cost',
-    color: theme['primary-color'],
+    angleField: 'value',
+    colorField: 'type',
+    legend: false,
+    radius: 1,
+    color: ['#30215D', '#289FC9', '#043d41', '#103927'],
+    innerRadius: 0.5,
     label: {
-      position: 'middle',
+      type: 'outer',
+      offset: '30%',
+      content: 'Lorem Ipsum {value}',
       style: {
-        fill: '#FFFFFF',
-        opacity: 0.6,
+        textAlign: 'center',
+        fontSize: 12,
       },
     },
-    xAxis: {
-      label: {
-        autoHide: true,
-        autoRotate: false,
+    interactions: [
+      {
+        type: 'element-selected',
+      },
+      {
+        type: 'element-active',
+      },
+    ],
+    statistic: {
+      title: false,
+      content: {
         style: {
-          fill: 'gray',
+          color: '#00A7E5',
+          fontSize: '35px',
+          whiteSpace: 'pre-wrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
         },
-      },
-    },
-    meta: {
-      cost: {
-        alias: 'Cost (Rs)',
-      },
-      sales: {
-        alias: 'xyz',
+        content: '100%',
       },
     },
   }
-  return <Column {...config} style={{ margin: '60px 0' }} />
+  return <Pie {...config} />
 }
-
-// loading={Arr.length > 0 ? false : true}
-export default ColumnChart
+export default DonoughtChart

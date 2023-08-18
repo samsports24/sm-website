@@ -43,6 +43,8 @@ import TeamSchedule from '../pages/TeamSchedule'
 import TeamSetting from '../pages/TeamSettings'
 import InjuredReserve from '../pages/InjuredReserve'
 import FreeAgent from '../pages/FreeAgent'
+import AgentPlayerInterface from '../pages/AgentPlayerInterface'
+import GmDashboard from '../pages/GmDashboard'
 
 // import PrivateWrapper from './PrivateRoutes'
 
@@ -96,6 +98,8 @@ const Routers = () => {
           <Route path='/practice-squad' element={<PracticeSquad />} />
 
           <Route path='/player-interface' element={<PlayerInterface />} />
+          <Route path='/agent-player-interface' element={<AgentPlayerInterface />} />
+          <Route path='/gm-dashboard' element={<GmDashboard />} />
           <Route path='/team-trade' element={<TeamTrade />} />
           <Route path='/team-schedule' element={<TeamSchedule />} />
           <Route path='/team-setting' element={<TeamSetting />} />

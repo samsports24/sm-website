@@ -20,7 +20,7 @@ import GmCard from '../components/playerInterface/GmCard'
 import PlayerStats from '../components/playerInterface/PlayerStats'
 import ContractInfo from '../components/playerInterface/ContractInfo'
 
-const PlayerInterface = () => {
+const AgentPlayerInterface = () => {
   let infoData = [
     {
       title: 'Postion',
@@ -121,7 +121,7 @@ const PlayerInterface = () => {
         <PoachPlayer />
       </section>
 
-      <GmCard />
+      <GmCard isButton />
       <div className='info-card'>
         {infoData.map((item, index) => (
           <h3 key={index}>
@@ -139,4 +139,4 @@ const PlayerInterface = () => {
   )
 }
 
-export default PlayerInterface
+export default AgentPlayerInterface

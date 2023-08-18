@@ -217,6 +217,7 @@
 .player_interface_container .player_info_container .info_right {
   width: 430px;
 }
+
 @media (max-width: 1800px) {
   .player_interface_container .player_info_container .info_left,
   .player_interface_container .player_info_container .info_right {
@@ -274,7 +275,8 @@
   }
   .player_interface_container .player_info_container .info_left,
   .player_interface_container .player_info_container .info_right {
-    width: calc(50% - 25px);
+    width: 100%;
+    /* width: calc(50% - 25px); */
     min-height: auto;
   }
   .player_interface_container .player_info_container .info_left {
@@ -346,7 +348,7 @@
 }
 
 /* new css */
-.player_info_box_new {
+.player_interface_container .player_info_box_new {
   border-radius: 1rem;
   /* opacity: 0.2; */
   background: url('../../assets/trans-league-banner.png');
@@ -354,19 +356,23 @@
   /* background-blend-mode: multiply; */
   width: 100%;
   background-size: 100% 100%;
-  min-height: 450px;
+  min-height: 380px;
+  margin-top: 30px;
+  padding: 0 30px 0 0;
+
   /* background-blend-mode: color-dodge; */
 }
-.player_info_box_new .left {
+.player_interface_container .player_info_box_new .left {
   background: url('../../assets/gm.png');
   background-repeat: no-repeat;
   background-position: right bottom;
-  height: 450px;
+  height: 380px;
   width: 100%;
   padding: 30px 0 0 60px;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+  background-size: 50%;
 }
 
 .player_interface_container .player_info_box_new .active {
@@ -394,6 +400,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding-left: 30px;
 }
 .player_interface_container .player_info_box_new .box .text1 {
   color: var(--grayText) !important;
@@ -419,4 +426,80 @@
   line-height: 28px;
   opacity: 0.5;
   margin-top: 10px !important;
+}
+
+.player_interface_container .player_info_box_new .stats-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.player_interface_container .player_info_box_new .stats-bar {
+  margin-top: 20px;
+}
+
+.player_interface_container .player_info_box_new .stats-bar .player-news .years {
+  display: flex;
+  gap: 15px;
+  margin: 10px 0;
+}
+
+.player_interface_container .player_info_box_new .stats-bar img {
+  border-radius: 8px;
+  border: 1px solid rgba(110, 105, 128, 0.4);
+}
+.player_interface_container .info-card {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 35px;
+  margin: 0 auto;
+  width: 80%;
+  flex-wrap: wrap;
+}
+
+.player_interface_container .info-card h3 {
+  color: rgba(255, 255, 255, 0.4) !important;
+  /* opacity: 0.5; */
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  margin: 5px 0 !important;
+}
+.player_interface_container .info-card h3 span {
+  color: var(--text) !important;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+@media (max-width: 1300px) {
+  .player_interface_container .player_info_box_new {
+    background: transparent;
+    border: 1px solid rgba(110, 105, 128, 0.4);
+    min-height: auto;
+    padding: 20px 30px;
+  }
+  .player_interface_container .player_info_box_new .left {
+    padding: 0;
+  }
+}
+
+@media (max-width: 550px) {
+  .player_interface_container .player_info_container {
+    overflow-x: auto;
+  }
+  .player_interface_container .player_info_container .info_center {
+    width: 1200px;
+  }
+  .player_interface_container .player_info_container .player_info_card .content div {
+    min-width: 70px;
+  }
+  .player_interface_container .player_info_container .player_info_card {
+    min-height: auto;
+  }
+  .player_interface_container .player_info_box_new .stats-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .player_interface_container .player_info_box_new .stats-bar .player-news .years {
+    flex-wrap: wrap;
+  }
 }
