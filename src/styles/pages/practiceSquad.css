@@ -23,6 +23,13 @@
   gap: 12px;
 }
 
+.dropdown-link {
+  transition: 0.3s;
+}
+
+.dropdown-link:hover {
+  color: var(--primary) !important;
+}
 .practice_squad_container .buttons_and_pagination .buttons_group button,
 .back_button {
   padding: 10px 28px;

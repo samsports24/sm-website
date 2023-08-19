@@ -3,6 +3,7 @@ import React from 'react'
 import { Button, Breadcrumb } from 'antd'
 
 import Arrow from '../assets/arrow-right.svg'
+import { useNavigate } from 'react-router-dom'
 
 // Component
 import Header from '../components/Header'
@@ -20,10 +21,11 @@ import {
   ReleasePlayer,
   MoveToPracticeSquad,
   TradePlayer,
-  MakeOffer,
 } from '../components/modal/PlayerInterfaceModals'
 
 const PlayerInterface = () => {
+  const navigate = useNavigate()
+
   return (
     <div className='player_interface_container'>
       {/* BACK BUTTON */}
@@ -94,7 +96,14 @@ const PlayerInterface = () => {
 
         <span className='divider_bar'>|</span>
 
-        <MakeOffer />
+        <h2
+          onClick={() => {
+            navigate('/team-trade')
+          }}
+          className='modal_button_text'
+        >
+          MAKE OFFER
+        </h2>
 
         <span className='divider_bar'>|</span>
 

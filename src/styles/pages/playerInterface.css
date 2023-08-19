@@ -347,6 +347,42 @@
   }
 }
 
+.player_interface_container .bid_history_container {
+  width: 100%;
+  min-height: 300px;
+  border: 1px solid rgba(110, 105, 128, 0.4);
+  background: transparent;
+  border-radius: 1rem;
+  padding: 20px;
+  margin-top: 40px;
+}
+.player_interface_container .bid_section .bid_card img {
+  margin-right: 15px;
+}
+
+.player_interface_container .bid_section .bid_card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 1px solid rgba(110, 105, 128, 0.4);
+  border-radius: 1rem;
+  padding: 30px;
+  min-height: 150px;
+}
+.player_interface_container .bid_section .bid_card_normal {
+  flex-direction: column;
+  gap: 15px;
+}
+
+.player_interface_container .bid_section .bid_card_btns {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  border-radius: 1rem;
+  padding: 30px;
+  min-height: 150px;
+}
 /* new css */
 .player_interface_container .player_info_box_new {
   border-radius: 1rem;

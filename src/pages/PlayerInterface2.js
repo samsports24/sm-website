@@ -1,6 +1,7 @@
 import { Button, Breadcrumb } from 'antd'
 
 import Arrow from '../assets/arrow-right.svg'
+import { useNavigate } from 'react-router-dom'
 
 // Component
 import Header from '../components/Header'
@@ -13,7 +14,6 @@ import {
   ReleasePlayer,
   MoveToPracticeSquad,
   TradePlayer,
-  MakeOffer,
 } from '../components/modal/PlayerInterfaceModals'
 import GmCard from '../components/playerInterface/GmCard'
 import PlayerStats from '../components/playerInterface/PlayerStats'
@@ -21,6 +21,8 @@ import ContractInfo from '../components/playerInterface/ContractInfo'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
 const PlayerInterface = () => {
+  const navigate = useNavigate()
+
   let infoData = [
     {
       title: 'Postion',
@@ -106,7 +108,14 @@ const PlayerInterface = () => {
 
         <span className='divider_bar'>|</span>
 
-        <MakeOffer />
+        <h2
+          onClick={() => {
+            navigate('/team-trade')
+          }}
+          className='modal_button_text'
+        >
+          MAKE OFFER
+        </h2>
 
         <span className='divider_bar'>|</span>
 

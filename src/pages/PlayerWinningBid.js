@@ -1,8 +1,8 @@
-import { Button, Breadcrumb } from 'antd'
+import { Button, Breadcrumb, Row, Col, Typography } from 'antd'
+import { useNavigate } from 'react-router-dom'
 
 import Arrow from '../assets/arrow-right.svg'
-import Twitter from '../assets/twitter.svg'
-import { useNavigate } from 'react-router-dom'
+import Image from '../assets/logo2.png'
 
 // Component
 import Header from '../components/Header'
@@ -17,34 +17,33 @@ import {
   TradePlayer,
 } from '../components/modal/PlayerInterfaceModals'
 import GmCard from '../components/playerInterface/GmCard'
-import DonoughtChart from '../components/Charts/ColumnChart'
+import PlayerStats from '../components/playerInterface/PlayerStats'
+import ContractInfo from '../components/playerInterface/ContractInfo'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
-// import PlayerStats from '../components/playerInterface/PlayerStats'
-// import ContractInfo from '../components/playerInterface/ContractInfo'
 
-const GmDashboard = () => {
+const PlayerWinningBid = () => {
   const navigate = useNavigate()
 
   let infoData = [
     {
-      title: 'All Time Record',
-      value: '120',
+      title: 'Postion',
+      value: 'Gridiron Seals (UFAFL)',
     },
     {
-      title: 'Current Team Record',
-      value: `98`,
+      title: 'Height',
+      value: `6'4"`,
     },
     {
-      title: 'All-Time Playoff Record',
-      value: '58',
+      title: 'Years in League',
+      value: '3 Years',
     },
     {
-      title: 'Current Team Playoff Record',
-      value: '28',
+      title: 'Player College',
+      value: 'College Name',
     },
     {
-      title: <img src={Twitter} />,
-      value: '@ashawnrobinson',
+      title: 'Age',
+      value: '28 (Mar 21, 1995)',
     },
   ]
 
@@ -124,7 +123,7 @@ const GmDashboard = () => {
         <PoachPlayer />
       </section>
 
-      <GmCard />
+      <GmCard isButton />
       <div className='info-card'>
         {infoData.map((item, index) => (
           <h3 key={index}>
@@ -134,17 +133,29 @@ const GmDashboard = () => {
       </div>
       <hr className='divider' />
 
+      <section className='bid_section'>
+        <Row gutter={[30, 30]} align={'middle'}>
+          <Col xs={24}>
+            <div className='bid_card'>
+              <img src={Image} />
+              <Typography.Title level={2}>Winning Bid</Typography.Title>
+            </div>
+          </Col>
+        </Row>
+      </section>
+
       <section className='player_info_container'>
-        <div className='player_info_card info_center'>
-          <h2>Team Financials</h2>
-        </div>
-        <div className='player_info_card info_right'>
-          <h2>Team Financials Projects Graph</h2>
-          <DonoughtChart />
+        <PlayerStats />
+        <ContractInfo />
+      </section>
+
+      <section className='bid_history_container'>
+        <div className='header'>
+          <h2>BID HISTORY</h2>
         </div>
       </section>
     </div>
   )
 }
 
-export default GmDashboard
+export default PlayerWinningBid

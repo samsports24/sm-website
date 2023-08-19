@@ -1,9 +1,13 @@
 import { Button } from 'antd'
 import moment from 'moment'
 import React from 'react'
+import {useNavigate} from 'react-router-dom'
 import { AiOutlineArrowRight } from 'react-icons/ai'
 
 const LeagueScoreCard = ({ data }) => {
+
+  const navigate = useNavigate()
+
   let date = () => `${moment(data?.date).format('ddd MM/YY')}`.toUpperCase()
   return (
     <div className='league-score-card'>
@@ -23,7 +27,9 @@ const LeagueScoreCard = ({ data }) => {
         </div>
       ))}
       <div className='line'></div>
-      <Button type='primary' style={{ alignSelf: 'end' }}>
+      <Button onClick={() => {
+        navigate("/game-details")
+      }} type='primary' style={{ alignSelf: 'end' }}>
         Game Details &nbsp; <AiOutlineArrowRight className='button-icon' size={16} />
       </Button>
     </div>

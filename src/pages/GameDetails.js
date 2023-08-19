@@ -10,9 +10,10 @@ import Player2 from '../assets/player-img-2-60x60.png'
 
 // Component
 import Header from '../components/Header'
-import ScheduleBox from '../components/ScheduleBox'
+// import ScheduleBox from '../components/ScheduleBox'
 import ScoreCardTeam from '../components/cards/ScoreCardTeam'
 import ScoreCardPlayer from '../components/cards/ScoreCardPlayer'
+import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
 const gameData = [
   { logo: AtlantaLogo, handle: '@MrMongrue84', name: 'Atlanta Legion', decimal: '17.73' },
@@ -57,9 +58,10 @@ const GameDetails = () => {
       {/* HEADER */}
       <Header />
 
-      <main className='wrapper'>
+      <main className='practice_squad_container wrapper'>
         {/* SCHEDULE ONE */}
-        <ScheduleBox />
+        {/* <ScheduleBox /> */}
+        <ButtonsAndPagination />
 
         {/* SCHEDULE TWO */}
         <section className='schedule_box2'>

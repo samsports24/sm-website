@@ -47,6 +47,8 @@ import AgentPlayerInterface from '../pages/AgentPlayerInterface'
 import GmDashboard from '../pages/GmDashboard'
 import PlayerAuction from '../pages/PlayerAuction'
 import PlayerStandings from '../pages/PlayerStandings'
+import PlayerLiveAuction from '../pages/PlayerLiveAuction'
+import PlayerWinningBid from '../pages/PlayerWinningBid'
 
 // import PrivateWrapper from './PrivateRoutes'
 
@@ -101,6 +103,8 @@ const Routers = () => {
 
           <Route path='/player-interface' element={<PlayerInterface />} />
           <Route path='/agent-player-interface' element={<AgentPlayerInterface />} />
+          <Route path='/player-live-auction' element={<PlayerLiveAuction />} />
+          <Route path='/player-winning-bid' element={<PlayerWinningBid />} />
           <Route path='/gm-dashboard' element={<GmDashboard />} />
           <Route path='/team-trade' element={<TeamTrade />} />
           <Route path='/team-schedule' element={<TeamSchedule />} />

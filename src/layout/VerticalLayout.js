@@ -52,7 +52,7 @@ const VerticalLayout = ({ children, active }) => {
             top: 0,
             bottom: 0,
             background: 'var(--sidebar)',
-            boxShadow: 'box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;',
+            boxShadow: 'box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px',
           }}
         >
           <div className='company-logo'>
