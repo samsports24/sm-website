@@ -164,17 +164,86 @@ const ButtonsAndPagination = ({ noWeek }) => {
     },
   ]
 
+  const leagueItems = [
+    {
+      key: '1',
+      label: (
+        <Typography.Title
+          onClick={() => {
+            navigate('/leagueScore')
+          }}
+          level={4}
+          className='dropdown-link'
+        >
+          LIVE SCORING
+        </Typography.Title>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <Typography.Title
+          onClick={() => {
+            navigate('/league-standings')
+          }}
+          className='dropdown-link'
+          level={4}
+        >
+          STANDINGS
+        </Typography.Title>
+      ),
+    },
+    {
+      key: '3',
+      label: (
+        <Typography.Title
+          onClick={() => {
+            navigate('/playoff')
+          }}
+          className='dropdown-link'
+          level={4}
+        >
+          PLAYOFF OUTLOOK
+        </Typography.Title>
+      ),
+    },
+    {
+      key: '4',
+      label: (
+        <Typography.Title
+          onClick={() => {
+            navigate('/draft-picks')
+          }}
+          className='dropdown-link'
+          level={4}
+        >
+          PLAYOFF DRAFTROOM
+        </Typography.Title>
+      ),
+    },
+  ]
+
   return (
     <section className='buttons_and_pagination'>
       <div className='buttons_group'>
-        <Button type='primary'>Home</Button>
+        <Button
+          type='primary'
+          onClick={() => {
+            navigate('/professional-league')
+          }}
+        >
+          Home
+        </Button>
         <Dropdown trigger={['hover', 'click']} menu={{ items: teamItems }}>
           <Button type='primary'>Team</Button>
         </Dropdown>
         <Dropdown trigger={['hover', 'click']} menu={{ items: playerItems }}>
           <Button type='primary'>Players</Button>
         </Dropdown>
-        <Button type='primary'>League</Button>
+
+        <Dropdown trigger={['hover', 'click']} menu={{ items: leagueItems }}>
+          <Button type='primary'>League</Button>
+        </Dropdown>
       </div>
       {!noWeek && <WeekPagination />}
     </section>

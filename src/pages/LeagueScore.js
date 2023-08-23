@@ -6,13 +6,14 @@ import { Col, Row } from 'antd'
 
 // Component
 import Header from '../components/Header'
-import ScheduleBox from '../components/ScheduleBox'
+// import ScheduleBox from '../components/ScheduleBox'
 import LeagueScoreCard from '../components/cards/leagueScoreCard'
 import Pagination from '../components/Pagination'
 
 // Mock Data
 import { leagueScoreData } from './mockData'
 import { useNavigate } from 'react-router-dom'
+import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
 const LeagueScore = () => {
   const navigate = useNavigate()
@@ -28,9 +29,11 @@ const LeagueScore = () => {
       {/* HEADER */}
       <Header />
 
-      <main className='wrapper'>
+      <main className='practice_squad_container wrapper'>
         {/* SCHEDULE ONE */}
-        <ScheduleBox />
+        {/* <ScheduleBox /> */}
+
+        <ButtonsAndPagination />
 
         {/* SCHEDULE TWO */}
         <section className='schedule_box2'>

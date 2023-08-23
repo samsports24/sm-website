@@ -13,7 +13,7 @@ import PhoneIcon from '../assets/phone-icon.svg'
 import GlobeIcon from '../assets/globe-icon.svg'
 
 const MainMenu = ({ active }) => {
-  const isAuthenticated = localStorage.getItem('token')
+  // const isAuthenticated = localStorage.getItem('token')
   const navigate = useNavigate()
   const login = () => navigate('/login')
   const signUp = () => navigate('/sign-up')
@@ -30,7 +30,7 @@ const MainMenu = ({ active }) => {
           // key='dashboard'
           className={'sidebar-menu'}
           icon={<img src={GlobeIcon} />}
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/dashboard')}
         >
           Home
         </Menu.Item>
@@ -39,7 +39,9 @@ const MainMenu = ({ active }) => {
           className={'sidebar-menu'}
           icon={<img src={PlayerIcon} />}
           onClick={() => {
-            isAuthenticated ? navigate('/leagueScore') : navigate('/transactions')
+            navigate('/professional-league')
+
+            // isAuthenticated ? navigate('/leagueScore') : navigate('/transactions')
           }}
         >
           Fantasy Leagues
@@ -48,7 +50,7 @@ const MainMenu = ({ active }) => {
           // key='dashboard'
           className={'sidebar-menu'}
           icon={<img src={ScoutingIcon} />}
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/scouting')}
         >
           Scouting
         </Menu.Item>
@@ -64,7 +66,7 @@ const MainMenu = ({ active }) => {
           // key='dashboard'
           className={'sidebar-menu'}
           icon={<img src={LeagueIcon} />}
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/leagues')}
         >
           League
         </Menu.Item>
@@ -80,7 +82,7 @@ const MainMenu = ({ active }) => {
           // key='dashboard'
           className={'sidebar-menu'}
           icon={<img src={ScoreIcon} />}
-          onClick={() => navigate('/dashboard')}
+          onClick={() => navigate('/token')}
         >
           SAM Sports Token
         </Menu.Item>
@@ -88,7 +90,7 @@ const MainMenu = ({ active }) => {
           // key='dashboard'
           className={'sidebar-menu'}
           icon={<img src={TeamIcon} />}
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/about')}
         >
           About Us
         </Menu.Item>
@@ -96,7 +98,7 @@ const MainMenu = ({ active }) => {
           // key='dashboard'
           className={'sidebar-menu'}
           icon={<img src={PhoneIcon} />}
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/contact')}
         >
           Contact Us
         </Menu.Item>
