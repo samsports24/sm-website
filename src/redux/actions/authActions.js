@@ -22,7 +22,7 @@ export const authLogin = (payload, navigate) => {
             duration: 2,
           })
           window.location.reload()
-          navigate('/')
+          navigate('/professional-league')
         }
       }
     } catch (err) {

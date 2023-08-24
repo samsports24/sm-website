@@ -24,7 +24,7 @@ const SignIn = () => {
     console.log(values)
     setLoading(false)
     localStorage.setItem('token', 'This is temporary token')
-    navigate('/dashboard')
+    navigate('/professional-league')
   }
   const onChange = (e) => {
     console.log(`checked = ${e.target.checked}`)

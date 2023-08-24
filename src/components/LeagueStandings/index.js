@@ -3,13 +3,20 @@ import { BiRightArrowAlt } from 'react-icons/bi'
 
 // Mock Data
 import { proLeagueStandingsData } from '../../pages/mockData'
+import { useNavigate } from 'react-router-dom'
 
 const LeagueStandings = () => {
+  const navigate = useNavigate()
   return (
     <div className='league_standings_box'>
       <header>
         <h3>League Standings</h3>
-        <p>
+        <p
+          style={{ cursor: 'pointer' }}
+          onClick={() => {
+            navigate('/league-standings')
+          }}
+        >
           See Details <BiRightArrowAlt size={18} />
         </p>
       </header>

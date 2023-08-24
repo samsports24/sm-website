@@ -39,7 +39,7 @@ const MainMenu = ({ active }) => {
           className={'sidebar-menu'}
           icon={<img src={PlayerIcon} />}
           onClick={() => {
-            navigate('/professional-league')
+            navigate('/fantasy-league')
 
             // isAuthenticated ? navigate('/leagueScore') : navigate('/transactions')
           }}

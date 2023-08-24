@@ -55,7 +55,7 @@ const ButtonsAndPagination = ({ noWeek }) => {
       label: (
         <Typography.Title
           onClick={() => {
-            navigate('/roster')
+            navigate('/player-roster')
           }}
           level={4}
           className='dropdown-link'

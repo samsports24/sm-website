@@ -1,7 +1,7 @@
-import { Routes, Route, BrowserRouter } from 'react-router-dom'
+import { Routes, Route, BrowserRouter, Outlet } from 'react-router-dom'
 import Login from '../pages/Login'
 import PrivateWrapper from './PrivateRoutes'
-// import Layout from '../layout/Layout'
+import Layout from '../layout/Layout'
 // import Login2 from '../pages/Login2'
 import SignUp from '../pages/SignUp'
 import ForgotPassword from '../pages/ForgotPassword'
@@ -19,7 +19,7 @@ import ProfessionalLeague from '../pages/ProfessionalLeague'
 // import Players from '../pages/Players'
 // import Teams from '../pages/Teams'
 // import PlayerDetails from '../pages/PlayerDetails'
-// import LeagueStandings from '../pages/LeagueStandings'
+import LeagueStandings from '../pages/LeagueStandings'
 // import StandingDetail from '../pages/StandingDetail'
 // import PlayerStats from '../pages/PlayerStats'
 // import Transactions from '../pages/Transactions'
@@ -32,13 +32,13 @@ import ProfessionalLeague from '../pages/ProfessionalLeague'
 // import RosterWStats from '../pages/RosterWStats'
 // import Roster from '../pages/Roster'
 // import RosterFullFormat from '../pages/RosterFullFormat'
-// import DepthChart from '../pages/DepthChart'
-// import PlayerRoster from '../pages/PlayerRoster'
+import DepthChart from '../pages/DepthChart'
+import PlayerRoster from '../pages/PlayerRoster'
 // import LeagueRules from '../pages/LeagueRules'
 // import LeagueCalendar from '../pages/LeagueCalendar'
 // import AllReports from '../pages/AllReports'
-// import PlayerInterface from '../pages/PlayerInterface2'
-// import PracticeSquad from '../pages/PracticeSquad'
+import PlayerInterface from '../pages/PlayerInterface2'
+import PracticeSquad from '../pages/PracticeSquad'
 // import TeamTrade from '../pages/TeamTrade'
 // import TeamSchedule from '../pages/TeamSchedule'
 // import TeamSetting from '../pages/TeamSettings'
@@ -54,16 +54,16 @@ import ProfessionalLeague from '../pages/ProfessionalLeague'
 // import PrivateWrapper from './PrivateRoutes'
 
 const Routers = () => {
-  // const Component = () => {
-  //   let token = localStorage.getItem('token')
-  //   if (token) return <Navigate to={'/dashboard'} />
-  //   else
-  //     return (
-  //       <Layout>
-  //         <Outlet />
-  //       </Layout>
-  //     )
-  // }
+  const Component = () => {
+    // let token = localStorage.getItem('token')
+    // if (token) return <Navigate to={'/dashboard'} />
+    // else
+    return (
+      <Layout>
+        <Outlet />
+      </Layout>
+    )
+  }
 
   return (
     <BrowserRouter>
@@ -72,17 +72,14 @@ const Routers = () => {
         <Route element={<PrivateWrapper />}>
           {/* <Layout active={'dashboard'}> */}
           <Route path='/dashboard' element={<Dashboard />} />
-          <Route path='/fantasy-league' element={<FantasyLeague />} />
           <Route path='*' element={<ComingSoon />} />
           <Route path='/leagueScore' element={<LeagueScore />} />
           <Route path='/game-details' element={<GameDetails />} />
-          <Route path='/professional-league' element={<ProfessionalLeague />} />
 
           {/* <Route path='/teams' element={<Teams />} />
           <Route path='/player-details' element={<PlayerDetails />} />
           <Route path='/edit-profile' element={<EditProfile />} />
           <Route path='/players' element={<Players />} />
-          <Route path='/league-standings' element={<LeagueStandings />} />
           <Route path='/standing-detail' element={<StandingDetail />} />
           <Route path='/player-stats' element={<PlayerStats />} />
           <Route path='/transactions' element={<Transactions />} />
@@ -92,17 +89,11 @@ const Routers = () => {
           <Route path='/adp-report' element={<AdpReport />} />
           <Route path='/draft-picks' element={<DraftPicks />} />
           <Route path='/aav-report' element={<AavReport />} />
-          <Route path='/roster-wstats' element={<RosterWStats />} />
-          <Route path='/roster' element={<Roster />} />
-          <Route path='/player-roster' element={<PlayerRoster />} />
-          <Route path='/roster-fullformat' element={<RosterFullFormat />} />
+       
           <Route path='/league-rules' element={<LeagueRules />} />
           <Route path='/league-calendar' element={<LeagueCalendar />} />
           <Route path='/all-reports' element={<AllReports />} />
-          <Route path='/depth-chart' element={<DepthChart />} />
           <Route path='/coming-soon' element={<ComingSoon />} />
-          <Route path='/practice-squad' element={<PracticeSquad />} />
-          <Route path='/player-interface' element={<PlayerInterface />} />
           <Route path='/agent-player-interface' element={<AgentPlayerInterface />} />
           <Route path='/player-live-auction' element={<PlayerLiveAuction />} />
           <Route path='/player-winning-bid' element={<PlayerWinningBid />} />
@@ -117,10 +108,21 @@ const Routers = () => {
           {/* </Layout> */}
         </Route>
 
-        {/* <Route element={<Component />}>
-        </Route> */}
+        <Route element={<Component />}>
+          {/* <Route path='/roster-wstats' element={<RosterWStats />} /> */}
+          {/* <Route path='/roster' element={<Roster />} /> */}
+          {/* <Route path='/roster-fullformat' element={<RosterFullFormat />} /> */}
+          <Route path='/' element={<Home />} />
+          <Route path='/player-interface' element={<PlayerInterface />} />
 
-        <Route path='/' element={<Home />} />
+          <Route path='/fantasy-league' element={<FantasyLeague />} />
+          <Route path='/professional-league' element={<ProfessionalLeague />} />
+          <Route path='/player-roster' element={<PlayerRoster />} />
+          <Route path='/practice-squad' element={<PracticeSquad />} />
+          <Route path='/depth-chart' element={<DepthChart />} />
+          <Route path='/league-standings' element={<LeagueStandings />} />
+        </Route>
+
         <Route path='/login' element={<Login />} />
         {/* <Route path='/login-screen2' element={<Login2 />} /> */}
         <Route path='/sign-up' element={<SignUp />} />

@@ -1,9 +1,12 @@
 import React from 'react'
 
 import { Table } from 'antd'
+import { useNavigate } from 'react-router-dom'
 
 const PlayerRosterCard = ({ data, index, style }) => {
   const { name, pts, age, team, bye, playerRank, playerCap, data: tableData } = data
+
+  const navigate = useNavigate()
 
   const columns = [
     {
@@ -101,7 +104,12 @@ const PlayerRosterCard = ({ data, index, style }) => {
   return (
     <div className='stats_card_container' style={style || null}>
       <header>
-        <h3>
+        <h3
+          style={{ cursor: 'pointer' }}
+          onClick={() => {
+            navigate('/player-interface')
+          }}
+        >
           {index + 1}. &nbsp;&nbsp; {name}
         </h3>
       </header>
@@ -141,7 +149,7 @@ const PlayerRosterCard = ({ data, index, style }) => {
           pagination={false}
           scroll={{ x: 800 }}
           style={{
-            borderBottomLeftRadius:'10px',
+            borderBottomLeftRadius: '10px',
           }}
         />
       </section>

@@ -21,7 +21,7 @@ const FantasyLeague = () => {
               item: [
                 {
                   name: 'Professional Leagues',
-                  navigate: '',
+                  navigate: '/professional-league',
                 },
                 {
                   name: 'Public Leagues',
