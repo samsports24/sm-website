@@ -99,6 +99,26 @@ const VerticalLayout = ({ children, active }) => {
                   COMING <b>SOON</b>
                 </h1>
               )}
+              {pathname === '/choose-your-game-step1' && (
+                <h1 className='header_title'>
+                  Choose Your <b>game</b>
+                </h1>
+              )}
+              {pathname === '/choose-your-league-step2' && (
+                <h1 className='header_title'>
+                  Choose Your <b>League</b>
+                </h1>
+              )}
+              {pathname === '/choose-your-league-step3' && (
+                <h1 className='header_title'>
+                  Choose Your <b>League</b>
+                </h1>
+              )}
+              {pathname === '/choose-your-league-step4' && (
+                <h1 className='header_title'>
+                  Choose Your <b>League</b>
+                </h1>
+              )}
             </div>
 
             {localStorage.getItem('token') ? (
