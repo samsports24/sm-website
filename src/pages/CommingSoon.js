@@ -5,12 +5,12 @@
 // import Arrow from '../assets/arrow-right.svg'
 
 // Component
-// import Header from '../components/Header'
+import Header from '../components/Header'
 
 // import { FiArrowLeft } from 'react-icons/fi'
 
 // import moment from 'moment'
-// import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
+import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
 // Mock Data
 
@@ -70,9 +70,9 @@ const ComingSoon = () => {
       </section> */}
 
       {/* HEADER */}
-      {/* <Header /> */}
+      <Header />
 
-      {/* <ButtonsAndPagination noWeek /> */}
+      <ButtonsAndPagination noWeek />
 
       <section className='coming_soon'>
         <img src={require('../assets/coming-soon.png')} />

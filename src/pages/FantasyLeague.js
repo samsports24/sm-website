@@ -8,8 +8,11 @@ import FeedbackCard from '../components/cards/feedbackCard'
 // Mock Data
 import { popularLeaguesData, popularSportsData, clientFeedbacksData } from './mockData'
 import ButtonMenu from '../components/ButtonMenu'
+import { useNavigate } from 'react-router-dom'
 
 const FantasyLeague = () => {
+  const navigate = useNavigate()
+
   return (
     <div className='fantasy_league_container'>
       <section className='header_top_section'>
@@ -51,7 +54,7 @@ const FantasyLeague = () => {
           <ButtonMenu
             data={{
               buttonName: (
-                <span>
+                <span onClick={() => navigate('/coming-soon')}>
                   <span style={{ fontWeight: 400 }}>Coming</span>&nbsp;Soon
                 </span>
               ),

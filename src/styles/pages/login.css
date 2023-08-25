@@ -22,7 +22,7 @@
 }
 
 .signin .form-div .title h1 {
-  color: var(--heading);
+  color: var(--heading) !important;
   font-size: 32px;
   font-style: normal;
   font-weight: 900;
@@ -30,7 +30,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  margin-bottom: 63.5px;
+  margin-bottom: 63.5px !important;
 }
 
 .signin .form-div .reset-password {

@@ -24,7 +24,7 @@ import LeagueStandings from '../pages/LeagueStandings'
 // import PlayerStats from '../pages/PlayerStats'
 // import Transactions from '../pages/Transactions'
 // import LiveScore from '../pages/LiveScore'
-// import Playoff from '../pages/Playoff'
+import Playoff from '../pages/Playoff'
 // import Schedule from '../pages/Schedule'
 // import AdpReport from '../pages/AdpReport'
 // import DraftPicks from '../pages/DraftPicks'
@@ -43,11 +43,11 @@ import PracticeSquad from '../pages/PracticeSquad'
 // import TeamSchedule from '../pages/TeamSchedule'
 // import TeamSetting from '../pages/TeamSettings'
 // import InjuredReserve from '../pages/InjuredReserve'
-// import FreeAgent from '../pages/FreeAgent'
+import FreeAgent from '../pages/FreeAgent'
 // import AgentPlayerInterface from '../pages/AgentPlayerInterface'
 // import GmDashboard from '../pages/GmDashboard'
-// import PlayerAuction from '../pages/PlayerAuction'
-// import PlayerStandings from '../pages/PlayerStandings'
+import PlayerAuction from '../pages/PlayerAuction'
+import PlayerStandings from '../pages/PlayerStandings'
 // import PlayerLiveAuction from '../pages/PlayerLiveAuction'
 // import PlayerWinningBid from '../pages/PlayerWinningBid'
 
@@ -84,7 +84,6 @@ const Routers = () => {
           <Route path='/player-stats' element={<PlayerStats />} />
           <Route path='/transactions' element={<Transactions />} />
           <Route path='/live-score' element={<LiveScore />} />
-          <Route path='/playoff' element={<Playoff />} />
           <Route path='/schedule' element={<Schedule />} />
           <Route path='/adp-report' element={<AdpReport />} />
           <Route path='/draft-picks' element={<DraftPicks />} />
@@ -102,9 +101,6 @@ const Routers = () => {
           <Route path='/team-schedule' element={<TeamSchedule />} />
           <Route path='/team-setting' element={<TeamSetting />} />
           <Route path='/injured-reserve' element={<InjuredReserve />} />
-          <Route path='/free-agent' element={<FreeAgent />} />
-          <Route path='/player-auction' element={<PlayerAuction />} />
-          <Route path='/player-standing' element={<PlayerStandings />} /> */}
           {/* </Layout> */}
         </Route>
 
@@ -121,6 +117,10 @@ const Routers = () => {
           <Route path='/practice-squad' element={<PracticeSquad />} />
           <Route path='/depth-chart' element={<DepthChart />} />
           <Route path='/league-standings' element={<LeagueStandings />} />
+          <Route path='/free-agent' element={<FreeAgent />} />
+          <Route path='/player-auction' element={<PlayerAuction />} />
+          <Route path='/player-standing' element={<PlayerStandings />} />
+          <Route path='/playoff' element={<Playoff />} />
         </Route>
 
         <Route path='/login' element={<Login />} />

@@ -1,5 +1,14 @@
 import { useState } from 'react'
-import { Form, Input, Button, Row, Col, Checkbox, Select } from 'antd'
+import {
+  Form,
+  Input,
+  Button,
+  Row,
+  Col,
+  Checkbox,
+  notification,
+  // Select
+} from 'antd'
 // import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
@@ -9,24 +18,30 @@ import FB from '../assets/fb.svg'
 import Twitter from '../assets/twitter.svg'
 import YouTube from '../assets/youtube.svg'
 import Banner from '../assets/login-pic-1.png'
+import { authSignup } from '../redux/actions/authActions'
 const SignUp = () => {
   const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
-  // const dispatch = useDispatch()
+  const [terms, setTerms] = useState(false)
+  const [policy, setPolicy] = useState(false)
 
-  // const onFinish = async (values) => {
-  //   setLoading(true)
-  //   await dispatch(authLogin(values, navigate))
-  //   setLoading(false)
-  // }
+  const navigate = useNavigate()
+
   const onFinish = async (values) => {
-    setLoading(true)
-    console.log(values)
-    setLoading(false)
+    if (terms && policy) {
+      if (values.password === values.confirmPassword) {
+        setLoading(true)
+        await authSignup(values, navigate)
+        setLoading(false)
+      } else {
+        notification.error({ message: 'Password and Confirm password should be same', duration: 7 })
+      }
+    } else {
+      notification.error({ message: 'You must agree to Terms and Conditions', duration: 7 })
+    }
   }
-  const onChange = (e) => {
-    console.log(`checked = ${e.target.checked}`)
-  }
+  // const onChange = (e) => {
+  //   console.log(`checked = ${e.target.checked}`)
+  // }
   // if (localStorage.hasOwnProperty("token")) {
   //   // return <Navigate replace to="/home" />;
   // } else {
@@ -43,11 +58,11 @@ const SignUp = () => {
                   <h2>Registration</h2>
                 </div>
                 <Form.Item
-                  name='fullName'
+                  name='name'
                   rules={[
                     {
                       required: true,
-                      message: 'The entered user name is not valid!',
+                      message: 'Name is Required!',
                     },
                   ]}
                   requiredMark='optional'
@@ -55,11 +70,23 @@ const SignUp = () => {
                   <Input autoComplete='off' type='text' placeholder='Full Name*' />
                 </Form.Item>
                 <Form.Item
+                  name='userName'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Username is Required!',
+                    },
+                  ]}
+                  requiredMark='optional'
+                >
+                  <Input autoComplete='off' type='text' placeholder='Choose a unique username' />
+                </Form.Item>
+                <Form.Item
                   name='email'
                   rules={[
                     {
                       required: true,
-                      message: 'The entered user name is not valid!',
+                      message: 'Email is Required!',
                     },
                   ]}
                   requiredMark='optional'
@@ -71,12 +98,13 @@ const SignUp = () => {
                   rules={[
                     {
                       required: true,
-                      message: 'The entered user name is not valid!',
+                      message: 'Country Name is Required!',
                     },
                   ]}
                   requiredMark='optional'
                 >
-                  <Select placeholder='Select Country*' />
+                  {/* <Select placeholder='Select Country*' /> */}
+                  <Input autoComplete='off' placeholder='Enter Your Country Name' />
                 </Form.Item>
                 <Form.Item
                   name='password'
@@ -104,14 +132,16 @@ const SignUp = () => {
                 </Form.Item>
                 <Form.Item name='remember' requiredMark='optional' style={{ marginBottom: '5px' }}>
                   <div className='remember'>
-                    <Checkbox onChange={onChange}>
+                    <Checkbox checked={terms} onChange={(e) => setTerms(e.target.checked)}>
                       I agree to the <span className='highlight'>Terms and Conditions</span>{' '}
                     </Checkbox>
                   </div>
                 </Form.Item>
-                <Form.Item name='remember' requiredMark='optional'>
+                <Form.Item name='policy' requiredMark='optional'>
                   <div className='remember'>
-                    <Checkbox onChange={onChange}>I agree to the Privacy Policy</Checkbox>
+                    <Checkbox checked={policy} onChange={(e) => setPolicy(e.target.checked)}>
+                      I agree to the Privacy Policy
+                    </Checkbox>
                   </div>
                 </Form.Item>
                 <Form.Item>

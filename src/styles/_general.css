@@ -17,7 +17,7 @@ h5,
 h6,
 p {
   letter-spacing: 1px;
-  margin: 0 !important;
+  /* margin: 0 !important; */
   color: white !important;
 }
 .empty {
