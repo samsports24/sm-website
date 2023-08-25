@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Form, Input, Button, Row, Col, Checkbox } from 'antd'
+import { Form, Input, Button, Row, Col, Checkbox, notification } from 'antd'
 import R from '../assets/r.svg'
 import UserIcon from '../assets/user-icon.svg'
 import PasswordIcon from '../assets/password-icon.svg'
@@ -9,23 +9,22 @@ import FB from '../assets/fb.svg'
 import Twitter from '../assets/twitter.svg'
 import YouTube from '../assets/youtube.svg'
 import Banner from '../assets/login-pic-1.png'
+import { authLogin } from '../redux/actions/authActions'
 const SignIn = () => {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   // const dispatch = useDispatch()
 
-  // const onFinish = async (values) => {
-  //   setLoading(true)
-  //   await dispatch(authLogin(values, navigate))
-  //   setLoading(false)
-  // }
   const onFinish = async (values) => {
-    setLoading(true)
-    console.log(values)
-    setLoading(false)
-    localStorage.setItem('token', 'This is temporary token')
-    navigate('/professional-league')
+    if (values.userName && values.password) {
+      setLoading(true)
+      await authLogin(values, navigate)
+      setLoading(false)
+    } else {
+      notification.error({ message: 'username or password is missing.', duration: 7 })
+    }
   }
+
   const onChange = (e) => {
     console.log(`checked = ${e.target.checked}`)
   }
