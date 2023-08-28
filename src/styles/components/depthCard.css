@@ -57,7 +57,6 @@
   padding: 6px 0px 6px 0px;
 }
 
-
 /* DEFENCE */
 .defence_s {
   top: 0px !important;
@@ -109,47 +108,47 @@
 }
 
 /* OFFENCE */
-.offence_te{
+.offence_te {
   top: 0 !important;
   left: 150px !important;
 }
-.offence_ol-1{
+.offence_ol-1 {
   top: 0 !important;
   left: 350px !important;
 }
-.offence_ol-2{
+.offence_ol-2 {
   top: 0 !important;
   left: 550px !important;
 }
-.offence_ol-3{
+.offence_ol-3 {
   top: 0 !important;
   left: 750px !important;
 }
-.offence_ol-4{
+.offence_ol-4 {
   top: 0 !important;
   left: 950px !important;
 }
-.offence_ol-5{
+.offence_ol-5 {
   top: 0 !important;
   left: 1150px !important;
 }
-.offence_wr-1{
+.offence_wr-1 {
   top: 300px !important;
   left: 0px !important;
 }
-.offence_rbwrte{
+.offence_rbwrte {
   top: 300px !important;
   left: 290px !important;
 }
-.offence_qb{
+.offence_qb {
   top: 300px !important;
   left: 760px !important;
 }
-.offence_rb{
+.offence_rb {
   top: 300px !important;
   left: 970px !important;
 }
-.offence_wr-2{
+.offence_wr-2 {
   top: 300px !important;
   left: 1420px !important;
 }

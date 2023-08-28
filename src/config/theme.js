@@ -83,5 +83,5 @@ export const dark = {
   secColor: '#30215D',
   grayText: 'rgba(255, 255, 255, 0.40)',
   lightGrayText: 'rgba(255, 255, 255, 0.60)',
-  greenText: "#3FBE94",
+  greenText: '#3FBE94',
 }

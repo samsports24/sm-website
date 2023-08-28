@@ -22,7 +22,7 @@
   flex-wrap: wrap;
 }
 
-.draft_picks_container .filter_container .filter_container_left{
+.draft_picks_container .filter_container .filter_container_left {
   margin-right: 90px;
 }
 
@@ -58,8 +58,7 @@
   }
 }
 @media (max-width: 650px) {
-  .draft_picks_container .filter_container .filter_container_left{
+  .draft_picks_container .filter_container .filter_container_left {
     margin-right: 0px;
   }
 }
-

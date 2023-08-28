@@ -9,14 +9,14 @@
   overflow-x: auto;
 }
 
-.bracket-wrapper{
+.bracket-wrapper {
   width: 100%;
   height: 600px;
   position: relative;
   margin-top: 40px;
 }
 
-.bracket-wrapper .super-bowl{
+.bracket-wrapper .super-bowl {
   width: 270px;
   height: auto;
   position: absolute;

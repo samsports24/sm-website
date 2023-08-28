@@ -1,146 +1,144 @@
 .cost-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    flex-direction: column;
-    border-radius: 16px;
-    border: 1px solid var(--borderColor);
-    overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex-direction: column;
+  border-radius: 16px;
+  border: 1px solid var(--borderColor);
+  overflow: hidden;
 }
 
 .cost-container .top-div {
-    padding: 20px 15px;
-    background: var(--secColor);
-    width: 100%;
-    justify-content: space-between;
+  padding: 20px 15px;
+  background: var(--secColor);
+  width: 100%;
+  justify-content: space-between;
 }
 
 .cost-container .top-div p {
-    font-family: Poppins;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    opacity: 0.5;
+  font-family: Poppins;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  opacity: 0.5;
 }
 
 .cost-container .top-div .details {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .cost-container .top-div .details h4 {
-    font-family: Poppins;
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 28px;
+  font-family: Poppins;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
 }
 
 .cost-container .top-div .details h3 {
-    font-family: Poppins;
-    font-size: 22px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 28px;
+  font-family: Poppins;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 28px;
 }
 
-.cost-container .card-body{
-    width: 100%;
-    padding: 20px 15px;
+.cost-container .card-body {
+  width: 100%;
+  padding: 20px 15px;
 }
 
-.cost-container .card-body .widgets-text{
-    margin-bottom: 29px;
-
+.cost-container .card-body .widgets-text {
+  margin-bottom: 29px;
 }
 
-.cost-container .card-body .widgets-text p{
-    font-family: Poppins;
-font-size: 14px;
-font-style: normal;
-font-weight: 400;
-line-height: 22px; 
+.cost-container .card-body .widgets-text p {
+  font-family: Poppins;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
 }
 
-.cost-container .card-body .draft-order{
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 49px;
+.cost-container .card-body .draft-order {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 49px;
 }
 
-.cost-container .card-body .draft-order h3{
-    font-family: Poppins;
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 28px;
+.cost-container .card-body .draft-order h3 {
+  font-family: Poppins;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
 }
 
-.cost-container .card-body .draft-order button{
-    padding: 10px 28px;
-    background: var(--heading);
-    color: white;
-    border-radius: 20px;
-    border: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: Poppins;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
+.cost-container .card-body .draft-order button {
+  padding: 10px 28px;
+  background: var(--heading);
+  color: white;
+  border-radius: 20px;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Poppins;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
 }
 
-.cost-container .card-body .draft-table{
-    border: 1px solid var(--borderColor);
+.cost-container .card-body .draft-table {
+  border: 1px solid var(--borderColor);
 }
 
-.cost-container .card-body .draft-table .table-head{
-    padding: 8px 20px;
-    background: var(--secColor);
-    width: 100%;
+.cost-container .card-body .draft-table .table-head {
+  padding: 8px 20px;
+  background: var(--secColor);
+  width: 100%;
 }
 
-.cost-container .card-body .draft-table .table-head h3{
-    font-family: Poppins;
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 28px;
+.cost-container .card-body .draft-table .table-head h3 {
+  font-family: Poppins;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
 }
 
-.cost-container .card-body .draft-table .table-row{
-    padding: 8px 20px;
-    border: 1px solid var(--borderColor);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.cost-container .card-body .draft-table .table-row {
+  padding: 8px 20px;
+  border: 1px solid var(--borderColor);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.cost-container .card-body .draft-table .table-row p{
-    font-family: Poppins;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 28px; 
+.cost-container .card-body .draft-table .table-row p {
+  font-family: Poppins;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
 }
 
-.cost-container .card-body .draft-table .table-row span{
-    width: 10%;
-    font-family: Poppins;
-font-size: 18px;
-font-style: normal;
-font-weight: 600;
-line-height: 28px;
-color: white;
+.cost-container .card-body .draft-table .table-row span {
+  width: 10%;
+  font-family: Poppins;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+  color: white;
 }
 
-.cost-container .card-body .draft-table .table-row .total{
-    color: var(--greenText) !important;
+.cost-container .card-body .draft-table .table-row .total {
+  color: var(--greenText) !important;
 }
-
