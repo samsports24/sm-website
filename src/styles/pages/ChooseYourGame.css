@@ -1,0 +1,148 @@
+.game-container {
+    width: 100%;
+}
+
+.game-container .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.game-container .head .home-links {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.game-container .head .home-links p {
+    font-family: Poppins;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.game-container .head .home-links .active-link {
+    color: var(--colors-theme-link-color, #289fc9) !important;
+}
+
+.game-container .head .home-links span {
+    font-family: Poppins;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    color: white;
+    margin: 0 5px;
+}
+
+.game-container .head .btn-container {}
+
+.game-container .head .btn-container button {
+    padding: 10px 28px;
+    background: var(--heading);
+    color: white;
+    border-radius: 20px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Poppins;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.game-container .heading {
+    padding-top: 41px;
+    padding-bottom: 66px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.game-container .heading h2 {
+    font-family: Poppins;
+    font-size: 34px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
+
+}
+
+.game-container .steps-div {
+    padding-bottom: 121px;
+}
+
+.game-container .step-one {
+    width: 100%;
+    margin-bottom: 260px;
+}
+
+.game-container .step-one img {
+    display: flex;
+    width: 90%;
+    height: 365px;
+    padding: 43px 20px 42.882px 20px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    border-radius: 50px;
+    border: 1px solid var(--borderColor);
+}
+
+.game-container .step-one .active-image {
+    width: 100%;
+    height: 405px;
+    background: var(--secColor);
+    border: none;
+}
+
+.game-container .title-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 0;
+}
+
+.game-container .title-image img {
+    width: 400px;
+    height: 342px;
+}
+
+.game-container .steps-div {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+}
+
+.game-container .steps-div .step {
+    width: 50px;
+    height: 50px;
+    padding: 18px;
+    border-radius: 50%;
+    border: 1px solid var(--borderColor);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-container .steps-div .step p{
+    font-family: Poppins;
+font-size: 22px;
+font-style: normal;
+font-weight: 700;
+line-height: 28px
+}
+
+.game-container .steps-div .line-border{
+    height: 1px;
+    width: 100%;
+    background: var(--borderColor);
+}
+
+.game-container .steps-div .active-step{
+    background: var(--heading);
+}

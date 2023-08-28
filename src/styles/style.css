@@ -45,6 +45,9 @@
 @import './components/rollingNewsFeed.css';
 @import './components/transactionTracker.css';
 @import './components/depthCard.css';
+@import './components/LeagueCard.css';
+@import './components/DraftCard.css';
+@import './components/LeagueCostCard.css';
 
 /* Page CSS */
 @import './pages/login.css';
@@ -74,3 +77,4 @@
 @import './pages/playerInterface.css';
 @import './pages/practiceSquad.css';
 @import './pages/teamTrade.css';
+@import './pages/ChooseYourGame.css';

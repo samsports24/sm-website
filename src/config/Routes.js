@@ -52,7 +52,10 @@ import PlayerStandings from '../pages/PlayerStandings'
 // import PlayerWinningBid from '../pages/PlayerWinningBid'
 
 // import PrivateWrapper from './PrivateRoutes'
-
+import ChooseYourGame from '../pages/ChooseYourGame'
+import ChooseYourLeague from '../pages/ChooseYourLeague'
+import ChooseYourLeagueStep3 from '../pages/ChooseYourLeagueStep3'
+import ChooseYourLeagueStep4 from '../pages/ChooseYourLeague4'
 const Routers = () => {
   const Component = () => {
     // let token = localStorage.getItem('token')
@@ -121,6 +124,10 @@ const Routers = () => {
           <Route path='/player-auction' element={<PlayerAuction />} />
           <Route path='/player-standing' element={<PlayerStandings />} />
           <Route path='/playoff' element={<Playoff />} />
+          <Route path='/choose-your-game-step1' element={<ChooseYourGame />} />
+          <Route path='/choose-your-league-step2' element={<ChooseYourLeague />} />
+          <Route path='/choose-your-league-step3' element={<ChooseYourLeagueStep3 />} />
+          <Route path='/choose-your-league-step4' element={<ChooseYourLeagueStep4 />} />
         </Route>
 
         <Route path='/login' element={<Login />} />
