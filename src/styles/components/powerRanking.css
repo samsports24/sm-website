@@ -32,7 +32,6 @@
   flex-direction: row;
   align-items: center;
   cursor: pointer;
-
 }
 
 .power_ranking_box .power_ranking_body {
@@ -67,7 +66,8 @@
 }
 .power_ranking_box .power_ranking_body .card_box img {
   height: 100%;
-  width: auto;
+  width: 40px;
+  object-fit: contain;
 }
 .power_ranking_box .power_ranking_body .card_box h3 {
   color: var(--primary);

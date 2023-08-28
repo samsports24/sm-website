@@ -1,10 +1,11 @@
 import React from 'react'
 import { BiRightArrowAlt } from 'react-icons/bi'
+import userImg from '../../assets/account.svg'
 
 // Mock Data
-import { playerRankingData } from '../../pages/mockData'
+// import { playerRankingData } from '../../pages/mockData'
 
-const PlayerRanking = () => {
+const PlayerRanking = ({ data }) => {
   return (
     <div className='player_ranking_box'>
       <header>
@@ -14,15 +15,15 @@ const PlayerRanking = () => {
         </p>
       </header>
       <section className='player_ranking_body'>
-        {playerRankingData?.map((v, i) => {
+        {data?.map((v, i) => {
           return (
             <div key={i} className='card_box'>
               <h6>{i + 1}.</h6>
               <div className='image_box'>
-                <img src={v?.imageUrl} />
+                <img src={userImg} />
               </div>
-              <h3>{v?.title}</h3>
-              <p>{v?.amount}</p>
+              <h3>{v?.player?.Name}</h3>
+              <p>{v?.score}</p>
             </div>
           )
         })}

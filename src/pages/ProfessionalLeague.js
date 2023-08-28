@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Breadcrumb } from 'antd'
 
@@ -11,8 +11,18 @@ import MatchUpOfTheWeek from '../components/MatchUpOfTheWeek'
 import RollingNewsFeed from '../components/RollingNewsFeed'
 import TransactionTracker from '../components/TransactionTracker'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
+import { getProfessionalLeagueRanks } from '../redux'
 
 const ProfessionalLeague = () => {
+  const [ranks, setRanks] = useState(null)
+
+  useEffect(() => {
+    ;(async () => {
+      let data = await getProfessionalLeagueRanks()
+      setRanks(data)
+    })()
+  }, [])
+
   return (
     <div className='pro_league_container'>
       {/* BREADCRUMB */}
@@ -49,8 +59,8 @@ const ProfessionalLeague = () => {
           <TransactionTracker />
         </div>
         <div className='right'>
-          <PowerRanking />
-          <PlayerRanking />
+          <PowerRanking data={ranks?.teamRanks} />
+          <PlayerRanking data={ranks?.playerRanks} />
         </div>
       </section>
     </div>

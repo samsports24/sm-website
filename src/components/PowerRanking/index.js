@@ -2,9 +2,9 @@ import React from 'react'
 import { BiRightArrowAlt } from 'react-icons/bi'
 
 // Mock Data
-import { powerRankingData } from '../../pages/mockData'
+// import { powerRankingData } from '../../pages/mockData'
 
-const PowerRanking = () => {
+const PowerRanking = ({ data }) => {
   return (
     <div className='power_ranking_box'>
       <header>
@@ -14,16 +14,16 @@ const PowerRanking = () => {
         </p>
       </header>
       <section className='power_ranking_body'>
-        {powerRankingData?.map((v, i) => {
+        {data?.map((v, i) => {
           return (
             <div key={i} className='card_box'>
               <h6>{i + 1}.</h6>
               <div className='image_box'>
-                <img src={v?.imageUrl} />
+                <img src={v?.team?.logo} />
               </div>
-              <h3>{v?.title}</h3>
-              <p>{v?.text1}</p>
-              <p>{v?.text2}</p>
+              <h3>{v?.team?.name}</h3>
+              <p>{v?.score1}</p>
+              <p>{v?.score2}</p>
             </div>
           )
         })}
