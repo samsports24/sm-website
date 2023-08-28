@@ -96,7 +96,6 @@
   line-height: normal;
 }
 
-
 @media (max-width: 768px) {
   .league_standings_box header {
     flex-wrap: wrap;

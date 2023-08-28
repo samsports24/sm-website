@@ -1,10 +1,10 @@
 import { Col, Row } from 'antd'
 import PopularLeagueCard from '../components/cards/popularLeagueCard'
 import PopularSportCard from '../components/cards/popularSportCard'
-import HomeMainBanner from '../components/banners/homeMainBanner'
+// import HomeMainBanner from '../components/banners/homeMainBanner'
 import AmericalFootballBanner from '../components/banners/americanFootballBanner'
 import FeedbackCard from '../components/cards/feedbackCard'
-
+import LandingBanner from '../components/banners/LandingBanner'
 // Mock Data
 import { popularLeaguesData, popularSportsData, clientFeedbacksData } from './mockData'
 
@@ -12,7 +12,8 @@ const Home = () => {
   return (
     <div className='home-page'>
       {/* main banner */}
-      <HomeMainBanner />
+      <LandingBanner />
+      {/* <HomeMainBanner /> */}
 
       <div style={{ height: '81px' }}></div>
 

@@ -99,7 +99,7 @@
     flex-direction: column;
     gap: 10px;
   }
-  .roster_stats_container .dropdown_container .now_btn{
+  .roster_stats_container .dropdown_container .now_btn {
     margin-top: 0px;
   }
 }

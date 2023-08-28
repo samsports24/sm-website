@@ -52,11 +52,11 @@
   color: var(--text);
   font-size: 40px;
   font-style: normal;
-  font-weight:400;
+  font-weight: 400;
   line-height: normal;
   text-transform: uppercase;
 }
-.v-layout div .header_title b{
+.v-layout div .header_title b {
   font-weight: 800;
 }
 .v-layout .mainHeader .auth-buttons {
@@ -209,7 +209,7 @@
   /* border: 1px solid blue; */
 }
 
-@media (max-width: 1440px){
+@media (max-width: 1440px) {
   .v-layout div .header_title {
     font-size: 26px;
   }

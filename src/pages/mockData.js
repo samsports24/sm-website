@@ -5967,55 +5967,55 @@ export const leagueHistory = {
 // Home
 export const popularLeaguesData = [
   {
-    title: 'American Football 1',
-    description: 'Season Starts in Sept',
+    title: 'American Football ',
     players: [4, 32],
     open: true,
     image: require('../assets/rectangle-5.png'),
+    Logo: require('../assets/sam-football.png'),
   },
   {
-    title: 'American Football 2',
-    description: 'Season Starts in Sept',
+    title: 'Hockey',
     players: [4, 32],
     open: true,
-    image: require('../assets/rectangle-6.png'),
+    image: require('../assets/hockey.png'),
+    Logo: require('../assets/sam-hockey.png'),
   },
   {
-    title: 'American Football 3',
-    description: 'Season Starts in Sept',
+    title: 'Baseball',
     players: [4, 32],
     open: true,
-    image: require('../assets/rectangle-7.png'),
+    image: require('../assets/baseball.png'),
+    Logo: require('../assets/sam-baseball.png'),
   },
   {
-    title: 'American Football 4',
-    description: 'Season Starts in Sept',
+    title: 'Basketball',
     players: [4, 32],
     open: true,
-    image: require('../assets/rectangle-8.png'),
+    image: require('../assets/basketball.png'),
+    Logo: require('../assets/sam-basketball.png'),
   },
 ]
 export const popularSportsData = [
   {
     title: 'American Football',
-    icon: require('../assets/ufafl-02-png-369-trans-1.png'),
+    icon: require('../assets/sam-football.png'),
     image: require('../assets/keith-johnston-vd-1-cz-99-sr-4-unsplash-1.png'),
   },
   {
-    title: 'American Football',
+    title: 'Hockey',
     different: true,
-    icon: require('../assets/ufafl-02-png-369-trans-2.png'),
-    image: require('../assets/keith-johnston-vd-1-cz-99-sr-4-unsplash-2.png'),
+    icon: require('../assets/sam-hockey.png'),
+    image: require('../assets/keith-johnston-hockey.png'),
   },
   {
-    title: 'American Football',
-    icon: require('../assets/ufafl-02-png-369-trans-0.png'),
-    image: require('../assets/keith-johnston-vd-1-cz-99-sr-4-unsplash-4.png'),
+    title: 'Baseball',
+    icon: require('../assets/sam-baseball.png'),
+    image: require('../assets/keith-johnston-baseball.png'),
   },
   {
-    title: 'American Football',
-    icon: require('../assets/ufafl-02-png-369-trans-3.png'),
-    image: require('../assets/keith-johnston-vd-1-cz-99-sr-4-unsplash-3.png'),
+    title: 'Basketball',
+    icon: require('../assets/sam-basketball.png'),
+    image: require('../assets/keith-johnston-basketball.png'),
   },
 ]
 export const clientFeedbacksData = [

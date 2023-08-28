@@ -1,139 +1,138 @@
 .league-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    flex-direction: column;
-    border-radius: 16px;
-    border: 1px solid var(--borderColor);
-    overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex-direction: column;
+  border-radius: 16px;
+  border: 1px solid var(--borderColor);
+  overflow: hidden;
 }
 
 .league-container .top-div {
-    display: flex;
-    padding: 20px 15px;
-    background: var(--secColor);
-    width: 100%;
+  display: flex;
+  padding: 20px 15px;
+  background: var(--secColor);
+  width: 100%;
 }
 
 .league-container .top-div img {
-    width: 128px;
-    height: 110px;
-    padding: 5px;
-    border: 1px solid var(--borderColor);
-    margin-right: 20px;
+  width: 128px;
+  height: 110px;
+  padding: 5px;
+  border: 1px solid var(--borderColor);
+  margin-right: 20px;
 }
 
 .league-container .top-div .details {
-    width: 100%;
+  width: 100%;
 }
 
 .league-container .top-div .details h3 {
-    font-family: Poppins;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 600;
-    margin-bottom: 20px !important;
+  font-family: Poppins;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  margin-bottom: 20px !important;
 }
 
 .league-container .top-div .details p {
-    font-family: Poppins;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    opacity: 0.5;
-    margin-bottom: 14px !important;
+  font-family: Poppins;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  opacity: 0.5;
+  margin-bottom: 14px !important;
 }
 
 .league-container .top-div .details .lead {
-    display: flex;
-    align-items: flex-end;
+  display: flex;
+  align-items: flex-end;
 }
 
 .league-container .top-div .details .lead img {
-    width: 24px;
-    height: 24px;
-    padding: 0;
-    border: none;
-    margin-right: 8px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  margin-right: 8px;
 }
 
 .league-container .top-div .details .lead p {
-    opacity: 1;
-    margin-bottom: 0 !important;
+  opacity: 1;
+  margin-bottom: 0 !important;
 }
 
 .league-container .card-body {
-    padding: 20px 15px;
-    width: 100%;
-
+  padding: 20px 15px;
+  width: 100%;
 }
 
 .league-container .card-body p {
-    font-family: Poppins;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    opacity: 0.5;
-    margin-bottom: 12px !important;
+  font-family: Poppins;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  opacity: 0.5;
+  margin-bottom: 12px !important;
 }
 
 .league-container .card-body .price {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .league-container .card-body .lead {
-    display: flex;
-    align-items: flex-end;
+  display: flex;
+  align-items: flex-end;
 }
 
 .league-container .card-body .lead img {
-    width: 24px;
-    height: 24px;
-    padding: 0;
-    border: none;
-    margin-right: 8px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  margin-right: 8px;
 }
 
 .league-container .card-body .lead p {
-    opacity: 1;
-    margin-bottom: 0 !important;
+  opacity: 1;
+  margin-bottom: 0 !important;
 }
 
 .league-container .card-bottom {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 15px;
-    background: var(--secColor);
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 15px;
+  background: var(--secColor);
 }
 
 .league-container .card-bottom img {
-    width: 99px;
-    height: 23px;
+  width: 99px;
+  height: 23px;
 }
 
-.league-container .card-bottom p{
-    font-family: Poppins;
-font-size: 12px;
-font-style: normal;
-font-weight: 500;
-line-height: 28px;
+.league-container .card-bottom p {
+  font-family: Poppins;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 28px;
 }
 
 .m-b-24 {
-    margin-bottom: 24px;
+  margin-bottom: 24px;
 }
 
 .m-b-16 {
-    margin-bottom: 16px;
+  margin-bottom: 16px;
 }
 
 .m-b-20 {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
