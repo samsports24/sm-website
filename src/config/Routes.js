@@ -129,7 +129,7 @@ const Routers = () => {
           <Route path='/choose-your-league-step2' element={<ChooseYourLeague />} />
           <Route path='/choose-your-league-step3' element={<ChooseYourLeagueStep3 />} />
           <Route path='/choose-your-league-step4' element={<ChooseYourLeagueStep4 />} />
-          <Route path='/public-League' element={<PublicLeague />} />
+          <Route path='/public-league' element={<PublicLeague />} />
         </Route>
 
         <Route path='/login' element={<Login />} />

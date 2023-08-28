@@ -3,10 +3,14 @@ import PopularLeagueCard from '../components/cards/popularLeagueCard'
 import PopularSportCard from '../components/cards/popularSportCard'
 // import HomeMainBanner from '../components/banners/homeMainBanner'
 import AmericalFootballBanner from '../components/banners/americanFootballBanner'
-import FeedbackCard from '../components/cards/feedbackCard'
+// import FeedbackCard from '../components/cards/feedbackCard'
 import LandingBanner from '../components/banners/LandingBanner'
 // Mock Data
-import { popularLeaguesData, popularSportsData, clientFeedbacksData } from './mockData'
+import {
+  popularLeaguesData,
+  popularSportsData,
+  //  clientFeedbacksData
+} from './mockData'
 
 const Home = () => {
   return (
@@ -40,7 +44,7 @@ const Home = () => {
         ))}
       </Row>
 
-      <h2 style={{ marginTop: '80px', marginBottom: '24px', color: '#fff' }}>Client Feedback</h2>
+      {/* <h2 style={{ marginTop: '80px', marginBottom: '24px', color: '#fff' }}>Client Feedback</h2>
 
       <h4 style={{ marginTop: '20px', marginBottom: '54px', color: '#fff' }}>
         See what millions of users say about us
@@ -52,7 +56,7 @@ const Home = () => {
             <FeedbackCard data={{ ...value, index }} />
           </Col>
         ))}
-      </Row>
+      </Row> */}
 
       <div style={{ height: '80px' }}></div>
     </div>

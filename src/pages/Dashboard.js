@@ -3,7 +3,7 @@ import PopularLeagueCard from '../components/cards/popularLeagueCard'
 import PopularSportCard from '../components/cards/popularSportCard'
 import HomeMainBanner from '../components/banners/homeMainBanner'
 import AmericalFootballBanner from '../components/banners/americanFootballBanner'
-import FeedbackCard from '../components/cards/feedbackCard'
+// import FeedbackCard from '../components/cards/feedbackCard'
 import DashboardBannerOne from '../components/banners/DashboardBannerOne'
 import UpcomingMatchCard from '../components/cards/upcomingMatchCard'
 
@@ -61,26 +61,26 @@ const Dashboard = () => {
       image: require('../assets/keith-johnston-vd-1-cz-99-sr-4-unsplash-3.png'),
     },
   ]
-  let clientFeedbacks = [
-    {
-      image: require('../assets/frame-250.png'),
-      comment:
-        '“Ut enim ad minim veniam, quis nostrud exercit ation ullamco laboris nisi ut aliquip ex ea commodo consequat aute irure dolor in in velit esse  fugiat nulla pariatur.”',
-      clientName: 'Brandi Redd',
-    },
-    {
-      image: require('../assets/frame-251.png'),
-      comment:
-        '“ed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore.”',
-      clientName: 'John Torcasio',
-    },
-    {
-      image: require('../assets/frame-252.png'),
-      comment:
-        '“Ut enim ad minim veniam, quis nostrud exercit ation ullamco laboris nisi ut aliquip ex ea commodo consequat aute irure dolor in in velit esse  fugiat nulla pariatur.”',
-      clientName: 'Brandi Redd',
-    },
-  ]
+  // let clientFeedbacks = [
+  //   {
+  //     image: require('../assets/frame-250.png'),
+  //     comment:
+  //       '“Ut enim ad minim veniam, quis nostrud exercit ation ullamco laboris nisi ut aliquip ex ea commodo consequat aute irure dolor in in velit esse  fugiat nulla pariatur.”',
+  //     clientName: 'Brandi Redd',
+  //   },
+  //   {
+  //     image: require('../assets/frame-251.png'),
+  //     comment:
+  //       '“ed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore.”',
+  //     clientName: 'John Torcasio',
+  //   },
+  //   {
+  //     image: require('../assets/frame-252.png'),
+  //     comment:
+  //       '“Ut enim ad minim veniam, quis nostrud exercit ation ullamco laboris nisi ut aliquip ex ea commodo consequat aute irure dolor in in velit esse  fugiat nulla pariatur.”',
+  //     clientName: 'Brandi Redd',
+  //   },
+  // ]
   let upcomingMatches = [
     {
       date: new Date(),
@@ -146,7 +146,7 @@ const Dashboard = () => {
         ))}
       </Row>
 
-      <h2 style={{ marginTop: '80px', marginBottom: '24px', color: 'var(--white)' }}>
+      {/* <h2 style={{ marginTop: '80px', marginBottom: '24px', color: 'var(--white)' }}>
         Client Feedback
       </h2>
 
@@ -160,7 +160,7 @@ const Dashboard = () => {
             <FeedbackCard data={{ ...value, index }} />
           </Col>
         ))}
-      </Row>
+      </Row> */}
 
       <div style={{ height: '80px' }}></div>
     </div>
