@@ -1,0 +1,36 @@
+.quick-join{
+    border-radius: 16px;
+    border: 1px solid var(--borderColor);
+    background: var(--primaryPurple);
+    padding: 16px 32px 32px 32px;
+}
+
+.quick-join .head{
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding-bottom: 21px;
+}
+
+.quick-join .head h3{
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 28px;
+}
+
+.quick-join .head .arrow-icons{
+    display: flex;
+    align-items: center;
+    gap: 17px;
+}
+
+.quick-join .head .arrow-icons img{
+    width: 22px;
+    height: 22px;
+}
+
+.quick-join .quick-join-Carousel{
+    margin-right: 10px;
+    margin-left: 10px;
+}

@@ -48,6 +48,8 @@
 @import './components/LeagueCard.css';
 @import './components/DraftCard.css';
 @import './components/LeagueCostCard.css';
+@import './components/LandingBanner.css';
+@import './components/QuickJoin.css';
 
 /* Page CSS */
 @import './pages/login.css';

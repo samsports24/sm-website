@@ -20,7 +20,7 @@
   position: absolute;
   bottom: 0px;
   left: 0px;
-
+top: 0;
   color: var(--white);
   font-size: 12px;
   font-style: normal;
@@ -30,16 +30,33 @@
   background: linear-gradient(360deg, #1e1d24 0%, rgba(30, 29, 36, 0) 100%);
   padding-bottom: 15px;
   padding-left: 15px;
+  
+}
+
+.container1 .content .sports-logo{
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding-right: 12px;
+  padding-top: 17px;
+  height: 80%;
+}
+
+.container1 .content .sports-logo img{
+  width: 82px;
+height: 80px;
 }
 
 .container1 .content h1 {
-  width: 114.535px;
   color: var(--white);
   /* Headings/H2 */
   font-size: 22px;
   font-style: normal;
   font-weight: 700;
   line-height: 28px; /* 127.273% */
+  display: flex;
+  /* justify-content: flex-end; */
+  align-items: flex-end;
 }
 
 .container2 {
@@ -73,12 +90,12 @@
 
 .league-card .row1 .col span {
   color: var(--white);
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  text-transform: uppercase;
-  opacity: 0.5;
+  font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    opacity: 0.5;
+    margin-bottom: 12px !important;
 }
 .league-card .row1 .col p {
   color: var(--white);
@@ -91,11 +108,12 @@
 
 .league-card .row2 p {
   color: var(--white);
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  text-transform: uppercase;
+  font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    opacity: 0.5;
+    margin-bottom: 12px !important;
 }
 
 .league-card .row2 .labels {
@@ -138,4 +156,43 @@
   font-style: normal;
   font-weight: 500;
   line-height: 28px; /* 233.333% */
+}
+
+.league-card  .row-type{
+  width: 100%;
+  padding-right: 16px;
+} 
+
+.league-card  .row-type p{
+  font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    opacity: 0.5;
+    margin-bottom: 12px !important;
+}
+
+.league-card  .row-type .price{
+  display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.league-card  .row-type .price .lead{
+  display: flex;
+  align-items: flex-end;
+}
+
+.league-card  .row-type .price .lead img{
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  margin-right: 8px;
+}
+
+.league-card  .row-type .price .lead p{
+  opacity: 1;
+  margin-bottom: 0 !important;
 }
