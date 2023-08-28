@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Form, Input, Button, Row, Col } from 'antd'
-// import { useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 // import { authLogin } from '../redux'
@@ -14,7 +14,7 @@ import { otpVerification } from '../redux'
 const Authentication = () => {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch()
 
   // const onFinish = async (values) => {
   //   setLoading(true)
@@ -23,7 +23,7 @@ const Authentication = () => {
   // }
   const onFinish = async (values) => {
     setLoading(true)
-    await otpVerification(values.otp, navigate)
+    await dispatch(otpVerification(values.otp, navigate))
     setLoading(false)
   }
   // if (localStorage.hasOwnProperty("token")) {
