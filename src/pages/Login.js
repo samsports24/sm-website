@@ -9,16 +9,19 @@ import FB from '../assets/fb.svg'
 import Twitter from '../assets/twitter.svg'
 import YouTube from '../assets/youtube.svg'
 import Banner from '../assets/login-pic-1.png'
-import { authLogin } from '../redux/actions/authActions'
+import { authLogin } from '../redux'
+import { useDispatch } from 'react-redux'
+
 const SignIn = () => {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch()
 
   const onFinish = async (values) => {
     if (values.userName && values.password) {
+      console.log('in if')
       setLoading(true)
-      await authLogin(values, navigate)
+      await dispatch(authLogin(values, navigate))
       setLoading(false)
     } else {
       notification.error({ message: 'username or password is missing.', duration: 7 })

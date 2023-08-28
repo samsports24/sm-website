@@ -10,6 +10,7 @@ import FB from '../assets/fb.svg'
 import Twitter from '../assets/twitter.svg'
 import YouTube from '../assets/youtube.svg'
 import Banner from '../assets/login-pic-1.png'
+import { otpVerification } from '../redux'
 const Authentication = () => {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
@@ -22,7 +23,7 @@ const Authentication = () => {
   // }
   const onFinish = async (values) => {
     setLoading(true)
-    console.log(values)
+    await otpVerification(values.otp, navigate)
     setLoading(false)
   }
   // if (localStorage.hasOwnProperty("token")) {
@@ -43,7 +44,7 @@ const Authentication = () => {
                     </span>
                   </h1>
                   <p>Authentication</p>
-                  <h2>code</h2>
+                  <h2>Code</h2>
                 </div>
                 <div className='reset-password'>
                   <p>
@@ -52,19 +53,19 @@ const Authentication = () => {
                   </p>
                 </div>
                 <Form.Item
-                  name='code'
+                  name='otp'
                   rules={[
                     // {
                     //   type: 'string',
                     // },
                     {
                       required: true,
-                      message: 'The entered user name is not valid!',
+                      message: 'The OTP code is required!',
                     },
                   ]}
                   requiredMark='optional'
                 >
-                  <Input autoComplete='off' type='text' placeholder='code' />
+                  <Input autoComplete='off' type='text' placeholder='OTP Code' />
                 </Form.Item>
                 <Form.Item>
                   <Button loading={loading} type='primary' htmlType='submit'>

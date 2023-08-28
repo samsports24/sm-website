@@ -17,9 +17,12 @@ h5,
 h6,
 p {
   letter-spacing: 1px;
-  /* margin: 0 !important; */
   color: white !important;
+  margin: 0;
 }
+/* p {
+  margin: 0 !important;
+} */
 .empty {
   height: 400px;
   display: flex;

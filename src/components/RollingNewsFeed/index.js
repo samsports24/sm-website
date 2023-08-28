@@ -15,7 +15,7 @@ const RollingNewsFeed = () => {
         </p>
       </header>
       <section className='content_body'>
-        {['', '']?.map((v, i) => {
+        {['', '', '', '']?.map((v, i) => {
           return (
             <div key={i} className='card_box'>
               <div className='card_box_header'>

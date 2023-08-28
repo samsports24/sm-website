@@ -3,15 +3,18 @@ import { Image, Button } from 'antd'
 
 // Image
 import bellIcon from '../../assets/bell-icon.svg'
-import circaImage from '../../assets/teams/circa_sports_trout.png'
+// import circaImage from '../../assets/teams/circa_sports_trout.png'
 import logo from '../../assets/Logo.svg'
+import { useSelector } from 'react-redux'
 
 const Header = () => {
-  return (
+  const user = useSelector((state) => state.user.userDetails)
+
+  return user ? (
     <header className='gd-header'>
       <div className='left'>
         <div className='image_div'>
-          <Image preview={false} src={circaImage} />
+          <Image preview={false} src={user?.team.logo} />
         </div>
         <p>
           <span>League Notification</span> <img src={bellIcon} alt='Icon' />
@@ -19,7 +22,7 @@ const Header = () => {
       </div>
       <div className='center'>
         <div className='title_box'>
-          <h1>Circa Sports Trout</h1>
+          <h1>{user?.team?.name}</h1>
           <p>
             <span>Live Player Auction</span> <img src={bellIcon} alt='Icon' />
           </p>
@@ -65,6 +68,40 @@ const Header = () => {
           </div>
         </div>
         <h1>UFAFL Price_Pools</h1>
+      </div>
+    </header>
+  ) : (
+    <header className='gd-header'>
+      <div className='center' style={!user && { columnGap: '20px', rowGap: '0' }}>
+        <div className='title_box' style={!user && { minHeight: '110px' }}>
+          <div>
+            <p style={{ marginBottom: '20px !important' }}>SFL Price-Pool</p>
+            <h1>{`23' Same Year Prize-Pool`}</h1>
+          </div>
+          <p>
+            <img src={bellIcon} alt='Icon' />
+          </p>
+        </div>
+        <div className='button_and_team_box'></div>
+      </div>
+      <div className='right'>
+        <div className='content'>
+          <div className='content2'>
+            <div className='image_div'>
+              <Image preview={false} src={logo} alt='UFAFL' />
+            </div>
+            <div className='content3'>
+              <div className='top' style={{ marginBottom: '12px' }}>
+                <span>24&apos;</span>
+                <p>Prize-Pool</p>
+              </div>
+              <div className='top'>
+                <span>25&apos;</span>
+                <p>Prize-Pool</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
   )
