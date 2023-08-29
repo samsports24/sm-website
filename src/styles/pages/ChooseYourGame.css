@@ -35,9 +35,6 @@
   margin: 0 5px;
 }
 
-.game-container .head .btn-container {
-}
-
 .game-container .head .btn-container button {
   padding: 10px 28px;
   background: var(--heading);

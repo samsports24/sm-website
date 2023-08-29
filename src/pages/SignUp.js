@@ -133,7 +133,15 @@ const SignUp = () => {
                 <Form.Item name='remember' requiredMark='optional' style={{ marginBottom: '5px' }}>
                   <div className='remember'>
                     <Checkbox checked={terms} onChange={(e) => setTerms(e.target.checked)}>
-                      I agree to the <span className='highlight'>Terms and Conditions</span>{' '}
+                      I agree to the{' '}
+                      <span
+                        className='highlight'
+                        onClick={() => {
+                          navigate('/terms-condition')
+                        }}
+                      >
+                        Terms and Conditions
+                      </span>{' '}
                     </Checkbox>
                   </div>
                 </Form.Item>
