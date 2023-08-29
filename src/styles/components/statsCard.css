@@ -3,10 +3,16 @@
   border: 1px solid var(--border);
   border-radius: 16px;
 }
+.stats_card_container .ant-checkbox-inner {
+  background-color: transparent;
+}
 
 .stats_card_container header {
   padding: 30px 60px;
   border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 .stats_card_container header h3 {
   color: var(--text);

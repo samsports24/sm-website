@@ -12,7 +12,7 @@ import { depthCardData } from './mockData'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
 const DepthChart = () => {
-  const [activeFilter, setActiveFilter] = useState('offence')
+  const [activeFilter, setActiveFilter] = useState('offense')
   const [data, setData] = useState([])
 
   const handleFilter = (value) => {
@@ -50,7 +50,7 @@ const DepthChart = () => {
       <ButtonsAndPagination />
 
       {/* FILTER */}
-      <ColorFilter data={['offence', 'defence', 'special team']} handleFilter={handleFilter} />
+      <ColorFilter data={['offense', 'defense', 'special team']} handleFilter={handleFilter} />
 
       <section className='depth_chart_wrapper'>
         <div

@@ -32,7 +32,8 @@
   gap: 12px;
 }
 
-.player_roster_container .buttons_and_pagination .buttons_group button {
+.player_roster_container .buttons_and_pagination .buttons_group button,
+.submit_button_box button {
   padding: 10px 28px;
   font-size: 16px;
   font-style: normal;
@@ -62,4 +63,21 @@
 }
 .player_roster_container .depth_chart_wrapper .special_team_container {
   height: 400px;
+}
+
+.player_roster_container .submit_button_box {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.player_roster_container .heading {
+  color: var(--text);
+  font-size: 26px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin-bottom: 20px;
 }
