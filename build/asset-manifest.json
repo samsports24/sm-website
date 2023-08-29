@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.c8eec5f1.css",
-    "main.js": "/static/js/main.1f95a754.js",
+    "main.css": "/static/css/main.e679e652.css",
+    "main.js": "/static/js/main.12f02194.js",
     "static/media/trans-league-banner.png": "/static/media/trans-league-banner.c6b03968a9f61ec4cad1.png",
     "static/media/rectangle-3.png": "/static/media/rectangle-3.aebbca7e8e6696c5f7c4.png",
     "static/media/login-pic-1.png": "/static/media/login-pic-1.38add10a7452b82cda4b.png",
@@ -115,11 +115,11 @@
     "static/media/arrow-right.svg": "/static/media/arrow-right.f306c848a5e7963bf1d2d5dd16212c01.svg",
     "static/media/youtube.svg": "/static/media/youtube.7af310466ac639302e497d811125f845.svg",
     "static/media/fb.svg": "/static/media/fb.16c5459973b0c91dc2db50341cb0e76e.svg",
-    "main.c8eec5f1.css.map": "/static/css/main.c8eec5f1.css.map",
-    "main.1f95a754.js.map": "/static/js/main.1f95a754.js.map"
+    "main.e679e652.css.map": "/static/css/main.e679e652.css.map",
+    "main.12f02194.js.map": "/static/js/main.12f02194.js.map"
   },
   "entrypoints": [
-    "static/css/main.c8eec5f1.css",
-    "static/js/main.1f95a754.js"
+    "static/css/main.e679e652.css",
+    "static/js/main.12f02194.js"
   ]
 }
