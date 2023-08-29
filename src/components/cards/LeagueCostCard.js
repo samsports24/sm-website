@@ -1,4 +1,4 @@
-import { Button } from 'antd'
+import { Input } from 'antd'
 
 const LeagueCostCard = () => {
   return (
@@ -16,7 +16,7 @@ const LeagueCostCard = () => {
         </div>
         <div className='draft-order'>
           <h3>Opening Draft Order Bid</h3>
-          <Button>$15.75</Button>
+          <Input />
         </div>
         <div className='widgets-text'>
           <p>

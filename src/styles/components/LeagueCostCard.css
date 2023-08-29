@@ -79,7 +79,7 @@
   line-height: 28px;
 }
 
-.cost-container .card-body .draft-order button {
+/* .cost-container .card-body .draft-order button {
   padding: 10px 28px;
   background: var(--heading);
   color: white;
@@ -93,6 +93,14 @@
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+} */
+
+.cost-container .card-body .draft-order Input{
+  background: var(--heading) !important;
+  border: none;
+  width: 163px;
+padding: 10px 28px;
+border-radius: 20px;
 }
 
 .cost-container .card-body .draft-table {
