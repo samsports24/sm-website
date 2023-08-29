@@ -95,12 +95,12 @@
   line-height: normal;
 } */
 
-.cost-container .card-body .draft-order Input{
+.cost-container .card-body .draft-order Input {
   background: var(--heading) !important;
   border: none;
   width: 163px;
-padding: 10px 28px;
-border-radius: 20px;
+  padding: 10px 28px;
+  border-radius: 20px;
 }
 
 .cost-container .card-body .draft-table {
