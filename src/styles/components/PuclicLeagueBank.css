@@ -1,69 +1,68 @@
-.public-league-bank{
-border: 1px solid var(--borderColor);
-border-radius: 16px;
-overflow: hidden;
+.public-league-bank {
+  border: 1px solid var(--borderColor);
+  border-radius: 16px;
+  overflow: hidden;
 }
 
-.public-league-bank .head{
-    display: flex;
-    padding: 11px 17px;
-justify-content: space-between;
-align-items: center;
-background: var(--secondaryPurple);
-
+.public-league-bank .head {
+  display: flex;
+  padding: 11px 17px;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--secondaryPurple);
 }
 
-.public-league-bank .head h3{
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 28px;
+.public-league-bank .head h3 {
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
 }
 
-.public-league-bank .head p{
-display: flex;
-justify-content: center;
-align-items: center;
-font-size: 14px;
-font-style: normal;
-font-weight: 600;
-line-height: normal;
-color: var(--heading) !important;
+.public-league-bank .head p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  color: var(--heading) !important;
 }
 
-.public-league-bank .bank-data{
-padding: 0 17px 17px 17px;
-height: 1292px;
-overflow-y: auto;
+.public-league-bank .bank-data {
+  padding: 0 17px 17px 17px;
+  height: 1292px;
+  overflow-y: auto;
 }
 
 .public-league-bank .bank-data .bank-data-div {
-    margin: 19px 0;
-padding: 13px 12px;
-background: var(--secondaryPurple);
-display: flex;
-justify-content: space-between;
-align-items: center;
+  margin: 19px 0;
+  padding: 13px 12px;
+  background: var(--secondaryPurple);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.public-league-bank .bank-data .bank-data-div p{
-    font-size: 16px;
-font-style: normal;
-font-weight: 400;
-line-height: 28px;
+.public-league-bank .bank-data .bank-data-div p {
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
 }
 
-.public-league-bank .bank-data .bank-data-div span{
-    font-size: 18px;
-font-style: normal;
-font-weight: 600;
-line-height: 28px;
-opacity: 0.5;
+.public-league-bank .bank-data .bank-data-div span {
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+  opacity: 0.5;
 }
 
-.public-league-bank .bank-data .bank-data-div h5{
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal
+.public-league-bank .bank-data .bank-data-div h5 {
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
 }

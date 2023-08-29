@@ -1,16 +1,16 @@
-.pro_league_container .join-league{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    background: var(--secondaryPurple);
-    border-radius: 16px;
-    border: 1px solid var(--borderColor);
+.pro_league_container .join-league {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: var(--secondaryPurple);
+  border-radius: 16px;
+  border: 1px solid var(--borderColor);
 }
 
-.pro_league_container .join-league h2{
-    font-size: 22px;
-font-style: normal;
-font-weight: 700;
-line-height: 28px;
+.pro_league_container .join-league h2 {
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 28px;
 }

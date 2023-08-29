@@ -455,8 +455,8 @@
   line-height: normal;
 }
 
-.player_interface_container .player_info_box_new .player-news{
-padding-top: 50px;
+.player_interface_container .player_info_box_new .player-news {
+  padding-top: 50px;
 }
 
 .player_interface_container .player_info_box_new .player-news p {
@@ -484,8 +484,8 @@ padding-top: 50px;
   margin: 10px 0;
 }
 
-.player_interface_container .player_info_box_new .stats-bar .player-news .years  h2{
-margin-top: 0;
+.player_interface_container .player_info_box_new .stats-bar .player-news .years h2 {
+  margin-top: 0;
 }
 
 .player_interface_container .player_info_box_new .stats-bar img {
@@ -549,7 +549,7 @@ margin-top: 0;
   }
 }
 
-.action-bar{
+.action-bar {
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -561,58 +561,57 @@ margin-top: 0;
   margin-top: 50px;
 }
 
-.action-bar h4{
+.action-bar h4 {
   font-size: 16px;
-font-style: normal;
-font-weight: 700;
-line-height: normal;
-opacity: 0.5;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  opacity: 0.5;
 }
 
-.action-bar .action-bar-btn{
+.action-bar .action-bar-btn {
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   font-size: 14px;
-font-style: normal;
-font-weight: 600;
-line-height: normal;
-text-transform: capitalize;
-
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  text-transform: capitalize;
 }
 
-.action-bar .action-bar-btn p{
+.action-bar .action-bar-btn p {
   font-size: 12px;
-font-style: normal;
-font-weight: 500;
-line-height: 16px;
-text-transform: capitalize;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px;
+  text-transform: capitalize;
 }
 
-.player_info_box_new .player-active-status{
+.player_info_box_new .player-active-status {
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
   flex-direction: column;
 }
 
-.player_info_box_new .player-active-status .injury-status{
+.player_info_box_new .player-active-status .injury-status {
   margin-top: 10px;
 }
 
-.player_info_box_new .player-active-status .injury-status p{
-font-size: 18px;
-font-style: normal;
-font-weight: 600;
-line-height: normal;
+.player_info_box_new .player-active-status .injury-status p {
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
 }
 
-.player_info_box_new .player-active-status .injury-status h4{
+.player_info_box_new .player-active-status .injury-status h4 {
   font-size: 22px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 28px;
-    color: #00c008 !important;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 28px;
+  color: #00c008 !important;
 }
