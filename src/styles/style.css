@@ -50,6 +50,7 @@
 @import './components/LeagueCostCard.css';
 @import './components/LandingBanner.css';
 @import './components/QuickJoin.css';
+@import './components/PuclicLeagueBank.css';
 
 /* Page CSS */
 @import './pages/login.css';

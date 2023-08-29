@@ -20,8 +20,18 @@ const PublicLeagueBank = () => {
         </p>
       </div>
       <div className='bank-data'>
-        <p>1. League #009771</p>
-        <h5> $54.06 .937</h5>
+        <div className='bank-data-div'>
+          <p>
+            <span>1. </span> League #009771
+          </p>
+          <h5> $54.06 .937</h5>
+        </div>
+        <div className='bank-data-div'>
+          <p>
+            <span>1. </span> League #009771
+          </p>
+          <h5> $54.06 .937</h5>
+        </div>
       </div>
     </div>
   )
