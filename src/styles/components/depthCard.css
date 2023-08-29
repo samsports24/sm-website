@@ -57,98 +57,98 @@
   padding: 6px 0px 6px 0px;
 }
 
-/* DEFENCE */
-.defence_s {
+/* DEFENSE */
+.defense_s {
   top: 0px !important;
   left: 1160px !important;
 }
-.defence_cbs {
+.defense_cbs {
   top: 220px !important;
   left: 156px !important;
 }
-.defence_lb-1 {
+.defense_lb-1 {
   top: 260px !important;
   left: 390px !important;
 }
-.defence_lb-2 {
+.defense_lb-2 {
   top: 260px !important;
   left: 680px !important;
 }
-.defence_lbcbs {
+.defense_lbcbs {
   top: 260px !important;
   left: 610px !important;
 }
-.defence_lbcbs {
+.defense_lbcbs {
   top: 260px !important;
   left: 920px !important;
 }
-.defence_cb-1 {
+.defense_cb-1 {
   top: 580px !important;
   left: 0px !important;
 }
-.defence_cb-2 {
+.defense_cb-2 {
   top: 650px !important;
   left: 1350px !important;
 }
-.defence_de {
+.defense_de {
   top: 650px !important;
   left: 290px !important;
 }
-.defence_dt {
+.defense_dt {
   top: 650px !important;
   left: 520px !important;
 }
-.defence_dtde {
+.defense_dtde {
   top: 650px !important;
   left: 755px !important;
 }
-.defence_dtlb {
+.defense_dtlb {
   top: 650px !important;
   left: 1005px !important;
 }
 
-/* OFFENCE */
-.offence_te {
+/* OFFENSE */
+.offense_te {
   top: 0 !important;
   left: 150px !important;
 }
-.offence_ol-1 {
+.offense_ol-1 {
   top: 0 !important;
   left: 350px !important;
 }
-.offence_ol-2 {
+.offense_ol-2 {
   top: 0 !important;
   left: 550px !important;
 }
-.offence_ol-3 {
+.offense_ol-3 {
   top: 0 !important;
   left: 750px !important;
 }
-.offence_ol-4 {
+.offense_ol-4 {
   top: 0 !important;
   left: 950px !important;
 }
-.offence_ol-5 {
+.offense_ol-5 {
   top: 0 !important;
   left: 1150px !important;
 }
-.offence_wr-1 {
+.offense_wr-1 {
   top: 300px !important;
   left: 0px !important;
 }
-.offence_rbwrte {
+.offense_rbwrte {
   top: 300px !important;
   left: 290px !important;
 }
-.offence_qb {
+.offense_qb {
   top: 300px !important;
   left: 760px !important;
 }
-.offence_rb {
+.offense_rb {
   top: 300px !important;
   left: 970px !important;
 }
-.offence_wr-2 {
+.offense_wr-2 {
   top: 300px !important;
   left: 1420px !important;
 }

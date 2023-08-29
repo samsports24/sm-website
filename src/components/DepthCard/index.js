@@ -5,28 +5,28 @@ import React, { useState } from 'react'
 import DepthChartModal from '../modal/DepthChart'
 
 const DepthCard = ({ data, index }) => {
-  const [modalIndex] = useState(-1)
-  // const [modalIndex, setModalIndex] = useState(-1)
+  // const [modalIndex] = useState(-1)
+  const [modalIndex, setModalIndex] = useState(-1)
   const [openModal, setOpenModal] = useState(false)
 
   const { imageUrl, name, text, type } = data
 
   const getPositionClass = (key) => {
     switch (key) {
-      case 'defence_cb/s':
-        return 'defence_cbs'
-      case 'defence_lb/cb/s':
-        return 'defence_lbcbs'
-      case 'defence_dt/de':
-        return 'defence_dtde'
-      case 'defence_dt/lb':
-        return 'defence_dtlb'
+      case 'defense_cb/s':
+        return 'defense_cbs'
+      case 'defense_lb/cb/s':
+        return 'defense_lbcbs'
+      case 'defense_dt/de':
+        return 'defense_dtde'
+      case 'defense_dt/lb':
+        return 'defense_dtlb'
       case 'special team_pk':
         return 'special_team_pk'
       case 'special team_pn':
         return 'special_team_pn'
-      case 'offence_rb/wr/te':
-        return 'offence_rbwrte'
+      case 'offense_rb/wr/te':
+        return 'offense_rbwrte'
       default:
         return key
     }
@@ -37,8 +37,8 @@ const DepthCard = ({ data, index }) => {
       <div
         className={`depth_card_box ${getPositionClass(`${type}_${text}`)}`}
         onClick={() => {
-          // setModalIndex(index)
-          // setOpenModal(true)
+          setModalIndex(index)
+          setOpenModal(true)
         }}
       >
         <div className='image_box'>
@@ -56,7 +56,7 @@ const DepthCard = ({ data, index }) => {
 
       {/* MODAL */}
       {modalIndex === index && (
-        <DepthChartModal openModal={openModal} setOpenModal={setOpenModal} />
+        <DepthChartModal openModal={openModal} setOpenModal={setOpenModal} data={data} />
       )}
     </>
   )

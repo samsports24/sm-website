@@ -1,24 +1,88 @@
 import React, { useEffect, useState } from 'react'
 
-import { Breadcrumb } from 'antd'
+import { Breadcrumb, Button, notification } from 'antd'
 import Arrow from '../assets/arrow-right.svg'
 // Component
 import DepthCard from '../components/DepthCard'
 import Header from '../components/Header'
 
 // Mock Data
-import { depthCardData, playerRosterData } from './mockData'
+import { depthCardData } from './mockData'
 import PlayerRosterCard from '../components/PlayerRosterCard'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
+import Loader from '../components/Loader'
+import { getRoster } from '../redux/actions/rosterAction'
 
 const PlayerRoster = () => {
   const [activeFilter] = useState('Roster')
   const [data, setData] = useState([])
+  const [activePlayerData, setActivePlayerData] = useState([])
+  const [practiveSquadData, setPractiveSquadData] = useState([])
+  const [nonActive, setNonActive] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  const handleNonActive = (event, id) => {
+    if (event) {
+      setNonActive([...nonActive, id])
+    } else {
+      const temp = [...nonActive]
+      let keyInd = temp?.indexOf(id)
+      if (keyInd !== -1) {
+        temp.splice(keyInd, 1)
+        setNonActive(temp)
+      }
+    }
+  }
+
+  const handleSubmit = () => {
+    if (nonActive?.length === 7) {
+      notification.success({
+        message: 'Success',
+        duration: 3,
+      })
+    } else {
+      notification.error({
+        message: `Select atleast 7 Players (${nonActive?.length}/7)`,
+        duration: 3,
+      })
+    }
+  }
 
   useEffect(() => {
     const filterdData = depthCardData?.filter((v) => v?.type === activeFilter?.toLocaleLowerCase())
     setData(filterdData)
+    getData()
   }, [activeFilter])
+
+  const getData = async () => {
+    setLoading(true)
+    const res = await getRoster()
+    if (res) {
+      const filtered = res?.players?.map((v) => {
+        const filterStats = res?.stats?.filter((x) => v?._id === x?.player)
+        let updateStats = {}
+        filterStats.forEach((v) => {
+          updateStats[`score${v.weekNo}`] = v.score
+        })
+        return {
+          ...v,
+          stats: updateStats,
+        }
+      })
+      const activePlayer = filtered?.filter((v) => v?.inPracticeSquad === false)
+      const practiceSquad = filtered?.filter((v) => v?.inPracticeSquad === true)
+      const nonAcitvePlayer = []
+      res?.players?.forEach((v) => {
+        if (v?.isActive !== true) {
+          nonAcitvePlayer.push(v?._id)
+        }
+      })
+      setActivePlayerData(activePlayer)
+      setPractiveSquadData(practiceSquad)
+      setNonActive(nonAcitvePlayer)
+    }
+    setLoading(false)
+  }
 
   return (
     <div className='player_roster_container'>
@@ -43,9 +107,9 @@ const PlayerRoster = () => {
 
       {/* HEADER */}
       <Header />
-      <ButtonsAndPagination />
 
       {/* FILTER */}
+      <ButtonsAndPagination />
 
       <section className='depth_chart_wrapper'>
         <div
@@ -59,11 +123,59 @@ const PlayerRoster = () => {
         </div>
       </section>
 
+      <div className='submit_button_box'>
+        <Button onClick={handleSubmit} type='primary'>
+          Submit
+        </Button>
+      </div>
+
       {/* STATS */}
       <section className='stats_container'>
-        {playerRosterData?.map((v, i) => {
-          return <PlayerRosterCard style={{ margin: '20px 0px' }} key={i} data={v} index={i} />
-        })}
+        {loading ? (
+          <Loader />
+        ) : (
+          <>
+            {activePlayerData?.map((v, i) => {
+              return (
+                <PlayerRosterCard
+                  // style={{ margin: '20px 0px' }}
+                  key={i}
+                  data={v}
+                  index={i}
+                  nonActive={nonActive}
+                  handleNonActive={handleNonActive}
+                  checkbox={true}
+                />
+              )
+            })}
+          </>
+        )}
+      </section>
+
+      <hr style={{ marginBlock: '40px' }} />
+
+      <p className='heading'>Practice Squad</p>
+
+      {/* STATS */}
+      <section className='stats_container'>
+        {loading ? (
+          <Loader />
+        ) : (
+          <>
+            {practiveSquadData?.map((v, i) => {
+              return (
+                <PlayerRosterCard
+                  // style={{ margin: '20px 0px' }}
+                  key={i}
+                  data={v}
+                  index={i}
+                  nonActive={nonActive}
+                  handleNonActive={handleNonActive}
+                />
+              )
+            })}
+          </>
+        )}
       </section>
     </div>
   )

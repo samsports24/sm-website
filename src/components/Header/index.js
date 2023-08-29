@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux'
 const Header = () => {
   const user = useSelector((state) => state.user.userDetails)
 
-  return user ? (
+  return user?.team ? (
     <header className='gd-header'>
       <div className='left'>
         <div className='image_div'>
