@@ -1,5 +1,5 @@
 import { Button, Row, Col } from 'antd'
-
+import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 
 import LegendsImage from '../assets/sam-legent-1.png'
@@ -7,6 +7,8 @@ import FootballImage from '../assets/sam-football.png'
 import CollegeFootballImage from '../assets/sam-college-football.png'
 
 const ChooseYourGame = () => {
+  const navigate = useNavigate()
+
   const [active, setActive] = useState('home')
   return (
     <div className='game-container'>
@@ -60,7 +62,13 @@ const ChooseYourGame = () => {
             <img src={LegendsImage} />
           </Col>
           <Col xs={24} md={8} lg={8}>
-            <img src={FootballImage} className='active-image' />
+            <img
+              src={FootballImage}
+              className='active-image'
+              onClick={() => {
+                navigate('/choose-your-league-step2')
+              }}
+            />
           </Col>
           <Col xs={24} md={8} lg={8}>
             <img src={CollegeFootballImage} />

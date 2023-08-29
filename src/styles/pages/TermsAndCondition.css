@@ -1,0 +1,63 @@
+.terms{
+    width: 100%;
+  }
+  
+  .terms .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 40px;
+  }
+  
+  .terms .head .home-links {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  
+  .terms .head .home-links p {
+    font-family: Poppins;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    cursor: pointer;
+  }
+  
+  .terms .head .home-links .active-link {
+    color: var(--colors-theme-link-color, #289fc9) !important;
+  }
+  
+  .terms .head .home-links span {
+    font-family: Poppins;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    color: white;
+    margin: 0 5px;
+  }
+
+  .terms .conditon-div{
+padding: 20px 0;
+}
+
+.terms .conditon-div h3{
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 20px;
+}
+
+.terms .conditon-div p{
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+.term .conditon-div .ant-checkbox .ant-checkbox-inner {
+    width: 20px;
+    height: 20px;
+}
+  
+ 

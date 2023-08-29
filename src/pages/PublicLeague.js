@@ -1,6 +1,7 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import { Breadcrumb } from 'antd'
+import { Breadcrumb, Button } from 'antd'
 
 // Component
 import Header from '../components/Header'
@@ -15,6 +16,107 @@ import TransactionTracker from '../components/TransactionTracker'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
 const PublicLeague = () => {
+  const navigate = useNavigate()
+  const DataRank = [
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+    {
+      League: 'League #00971',
+      Rank: '54.06.937',
+    },
+  ]
   return (
     <div className='pro_league_container'>
       {/* BREADCRUMB */}
@@ -44,10 +146,22 @@ const PublicLeague = () => {
       <section className='league_details_container'>
         <div className='left'>
           {/* <LeagueStandings /> */}
-          <PublicLeagueBank />
+
+          <PublicLeagueBank data={DataRank} />
         </div>
         <div className='center'>
           <QuickJoin />
+          <div className='join-league'>
+            <h2>Join A Sam Football League</h2>
+            <Button
+              type='primary'
+              onClick={() => {
+                navigate('/choose-your-game-step1')
+              }}
+            >
+              JOIN NOW
+            </Button>
+          </div>
           {/* <MatchUpOfTheWeek /> */}
           <RollingNewsFeed />
           <TransactionTracker />

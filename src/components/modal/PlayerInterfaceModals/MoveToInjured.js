@@ -8,9 +8,10 @@ const MoveToInjured = () => {
 
   return (
     <>
-      <h2 className='modal_button_text' onClick={showModal}>
-        MOVE TO INJURED RESERVE (I.R.)
-      </h2>
+      <Button type='primary' className='action-bar-btn' onClick={showModal}>
+        MOVE TO (I.R.)
+        <p>Practice Squad</p>
+      </Button>
       <Modal
         centered
         open={open}

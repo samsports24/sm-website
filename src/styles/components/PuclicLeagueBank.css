@@ -32,7 +32,9 @@ color: var(--heading) !important;
 }
 
 .public-league-bank .bank-data{
-padding: 0 17px;
+padding: 0 17px 17px 17px;
+height: 1292px;
+overflow-y: auto;
 }
 
 .public-league-bank .bank-data .bank-data-div {

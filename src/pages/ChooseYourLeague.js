@@ -1,13 +1,13 @@
 import { Row, Col, Button } from 'antd'
 import { useState } from 'react'
-
+import { useNavigate } from 'react-router-dom'
 import LeagueCard from '../components/cards/LeagueCard'
 
 import TitleImage from '../assets/sam-football.png'
 
 const ChooseYourLeague = () => {
   const [active, setActive] = useState('home')
-
+  const navigate = useNavigate()
   return (
     <div className='game-container'>
       <div className='head'>
@@ -58,16 +58,44 @@ const ChooseYourLeague = () => {
         <img src={TitleImage} />
       </div>
       <Row gutter={[32, 32]}>
-        <Col xs={24} md={12} lg={6}>
+        <Col
+          xs={24}
+          md={12}
+          lg={6}
+          onClick={() => {
+            navigate('/choose-your-league-step3')
+          }}
+        >
           <LeagueCard />
         </Col>
-        <Col xs={24} md={12} lg={6}>
+        <Col
+          xs={24}
+          md={12}
+          lg={6}
+          onClick={() => {
+            navigate('/choose-your-league-step3')
+          }}
+        >
           <LeagueCard />
         </Col>
-        <Col xs={24} md={12} lg={6}>
+        <Col
+          xs={24}
+          md={12}
+          lg={6}
+          onClick={() => {
+            navigate('/choose-your-league-step3')
+          }}
+        >
           <LeagueCard />
         </Col>
-        <Col xs={24} md={12} lg={6}>
+        <Col
+          xs={24}
+          md={12}
+          lg={6}
+          onClick={() => {
+            navigate('/choose-your-league-step3')
+          }}
+        >
           <LeagueCard />
         </Col>
       </Row>

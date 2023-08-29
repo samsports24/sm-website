@@ -8,9 +8,9 @@ const TradePlayer = () => {
 
   return (
     <>
-      <h2 className='modal_button_text' onClick={showModal}>
+      <Button type='primary' className='action-bar-btn' onClick={showModal}>
         Trade Player
-      </h2>
+      </Button>
       <Modal
         centered
         open={open}

@@ -50,13 +50,14 @@ import FreeAgent from '../pages/FreeAgent'
 import PlayerAuction from '../pages/PlayerAuction'
 import PlayerStandings from '../pages/PlayerStandings'
 // import PlayerLiveAuction from '../pages/PlayerLiveAuction'
-// import PlayerWinningBid from '../pages/PlayerWinningBid'
+import PlayerWinningBid from '../pages/PlayerWinningBid'
 
 // import PrivateWrapper from './PrivateRoutes'
 import ChooseYourGame from '../pages/ChooseYourGame'
 import ChooseYourLeague from '../pages/ChooseYourLeague'
 import ChooseYourLeagueStep3 from '../pages/ChooseYourLeagueStep3'
 import ChooseYourLeagueStep4 from '../pages/ChooseYourLeague4'
+import TermsAndCondition from '../pages/TermsAndCondition'
 const Routers = () => {
   const Component = () => {
     // let token = localStorage.getItem('token')
@@ -99,7 +100,6 @@ const Routers = () => {
           <Route path='/coming-soon' element={<ComingSoon />} />
           <Route path='/agent-player-interface' element={<AgentPlayerInterface />} />
           <Route path='/player-live-auction' element={<PlayerLiveAuction />} />
-          <Route path='/player-winning-bid' element={<PlayerWinningBid />} />
           <Route path='/gm-dashboard' element={<GmDashboard />} />
           <Route path='/team-trade' element={<TeamTrade />} />
           <Route path='/team-schedule' element={<TeamSchedule />} />
@@ -130,6 +130,8 @@ const Routers = () => {
           <Route path='/choose-your-league-step3' element={<ChooseYourLeagueStep3 />} />
           <Route path='/choose-your-league-step4' element={<ChooseYourLeagueStep4 />} />
           <Route path='/public-league' element={<PublicLeague />} />
+          <Route path='/player-winning-bid' element={<PlayerWinningBid />} />
+          <Route path='/terms-condition' element={<TermsAndCondition />} />
         </Route>
 
         <Route path='/login' element={<Login />} />

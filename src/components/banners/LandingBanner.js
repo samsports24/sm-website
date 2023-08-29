@@ -36,10 +36,7 @@ const LandingBanner = () => {
             <h3>{"WHAT'S TRENDING"}</h3>
             <h1>{"WHAT'S TRENDING"}</h1>
             <p>
-              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-              officia deserunt mollit anim id est laborum. Ut enim ad minim veniam, quis nostrud
-              exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              {`Welcome to SAM Ultimate Sports, where we offer an unparalleled GM experience that fully immerses you in the world of your favorite sport. As the mastermind behind the scenes, you'll make crucial decisions, shape strategies, and lead your team to victory. Experience the thrill of realistic sports management with SAM Ultimate Sports – your gateway to becoming a true sports strategist. Your ultimate GM adventure starts here.`}
             </p>
             <Button type='primary' htmlType='submit'>
               Read More
@@ -58,10 +55,7 @@ const LandingBanner = () => {
             <h3>{"WHAT'S TRENDING"}</h3>
             <h1>{"WHAT'S TRENDING"}</h1>
             <p>
-              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-              officia deserunt mollit anim id est laborum. Ut enim ad minim veniam, quis nostrud
-              exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              {`Welcome to SAM Ultimate Sports, where we offer an unparalleled GM experience that fully immerses you in the world of your favorite sport. As the mastermind behind the scenes, you'll make crucial decisions, shape strategies, and lead your team to victory. Experience the thrill of realistic sports management with SAM Ultimate Sports – your gateway to becoming a true sports strategist. Your ultimate GM adventure starts here.`}
             </p>
             <Button type='primary' htmlType='submit'>
               Read More

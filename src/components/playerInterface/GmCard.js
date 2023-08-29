@@ -1,12 +1,25 @@
 import { Row, Col, Typography, Button } from 'antd'
+import { useNavigate } from 'react-router-dom'
+
 import Circa from '../../assets/teams/circa_sports_trout.png'
 
 import { playerInterfaceData } from '../../pages/mockData'
+import {
+  ActivateFromPracticeSquad,
+  AuctionPlayer,
+  MoveToInjured,
+  ReleasePlayer,
+  MoveToPracticeSquad,
+  TradePlayer,
+  PoachPlayer,
+} from '../../components/modal/PlayerInterfaceModals'
 
-const GmCard = ({ isButton }) => {
+const GmCard = ({ isButton, bidWinningPage = false }) => {
+  const navigate = useNavigate()
+
   return (
     <section className='player_info_box_new'>
-      <Row align={'middle'} gutter={[30, 20]}>
+      <Row gutter={[30, 20]}>
         {/* {isButton && (
           <Col xs={24}>
           </Col>
@@ -15,9 +28,15 @@ const GmCard = ({ isButton }) => {
           <div className='left'>
             <div>
               <Typography.Title level={2}>{`A'Shawn Robinson`}</Typography.Title>
-              <div className='active'>
-                <div className='active_btn' />
-                <p>{playerInterfaceData?.status}</p>
+              <div className='player-active-status'>
+                <div className='active'>
+                  <div className='active_btn' />
+                  <p>{playerInterfaceData?.status}</p>
+                </div>
+                <div className='injury-status'>
+                  <p>Injury Status</p>
+                  <h4>HEALTHY</h4>
+                </div>
               </div>
             </div>
             <div className='box'>
@@ -30,7 +49,7 @@ const GmCard = ({ isButton }) => {
             </div>
           </div>
         </Col>
-        <Col xs={24} xl={14}>
+        <Col xs={24} xl={10}>
           {isButton && (
             <Button type='primary' style={{ marginLeft: 'auto', display: 'flex' }}>
               AUCTION PLAYER
@@ -53,6 +72,33 @@ const GmCard = ({ isButton }) => {
             </div>
             <img src={Circa} height={'100px'} />
           </div>
+        </Col>
+        <Col xs={24} xl={4}>
+          {bidWinningPage ? (
+            <div className='action-bar'>
+              <h4>Player Action Bar</h4>
+              <Button
+                type='primary'
+                className='action-bar-btn'
+                onClick={() => {
+                  navigate('/team-trade')
+                }}
+              >
+                make offer
+              </Button>
+              <PoachPlayer />
+            </div>
+          ) : (
+            <div className='action-bar'>
+              <h4>Player Action Bar</h4>
+              <AuctionPlayer />
+              <TradePlayer />
+              <ReleasePlayer />
+              <MoveToInjured />
+              <ActivateFromPracticeSquad />
+              <MoveToPracticeSquad />
+            </div>
+          )}
         </Col>
       </Row>
     </section>

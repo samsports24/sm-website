@@ -64,9 +64,9 @@ const PopularLeagueCard = ({ data }) => {
             </div>
           </div>
         </div>
-        <div className='row-type'>
+        <div className='row-type '>
           <p>League Bid Increments Min.</p>
-          <div className='price m-b-24'>
+          <div className='price m-b-24 flex-wrap'>
             <div className='lead'>
               <img src={DollorIcon} />
               <p> $0.25</p>

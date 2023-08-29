@@ -8,9 +8,10 @@ const MakeOffer = () => {
 
   return (
     <>
-      <h2 className='modal_button_text' onClick={showModal}>
-        Move To Practice Squad
-      </h2>
+      <Button type='primary' className='action-bar-btn' onClick={showModal}>
+        Move To
+        <p>Practice Squad</p>
+      </Button>
       <Modal
         centered
         open={open}

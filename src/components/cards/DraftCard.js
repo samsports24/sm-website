@@ -1,4 +1,5 @@
 import { Button } from 'antd'
+import { useNavigate } from 'react-router-dom'
 
 import LeadIcon from '../../assets/lead.svg'
 import DollorIcon from '../../assets/dollor-icon.svg'
@@ -7,6 +8,8 @@ import CalendarIcon from '../../assets/calender.svg'
 import TrophyIcon from '../../assets/trophy.svg'
 
 const DraftCard = () => {
+  const navigate = useNavigate()
+
   return (
     <div className='draft-container'>
       <div className='top-div'>
@@ -15,7 +18,13 @@ const DraftCard = () => {
           <h3>Sam Football league #00001</h3>
         </div>
         <div className='btn-container'>
-          <Button>Join</Button>
+          <Button
+            onClick={() => {
+              navigate('/choose-your-league-step4')
+            }}
+          >
+            Join
+          </Button>
         </div>
       </div>
       <div className='card-body'>

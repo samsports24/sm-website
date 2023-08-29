@@ -7,6 +7,7 @@
   border-radius: 16px;
   border: 1px solid var(--borderColor);
   overflow: hidden;
+  cursor: pointer;
 }
 
 .league-container .top-div {

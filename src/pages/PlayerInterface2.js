@@ -1,27 +1,27 @@
 import { Button, Breadcrumb } from 'antd'
 
 import Arrow from '../assets/arrow-right.svg'
-import { useNavigate } from 'react-router-dom'
+// import { useNavigate } from 'react-router-dom'
 
 // Component
 import Header from '../components/Header'
 
-import {
-  ActivateFromPracticeSquad,
-  AuctionPlayer,
-  MoveToInjured,
-  PoachPlayer,
-  ReleasePlayer,
-  MoveToPracticeSquad,
-  TradePlayer,
-} from '../components/modal/PlayerInterfaceModals'
+// import {
+//   ActivateFromPracticeSquad,
+//   AuctionPlayer,
+//   MoveToInjured,
+//   PoachPlayer,
+//   ReleasePlayer,
+//   MoveToPracticeSquad,
+//   TradePlayer,
+// } from '../components/modal/PlayerInterfaceModals'
 import GmCard from '../components/playerInterface/GmCard'
 import PlayerStats from '../components/playerInterface/PlayerStats'
 import ContractInfo from '../components/playerInterface/ContractInfo'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
 const PlayerInterface = () => {
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
 
   let infoData = [
     {
@@ -83,7 +83,7 @@ const PlayerInterface = () => {
       <hr className='divider' />
 
       {/* MODALS */}
-      <section className='filter_box'>
+      {/* <section className='filter_box'>
         <AuctionPlayer />
 
         <span className='divider_bar'>|</span>
@@ -120,7 +120,7 @@ const PlayerInterface = () => {
         <span className='divider_bar'>|</span>
 
         <PoachPlayer />
-      </section>
+      </section> */}
 
       <GmCard />
       <div className='info-card'>

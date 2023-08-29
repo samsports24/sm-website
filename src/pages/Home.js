@@ -1,10 +1,14 @@
-import { Col, Row } from 'antd'
+import Carousel from 'react-multi-carousel'
+import 'react-multi-carousel/lib/styles.css'
+// import { Col, Row } from 'antd'
+
 import PopularLeagueCard from '../components/cards/popularLeagueCard'
 import PopularSportCard from '../components/cards/popularSportCard'
-// import HomeMainBanner from '../components/banners/homeMainBanner'
 import AmericalFootballBanner from '../components/banners/americanFootballBanner'
-// import FeedbackCard from '../components/cards/feedbackCard'
 import LandingBanner from '../components/banners/LandingBanner'
+
+// import FeedbackCard from '../components/cards/feedbackCard'
+// import HomeMainBanner from '../components/banners/homeMainBanner'
 // Mock Data
 import {
   popularLeaguesData,
@@ -13,6 +17,28 @@ import {
 } from './mockData'
 
 const Home = () => {
+  const responsive = {
+    largeDesktop: {
+      breakpoint: { max: 4000, min: 1200 },
+      items: 4,
+      slidesToSlide: 1, // optional, default to 1.
+    },
+    desktop: {
+      breakpoint: { max: 1200, min: 1150 },
+      items: 3,
+      slidesToSlide: 1, // optional, default to 1.
+    },
+    tablet: {
+      breakpoint: { max: 1150, min: 750 },
+      items: 2,
+      slidesToSlide: 1, // optional, default to 1.
+    },
+    mobile: {
+      breakpoint: { max: 750, min: 0 },
+      items: 1,
+      slidesToSlide: 1, // optional, default to 1.
+    },
+  }
   return (
     <div className='home-page'>
       {/* main banner */}
@@ -23,26 +49,45 @@ const Home = () => {
 
       {/* popular leagues */}
       <h2 style={{ marginBottom: '24px', color: '#fff' }}>Popular Leagues</h2>
-      <Row gutter={[20, 20]}>
+      <Carousel
+        swipeable={true}
+        draggable={true}
+        showDots={false}
+        responsive={responsive}
+        arrows={false}
+        infinite={true}
+        autoPlay={true}
+        autoPlaySpeed={3000}
+        keyBoardControl={true}
+      >
         {popularLeaguesData?.map((value, index) => (
-          <Col xs={24} sm={12} xl={8} xxl={6} key={index}>
+          <div className='carousel-card' key={index}>
             <PopularLeagueCard data={value} />
-          </Col>
+          </div>
         ))}
-      </Row>
+      </Carousel>
 
       <AmericalFootballBanner />
 
       {/* popular sport */}
       <h2 style={{ marginTop: '80px', marginBottom: '24px', color: '#fff' }}>Popular Sports</h2>
-
-      <Row gutter={[20, 20]}>
+      <Carousel
+        swipeable={true}
+        draggable={true}
+        showDots={false}
+        responsive={responsive}
+        arrows={false}
+        infinite={true}
+        autoPlay={true}
+        autoPlaySpeed={3000}
+        keyBoardControl={true}
+      >
         {popularSportsData?.map((value, index) => (
-          <Col xs={24} sm={12} xl={8} xxl={6} key={index}>
+          <div className='carousel-card' key={index}>
             <PopularSportCard data={{ ...value, index }} />
-          </Col>
+          </div>
         ))}
-      </Row>
+      </Carousel>
 
       {/* <h2 style={{ marginTop: '80px', marginBottom: '24px', color: '#fff' }}>Client Feedback</h2>
 

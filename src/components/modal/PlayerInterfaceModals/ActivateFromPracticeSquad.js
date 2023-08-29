@@ -8,9 +8,10 @@ const ActivateFromPracticeSquad = () => {
 
   return (
     <>
-      <h2 className='modal_button_text' onClick={showModal}>
-        Activate From Practice Squad
-      </h2>
+      <Button type='primary' className='action-bar-btn' onClick={showModal}>
+        Activate From
+        <p> Practice Squad</p>
+      </Button>
       <Modal
         centered
         open={open}

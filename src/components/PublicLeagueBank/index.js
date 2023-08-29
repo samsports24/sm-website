@@ -4,7 +4,7 @@ import { BiRightArrowAlt } from 'react-icons/bi'
 // Mock Data
 import { useNavigate } from 'react-router-dom'
 
-const PublicLeagueBank = () => {
+const PublicLeagueBank = ({ data }) => {
   const navigate = useNavigate()
   return (
     <div className='public-league-bank'>
@@ -20,18 +20,14 @@ const PublicLeagueBank = () => {
         </p>
       </div>
       <div className='bank-data'>
-        <div className='bank-data-div'>
-          <p>
-            <span>1. </span> League #009771
-          </p>
-          <h5> $54.06 .937</h5>
-        </div>
-        <div className='bank-data-div'>
-          <p>
-            <span>1. </span> League #009771
-          </p>
-          <h5> $54.06 .937</h5>
-        </div>
+        {data?.map((item, i) => (
+          <div className='bank-data-div' key={i}>
+            <p>
+              <span>{i + 1} </span> {item?.League}
+            </p>
+            <h5> {item?.Rank}</h5>
+          </div>
+        ))}
       </div>
     </div>
   )

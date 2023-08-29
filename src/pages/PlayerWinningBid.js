@@ -1,5 +1,5 @@
 import { Button, Breadcrumb, Row, Col, Typography } from 'antd'
-import { useNavigate } from 'react-router-dom'
+// import { useNavigate } from 'react-router-dom'
 
 import Arrow from '../assets/arrow-right.svg'
 import Image from '../assets/logo2.png'
@@ -7,22 +7,22 @@ import Image from '../assets/logo2.png'
 // Component
 import Header from '../components/Header'
 
-import {
-  ActivateFromPracticeSquad,
-  AuctionPlayer,
-  MoveToInjured,
-  PoachPlayer,
-  ReleasePlayer,
-  MoveToPracticeSquad,
-  TradePlayer,
-} from '../components/modal/PlayerInterfaceModals'
+// import {
+//   ActivateFromPracticeSquad,
+//   AuctionPlayer,
+//   MoveToInjured,
+//   PoachPlayer,
+//   ReleasePlayer,
+//   MoveToPracticeSquad,
+//   TradePlayer,
+// } from '../components/modal/PlayerInterfaceModals'
 import GmCard from '../components/playerInterface/GmCard'
 import PlayerStats from '../components/playerInterface/PlayerStats'
 import ContractInfo from '../components/playerInterface/ContractInfo'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
 const PlayerWinningBid = () => {
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
 
   let infoData = [
     {
@@ -84,7 +84,7 @@ const PlayerWinningBid = () => {
       <hr className='divider' />
 
       {/* MODALS */}
-      <section className='filter_box'>
+      {/* <section className='filter_box'>
         <AuctionPlayer />
 
         <span className='divider_bar'>|</span>
@@ -121,9 +121,9 @@ const PlayerWinningBid = () => {
         <span className='divider_bar'>|</span>
 
         <PoachPlayer />
-      </section>
+      </section> */}
 
-      <GmCard isButton />
+      <GmCard bidWinningPage={true} />
       <div className='info-card'>
         {infoData.map((item, index) => (
           <h3 key={index}>
