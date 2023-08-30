@@ -18,4 +18,5 @@ export const attachToken = async () => {
 
 export const activeRosterCount = 53
 export const practiceRosterCount = 53
+export const legalPlayers = 46
 export const proctectedSquadCount = 4
