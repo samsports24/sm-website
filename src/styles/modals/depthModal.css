@@ -81,9 +81,9 @@
   max-height: 320px;
   overflow-y: auto;
 }
-.depth_modal .scroll_section .content_body{
+/* .depth_modal .scroll_section .content_body{
   cursor: pointer !important;
-}
+} */
 
 .depth_modal_spinner {
   width: 100%;
@@ -91,4 +91,11 @@
   align-items: center;
   justify-content: center;
   height: 80px;
+}
+
+.add_starter_button {
+  width: 200px;
+}
+.add_starter_button:hover {
+  color: var(--primary) !important;
 }

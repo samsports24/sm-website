@@ -1,8 +1,6 @@
 import { Row, Col, Typography, Button } from 'antd'
 import { useNavigate } from 'react-router-dom'
 
-import Circa from '../../assets/teams/circa_sports_trout.png'
-
 import { playerInterfaceData } from '../../pages/mockData'
 import {
   ActivateFromPracticeSquad,
@@ -14,7 +12,15 @@ import {
   PoachPlayer,
 } from '../../components/modal/PlayerInterfaceModals'
 
-const GmCard = ({ isButton, bidWinningPage = false }) => {
+const GmCard = ({
+  isButton,
+  bidWinningPage = false,
+  playerData,
+  activePlayers,
+  practicePlayers,
+  getData,
+}) => {
+  const { team, Name, Active, InjuryStatus, PositionRank, LeagueRank, inPracticeSquad } = playerData
   const navigate = useNavigate()
 
   return (
@@ -27,25 +33,25 @@ const GmCard = ({ isButton, bidWinningPage = false }) => {
         <Col xs={24} xl={10}>
           <div className='left'>
             <div>
-              <Typography.Title level={2}>{`A'Shawn Robinson`}</Typography.Title>
+              <Typography.Title level={2}>{Name}</Typography.Title>
               <div className='player-active-status'>
                 <div className='active'>
-                  <div className='active_btn' />
-                  <p>{playerInterfaceData?.status}</p>
+                  <div className={Active ? `active_btn` : 'in-active_btn'} />
+                  <p>{Active ? 'Active Player' : 'In-active Player'}</p>
                 </div>
                 <div className='injury-status'>
                   <p>Injury Status</p>
-                  <h4>HEALTHY</h4>
+                  <h4>{InjuryStatus || '-'}</h4>
                 </div>
               </div>
             </div>
             <div className='box'>
               <p className='text1'>Position Rank:</p>
-              <p className='text2'>#{playerInterfaceData?.positionRank}</p>
+              <p className='text2'>#{PositionRank > 0 ? `#${PositionRank}` : 0}</p>
             </div>
             <div className='box'>
               <p className='text1'>League Rank:</p>
-              <p className='text2'>#{playerInterfaceData?.leagueRank}</p>
+              <p className='text2'>#{LeagueRank > 0 ? `#${LeagueRank}` : 0}</p>
             </div>
           </div>
         </Col>
@@ -70,7 +76,7 @@ const GmCard = ({ isButton, bidWinningPage = false }) => {
                 <Typography.Title level={2}>2021</Typography.Title>
               </div>
             </div>
-            <img src={Circa} height={'100px'} />
+            {team?.logo && <img src={team?.logo} height={'100px'} />}
           </div>
         </Col>
         <Col xs={24} xl={4}>
@@ -95,8 +101,16 @@ const GmCard = ({ isButton, bidWinningPage = false }) => {
               <TradePlayer />
               <ReleasePlayer />
               <MoveToInjured />
-              <ActivateFromPracticeSquad />
-              <MoveToPracticeSquad />
+              <ActivateFromPracticeSquad
+                activePlayers={activePlayers}
+                disabled={!inPracticeSquad}
+                getData={getData}
+              />
+              <MoveToPracticeSquad
+                practicePlayers={practicePlayers}
+                disabled={inPracticeSquad}
+                getData={getData}
+              />
             </div>
           )}
         </Col>

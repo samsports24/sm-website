@@ -59,6 +59,18 @@
 .player_interface_modals .modal_body .main_heading {
   padding-left: 15px;
 }
+.player_interface_modals .modal_body .team_roster_box {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  height: 250px;
+}
+.player_interface_modals .modal_body .selected_row {
+  padding-block: 8px;
+  border-top: 1px solid gray;
+  border-bottom: 1px solid gray;
+}
 
 /* FOOTER */
 .player_interface_modals .modal_footer {

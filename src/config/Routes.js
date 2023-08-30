@@ -113,7 +113,7 @@ const Routers = () => {
           {/* <Route path='/roster' element={<Roster />} /> */}
           {/* <Route path='/roster-fullformat' element={<RosterFullFormat />} /> */}
           <Route path='/' element={<Home />} />
-          <Route path='/player-interface' element={<PlayerInterface />} />
+          <Route path='/player-interface/:id' element={<PlayerInterface />} />
 
           <Route path='/fantasy-league' element={<FantasyLeague />} />
           <Route path='/professional-league' element={<ProfessionalLeague />} />

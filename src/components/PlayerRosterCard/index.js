@@ -108,7 +108,7 @@ const PlayerRosterCard = ({ checkbox = false, data, index, style, nonActive, han
         <h3
           style={{ cursor: 'pointer' }}
           onClick={() => {
-            navigate('/player-interface')
+            navigate(`/player-interface/${_id}`)
           }}
         >
           {index + 1}. &nbsp;&nbsp; {Name}

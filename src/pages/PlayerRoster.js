@@ -11,7 +11,7 @@ import { depthCardData } from './mockData'
 import PlayerRosterCard from '../components/PlayerRosterCard'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import Loader from '../components/Loader'
-import { getRoster } from '../redux/actions/rosterAction'
+import { getRoster, setNonActivePlayer } from '../redux/actions/rosterAction'
 
 const PlayerRoster = () => {
   const [activeFilter] = useState('Roster')
@@ -20,6 +20,7 @@ const PlayerRoster = () => {
   const [practiveSquadData, setPractiveSquadData] = useState([])
   const [nonActive, setNonActive] = useState([])
   const [loading, setLoading] = useState(true)
+  const [submitLoading, setSubmitLoading] = useState(false)
 
   const handleNonActive = (event, id) => {
     if (event) {
@@ -34,12 +35,11 @@ const PlayerRoster = () => {
     }
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (nonActive?.length === 7) {
-      notification.success({
-        message: 'Success',
-        duration: 3,
-      })
+      setSubmitLoading(true)
+      await setNonActivePlayer(nonActive)
+      setSubmitLoading(false)
     } else {
       notification.error({
         message: `Select atleast 7 Players (${nonActive?.length}/7)`,
@@ -61,8 +61,12 @@ const PlayerRoster = () => {
       const filtered = res?.players?.map((v) => {
         const filterStats = res?.stats?.filter((x) => v?._id === x?.player)
         let updateStats = {}
-        filterStats.forEach((v) => {
-          updateStats[`score${v.weekNo}`] = v.score
+        filterStats.forEach((val) => {
+          if (v.ByeWeek && v.ByeWeek === val.weekNo) {
+            updateStats[`score${val.weekNo}`] = 'B'
+          } else {
+            updateStats[`score${val.weekNo}`] = val.score
+          }
         })
         return {
           ...v,
@@ -124,17 +128,17 @@ const PlayerRoster = () => {
       </section>
 
       <div className='submit_button_box'>
-        <Button onClick={handleSubmit} type='primary'>
+        <Button loading={submitLoading} onClick={handleSubmit} type='primary'>
           Submit
         </Button>
       </div>
 
       {/* STATS */}
-      <section className='stats_container'>
-        {loading ? (
-          <Loader />
-        ) : (
-          <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          <section className='stats_container'>
             {activePlayerData?.map((v, i) => {
               return (
                 <PlayerRosterCard
@@ -148,20 +152,14 @@ const PlayerRoster = () => {
                 />
               )
             })}
-          </>
-        )}
-      </section>
+          </section>
 
-      <hr style={{ marginBlock: '40px' }} />
+          <hr style={{ marginBlock: '40px' }} />
 
-      <p className='heading'>Practice Squad</p>
+          <p className='heading'>Practice Squad</p>
 
-      {/* STATS */}
-      <section className='stats_container'>
-        {loading ? (
-          <Loader />
-        ) : (
-          <>
+          {/* STATS */}
+          <section className='stats_container'>
             {practiveSquadData?.map((v, i) => {
               return (
                 <PlayerRosterCard
@@ -174,9 +172,9 @@ const PlayerRoster = () => {
                 />
               )
             })}
-          </>
-        )}
-      </section>
+          </section>
+        </>
+      )}
     </div>
   )
 }

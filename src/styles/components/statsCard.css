@@ -21,6 +21,9 @@
   font-weight: 600;
   line-height: normal;
 }
+.stats_card_container header h3:hover {
+  color: var(--primary) !important;
+}
 
 .stats_card_container .center {
   padding: 30px 60px;

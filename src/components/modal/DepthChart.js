@@ -1,7 +1,8 @@
-import { Modal, Spin } from 'antd'
 import React, { useEffect, useState } from 'react'
+import { Modal, Spin, Popover, Button } from 'antd'
 
 import barIcon from '../../assets/bar-icon.svg'
+import { GiAmericanFootballPlayer } from 'react-icons/gi'
 
 const mock = [
   {
@@ -129,11 +130,15 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData }) => {
   }
 
   const Card = ({ data }) => {
-    const { _id, team, position, playerName, injury, gameInfo, projection } = data
+    const { _id, imageUrl, team, position, playerName, injury, gameInfo, projection } = data
     return (
       <div className='content_body' onClick={() => handleStarter(_id)}>
         <div className='image_box'>
-          <img src={require('../../assets/player-img-6.png')} />
+          {imageUrl ? (
+            <img src={imageUrl} />
+          ) : (
+            <GiAmericanFootballPlayer size={35} color={'#c4c4c4'} />
+          )}
         </div>
         <div>
           <p className='text1'>Team</p>
@@ -159,7 +164,21 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData }) => {
           <p className='text1'>Projection</p>
           <p className='text2'>{projection || '-'}</p>
         </div>
-        <img src={barIcon} />
+        <Popover
+          placement='left'
+          title={starter?._id === _id ? 'Already Selected' : 'Select for Starter'}
+          content={
+            starter?._id !== _id ? (
+              <Button type='primary' className='add_starter_button'>
+                Add
+              </Button>
+            ) : (
+              ''
+            )
+          }
+        >
+          <img src={barIcon} style={{ cursor: 'pointer' }} />
+        </Popover>
       </div>
     )
   }
@@ -168,7 +187,7 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData }) => {
     return (
       <div className='content_body'>
         <div className='image_box'>
-          <img src={require('../../assets/player-img-6.png')} />
+          <GiAmericanFootballPlayer size={35} color={'#c4c4c4'} />
         </div>
         <img src={barIcon} />
       </div>

@@ -1,16 +1,55 @@
-import { Button, Modal } from 'antd'
 import React, { useState } from 'react'
+import { Button, Modal, notification } from 'antd'
+import { useParams } from 'react-router-dom'
+import { moveToPractice } from '../../../redux/actions/rosterAction'
+import { activeRosterCount } from '../../../config/constants'
 
-const MakeOffer = () => {
+const MakeOffer = ({ disabled, practicePlayers, getData }) => {
   const [open, setOpen] = useState(false)
+  const [selectedId, setSelectedId] = useState(null)
+  const [loading, setLoading] = useState(false)
+
+  const { id } = useParams()
+
   const showModal = () => setOpen(true)
-  const closeModal = () => setOpen(false)
+  const closeModal = () => {
+    setOpen(false)
+    setSelectedId(null)
+  }
+
+  const moveToPracticeSquad = async () => {
+    setLoading(true)
+    await moveToPractice({
+      id,
+    })
+    await getData()
+    setLoading(false)
+    closeModal()
+  }
+
+  const handleSubmit = async () => {
+    if (selectedId) {
+      setLoading(true)
+      await moveToPractice({
+        id: id,
+        replacedPlayer: selectedId,
+      })
+      await getData()
+      setLoading(false)
+      closeModal()
+    } else {
+      notification.error({
+        message: `Please select player to replace!`,
+        duration: 3,
+      })
+    }
+  }
 
   return (
     <>
-      <Button type='primary' className='action-bar-btn' onClick={showModal}>
+      <Button disabled={disabled} type='primary' className='action-bar-btn' onClick={showModal}>
         Move To
-        <p>Practice Squad</p>
+        <span>Practice Squad</span>
       </Button>
       <Modal
         centered
@@ -37,17 +76,54 @@ const MakeOffer = () => {
             </p>
           </div>
 
-          <h1 className='modal_header_heading'>TEAM ROSTER</h1>
-          {['', '', '', '', '']?.map((v, i) => {
-            return (
-              <div key={i} className='_row'>
-                <p>Position</p>
-                <p>Player Name</p>
-                <p>$Player Hit Cap</p>
-                <Button type='primary'>Select</Button>
+          {/* in future we will use practice roster count variable */}
+          {practicePlayers?.length < activeRosterCount ? (
+            <div className='modal_footer'>
+              <Button
+                onClick={moveToPracticeSquad}
+                type='primary'
+                className='button_1'
+                loading={loading}
+              >
+                MOVE TO PRACTICE SQUAD
+              </Button>
+              <Button onClick={closeModal} type='primary' className='button_2'>
+                Cancel
+              </Button>
+            </div>
+          ) : (
+            <>
+              <h1 className='modal_header_heading'>TEAM ROSTER</h1>
+              <div className='team_roster_box'>
+                {practicePlayers?.map((v, i) => {
+                  return (
+                    <div key={i} className={`_row ${selectedId === v?._id && 'selected_row'}`}>
+                      <p style={{ minWidth: '70px' }}>{v?.Position}</p>
+                      <p style={{ minWidth: '300px' }}>{v?.Name}</p>
+                      <p>${v?.PlayerCap}</p>
+                      <Button type='primary' onClick={() => setSelectedId(v?._id)}>
+                        Select
+                      </Button>
+                    </div>
+                  )
+                })}
               </div>
-            )
-          })}
+              <div className='modal_footer'>
+                <Button
+                  onClick={handleSubmit}
+                  type='primary'
+                  className='button_1'
+                  style={{ width: '150px' }}
+                  loading={loading}
+                >
+                  Submit
+                </Button>
+                <Button onClick={closeModal} type='primary' className='button_2'>
+                  Cancel
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       </Modal>
     </>
