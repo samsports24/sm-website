@@ -16,7 +16,7 @@ import GameDetails from '../pages/GameDetails'
 import ProfessionalLeague from '../pages/ProfessionalLeague'
 import PublicLeague from '../pages/PublicLeague'
 
-// import EditProfile from '../pages/EditProfile'
+import EditProfile from '../pages/EditProfile'
 // import Players from '../pages/Players'
 // import Teams from '../pages/Teams'
 // import PlayerDetails from '../pages/PlayerDetails'
@@ -42,7 +42,7 @@ import PlayerInterface from '../pages/PlayerInterface2'
 import PracticeSquad from '../pages/PracticeSquad'
 // import TeamTrade from '../pages/TeamTrade'
 // import TeamSchedule from '../pages/TeamSchedule'
-// import TeamSetting from '../pages/TeamSettings'
+import TeamSetting from '../pages/TeamSettings'
 // import InjuredReserve from '../pages/InjuredReserve'
 import FreeAgent from '../pages/FreeAgent'
 // import AgentPlayerInterface from '../pages/AgentPlayerInterface'
@@ -114,6 +114,8 @@ const Routers = () => {
           {/* <Route path='/roster-fullformat' element={<RosterFullFormat />} /> */}
           <Route path='/' element={<Home />} />
           <Route path='/player-interface/:id' element={<PlayerInterface />} />
+          <Route path='/team-setting' element={<TeamSetting />} />
+          <Route path='/edit-profile' element={<EditProfile />} />
 
           <Route path='/fantasy-league' element={<FantasyLeague />} />
           <Route path='/professional-league' element={<ProfessionalLeague />} />

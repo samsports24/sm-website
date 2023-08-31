@@ -1,18 +1,23 @@
 .feedback-card {
   position: relative;
   border-radius: 16px;
-  background: var(--primaryPurple);
-  padding: 37px 34px 37px 64px;
-  margin: 40px 10px 0px 0px;
-  margin-left: 20px;
-  width: 95%;
+  /* background: var(--primaryPurple); */
+  /* margin: 40px 10px 0px 0px; */
+  /* margin-left: 20px; */
+  width: 100%;
+  height: 250px;
+  padding: 30px 0px 37px 30px;
+  /* overflow-y: auto; */
 }
 .feedback-card p {
   color: #fff;
-  font-size: 16px;
+  font-size: 15px;
+  padding: 20px 20px 20px 50px;
   font-style: normal;
   font-weight: 400;
   line-height: 30px;
+  background: var(--primaryPurple);
+  border-radius: 16px;
 }
 .feedback-card p span {
   color: rgba(255, 255, 255, 0.5);
@@ -22,12 +27,17 @@
   line-height: 30px;
 }
 .feedback-card img {
-  position: absolute;
-  top: -20px;
-  left: -20px;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 7px solid #605583;
+  z-index: 999;
 }
 
-@media (max-width: 550px) {
+/* @media (max-width: 550px) {
   .feedback-card {
     padding: 47px 15px 37px 15px;
     margin: 40px 10px 0px 0px;
@@ -40,4 +50,4 @@
     -webkit-transform: translateX(-50%);
     transform: translateX(-50%);
   }
-}
+} */

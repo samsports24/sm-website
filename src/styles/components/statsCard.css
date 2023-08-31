@@ -8,7 +8,7 @@
 }
 
 .stats_card_container header {
-  padding: 30px 60px;
+  padding: 15px 40px;
   border-bottom: 1px solid var(--border);
   display: flex;
   flex-direction: row;
@@ -26,7 +26,7 @@
 }
 
 .stats_card_container .center {
-  padding: 30px 60px;
+  padding: 15px 40px;
   display: flex;
   flex-direction: row;
   gap: 30px;

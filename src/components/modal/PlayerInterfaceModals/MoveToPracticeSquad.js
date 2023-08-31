@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import { moveToPractice } from '../../../redux/actions/rosterAction'
 import { activeRosterCount } from '../../../config/constants'
 
-const MakeOffer = ({ disabled, practicePlayers, getData }) => {
+const MakeOffer = ({ disabled, practicePlayers, activePlayersCount, getData }) => {
   const [open, setOpen] = useState(false)
   const [selectedId, setSelectedId] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -77,7 +77,7 @@ const MakeOffer = ({ disabled, practicePlayers, getData }) => {
           </div>
 
           {/* in future we will use practice roster count variable */}
-          {practicePlayers?.length < activeRosterCount ? (
+          {activePlayersCount > activeRosterCount ? (
             <div className='modal_footer'>
               <Button
                 onClick={moveToPracticeSquad}

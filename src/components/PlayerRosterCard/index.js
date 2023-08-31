@@ -4,7 +4,14 @@ import { Checkbox, Table } from 'antd'
 
 import { useNavigate } from 'react-router-dom'
 
-const PlayerRosterCard = ({ checkbox = false, data, index, style, nonActive, handleNonActive }) => {
+const PlayerRosterCard = ({
+  data,
+  index,
+  style,
+  nonActive,
+  handleNonActive,
+  isPractice = false,
+}) => {
   const { _id, Name, pts, Age, team, ByeWeek, PlayerRank, PlayerCap, stats: tableData } = data
 
   const navigate = useNavigate()
@@ -113,7 +120,14 @@ const PlayerRosterCard = ({ checkbox = false, data, index, style, nonActive, han
         >
           {index + 1}. &nbsp;&nbsp; {Name}
         </h3>
-        {checkbox && (
+        {isPractice ? (
+          <Checkbox
+            onChange={(event) => handleNonActive(event.target.checked, _id)}
+            checked={nonActive?.includes(_id)}
+          >
+            Protected
+          </Checkbox>
+        ) : (
           <Checkbox
             onChange={(event) => handleNonActive(event.target.checked, _id)}
             checked={nonActive?.includes(_id)}

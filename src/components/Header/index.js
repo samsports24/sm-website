@@ -6,6 +6,7 @@ import bellIcon from '../../assets/bell-icon.svg'
 // import circaImage from '../../assets/teams/circa_sports_trout.png'
 import logo from '../../assets/Logo.svg'
 import { useSelector } from 'react-redux'
+import { BiRightArrowAlt } from 'react-icons/bi'
 
 const Header = () => {
   const user = useSelector((state) => state.user.userDetails)
@@ -33,14 +34,23 @@ const Header = () => {
             <Button>Division Record</Button>
           </div>
           <div className='team_financials_box'>
-            <p>Team Financials</p>
             <div>
-              <p>Live Player Auction</p>
-              <span>---</span>
+              <h4>Team Financials</h4>
+              <h4>
+                <BiRightArrowAlt size={18} style={{ cursor: 'pointer' }} />
+              </h4>
             </div>
             <div>
-              <p>Live Player Auction</p>
-              <span>---</span>
+              <p>League Salary Cap</p>
+              <span>$199,759,446</span>
+            </div>
+            <div>
+              <p>Team Salary Cap</p>
+              <span>$189,890,858</span>
+            </div>
+            <div>
+              <p>Team Cap Left</p>
+              <span>$9,868,588</span>
             </div>
           </div>
         </div>
@@ -57,11 +67,11 @@ const Header = () => {
             </div>
             <div className='content3'>
               <div className='top' style={{ marginBottom: '12px' }}>
-                <span>23&apos;</span>
+                <span>24&apos;</span>
                 <p>Prize-Pool</p>
               </div>
               <div className='top'>
-                <span>23&apos;</span>
+                <span>25&apos;</span>
                 <p>Prize-Pool</p>
               </div>
             </div>

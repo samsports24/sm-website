@@ -47,11 +47,11 @@ const GmCard = ({
             </div>
             <div className='box'>
               <p className='text1'>Position Rank:</p>
-              <p className='text2'>#{PositionRank > 0 ? `#${PositionRank}` : 0}</p>
+              <p className='text2'>#{PositionRank > 0 ? PositionRank : 0}</p>
             </div>
             <div className='box'>
               <p className='text1'>League Rank:</p>
-              <p className='text2'>#{LeagueRank > 0 ? `#${LeagueRank}` : 0}</p>
+              <p className='text2'>#{LeagueRank > 0 ? LeagueRank : 0}</p>
             </div>
           </div>
         </Col>
@@ -101,12 +101,15 @@ const GmCard = ({
               <TradePlayer />
               <ReleasePlayer />
               <MoveToInjured />
+
               <ActivateFromPracticeSquad
                 activePlayers={activePlayers}
                 disabled={!inPracticeSquad}
                 getData={getData}
               />
+
               <MoveToPracticeSquad
+                activePlayersCount={activePlayers?.length}
                 practicePlayers={practicePlayers}
                 disabled={inPracticeSquad}
                 getData={getData}

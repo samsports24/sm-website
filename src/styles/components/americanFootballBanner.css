@@ -16,7 +16,7 @@
 }
 .american-football-banner-dekstop .content_wrapper .left h1 {
   color: var(--text);
-  font-size: 34px;
+  font-size: 26px;
   font-style: normal;
   font-weight: 800;
   line-height: normal;
@@ -39,10 +39,11 @@
   line-height: 28px;
   bottom: calc(500 / 1590 * 76%);
   left: calc(500 / 1590 * 102%);
+  cursor: pointer;
 }
 @media (max-width: 1700px) {
   .american-football-banner-dekstop .content_wrapper .left h1 {
-    font-size: 22px;
+    font-size: 18px;
   }
   .american-football-banner-dekstop .play_now_text {
     font-size: 32px;
@@ -112,6 +113,7 @@
   line-height: 28px;
   bottom: calc(500 / 1590 * 33%);
   left: calc(500 / 1590 * 195%);
+  cursor: pointer;
 }
 @media (min-width: 1000px) {
   .american-football-banner-tab {
@@ -178,6 +180,7 @@
   line-height: normal;
   bottom: calc(500 / 1590 * 25%);
   left: calc(500 / 1590 * 28%);
+  cursor: pointer;
 }
 @media (max-width: 400px) {
   .american-football-banner-mobile .content_wrapper {

@@ -11,7 +11,7 @@ import { ColorFilter } from '../components/FilterComponent'
 import { depthCardData } from './mockData'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import { getActiveRosterCount } from '../redux/actions/depthChartAction'
-import { legalPlayers } from '../config/constants'
+import { firstLetterCap, legalPlayers } from '../config/constants'
 import Loader from '../components/Loader'
 
 const DepthChart = () => {
@@ -25,19 +25,39 @@ const DepthChart = () => {
   }
 
   useEffect(() => {
-    const filterdData = depthCardData?.filter((v) => v?.type === activeFilter?.toLocaleLowerCase())
-    setData(filterdData)
-    getData()
+    getDepthChartData()
   }, [activeFilter])
 
-  const getData = async () => {
+  const getDepthChartData = async () => {
+    const filtered = depthCardData.filter((obj) => obj.type === activeFilter)
     setLoading(true)
+    // setData(filtered)
+
     const res = await getActiveRosterCount({
       type: activeFilter === 'special team' ? 'special' : activeFilter,
     })
     if (res) {
-      setActiveCount(res?.count)
-      console.log(res)
+      setActiveCount(res?.count?.activePlayers)
+
+      if (res?.data?.length > 0) {
+        res?.data.map((item) => {
+          let index = filtered.findIndex((item2) => {
+            return item2.classKey === item.classKey
+          })
+          if (index !== -1) {
+            filtered.splice(index, 1, {
+              imageUrl: filtered[index].imageUrl,
+              Name: item?.player?.Name,
+              Position: filtered[index].Position,
+              classKey: filtered[index].classKey,
+              type: filtered[index].type,
+            })
+          }
+        })
+        setData([...filtered])
+      } else {
+        setData([...filtered])
+      }
     }
     setLoading(false)
   }
@@ -57,7 +77,7 @@ const DepthChart = () => {
               title: <p>Depth-Chart</p>,
             },
             {
-              title: <p>{activeFilter}</p>,
+              title: <p>{firstLetterCap(activeFilter)}</p>,
             },
           ]}
         />
@@ -90,7 +110,9 @@ const DepthChart = () => {
               }`}
             >
               {data?.map((v, i) => {
-                return <DepthCard key={i} data={v} index={i} />
+                return (
+                  <DepthCard key={i} data={v} index={i} getDepthChartData={getDepthChartData} />
+                )
               })}
             </div>
           </section>

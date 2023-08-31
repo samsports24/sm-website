@@ -19,8 +19,10 @@ const PlayerRoster = () => {
   const [activePlayerData, setActivePlayerData] = useState([])
   const [practiveSquadData, setPractiveSquadData] = useState([])
   const [nonActive, setNonActive] = useState([])
+  const [protectedCheck, setProtectedCheck] = useState([])
   const [loading, setLoading] = useState(true)
   const [submitLoading, setSubmitLoading] = useState(false)
+  console.log(protectedCheck)
 
   const handleNonActive = (event, id) => {
     if (event) {
@@ -34,7 +36,6 @@ const PlayerRoster = () => {
       }
     }
   }
-
   const handleSubmit = async () => {
     if (nonActive?.length === 7) {
       setSubmitLoading(true)
@@ -42,7 +43,32 @@ const PlayerRoster = () => {
       setSubmitLoading(false)
     } else {
       notification.error({
-        message: `Select atleast 7 Players (${nonActive?.length}/7)`,
+        message: `Select at least 7 Players (${nonActive?.length}/7)`,
+        duration: 3,
+      })
+    }
+  }
+
+  const handleProtectedCheckbox = (event, id) => {
+    if (event) {
+      setProtectedCheck([...protectedCheck, id])
+    } else {
+      const temp = [...protectedCheck]
+      let keyInd = temp?.indexOf(id)
+      if (keyInd !== -1) {
+        temp.splice(keyInd, 1)
+        setProtectedCheck(temp)
+      }
+    }
+  }
+  const handleProtectedSubmit = async () => {
+    if (protectedCheck?.length === 4) {
+      // setSubmitLoading(true)
+      // await setNonActivePlayer(protectedCheck)
+      // setSubmitLoading(false)
+    } else {
+      notification.error({
+        message: `Select at least 4 Players (${protectedCheck?.length}/4)`,
         duration: 3,
       })
     }
@@ -148,7 +174,6 @@ const PlayerRoster = () => {
                   index={i}
                   nonActive={nonActive}
                   handleNonActive={handleNonActive}
-                  checkbox={true}
                 />
               )
             })}
@@ -156,7 +181,12 @@ const PlayerRoster = () => {
 
           <hr style={{ marginBlock: '40px' }} />
 
-          <p className='heading'>Practice Squad</p>
+          <div className='practice_squad_header'>
+            <p className='heading'>Practice Squad</p>
+            <Button loading={submitLoading} onClick={handleProtectedSubmit} type='primary'>
+              Submit
+            </Button>
+          </div>
 
           {/* STATS */}
           <section className='stats_container'>
@@ -167,8 +197,9 @@ const PlayerRoster = () => {
                   key={i}
                   data={v}
                   index={i}
-                  nonActive={nonActive}
-                  handleNonActive={handleNonActive}
+                  nonActive={protectedCheck}
+                  handleNonActive={handleProtectedCheckbox}
+                  isPractice={true}
                 />
               )
             })}

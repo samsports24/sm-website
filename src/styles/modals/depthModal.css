@@ -1,6 +1,6 @@
 /* DEPTH MODAL */
 .depth_modal {
-  width: 700px !important;
+  width: 1100px !important;
 }
 .depth_modal .ant-modal-content {
   padding: 20px;
@@ -94,7 +94,7 @@
 }
 
 .add_starter_button {
-  width: 200px;
+  width: 150px;
 }
 .add_starter_button:hover {
   color: var(--primary) !important;

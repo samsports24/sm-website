@@ -36,6 +36,25 @@ export const setNonActivePlayer = async (data) => {
   }
 }
 
+export const setProtectedPlayer = async (data) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/player/set-protected', { ids: data })
+    if (res) {
+      await getRoster()
+      notification.success({
+        message: res.data.data,
+        duration: 3,
+      })
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
 export const getRosterPlayer = async (id) => {
   try {
     attachToken()

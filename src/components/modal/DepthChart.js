@@ -1,124 +1,49 @@
 import React, { useEffect, useState } from 'react'
-import { Modal, Spin, Popover, Button } from 'antd'
+import { Modal, Spin, Button } from 'antd'
 
-import barIcon from '../../assets/bar-icon.svg'
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
+import { assignPlayerToStarter, getPlayersByPosition } from '../../redux/actions/depthChartAction'
 
-const mock = [
-  {
-    _id: '12345671',
-    team: 'KCC',
-    position: 'KCC',
-    playerName: 'KCC',
-    injury: 'KCC',
-    gameInfo: 'KCC',
-    projection: '7:05',
-    starter: true,
-  },
-  {
-    _id: '12345672',
-    team: 'KCC',
-    position: 'KCC',
-    playerName: 'KCC',
-    injury: 'KCC',
-    gameInfo: 'KCC',
-    projection: '7:05',
-  },
-  {
-    _id: '12345673',
-    team: 'KCC',
-    position: 'KCC',
-    playerName: 'KCC',
-    injury: 'KCC',
-    gameInfo: 'KCC',
-    projection: '7:05',
-  },
-  {
-    _id: '12345674',
-    team: 'KCC',
-    position: 'KCC',
-    playerName: 'KCC',
-    injury: 'KCC',
-    gameInfo: 'KCC',
-    projection: '7:05',
-  },
-  {
-    _id: '12345675',
-    team: 'KCC',
-    position: 'KCC',
-    playerName: 'KCC',
-    injury: 'KCC',
-    gameInfo: 'KCC',
-    projection: '7:05',
-  },
-  {
-    _id: '12345676',
-    team: 'KCC',
-    position: 'KCC',
-    playerName: 'KCC',
-    injury: 'KCC',
-    gameInfo: 'KCC',
-    projection: '7:05',
-  },
-  {
-    _id: '12345677',
-    team: 'KCC',
-    position: 'KCC',
-    playerName: 'KCC',
-    injury: 'KCC',
-    gameInfo: 'KCC',
-    projection: '7:05',
-  },
-  {
-    _id: '12345678',
-    team: 'KCC',
-    position: 'KCC',
-    playerName: 'KCC',
-    injury: 'KCC',
-    gameInfo: 'KCC',
-    projection: '7:05',
-  },
-  {
-    _id: '12345679',
-    team: 'KCC',
-    position: 'KCC',
-    playerName: 'KCC',
-    injury: 'KCC',
-    gameInfo: 'KCC',
-    projection: '7:05',
-  },
-  {
-    _id: '12345680',
-    team: 'KCC',
-    position: 'KCC',
-    playerName: 'KCC',
-    injury: 'KCC',
-    gameInfo: 'KCC',
-    projection: '7:05',
-  },
-]
-
-const DepthChart = ({ openModal, setOpenModal, data: propsData }) => {
+const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartData }) => {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState([])
   const [starter, setStarter] = useState({})
+  const [playerId, setPlayerId] = useState('')
 
-  const getData = () => {
-    setTimeout(() => {
-      const starter = mock?.find((v) => v?.starter === true)
-      const others = mock?.filter((v) => v?.starter !== true)
-      setStarter(starter)
-      setData(others)
-      setLoading(false)
-    }, 2000)
+  const closeModal = () => {
+    setOpenModal(false)
+    setData([])
+    setStarter({})
+  }
+
+  const getData = async () => {
+    setLoading(true)
+    const res = await getPlayersByPosition({
+      position: propsData.Position && propsData.Position?.toUpperCase().split('/'),
+      classKey: propsData?.classKey && propsData?.classKey,
+    })
+    if (res) {
+      setStarter(res?.starterPlayer ? res?.starterPlayer?.player : {})
+      setData(res?.bench)
+    }
+    setLoading(false)
   }
 
   useEffect(() => {
     getData()
-  }, [])
+  }, [openModal])
 
-  const handleStarter = (id) => {
-    console.log(id)
+  const handleStarter = async (id) => {
+    setPlayerId(id)
+    const res = await assignPlayerToStarter({
+      oldPlayerId: starter?._id ? starter?._id : '',
+      playerId: id,
+      classKey: propsData?.classKey,
+    })
+    if (res) {
+      await getData()
+      await getDepthChartData()
+    }
   }
 
   const Spinner = () => {
@@ -129,42 +54,42 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData }) => {
     )
   }
 
-  const Card = ({ data }) => {
-    const { _id, imageUrl, team, position, playerName, injury, gameInfo, projection } = data
+  const Card = ({ data, button = false }) => {
+    const { _id, ImageUrl, team, Position, Name, InjuryStatus, GameInfo, Projection } = data
     return (
-      <div className='content_body' onClick={() => handleStarter(_id)}>
+      <div className='content_body'>
         <div className='image_box'>
-          {imageUrl ? (
-            <img src={imageUrl} />
+          {ImageUrl ? (
+            <img src={ImageUrl} />
           ) : (
             <GiAmericanFootballPlayer size={35} color={'#c4c4c4'} />
           )}
         </div>
         <div>
           <p className='text1'>Team</p>
-          <p className='text2'>{team || '-'}</p>
+          <p className='text2'>{team?.name || '-'}</p>
         </div>
         <div>
           <p className='text1'>POS</p>
-          <p className='text2'>{position || '-'}</p>
+          <p className='text2'>{Position || '-'}</p>
         </div>
         <div>
           <p className='text1'>Player Name</p>
-          <p className='text2'>{playerName || '-'}</p>
+          <p className='text2'>{Name || '-'}</p>
         </div>
         <div>
           <p className='text1'>Injury</p>
-          <p className='text2'>{injury || '-'}</p>
+          <p className='text2'>{InjuryStatus || '-'}</p>
         </div>
         <div>
           <p className='text1'>Game Info</p>
-          <p className='text2'>{gameInfo || '-'}</p>
+          <p className='text2'>{GameInfo || '-'}</p>
         </div>
         <div>
           <p className='text1'>Projection</p>
-          <p className='text2'>{projection || '-'}</p>
+          <p className='text2'>{Projection || '-'}</p>
         </div>
-        <Popover
+        {/* <Popover
           placement='left'
           title={starter?._id === _id ? 'Already Selected' : 'Select for Starter'}
           content={
@@ -177,8 +102,17 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData }) => {
             )
           }
         >
-          <img src={barIcon} style={{ cursor: 'pointer' }} />
-        </Popover>
+        </Popover> */}
+        {button && (
+          <Button
+            type='primary'
+            className='add_starter_button'
+            loading={playerId === _id ? true : false}
+            onClick={() => handleStarter(_id)}
+          >
+            Add to Starter
+          </Button>
+        )}
       </div>
     )
   }
@@ -189,7 +123,6 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData }) => {
         <div className='image_box'>
           <GiAmericanFootballPlayer size={35} color={'#c4c4c4'} />
         </div>
-        <img src={barIcon} />
       </div>
     )
   }
@@ -198,7 +131,7 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData }) => {
     <Modal
       centered
       open={openModal}
-      onCancel={() => setOpenModal(false)}
+      onCancel={closeModal}
       footer={null}
       closeIcon={false}
       className='depth_modal'
@@ -208,7 +141,7 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData }) => {
         <div className='card_box'>
           <div className='header'>
             <h2>Starter</h2>
-            <h2 style={{ textTransform: 'uppercase' }}>{propsData?.text}</h2>
+            <h2 style={{ textTransform: 'uppercase' }}>{propsData?.Position}</h2>
           </div>
           {loading ? (
             <Spinner />
@@ -218,12 +151,14 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData }) => {
             <EmptyCard />
           )}
         </div>
-        <div className='card_box'>
-          <div className='header'>
-            <h2>Back-up</h2>
+        {propsData?.Position?.includes('qb') && (
+          <div className='card_box'>
+            <div className='header'>
+              <h2>Back-up</h2>
+            </div>
+            <div className='scroll_section'>{loading ? <Spinner /> : <EmptyCard />}</div>
           </div>
-          <div className='scroll_section'>{loading ? <Spinner /> : <EmptyCard />}</div>
-        </div>
+        )}
         <div className='card_box'>
           <div className='header'>
             <h2>Bench</h2>
@@ -235,7 +170,7 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData }) => {
               <EmptyCard />
             ) : (
               data?.map((v, i) => {
-                return <Card key={i} data={v} handleStarter={handleStarter} />
+                return <Card button={true} key={i} data={v} handleStarter={handleStarter} />
               })
             )}
           </div>

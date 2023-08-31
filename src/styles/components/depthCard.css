@@ -140,7 +140,7 @@
   top: 300px !important;
   left: 290px !important;
 }
-.offense_qb {
+.offense_qb-1 {
   top: 300px !important;
   left: 760px !important;
 }
@@ -151,6 +151,10 @@
 .offense_wr-2 {
   top: 300px !important;
   left: 1420px !important;
+}
+.offense_qb-2 {
+  top: 560px !important;
+  left: 760px !important;
 }
 
 /* SPECIAL TEAM */

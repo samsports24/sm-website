@@ -30,7 +30,7 @@ const MainMenu = ({ active }) => {
           // key='dashboard'
           className={'sidebar-menu'}
           icon={<img src={GlobeIcon} />}
-          onClick={() => navigate('/dashboard')}
+          onClick={() => navigate('/')}
         >
           Home
         </Menu.Item>

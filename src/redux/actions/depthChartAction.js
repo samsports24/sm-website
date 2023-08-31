@@ -37,21 +37,32 @@ export const getDepthChartByType = async (payload) => {
   }
 }
 
-// export const setNonActivePlayer = async (data) => {
-//   try {
-//     attachToken()
-//     const res = await privateAPI.post('/player/set-nonactive', { ids: data })
-//     if (res) {
-//       await getRoster()
-//       notification.success({
-//         message: res.data.data,
-//         duration: 3,
-//       })
-//     }
-//   } catch (err) {
-//     notification.error({
-//       message: err?.response?.data?.message || 'Server Error',
-//       duration: 3,
-//     })
-//   }
-// }
+export const getPlayersByPosition = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/depthChart/get-players-by-position', payload)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const assignPlayerToStarter = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/depthChart/assign-player-to-starter', payload)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}

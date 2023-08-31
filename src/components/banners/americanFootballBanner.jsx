@@ -2,7 +2,13 @@ import React from 'react'
 
 import Carousel from 'react-multi-carousel'
 import 'react-multi-carousel/lib/styles.css'
+import { useNavigate } from 'react-router-dom'
+
 const AmericalFootballBanner = () => {
+  const navigate = useNavigate()
+
+  const handleNavigate = () => navigate('/public-league')
+
   const responsive = {
     mobile: {
       breakpoint: { max: 4000, min: 0 },
@@ -29,11 +35,13 @@ const AmericalFootballBanner = () => {
             <img src={require('../../assets/rectangle-9.png')} />
             <div className='content_wrapper'>
               <div className='left'>
-                <h1>Try out a mock draft</h1>
-                <p>Learn more about different types of draft modes.</p>
+                <h1>Try out our public leagues</h1>
+                <p>That&apos;s where your GM experience starts.</p>
               </div>
             </div>
-            <h1 className='play_now_text'>Play Now!</h1>
+            <h1 onClick={handleNavigate} className='play_now_text'>
+              Play Now!
+            </h1>
           </div>
 
           {/* Tablet */}
@@ -41,11 +49,13 @@ const AmericalFootballBanner = () => {
             <img src={require('../../assets/banner-img-tab.png')} />
             <div className='content_wrapper'>
               <div className='left'>
-                <h1>Try out a mock draft</h1>
-                <p>Learn more about different types of draft modes.</p>
+                <h1>Try out our public leagues</h1>
+                <p>That&apos;s where your GM experience starts.</p>
               </div>
             </div>
-            <h1 className='play_now_text'>Play Now!</h1>
+            <h1 onClick={handleNavigate} className='play_now_text'>
+              Play Now!
+            </h1>
           </div>
 
           {/* Mobile */}
@@ -53,11 +63,13 @@ const AmericalFootballBanner = () => {
             <img src={require('../../assets/banner-img-mob.png')} />
             <div className='content_wrapper'>
               <div className='left'>
-                <h1>Try out a mock draft</h1>
-                <p>Learn more about different types of draft modes.</p>
+                <h1>Try out our public leagues</h1>
+                <p>That&apos;s where your GM experience starts.</p>
               </div>
             </div>
-            <h1 className='play_now_text'>Play Now!</h1>
+            <h1 onClick={handleNavigate} className='play_now_text'>
+              Play Now!
+            </h1>
           </div>
         </>
         <>
@@ -66,11 +78,13 @@ const AmericalFootballBanner = () => {
             <img src={require('../../assets/rectangle-9.png')} />
             <div className='content_wrapper'>
               <div className='left'>
-                <h1>Try out a mock draft</h1>
-                <p>Learn more about different types of draft modes.</p>
+                <h1>Try out our public leagues</h1>
+                <p>That&apos;s where your GM experience starts.</p>
               </div>
             </div>
-            <h1 className='play_now_text'>Play Now!</h1>
+            <h1 onClick={handleNavigate} className='play_now_text'>
+              Play Now!
+            </h1>
           </div>
 
           {/* Tablet */}
@@ -78,11 +92,13 @@ const AmericalFootballBanner = () => {
             <img src={require('../../assets/banner-img-tab.png')} />
             <div className='content_wrapper'>
               <div className='left'>
-                <h1>Try out a mock draft</h1>
-                <p>Learn more about different types of draft modes.</p>
+                <h1>Try out our public leagues</h1>
+                <p>That&apos;s where your GM experience starts.</p>
               </div>
             </div>
-            <h1 className='play_now_text'>Play Now!</h1>
+            <h1 onClick={handleNavigate} className='play_now_text'>
+              Play Now!
+            </h1>
           </div>
 
           {/* Mobile */}
@@ -90,11 +106,13 @@ const AmericalFootballBanner = () => {
             <img src={require('../../assets/banner-img-mob.png')} />
             <div className='content_wrapper'>
               <div className='left'>
-                <h1>Try out a mock draft</h1>
-                <p>Learn more about different types of draft modes.</p>
+                <h1>Try out our public leagues</h1>
+                <p>That&apos;s where your GM experience starts.</p>
               </div>
             </div>
-            <h1 className='play_now_text'>Play Now!</h1>
+            <h1 onClick={handleNavigate} className='play_now_text'>
+              Play Now!
+            </h1>
           </div>
         </>
       </Carousel>
