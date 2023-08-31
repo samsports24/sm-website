@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.f504b8f0.css",
-    "main.js": "/static/js/main.d061333d.js",
+    "main.css": "/static/css/main.48900e6d.css",
+    "main.js": "/static/js/main.1f2ba9bd.js",
     "static/media/trans-league-banner.png": "/static/media/trans-league-banner.c6b03968a9f61ec4cad1.png",
     "static/media/rectangle-3.png": "/static/media/rectangle-3.aebbca7e8e6696c5f7c4.png",
     "static/media/login-pic-1.png": "/static/media/login-pic-1.38add10a7452b82cda4b.png",
@@ -17,6 +17,7 @@
     "static/media/banner-img-mob.png": "/static/media/banner-img-mob.dc68704617b7fd75f885.png",
     "static/media/img.png": "/static/media/img.6a67002e44345a678b48.png",
     "static/media/keith-johnston-basketball.png": "/static/media/keith-johnston-basketball.56806c3047d7eccd953f.png",
+    "static/media/news-feed-1.jpg": "/static/media/news-feed-1.fab9de4160634381dbb5.jpg",
     "static/media/gm.png": "/static/media/gm.7bc64561316bd1362850.png",
     "static/media/rectangle-5.png": "/static/media/rectangle-5.2d3bdef16d75bdf891c5.png",
     "static/media/rectangle-7.png": "/static/media/rectangle-7.02920d6d234401ad0829.png",
@@ -38,6 +39,7 @@
     "static/media/ellipse-38.png": "/static/media/ellipse-38.bcba954ab238f9583418.png",
     "static/media/player-img-4.png": "/static/media/player-img-4.e22b571c3b547c433159.png",
     "static/media/sam-college-football.png": "/static/media/sam-college-football.3fed1dd8419a9eb0c7e3.png",
+    "static/media/news-feed-3.jpg": "/static/media/news-feed-3.d0e8eef640a0f9e7bc73.jpg",
     "static/media/sam-legent-1.png": "/static/media/sam-legent-1.880dcb0889db06936048.png",
     "static/media/player-img-5.png": "/static/media/player-img-5.ff7c7e6bbc3d1dcb936e.png",
     "static/media/monsters.png": "/static/media/monsters.0d0c9e7f78a698bb2223.png",
@@ -56,6 +58,7 @@
     "static/media/legion.png": "/static/media/legion.9aa33856cb2197a97ce9.png",
     "static/media/doom.png": "/static/media/doom.1c596999c4aa1cd6ab60.png",
     "static/media/silverbacks.png": "/static/media/silverbacks.de7d7ab6a00ef9204768.png",
+    "static/media/news-feed-2.jpg": "/static/media/news-feed-2.47de515335a8f4a59fce.jpg",
     "static/media/defiance.png": "/static/media/defiance.8427e358605c6d85178d.png",
     "static/media/the_beast.png": "/static/media/the_beast.c764e52f4a29f5eaf762.png",
     "static/media/empire.png": "/static/media/empire.baf785a7a3bc4f7e9abf.png",
@@ -71,16 +74,13 @@
     "static/media/sam-hockey.png": "/static/media/sam-hockey.8e21462d15f108204926.png",
     "static/media/sam-basketball.png": "/static/media/sam-basketball.165f82814452c323880b.png",
     "static/media/beast-square-3.png": "/static/media/beast-square-3.fc90a0c735b05052cbc5.png",
-    "static/media/frame-250.png": "/static/media/frame-250.1d5fd489a8fcc1d462dd.png",
     "static/media/blitz-square-3.png": "/static/media/blitz-square-3.813d9c354b1adf47eaff.png",
     "static/media/revicons.eot": "/static/media/revicons.a77de540a38981833f9e.eot",
     "static/media/revicons.ttf": "/static/media/revicons.57fd05d4ae650374c8de.ttf",
     "static/media/pradise.png": "/static/media/pradise.9e32855aa3ae71eb3672.png",
-    "static/media/frame-251.png": "/static/media/frame-251.0a1f1dd7c54e8888145b.png",
     "static/media/blitz-square-2.png": "/static/media/blitz-square-2.bc0281143dc1815cede5.png",
     "static/media/beast-square-1.png": "/static/media/beast-square-1.2b13be5a272651f887c8.png",
     "static/media/ufafl-02-png-369-trans-2.png": "/static/media/ufafl-02-png-369-trans-2.4dd0b7ca5ac0e9429b43.png",
-    "static/media/frame-252.png": "/static/media/frame-252.46c61bff2623fc2ac2a9.png",
     "static/media/revicons.woff": "/static/media/revicons.e8746a624ed098489406.woff",
     "static/media/player-icon.svg": "/static/media/player-icon.2c1e4037ccdabb2ae0819feb2fd8b842.svg",
     "static/media/scouting-icon.svg": "/static/media/scouting-icon.4758d64bc8881da440204ac6ea8593ca.svg",
@@ -96,6 +96,7 @@
     "static/media/team-icon.svg": "/static/media/team-icon.0a4eb3f4297d4d464e847deea0a5fb12.svg",
     "static/media/standing-icon.svg": "/static/media/standing-icon.c497a7b43bb7c272cf83f5c2017d56b4.svg",
     "static/media/dice.svg": "/static/media/dice.adda55ff8c42d160801dbcf9f3894ec5.svg",
+    "static/media/color-icon.svg": "/static/media/color-icon.3b5680d1c0b9007b2902f8581781012c.svg",
     "static/media/lead.svg": "/static/media/lead.6a9e4959d7bf6d4e63b270ff30931652.svg",
     "static/media/twitter.svg": "/static/media/twitter.3164ae85ac7e065dc1d452a2ed7f30e0.svg",
     "static/media/insta.svg": "/static/media/insta.e01ec15c28a882632b6efdc6dbcf442a.svg",
@@ -115,11 +116,11 @@
     "static/media/arrow-right.svg": "/static/media/arrow-right.f306c848a5e7963bf1d2d5dd16212c01.svg",
     "static/media/youtube.svg": "/static/media/youtube.7af310466ac639302e497d811125f845.svg",
     "static/media/fb.svg": "/static/media/fb.16c5459973b0c91dc2db50341cb0e76e.svg",
-    "main.f504b8f0.css.map": "/static/css/main.f504b8f0.css.map",
-    "main.d061333d.js.map": "/static/js/main.d061333d.js.map"
+    "main.48900e6d.css.map": "/static/css/main.48900e6d.css.map",
+    "main.1f2ba9bd.js.map": "/static/js/main.1f2ba9bd.js.map"
   },
   "entrypoints": [
-    "static/css/main.f504b8f0.css",
-    "static/js/main.d061333d.js"
+    "static/css/main.48900e6d.css",
+    "static/js/main.1f2ba9bd.js"
   ]
 }
