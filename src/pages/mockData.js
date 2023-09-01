@@ -6578,7 +6578,7 @@ export const depthCardData = [
   {
     imageUrl: require('../assets/player-img-2.png'),
     Name: '',
-    Position: 'qb',
+    Position: 'backup qb',
     classKey: 'offense_qb-2',
     type: 'offense',
   },
@@ -6662,14 +6662,14 @@ export const depthCardData = [
   {
     imageUrl: require('../assets/player-img-2.png'),
     Name: '',
-    Position: 'pk',
+    Position: 'k',
     classKey: 'special_team_pk',
     type: 'special team',
   },
   {
     imageUrl: require('../assets/player-img-6.png'),
     Name: '',
-    Position: 'pn',
+    Position: 'p',
     classKey: 'special_team_pn',
     type: 'special team',
   },

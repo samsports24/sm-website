@@ -153,7 +153,16 @@ const VerticalLayout = ({ children, active }) => {
             )}
           </Header>
           <Content className='main-content'>{children}</Content>
-          <Footer className='mainFooter'>© Sam Sports, Inc. All rights reserved.</Footer>
+          <Footer className='mainFooter'>
+            <p>© Sam Sports, Inc. All rights reserved.</p>
+
+            <a href='https://sportsdata.io' target='_blank' rel='noreferrer'>
+              <img
+                src='https://sportsdata.io/assets/images/badges/sportsdataio_light_ss_300.png'
+                alt='Powered by SportsDataIO'
+              />
+            </a>
+          </Footer>
         </Layout>
       </Layout>
     </div>

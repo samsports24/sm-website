@@ -172,8 +172,8 @@ const PlayerRoster = () => {
                   key={i}
                   data={v}
                   index={i}
-                  nonActive={nonActive}
-                  handleNonActive={handleNonActive}
+                  state={nonActive}
+                  handleClick={handleNonActive}
                 />
               )
             })}
@@ -197,8 +197,8 @@ const PlayerRoster = () => {
                   key={i}
                   data={v}
                   index={i}
-                  nonActive={protectedCheck}
-                  handleNonActive={handleProtectedCheckbox}
+                  state={protectedCheck}
+                  handleClick={handleProtectedCheckbox}
                   isPractice={true}
                 />
               )

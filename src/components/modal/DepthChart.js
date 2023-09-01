@@ -7,23 +7,26 @@ import { assignPlayerToStarter, getPlayersByPosition } from '../../redux/actions
 const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartData }) => {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState([])
-  const [starter, setStarter] = useState({})
+  const [starter, setStarter] = useState(null)
   const [playerId, setPlayerId] = useState('')
 
   const closeModal = () => {
     setOpenModal(false)
     setData([])
-    setStarter({})
+    setStarter(null)
   }
 
   const getData = async () => {
     setLoading(true)
     const res = await getPlayersByPosition({
-      position: propsData.Position && propsData.Position?.toUpperCase().split('/'),
+      position:
+        propsData.Position && propsData.Position === 'backup qb'
+          ? ['QB']
+          : propsData.Position?.toUpperCase().split('/'),
       classKey: propsData?.classKey && propsData?.classKey,
     })
     if (res) {
-      setStarter(res?.starterPlayer ? res?.starterPlayer?.player : {})
+      setStarter(res?.starterPlayer)
       setData(res?.bench)
     }
     setLoading(false)
@@ -39,6 +42,7 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
       oldPlayerId: starter?._id ? starter?._id : '',
       playerId: id,
       classKey: propsData?.classKey,
+      isBackup: propsData?.Position === 'backup qb' ? true : false,
     })
     if (res) {
       await getData()
@@ -89,20 +93,6 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
           <p className='text1'>Projection</p>
           <p className='text2'>{Projection || '-'}</p>
         </div>
-        {/* <Popover
-          placement='left'
-          title={starter?._id === _id ? 'Already Selected' : 'Select for Starter'}
-          content={
-            starter?._id !== _id ? (
-              <Button type='primary' className='add_starter_button'>
-                Add
-              </Button>
-            ) : (
-              ''
-            )
-          }
-        >
-        </Popover> */}
         {button && (
           <Button
             type='primary'
@@ -110,22 +100,22 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
             loading={playerId === _id ? true : false}
             onClick={() => handleStarter(_id)}
           >
-            Add to Starter
+            {propsData?.Position === 'backup qb' ? 'Add to Backup' : 'Add to Starter'}
           </Button>
         )}
       </div>
     )
   }
 
-  const EmptyCard = () => {
-    return (
-      <div className='content_body'>
-        <div className='image_box'>
-          <GiAmericanFootballPlayer size={35} color={'#c4c4c4'} />
-        </div>
-      </div>
-    )
-  }
+  // const EmptyCard = () => {
+  //   return (
+  //     <div className='content_body'>
+  //       <div className='image_box'>
+  //         <GiAmericanFootballPlayer size={35} color={'#c4c4c4'} />
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
   return (
     <Modal
@@ -138,25 +128,24 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
       closable={false}
     >
       <div className='depth_modal_content'>
-        <div className='card_box'>
-          <div className='header'>
-            <h2>Starter</h2>
-            <h2 style={{ textTransform: 'uppercase' }}>{propsData?.Position}</h2>
-          </div>
-          {loading ? (
-            <Spinner />
-          ) : Object.entries(starter)?.length ? (
-            <Card data={starter} />
-          ) : (
-            <EmptyCard />
-          )}
-        </div>
-        {propsData?.Position?.includes('qb') && (
+        {propsData?.Position !== 'backup qb' && (
           <div className='card_box'>
-            <div className='header'>
-              <h2>Back-up</h2>
+            <div className='header' style={{ marginBottom: starter ? '0px' : '20px' }}>
+              <h2>Starter</h2>
+              <h2 style={{ textTransform: 'uppercase' }}>{propsData?.Position}</h2>
             </div>
-            <div className='scroll_section'>{loading ? <Spinner /> : <EmptyCard />}</div>
+            {loading ? <Spinner /> : !!starter && <Card data={starter?.player} />}
+          </div>
+        )}
+        {propsData?.Position === 'backup qb' && (
+          <div className='card_box'>
+            <div className='header' style={{ marginBottom: starter ? '0px' : '20px' }}>
+              <h2>Back-up</h2>
+              <h2 style={{ textTransform: 'uppercase' }}>{propsData?.Position}</h2>
+            </div>
+            <div className='scroll_section'>
+              {loading ? <Spinner /> : !!starter && <Card data={starter?.player} />}
+            </div>
           </div>
         )}
         <div className='card_box'>
@@ -166,9 +155,8 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
           <div className='scroll_section'>
             {loading ? (
               <Spinner />
-            ) : data?.length <= 0 ? (
-              <EmptyCard />
             ) : (
+              data?.length > 0 &&
               data?.map((v, i) => {
                 return <Card button={true} key={i} data={v} handleStarter={handleStarter} />
               })
