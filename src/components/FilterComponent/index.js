@@ -28,11 +28,11 @@ const FilterBox = ({ data, handleFilter = () => {} }) => {
   )
 }
 
-export const ColorFilter = ({ data, handleFilter }) => {
-  const [activeFilter, setActiveFilter] = useState(data[0] || '')
+export const ColorFilter = ({ data, handleFilter, activeFilter }) => {
+  // const [activeFilter, setActiveFilter] = useState(data[0] || '')
 
   const handleActiveFilter = (value) => {
-    setActiveFilter(value)
+    // setActiveFilter(value)
     handleFilter(value)
   }
 

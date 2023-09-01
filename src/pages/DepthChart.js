@@ -6,13 +6,14 @@ import { Breadcrumb } from 'antd'
 import Header from '../components/Header'
 import DepthCard from '../components/DepthCard'
 import { ColorFilter } from '../components/FilterComponent'
+import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
+import Loader from '../components/Loader'
 
 // Mock Data
 import { depthCardData } from './mockData'
-import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
+
 import { getActiveRosterCount } from '../redux/actions/depthChartAction'
 import { firstLetterCap, legalPlayers } from '../config/constants'
-import Loader from '../components/Loader'
 
 const DepthChart = () => {
   const [activeFilter, setActiveFilter] = useState('offense')
@@ -31,7 +32,6 @@ const DepthChart = () => {
   const getDepthChartData = async () => {
     const filtered = depthCardData.filter((obj) => obj.type === activeFilter)
     setLoading(true)
-    // setData(filtered)
 
     const res = await getActiveRosterCount({
       type: activeFilter === 'special team' ? 'special' : activeFilter,
@@ -99,7 +99,11 @@ const DepthChart = () => {
             <h2>You have an illegal Roster</h2>
           </div>
           {/* FILTER */}
-          <ColorFilter data={['offense', 'defense', 'special team']} handleFilter={handleFilter} />
+          <ColorFilter
+            data={['offense', 'defense', 'special team']}
+            activeFilter={activeFilter}
+            handleFilter={handleFilter}
+          />
 
           <section className='depth_chart_wrapper'>
             <div

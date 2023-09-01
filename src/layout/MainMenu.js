@@ -13,7 +13,7 @@ import PhoneIcon from '../assets/phone-icon.svg'
 import GlobeIcon from '../assets/globe-icon.svg'
 
 const MainMenu = ({ active }) => {
-  // const isAuthenticated = localStorage.getItem('token')
+  const isAuthenticated = localStorage.getItem('token')
   const navigate = useNavigate()
   const login = () => navigate('/login')
   const signUp = () => navigate('/sign-up')
@@ -46,6 +46,18 @@ const MainMenu = ({ active }) => {
         >
           Fantasy Leagues
         </Menu.Item>
+        {isAuthenticated && (
+          <Menu.Item
+            // key='dashboard'
+            className={'sidebar-menu'}
+            icon={<img src={TeamIcon} />}
+            onClick={() => {
+              navigate('/professional-league')
+            }}
+          >
+            My Team
+          </Menu.Item>
+        )}
         <Menu.Item
           // key='dashboard'
           className={'sidebar-menu'}

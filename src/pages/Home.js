@@ -11,34 +11,34 @@ import FeedbackCard from '../components/cards/feedbackCard'
 // import HomeMainBanner from '../components/banners/homeMainBanner'
 // Mock Data
 import { popularLeaguesData, popularSportsData, clientFeedbacksData } from './mockData'
-import DashboardBannerOne from '../components/banners/DashboardBannerOne'
-import UpcomingMatchCard from '../components/cards/upcomingMatchCard'
-import { Col, Row } from 'antd'
-import { useSelector } from 'react-redux'
+// import DashboardBannerOne from '../components/banners/DashboardBannerOne'
+// import UpcomingMatchCard from '../components/cards/upcomingMatchCard'
+// import { Col, Row } from 'antd'
+// import { useSelector } from 'react-redux'
 import ButtonMenu from '../components/ButtonMenu'
 import { useNavigate } from 'react-router-dom'
 
 const Home = () => {
-  const user = useSelector((state) => state.user.userDetails)
+  // const user = useSelector((state) => state.user.userDetails)
   const navigate = useNavigate()
 
-  let upcomingMatches = [
-    {
-      date: new Date(),
-      location: 'Django Stadium',
-      opponents: [require('../assets/beast-square-1.png'), require('../assets/blitz-square-1.png')],
-    },
-    {
-      date: new Date(),
-      location: 'Django Stadium',
-      opponents: [require('../assets/beast-square-2.png'), require('../assets/blitz-square-2.png')],
-    },
-    {
-      date: new Date(),
-      location: 'Django Stadium',
-      opponents: [require('../assets/beast-square-3.png'), require('../assets/blitz-square-3.png')],
-    },
-  ]
+  // let upcomingMatches = [
+  //   {
+  //     date: new Date(),
+  //     location: 'Django Stadium',
+  //     opponents: [require('../assets/beast-square-1.png'), require('../assets/blitz-square-1.png')],
+  //   },
+  //   {
+  //     date: new Date(),
+  //     location: 'Django Stadium',
+  //     opponents: [require('../assets/beast-square-2.png'), require('../assets/blitz-square-2.png')],
+  //   },
+  //   {
+  //     date: new Date(),
+  //     location: 'Django Stadium',
+  //     opponents: [require('../assets/beast-square-3.png'), require('../assets/blitz-square-3.png')],
+  //   },
+  // ]
   const responsive = {
     largeDesktop: {
       breakpoint: { max: 4000, min: 1400 },
@@ -138,7 +138,7 @@ const Home = () => {
         </section>
       )}
 
-      {!!user && window.location.pathname == '/' && (
+      {/* {!!user && window.location.pathname == '/' && (
         <>
           <DashboardBannerOne />
 
@@ -154,7 +154,7 @@ const Home = () => {
             ))}
           </Row>
         </>
-      )}
+      )} */}
 
       {/* main banner */}
       <LandingBanner />

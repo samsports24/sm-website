@@ -1,10 +1,28 @@
-import { Button, Modal } from 'antd'
+import {
+  Button,
+  Modal,
+  //  Popover
+} from 'antd'
 import React, { useState } from 'react'
+import { releasePlayer } from '../../../redux/actions/rosterAction'
+import { useParams } from 'react-router-dom'
 
 const ReleasePlayer = () => {
   const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
   const showModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
+
+  const { id } = useParams()
+
+  const _releasePlayer = async () => {
+    setLoading(true)
+    const res = await releasePlayer(id)
+    if (res) {
+      closeModal()
+    }
+    setLoading(false)
+  }
 
   return (
     <>
@@ -32,7 +50,25 @@ const ReleasePlayer = () => {
           </div>
 
           <div className='modal_footer'>
-            <Button type='primary' className='button_1'>
+            {/* <Popover
+              content={
+                <Button
+                  type='primary'
+                  className='processed_button'
+                  onClick={_releasePlayer}
+                  loading={loading}
+                >
+                  Processed
+                </Button>
+              }
+              title='Are you sure?'
+              trigger='click'
+            >
+              <Button type='primary' className='button_1'>
+                RELEASE PLAYER
+              </Button>
+            </Popover> */}
+            <Button type='primary' className='button_1' onClick={_releasePlayer} loading={loading}>
               RELEASE PLAYER
             </Button>
             <Button onClick={closeModal} type='primary' className='button_2'>

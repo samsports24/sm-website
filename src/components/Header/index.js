@@ -4,7 +4,7 @@ import { Image, Button } from 'antd'
 // Image
 import bellIcon from '../../assets/bell-icon.svg'
 // import circaImage from '../../assets/teams/circa_sports_trout.png'
-import logo from '../../assets/Logo.svg'
+import logo from '../../assets/sam-football.png'
 import { useSelector } from 'react-redux'
 import { BiRightArrowAlt } from 'react-icons/bi'
 
@@ -59,7 +59,7 @@ const Header = () => {
         <div className='content'>
           <div className='top'>
             <span>23&apos;</span>
-            <p> Same year Prize-Pool</p>
+            <p> Same year SFL Prize-Pool</p>
           </div>
           <div className='content2'>
             <div className='image_div'>
@@ -68,16 +68,16 @@ const Header = () => {
             <div className='content3'>
               <div className='top' style={{ marginBottom: '12px' }}>
                 <span>24&apos;</span>
-                <p>Prize-Pool</p>
+                <p>SFL Prize-Pool</p>
               </div>
               <div className='top'>
                 <span>25&apos;</span>
-                <p>Prize-Pool</p>
+                <p>SFL Prize-Pool</p>
               </div>
             </div>
           </div>
         </div>
-        <h1>UFAFL Price_Pools</h1>
+        <h1>SFL Prize_Pools</h1>
       </div>
     </header>
   ) : (
@@ -85,7 +85,7 @@ const Header = () => {
       <div className='center' style={!user && { columnGap: '20px', rowGap: '0' }}>
         <div className='title_box' style={!user && { minHeight: '110px' }}>
           <div>
-            <p style={{ marginBottom: '20px !important' }}>SFL Price-Pool</p>
+            <p style={{ marginBottom: '20px !important' }}>SFL Prize-Pool</p>
             <h1>{`23' Same Year Prize-Pool`}</h1>
           </div>
           <p>
@@ -103,11 +103,11 @@ const Header = () => {
             <div className='content3'>
               <div className='top' style={{ marginBottom: '12px' }}>
                 <span>24&apos;</span>
-                <p>Prize-Pool</p>
+                <p>SFL Prize-Pool</p>
               </div>
               <div className='top'>
                 <span>25&apos;</span>
-                <p>Prize-Pool</p>
+                <p>SFL Prize-Pool</p>
               </div>
             </div>
           </div>

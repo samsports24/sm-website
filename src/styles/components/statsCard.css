@@ -9,10 +9,12 @@
 
 .stats_card_container header {
   padding: 15px 40px;
-  border-bottom: 1px solid var(--border);
+  padding-bottom: 0px !important;
+  /* border-bottom: 1px solid var(--border); */
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 }
 .stats_card_container header h3 {
   color: var(--text);
@@ -32,14 +34,18 @@
   gap: 30px;
 }
 .stats_card_container .center div {
-  min-width: 180px;
+  /* min-width: 180px; */
+  display: flex;
+  flex-direction: row;
+  gap: 10px
 }
 .stats_card_container .center div .text1 {
   color: #6e6980;
   font-size: 16px;
   font-style: normal;
   font-weight: 400 !important;
-  line-height: 28px;
+  line-height: normal;
+  opacity: 0.5;
 }
 .stats_card_container .center div .text2 {
   color: var(--text);
@@ -47,6 +53,8 @@
   font-style: normal;
   font-weight: 700 !important;
   line-height: normal;
+  opacity: 0.5;
+
 }
 
 /* STATS TABLE */

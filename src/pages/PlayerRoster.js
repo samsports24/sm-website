@@ -11,7 +11,7 @@ import { depthCardData } from './mockData'
 import PlayerRosterCard from '../components/PlayerRosterCard'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import Loader from '../components/Loader'
-import { getRoster, setNonActivePlayer } from '../redux/actions/rosterAction'
+import { getRoster, setNonActivePlayer, setProtectedPlayer } from '../redux/actions/rosterAction'
 
 const PlayerRoster = () => {
   const [activeFilter] = useState('Roster')
@@ -22,7 +22,6 @@ const PlayerRoster = () => {
   const [protectedCheck, setProtectedCheck] = useState([])
   const [loading, setLoading] = useState(true)
   const [submitLoading, setSubmitLoading] = useState(false)
-  console.log(protectedCheck)
 
   const handleNonActive = (event, id) => {
     if (event) {
@@ -63,9 +62,9 @@ const PlayerRoster = () => {
   }
   const handleProtectedSubmit = async () => {
     if (protectedCheck?.length === 4) {
-      // setSubmitLoading(true)
-      // await setNonActivePlayer(protectedCheck)
-      // setSubmitLoading(false)
+      setSubmitLoading(true)
+      await setProtectedPlayer(protectedCheck)
+      setSubmitLoading(false)
     } else {
       notification.error({
         message: `Select at least 4 Players (${protectedCheck?.length}/4)`,
@@ -83,6 +82,7 @@ const PlayerRoster = () => {
   const getData = async () => {
     setLoading(true)
     const res = await getRoster()
+    console.log(res?.players)
     if (res) {
       const filtered = res?.players?.map((v) => {
         const filterStats = res?.stats?.filter((x) => v?._id === x?.player)
@@ -107,9 +107,16 @@ const PlayerRoster = () => {
           nonAcitvePlayer.push(v?._id)
         }
       })
+      const protectedPlayer = []
+      res?.players?.forEach((v) => {
+        if (v?.isPlayerProtected == true) {
+          protectedPlayer.push(v?._id)
+        }
+      })
       setActivePlayerData(activePlayer)
       setPractiveSquadData(practiceSquad)
       setNonActive(nonAcitvePlayer)
+      setProtectedCheck(protectedPlayer)
     }
     setLoading(false)
   }
@@ -172,8 +179,8 @@ const PlayerRoster = () => {
                   key={i}
                   data={v}
                   index={i}
-                  nonActive={nonActive}
-                  handleNonActive={handleNonActive}
+                  state={nonActive}
+                  handleClick={handleNonActive}
                 />
               )
             })}
@@ -197,8 +204,8 @@ const PlayerRoster = () => {
                   key={i}
                   data={v}
                   index={i}
-                  nonActive={protectedCheck}
-                  handleNonActive={handleProtectedCheckbox}
+                  state={protectedCheck}
+                  handleClick={handleProtectedCheckbox}
                   isPractice={true}
                 />
               )

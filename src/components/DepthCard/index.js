@@ -5,32 +5,14 @@ import React, { useState } from 'react'
 import DepthChartModal from '../modal/DepthChart'
 
 const DepthCard = ({ data, index, getDepthChartData }) => {
-  // const [modalIndex] = useState(-1)
   const [modalIndex, setModalIndex] = useState(-1)
   const [openModal, setOpenModal] = useState(false)
 
   const { imageUrl, Name, Position, classKey } = data
 
-  // const getPositionClass = (key) => {
-  //   switch (key) {
-  //     case 'defense_cb/s':
-  //       return 'defense_cbs'
-  //     case 'defense_lb/cb/s':
-  //       return 'defense_lbcbs'
-  //     case 'defense_dt/de':
-  //       return 'defense_dtde'
-  //     case 'defense_dt/lb':
-  //       return 'defense_dtlb'
-  //     case 'special team_pk':
-  //       return 'special_team_pk'
-  //     case 'special team_pn':
-  //       return 'special_team_pn'
-  //     case 'offense_rb/wr/te':
-  //       return 'offense_rbwrte'
-  //     default:
-  //       return key
-  //   }
-  // }
+  const updatedName = (name) => {
+    return name === 'k' ? 'kicker' : name === 'p' ? 'punter' : name
+  }
 
   return (
     <>
@@ -50,7 +32,7 @@ const DepthCard = ({ data, index, getDepthChartData }) => {
           </Tooltip>
         </div>
         <div className='text'>
-          <h2>{Position}</h2>
+          <h2>{updatedName(Position)}</h2>
         </div>
       </div>
 
