@@ -95,6 +95,18 @@
   color: var(--primary);
 }
 
+.processed_button {
+  width: 170px !important;
+  background-color: transparent !important;
+  color: red;
+  border: 2px solid red !important;
+}
+.processed_button:hover {
+  background-color: red !important;
+  color: #fff;
+  border: 2px solid red !important;
+}
+
 /* AUCTION PLAYER */
 .player_interface_modals .auction_button_groups {
   display: flex;

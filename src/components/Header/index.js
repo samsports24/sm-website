@@ -77,7 +77,7 @@ const Header = () => {
             </div>
           </div>
         </div>
-        <h1>UFAFL Price_Pools</h1>
+        <h1>SFL Prize_Pools</h1>
       </div>
     </header>
   ) : (
@@ -85,7 +85,7 @@ const Header = () => {
       <div className='center' style={!user && { columnGap: '20px', rowGap: '0' }}>
         <div className='title_box' style={!user && { minHeight: '110px' }}>
           <div>
-            <p style={{ marginBottom: '20px !important' }}>SFL Price-Pool</p>
+            <p style={{ marginBottom: '20px !important' }}>SFL Prize-Pool</p>
             <h1>{`23' Same Year Prize-Pool`}</h1>
           </div>
           <p>

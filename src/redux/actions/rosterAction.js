@@ -5,7 +5,6 @@ export const getRoster = async () => {
   try {
     attachToken()
     const res = await privateAPI.get('/team/get-roster')
-    console.log(res)
     if (res) {
       return res.data.data
     }
@@ -39,7 +38,7 @@ export const setNonActivePlayer = async (data) => {
 export const setProtectedPlayer = async (data) => {
   try {
     attachToken()
-    const res = await privateAPI.post('/player/set-protected', { ids: data })
+    const res = await privateAPI.post('/player/protect-practice-player', { ids: data })
     if (res) {
       await getRoster()
       notification.success({
@@ -59,7 +58,6 @@ export const getRosterPlayer = async (id) => {
   try {
     attachToken()
     const res = await privateAPI.get(`/player/get-player/${id}`)
-    console.log(res)
     if (res) {
       return res.data.data
     }
@@ -75,7 +73,6 @@ export const moveToPractice = async (data) => {
   try {
     attachToken()
     const res = await privateAPI.post('/player/move-to-practice', data)
-    console.log(res)
     if (res) {
       await getRoster()
       notification.success({
@@ -95,7 +92,6 @@ export const moveFromPractice = async (data) => {
   try {
     attachToken()
     const res = await privateAPI.post('/player/move-from-practice', data)
-    console.log(res)
     if (res) {
       await getRoster()
       notification.success({
@@ -103,6 +99,24 @@ export const moveFromPractice = async (data) => {
         duration: 3,
       })
     }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+export const releasePlayer = async (id) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/player/release-player', { id })
+    if (res) {
+      notification.success({
+        message: res.data.data,
+        duration: 3,
+      })
+    }
+    return res.data.data
   } catch (err) {
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
