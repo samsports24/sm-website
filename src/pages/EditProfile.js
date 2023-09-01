@@ -1,20 +1,124 @@
 import { useState } from 'react'
-import { Row, Col, Form, Input, DatePicker, Button } from 'antd'
+import { Row, Col, Form, Input, DatePicker, Button, notification } from 'antd'
 import User1 from '../assets/user-pic-1.png'
 import Color from '../assets/color-icon.svg'
 import { HiOutlineCamera } from 'react-icons/hi'
+import { useSelector } from 'react-redux'
+import { updateUserProfile } from '../redux'
+import dayjs from 'dayjs'
 
 const EditProfile = () => {
+  const user = useSelector((state) => state.user.userDetails)
   const [loading, setLoading] = useState(false)
+  const [file, setFile] = useState(null)
+  const [imageSrc, setImageSrc] = useState(null)
+  const [form] = Form.useForm()
 
-  const onChange = (date, dateString) => {
-    console.log(date, dateString)
+  console.log(user, imageSrc)
+
+  const handleFile = (file) => {
+    setFile(file)
+    const src = URL.createObjectURL(file)
+    setImageSrc(src)
+  }
+
+  const updateUser = async (payload) => {
+    setLoading(true)
+    const res = await updateUserProfile(payload)
+    if (res) {
+      notification.success({
+        message: res,
+        duration: 3,
+      })
+    }
+    setLoading(false)
   }
 
   const onFinish = async (values) => {
-    setLoading(true)
-    console.log(values)
-    setLoading(false)
+    const userName = values?.userName ? values?.userName : user?.userName || ''
+    const currentPassword = values?.currentPassword
+      ? values?.currentPassword
+      : user?.currentPassword || ''
+    const newPassword = values?.newPassword ? values?.newPassword : user?.newPassword || ''
+    const firstName = values?.firstName ? values?.firstName : user?.firstName || ''
+    const lastName = values?.lastName ? values?.lastName : user?.lastName || ''
+    const phone = values?.phoneNumber ? values?.phoneNumber : user?.phone || ''
+    const dateOfBirth = values?.dateOfBirth
+      ? values?.dateOfBirth?.toISOString()
+      : user?.dateOfBirth || ''
+    const joinDate = values?.joinDate ? values?.joinDate?.toISOString() : user?.joinDate || ''
+    const city = values?.city ? values?.city : user?.city || ''
+    const country = values?.country ? values?.country : user?.country || ''
+
+    if (values?.newPassword) {
+      if (values?.newPassword === values?.confirmPassword) {
+        if (file) {
+          let formdata = new FormData()
+          formdata.append('pictures', file)
+          formdata.append('userName', userName)
+          formdata.append('currentPassword', currentPassword)
+          formdata.append('newPassword', newPassword)
+          formdata.append('firstName', firstName)
+          formdata.append('lastName', lastName)
+          formdata.append('phone', phone)
+          formdata.append('dateOfBirth', dateOfBirth)
+          formdata.append('joinDate', joinDate)
+          formdata.append('city', city)
+          formdata.append('country', country)
+          // api call
+          console.log(formdata)
+          await updateUser(formdata)
+        } else {
+          const obj = {
+            userName,
+            currentPassword,
+            newPassword,
+            firstName,
+            lastName,
+            phone,
+            dateOfBirth,
+            joinDate,
+            city,
+            country,
+          }
+          // api call
+          console.log(obj)
+          await updateUser(obj)
+        }
+      } else {
+        notification.error({
+          message: `Password not match`,
+          duration: 3,
+        })
+      }
+    } else {
+      if (file) {
+        let formdata = new FormData()
+        formdata.append('pictures', file)
+        formdata.append('userName', userName)
+        formdata.append('firstName', firstName)
+        formdata.append('lastName', lastName)
+        formdata.append('phone', phone)
+        formdata.append('dateOfBirth', dateOfBirth)
+        formdata.append('joinDate', joinDate)
+        formdata.append('city', city)
+        formdata.append('country', country)
+
+        await updateUser(formdata)
+      } else {
+        const obj = {
+          userName,
+          firstName,
+          lastName,
+          phone,
+          dateOfBirth,
+          joinDate,
+          city,
+          country,
+        }
+        await updateUser(obj)
+      }
+    }
   }
 
   return (
@@ -24,7 +128,61 @@ const EditProfile = () => {
           <h2>Profile Information</h2>
         </div>
         <div className='profile-form'>
-          <Form layout='vertical' onFinish={onFinish}>
+          <Form
+            form={form}
+            layout='vertical'
+            onFinish={onFinish}
+            fields={[
+              {
+                name: 'userName',
+                value: user?.userName,
+              },
+              {
+                name: 'currentPassword',
+                value: '',
+              },
+              {
+                name: 'newPassword',
+                value: '',
+              },
+              {
+                name: 'confirmPassword',
+                value: '',
+              },
+              {
+                name: 'firstName',
+                value: user?.firstName,
+              },
+              {
+                name: 'lastName',
+                value: user?.lastName,
+              },
+              {
+                name: 'phoneNumber',
+                value: user?.phoneNumber,
+              },
+              {
+                name: 'email',
+                value: user?.email,
+              },
+              {
+                name: 'dateOfBirth',
+                value: dayjs(user?.dateOfBirth),
+              },
+              {
+                name: 'joinDate',
+                value: dayjs(user?.joinDate),
+              },
+              {
+                name: 'city',
+                value: user?.city,
+              },
+              {
+                name: 'country',
+                value: user?.country,
+              },
+            ]}
+          >
             <Row gutter={[24, 0]} justify='space-between'>
               <Col xs={24} md={24} lg={24}>
                 <Row gutter={[24, 0]} justify='space-between'>
@@ -32,12 +190,18 @@ const EditProfile = () => {
                     <div className='profile-pic'>
                       <p>Profile Photo</p>
                       <div style={{ position: 'relative', width: 'max-content' }}>
-                        <img src={User1} />
+                        <img src={imageSrc || user?.image || User1} />
                         <div className='profile_camera_icon'>
                           <label htmlFor='fileInput' style={{ marginTop: '5px' }}>
                             <HiOutlineCamera color='#fff' size={18} />
                           </label>
-                          <input type='file' hidden id='fileInput' />
+                          <input
+                            type='file'
+                            hidden
+                            id='fileInput'
+                            onChange={(e) => handleFile(e?.target?.files[0])}
+                            accept='image/jpg,image/png,image/jpeg'
+                          />
                         </div>
                       </div>
                     </div>
@@ -51,7 +215,7 @@ const EditProfile = () => {
                           label='User Name'
                           rules={[
                             {
-                              required: true,
+                              required: false,
                               message: 'The entered user name is not valid!',
                             },
                           ]}
@@ -66,7 +230,7 @@ const EditProfile = () => {
                           label='Current Password'
                           rules={[
                             {
-                              required: true,
+                              required: false,
                               message: 'The entered password is not valid!',
                             },
                           ]}
@@ -85,7 +249,7 @@ const EditProfile = () => {
                           label='New Password'
                           rules={[
                             {
-                              required: true,
+                              required: false,
                               message: 'The entered password is not valid!',
                             },
                           ]}
@@ -100,7 +264,7 @@ const EditProfile = () => {
                           label='Confirm Password'
                           rules={[
                             {
-                              required: true,
+                              required: form.getFieldValue('newPassword') ? true : false,
                               message: 'The entered password is not valid!',
                             },
                           ]}
@@ -129,7 +293,7 @@ const EditProfile = () => {
                   label='First Name'
                   rules={[
                     {
-                      required: true,
+                      required: false,
                       message: 'The entered password is not valid!',
                     },
                   ]}
@@ -145,7 +309,7 @@ const EditProfile = () => {
                   label='Last Name'
                   rules={[
                     {
-                      required: true,
+                      required: false,
                       message: 'The entered password is not valid!',
                     },
                   ]}
@@ -161,7 +325,7 @@ const EditProfile = () => {
                   label='Phone Number'
                   rules={[
                     {
-                      required: true,
+                      required: false,
                       message: 'The entered password is not valid!',
                     },
                   ]}
@@ -177,13 +341,13 @@ const EditProfile = () => {
                   label='Email Address'
                   rules={[
                     {
-                      required: true,
+                      required: false,
                       message: 'The entered email is not valid!',
                     },
                   ]}
                   requiredMark='optional'
                 >
-                  <Input autoComplete='off' type='email' placeholder='xyz@gmail.com' />
+                  <Input disabled autoComplete='off' type='email' placeholder='xyz@gmail.com' />
                 </Form.Item>
               </Col>
 
@@ -193,13 +357,13 @@ const EditProfile = () => {
                   label='Date of Birth'
                   rules={[
                     {
-                      required: true,
+                      required: false,
                       message: 'The entered password is not valid!',
                     },
                   ]}
                   requiredMark='optional'
                 >
-                  <DatePicker onChange={onChange} />
+                  <DatePicker format={'YYYY/MM/DD'} />
                 </Form.Item>
               </Col>
 
@@ -209,13 +373,13 @@ const EditProfile = () => {
                   label='Join Date'
                   rules={[
                     {
-                      required: true,
+                      required: false,
                       message: 'The entered password is not valid!',
                     },
                   ]}
                   requiredMark='optional'
                 >
-                  <DatePicker onChange={onChange} />
+                  <DatePicker format={'YYYY/MM/DD'} />
                 </Form.Item>
               </Col>
 
@@ -225,13 +389,13 @@ const EditProfile = () => {
                   label='City'
                   rules={[
                     {
-                      required: true,
+                      required: false,
                       message: 'The entered password is not valid!',
                     },
                   ]}
                   requiredMark='optional'
                 >
-                  <Input autoComplete='off' type='email' placeholder='city' />
+                  <Input autoComplete='off' type='text' placeholder='city' />
                 </Form.Item>
               </Col>
 
@@ -241,22 +405,20 @@ const EditProfile = () => {
                   label='Country'
                   rules={[
                     {
-                      required: true,
+                      required: false,
                       message: 'The entered password is not valid!',
                     },
                   ]}
                   requiredMark='optional'
                 >
-                  <Input autoComplete='off' type='email' placeholder='Country' />
+                  <Input autoComplete='off' type='text' placeholder='Country' />
                 </Form.Item>
               </Col>
 
               <Col xs={24} md={24} lg={24}>
                 <Form.Item>
                   <div className='form-btn'>
-                    <Button loading={loading} className='reset-btn'>
-                      Reset
-                    </Button>
+                    <Button className='reset-btn'>Reset</Button>
                     <Button loading={loading} type='primary' htmlType='submit'>
                       Save Changes
                     </Button>
@@ -292,12 +454,8 @@ const EditProfile = () => {
             </div>
           </div>
           <div className='btn-container'>
-            <Button loading={loading} className='reset-btn'>
-              Reset
-            </Button>
-            <Button loading={loading} type='primary'>
-              Save Changes
-            </Button>
+            <Button className='reset-btn'>Reset</Button>
+            <Button type='primary'>Save Changes</Button>
           </div>
         </div>
       </div>

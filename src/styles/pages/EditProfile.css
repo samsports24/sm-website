@@ -55,6 +55,7 @@
 .profile-container .profile .profile-form .profile-pic img {
   width: 120px;
   height: 120px;
+  border-radius: 50%;
 }
 .profile-container .profile .profile-form .personal-information {
   padding: 50px 0 20px 0;
@@ -202,7 +203,7 @@
   color: var(--iconNew) !important;
 }
 .profile-container .ant-picker-input > input {
-  color: var(inputText) !important;
+  color: var(--inputText) !important;
 }
 .profile-container .ant-picker-input > input::placeholder {
   color: var(--placeholder) !important;
