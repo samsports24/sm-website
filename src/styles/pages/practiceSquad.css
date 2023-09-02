@@ -67,6 +67,10 @@
 .squad_card_container .ant-input {
   color: black !important;
 }
+.team_setting .ant-input {
+  color: #fff !important;
+}
+
 .practice_squad_container .transparent {
   border: none !important;
   background: transparent !important;
@@ -159,4 +163,23 @@
   .squad_card_container .squad_card_box {
     width: 1000px;
   }
+}
+
+.team_setting .file_button {
+  background-color: var(--primary);
+  height: 40px;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text);
+  width: max-content;
+  cursor: pointer;
+  border: 2px solid var(--primary);
+}
+.team_setting .file_button:hover {
+  background-color: transparent;
 }

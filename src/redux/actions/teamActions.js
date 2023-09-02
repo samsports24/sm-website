@@ -36,6 +36,10 @@ export const updateTeam = async (payload) => {
     attachToken()
     const res = await privateAPI.post('/team/update', payload)
     if (res) {
+      notification.success({
+        message: res.data.data,
+        duration: 3,
+      })
       return res.data.data
     }
   } catch (err) {
