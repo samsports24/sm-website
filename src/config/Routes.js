@@ -41,7 +41,7 @@ import PlayerRoster from '../pages/PlayerRoster'
 import PlayerInterface from '../pages/PlayerInterface2'
 import PracticeSquad from '../pages/PracticeSquad'
 // import TeamTrade from '../pages/TeamTrade'
-// import TeamSchedule from '../pages/TeamSchedule'
+import TeamSchedule from '../pages/TeamSchedule'
 import TeamSetting from '../pages/TeamSettings'
 // import InjuredReserve from '../pages/InjuredReserve'
 import FreeAgent from '../pages/FreeAgent'
@@ -134,6 +134,7 @@ const Routers = () => {
           <Route path='/public-league' element={<PublicLeague />} />
           <Route path='/player-winning-bid' element={<PlayerWinningBid />} />
           <Route path='/terms-condition' element={<TermsAndCondition />} />
+          <Route path='/team-schedule' element={<TeamSchedule />} />
         </Route>
 
         <Route path='/login' element={<Login />} />

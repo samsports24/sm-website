@@ -23,6 +23,8 @@ const PlayerRoster = () => {
   const [loading, setLoading] = useState(true)
   const [submitLoading, setSubmitLoading] = useState(false)
 
+  console.log(nonActive)
+
   const handleNonActive = (event, id) => {
     if (event) {
       setNonActive([...nonActive, id])
@@ -102,13 +104,13 @@ const PlayerRoster = () => {
       const activePlayer = filtered?.filter((v) => v?.inPracticeSquad === false)
       const practiceSquad = filtered?.filter((v) => v?.inPracticeSquad === true)
       const nonAcitvePlayer = []
-      res?.players?.forEach((v) => {
+      activePlayer?.forEach((v) => {
         if (v?.isActive !== true) {
           nonAcitvePlayer.push(v?._id)
         }
       })
       const protectedPlayer = []
-      res?.players?.forEach((v) => {
+      practiceSquad?.forEach((v) => {
         if (v?.isPlayerProtected == true) {
           protectedPlayer.push(v?._id)
         }

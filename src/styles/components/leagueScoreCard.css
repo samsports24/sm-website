@@ -48,3 +48,11 @@
   background-color: transparent !important;
   border: 2px solid var(--primary);
 }
+
+.no_schedule_text {
+  color: var(--text);
+  text-align: center;
+  width: 100%;
+  padding-block: 50px;
+  font-weight: 700;
+}

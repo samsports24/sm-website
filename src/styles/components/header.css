@@ -115,7 +115,7 @@
 }
 .gd-header .center .button_and_team_box .team_financials_box div p {
   color: var(--text);
-  text-align: right;
+  text-align: left;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;

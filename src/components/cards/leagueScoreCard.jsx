@@ -1,30 +1,40 @@
 import { Button } from 'antd'
-import moment from 'moment'
+// import moment from 'moment'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AiOutlineArrowRight } from 'react-icons/ai'
+import dayjs from 'dayjs'
 
-const LeagueScoreCard = ({ data }) => {
+const LeagueScoreCard = ({ data: v }) => {
+  console.log(v)
   const navigate = useNavigate()
 
-  let date = () => `${moment(data?.date).format('ddd MM/YY')}`.toUpperCase()
   return (
     <div className='league-score-card'>
       <h2>
-        FINAL <span>{` - ${date()}`}</span>
+        {`${dayjs(v?.matchStartDate).format('ddd DD')} / ${dayjs(v?.matchEndDate).format('DD')}`}
       </h2>
       <div className='line'></div>
-      {data?.scores?.map((value, index) => (
-        <div className='score-row' key={index}>
-          <div className='d-flex' style={{ gap: '10px' }}>
-            <img src={value?.image} />
-            <p>{value?.title || 'Heat Wave Square'}</p>
-          </div>
-          <h6>
-            1-2 <span>17</span>
-          </h6>
+      {/* {data?.scores?.map((v, index) => ( */}
+      <div className='score-row'>
+        <div className='d-flex' style={{ gap: '10px' }}>
+          <img src={v?.image} />
+          <p>{v?.opponentOne?.name}</p>
         </div>
-      ))}
+        <h6>
+          0-0-<span>0</span>
+        </h6>
+      </div>
+      <div className='score-row'>
+        <div className='d-flex' style={{ gap: '10px' }}>
+          <img src={v?.image} />
+          <p>{v?.opponentTwo?.name}</p>
+        </div>
+        <h6>
+          0-0-<span>0</span>
+        </h6>
+      </div>
+      {/* ))} */}
       <div className='line'></div>
       <Button
         onClick={() => {

@@ -1,6 +1,12 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { Button, Breadcrumb, Row, Col, Select } from 'antd'
+import {
+  Button,
+  Breadcrumb,
+  Row,
+  Col,
+  // Select
+} from 'antd'
 
 import Arrow from '../assets/arrow-right.svg'
 
@@ -8,8 +14,61 @@ import Arrow from '../assets/arrow-right.svg'
 import Header from '../components/Header'
 import MatchUpOfTheWeek from '../components/MatchUpOfTheWeek'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
+import Loader from '../components/Loader'
+import {
+  //  getAllTeam,
+  getTeamSchedule,
+} from '../redux/actions/teamActions'
+// import { useSelector } from 'react-redux'
+// import { GrFormClose } from 'react-icons/gr'
 
 const TeamSchedule = () => {
+  // const user = useSelector((state) => state.user.userDetails)
+  const [data, setData] = useState([])
+  // const [allTeam, setAllTeam] = useState([])
+  const [loading, setLoading] = useState(true)
+  // const [selectedTeam, setSelectedTeam] = useState('')
+
+  useEffect(
+    () => {
+      getData()
+    },
+    [
+      // selectedTeam
+    ],
+  )
+
+  const getData = async () => {
+    setLoading(true)
+    // const res = await getTeamSchedule({ teamFilter: selectedTeam })
+    const res = await getTeamSchedule({ teamFilter: '' })
+    setData(res)
+    setLoading(false)
+  }
+
+  // useEffect(() => {
+  //   getTeams()
+  // }, [])
+
+  // const getTeams = async () => {
+  //   const teams = await getAllTeam()
+  //   let updated = []
+  //   if (teams) {
+  //     teams?.forEach((v) => {
+  //       user?.team?._id !== v?._id &&
+  //         updated.push({
+  //           _id: v?._id,
+  //           name: v?.name,
+  //         })
+  //     })
+  //   }
+  //   setAllTeam(updated)
+  // }
+
+  // const handleTeamChange = (e) => {
+  //   setSelectedTeam(e)
+  // }
+
   return (
     <div className='practice_squad_container team_trade_main'>
       {/* BACK BUTTON */}
@@ -51,27 +110,35 @@ const TeamSchedule = () => {
           <Col xs={24}>
             <div className='header'>
               <h2>TEAM SCHEDULE</h2>
+
               <div className='right'>
-                <p>YOUR TEAM</p>
-                <Select
+                {/* <p>YOUR TEAM</p> */}
+                {/* <Select
                   placeholder='Team'
                   style={{ minWidth: 130 }}
-                  // onChange={handleChange}
-                  options={[
-                    {
-                      value: 'teams',
-                      label: 'Teams',
-                    },
-                  ]}
-                />
+                  onChange={handleTeamChange}
+                  allowClear={{ clearIcon: <GrFormClose size={25} onClick={()=> setSelectedTeam("")} /> }}
+                  options={allTeam?.map((v) => {
+                    return {
+                      value: v?._id,
+                      label: v?.name,
+                    }
+                  })}
+                /> */}
               </div>
             </div>
           </Col>
-          {[1, 2, 3, 4, 5, 6].map((item) => (
-            <Col key={item} xs={24} lg={12}>
-              <MatchUpOfTheWeek />
-            </Col>
-          ))}
+          {loading ? (
+            <Loader />
+          ) : data?.length > 0 ? (
+            data?.map((v, i) => (
+              <Col key={i} xs={24} lg={12}>
+                <MatchUpOfTheWeek data={{ ...v }} />
+              </Col>
+            ))
+          ) : (
+            <p className='no_schedule_text'>No Scedules..</p>
+          )}
         </Row>
       </section>
     </div>

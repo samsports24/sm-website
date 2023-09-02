@@ -1,25 +1,25 @@
-import moment from 'moment'
+import dayjs from 'dayjs'
 import React from 'react'
 import { BiRightArrowAlt } from 'react-icons/bi'
 
-const MatchUpOfTheWeek = () => {
+const MatchUpOfTheWeek = ({ data: v }) => {
   return (
     <div className='match_up_box'>
       <div className='header'>
         <h1>Match-Up Of The Week</h1>
       </div>
       <div className='date_and_time'>
-        <h3>{moment(new Date()).format('ddd, Do MMM YYYY  |  h:mm a')}</h3>
+        <h3>{dayjs(v?.matchStartDate).format('ddd, Do MMM YYYY')}</h3>
       </div>
       <div className='teams'>
         <div className='team1'>
           <div className='image_div'>
-            <img src={require('../../assets/teams/rowdys.png')} />
+            <img src={v?.opponentOne?.logo} />
           </div>
           <div className='content'>
-            <h3>Rowdys Square</h3>
+            <h3>{v?.opponentOne?.name}</h3>
             <p>
-              <span>Points:</span> +3.214
+              <span>Points:</span> {v?.opponentOne?.points || 0}
             </p>
           </div>
         </div>
@@ -28,13 +28,13 @@ const MatchUpOfTheWeek = () => {
         </div>
         <div className='team1 team2'>
           <div className='content'>
-            <h3>Kraken Square</h3>
+            <h3>{v?.opponentTwo?.name}</h3>
             <p>
-              <span>Points:</span> +3.214
+              <span>Points:</span> {v?.opponentTwo?.points || 0}
             </p>
           </div>
           <div className='image_div'>
-            <img src={require('../../assets/teams/kraken.png')} />
+            <img src={v?.opponentTwo?.logo} />
           </div>
         </div>
       </div>

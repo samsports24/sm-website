@@ -21,8 +21,8 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
     const res = await getPlayersByPosition({
       position:
         propsData.Position && propsData.Position === 'backup qb'
-          ? ['QB']
-          : propsData.Position?.toUpperCase().split('/'),
+          ? 'QB'
+          : propsData.Position?.toUpperCase(),
       classKey: propsData?.classKey && propsData?.classKey,
     })
     if (res) {
@@ -39,7 +39,7 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
   const handleStarter = async (id) => {
     setPlayerId(id)
     const res = await assignPlayerToStarter({
-      oldPlayerId: starter?._id ? starter?._id : '',
+      oldPlayerId: starter?._id ? starter?.player?._id : '',
       playerId: id,
       classKey: propsData?.classKey,
       isBackup: propsData?.Position === 'backup qb' ? true : false,
