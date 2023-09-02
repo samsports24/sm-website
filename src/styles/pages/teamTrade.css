@@ -51,3 +51,12 @@
   flex-wrap: wrap;
   color: white;
 }
+
+.team_trade_main .pagination_box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* .team_trade_main .ant-pagination-options {
+  border: none !important;
+} */

@@ -14,8 +14,6 @@ const EditProfile = () => {
   const [imageSrc, setImageSrc] = useState(null)
   const [form] = Form.useForm()
 
-  console.log(user, imageSrc)
-
   const handleFile = (file) => {
     setFile(file)
     const src = URL.createObjectURL(file)

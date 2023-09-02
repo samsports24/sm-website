@@ -124,3 +124,19 @@ export const releasePlayer = async (id) => {
     })
   }
 }
+
+export const getFreeAgent = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/player/get-free-agents`, payload)
+    if (res) {
+      console.log(res)
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}

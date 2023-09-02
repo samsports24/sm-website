@@ -22,5 +22,6 @@ export const firstLetterCap = (str) => {
 
 export const activeRosterCount = 53
 export const practiceRosterCount = 53
-export const legalPlayers = 53
+export const legalPlayers = 46
 export const proctectedSquadCount = 4
+export const nonActivePlayers = 7

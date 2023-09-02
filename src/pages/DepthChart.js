@@ -13,7 +13,12 @@ import Loader from '../components/Loader'
 import { depthCardData } from './mockData'
 
 import { getActiveRosterCount } from '../redux/actions/depthChartAction'
-import { firstLetterCap, legalPlayers } from '../config/constants'
+import {
+  activeRosterCount,
+  firstLetterCap,
+  legalPlayers,
+  nonActivePlayers,
+} from '../config/constants'
 
 const DepthChart = () => {
   const [activeFilter, setActiveFilter] = useState('offense')
@@ -37,7 +42,7 @@ const DepthChart = () => {
       type: activeFilter === 'special team' ? 'special' : activeFilter,
     })
     if (res) {
-      setActiveCount(res?.count?.activePlayers)
+      setActiveCount(res?.count)
 
       if (res?.data?.length > 0) {
         res?.data.map((item) => {
@@ -96,7 +101,8 @@ const DepthChart = () => {
             className='overlay'
             style={{ display: activeCount == legalPlayers ? 'none' : 'flex' }}
           >
-            <h2>You have an illegal Roster</h2>
+            <h2>{`You have an illegal Roster`}</h2>
+            <h4>{`kindly have ${activeRosterCount} players and ${nonActivePlayers} non active players on the roster`}</h4>
           </div>
           {/* FILTER */}
           <ColorFilter
