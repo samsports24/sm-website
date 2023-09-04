@@ -100,6 +100,7 @@ const PlayerRoster = () => {
       //     stats: updateStats,
       //   }
       // })
+      console.log(res?.players)
       const activePlayer = res?.players?.filter(
         (v) => v?.inPracticeSquad == false && v?.isPlayerInjured == false,
       )

@@ -48,11 +48,11 @@ const Header = () => {
             </div>
             <div>
               <p>Team Salary Cap</p>
-              <span>$189,890,858</span>
+              <span>-</span>
             </div>
             <div>
               <p>Team Cap Left</p>
-              <span>$9,868,588</span>
+              <span>-</span>
             </div>
           </div>
         </div>
@@ -60,8 +60,10 @@ const Header = () => {
       <div className='right'>
         <div className='content'>
           <div className='top'>
-            <span>23&apos;</span>
-            <p> Same year SFL Prize-Pool</p>
+            <span style={{ width: '100%', textAlign: 'right' }}>
+              <span>23&apos;</span> &nbsp;
+              <span>SAMS 1,491,526</span>
+            </span>
           </div>
           <div className='content2'>
             <div className='image_div'>

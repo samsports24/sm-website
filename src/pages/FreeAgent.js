@@ -166,47 +166,46 @@ const FreeAgent = () => {
                           )}
                         </div>
                         <div>
-                          <p className='squad_text1'>position</p>
-                          <p className='squad_text2'>{v?.Position || '-'}</p>
+                          <p className='squad_text2'>position</p>
+                          <p className='squad_text1'>{v?.Position || '-'}</p>
                         </div>
                         <div>
-                          <p className='squad_text1'>player name</p>
-                          <p className='squad_text2'>{v?.Name || '-'}</p>
+                          <p style={{ width: '160px' }} className='squad_text2'>
+                            player name
+                          </p>
+                          <p className='squad_text1'>{v?.Name || '-'}</p>
                         </div>
                         <div>
-                          <p className='squad_text1'>age</p>
-                          <p className='squad_text2'>{v?.Age || '-'}</p>
+                          <p className='squad_text2'>age</p>
+                          <p className='squad_text1'>{v?.Age || '-'}</p>
                         </div>
                         <div>
-                          <p className='squad_text1'>team</p>
-                          <p className='squad_text2'>{v?.Team || '-'}</p>
+                          <p className='squad_text2'>team</p>
+                          <p className='squad_text1'>{v?.Team || '-'}</p>
                         </div>
                         <div>
-                          <p className='squad_text1'>bye</p>
-                          <p className='squad_text2'>{v?.ByeWeek || '-'}</p>
+                          <p className='squad_text2'>bye</p>
+                          <p className='squad_text1'>{v?.ByeWeek || '-'}</p>
                         </div>
                         <div>
-                          <p className='squad_text1'>player cap #</p>
-                          <p className='squad_text2'>{v?.PlayerCap || '-'}</p>
+                          <p className='squad_text2'>player cap #</p>
+                          <p className='squad_text1'>{v?.PlayerCap || '-'}</p>
                         </div>
-                        <div>
-                          <p className='squad_text1'>
+                        {/* <div>
+                          <p className='squad_text2'>
                             year left <br /> experation &nbsp;
                             <span className='squad_text2'>{v?.YearLeftExperation || '-'}</span>
                           </p>
+                        </div> */}
+                        <div>
+                          <p className='squad_text2'>PPG &nbsp;</p>
+                          <p className='squad_text1'>{v?.pointsPerGame || '-'}</p>
                         </div>
                         <div>
-                          <p className='squad_text1'>
-                            point per <br /> game &nbsp;
-                            <span className='squad_text2'>{v?.pointsPerGame || '-'}</span>
-                          </p>
+                          <p className='squad_text2'>player rank</p>
+                          <p className='squad_text1'>{v?.playerRank || '-'}</p>
                         </div>
-                        <div>
-                          <p className='squad_text1'>
-                            player <br /> rank &nbsp;
-                            <span className='squad_text2'>{v?.playerRank || '-'}</span>
-                          </p>
-                        </div>
+                        <Button type='primary'>Auction</Button>
                       </div>
                     </div>
                   )
