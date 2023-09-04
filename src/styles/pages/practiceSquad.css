@@ -67,13 +67,17 @@
 .squad_card_container .ant-input {
   color: black !important;
 }
+.team_setting .ant-input {
+  color: #fff !important;
+}
+
 .practice_squad_container .transparent {
   border: none !important;
   background: transparent !important;
 }
 .squad_card_container .squad_card_box {
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 .squad_card_container .squad_card_box .squad_header {
   width: 100%;
@@ -100,7 +104,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
+  padding: 5px 16px;
   gap: 10px;
   background-color: var(--primaryPurple);
 }
@@ -117,7 +121,7 @@
 }
 .squad_card_container .squad_card_box .squad_content_body .squad_text1 {
   color: var(--text);
-  font-size: 15px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
@@ -126,7 +130,7 @@
 }
 .squad_card_container .squad_card_box .squad_content_body .squad_text2 {
   color: var(--text);
-  font-size: 14px;
+  font-size: 15px;
   font-style: normal;
   font-weight: 400;
   line-height: 22px;
@@ -159,4 +163,23 @@
   .squad_card_container .squad_card_box {
     width: 1000px;
   }
+}
+
+.team_setting .file_button {
+  background-color: var(--primary);
+  height: 40px;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text);
+  width: max-content;
+  cursor: pointer;
+  border: 2px solid var(--primary);
+}
+.team_setting .file_button:hover {
+  background-color: transparent;
 }

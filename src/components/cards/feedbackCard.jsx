@@ -1,9 +1,12 @@
+import { Avatar } from 'antd'
 import React from 'react'
 
 const FeedbackCard = ({ data }) => {
   return (
     <div className='feedback-card'>
-      <img src={data?.image} />
+      <div className='image-box'>
+        <Avatar className='avatar' src={<img src={data?.image} alt={data?.clientName} />} />
+      </div>
       <p>
         <span>{` -   ${data?.clientName}`}</span> <br />
         {data?.comment && data?.comment?.length > 200 ? (

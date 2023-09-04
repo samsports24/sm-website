@@ -43,7 +43,7 @@ import PracticeSquad from '../pages/PracticeSquad'
 // import TeamTrade from '../pages/TeamTrade'
 import TeamSchedule from '../pages/TeamSchedule'
 import TeamSetting from '../pages/TeamSettings'
-// import InjuredReserve from '../pages/InjuredReserve'
+import InjuredReserve from '../pages/InjuredReserve'
 import FreeAgent from '../pages/FreeAgent'
 // import AgentPlayerInterface from '../pages/AgentPlayerInterface'
 // import GmDashboard from '../pages/GmDashboard'
@@ -80,7 +80,10 @@ const Routers = () => {
           <Route path='*' element={<ComingSoon />} />
           <Route path='/leagueScore' element={<LeagueScore />} />
           <Route path='/game-details' element={<GameDetails />} />
-
+          <Route path='/team-setting' element={<TeamSetting />} />
+          <Route path='/edit-profile' element={<EditProfile />} />
+          <Route path='/team-schedule' element={<TeamSchedule />} />
+          <Route path='/injured-reserve' element={<InjuredReserve />} />
           {/* <Route path='/teams' element={<Teams />} />
           <Route path='/player-details' element={<PlayerDetails />} />
           <Route path='/edit-profile' element={<EditProfile />} />
@@ -104,7 +107,6 @@ const Routers = () => {
           <Route path='/team-trade' element={<TeamTrade />} />
           <Route path='/team-schedule' element={<TeamSchedule />} />
           <Route path='/team-setting' element={<TeamSetting />} />
-          <Route path='/injured-reserve' element={<InjuredReserve />} />
           {/* </Layout> */}
         </Route>
 
@@ -114,9 +116,6 @@ const Routers = () => {
           {/* <Route path='/roster-fullformat' element={<RosterFullFormat />} /> */}
           <Route path='/' element={<Home />} />
           <Route path='/player-interface/:id' element={<PlayerInterface />} />
-          <Route path='/team-setting' element={<TeamSetting />} />
-          <Route path='/edit-profile' element={<EditProfile />} />
-
           <Route path='/fantasy-league' element={<FantasyLeague />} />
           <Route path='/professional-league' element={<ProfessionalLeague />} />
           <Route path='/player-roster' element={<PlayerRoster />} />
@@ -134,7 +133,6 @@ const Routers = () => {
           <Route path='/public-league' element={<PublicLeague />} />
           <Route path='/player-winning-bid' element={<PlayerWinningBid />} />
           <Route path='/terms-condition' element={<TermsAndCondition />} />
-          <Route path='/team-schedule' element={<TeamSchedule />} />
         </Route>
 
         <Route path='/login' element={<Login />} />

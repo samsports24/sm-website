@@ -100,7 +100,8 @@ const GmCard = ({
               <AuctionPlayer />
               <TradePlayer />
               <ReleasePlayer />
-              <MoveToInjured />
+
+              <MoveToInjured disabled={InjuryStatus?.toLowerCase() != 'out'} getData={getData} />
 
               <ActivateFromPracticeSquad
                 activePlayers={activePlayers}

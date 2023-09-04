@@ -1,78 +1,100 @@
-import React from // useState
-'react'
+import React, { useState } from 'react'
 
-import { Button, Breadcrumb, Row, Col, Form, Input } from 'antd'
+import { Button, Breadcrumb, Row, Col, Form, Input, Avatar } from 'antd'
 
 import Arrow from '../assets/arrow-right.svg'
+
+import { useNavigate } from 'react-router-dom'
 
 // Component
 import Header from '../components/Header'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
-// import { updateTeam } from '../redux/actions/teamActions'
-// import { useSelector } from 'react-redux'
+
+// Redux
+import { useSelector, useDispatch } from 'react-redux'
+import { getUser } from '../redux'
+import { updateTeam } from '../redux/actions/teamActions'
 
 const TeamSetting = () => {
-  // const user = useSelector((state) => state.user.userDetails)
-  // console.log(user)
-  // const { team } = user
-  // const [loading, setLoading] = useState(false)
-  // const [file, setFile] = useState(null)
-  // // const [imageSrc, setImageSrc] = useState(null)
-  // const [form] = Form.useForm()
+  const user = useSelector((state) => state.user.userDetails)
+  const [loading, setLoading] = useState(false)
+  const [file, setFile] = useState(null)
+  const [imageSrc, setImageSrc] = useState(null)
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-  // // console.log(imageSrc)
+  const handleFile = (file) => {
+    setFile(file)
+    const src = URL.createObjectURL(file)
+    setImageSrc(src)
+  }
 
-  // const handleFile = (file) => {
-  //   setFile(file)
-  //   // const src = URL.createObjectURL(file)
-  //   // setImageSrc(src)
-  // }
-  // console.log(handleFile)
+  const _updateTeam = async (payload) => {
+    setLoading(true)
+    const res = await updateTeam(payload)
+    if (res) {
+      dispatch(getUser())
+    }
+    setLoading(false)
+  }
 
-  // const _updateTeam = async (payload) => {
-  //   setLoading(true)
-  //   const res = await updateTeam(payload)
-  //   if (res) {
-  //     console.log("===>")
-  //   }
-  //   setLoading(false)
-  // }
+  const onFinish = async (values) => {
+    const name = values?.name ? values?.name : user?.team?.name || ''
+    const picture = file ? file : user?.team?.logo || ''
+    const gmName = values?.gmName ? values?.gmName : user?.team?.gmName || ''
+    const abbreviation = values?.abbreviation
+      ? values?.abbreviation
+      : user?.team?.abbreviation || ''
+    const gmTwitter = values?.gmTwitter ? values?.gmTwitter : user?.team?.gmTwitter || ''
+    const city = values?.city ? values?.city : user?.team?.city || ''
+    const hometown = values?.hometown ? values?.hometown : user?.team?.hometown || ''
+    const teamTwitter = values?.teamTwitter ? values?.teamTwitter : user?.team?.teamTwitter || ''
 
-  // const onFinish = async (values) => {
-  //   const name = values?.name ? values?.name : team?.name || ''
-  //   const picture = values?.logo ? values?.logo : team?.logo || ''
-  //   const gmName = values?.gmName ? values?.gmName : team?.gmName || ''
-  //   const abbreviation = values?.abbreviation ? values?.abbreviation : team?.abbreviation || ''
-  //   const gmTwitter = values?.gmTwitter ? values?.gmTwitter : team?.gmTwitter || ''
-  //   const city = values?.city ? values?.city : team?.city || ''
-  //   const hometown = values?.hometown ? values?.hometown : team?.hometown || ''
-  //   const teamTwitter = values?.teamTwitter ? values?.teamTwitter : team?.teamTwitter || ''
+    if (file) {
+      let formdata = new FormData()
+      formdata.append('name', name)
+      formdata.append('pictures', picture)
+      formdata.append('gmName', gmName)
+      formdata.append('abbreviation', abbreviation)
+      formdata.append('gmTwitter', gmTwitter)
+      formdata.append('city', city)
+      formdata.append('hometown', hometown)
+      formdata.append('teamTwitter', teamTwitter)
 
-  //   if (file) {
-  //     let formdata = new FormData()
-  //     formdata.append('name', name)
-  //     formdata.append('pictures', file)
+      await _updateTeam(formdata)
+    } else {
+      const obj = {
+        name,
+        gmName,
+        abbreviation,
+        gmTwitter,
+        city,
+        hometown,
+        teamTwitter,
+      }
+      await _updateTeam(obj)
+    }
+  }
 
-  //     await _updateTeam(formdata)
-  //   } else {
-  //     const obj = {
-  //       name,
-  //       picture,
-  //       gmName,
-  //       abbreviation,
-  //       gmTwitter,
-  //       city,
-  //       hometown,
-  //       teamTwitter,
-  //     }
-  //     await _updateTeam(obj)
-  //   }
-  // }
+  const validateAbbreviation = (_, value) => {
+    return new Promise((resolve, reject) => {
+      if (value && value.length > 3) {
+        reject('Team abbreviation must be 3 letters or less')
+      } else {
+        resolve()
+      }
+    })
+  }
 
   return (
     <div className='practice_squad_container team_trade_main'>
       {/* BACK BUTTON */}
-      <Button className='back_button' type='primary'>
+      <Button
+        className='back_button'
+        type='primary'
+        onClick={() => navigate('/professional-league')}
+      >
         Back
       </Button>
 
@@ -105,45 +127,45 @@ const TeamSetting = () => {
 
       <hr className='divider' />
 
-      <section className='squad_card_container transparent'>
+      <section className='squad_card_container transparent team_setting'>
         <Form
-          // form={form}
+          form={form}
           layout='vertical'
-          // onFinish={onFinish}
-          // fields={[
-          //   {
-          //     name: 'name',
-          //     value: team?.name,
-          //   },
-          //   {
-          //     name: 'logo',
-          //     value: team?.logo,
-          //   },
-          //   {
-          //     name: 'gmName',
-          //     value: team?.gmName,
-          //   },
-          //   {
-          //     name: 'abbreviation',
-          //     value: team?.abbreviation,
-          //   },
-          //   {
-          //     name: 'gmTwitter',
-          //     value: team?.gmTwitter,
-          //   },
-          //   {
-          //     name: 'city',
-          //     value: team?.city,
-          //   },
-          //   {
-          //     name: 'hometown',
-          //     value: team?.hometown,
-          //   },
-          //   {
-          //     name: 'teamTwitter',
-          //     value: team?.teamTwitter,
-          //   },
-          // ]}
+          onFinish={onFinish}
+          fields={[
+            {
+              name: 'name',
+              value: user?.team?.name,
+            },
+            {
+              name: 'pictures',
+              value: user?.team?.logo,
+            },
+            {
+              name: 'gmName',
+              value: user?.team?.gmName,
+            },
+            {
+              name: 'abbreviation',
+              value: user?.team?.abbreviation,
+            },
+            {
+              name: 'gmTwitter',
+              value: user?.team?.gmTwitter,
+            },
+            {
+              name: 'city',
+              value: user?.team?.city,
+            },
+            {
+              name: 'hometown',
+              value: user?.team?.hometown,
+            },
+            {
+              name: 'teamTwitter',
+              value: user?.team?.teamTwitter,
+            },
+          ]}
         >
           <Row gutter={[30, 30]}>
             <Col xs={24}>
@@ -163,7 +185,15 @@ const TeamSetting = () => {
             </Col>
             <Col lg={0} xl={8} />
             <Col xs={24} lg={12} xl={8}>
-              <Form.Item name={'abbreviation'} label='Team Abbreviation (3 Letters Max)'>
+              <Form.Item
+                name={'abbreviation'}
+                label='Team Abbreviation (3 Letters Max)'
+                rules={[
+                  {
+                    validator: validateAbbreviation,
+                  },
+                ]}
+              >
                 <Input placeholder='ABC' />
               </Form.Item>
             </Col>
@@ -185,8 +215,19 @@ const TeamSetting = () => {
               </Form.Item>
             </Col>
             <Col lg={24} xl={8}>
-              <Form.Item name={'picture'} label='Team Logo'>
-                <Button type='primary'>Add Image</Button>
+              <Form.Item name={'pictures'} label='Team Logo'>
+                <>
+                  <label className='file_button' htmlFor='fileInput'>
+                    Add Image {imageSrc && <Avatar style={{ marginLeft: '5px' }} src={imageSrc} />}
+                  </label>
+                  <input
+                    type='file'
+                    hidden
+                    id='fileInput'
+                    onChange={(e) => handleFile(e?.target?.files[0])}
+                    accept='image/jpg,image/png,image/jpeg'
+                  />
+                </>
               </Form.Item>
             </Col>
             <Col lg={0} xl={8} />
@@ -199,11 +240,7 @@ const TeamSetting = () => {
 
             <Col xs={24}>
               <Form.Item>
-                <Button
-                  //  loading={loading}
-                  type='primary'
-                  htmlType='submit'
-                >
+                <Button loading={loading} type='primary' htmlType='submit'>
                   Submit
                 </Button>
               </Form.Item>

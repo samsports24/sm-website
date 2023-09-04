@@ -158,6 +158,7 @@ const VerticalLayout = ({ children, active }) => {
 
             <a href='https://sportsdata.io' target='_blank' rel='noreferrer'>
               <img
+                style={{ height: '50px', width: 'auto' }}
                 src='https://sportsdata.io/assets/images/badges/sportsdataio_light_ss_300.png'
                 alt='Powered by SportsDataIO'
               />

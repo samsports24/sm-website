@@ -106,46 +106,6 @@ const PlayerInterface = () => {
 
       <hr className='divider' />
 
-      {/* MODALS */}
-      {/* <section className='filter_box'>
-        <AuctionPlayer />
-
-        <span className='divider_bar'>|</span>
-
-        <TradePlayer />
-
-        <span className='divider_bar'>|</span>
-
-        <ReleasePlayer />
-
-        <span className='divider_bar'>|</span>
-
-        <MoveToInjured />
-
-        <span className='divider_bar'>|</span>
-
-        <ActivateFromPracticeSquad />
-
-        <span className='divider_bar'>|</span>
-
-        <MoveToPracticeSquad />
-
-        <span className='divider_bar'>|</span>
-
-        <h2
-          onClick={() => {
-            navigate('/team-trade')
-          }}
-          className='modal_button_text'
-        >
-          MAKE OFFER
-        </h2>
-
-        <span className='divider_bar'>|</span>
-
-        <PoachPlayer />
-      </section> */}
-
       {loading ? (
         <Loader />
       ) : (

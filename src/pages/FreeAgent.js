@@ -8,9 +8,6 @@ import { SearchOutlined } from '@ant-design/icons'
 // Component
 import Header from '../components/Header'
 
-// import barIcon from '../assets/bar-icon.svg'
-
-// import { practiceSquadData } from './mockData'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import { getFreeAgent } from '../redux/actions/rosterAction'
 import Loader from '../components/Loader'
@@ -160,9 +157,6 @@ const FreeAgent = () => {
                 freeAgents?.players?.map((v, i) => {
                   return (
                     <div key={i} className='squad_card_box'>
-                      {/* <div className='squad_header'>
-                    <h2>{v?.title}</h2>
-                  </div> */}
                       <div className='squad_content_body'>
                         <div className='squad_image_box'>
                           {v?.image ? (
@@ -172,48 +166,46 @@ const FreeAgent = () => {
                           )}
                         </div>
                         <div>
-                          <p className='squad_text1'>position</p>
-                          <p className='squad_text2'>{v?.Position || '-'}</p>
+                          <p className='squad_text2'>position</p>
+                          <p className='squad_text1'>{v?.Position || '-'}</p>
                         </div>
                         <div>
-                          <p className='squad_text1'>player name</p>
-                          <p className='squad_text2'>{v?.Name || '-'}</p>
+                          <p style={{ width: '160px' }} className='squad_text2'>
+                            player name
+                          </p>
+                          <p className='squad_text1'>{v?.Name || '-'}</p>
                         </div>
                         <div>
-                          <p className='squad_text1'>age</p>
-                          <p className='squad_text2'>{v?.Age || '-'}</p>
+                          <p className='squad_text2'>age</p>
+                          <p className='squad_text1'>{v?.Age || '-'}</p>
                         </div>
                         <div>
-                          <p className='squad_text1'>team</p>
-                          <p className='squad_text2'>{v?.Team || '-'}</p>
+                          <p className='squad_text2'>team</p>
+                          <p className='squad_text1'>{v?.Team || '-'}</p>
                         </div>
                         <div>
-                          <p className='squad_text1'>bye</p>
-                          <p className='squad_text2'>{v?.ByeWeek || '-'}</p>
+                          <p className='squad_text2'>bye</p>
+                          <p className='squad_text1'>{v?.ByeWeek || '-'}</p>
                         </div>
                         <div>
-                          <p className='squad_text1'>player cap #</p>
-                          <p className='squad_text2'>{v?.PlayerCap || '-'}</p>
+                          <p className='squad_text2'>player cap #</p>
+                          <p className='squad_text1'>{v?.PlayerCap || '-'}</p>
                         </div>
-                        <div>
-                          <p className='squad_text1'>
+                        {/* <div>
+                          <p className='squad_text2'>
                             year left <br /> experation &nbsp;
                             <span className='squad_text2'>{v?.YearLeftExperation || '-'}</span>
                           </p>
+                        </div> */}
+                        <div>
+                          <p className='squad_text2'>PPG &nbsp;</p>
+                          <p className='squad_text1'>{v?.pointsPerGame || '-'}</p>
                         </div>
                         <div>
-                          <p className='squad_text1'>
-                            point per <br /> game &nbsp;
-                            <span className='squad_text2'>{v?.pointsPerGame || '-'}</span>
-                          </p>
+                          <p className='squad_text2'>player rank</p>
+                          <p className='squad_text1'>{v?.playerRank || '-'}</p>
                         </div>
-                        <div>
-                          <p className='squad_text1'>
-                            player <br /> rank &nbsp;
-                            <span className='squad_text2'>{v?.playerRank || '-'}</span>
-                          </p>
-                        </div>
-                        {/* <img src={barIcon} /> */}
+                        <Button type='primary'>Auction</Button>
                       </div>
                     </div>
                   )
