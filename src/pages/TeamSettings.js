@@ -4,12 +4,16 @@ import { Button, Breadcrumb, Row, Col, Form, Input, Avatar } from 'antd'
 
 import Arrow from '../assets/arrow-right.svg'
 
+import { useNavigate } from 'react-router-dom'
+
 // Component
 import Header from '../components/Header'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
-import { updateTeam } from '../redux/actions/teamActions'
+
+// Redux
 import { useSelector, useDispatch } from 'react-redux'
 import { getUser } from '../redux'
+import { updateTeam } from '../redux/actions/teamActions'
 
 const TeamSetting = () => {
   const user = useSelector((state) => state.user.userDetails)
@@ -18,6 +22,7 @@ const TeamSetting = () => {
   const [imageSrc, setImageSrc] = useState(null)
   const [form] = Form.useForm()
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const handleFile = (file) => {
     setFile(file)
@@ -35,8 +40,8 @@ const TeamSetting = () => {
   }
 
   const onFinish = async (values) => {
-    // const name = values?.name ? values?.name : user?.team?.name || ''
-    // const picture = file ? file : user?.team?.logo || ''
+    const name = values?.name ? values?.name : user?.team?.name || ''
+    const picture = file ? file : user?.team?.logo || ''
     const gmName = values?.gmName ? values?.gmName : user?.team?.gmName || ''
     const abbreviation = values?.abbreviation
       ? values?.abbreviation
@@ -48,8 +53,8 @@ const TeamSetting = () => {
 
     if (file) {
       let formdata = new FormData()
-      // formdata.append('name', name)
-      // formdata.append('pictures', picture)
+      formdata.append('name', name)
+      formdata.append('pictures', picture)
       formdata.append('gmName', gmName)
       formdata.append('abbreviation', abbreviation)
       formdata.append('gmTwitter', gmTwitter)
@@ -60,7 +65,7 @@ const TeamSetting = () => {
       await _updateTeam(formdata)
     } else {
       const obj = {
-        // name,
+        name,
         gmName,
         abbreviation,
         gmTwitter,
@@ -85,7 +90,11 @@ const TeamSetting = () => {
   return (
     <div className='practice_squad_container team_trade_main'>
       {/* BACK BUTTON */}
-      <Button className='back_button' type='primary'>
+      <Button
+        className='back_button'
+        type='primary'
+        onClick={() => navigate('/professional-league')}
+      >
         Back
       </Button>
 

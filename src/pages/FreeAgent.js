@@ -8,9 +8,6 @@ import { SearchOutlined } from '@ant-design/icons'
 // Component
 import Header from '../components/Header'
 
-// import barIcon from '../assets/bar-icon.svg'
-
-// import { practiceSquadData } from './mockData'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import { getFreeAgent } from '../redux/actions/rosterAction'
 import Loader from '../components/Loader'
@@ -160,9 +157,6 @@ const FreeAgent = () => {
                 freeAgents?.players?.map((v, i) => {
                   return (
                     <div key={i} className='squad_card_box'>
-                      {/* <div className='squad_header'>
-                    <h2>{v?.title}</h2>
-                  </div> */}
                       <div className='squad_content_body'>
                         <div className='squad_image_box'>
                           {v?.image ? (
@@ -213,7 +207,6 @@ const FreeAgent = () => {
                             <span className='squad_text2'>{v?.playerRank || '-'}</span>
                           </p>
                         </div>
-                        {/* <img src={barIcon} /> */}
                       </div>
                     </div>
                   )

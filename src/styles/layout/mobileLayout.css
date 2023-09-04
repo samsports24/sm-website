@@ -47,7 +47,7 @@
   align-items: center;
   background-color: var(--backgroundGradient1) !important;
   border-bottom: 1px solid rgba(110, 105, 128, 0.4);
-  height: 60px !important;
+  min-height: 9vh !important;
   padding-block: 0px !important;
 }
 .v-layout div .header_title {

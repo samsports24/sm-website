@@ -84,25 +84,28 @@ const PlayerRoster = () => {
   const getData = async () => {
     setLoading(true)
     const res = await getRoster()
-    console.log(res?.players)
     if (res) {
-      const filtered = res?.players?.map((v) => {
-        const filterStats = res?.stats?.filter((x) => v?._id === x?.player)
-        let updateStats = {}
-        filterStats.forEach((val) => {
-          if (v.ByeWeek && v.ByeWeek === val.weekNo) {
-            updateStats[`score${val.weekNo}`] = 'B'
-          } else {
-            updateStats[`score${val.weekNo}`] = val.score
-          }
-        })
-        return {
-          ...v,
-          stats: updateStats,
-        }
-      })
-      const activePlayer = filtered?.filter((v) => v?.inPracticeSquad === false)
-      const practiceSquad = filtered?.filter((v) => v?.inPracticeSquad === true)
+      // const filtered = res?.players?.map((v) => {
+      //   const filterStats = res?.stats?.filter((x) => v?._id === x?.player)
+      //   let updateStats = {}
+      //   filterStats?.forEach((val) => {
+      //     if (v.ByeWeek && v.ByeWeek === val.weekNo) {
+      //       updateStats[`score${val.weekNo}`] = 'B'
+      //     } else {
+      //       updateStats[`score${val.weekNo}`] = val.score
+      //     }
+      //   })
+      //   return {
+      //     ...v,
+      //     stats: updateStats,
+      //   }
+      // })
+      const activePlayer = res?.players?.filter(
+        (v) => v?.inPracticeSquad == false && v?.isPlayerInjured == false,
+      )
+      const practiceSquad = res?.players?.filter(
+        (v) => v?.inPracticeSquad === true && v?.isPlayerInjured == false,
+      )
       const nonAcitvePlayer = []
       activePlayer?.forEach((v) => {
         if (v?.isActive !== true) {

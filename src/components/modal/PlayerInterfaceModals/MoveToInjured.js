@@ -1,16 +1,33 @@
 import { Button, Modal } from 'antd'
 import React, { useState } from 'react'
+import { moveToIr } from '../../../redux/actions/rosterAction'
+import { useParams } from 'react-router-dom'
 
-const MoveToInjured = () => {
+const MoveToInjured = ({ disabled, getData }) => {
   const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
   const showModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
 
+  const { id } = useParams()
+
+  const _moveToIr = async () => {
+    setLoading(true)
+    const res = await moveToIr({
+      id,
+    })
+    if (res) {
+      await getData()
+      closeModal()
+    }
+    setLoading(false)
+  }
+
   return (
     <>
-      <Button type='primary' className='action-bar-btn' onClick={showModal}>
+      <Button disabled={disabled} type='primary' className='action-bar-btn' onClick={showModal}>
         MOVE TO (I.R.)
-        <p>Practice Squad</p>
+        <span>Practice Squad</span>
       </Button>
       <Modal
         centered
@@ -38,7 +55,7 @@ const MoveToInjured = () => {
           </div>
 
           <div className='modal_footer'>
-            <Button type='primary' className='button_1'>
+            <Button loading={loading} type='primary' className='button_1' onClick={_moveToIr}>
               MOVE TO INJURED I.R.
             </Button>
             <Button onClick={closeModal} type='primary' className='button_2'>

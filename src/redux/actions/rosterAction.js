@@ -106,6 +106,7 @@ export const moveFromPractice = async (data) => {
     })
   }
 }
+
 export const releasePlayer = async (id) => {
   try {
     attachToken()
@@ -130,9 +131,79 @@ export const getFreeAgent = async (payload) => {
     attachToken()
     const res = await privateAPI.post(`/player/get-free-agents`, payload)
     if (res) {
-      console.log(res)
       return res.data.data
     }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const getAllIr = async () => {
+  try {
+    attachToken()
+    const res = await privateAPI.get('/player/get-all-ir')
+    return res.data.data
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const moveToIr = async (id) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/player/move-to-ir', id)
+    if (res) {
+      notification.success({
+        message: res.data.data,
+        duration: 3,
+      })
+    }
+    return res.data.data
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const moveIrToRoster = async (id) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/player/move-ir-to-roster', id)
+    if (res) {
+      notification.success({
+        message: res.data.data,
+        duration: 3,
+      })
+      await getAllIr()
+    }
+    return res.data.data
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const moveIrToPractice = async (id) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/player/move-ir-to-practice', id)
+    if (res) {
+      notification.success({
+        message: res.data.data,
+        duration: 3,
+      })
+    }
+    return res.data.data
   } catch (err) {
     notification.error({
       message: err?.response?.data?.message || 'Server Error',

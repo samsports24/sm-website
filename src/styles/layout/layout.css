@@ -2,7 +2,7 @@
   /* background-color: var(--background); */
   background: linear-gradient(180deg, #291c4a 0%, #080611 100%);
   min-height: 88vh;
-  padding: 40px;
+  padding: 20px 40px 40px 40px;
 }
 .ant-layout-header {
   background-color: var(--background) !important;

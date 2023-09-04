@@ -11,6 +11,8 @@ import { BiRightArrowAlt } from 'react-icons/bi'
 const Header = () => {
   const user = useSelector((state) => state.user.userDetails)
 
+  const teamFinancials = () => {}
+
   return user?.team ? (
     <header className='gd-header'>
       <div className='left'>
@@ -34,10 +36,10 @@ const Header = () => {
             <Button>Division Record</Button>
           </div>
           <div className='team_financials_box'>
-            <div>
+            <div style={{ cursor: 'pointer' }} onClick={teamFinancials}>
               <h4>Team Financials</h4>
               <h4>
-                <BiRightArrowAlt size={18} style={{ cursor: 'pointer' }} />
+                <BiRightArrowAlt size={18} />
               </h4>
             </div>
             <div>
