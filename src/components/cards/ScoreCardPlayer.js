@@ -1,6 +1,9 @@
 import React from 'react'
 import { Image } from 'antd'
 
+import Player1 from '../../assets/player-img-60x60.png'
+// import Player2 from '../../assets/player-img-2-60x60.png'
+
 const ScoreCardPlayer = ({ alignment, data }) => {
   return (
     <div className='sc-player'>
@@ -15,9 +18,11 @@ const ScoreCardPlayer = ({ alignment, data }) => {
           className='left'
           style={{ flexDirection: alignment == 'right' ? 'row-reverse' : 'row' }}
         >
-          <Image className='player-img' alt='player' src={data?.image} />
-          <p className='name'>{data?.name}</p>
-          <p className='position'>{data?.position}</p>
+          <Image className='player-img' alt='player' src={Player1} />
+          <p className='name'>{data?.player?.Name}</p>
+          <p className='position'>
+            {data?.player?.Position} - {data?.player?.Team}
+          </p>
         </div>
         <p className='score'>-</p>
       </div>
@@ -30,7 +35,7 @@ const ScoreCardPlayer = ({ alignment, data }) => {
       >
         <div style={{ flexDirection: alignment == 'right' ? 'row-reverse' : 'row' }}>
           <p className='time'>{data?.matchTime}</p>
-          <p className='decimal'>3.97</p>
+          <p className='decimal'>0</p>
         </div>
         <p className='handle'>{data?.handle}</p>
       </div>

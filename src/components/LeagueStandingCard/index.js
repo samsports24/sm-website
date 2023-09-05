@@ -65,23 +65,40 @@ const LeagueStandingCard = ({ data, index }) => {
       className='league_standing_card'
       style={{ marginTop: index === 0 && '0px' }}
     >
-      <h3 className='text'>{data?.mainTitle}</h3>
-      {data?.data?.map((v, i) => {
+      <h3 className='text'>
+        {data?.conference} - {data?._id}
+      </h3>
+      {data?.standing?.map((v, i) => {
         return (
           <div key={i} className='table_card'>
             <div className='table_header'>
-              <h3>{v?.title}</h3>
+              <h3>{v?.team?.name}</h3>
             </div>
             <div className='table_body'>
               <div className='table_image'>
-                <Image preview={false} src={v?.imageUrl} alt={v?.title} />
+                <Image preview={false} src={v?.team?.logo} alt={v?.team?.name} />
               </div>
               <div className='main_ls_table'>
                 <Table
-                  dataSource={v?.tableData}
+                  dataSource={[
+                    {
+                      key: v?._id,
+                      wlt: `${v?.win}-${v?.lose}-${v?.tie}`,
+                      pct: v?.pct,
+                      gb: v?.gb,
+                      strk: v?.strk ? v?.strk : '-',
+                      pf: v?.pf,
+                      avgpf: v?.avgPf,
+                      pa: v?.pa,
+                      avgpa: v?.avgPa,
+                      divwlt: `${v?.divWin}-${v?.divLose}-${v?.divTie}`,
+                      confwlt: `${v?.confWin}-${v?.confLose}-${v?.confTie}`,
+                    },
+                  ]}
                   columns={columns}
                   bordered={false}
                   pagination={false}
+                  size='small'
                   scroll={{ x: 800 }}
                 />
               </div>

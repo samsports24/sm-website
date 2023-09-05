@@ -27,6 +27,7 @@ const PlayerInterface = () => {
   const [player, setPlayer] = useState({})
   const [activePlayers, setActivePlayers] = useState([])
   const [practicePlayers, setPracticePlayers] = useState([])
+  const [news, setNews] = useState(null)
   const [loading, setLoading] = useState(true)
 
   const { id } = useParams()
@@ -43,6 +44,7 @@ const PlayerInterface = () => {
       setPlayer(res?.player)
       setActivePlayers(res?.activePlayers)
       setPracticePlayers(res?.practicePlayers)
+      setNews(res?.news)
     }
     setLoading(false)
   }
@@ -115,6 +117,7 @@ const PlayerInterface = () => {
             activePlayers={activePlayers}
             practicePlayers={practicePlayers}
             getData={getData}
+            news={news}
           />
           <div className='info-card'>
             {infoData.map((item, index) => (

@@ -13,6 +13,7 @@ import { getFreeAgent } from '../redux/actions/rosterAction'
 import Loader from '../components/Loader'
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import { GrFormClose } from 'react-icons/gr'
+import { useNavigate } from 'react-router-dom'
 
 const FreeAgent = () => {
   const [isEmpty] = useState(false)
@@ -26,6 +27,7 @@ const FreeAgent = () => {
   const [search, setSearch] = useState('')
   const [filterBy, setFilterBy] = useState('')
 
+  const navigate = useNavigate()
   useEffect(() => {
     getData()
   }, [page])
@@ -144,7 +146,7 @@ const FreeAgent = () => {
             }}
           >
             <Typography.Title level={5} style={{ color: 'white' }}>
-              I.R IS EMPTY
+              NO FREE AGENTS
             </Typography.Title>
           </div>
         )}
@@ -173,7 +175,15 @@ const FreeAgent = () => {
                           <p style={{ width: '160px' }} className='squad_text2'>
                             player name
                           </p>
-                          <p className='squad_text1'>{v?.Name || '-'}</p>
+                          <p
+                            onClick={() => {
+                              navigate(`/agent-player-interface/${v?._id}`)
+                            }}
+                            style={{ cursor: 'pointer' }}
+                            className='squad_text1'
+                          >
+                            {v?.Name || '-'}
+                          </p>
                         </div>
                         <div>
                           <p className='squad_text2'>age</p>

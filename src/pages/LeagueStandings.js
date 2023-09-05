@@ -1,29 +1,55 @@
 // Component
+import { useEffect, useState } from 'react'
+import Header from '../components/Header'
 import LeagueStandingCard from '../components/LeagueStandingCard'
-import StandingHeader from '../components/StandingHeader'
+import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
+// import StandingHeader from '../components/StandingHeader'
 
 // Mock Data
-import { leagueStandingData } from './mockData'
+// import { leagueStandingData } from './mockData'
+import { getLeagueStandings } from '../redux'
+import Loader from '../components/Loader'
 
 const LeagueStandings = () => {
-  const handlePagination = (page) => {
-    console.log(page)
-  }
+  // const handlePagination = (page) => {
+  //   console.log(page)
+  // }
+
+  const [standings, setStandings] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    ;(async () => {
+      setLoading(true)
+      let data = await getLeagueStandings()
+      setStandings(data)
+      setLoading(false)
+    })()
+  }, [])
 
   return (
-    <div className='standing_container'>
+    <div className='standing_container pro_league_container standing_header_container'>
       {/* HEADER */}
-      <StandingHeader pagination={true} handlePagination={handlePagination} />
+      {/* <StandingHeader pagination={true} handlePagination={handlePagination} /> */}
+      <h1>SAM FOOTBALL LEAGUE</h1>
+
+      <Header />
+
+      <ButtonsAndPagination />
 
       <div className='heading_box'>
         <h2>League Standings</h2>
       </div>
 
-      <div className='league_standing_card_container' style={{ width: '100%' }}>
-        {leagueStandingData?.map((v, i) => (
-          <LeagueStandingCard key={i} data={v} index={i} />
-        ))}
-      </div>
+      {loading ? (
+        <Loader />
+      ) : (
+        <div className='league_standing_card_container' style={{ width: '100%' }}>
+          {standings?.map((v, i) => (
+            <LeagueStandingCard key={i} data={v} index={i} />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

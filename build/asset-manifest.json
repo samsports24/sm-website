@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.d575b617.css",
-    "main.js": "/static/js/main.ea0bb7e2.js",
+    "main.css": "/static/css/main.8ae42516.css",
+    "main.js": "/static/js/main.a3dabb00.js",
     "static/media/trans-league-banner.png": "/static/media/trans-league-banner.c6b03968a9f61ec4cad1.png",
     "static/media/rectangle-3.png": "/static/media/rectangle-3.aebbca7e8e6696c5f7c4.png",
     "static/media/login-pic-1.png": "/static/media/login-pic-1.38add10a7452b82cda4b.png",
@@ -18,7 +18,6 @@
     "static/media/img.png": "/static/media/img.6a67002e44345a678b48.png",
     "static/media/keith-johnston-basketball.png": "/static/media/keith-johnston-basketball.56806c3047d7eccd953f.png",
     "static/media/news-feed-1.jpg": "/static/media/news-feed-1.fab9de4160634381dbb5.jpg",
-    "static/media/gm.png": "/static/media/gm.7bc64561316bd1362850.png",
     "static/media/rectangle-5.png": "/static/media/rectangle-5.2d3bdef16d75bdf891c5.png",
     "static/media/rectangle-7.png": "/static/media/rectangle-7.02920d6d234401ad0829.png",
     "static/media/dragons_big.png": "/static/media/dragons_big.fa2124ca1f4e9bddb500.png",
@@ -116,11 +115,11 @@
     "static/media/arrow-right.svg": "/static/media/arrow-right.f306c848a5e7963bf1d2d5dd16212c01.svg",
     "static/media/youtube.svg": "/static/media/youtube.7af310466ac639302e497d811125f845.svg",
     "static/media/fb.svg": "/static/media/fb.16c5459973b0c91dc2db50341cb0e76e.svg",
-    "main.d575b617.css.map": "/static/css/main.d575b617.css.map",
-    "main.ea0bb7e2.js.map": "/static/js/main.ea0bb7e2.js.map"
+    "main.8ae42516.css.map": "/static/css/main.8ae42516.css.map",
+    "main.a3dabb00.js.map": "/static/js/main.a3dabb00.js.map"
   },
   "entrypoints": [
-    "static/css/main.d575b617.css",
-    "static/js/main.ea0bb7e2.js"
+    "static/css/main.8ae42516.css",
+    "static/js/main.a3dabb00.js"
   ]
 }

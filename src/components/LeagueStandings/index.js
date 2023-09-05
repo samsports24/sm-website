@@ -2,10 +2,10 @@ import React from 'react'
 import { BiRightArrowAlt } from 'react-icons/bi'
 
 // Mock Data
-import { proLeagueStandingsData } from '../../pages/mockData'
+// import { proLeagueStandingsData } from '../../pages/mockData'
 import { useNavigate } from 'react-router-dom'
 
-const LeagueStandings = () => {
+const LeagueStandings = ({ data }) => {
   const navigate = useNavigate()
   return (
     <div className='league_standings_box'>
@@ -21,17 +21,17 @@ const LeagueStandings = () => {
         </p>
       </header>
       <section className='league_standings_body'>
-        {proLeagueStandingsData?.map((v, i) => {
+        {data?.map((v) => {
           return (
-            <div key={i} className='card_box'>
+            <div key={v._id} className='card_box'>
               <div className='header'>
-                <p>{v?.title}</p>
+                <p>{v?.team?.name}</p>
                 <BiRightArrowAlt size={18} />
               </div>
               <div className='content'>
                 <div>
                   <p className='text1'>W‑L‑T</p>
-                  <p className='text2'>{v?.wlt}</p>
+                  <p className='text2'>{`${v?.win}-${v?.lose}-${v?.tie}`}</p>
                 </div>
                 <div>
                   <p className='text1'>AVG PF</p>
@@ -43,11 +43,11 @@ const LeagueStandings = () => {
                 </div>
                 <div>
                   <p className='text1'>DIV W‑L‑T</p>
-                  <p className='text2'>{v?.divWlt}</p>
+                  <p className='text2'>{`${v?.divWin}-${v?.divLose}-${v?.divTie}`}</p>
                 </div>
                 <div>
                   <p className='text1'>DIV W‑L‑T</p>
-                  <p className='text2'>{v?.divWlt2}</p>
+                  <p className='text2'>{`${v?.confWin}-${v?.confLose}-${v?.confTie}`}</p>
                 </div>
               </div>
             </div>

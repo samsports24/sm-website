@@ -1,12 +1,10 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Image, Select } from 'antd'
 
 // Image, Icon
-import AtlantaLogo from '../assets/AtlantaLegionLogo.png'
-import GeneralLogo from '../assets/GeneralTeamLogo.png'
+// import AtlantaLogo from '../assets/AtlantaLegionLogo.png'
+// import GeneralLogo from '../assets/GeneralTeamLogo.png'
 import Versus from '../assets/versus-1.png'
-import Player1 from '../assets/player-img-60x60.png'
-import Player2 from '../assets/player-img-2-60x60.png'
 
 // Component
 import Header from '../components/Header'
@@ -14,45 +12,29 @@ import Header from '../components/Header'
 import ScoreCardTeam from '../components/cards/ScoreCardTeam'
 import ScoreCardPlayer from '../components/cards/ScoreCardPlayer'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
-
-const gameData = [
-  { logo: AtlantaLogo, handle: '@MrMongrue84', name: 'Atlanta Legion', decimal: '17.73' },
-  { logo: GeneralLogo, handle: '@MrMongrue84', name: 'Team 14', decimal: '22.93' },
-]
-
-const player1 = {
-  image: Player1,
-  name: 'B. Young',
-  position: 'QB - CAR',
-  matchTime: 'Sun 12:00 Pm @ ATL',
-  handle: '@MrMongrue84',
-}
-
-const player2 = {
-  image: Player2,
-  name: 'J. Fields',
-  position: 'RB - CIN',
-  matchTime: 'Sun 3:25 Pm vs GB',
-  handle: '@MrMongrue84',
-}
-
-const player3 = {
-  image: Player1,
-  name: 'N. Harris',
-  position: 'RB - PIT',
-  matchTime: 'Sun 12:00 Pm @ ATL',
-  handle: '@MrMongrue84',
-}
-
-const player4 = {
-  image: Player2,
-  name: 'J. Mixon',
-  position: 'RB - CIN',
-  matchTime: 'Sun 3:25 Pm vs GB',
-  handle: '@MrMongrue84',
-}
+import { useLocation, useNavigate } from 'react-router-dom'
+import { getGameDeails } from '../redux'
+import Loader from '../components/Loader'
 
 const GameDetails = () => {
+  const { state } = useLocation()
+  const navigate = useNavigate()
+  const [Data, setData] = useState(null)
+  const [loading, setLoading] = useState(null)
+
+  useEffect(() => {
+    ;(async () => {
+      setLoading(true)
+      let data = await getGameDeails({
+        team1: state?.team1?._id,
+        team2: state?.team2?._id,
+      })
+      // console.log('data', data)
+      setData(data)
+      setLoading(false)
+    })()
+  }, [])
+  console.log('Data', Data)
   return (
     <div className='game_details'>
       {/* HEADER */}
@@ -66,16 +48,23 @@ const GameDetails = () => {
         {/* SCHEDULE TWO */}
         <section className='schedule_box2'>
           <h1>League Scores </h1>
-          <Button type='primary'>Back</Button>
+          <Button
+            type='primary'
+            onClick={() => {
+              navigate(-1)
+            }}
+          >
+            Back
+          </Button>
         </section>
 
         {/* TEAM COMPARISION */}
         <section className='team-cards-container'>
-          <ScoreCardTeam alignment='left' data={gameData[0]} />
+          <ScoreCardTeam alignment='left' data={state?.team1} />
           <div className='versus-container'>
             <Image alt='vs' src={Versus} />
           </div>
-          <ScoreCardTeam alignment='right' data={gameData[1]} />
+          <ScoreCardTeam alignment='right' data={state?.team2} />
         </section>
 
         <section className='starters-sec'>
@@ -95,23 +84,33 @@ const GameDetails = () => {
           </div>
         </section>
 
-        {/* PLAYER COMPARISION */}
-        <section className='player-cards-container'>
-          <div className='row'>
-            <ScoreCardPlayer alignment='left' data={player1} />
-            <div className='position-label' style={{ color: '#FF2D6C' }}>
-              QB
-            </div>
-            <ScoreCardPlayer alignment='right' data={player2} />
-          </div>
-          <div className='row'>
-            <ScoreCardPlayer alignment='left' data={player3} />
-            <div className='position-label' style={{ color: '#2DFFA7' }}>
-              RB
-            </div>
-            <ScoreCardPlayer alignment='right' data={player4} />
-          </div>
-        </section>
+        {loading ? (
+          <Loader />
+        ) : (
+          <>
+            {/* PLAYER COMPARISION */}
+            <section className='player-cards-container'>
+              {Data?.starters?.map((player) => (
+                <div key={player.position} className='row'>
+                  <ScoreCardPlayer alignment='left' data={player.player1} />
+                  <div className='position-label' style={{ color: '#0CD9F5' }}>
+                    {player?.position?.split('/').map((pos) => (
+                      <span key={pos}>{pos}</span>
+                    ))}
+                  </div>
+                  <ScoreCardPlayer alignment='right' data={player.player2} />
+                </div>
+              ))}
+              {/* <div className='row'>
+                <ScoreCardPlayer alignment='left' data={player3} />
+                <div className='position-label' style={{ color: '#2DFFA7' }}>
+                  RB
+                </div>
+                <ScoreCardPlayer alignment='right' data={player4} />
+              </div> */}
+            </section>
+          </>
+        )}
       </main>
     </div>
   )

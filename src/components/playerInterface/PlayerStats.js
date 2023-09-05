@@ -1,11 +1,21 @@
-import { proLeagueStandingsData } from '../../pages/mockData'
+// import { proLeagueStandingsData } from '../../pages/mockData'
+import comingSoon from '../../assets/coming-soon.png'
 
 const PlayerStats = () => {
   return (
     <div className='player_info_card info_center'>
       <h2>Player Past & Projected Stats & Scores</h2>
-      <div style={{ marginTop: '-12px' }}>
-        {proLeagueStandingsData?.slice(0, 5)?.map((v, i) => {
+      <div
+        style={{
+          marginTop: '-12px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '270px',
+        }}
+      >
+        <img src={comingSoon} alt={''} width={300} height={'auto'} />
+        {/* {proLeagueStandingsData?.slice(0, 5)?.map((v, i) => {
           return (
             <div key={i} className='content'>
               <div>
@@ -50,7 +60,7 @@ const PlayerStats = () => {
               </div>
             </div>
           )
-        })}
+        })} */}
       </div>
     </div>
   )

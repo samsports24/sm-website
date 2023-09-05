@@ -1,7 +1,7 @@
 import { Row, Col, Typography, Button } from 'antd'
 import { useNavigate } from 'react-router-dom'
 
-import { playerInterfaceData } from '../../pages/mockData'
+// import { playerInterfaceData } from '../../pages/mockData'
 import {
   ActivateFromPracticeSquad,
   AuctionPlayer,
@@ -19,6 +19,7 @@ const GmCard = ({
   activePlayers,
   practicePlayers,
   getData,
+  news,
 }) => {
   const { team, Name, Active, InjuryStatus, PositionRank, LeagueRank, inPracticeSquad } = playerData
   const navigate = useNavigate()
@@ -64,7 +65,8 @@ const GmCard = ({
 
           <div className='player-news'>
             <Typography.Title level={3}>{`Player News`}</Typography.Title>
-            <p>{playerInterfaceData?.playerNews}</p>
+            <p>{news}</p>
+            {/* <p>{playerInterfaceData?.playerNews}</p> */}
           </div>
 
           <div className='stats-bar'>

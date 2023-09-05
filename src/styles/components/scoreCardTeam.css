@@ -56,6 +56,15 @@
   font-weight: 700;
   line-height: 22px;
 }
+
+.sc-team .image-container {
+  width: 80px;
+  /* height: 80px; */
+}
+.sc-team .image-container img {
+  border-radius: 50%;
+}
+
 .sc-team .team-card .content .bottom .head-to-head,
 .decimal {
   color: var(--text);

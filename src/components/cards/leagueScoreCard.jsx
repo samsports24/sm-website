@@ -6,7 +6,6 @@ import { AiOutlineArrowRight } from 'react-icons/ai'
 import dayjs from 'dayjs'
 
 const LeagueScoreCard = ({ data: v }) => {
-  console.log(v)
   const navigate = useNavigate()
 
   return (
@@ -38,7 +37,7 @@ const LeagueScoreCard = ({ data: v }) => {
       <div className='line'></div>
       <Button
         onClick={() => {
-          navigate('/game-details')
+          navigate('/game-details' , {state : {team1 : v?.opponentOne , team2 : v?.opponentTwo}})
         }}
         type='primary'
         style={{ alignSelf: 'end' }}

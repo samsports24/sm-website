@@ -11,17 +11,24 @@ import MatchUpOfTheWeek from '../components/MatchUpOfTheWeek'
 import RollingNewsFeed from '../components/RollingNewsFeed'
 import TransactionTracker from '../components/TransactionTracker'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
-import { getProfessionalLeagueRanks } from '../redux'
+import { getProfessionalLeagueRanks, getScheduleByWeek } from '../redux'
 
 const ProfessionalLeague = () => {
   const [ranks, setRanks] = useState(null)
+  const [data, setData] = useState([])
 
   useEffect(() => {
     ;(async () => {
       let data = await getProfessionalLeagueRanks()
       setRanks(data)
+      getDataByWeek()
     })()
   }, [])
+
+  const getDataByWeek = async () => {
+    const res = await getScheduleByWeek(1)
+    setData(res)
+  }
 
   return (
     <div className='pro_league_container'>
@@ -51,10 +58,12 @@ const ProfessionalLeague = () => {
 
       <section className='league_details_container'>
         <div className='left'>
-          <LeagueStandings />
+          <LeagueStandings data={ranks?.teamRanks} />
         </div>
         <div className='center'>
-          <MatchUpOfTheWeek />
+          {[data?.[0]].map((item, index) => (
+            <MatchUpOfTheWeek key={index} data={{ ...item }} />
+          ))}
           <RollingNewsFeed />
           <TransactionTracker />
         </div>

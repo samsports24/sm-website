@@ -20,7 +20,7 @@
 }
 .league_standing_card .table_card {
   width: 100%;
-  min-height: 250px;
+  min-height: auto;
   border-radius: 15px;
   border: 1px solid var(--border);
 }
@@ -34,18 +34,18 @@
   font-style: normal;
   font-weight: 600;
   line-height: normal;
-  padding: 19px 24px;
+  padding: 8px 24px;
 }
 .league_standing_card .table_card .table_body {
   width: 100%;
-  padding: 25px;
+  padding: 25px 25px 10px 25px;
   display: flex;
   flex-direction: row;
   gap: 20px;
 }
 .league_standing_card .table_card .table_image {
-  width: 140px;
-  height: 140px;
+  width: 100px;
+  height: 100px;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -53,7 +53,7 @@
 }
 .league_standing_card .table_card .table_image img {
   width: 100%;
-  height: auto;
+  height: 80px;
 }
 
 .league_standing_card .main_ls_table {

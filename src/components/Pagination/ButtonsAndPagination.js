@@ -78,20 +78,20 @@ const ButtonsAndPagination = ({ noWeek }) => {
         </Typography.Title>
       ),
     },
-    {
-      key: '3',
-      label: (
-        <Typography.Title
-          onClick={() => {
-            navigate('/practice-squad')
-          }}
-          className='dropdown-link'
-          level={4}
-        >
-          PRACTICE SQUAD
-        </Typography.Title>
-      ),
-    },
+    // {
+    //   key: '3',
+    //   label: (
+    //     <Typography.Title
+    //       onClick={() => {
+    //         navigate('/practice-squad')
+    //       }}
+    //       className='dropdown-link'
+    //       level={4}
+    //     >
+    //       PRACTICE SQUAD
+    //     </Typography.Title>
+    //   ),
+    // },
     {
       key: '4',
       label: (

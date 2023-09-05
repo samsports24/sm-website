@@ -17,7 +17,7 @@ const ScoreCardTeam = ({ alignment, data }) => {
         <div className='content'>
           <div className='top'>
             <p className='handle' style={{ textAlign: alignment == 'right' ? 'right' : 'left' }}>
-              {data?.handle}
+              {/* {data?.handle} */}
             </p>
             <div style={{ flexDirection: alignment == 'right' ? 'row-reverse' : 'row' }}>
               <p className='name'>{data?.name}</p>
@@ -37,14 +37,14 @@ const ScoreCardTeam = ({ alignment, data }) => {
         </div>
       </div>
 
-      <div className='details'>
+      {/* <div className='details'>
         <p className='label' style={{ textAlign: alignment == 'right' ? 'right' : 'left' }}>
           Yet to play (18)
         </p>
         <p className='positions' style={{ textAlign: alignment == 'right' ? 'right' : 'left' }}>
           QB. 2 RB,2 WR, TE, L 2 DE, D, 4 LB, 3DB, CB
         </p>
-      </div>
+      </div> */}
     </div>
   )
 }
