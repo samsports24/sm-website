@@ -137,7 +137,7 @@ const TeamSchedule = () => {
               </Col>
             ))
           ) : (
-            <p className='no_schedule_text'>No Scedules..</p>
+            <p className='no_schedule_text'>No Schedule..</p>
           )}
         </Row>
       </section>
