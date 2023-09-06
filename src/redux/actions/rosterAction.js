@@ -173,10 +173,10 @@ export const moveToIr = async (id) => {
   }
 }
 
-export const moveIrToRoster = async (id) => {
+export const moveIrToRoster = async (payload, setIsError) => {
   try {
     attachToken()
-    const res = await privateAPI.post('/player/move-ir-to-roster', id)
+    const res = await privateAPI.post('/player/move-ir-to-roster', payload)
     if (res) {
       notification.success({
         message: res.data.data,
@@ -188,15 +188,18 @@ export const moveIrToRoster = async (id) => {
   } catch (err) {
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
-      duration: 3,
+      duration: 5,
     })
+    if (err?.response?.data?.message === 'Active Roster Full') {
+      setIsError(true)
+    }
   }
 }
 
-export const moveIrToPractice = async (id) => {
+export const moveIrToPractice = async (paylaod) => {
   try {
     attachToken()
-    const res = await privateAPI.post('/player/move-ir-to-practice', id)
+    const res = await privateAPI.post('/player/move-ir-to-practice', paylaod)
     if (res) {
       notification.success({
         message: res.data.data,

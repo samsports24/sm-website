@@ -1,8 +1,8 @@
 import Axios from 'axios'
 
 // export const base_url = 'http://34.203.233.165:8001'
-// export const base_url = 'http://192.168.100.16:8001'
-export const base_url = 'https://backend.samsports.io'
+export const base_url = 'http://192.168.100.16:8000'
+// export const base_url = 'https://backend.samsports.io'
 
 export const publicAPI = Axios.create({ baseURL: base_url })
 
