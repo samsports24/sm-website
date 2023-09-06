@@ -1,47 +1,51 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Image, Select } from 'antd'
 
-// Image, Icon
-// import AtlantaLogo from '../assets/AtlantaLegionLogo.png'
-// import GeneralLogo from '../assets/GeneralTeamLogo.png'
 import Versus from '../assets/versus-1.png'
+
+import { useLocation, useNavigate } from 'react-router-dom'
+import { getGameDeails } from '../redux'
 
 // Component
 import Header from '../components/Header'
-// import ScheduleBox from '../components/ScheduleBox'
 import ScoreCardTeam from '../components/cards/ScoreCardTeam'
 import ScoreCardPlayer from '../components/cards/ScoreCardPlayer'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { getGameDeails } from '../redux'
 import Loader from '../components/Loader'
 
 const GameDetails = () => {
   const { state } = useLocation()
-  const navigate = useNavigate()
   const [Data, setData] = useState(null)
+  const [backupPlayer, setBackupPlayer] = useState(null)
+  const [benchPlayerKey, setBenchPlayerKey] = useState('')
   const [loading, setLoading] = useState(null)
 
+  const navigate = useNavigate()
+
   useEffect(() => {
-    ;(async () => {
-      setLoading(true)
-      let data = await getGameDeails({
-        team1: state?.team1?._id,
-        team2: state?.team2?._id,
-      })
-      // console.log('data', data)
-      setData(data)
-      setLoading(false)
-    })()
+    getData()
   }, [])
-  console.log('Data', Data)
+
+  const getData = async () => {
+    setLoading(true)
+    let data = await getGameDeails({
+      team1: state?.team1?._id,
+      team2: state?.team2?._id,
+    })
+    const filterdBackupPlayer = data?.starters?.find((v) => v?.position?.toLowerCase() === 'bqb')
+    const smallBenchKey = data?.bench1?.length > data?.bench2?.length ? 'bench2' : 'bench1'
+    setBenchPlayerKey(smallBenchKey)
+    setBackupPlayer(filterdBackupPlayer)
+    setData(data)
+    setLoading(false)
+  }
+
   return (
     <div className='game_details'>
       {/* HEADER */}
       <Header />
 
       <main className='practice_squad_container wrapper'>
-        {/* SCHEDULE ONE */}
         {/* <ScheduleBox /> */}
         <ButtonsAndPagination />
 
@@ -67,40 +71,41 @@ const GameDetails = () => {
           <ScoreCardTeam alignment='right' data={state?.team2} />
         </section>
 
-        <section className='starters-sec'>
-          <h3>Starters</h3>
-          <div className='select_box'>
-            <Select
-              defaultValue='week-1'
-              style={{ minWidth: 140 }}
-              // onChange={handleChange}
-              options={[
-                {
-                  value: 'week-1',
-                  label: 'WK. 1',
-                },
-              ]}
-            />
-          </div>
-        </section>
-
         {loading ? (
           <Loader />
         ) : (
           <>
+            <section className='starters-sec'>
+              <h3>Starters</h3>
+              <div className='select_box'>
+                <Select
+                  defaultValue='week-1'
+                  style={{ minWidth: 140 }}
+                  // onChange={handleChange}
+                  options={[
+                    {
+                      value: 'week-1',
+                      label: 'WK. 1',
+                    },
+                  ]}
+                />
+              </div>
+            </section>
             {/* PLAYER COMPARISION */}
             <section className='player-cards-container'>
-              {Data?.starters?.map((player) => (
-                <div key={player.position} className='row'>
-                  <ScoreCardPlayer alignment='left' data={player.player1} />
-                  <div className='position-label' style={{ color: '#0CD9F5' }}>
-                    {player?.position?.split('/').map((pos) => (
-                      <span key={pos}>{pos}</span>
-                    ))}
+              {Data?.starters
+                ?.filter((v) => v?.position?.toLowerCase() !== 'bqb')
+                .map((player, i) => (
+                  <div key={player.position + i} className='row'>
+                    <ScoreCardPlayer alignment='left' data={player.player1} />
+                    <div className='position-label' style={{ color: '#0CD9F5' }}>
+                      {player?.position?.split('/').map((pos) => (
+                        <span key={pos}>{pos}</span>
+                      ))}
+                    </div>
+                    <ScoreCardPlayer alignment='right' data={player.player2} />
                   </div>
-                  <ScoreCardPlayer alignment='right' data={player.player2} />
-                </div>
-              ))}
+                ))}
               {/* <div className='row'>
                 <ScoreCardPlayer alignment='left' data={player3} />
                 <div className='position-label' style={{ color: '#2DFFA7' }}>
@@ -108,6 +113,48 @@ const GameDetails = () => {
                 </div>
                 <ScoreCardPlayer alignment='right' data={player4} />
               </div> */}
+            </section>
+
+            {/* BACKUP QB */}
+            {backupPlayer && (
+              <>
+                <section className='starters-sec'>
+                  <h3>Backup QB</h3>
+                </section>
+                {/* PLAYER COMPARISION */}
+                <section className='player-cards-container'>
+                  <div className='row'>
+                    <ScoreCardPlayer alignment='left' data={backupPlayer.player1} />
+                    <div className='position-label' style={{ color: '#0CD9F5' }}>
+                      <span>{backupPlayer?.position}</span>
+                    </div>
+                    <ScoreCardPlayer alignment='right' data={backupPlayer.player2} />
+                  </div>
+                </section>
+              </>
+            )}
+
+            {/* BENCH */}
+            <section className='starters-sec'>
+              <h3>Bench</h3>
+            </section>
+            {/* PLAYER COMPARISION */}
+            <section className='player-cards-container'>
+              {Data?.bench1 &&
+                Data[benchPlayerKey]?.map((v, i) => (
+                  <div key={i} className='row'>
+                    <ScoreCardPlayer alignment='left' data={{ player: { ...v } }} />
+                    <div className='position-label' style={{ color: '#0CD9F5' }}>
+                      <span>BH</span>
+                    </div>
+                    <ScoreCardPlayer
+                      alignment='right'
+                      data={{
+                        player: { ...Data[benchPlayerKey === 'bench1' ? 'bench2' : 'bench1'][i] },
+                      }}
+                    />
+                  </div>
+                ))}
             </section>
           </>
         )}

@@ -15,7 +15,6 @@ import Loader from '../components/Loader'
 
 const InjuredReserve = () => {
   const [injuredReserve, setInjuredReserve] = useState([])
-  console.log(injuredReserve)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -135,6 +134,8 @@ const InjuredReserve = () => {
                           activeDate={v?.activeDate}
                           injuredDate={v?.injuredDate}
                           playerId={p?._id}
+                          injuredId={v?._id}
+                          getData={getData}
                         />
                       </div>
                     </div>
