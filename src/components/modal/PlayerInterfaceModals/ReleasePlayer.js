@@ -1,23 +1,27 @@
 import { Button, Modal } from 'antd'
 import React, { useState } from 'react'
-// import { releasePlayer } from '../../../redux/actions/rosterAction'
-import { useParams } from 'react-router-dom'
+import { releasePlayer } from '../../../redux/actions/rosterAction'
+import { useParams, useNavigate } from 'react-router-dom'
+import Processed from './Processed'
 
 const ReleasePlayer = () => {
   const [open, setOpen] = useState(false)
+  const [confirmModal, setConfirmModal] = useState(false)
   const [loading, setLoading] = useState(false)
   const showModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
 
   const { id } = useParams()
+  const navigate = useNavigate()
 
   const _releasePlayer = async () => {
     setLoading(true)
-    // const res = await releasePlayer(id)
-    // if (res) {
-    //   closeModal()
-    // }
-    console.log('id :>> ', id)
+    const res = await releasePlayer(id)
+    if (res) {
+      setConfirmModal(false)
+      closeModal()
+      navigate('/player-roster')
+    }
     setLoading(false)
   }
 
@@ -47,13 +51,24 @@ const ReleasePlayer = () => {
           </div>
 
           <div className='modal_footer'>
-            <Button type='primary' className='button_1' onClick={_releasePlayer} loading={loading}>
+            <Button
+              type='primary'
+              className='button_1'
+              onClick={() => setConfirmModal(true)}
+              loading={loading}
+            >
               RELEASE PLAYER
             </Button>
             <Button onClick={closeModal} type='primary' className='button_2'>
               Cancel
             </Button>
           </div>
+          <Processed
+            loading={loading}
+            onClick={_releasePlayer}
+            confirmModal={confirmModal}
+            setConfirmModal={setConfirmModal}
+          />
         </div>
       </Modal>
     </>

@@ -1,7 +1,7 @@
 import { Button, Modal } from 'antd'
 import React, { useState } from 'react'
 import { moveToIr } from '../../../redux/actions/rosterAction'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 const MoveToInjured = ({ disabled, getData }) => {
   const [open, setOpen] = useState(false)
@@ -10,6 +10,7 @@ const MoveToInjured = ({ disabled, getData }) => {
   const closeModal = () => setOpen(false)
 
   const { id } = useParams()
+  const navigate = useNavigate()
 
   const _moveToIr = async () => {
     setLoading(true)
@@ -19,6 +20,7 @@ const MoveToInjured = ({ disabled, getData }) => {
     if (res) {
       await getData()
       closeModal()
+      navigate('/player-roster')
     }
     setLoading(false)
   }

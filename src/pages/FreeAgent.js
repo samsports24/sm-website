@@ -25,7 +25,7 @@ const FreeAgent = () => {
   const [limit] = useState(10)
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
-  const [filterBy, setFilterBy] = useState('')
+  // const [filterBy, setFilterBy] = useState('')
 
   const navigate = useNavigate()
   useEffect(() => {
@@ -40,8 +40,9 @@ const FreeAgent = () => {
     })
     setLoading(true)
     const res = await getFreeAgent({
-      searchTeam: filterBy === 'team' ? search : '',
-      searchPosition: filterBy === 'position' ? search : '',
+      // searchTeam: filterBy === 'team' ? search : '',
+      // searchPosition: filterBy === 'position' ? search : '',
+      search,
       limit: limit,
       page: page,
     })
@@ -51,12 +52,13 @@ const FreeAgent = () => {
 
   const handlePagination = (val) => setPage(val)
 
-  const handleFilterBy = async (val) => {
-    setFilterBy(val)
+  const handleFilterBy = async () => {
+    // setFilterBy(val)
     if (search?.trim() !== '') {
       const res = await getFreeAgent({
-        searchTeam: val === 'team' ? search : '',
-        searchPosition: val === 'position' ? search : '',
+        // searchTeam: val === 'team' ? search : '',
+        // searchPosition: val === 'position' ? search : '',
+        search,
         limit: limit,
         page: 1,
       })
@@ -67,8 +69,9 @@ const FreeAgent = () => {
   const onFieldClear = async () => {
     setLoading(true)
     const res = await getFreeAgent({
-      searchTeam: '',
-      searchPosition: '',
+      // searchTeam: '',
+      // searchPosition: '',
+      search: '',
       limit: limit,
       page: 1,
     })
@@ -129,11 +132,14 @@ const FreeAgent = () => {
               // allowClear
               allowClear={{ clearIcon: <GrFormClose size={25} onClick={onFieldClear} /> }}
             />
-            <Button type='primary' onClick={() => handleFilterBy('team')}>
+            {/* <Button type='primary' onClick={() => handleFilterBy('team')}>
               TEAM
             </Button>
             <Button type='primary' onClick={() => handleFilterBy('position')}>
               POSITION
+            </Button> */}
+            <Button type='primary' onClick={handleFilterBy}>
+              SEARCH
             </Button>
           </div>
         </div>
