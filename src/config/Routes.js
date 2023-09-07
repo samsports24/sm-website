@@ -58,6 +58,7 @@ import ChooseYourLeague from '../pages/ChooseYourLeague'
 import ChooseYourLeagueStep3 from '../pages/ChooseYourLeagueStep3'
 import ChooseYourLeagueStep4 from '../pages/ChooseYourLeague4'
 import TermsAndCondition from '../pages/TermsAndCondition'
+import LeagueNotification from '../pages/LeagueNotification'
 const Routers = () => {
   const Component = () => {
     // let token = localStorage.getItem('token')
@@ -84,6 +85,7 @@ const Routers = () => {
           <Route path='/edit-profile' element={<EditProfile />} />
           <Route path='/team-schedule' element={<TeamSchedule />} />
           <Route path='/injured-reserve' element={<InjuredReserve />} />
+          <Route path='/league-notification' element={<LeagueNotification />} />
           {/* <Route path='/teams' element={<Teams />} />
           <Route path='/player-details' element={<PlayerDetails />} />
           <Route path='/edit-profile' element={<EditProfile />} />

@@ -1,0 +1,76 @@
+.league_notification {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  margin-top: 45px;
+}
+
+.league_notification header {
+  width: 100%;
+  background-color: var(--primaryPurple);
+  border-radius: 16px 16px 0px 0px;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 17px;
+  min-height: 45px;
+}
+
+.league_notification .league_standings_body {
+  padding: 19px 17px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 1172px;
+  overflow-y: auto;
+}
+.league_notification .league_standings_body .card_box {
+  width: 100%;
+  border: 1px solid var(--border);
+}
+.league_notification .league_standings_body .card_box .header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--primary);
+  padding: 8px 12px;
+  background-color: var(--primaryPurple);
+}
+.league_notification .league_standings_body .card_box .header p {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.league_notification .league_standings_body .card_box .content {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  padding: 12px;
+  justify-content: space-between;
+}
+.league_notification .league_standings_body .card_box .content p {
+  color: var(--text);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  opacity: 0.5;
+  line-height: 22px;
+}
+
+.league_notification .no_notification_box {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.league_notification .no_notification_box p {
+  color: var(--text);
+  font-weight: 500;
+}
