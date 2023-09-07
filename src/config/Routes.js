@@ -49,7 +49,7 @@ import AgentPlayerInterface from '../pages/AgentPlayerInterface'
 // import GmDashboard from '../pages/GmDashboard'
 import PlayerAuction from '../pages/PlayerAuction'
 import PlayerStandings from '../pages/PlayerStandings'
-// import PlayerLiveAuction from '../pages/PlayerLiveAuction'
+import PlayerLiveAuction from '../pages/PlayerLiveAuction'
 import PlayerWinningBid from '../pages/PlayerWinningBid'
 
 // import PrivateWrapper from './PrivateRoutes'
@@ -86,6 +86,7 @@ const Routers = () => {
           <Route path='/team-schedule' element={<TeamSchedule />} />
           <Route path='/injured-reserve' element={<InjuredReserve />} />
           <Route path='/league-notification' element={<LeagueNotification />} />
+          <Route path='/player-live-auction/:id' element={<PlayerLiveAuction />} />
           {/* <Route path='/teams' element={<Teams />} />
           <Route path='/player-details' element={<PlayerDetails />} />
           <Route path='/edit-profile' element={<EditProfile />} />
@@ -103,7 +104,6 @@ const Routers = () => {
           <Route path='/league-calendar' element={<LeagueCalendar />} />
           <Route path='/all-reports' element={<AllReports />} />
           <Route path='/coming-soon' element={<ComingSoon />} />
-          <Route path='/player-live-auction' element={<PlayerLiveAuction />} />
           <Route path='/gm-dashboard' element={<GmDashboard />} />
           <Route path='/team-trade' element={<TeamTrade />} />
           <Route path='/team-schedule' element={<TeamSchedule />} />

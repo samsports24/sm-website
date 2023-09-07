@@ -20,30 +20,40 @@ import GmCard from '../components/playerInterface/GmCard'
 import PlayerStats from '../components/playerInterface/PlayerStats'
 import ContractInfo from '../components/playerInterface/ContractInfo'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
+import { useState } from 'react'
 
 const PlayerWinningBid = () => {
   // const navigate = useNavigate()
+  const [player] = useState({})
 
   let infoData = [
     {
+      title: 'Team',
+      value: player?.Team || '-',
+    },
+    {
+      title: 'Opponent',
+      value: player?.UpcomingGameOpponent,
+    },
+    {
       title: 'Postion',
-      value: 'Gridiron Seals (UFAFL)',
+      value: player?.Position || '-',
     },
     {
       title: 'Height',
-      value: `6'4"`,
+      value: player?.Height || '-',
     },
     {
       title: 'Years in League',
-      value: '3 Years',
+      value: player?.Experience <= 1 ? `${player?.Experience} Year` : `${player?.Experience} Years`,
     },
     {
       title: 'Player College',
-      value: 'College Name',
+      value: player?.College,
     },
     {
       title: 'Age',
-      value: '28 (Mar 21, 1995)',
+      value: `${player?.Age} (${player?.BirthDateString})`,
     },
   ]
 
@@ -124,6 +134,7 @@ const PlayerWinningBid = () => {
       </section> */}
 
       <GmCard bidWinningPage={true} />
+
       <div className='info-card'>
         {infoData.map((item, index) => (
           <h3 key={index}>

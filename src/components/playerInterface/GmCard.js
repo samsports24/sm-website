@@ -20,6 +20,7 @@ const GmCard = ({
   practicePlayers,
   getData,
   news,
+  isAction = true,
 }) => {
   const { team, Name, Active, InjuryStatus, PositionRank, LeagueRank, inPracticeSquad } = playerData
   const navigate = useNavigate()
@@ -56,7 +57,7 @@ const GmCard = ({
             </div>
           </div>
         </Col>
-        <Col xs={24} xl={10}>
+        <Col xs={24} xl={isAction ? 10 : 14}>
           {isButton && (
             <Button type='primary' style={{ marginLeft: 'auto', display: 'flex' }}>
               AUCTION PLAYER
@@ -81,45 +82,47 @@ const GmCard = ({
             {team?.logo && <img src={team?.logo} height={'100px'} />}
           </div>
         </Col>
-        <Col xs={24} xl={4}>
-          {bidWinningPage ? (
-            <div className='action-bar'>
-              <h4>Player Action Bar</h4>
-              <Button
-                type='primary'
-                className='action-bar-btn'
-                onClick={() => {
-                  navigate('/team-trade')
-                }}
-              >
-                make offer
-              </Button>
-              <PoachPlayer />
-            </div>
-          ) : (
-            <div className='action-bar'>
-              <h4>Player Action Bar</h4>
-              <AuctionPlayer />
-              <TradePlayer />
-              <ReleasePlayer />
+        {isAction && (
+          <Col xs={24} xl={4}>
+            {bidWinningPage ? (
+              <div className='action-bar'>
+                <h4>Player Action Bar</h4>
+                <Button
+                  type='primary'
+                  className='action-bar-btn'
+                  onClick={() => {
+                    navigate('/team-trade')
+                  }}
+                >
+                  make offer
+                </Button>
+                <PoachPlayer />
+              </div>
+            ) : (
+              <div className='action-bar'>
+                <h4>Player Action Bar</h4>
+                <AuctionPlayer />
+                <TradePlayer />
+                <ReleasePlayer />
 
-              <MoveToInjured disabled={InjuryStatus?.toLowerCase() != 'out'} getData={getData} />
+                <MoveToInjured disabled={InjuryStatus?.toLowerCase() != 'out'} getData={getData} />
 
-              <ActivateFromPracticeSquad
-                activePlayers={activePlayers}
-                disabled={!inPracticeSquad}
-                getData={getData}
-              />
+                <ActivateFromPracticeSquad
+                  activePlayers={activePlayers}
+                  disabled={!inPracticeSquad}
+                  getData={getData}
+                />
 
-              <MoveToPracticeSquad
-                activePlayersCount={activePlayers?.length}
-                practicePlayers={practicePlayers}
-                disabled={inPracticeSquad}
-                getData={getData}
-              />
-            </div>
-          )}
-        </Col>
+                <MoveToPracticeSquad
+                  activePlayersCount={activePlayers?.length}
+                  practicePlayers={practicePlayers}
+                  disabled={inPracticeSquad}
+                  getData={getData}
+                />
+              </div>
+            )}
+          </Col>
+        )}
       </Row>
     </section>
   )

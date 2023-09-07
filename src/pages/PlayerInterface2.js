@@ -25,9 +25,9 @@ import Loader from '../components/Loader'
 
 const PlayerInterface = () => {
   const [player, setPlayer] = useState({})
+  const [news, setNews] = useState(null)
   const [activePlayers, setActivePlayers] = useState([])
   const [practicePlayers, setPracticePlayers] = useState([])
-  const [news, setNews] = useState(null)
   const [loading, setLoading] = useState(true)
 
   const { id } = useParams()
@@ -42,9 +42,9 @@ const PlayerInterface = () => {
     const res = await getRosterPlayer(id)
     if (res) {
       setPlayer(res?.player)
+      setNews(res?.news)
       setActivePlayers(res?.activePlayers)
       setPracticePlayers(res?.practicePlayers)
-      setNews(res?.news)
     }
     setLoading(false)
   }
@@ -53,6 +53,10 @@ const PlayerInterface = () => {
     {
       title: 'Team',
       value: player?.Team || '-',
+    },
+    {
+      title: 'Opponent',
+      value: player?.UpcomingGameOpponent,
     },
     {
       title: 'Postion',

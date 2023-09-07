@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Button, Breadcrumb, Typography } from 'antd'
 
@@ -9,13 +9,26 @@ import Header from '../components/Header'
 import Loader from '../components/Loader'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
-import { practiceSquadData } from './mockData'
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import { useNavigate } from 'react-router-dom'
 
 const PlayerAuction = () => {
-  const [isLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [data, setData] = useState([])
+
   const navigate = useNavigate()
+
+  useEffect(() => {
+    getData()
+  }, [])
+
+  const getData = async () => {
+    setIsLoading(true)
+    setTimeout(() => {
+      setData([])
+      setIsLoading(false)
+    }, 1000)
+  }
 
   return (
     <div className='practice_squad_container team_trade_main'>
@@ -55,62 +68,72 @@ const PlayerAuction = () => {
 
         {isLoading ? (
           <Loader />
-        ) : practiceSquadData?.length > 0 ? (
+        ) : data?.length > 0 ? (
           <div className='standing-table-bg'>
-            {practiceSquadData?.map((v, i) => {
-              const { player: p } = v
+            {data?.map((v, i) => {
               return (
                 <div key={i} className='squad_card_box'>
                   <div className='squad_content_body'>
                     <div className='squad_image_box'>
                       {v?.image ? (
-                        <img src={p?.image} />
+                        <img src={v?.image} />
                       ) : (
                         <GiAmericanFootballPlayer size={35} color={'#c4c4c4'} />
                       )}
                     </div>
                     <div>
-                      <p className='squad_text1'>position</p>
-                      <p className='squad_text2'>{p?.Position || '-'}</p>
+                      <p className='squad_text2'>position</p>
+                      <p className='squad_text1'>{v?.Position || '-'}</p>
                     </div>
                     <div>
-                      <p className='squad_text1'>player name</p>
-                      <p className='squad_text2'>{p?.Name || '-'}</p>
-                    </div>
-                    <div>
-                      <p className='squad_text1'>age</p>
-                      <p className='squad_text2'>{p?.Age || '-'}</p>
-                    </div>
-                    <div>
-                      <p className='squad_text1'>team</p>
-                      <p className='squad_text2'>{p?.Team || '-'}</p>
-                    </div>
-                    <div>
-                      <p className='squad_text1'>bye</p>
-                      <p className='squad_text2'>{p?.ByeWeek || '-'}</p>
-                    </div>
-                    <div>
-                      <p className='squad_text1'>player cap #</p>
-                      <p className='squad_text2'>{p?.PlayerCap || '-'}</p>
-                    </div>
-                    <div>
-                      <p className='squad_text1'>
-                        year left <br /> experation &nbsp;
-                        <span className='squad_text2'>{p?.YearLeftExperation || '-'}</span>
+                      <p style={{ width: '160px' }} className='squad_text2'>
+                        player name
+                      </p>
+                      <p
+                        onClick={() => {
+                          navigate(`/player-live-auction/${v?._id}`)
+                        }}
+                        style={{ cursor: 'pointer' }}
+                        className='squad_text1 name_text_hover'
+                      >
+                        {v?.Name || '-'}
                       </p>
                     </div>
                     <div>
-                      <p className='squad_text1'>
-                        point per <br /> game &nbsp;
-                        <span className='squad_text2'>{p?.pointsPerGame || '-'}</span>
-                      </p>
+                      <p className='squad_text2'>age</p>
+                      <p className='squad_text1'>{v?.Age || '-'}</p>
                     </div>
                     <div>
-                      <p className='squad_text1'>
-                        player <br /> rank &nbsp;
-                        <span className='squad_text2'>{p?.playerRank || '-'}</span>
-                      </p>
+                      <p className='squad_text2'>team</p>
+                      <p className='squad_text1'>{v?.Team || '-'}</p>
                     </div>
+                    <div>
+                      <p className='squad_text2'>opp</p>
+                      <p className='squad_text1'>{v?.UpcomingGameOpponent || '-'}</p>
+                    </div>
+                    <div>
+                      <p className='squad_text2'>bye</p>
+                      <p className='squad_text1'>{v?.ByeWeek || '-'}</p>
+                    </div>
+                    <div>
+                      <p className='squad_text2'>player cap #</p>
+                      <p className='squad_text1'>{v?.PlayerCap || '-'}</p>
+                    </div>
+                    {/* <div>
+                  <p className='squad_text2'>
+                    year left <br /> experation &nbsp;
+                    <span className='squad_text2'>{v?.YearLeftExperation || '-'}</span>
+                  </p>
+                </div> */}
+                    <div>
+                      <p className='squad_text2'>PF &nbsp;</p>
+                      <p className='squad_text1'>{v?.pointsPerGame || '-'}</p>
+                    </div>
+                    <div>
+                      <p className='squad_text2'>player rank</p>
+                      <p className='squad_text1'>{v?.playerRank || '-'}</p>
+                    </div>
+                    {/* <Button type='primary'>Auction</Button> */}
                   </div>
                 </div>
               )

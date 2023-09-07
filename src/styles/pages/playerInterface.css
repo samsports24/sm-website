@@ -404,6 +404,7 @@
   background-position: right bottom;
   /* height: 380px; */
   height: 100%;
+  min-height: 415px;
   width: 100%;
   padding: 30px 0 0 60px;
   display: flex;
