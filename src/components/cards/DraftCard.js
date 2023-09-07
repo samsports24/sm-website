@@ -20,7 +20,7 @@ const DraftCard = () => {
         <div className='btn-container'>
           <Button
             onClick={() => {
-              navigate('/choose-your-league-step4')
+              navigate('/total-payment')
             }}
           >
             Join

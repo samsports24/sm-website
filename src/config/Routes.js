@@ -59,6 +59,7 @@ import ChooseYourLeagueStep3 from '../pages/ChooseYourLeagueStep3'
 import ChooseYourLeagueStep4 from '../pages/ChooseYourLeague4'
 import TermsAndCondition from '../pages/TermsAndCondition'
 import LeagueNotification from '../pages/LeagueNotification'
+import TotalPayment from '../pages/TotalPayment'
 const Routers = () => {
   const Component = () => {
     // let token = localStorage.getItem('token')
@@ -131,6 +132,7 @@ const Routers = () => {
           <Route path='/choose-your-league-step2' element={<ChooseYourLeague />} />
           <Route path='/choose-your-league-step3' element={<ChooseYourLeagueStep3 />} />
           <Route path='/choose-your-league-step4' element={<ChooseYourLeagueStep4 />} />
+          <Route path='/total-payment' element={<TotalPayment />} />
           <Route path='/public-league' element={<PublicLeague />} />
           <Route path='/player-winning-bid' element={<PlayerWinningBid />} />
           <Route path='/terms-condition' element={<TermsAndCondition />} />
