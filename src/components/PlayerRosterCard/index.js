@@ -19,6 +19,7 @@ const PlayerRosterCard = ({ data, index, style, state, handleClick, isPractice =
     PlayerCap,
     // stats: tableData,
     Position,
+    UpcomingGameOpponent,
   } = data
   const navigate = useNavigate()
 
@@ -155,6 +156,10 @@ const PlayerRosterCard = ({ data, index, style, state, handleClick, isPractice =
         <div>
           <p className='text1'>Team:</p>
           <p className='text2'>{Team || '-'}</p>
+        </div>
+        <div>
+          <p className='text1'>OPP:</p>
+          <p className='text2'>{UpcomingGameOpponent || '-'}</p>
         </div>
         <div>
           <p className='text1'>BYE:</p>

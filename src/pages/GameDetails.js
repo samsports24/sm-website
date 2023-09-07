@@ -39,6 +39,7 @@ const GameDetails = () => {
     setData(data)
     setLoading(false)
   }
+  console.log(Data)
 
   return (
     <div className='game_details'>
@@ -144,7 +145,10 @@ const GameDetails = () => {
                 Data[benchPlayerKey]?.map((v, i) => (
                   <div key={i} className='row'>
                     <ScoreCardPlayer alignment='left' data={{ player: { ...v } }} />
-                    <div className='position-label' style={{ color: '#0CD9F5' }}>
+                    <div
+                      className='position-label'
+                      style={{ color: '#0CD9F5', backgroundColor: 'gray' }}
+                    >
                       <span>BH</span>
                     </div>
                     <ScoreCardPlayer

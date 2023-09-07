@@ -47,6 +47,14 @@ const AgentPlayerInterface = () => {
 
   let infoData = [
     {
+      title: 'Team',
+      value: player?.Team || '-',
+    },
+    {
+      title: 'Opponent',
+      value: player?.UpcomingGameOpponent,
+    },
+    {
       title: 'Postion',
       value: player?.Position || '-',
     },

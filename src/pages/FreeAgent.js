@@ -28,6 +28,7 @@ const FreeAgent = () => {
   // const [filterBy, setFilterBy] = useState('')
 
   const navigate = useNavigate()
+
   useEffect(() => {
     getData()
   }, [page])
@@ -186,7 +187,7 @@ const FreeAgent = () => {
                               navigate(`/agent-player-interface/${v?._id}`)
                             }}
                             style={{ cursor: 'pointer' }}
-                            className='squad_text1'
+                            className='squad_text1 name_text_hover'
                           >
                             {v?.Name || '-'}
                           </p>
@@ -198,6 +199,10 @@ const FreeAgent = () => {
                         <div>
                           <p className='squad_text2'>team</p>
                           <p className='squad_text1'>{v?.Team || '-'}</p>
+                        </div>
+                        <div>
+                          <p className='squad_text2'>opp</p>
+                          <p className='squad_text1'>{v?.UpcomingGameOpponent || '-'}</p>
                         </div>
                         <div>
                           <p className='squad_text2'>bye</p>
@@ -214,7 +219,7 @@ const FreeAgent = () => {
                           </p>
                         </div> */}
                         <div>
-                          <p className='squad_text2'>PPG &nbsp;</p>
+                          <p className='squad_text2'>PF &nbsp;</p>
                           <p className='squad_text1'>{v?.pointsPerGame || '-'}</p>
                         </div>
                         <div>

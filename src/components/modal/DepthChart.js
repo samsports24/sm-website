@@ -59,7 +59,8 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
   }
 
   const Card = ({ data, button = false }) => {
-    const { _id, ImageUrl, team, Position, Name, InjuryStatus, GameInfo, Projection } = data
+    const { _id, ImageUrl, team, Position, Name, InjuryStatus, UpcomingGameOpponent, Projection } =
+      data
     return (
       <div className='content_body'>
         <div className='image_box'>
@@ -86,8 +87,8 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
           <p className='text2'>{InjuryStatus || '-'}</p>
         </div>
         <div>
-          <p className='text1'>Game Info</p>
-          <p className='text2'>{GameInfo || '-'}</p>
+          <p className='text1'>OPP</p>
+          <p className='text2'>{UpcomingGameOpponent || '-'}</p>
         </div>
         <div>
           <p className='text1'>Projection</p>

@@ -1,5 +1,5 @@
 import { Button, Breadcrumb, Row, Col, Typography, Input } from 'antd'
-import { useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import Arrow from '../assets/arrow-right.svg'
 import Image from '../assets/logo2.png'
@@ -7,50 +7,69 @@ import Image from '../assets/logo2.png'
 // Component
 import Header from '../components/Header'
 
-import {
-  ActivateFromPracticeSquad,
-  AuctionPlayer,
-  MoveToInjured,
-  PoachPlayer,
-  ReleasePlayer,
-  MoveToPracticeSquad,
-  TradePlayer,
-} from '../components/modal/PlayerInterfaceModals'
 import GmCard from '../components/playerInterface/GmCard'
 import PlayerStats from '../components/playerInterface/PlayerStats'
 import ContractInfo from '../components/playerInterface/ContractInfo'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
+import Loader from '../components/Loader'
+import { useEffect, useState } from 'react'
 
 const PlayerLiveAuction = () => {
+  const [isLoading, setIsLoading] = useState(true)
+  const [player, setPlayer] = useState({})
+  const [news, setNews] = useState('')
   const navigate = useNavigate()
+  const { id } = useParams()
+  console.log(id)
+
+  useEffect(() => {
+    getData()
+  }, [])
+  const getData = async () => {
+    setIsLoading(true)
+    // API CALL
+    setTimeout(() => {
+      setPlayer({})
+      setNews()
+      setIsLoading(false)
+    }, 1000)
+  }
 
   let infoData = [
     {
+      title: 'Team',
+      value: player?.Team || '-',
+    },
+    {
+      title: 'Opponent',
+      value: player?.UpcomingGameOpponent,
+    },
+    {
       title: 'Postion',
-      value: 'Gridiron Seals (UFAFL)',
+      value: player?.Position || '-',
     },
     {
       title: 'Height',
-      value: `6'4"`,
+      value: player?.Height || '-',
     },
     {
       title: 'Years in League',
-      value: '3 Years',
+      value: player?.Experience <= 1 ? `${player?.Experience} Year` : `${player?.Experience} Years`,
     },
     {
       title: 'Player College',
-      value: 'College Name',
+      value: player?.College,
     },
     {
       title: 'Age',
-      value: '28 (Mar 21, 1995)',
+      value: `${player?.Age} (${player?.BirthDateString})`,
     },
   ]
 
   return (
     <div className='player_interface_container'>
       {/* BACK BUTTON */}
-      <Button className='back_button' type='primary'>
+      <Button className='back_button' type='primary' onClick={() => navigate(-1)}>
         Back
       </Button>
 
@@ -83,98 +102,71 @@ const PlayerLiveAuction = () => {
 
       <hr className='divider' />
 
-      {/* MODALS */}
-      <section className='filter_box'>
-        <AuctionPlayer />
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <>
+          <GmCard
+            playerData={player}
+            news={news}
+            isButton={false}
+            bidWinningPage={false}
+            isAction={false}
+          />
 
-        <span className='divider_bar'>|</span>
+          <div className='info-card'>
+            {infoData.map((item, index) => (
+              <h3 key={index}>
+                {item.title} : <span>{item.value}</span>
+              </h3>
+            ))}
+          </div>
+          <hr className='divider' />
 
-        <TradePlayer />
+          <section className='bid_section'>
+            <Row gutter={[30, 30]} align={'middle'}>
+              <Col xs={24} md={12} lg={12} xl={6}>
+                <div className='bid_card'>
+                  <img src={Image} />
+                  <Typography.Title level={2}>
+                    CURRENT
+                    <br />
+                    HIGHEST BID
+                  </Typography.Title>
+                </div>
+              </Col>
+              <Col xs={24} md={12} lg={12} xl={6}>
+                <div className='bid_card'>
+                  <Typography.Title level={2}>AUCTION CLOCK</Typography.Title>
+                </div>
+              </Col>
+              <Col xs={24} md={12} lg={12} xl={6}>
+                <div className='bid_card bid_card_normal'>
+                  <Typography.Title level={2}>MANUAL BID ENTRY</Typography.Title>
+                  <Input value={'*********'} disabled style={{ textAlign: 'center' }} />
+                </div>
+              </Col>
+              <Col xs={24} md={12} lg={12} xl={6}>
+                <div className='bid_card_btns'>
+                  <Button type='primary'>Submit</Button>
+                  <Button type='primary'>Quick Bid</Button>
+                </div>
+              </Col>
+            </Row>
+          </section>
 
-        <span className='divider_bar'>|</span>
+          <section className='player_info_container'>
+            <PlayerStats />
+            <ContractInfo />
+          </section>
 
-        <ReleasePlayer />
-
-        <span className='divider_bar'>|</span>
-
-        <MoveToInjured />
-
-        <span className='divider_bar'>|</span>
-
-        <ActivateFromPracticeSquad />
-
-        <span className='divider_bar'>|</span>
-
-        <MoveToPracticeSquad />
-
-        <span className='divider_bar'>|</span>
-
-        <h2
-          onClick={() => {
-            navigate('/team-trade')
-          }}
-          className='modal_button_text'
-        >
-          MAKE OFFER
-        </h2>
-
-        <span className='divider_bar'>|</span>
-
-        <PoachPlayer />
-      </section>
-
-      <GmCard isButton />
-      <div className='info-card'>
-        {infoData.map((item, index) => (
-          <h3 key={index}>
-            {item.title} : <span>{item.value}</span>
-          </h3>
-        ))}
-      </div>
-      <hr className='divider' />
-
-      <section className='bid_section'>
-        <Row gutter={[30, 30]} align={'middle'}>
-          <Col xs={24} md={12} lg={12} xl={6}>
-            <div className='bid_card'>
-              <img src={Image} />
-              <Typography.Title level={2}>
-                CURRENT
-                <br />
-                HIGHEST BID
-              </Typography.Title>
+          <section className='bid_history_container'>
+            <div className='header'>
+              <h2>BID HISTORY</h2>
             </div>
-          </Col>
-          <Col xs={24} md={12} lg={12} xl={6}>
-            <div className='bid_card'>
-              <Typography.Title level={2}>AUCTION CLOCK</Typography.Title>
-            </div>
-          </Col>
-          <Col xs={24} md={12} lg={12} xl={6}>
-            <div className='bid_card bid_card_normal'>
-              <Typography.Title level={2}>MANUAL BID ENTRY</Typography.Title>
-              <Input value={'*********'} disabled style={{ textAlign: 'center' }} />
-            </div>
-          </Col>
-          <Col xs={24} md={12} lg={12} xl={6}>
-            <div className='bid_card_btns'>
-              <Button type='primary'>Submit</Button>
-              <Button type='primary'>Quick Bid</Button>
-            </div>
-          </Col>
-        </Row>
-      </section>
-
-      <section className='player_info_container'>
-        <PlayerStats />
-        <ContractInfo />
-      </section>
-
-      <section className='bid_history_container'>
-        <div className='header'>
-          <h2>BID HISTORY</h2>
-        </div>
-      </section>
+          </section>
+        </>
+      )}
     </div>
   )
 }

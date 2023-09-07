@@ -5,6 +5,7 @@ import Player1 from '../../assets/player-img-60x60.png'
 // import Player2 from '../../assets/player-img-2-60x60.png'
 
 const ScoreCardPlayer = ({ alignment, data }) => {
+  console.log(data)
   return (
     <div className='sc-player'>
       <div
@@ -34,7 +35,7 @@ const ScoreCardPlayer = ({ alignment, data }) => {
         }}
       >
         <div style={{ flexDirection: alignment == 'right' ? 'row-reverse' : 'row' }}>
-          <p className='time'>{data?.matchTime}</p>
+          <p className='time'>Oppenent: {data?.player?.UpcomingGameOpponent}</p>
           <p className='decimal'>0</p>
         </div>
         <p className='handle'>{data?.handle}</p>
