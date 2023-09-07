@@ -19,7 +19,6 @@ const SignIn = () => {
 
   const onFinish = async (values) => {
     if (values.userName && values.password) {
-      console.log('in if')
       setLoading(true)
       await dispatch(authLogin(values, navigate))
       setLoading(false)

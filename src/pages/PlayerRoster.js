@@ -23,8 +23,6 @@ const PlayerRoster = () => {
   const [loading, setLoading] = useState(true)
   const [submitLoading, setSubmitLoading] = useState(false)
 
-  console.log(nonActive)
-
   const handleNonActive = (event, id) => {
     if (event) {
       setNonActive([...nonActive, id])
@@ -100,11 +98,6 @@ const PlayerRoster = () => {
       //     stats: updateStats,
       //   }
       // })
-      console.log(
-        res?.players?.map((v) => {
-          console.log(v?.Name, v?.InjuryStatus)
-        }),
-      )
       const activePlayer = res?.players?.filter(
         (v) => v?.inPracticeSquad == false && v?.isPlayerInjured == false,
       )

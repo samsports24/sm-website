@@ -51,6 +51,10 @@ const PlayerInterface = () => {
 
   let infoData = [
     {
+      title: 'Team',
+      value: player?.Team || '-',
+    },
+    {
       title: 'Postion',
       value: player?.Position || '-',
     },
