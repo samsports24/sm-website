@@ -63,8 +63,7 @@ const EditProfile = () => {
           formdata.append('joinDate', joinDate)
           formdata.append('city', city)
           formdata.append('country', country)
-          // api call
-          console.log(formdata)
+
           await updateUser(formdata)
         } else {
           const obj = {
@@ -79,8 +78,7 @@ const EditProfile = () => {
             city,
             country,
           }
-          // api call
-          console.log(obj)
+
           await updateUser(obj)
         }
       } else {

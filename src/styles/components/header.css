@@ -19,14 +19,18 @@
   border: 1px solid #6e6980;
   margin-bottom: 10px;
   border-radius: 8px;
+  min-height: 165px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.gd-header .left p span {
-  color: var(--colors-theme-white-color, #fff);
+
+.gd-header .left p > span {
+  color: var(--lightGrayText);
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
   line-height: 22px;
-  opacity: 0.5;
 }
 
 /* CENTER */
@@ -34,7 +38,6 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  /* justify-content: space-between; */
   gap: 10px;
 }
 .gd-header .center .title_box {
@@ -52,19 +55,21 @@
 }
 .gd-header .center .title_box h1 {
   color: var(--text);
-  font-size: 34px;
+  font-size: 30px;
   font-style: normal;
   font-weight: 800;
   line-height: normal;
 }
-.gd-header .center .title_box p span {
-  color: var(--colors-theme-white-color, #fff);
+.gd-header .center .title_box p {
+  cursor: pointer;
+}
+.gd-header .center .title_box p > span {
   text-align: right;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
   line-height: 22px;
-  opacity: 0.5;
+  color: var(--lightGrayText);
 }
 
 .gd-header .center .button_and_team_box {
@@ -194,7 +199,7 @@
   gap: 10px;
 }
 
-@media (max-width: 1440px) {
+@media (max-width: 1600px) {
   .gd-header .center .button_and_team_box .button_box button {
     width: 160px;
     min-width: 160px;
@@ -225,7 +230,18 @@
   .gd-header .center .button_and_team_box {
     flex-direction: column;
   }
+  .gd-header .center .button_and_team_box .button_box {
+    width: 100%;
+  }
+  .gd-header .center .button_and_team_box .button_box button {
+    width: 0vw !important;
+    width: 100% !important;
+    min-width: 160px;
+  }
   .gd-header .center .title_box h1 {
     font-size: 22px;
+  }
+  .gd-header .center .button_and_team_box .team_financials_box {
+    width: 100%;
   }
 }

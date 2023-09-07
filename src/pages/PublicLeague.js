@@ -126,13 +126,13 @@ const PublicLeague = () => {
           separator='|'
           items={[
             {
-              title: <p>Fantacy Leagues</p>,
+              title: <p>Fantasy Leagues</p>,
             },
             {
               title: <p>Football</p>,
             },
             {
-              title: <p>Professionl League</p>,
+              title: <p>Professional League</p>,
             },
           ]}
         />

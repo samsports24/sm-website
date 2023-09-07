@@ -25,7 +25,7 @@ const Processed = ({ onClick, loading, confirmModal, setConfirmModal }) => {
 
           <div className='modal_footer'>
             <Button type='primary' className='button_1' onClick={onClick} loading={loading}>
-              PROCESSED
+              PROCESS
             </Button>
             <Button onClick={closeModal} type='primary' className='button_2'>
               Cancel

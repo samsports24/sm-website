@@ -1,5 +1,5 @@
-import React from 'react'
-import { Image, Button } from 'antd'
+import React, { useState } from 'react'
+import { Image, Button, Badge } from 'antd'
 
 // Image
 import bellIcon from '../../assets/bell-icon.svg'
@@ -7,9 +7,13 @@ import bellIcon from '../../assets/bell-icon.svg'
 import logo from '../../assets/sam-football.png'
 import { useSelector } from 'react-redux'
 import { BiRightArrowAlt } from 'react-icons/bi'
+import { useNavigate } from 'react-router-dom'
 
 const Header = () => {
   const user = useSelector((state) => state.user.userDetails)
+  const [notificationCount] = useState(null)
+  const [auctionCount] = useState(null)
+  const navigate = useNavigate()
 
   const teamFinancials = () => {}
 
@@ -19,15 +23,29 @@ const Header = () => {
         <div className='image_div'>
           <Image preview={false} src={user?.team.logo} />
         </div>
-        <p>
-          <span>League Notification</span> <img src={bellIcon} alt='Icon' />
+        <p style={{ cursor: 'pointer' }} onClick={() => navigate('/league-notification')}>
+          <span>League Notification</span>{' '}
+          {notificationCount ? (
+            <Badge count={notificationCount}>
+              <img src={bellIcon} alt='Icon' />
+            </Badge>
+          ) : (
+            <img src={bellIcon} alt='Icon' />
+          )}
         </p>
       </div>
       <div className='center'>
         <div className='title_box'>
           <h1>{user?.team?.name}</h1>
-          <p>
-            <span>Live Player Auction</span> <img src={bellIcon} alt='Icon' />
+          <p onClick={() => navigate('/player-auction')}>
+            <span>Live Player Auction</span>{' '}
+            {auctionCount ? (
+              <Badge count={auctionCount}>
+                <img src={bellIcon} alt='Icon' />
+              </Badge>
+            ) : (
+              <img src={bellIcon} alt='Icon' />
+            )}
           </p>
         </div>
         <div className='button_and_team_box'>

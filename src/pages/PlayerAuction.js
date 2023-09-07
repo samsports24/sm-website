@@ -6,19 +6,21 @@ import Arrow from '../assets/arrow-right.svg'
 
 // Component
 import Header from '../components/Header'
-
-import barIcon from '../assets/bar-icon.svg'
-
-import { practiceSquadData } from './mockData'
+import Loader from '../components/Loader'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
+import { practiceSquadData } from './mockData'
+import { GiAmericanFootballPlayer } from 'react-icons/gi'
+import { useNavigate } from 'react-router-dom'
+
 const PlayerAuction = () => {
-  const [isEmpty] = useState(false)
+  const [isLoading] = useState(false)
+  const navigate = useNavigate()
 
   return (
     <div className='practice_squad_container team_trade_main'>
       {/* BACK BUTTON */}
-      <Button className='back_button' type='primary'>
+      <Button className='back_button' type='primary' onClick={() => navigate(-1)}>
         Back
       </Button>
 
@@ -32,13 +34,10 @@ const PlayerAuction = () => {
               title: <p>Home</p>,
             },
             {
-              title: <p>Team</p>,
+              title: <p>Player</p>,
             },
             {
-              title: <p>Roster</p>,
-            },
-            {
-              title: <p>Player Interface</p>,
+              title: <p>Player Auction</p>,
             },
           ]}
         />
@@ -49,13 +48,75 @@ const PlayerAuction = () => {
 
       <ButtonsAndPagination />
 
-      <hr className='divider' />
-
-      <section className='squad_card_container transparent'>
+      <section className='squad_card_container transparent' style={{ marginTop: '45px' }}>
         <div className='header'>
           <h2>PLAYER AUCTION</h2>
         </div>
-        {isEmpty && (
+
+        {isLoading ? (
+          <Loader />
+        ) : practiceSquadData?.length > 0 ? (
+          <div className='standing-table-bg'>
+            {practiceSquadData?.map((v, i) => {
+              const { player: p } = v
+              return (
+                <div key={i} className='squad_card_box'>
+                  <div className='squad_content_body'>
+                    <div className='squad_image_box'>
+                      {v?.image ? (
+                        <img src={p?.image} />
+                      ) : (
+                        <GiAmericanFootballPlayer size={35} color={'#c4c4c4'} />
+                      )}
+                    </div>
+                    <div>
+                      <p className='squad_text1'>position</p>
+                      <p className='squad_text2'>{p?.Position || '-'}</p>
+                    </div>
+                    <div>
+                      <p className='squad_text1'>player name</p>
+                      <p className='squad_text2'>{p?.Name || '-'}</p>
+                    </div>
+                    <div>
+                      <p className='squad_text1'>age</p>
+                      <p className='squad_text2'>{p?.Age || '-'}</p>
+                    </div>
+                    <div>
+                      <p className='squad_text1'>team</p>
+                      <p className='squad_text2'>{p?.Team || '-'}</p>
+                    </div>
+                    <div>
+                      <p className='squad_text1'>bye</p>
+                      <p className='squad_text2'>{p?.ByeWeek || '-'}</p>
+                    </div>
+                    <div>
+                      <p className='squad_text1'>player cap #</p>
+                      <p className='squad_text2'>{p?.PlayerCap || '-'}</p>
+                    </div>
+                    <div>
+                      <p className='squad_text1'>
+                        year left <br /> experation &nbsp;
+                        <span className='squad_text2'>{p?.YearLeftExperation || '-'}</span>
+                      </p>
+                    </div>
+                    <div>
+                      <p className='squad_text1'>
+                        point per <br /> game &nbsp;
+                        <span className='squad_text2'>{p?.pointsPerGame || '-'}</span>
+                      </p>
+                    </div>
+                    <div>
+                      <p className='squad_text1'>
+                        player <br /> rank &nbsp;
+                        <span className='squad_text2'>{p?.playerRank || '-'}</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        ) : (
           <div
             style={{
               minHeight: '70vh',
@@ -64,7 +125,21 @@ const PlayerAuction = () => {
             }}
           >
             <Typography.Title level={5} style={{ color: 'white' }}>
-              I.R IS EMPTY
+              AUCTION IS EMPTY
+            </Typography.Title>
+          </div>
+        )}
+
+        {/* {isEmpty && (
+          <div
+            style={{
+              minHeight: '70vh',
+              border: '1px solid rgba(255,255,255,0.4)',
+              padding: '30px',
+            }}
+          >
+            <Typography.Title level={5} style={{ color: 'white' }}>
+              AUCTION IS EMPTY
             </Typography.Title>
           </div>
         )}
@@ -73,58 +148,49 @@ const PlayerAuction = () => {
             practiceSquadData?.map((v, i) => {
               return (
                 <div key={i} className='squad_card_box'>
-                  <div className='squad_header'>
-                    <h2>{v?.title}</h2>
-                  </div>
                   <div className='squad_content_body'>
-                    <div className='squad_image_box'>
-                      <img src={require('../assets/player-img-6.png')} />
+                    {v?.image ? (
+                      <img src={v?.image} />
+                    ) : (
+                      <GiAmericanFootballPlayer size={35} color={'#c4c4c4'} />
+                    )}
+                    <div>
+                      <p className='squad_text2'>position</p>
+                      <p className='squad_text1'>{v?.position}</p>
                     </div>
                     <div>
-                      <p className='squad_text1'>position</p>
-                      <p className='squad_text2'>{v?.position}</p>
+                      <p className='squad_text2'>player name</p>
+                      <p className='squad_text1'>{v?.playerName}</p>
                     </div>
                     <div>
-                      <p className='squad_text1'>player name</p>
-                      <p className='squad_text2'>{v?.playerName}</p>
+                      <p className='squad_text2'>age</p>
+                      <p className='squad_text1'>{v?.age}</p>
                     </div>
                     <div>
-                      <p className='squad_text1'>age</p>
-                      <p className='squad_text2'>{v?.age}</p>
+                      <p className='squad_text2'>team</p>
+                      <p className='squad_text1'>{v?.team}</p>
                     </div>
                     <div>
-                      <p className='squad_text1'>team</p>
-                      <p className='squad_text2'>{v?.team}</p>
+                      <p className='squad_text2'>bye</p>
+                      <p className='squad_text1'>{v?.bye}</p>
                     </div>
                     <div>
-                      <p className='squad_text1'>bye</p>
-                      <p className='squad_text2'>{v?.bye}</p>
+                      <p className='squad_text2'>player cap #</p>
+                      <p className='squad_text1'>{v?.playerCap}</p>
                     </div>
                     <div>
-                      <p className='squad_text1'>player cap #</p>
-                      <p className='squad_text2'>{v?.playerCap}</p>
+                      <p className='squad_text2'>PPG</p>
+                      <p className='squad_text1'>{v?.playerCap}</p>
                     </div>
                     <div>
-                      <p className='squad_text1'>
-                        year left <br /> experation
-                      </p>
+                      <p className='squad_text2'>player rank</p>
+                      <p className='squad_text1'>{v?.playerCap}</p>
                     </div>
-                    <div>
-                      <p className='squad_text1'>
-                        point per <br /> game
-                      </p>
-                    </div>
-                    <div>
-                      <p className='squad_text1'>
-                        player <br /> rank
-                      </p>
-                    </div>
-                    <img src={barIcon} />
                   </div>
                 </div>
               )
             })}
-        </div>
+        </div> */}
       </section>
     </div>
   )
