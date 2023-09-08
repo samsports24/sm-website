@@ -63,10 +63,12 @@
 .player_ranking_box .player_ranking_body .card_box .image_box {
   height: 30px;
   width: 30px;
+  border-radius: 50%;
 }
 .player_ranking_box .player_ranking_body .card_box img {
   height: 100%;
   width: auto;
+  border-radius: 50%;
 }
 .player_ranking_box .player_ranking_body .card_box h3 {
   color: var(--primary);

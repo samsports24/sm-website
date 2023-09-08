@@ -13,7 +13,6 @@ const DepthCard = ({ data, index, getDepthChartData }) => {
   const updatedName = (name) => {
     return name === 'k' ? 'kicker' : name === 'p' ? 'punter' : name
   }
-
   return (
     <>
       <div

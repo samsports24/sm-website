@@ -16,7 +16,6 @@ const PlayerRanking = ({ data }) => {
       </header>
       <section className='player_ranking_body'>
         {data?.map((v, i) => {
-          console.log(v)
           return (
             <div key={i} className='card_box'>
               <h6>{i + 1}.</h6>
