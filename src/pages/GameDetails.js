@@ -99,7 +99,7 @@ const GameDetails = () => {
           <ScoreCardTeam
             alignment='left'
             data={state?.team1}
-            score={Data?.team1Score?.score || 0}
+            score={state?.scoreOne || Data?.team1Score?.score || 0}
           />
           <div className='versus-container'>
             <Image alt='vs' src={Versus} />
@@ -107,7 +107,7 @@ const GameDetails = () => {
           <ScoreCardTeam
             alignment='right'
             data={state?.team2}
-            score={Data?.team2Score?.score || 0}
+            score={state?.scoreTwo || Data?.team2Score?.score || 0}
           />
         </section>
 

@@ -9,6 +9,7 @@ import TransactionTracker from '../components/TransactionTracker'
 import { getProfessionalLeagueRanks } from '../redux'
 import UserLog from '../components/UserLog'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
+import DraftOrder from '../components/DraftOrder'
 
 const League = () => {
   const [ranks, setRanks] = useState(null)
@@ -34,6 +35,7 @@ const League = () => {
           <LeagueStandings data={ranks?.teamRanks} />
         </div>
         <div className='center'>
+          <DraftOrder />
           <RollingNewsFeed />
           <TransactionTracker />
         </div>

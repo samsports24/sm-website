@@ -47,7 +47,14 @@ const LeagueScoreCard = ({ data: v }) => {
       <div className='line'></div>
       <Button
         onClick={() => {
-          navigate('/game-details', { state: { team1: v?.opponentOne, team2: v?.opponentTwo } })
+          navigate('/game-details', {
+            state: {
+              team1: v?.opponentOne,
+              team2: v?.opponentTwo,
+              scoreOne: v?.scoreOne,
+              scoreTwo: v?.scoreTwo,
+            },
+          })
         }}
         type='primary'
         style={{ alignSelf: 'end' }}

@@ -1,5 +1,5 @@
 import React from 'react'
-import { BiRightArrowAlt } from 'react-icons/bi'
+// import { BiRightArrowAlt } from 'react-icons/bi'
 
 // Mock Data
 // import { powerRankingData } from '../../pages/mockData'
@@ -9,9 +9,9 @@ const PowerRanking = ({ data }) => {
     <div className='power_ranking_box'>
       <header>
         <h3>Power Ranking</h3>
-        <p>
+        {/* <p>
           View All <BiRightArrowAlt size={18} />
-        </p>
+        </p> */}
       </header>
       <section className='power_ranking_body'>
         {data?.map((v, i) => {
