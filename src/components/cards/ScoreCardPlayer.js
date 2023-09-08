@@ -18,7 +18,11 @@ const ScoreCardPlayer = ({ alignment, data }) => {
           className='left'
           style={{ flexDirection: alignment == 'right' ? 'row-reverse' : 'row' }}
         >
-          <Image className='player-img' alt='player' src={Player1} />
+          <Image
+            className='player-img'
+            alt='player'
+            src={data?.player?.HostedHeadshotNoBackgroundUrl || Player1}
+          />
           <p className='name'>{data?.player?.Name}</p>
           <p className='position'>
             {data?.player?.Position} - {data?.player?.Team}

@@ -18,7 +18,12 @@ const LeagueScoreCard = ({ data: v }) => {
       <div className='score-row'>
         <div className='d-flex' style={{ gap: '10px' }}>
           <img src={v?.image} />
-          <p>{v?.opponentOne?.name}</p>
+          <p>
+            {v?.opponentOne?.name}&nbsp;
+            <span style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }}>
+              ({v?.scoreOne})
+            </span>
+          </p>
         </div>
         <h6>
           0-0-<span>0</span>
@@ -27,7 +32,12 @@ const LeagueScoreCard = ({ data: v }) => {
       <div className='score-row'>
         <div className='d-flex' style={{ gap: '10px' }}>
           <img src={v?.image} />
-          <p>{v?.opponentTwo?.name}</p>
+          <p>
+            {v?.opponentTwo?.name}&nbsp;
+            <span style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }}>
+              ({v?.scoreTwo})
+            </span>
+          </p>
         </div>
         <h6>
           0-0-<span>0</span>
@@ -37,7 +47,7 @@ const LeagueScoreCard = ({ data: v }) => {
       <div className='line'></div>
       <Button
         onClick={() => {
-          navigate('/game-details' , {state : {team1 : v?.opponentOne , team2 : v?.opponentTwo}})
+          navigate('/game-details', { state: { team1: v?.opponentOne, team2: v?.opponentTwo } })
         }}
         type='primary'
         style={{ alignSelf: 'end' }}

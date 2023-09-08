@@ -12,7 +12,10 @@
   column-gap: 10px;
 }
 .sc-player .top .left .player-img {
-  margin-bottom: -16px;
+  margin-bottom: -15px;
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
 }
 .sc-player .top .position {
   color: var(--text);

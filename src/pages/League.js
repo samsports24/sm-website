@@ -14,11 +14,13 @@ const League = () => {
   const [ranks, setRanks] = useState(null)
 
   useEffect(() => {
-    ;(async () => {
-      let data = await getProfessionalLeagueRanks()
-      setRanks(data)
-    })()
+    getData()
   }, [])
+
+  const getData = async () => {
+    let data = await getProfessionalLeagueRanks()
+    setRanks(data)
+  }
 
   return (
     <div className='league_container_n1'>
