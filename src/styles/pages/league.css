@@ -1,0 +1,115 @@
+.league_container_n1 {
+  width: 100%;
+}
+
+.league_container_n1 .league_details_container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 27px;
+  margin-top: 50px;
+}
+
+.league_container_n1 .buttons_and_pagination {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 35px;
+  align-items: center;
+}
+
+.league_container_n1 .buttons_and_pagination .buttons_group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.league_container_n1 .league_details_container .left,
+.league_container_n1 .league_details_container .right {
+  width: 400px !important;
+}
+.league_container_n1 .league_details_container .right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.league_container_n1 .league_details_container .center {
+  width: calc(100% - 854px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (max-width: 1800px) {
+  .league_container_n1 .league_details_container .center {
+    width: calc(100% - 427px);
+  }
+  .league_container_n1 .league_details_container {
+    flex-wrap: wrap;
+  }
+
+  .league_container_n1 .league_details_container .right {
+    flex-direction: row;
+    width: 100% !important;
+  }
+
+  /* POWER RANKING */
+  .power_ranking_box {
+    width: 50%;
+  }
+  .power_ranking_box .power_ranking_body {
+    max-height: 517px !important;
+  }
+
+  /* PLAYER RANKING */
+  .player_ranking_box {
+    width: 50%;
+  }
+  .player_ranking_box .player_ranking_body {
+    max-height: 517px !important;
+  }
+}
+
+@media (max-width: 1360px) {
+  .league_container_n1 .league_details_container .left {
+    order: 2;
+    width: 100% !important;
+  }
+  .league_container_n1 .league_details_container .center {
+    width: 100%;
+    order: 1;
+  }
+  .league_container_n1 .league_details_container .right {
+    order: 3;
+  }
+
+  /* LEAGUE STANDING */
+  .league_standings_box .league_standings_body {
+    max-height: 517px !important;
+  }
+}
+
+@media (max-width: 1200px) {
+  .league_container_n1 .league_details_container .right {
+    flex-direction: column;
+  }
+
+  /* POWER RANKING */
+  .power_ranking_box {
+    width: 100%;
+  }
+
+  /* PLAYER RANKING */
+  .player_ranking_box {
+    width: 100%;
+  }
+}
+
+@media (max-width: 1440px) {
+  .league_container_n1 .buttons_and_pagination .buttons_group button {
+    font-size: 15px;
+  }
+}

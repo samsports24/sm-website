@@ -1,7 +1,7 @@
 import React from 'react'
 import { Image } from 'antd'
 
-const ScoreCardTeam = ({ alignment, data }) => {
+const ScoreCardTeam = ({ alignment, data, score }) => {
   return (
     <div className='sc-team'>
       <div
@@ -21,7 +21,7 @@ const ScoreCardTeam = ({ alignment, data }) => {
             </p>
             <div style={{ flexDirection: alignment == 'right' ? 'row-reverse' : 'row' }}>
               <p className='name'>{data?.name}</p>
-              <p className='score'>-</p>
+              <p className='score'>{score}</p>
             </div>
           </div>
           <div

@@ -9,21 +9,22 @@ const PlayerRanking = ({ data }) => {
   return (
     <div className='player_ranking_box'>
       <header>
-        <h3>Player Ranking</h3>
+        <h3>Player Ranking (Top 50)</h3>
         <p>
           View All <BiRightArrowAlt size={18} />
         </p>
       </header>
       <section className='player_ranking_body'>
         {data?.map((v, i) => {
+          console.log(v)
           return (
             <div key={i} className='card_box'>
               <h6>{i + 1}.</h6>
               <div className='image_box'>
-                <img src={userImg} />
+                <img src={v?.HostedHeadshotNoBackgroundUrl || userImg} />
               </div>
-              <h3>{v?.player?.Name}</h3>
-              <p>{v?.score}</p>
+              <h3>{v?.Name}</h3>
+              <p>{v?.playerScore}</p>
             </div>
           )
         })}

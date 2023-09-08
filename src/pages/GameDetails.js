@@ -4,7 +4,7 @@ import { Button, Image, Select } from 'antd'
 import Versus from '../assets/versus-1.png'
 
 import { useLocation, useNavigate } from 'react-router-dom'
-import { getGameDeails } from '../redux'
+import { getGameDetails } from '../redux'
 
 // Component
 import Header from '../components/Header'
@@ -17,7 +17,6 @@ const GameDetails = () => {
   const { state } = useLocation()
   const [Data, setData] = useState(null)
   const [backupPlayer, setBackupPlayer] = useState(null)
-  const [benchPlayerKey, setBenchPlayerKey] = useState('')
   const [loading, setLoading] = useState(null)
 
   const navigate = useNavigate()
@@ -28,18 +27,50 @@ const GameDetails = () => {
 
   const getData = async () => {
     setLoading(true)
-    let data = await getGameDeails({
+    let data = await getGameDetails({
       team1: state?.team1?._id,
       team2: state?.team2?._id,
     })
+
     const filterdBackupPlayer = data?.starters?.find((v) => v?.position?.toLowerCase() === 'bqb')
-    const smallBenchKey = data?.bench1?.length > data?.bench2?.length ? 'bench2' : 'bench1'
-    setBenchPlayerKey(smallBenchKey)
     setBackupPlayer(filterdBackupPlayer)
-    setData(data)
+
+    const bench1Length = data?.bench1?.length || 0
+    const bench2Length = data?.bench2?.length || 0
+
+    const bigLength = bench1Length > bench2Length ? 'bench1' : 'bench2'
+
+    const length = Math.abs(bench1Length - bench2Length)
+
+    if (bench1Length == bench2Length) {
+      setData(data)
+    } else {
+      if (bigLength === 'bench1') {
+        let array = data?.bench2
+        Array(length)
+          .fill({})
+          ?.map((_, i) => {
+            array.push({ _id: i })
+          })
+        setData({
+          ...data,
+          bench2: array,
+        })
+      } else {
+        let array = data?.bench1
+        Array(length)
+          .fill({})
+          ?.map((_, i) => {
+            array.push({ _id: i })
+          })
+        setData({
+          ...data,
+          bench1: array,
+        })
+      }
+    }
     setLoading(false)
   }
-  console.log(Data)
 
   return (
     <div className='game_details'>
@@ -65,11 +96,19 @@ const GameDetails = () => {
 
         {/* TEAM COMPARISION */}
         <section className='team-cards-container'>
-          <ScoreCardTeam alignment='left' data={state?.team1} />
+          <ScoreCardTeam
+            alignment='left'
+            data={state?.team1}
+            score={state?.scoreOne || Data?.team1Score?.score || 0}
+          />
           <div className='versus-container'>
             <Image alt='vs' src={Versus} />
           </div>
-          <ScoreCardTeam alignment='right' data={state?.team2} />
+          <ScoreCardTeam
+            alignment='right'
+            data={state?.team2}
+            score={state?.scoreTwo || Data?.team2Score?.score || 0}
+          />
         </section>
 
         {loading ? (
@@ -141,24 +180,23 @@ const GameDetails = () => {
             </section>
             {/* PLAYER COMPARISION */}
             <section className='player-cards-container'>
-              {Data?.bench1 &&
-                Data[benchPlayerKey]?.map((v, i) => (
-                  <div key={i} className='row'>
-                    <ScoreCardPlayer alignment='left' data={{ player: { ...v } }} />
-                    <div
-                      className='position-label'
-                      style={{ color: '#0CD9F5', backgroundColor: 'gray' }}
-                    >
-                      <span>BH</span>
-                    </div>
-                    <ScoreCardPlayer
-                      alignment='right'
-                      data={{
-                        player: { ...Data[benchPlayerKey === 'bench1' ? 'bench2' : 'bench1'][i] },
-                      }}
-                    />
+              {Data?.bench1?.map((v, i) => (
+                <div key={i} className='row'>
+                  <ScoreCardPlayer alignment='left' data={{ player: { ...v } }} />
+                  <div
+                    className='position-label'
+                    style={{ color: '#0CD9F5', backgroundColor: 'gray' }}
+                  >
+                    <span>BH</span>
                   </div>
-                ))}
+                  <ScoreCardPlayer
+                    alignment='right'
+                    data={{
+                      player: { ...Data?.bench2[i] },
+                    }}
+                  />
+                </div>
+              ))}
             </section>
           </>
         )}

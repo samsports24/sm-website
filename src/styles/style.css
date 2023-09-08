@@ -13,6 +13,7 @@
 /* Modal */
 @import './modals/depthModal.css';
 @import './modals/playerInerfaceModals.css';
+@import './modals/couponModal.css';
 
 /* Component CSS */
 @import './components/header.css';
@@ -51,6 +52,9 @@
 @import './components/LandingBanner.css';
 @import './components/QuickJoin.css';
 @import './components/PuclicLeagueBank.css';
+@import './components/sportsButtonMenu.css';
+@import './components/routesButton.css';
+@import './components/draftOrder.css';
 
 /* Page CSS */
 @import './pages/login.css';
@@ -84,3 +88,5 @@
 @import './pages/PublicLeague.css';
 @import './pages/TermsAndCondition.css';
 @import './pages/leagueNotification.css';
+@import './pages/totalPayment.css';
+@import './pages/league.css';

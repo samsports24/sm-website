@@ -28,7 +28,7 @@
   color: var(--white);
 }
 .score-row p {
-  opacity: 0.8;
+  color: var(--lightGrayText) !important;
 }
 .score-row h6 {
   color: var(--white);

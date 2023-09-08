@@ -8,6 +8,7 @@ import logo from '../../assets/sam-football.png'
 import { useSelector } from 'react-redux'
 import { BiRightArrowAlt } from 'react-icons/bi'
 import { useNavigate } from 'react-router-dom'
+import RoutesButton from '../RoutesButton'
 
 const Header = () => {
   const user = useSelector((state) => state.user.userDetails)
@@ -103,39 +104,43 @@ const Header = () => {
       </div>
     </header>
   ) : (
-    <header className='gd-header'>
-      <div className='center' style={!user && { columnGap: '20px', rowGap: '0' }}>
-        <div className='title_box' style={!user && { minHeight: '110px' }}>
-          <div>
-            <p style={{ marginBottom: '20px !important' }}>SFL Prize-Pool</p>
-            <h1>{`23' Same Year Prize-Pool`}</h1>
-          </div>
-          <p>
-            <img src={bellIcon} alt='Icon' />
-          </p>
-        </div>
-        <div className='button_and_team_box'></div>
-      </div>
-      <div className='right'>
-        <div className='content'>
-          <div className='content2'>
-            <div className='image_div'>
-              <Image preview={false} src={logo} alt='UFAFL' />
+    <>
+      <header className='gd-header'>
+        <div className='center' style={!user && { columnGap: '20px', rowGap: '0' }}>
+          <div className='title_box' style={!user && { minHeight: '110px' }}>
+            <div>
+              <p style={{ marginBottom: '20px !important' }}>SFL Prize-Pool</p>
+              <h1>{`23' SAMS 1,491,526`}</h1>
             </div>
-            <div className='content3'>
-              <div className='top' style={{ marginBottom: '12px' }}>
-                <span>24&apos;</span>
-                <p>SFL Prize-Pool</p>
+            <p>
+              <img src={bellIcon} alt='Icon' />
+            </p>
+          </div>
+          <div className='button_and_team_box'></div>
+        </div>
+        <div className='right'>
+          <div className='content'>
+            <div className='content2'>
+              <div className='image_div'>
+                <Image preview={false} src={logo} alt='UFAFL' />
               </div>
-              <div className='top'>
-                <span>25&apos;</span>
-                <p>SFL Prize-Pool</p>
+              <div className='content3'>
+                <div className='top' style={{ marginBottom: '12px' }}>
+                  <span>24&apos;</span>
+                  <p>SFL Prize-Pool</p>
+                </div>
+                <div className='top'>
+                  <span>25&apos;</span>
+                  <p>SFL Prize-Pool</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+
+      <RoutesButton />
+    </>
   )
 }
 

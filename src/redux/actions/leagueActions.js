@@ -46,7 +46,7 @@ export const getScheduleByWeek = async (week) => {
   }
 }
 
-export const getGameDeails = async (payload) => {
+export const getGameDetails = async (payload) => {
   try {
     attachToken()
     const res = await privateAPI.post(`/schedule/get-game-details`, payload)
