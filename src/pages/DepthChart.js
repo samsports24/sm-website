@@ -51,7 +51,7 @@ const DepthChart = () => {
           })
           if (index !== -1) {
             filtered.splice(index, 1, {
-              imageUrl: filtered[index].imageUrl,
+              imageUrl: item?.player?.HostedHeadshotNoBackgroundUrl || filtered[index].imageUrl,
               Name: item?.player?.Name,
               Position: filtered[index].Position,
               classKey: filtered[index].classKey,

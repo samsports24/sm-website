@@ -164,14 +164,15 @@ const FreeAgent = () => {
             <div className='standing-table-bg'>
               {!isEmpty &&
                 freeAgents?.players?.map((v, i) => {
+                  console.log(v)
                   return (
                     <div key={i} className='squad_card_box'>
                       <div className='squad_content_body'>
                         <div className='squad_image_box'>
-                          {v?.image ? (
-                            <img src={v?.image} />
+                          {v?.HostedHeadshotNoBackgroundUrl ? (
+                            <img src={v?.HostedHeadshotNoBackgroundUrl} />
                           ) : (
-                            <GiAmericanFootballPlayer size={35} color={'#c4c4c4'} />
+                            <GiAmericanFootballPlayer size={45} color={'#c4c4c4'} />
                           )}
                         </div>
                         <div>

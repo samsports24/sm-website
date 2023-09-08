@@ -114,10 +114,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 50%;
 }
 .squad_card_container .squad_card_box .squad_content_body .squad_image_box img {
-  height: 100%;
-  width: auto;
+  height: auto;
+  width: 100%;
+  border-radius: 50%;
 }
 .squad_card_container .squad_card_box .squad_content_body .squad_text1 {
   color: var(--text);
