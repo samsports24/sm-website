@@ -5,7 +5,6 @@ import Player1 from '../../assets/player-img-60x60.png'
 // import Player2 from '../../assets/player-img-2-60x60.png'
 
 const ScoreCardPlayer = ({ alignment, data }) => {
-  console.log(data)
   return (
     <div className='sc-player'>
       <div
@@ -25,7 +24,7 @@ const ScoreCardPlayer = ({ alignment, data }) => {
             {data?.player?.Position} - {data?.player?.Team}
           </p>
         </div>
-        <p className='score'>-</p>
+        <p className='score'>{data?.player?.playerScore || '-'}</p>
       </div>
       <div
         className='bottom'

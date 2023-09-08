@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 import Arrow from '../assets/arrow-right.svg'
 import DollorIcon from '../assets/dollor-icon.svg'
+import AddCoupon from '../components/modal/AddCoupon'
 
 const TotalPayment = () => {
   const navigate = useNavigate()
@@ -110,8 +111,10 @@ const TotalPayment = () => {
       </section>
 
       <section className='button_section'>
-        <Button type='primary'>MAKE PAYMENT</Button>
-        <Button type='primary'>ADD COUPON</Button>
+        <Button type='primary' onClick={() => navigate('/my-league')}>
+          MAKE PAYMENT
+        </Button>
+        <AddCoupon />
       </section>
     </div>
   )

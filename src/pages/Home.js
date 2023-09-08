@@ -15,12 +15,10 @@ import { popularLeaguesData, popularSportsData, clientFeedbacksData } from './mo
 // import UpcomingMatchCard from '../components/cards/upcomingMatchCard'
 // import { Col, Row } from 'antd'
 // import { useSelector } from 'react-redux'
-import ButtonMenu from '../components/ButtonMenu'
-import { useNavigate } from 'react-router-dom'
+import SportsButtonMenu from '../components/SportsButtonMenu'
 
 const Home = () => {
   // const user = useSelector((state) => state.user.userDetails)
-  const navigate = useNavigate()
 
   // let upcomingMatches = [
   //   {
@@ -87,56 +85,7 @@ const Home = () => {
   return (
     <div className='home-page'>
       {/* FANTASY LEAGUE */}
-      {window.location.pathname == '/fantasy-league' && (
-        <section className='header_top_section'>
-          <h2>Sports:</h2>
-          <div className='button_menu_box'>
-            <ButtonMenu
-              data={{
-                buttonName: 'Football',
-                item: [
-                  {
-                    name: 'Professional Leagues',
-                    navigate: '/professional-league',
-                  },
-                  {
-                    name: 'Public Leagues',
-                    navigate: '/public-league',
-                  },
-                ],
-              }}
-            />
-            <ButtonMenu
-              data={{
-                buttonName: 'Baseball',
-                item: [],
-              }}
-            />
-            <ButtonMenu
-              data={{
-                buttonName: 'Basketball',
-                item: [],
-              }}
-            />
-            <ButtonMenu
-              data={{
-                buttonName: 'Hockey',
-                item: [],
-              }}
-            />
-            <ButtonMenu
-              data={{
-                buttonName: (
-                  <span onClick={() => navigate('/coming-soon')}>
-                    <span style={{ fontWeight: 400 }}>Coming</span>&nbsp;Soon
-                  </span>
-                ),
-                item: [],
-              }}
-            />
-          </div>
-        </section>
-      )}
+      {window.location.pathname == '/fantasy-league' && <SportsButtonMenu />}
 
       {/* {!!user && window.location.pathname == '/' && (
         <>
