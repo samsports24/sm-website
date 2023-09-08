@@ -99,6 +99,7 @@ export const getUser = () => {
           type: SET_USER_DETAILS,
           payload: res.data.data,
         })
+        localStorage.setItem('week', res?.data?.data?.setting?.week)
       }
     } catch (err) {
       notification.error({

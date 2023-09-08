@@ -12,14 +12,17 @@ import RollingNewsFeed from '../components/RollingNewsFeed'
 import TransactionTracker from '../components/TransactionTracker'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import { getProfessionalLeagueRanks, getScheduleByWeek } from '../redux'
+import { useSelector } from 'react-redux'
 
 const ProfessionalLeague = () => {
+  const setting = useSelector((state) => state?.user?.setting)
   const [ranks, setRanks] = useState(null)
   const [data, setData] = useState([])
 
   useEffect(() => {
     ;(async () => {
-      let data = await getProfessionalLeagueRanks()
+      let data = await getProfessionalLeagueRanks(setting?.week)
+      console.log('DATA ===>', data)
       setRanks(data)
       getDataByWeek()
     })()

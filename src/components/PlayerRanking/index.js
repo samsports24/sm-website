@@ -20,10 +20,10 @@ const PlayerRanking = ({ data }) => {
             <div key={i} className='card_box'>
               <h6>{i + 1}.</h6>
               <div className='image_box'>
-                <img src={v?.HostedHeadshotNoBackgroundUrl || userImg} />
+                <img src={v?.players?.HostedHeadshotNoBackgroundUrl || userImg} />
               </div>
-              <h3>{v?.Name}</h3>
-              <p>{v?.playerScore}</p>
+              <h3>{v?.players?.Name}</h3>
+              <p>{v?.players?.playerScore}</p>
             </div>
           )
         })}

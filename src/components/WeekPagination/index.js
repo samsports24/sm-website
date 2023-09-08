@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react'
 
 // Icon
 import { FiArrowRight, FiArrowLeft } from 'react-icons/fi'
+import { useSelector } from 'react-redux'
 
-const WeekPagination = ({ currentWeek = 1, onClick }) => {
-  const [weekPagination, setWeekPagination] = useState(currentWeek)
+const WeekPagination = ({ currentWeek = 1, onClick = () => {} }) => {
+  const setting = useSelector((state) => state?.user?.setting)
+
+  const [weekPagination, setWeekPagination] = useState(setting?.week || currentWeek)
   const [weekSlice, setWeekSlice] = useState(0)
 
   const WEEK = [
@@ -50,6 +53,8 @@ const WeekPagination = ({ currentWeek = 1, onClick }) => {
     }
   }, [])
 
+  console.log('weekPagination :>> ', weekPagination)
+
   const handleWeekPagination = (value, week) => {
     const currentWeek = WEEK.findIndex((v) => v === week) + 1
     setWeekPagination(value)
@@ -61,12 +66,12 @@ const WeekPagination = ({ currentWeek = 1, onClick }) => {
     if (value === 'next') {
       if (weekSlice < 15) {
         setWeekSlice(weekSlice + 4)
-        setWeekPagination(0)
+        setWeekPagination(1)
       }
     } else {
       if (weekSlice > 0) {
         setWeekSlice(weekSlice - 4)
-        setWeekPagination(0)
+        setWeekPagination(1)
       }
     }
   }
@@ -74,11 +79,13 @@ const WeekPagination = ({ currentWeek = 1, onClick }) => {
   return (
     <ul className='week_pagination_ul'>
       {WEEK.slice(weekSlice, weekSlice + 4).map((v, i) => {
+        const index = i + 1
         return (
           <li
-            key={i + 1}
-            onClick={() => handleWeekPagination(i + 1, v)}
-            className={`${weekPagination === i + 1 && 'active_week'}`}
+            key={index}
+            onClick={() => setting?.week >= index && handleWeekPagination(index, v)}
+            className={`${weekPagination === index && 'active_week'}`}
+            style={{ cursor: setting?.week >= index ? 'pointer' : 'no-drop' }}
           >
             {v}
           </li>
@@ -88,7 +95,7 @@ const WeekPagination = ({ currentWeek = 1, onClick }) => {
         <button className='previous' onClick={() => handleNextAndPrev('previous')}>
           <FiArrowLeft />
         </button>
-        <button className='next' onClick={() => handleNextAndPrev('next')}>
+        <button className='next' disabled={false} onClick={() => handleNextAndPrev('next')}>
           <FiArrowRight />
         </button>
       </div>

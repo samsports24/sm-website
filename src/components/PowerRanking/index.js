@@ -22,7 +22,7 @@ const PowerRanking = ({ data }) => {
                 <img src={v?.team?.logo} />
               </div>
               <h3>{v?.team?.name}</h3>
-              <p>{v?.score}</p>
+              <p>{v?.teamScore?.score}</p>
               {/* <p>{v?.score2}</p> */}
             </div>
           )

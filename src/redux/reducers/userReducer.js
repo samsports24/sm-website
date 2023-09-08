@@ -1,5 +1,8 @@
 const initialState = {
   userDetails: null,
+  setting: {
+    week: localStorage.getItem('week'),
+  },
 }
 
 const userReducer = (state = initialState, action) => {
@@ -8,7 +11,8 @@ const userReducer = (state = initialState, action) => {
     case 'SET_USER_DETAILS': {
       return {
         ...state,
-        userDetails: payload,
+        userDetails: payload?.user,
+        setting: payload?.setting,
       }
     }
     default:

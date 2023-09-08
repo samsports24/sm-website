@@ -1,10 +1,10 @@
 import { notification } from 'antd'
 import { attachToken, privateAPI } from '../../config/constants'
 
-export const getProfessionalLeagueRanks = async () => {
+export const getProfessionalLeagueRanks = async (week) => {
   try {
     attachToken()
-    const res = await privateAPI.get('/ranking/professionalStats')
+    const res = await privateAPI.get(`/ranking/professionalStats/${week}`)
     if (res) {
       return res.data.data
     }
