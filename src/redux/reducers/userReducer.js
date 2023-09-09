@@ -15,6 +15,15 @@ const userReducer = (state = initialState, action) => {
         setting: payload?.setting,
       }
     }
+    case 'UPDATE_WEEK': {
+      return {
+        ...state,
+        setting: {
+          ...state?.setting,
+          week: payload,
+        },
+      }
+    }
     default:
       return state
   }

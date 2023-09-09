@@ -124,3 +124,10 @@ export const updateUserProfile = async (payload) => {
     })
   }
 }
+
+export const updateWeek = (week) => {
+  return {
+    type: 'UPDATE_WEEK',
+    payload: week,
+  }
+}

@@ -15,21 +15,21 @@ import { getProfessionalLeagueRanks, getScheduleByWeek } from '../redux'
 import { useSelector } from 'react-redux'
 
 const ProfessionalLeague = () => {
-  const setting = useSelector((state) => state?.user?.setting)
+  const SETTING = useSelector((state) => state?.user?.setting)
   const [ranks, setRanks] = useState(null)
   const [data, setData] = useState([])
 
   useEffect(() => {
-    ;(async () => {
-      let data = await getProfessionalLeagueRanks(setting?.week)
-      console.log('DATA ===>', data)
-      setRanks(data)
-      getDataByWeek()
-    })()
+    getTeamAndPlayerRank()
   }, [])
 
+  const getTeamAndPlayerRank = async () => {
+    let data = await getProfessionalLeagueRanks(SETTING?.week)
+    setRanks(data)
+    getDataByWeek()
+  }
   const getDataByWeek = async () => {
-    const res = await getScheduleByWeek(1)
+    const res = await getScheduleByWeek(SETTING?.week)
     setData(res)
   }
 

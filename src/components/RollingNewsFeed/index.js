@@ -6,7 +6,7 @@ import { BiRightArrowAlt } from 'react-icons/bi'
 // import fbIcon from '../../assets/Ellipse 37.svg'
 import { getNewsFeed } from '../../redux'
 
-const RollingNewsFeed = () => {
+const RollingNewsFeed = ({ height = '463px' }) => {
   const [news, setNews] = useState([])
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const RollingNewsFeed = () => {
           View All <BiRightArrowAlt size={18} />
         </p>
       </header>
-      <section className='content_body'>
+      <section className='content_body' style={{ maxHeight: height }}>
         {news?.map((v) => {
           return (
             <div key={v.NewsID} className='card_box'>
