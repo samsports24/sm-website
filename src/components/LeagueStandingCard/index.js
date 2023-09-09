@@ -82,17 +82,17 @@ const LeagueStandingCard = ({ data, index }) => {
                 <Table
                   dataSource={[
                     {
-                      key: v?._id,
-                      wlt: `${v?.win}-${v?.lose}-${v?.tie}`,
-                      pct: v?.pct,
-                      gb: v?.gb,
-                      strk: v?.strk ? v?.strk : '-',
-                      pf: v?.pf,
-                      avgpf: v?.avgPf,
-                      pa: v?.pa,
-                      avgpa: v?.avgPa,
-                      divwlt: `${v?.divWin}-${v?.divLose}-${v?.divTie}`,
-                      confwlt: `${v?.confWin}-${v?.confLose}-${v?.confTie}`,
+                      key: v?.teamScore?._id,
+                      wlt: `${v?.teamScore?.win}-${v?.teamScore?.lose}-${v?.teamScore?.tie}`,
+                      pct: v?.teamScore?.pct,
+                      gb: v?.teamScore?.gb,
+                      strk: v?.teamScore?.strk ? v?.teamScore?.strk : '-',
+                      pf: v?.teamScore?.pf,
+                      avgpf: v?.teamScore?.avgPf,
+                      pa: v?.teamScore?.pa,
+                      avgpa: v?.teamScore?.avgPa,
+                      divwlt: `${v?.teamScore?.divWin}-${v?.teamScore?.divLose}-${v?.teamScore?.divTie}`,
+                      confwlt: `${v?.teamScore?.confWin}-${v?.teamScore?.confLose}-${v?.teamScore?.confTie}`,
                     },
                   ]}
                   columns={columns}

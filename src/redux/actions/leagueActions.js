@@ -16,10 +16,10 @@ export const getProfessionalLeagueRanks = async (week) => {
   }
 }
 
-export const getLeagueStandings = async () => {
+export const getLeagueStandings = async (week) => {
   try {
     attachToken()
-    const res = await privateAPI.get('/ranking/get-league-standings')
+    const res = await privateAPI.get(`/ranking/get-league-standings/${week}`)
     if (res) {
       return res.data.data
     }

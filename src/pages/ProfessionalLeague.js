@@ -21,7 +21,7 @@ const ProfessionalLeague = () => {
 
   useEffect(() => {
     getTeamAndPlayerRank()
-  }, [])
+  }, [SETTING?.week])
 
   const getTeamAndPlayerRank = async () => {
     let data = await getProfessionalLeagueRanks(SETTING?.week)

@@ -1,5 +1,6 @@
 const initialState = {
   userDetails: null,
+  currentWeek: localStorage.getItem('week'),
   setting: {
     week: localStorage.getItem('week'),
   },
@@ -12,7 +13,11 @@ const userReducer = (state = initialState, action) => {
       return {
         ...state,
         userDetails: payload?.user,
-        setting: payload?.setting,
+        currentWeek: payload?.setting?.week,
+        setting: {
+          ...state?.setting,
+          week: payload?.setting?.week,
+        },
       }
     }
     case 'UPDATE_WEEK': {

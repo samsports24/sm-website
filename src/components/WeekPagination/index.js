@@ -5,8 +5,9 @@ import { FiArrowRight, FiArrowLeft } from 'react-icons/fi'
 import { useSelector, useDispatch } from 'react-redux'
 import { updateWeek } from '../../redux'
 
-const WeekPagination = ({ currentWeek = 1, onClick = () => {} }) => {
-  const SETTING = useSelector((state) => state?.user?.setting)
+const WeekPagination = () => {
+  const SETTING = useSelector((state) => state?.user)
+  const { week: currentWeek } = useSelector((state) => state?.user?.setting)
 
   const dispatch = useDispatch()
 
@@ -62,11 +63,11 @@ const WeekPagination = ({ currentWeek = 1, onClick = () => {} }) => {
     }
   }, [])
 
-  const handleWeekPagination = (value, week) => {
-    const currentWeek = WEEK.findIndex((v) => v === week) + 1
+  const handleWeekPagination = (value) => {
+    // const currentWeek = WEEK.findIndex((v) => v === week) + 1
     // setWeekPagination(value)
     dispatch(updateWeek(value))
-    onClick(currentWeek)
+    // onClick(currentWeek)
     // console.log(currentWeek)
   }
 
@@ -93,9 +94,9 @@ const WeekPagination = ({ currentWeek = 1, onClick = () => {} }) => {
         return (
           <li
             key={index}
-            onClick={() => SETTING?.week >= index && handleWeekPagination(index, v)}
-            className={`${SETTING?.week === index && 'active_week'}`}
-            style={{ cursor: SETTING?.week >= index ? 'pointer' : 'no-drop' }}
+            onClick={() => SETTING?.currentWeek >= index && handleWeekPagination(index)}
+            className={`${SETTING?.setting?.week === index && 'active_week'}`}
+            style={{ cursor: SETTING?.currentWeek >= index ? 'pointer' : 'no-drop' }}
           >
             {v}
           </li>
