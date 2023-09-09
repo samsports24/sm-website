@@ -59,7 +59,7 @@ const PlayerAuction = () => {
       {/* HEADER */}
       <Header />
 
-      <ButtonsAndPagination />
+      <ButtonsAndPagination noWeek={true} />
 
       <section className='squad_card_container transparent' style={{ marginTop: '45px' }}>
         <div className='header'>

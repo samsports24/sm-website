@@ -112,7 +112,7 @@ const FreeAgent = () => {
       {/* HEADER */}
       <Header />
 
-      <ButtonsAndPagination />
+      <ButtonsAndPagination noWeek={true} />
 
       <hr className='divider' />
 

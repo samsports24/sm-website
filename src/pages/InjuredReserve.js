@@ -62,7 +62,7 @@ const InjuredReserve = () => {
       {/* HEADER */}
       <Header />
 
-      <ButtonsAndPagination />
+      <ButtonsAndPagination noWeek={true} />
 
       <hr className='divider' />
 

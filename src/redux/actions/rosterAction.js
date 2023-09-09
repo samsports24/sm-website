@@ -1,10 +1,10 @@
 import { notification } from 'antd'
 import { attachToken, privateAPI } from '../../config/constants'
 
-export const getRoster = async () => {
+export const getRoster = async (week) => {
   try {
     attachToken()
-    const res = await privateAPI.get('/team/get-roster')
+    const res = await privateAPI.get(`/team/get-roster/${week}`)
     if (res) {
       return res.data.data
     }
@@ -16,12 +16,12 @@ export const getRoster = async () => {
   }
 }
 
-export const setNonActivePlayer = async (data) => {
+export const setNonActivePlayer = async (data, week) => {
   try {
     attachToken()
-    const res = await privateAPI.post('/player/set-nonactive', { ids: data })
+    const res = await privateAPI.post('/player/set-nonactive', data)
     if (res) {
-      await getRoster()
+      await getRoster(week)
       notification.success({
         message: res.data.data,
         duration: 3,
@@ -35,12 +35,12 @@ export const setNonActivePlayer = async (data) => {
   }
 }
 
-export const setProtectedPlayer = async (data) => {
+export const setProtectedPlayer = async (data, week) => {
   try {
     attachToken()
-    const res = await privateAPI.post('/player/protect-practice-player', { ids: data })
+    const res = await privateAPI.post('/player/protect-practice-player', data)
     if (res) {
-      await getRoster()
+      await getRoster(week)
       notification.success({
         message: res.data.data,
         duration: 3,

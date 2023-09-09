@@ -48,7 +48,7 @@ const LeagueScore = () => {
         {/* SCHEDULE ONE */}
         {/* <ScheduleBox /> */}
 
-        <ButtonsAndPagination />
+        <ButtonsAndPagination noWeek={true} />
 
         {/* SCHEDULE TWO */}
         <section className='schedule_box2'>

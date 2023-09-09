@@ -13,20 +13,24 @@ import TransactionTracker from '../components/TransactionTracker'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import { getProfessionalLeagueRanks, getScheduleByWeek } from '../redux'
 import { useSelector } from 'react-redux'
+import Loader from '../components/Loader'
 
 const ProfessionalLeague = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
   const [ranks, setRanks] = useState(null)
   const [data, setData] = useState([])
+  const [isLoading, setIsloading] = useState(true)
 
   useEffect(() => {
     getTeamAndPlayerRank()
   }, [SETTING?.week])
 
   const getTeamAndPlayerRank = async () => {
+    setIsloading(true)
     let data = await getProfessionalLeagueRanks(SETTING?.week)
     setRanks(data)
-    getDataByWeek()
+    await getDataByWeek()
+    setIsloading(false)
   }
   const getDataByWeek = async () => {
     const res = await getScheduleByWeek(SETTING?.week)
@@ -57,24 +61,30 @@ const ProfessionalLeague = () => {
       {/* HEADER */}
       <Header />
 
-      <ButtonsAndPagination />
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <>
+          <ButtonsAndPagination />
 
-      <section className='league_details_container'>
-        <div className='left'>
-          <LeagueStandings data={ranks?.teamRanks} />
-        </div>
-        <div className='center'>
-          {[data?.[0]].map((item, index) => (
-            <MatchUpOfTheWeek key={index} data={{ ...item }} />
-          ))}
-          <RollingNewsFeed />
-          <TransactionTracker />
-        </div>
-        <div className='right'>
-          <PowerRanking data={ranks?.teamRanks} />
-          <PlayerRanking data={ranks?.playerRanks} />
-        </div>
-      </section>
+          <section className='league_details_container'>
+            <div className='left'>
+              <LeagueStandings data={ranks?.teamRanks} />
+            </div>
+            <div className='center'>
+              {[data?.[0]].map((item, index) => (
+                <MatchUpOfTheWeek key={index} data={{ ...item }} />
+              ))}
+              <RollingNewsFeed />
+              <TransactionTracker />
+            </div>
+            <div className='right'>
+              <PowerRanking data={ranks?.teamRanks} />
+              <PlayerRanking data={ranks?.playerRanks} />
+            </div>
+          </section>
+        </>
+      )}
     </div>
   )
 }
