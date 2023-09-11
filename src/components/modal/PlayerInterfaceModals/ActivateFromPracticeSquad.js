@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
 import { Button, Modal, notification } from 'antd'
-import { useParams } from 'react-router-dom'
+// import { useParams } from 'react-router-dom'
 import { moveFromPractice } from '../../../redux/actions/rosterAction'
 import { activeRosterCount } from '../../../config/constants'
 
-const ActivateFromPracticeSquad = ({ disabled, getData, activePlayers }) => {
+const ActivateFromPracticeSquad = ({ disabled, getData, activePlayers, playerId }) => {
   const [open, setOpen] = useState(false)
   const [selectedId, setSelectedId] = useState(null)
   const [loading, setLoading] = useState(false)
 
-  const { id } = useParams()
+  // const { id } = useParams()
 
   const showModal = () => setOpen(true)
   const closeModal = () => {
@@ -20,7 +20,7 @@ const ActivateFromPracticeSquad = ({ disabled, getData, activePlayers }) => {
   const moveFromPracticeSquad = async () => {
     setLoading(true)
     await moveFromPractice({
-      id,
+      id: playerId,
     })
     await getData()
     setLoading(false)
@@ -31,7 +31,7 @@ const ActivateFromPracticeSquad = ({ disabled, getData, activePlayers }) => {
     if (selectedId) {
       setLoading(true)
       await moveFromPractice({
-        id: id,
+        id: playerId,
         replacedPlayer: selectedId,
       })
       await getData()
@@ -96,11 +96,14 @@ const ActivateFromPracticeSquad = ({ disabled, getData, activePlayers }) => {
               <div className='team_roster_box'>
                 {activePlayers?.map((v, i) => {
                   return (
-                    <div key={i} className={`_row ${selectedId === v?._id && 'selected_row'}`}>
-                      <p style={{ minWidth: '70px' }}>{v?.Position}</p>
-                      <p style={{ minWidth: '300px' }}>{v?.Name}</p>
-                      <p>${v?.PlayerCap}</p>
-                      <Button type='primary' onClick={() => setSelectedId(v?._id)}>
+                    <div
+                      key={i}
+                      className={`_row ${selectedId === v?.players?.PlayerID && 'selected_row'}`}
+                    >
+                      <p style={{ minWidth: '70px' }}>{v?.players?.Position}</p>
+                      <p style={{ minWidth: '300px' }}>{v?.players?.Name}</p>
+                      <p>${v?.players?.PlayerCap}</p>
+                      <Button type='primary' onClick={() => setSelectedId(v?.players?.PlayerID)}>
                         Select
                       </Button>
                     </div>

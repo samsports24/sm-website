@@ -19,8 +19,10 @@ import {
   legalPlayers,
   nonActivePlayers,
 } from '../config/constants'
+import { useSelector } from 'react-redux'
 
 const DepthChart = () => {
+  const SETTING = useSelector((state) => state?.user?.setting)
   const [activeFilter, setActiveFilter] = useState('offense')
   const [data, setData] = useState([])
   const [activeCount, setActiveCount] = useState(null)
@@ -32,7 +34,7 @@ const DepthChart = () => {
 
   useEffect(() => {
     getDepthChartData()
-  }, [activeFilter])
+  }, [activeFilter, SETTING?.week])
 
   const getDepthChartData = async () => {
     const filtered = depthCardData.filter((obj) => obj.type === activeFilter)

@@ -54,10 +54,10 @@ export const setProtectedPlayer = async (data, week) => {
   }
 }
 
-export const getRosterPlayer = async (id) => {
+export const getRosterPlayer = async (payload) => {
   try {
     attachToken()
-    const res = await privateAPI.get(`/player/get-player/${id}`)
+    const res = await privateAPI.post(`/player/get-player`, payload)
     if (res) {
       return res.data.data
     }
@@ -69,12 +69,12 @@ export const getRosterPlayer = async (id) => {
   }
 }
 
-export const moveToPractice = async (data) => {
+export const moveToPractice = async (payload) => {
   try {
     attachToken()
-    const res = await privateAPI.post('/player/move-to-practice', data)
+    const res = await privateAPI.post('/player/move-to-practice', payload)
     if (res) {
-      await getRoster()
+      await getRoster(payload?.week)
       notification.success({
         message: res.data.data,
         duration: 3,
@@ -88,12 +88,12 @@ export const moveToPractice = async (data) => {
   }
 }
 
-export const moveFromPractice = async (data) => {
+export const moveFromPractice = async (payload) => {
   try {
     attachToken()
-    const res = await privateAPI.post('/player/move-from-practice', data)
+    const res = await privateAPI.post('/player/move-from-practice', payload)
     if (res) {
-      await getRoster()
+      await getRoster(payload?.week)
       notification.success({
         message: res.data.data,
         duration: 3,
@@ -107,10 +107,10 @@ export const moveFromPractice = async (data) => {
   }
 }
 
-export const releasePlayer = async (id) => {
+export const releasePlayer = async (payload) => {
   try {
     attachToken()
-    const res = await privateAPI.post('/player/release-player', { id })
+    const res = await privateAPI.post('/player/release-player', payload)
     if (res) {
       notification.success({
         message: res.data.data,

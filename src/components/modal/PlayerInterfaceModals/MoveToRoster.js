@@ -23,7 +23,7 @@ const MoveToRoster = ({ activeDate, injuredDate, injuredId, playerId, getData })
 
   const _moveToRoster = async () => {
     setLoading(true)
-    const res = await moveIrToRoster({ playerId, injuredId }, setIsError)
+    const res = await moveIrToRoster({ injuredId }, setIsError)
     if (res) {
       await getData()
       closeModal()
@@ -31,8 +31,12 @@ const MoveToRoster = ({ activeDate, injuredDate, injuredId, playerId, getData })
     setLoading(false)
   }
   const _moveToPractice = async () => {
+    console.log(playerId)
     setLoading(true)
-    const res = await moveIrToPractice({ playerId, injuredId })
+    const res = await moveIrToPractice({
+      // playerId,
+      injuredId,
+    })
     if (res) {
       await getData()
       closeModal()
@@ -42,7 +46,7 @@ const MoveToRoster = ({ activeDate, injuredDate, injuredId, playerId, getData })
 
   return (
     <>
-      {!isActive ? (
+      {isActive ? (
         <Tooltip
           popupVisible={false}
           placement='top'

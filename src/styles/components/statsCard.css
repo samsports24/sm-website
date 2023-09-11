@@ -7,6 +7,15 @@
   background-color: transparent;
 }
 
+.stats_card_container :where(.css-dev-only-do-not-override-1jqvr6p).ant-checkbox-disabled + span {
+  color: #fff !important;
+}
+.stats_card_container
+  :where(.css-dev-only-do-not-override-1jqvr6p).ant-checkbox-disabled
+  .ant-checkbox-inner:after {
+  border-color: #fff !important;
+}
+
 .stats_card_container header {
   padding: 10px 40px 0px 40px;
   padding-bottom: 0px !important;
@@ -37,7 +46,7 @@
   /* min-width: 180px; */
   display: flex;
   flex-direction: row;
-  gap: 10px
+  gap: 10px;
 }
 .stats_card_container .center div .text1 {
   color: #6e6980;
@@ -54,7 +63,6 @@
   font-weight: 700 !important;
   line-height: normal;
   opacity: 0.5;
-
 }
 
 /* STATS TABLE */

@@ -36,7 +36,6 @@ const InjuredReserve = () => {
       <Button className='back_button' type='primary'>
         Back
       </Button>
-
       {/* BREADCRUMB */}
       <section className='breadcrumb'>
         <Breadcrumb
@@ -58,14 +57,10 @@ const InjuredReserve = () => {
           ]}
         />
       </section>
-
       {/* HEADER */}
       <Header />
-
       <ButtonsAndPagination noWeek={true} />
-
       <hr className='divider' />
-
       <section className='squad_card_container transparent'>
         <div className='header'>
           <h2>INJURED RESERVE</h2>
@@ -78,6 +73,7 @@ const InjuredReserve = () => {
               <div className='standing-table-bg'>
                 {injuredReserve?.map((v, i) => {
                   const { player: p } = v
+                  console.log(v)
                   return (
                     <div key={i} className='squad_card_box'>
                       <div className='squad_content_body'>
@@ -89,51 +85,45 @@ const InjuredReserve = () => {
                           )}
                         </div>
                         <div>
-                          <p className='squad_text1'>position</p>
-                          <p className='squad_text2'>{p?.Position || '-'}</p>
+                          <p className='squad_text2'>position</p>
+                          <p className='squad_text1'>{p?.Position || '-'}</p>
                         </div>
                         <div>
-                          <p className='squad_text1'>player name</p>
-                          <p className='squad_text2'>{p?.Name || '-'}</p>
+                          <p className='squad_text2'>player name</p>
+                          <p className='squad_text1'>{p?.Name || '-'}</p>
                         </div>
                         <div>
-                          <p className='squad_text1'>age</p>
-                          <p className='squad_text2'>{p?.Age || '-'}</p>
+                          <p className='squad_text2'>age</p>
+                          <p className='squad_text1'>{p?.Age || '-'}</p>
                         </div>
                         <div>
-                          <p className='squad_text1'>team</p>
-                          <p className='squad_text2'>{p?.Team || '-'}</p>
+                          <p className='squad_text2'>team</p>
+                          <p className='squad_text1'>{p?.Team || '-'}</p>
                         </div>
                         <div>
-                          <p className='squad_text1'>bye</p>
-                          <p className='squad_text2'>{p?.ByeWeek || '-'}</p>
+                          <p className='squad_text2'>opp</p>
+                          <p className='squad_text1'>{p?.UpcomingGameOpponent || '-'}</p>
                         </div>
                         <div>
-                          <p className='squad_text1'>player cap #</p>
-                          <p className='squad_text2'>{p?.PlayerCap || '-'}</p>
+                          <p className='squad_text2'>bye</p>
+                          <p className='squad_text1'>{p?.ByeWeek || '-'}</p>
                         </div>
                         <div>
-                          <p className='squad_text1'>
-                            year left <br /> experation &nbsp;
-                            <span className='squad_text2'>{p?.YearLeftExperation || '-'}</span>
-                          </p>
+                          <p className='squad_text2'>player cap #</p>
+                          <p className='squad_text1'>{p?.PlayerCap || '-'}</p>
                         </div>
                         <div>
-                          <p className='squad_text1'>
-                            point per <br /> game &nbsp;
-                            <span className='squad_text2'>{p?.pointsPerGame || '-'}</span>
-                          </p>
+                          <p className='squad_text2'>PF &nbsp;</p>
+                          <p className='squad_text1'>{p?.pointsPerGame || '-'}</p>
                         </div>
                         <div>
-                          <p className='squad_text1'>
-                            player <br /> rank &nbsp;
-                            <span className='squad_text2'>{p?.playerRank || '-'}</span>
-                          </p>
+                          <p className='squad_text2'>player rank</p>
+                          <p className='squad_text1'>{p?.playerRank || '-'}</p>
                         </div>
                         <MoveToRoster
                           activeDate={v?.activeDate}
                           injuredDate={v?.injuredDate}
-                          playerId={p?._id}
+                          playerId={v?.PlayerID}
                           injuredId={v?._id}
                           getData={getData}
                         />

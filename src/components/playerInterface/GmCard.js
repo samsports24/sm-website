@@ -1,5 +1,6 @@
 import { Row, Col, Typography, Button } from 'antd'
 import { useNavigate } from 'react-router-dom'
+import { isLocked } from '../../config/constants'
 
 // import { playerInterfaceData } from '../../pages/mockData'
 import {
@@ -22,8 +23,19 @@ const GmCard = ({
   news,
   isAction = true,
 }) => {
-  const { team, Name, Active, InjuryStatus, PositionRank, LeagueRank, inPracticeSquad } = playerData
+  const {
+    team,
+    Name,
+    Active,
+    InjuryStatus,
+    PositionRank,
+    LeagueRank,
+    inPracticeSquad,
+    PlayerID,
+    HostedHeadshotNoBackgroundUrl,
+  } = playerData
   const navigate = useNavigate()
+  console.log(playerData)
 
   return (
     <section className='player_info_box_new'>
@@ -33,7 +45,12 @@ const GmCard = ({
           </Col>
         )} */}
         <Col xs={24} xl={10}>
-          <div className='left'>
+          <div
+            className='left'
+            style={{
+              background: `url(${HostedHeadshotNoBackgroundUrl})`,
+            }}
+          >
             <div>
               <Typography.Title level={2}>{Name}</Typography.Title>
               <div className='player-active-status'>
@@ -98,10 +115,13 @@ const GmCard = ({
                 </Button>
                 <PoachPlayer />
               </div>
+            ) : isLocked() ? (
+              <></>
             ) : (
               <div className='action-bar'>
                 <h4>Player Action Bar</h4>
                 <AuctionPlayer />
+
                 <TradePlayer />
                 <ReleasePlayer />
 
@@ -111,6 +131,7 @@ const GmCard = ({
                   activePlayers={activePlayers}
                   disabled={!inPracticeSquad}
                   getData={getData}
+                  playerId={PlayerID}
                 />
 
                 <MoveToPracticeSquad
@@ -118,6 +139,7 @@ const GmCard = ({
                   practicePlayers={practicePlayers}
                   disabled={inPracticeSquad}
                   getData={getData}
+                  playerId={PlayerID}
                 />
               </div>
             )}

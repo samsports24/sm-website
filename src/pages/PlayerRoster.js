@@ -2,21 +2,22 @@ import React, { useEffect, useState } from 'react'
 
 import { Breadcrumb, Button, notification } from 'antd'
 import Arrow from '../assets/arrow-right.svg'
+
 // Component
 import DepthCard from '../components/DepthCard'
 import Header from '../components/Header'
-
-// Mock Data
-import { depthCardData } from './mockData'
 import PlayerRosterCard from '../components/PlayerRosterCard'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import Loader from '../components/Loader'
+
+// Mock Data
+import { depthCardData } from './mockData'
+
 import { getRoster, setNonActivePlayer, setProtectedPlayer } from '../redux/actions/rosterAction'
 import { useSelector } from 'react-redux'
 
 const PlayerRoster = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
-  console.log(SETTING.week)
   const [activeFilter] = useState('Roster')
   const [data, setData] = useState([])
   const [activePlayerData, setActivePlayerData] = useState([])
@@ -39,12 +40,12 @@ const PlayerRoster = () => {
     }
   }
   const handleSubmit = async () => {
-    const lineupId = activePlayerData[0]?._id
+    // const lineupId = activePlayerData[0]?._id
     if (nonActive?.length === 7) {
       setSubmitLoading(true)
       await setNonActivePlayer(
         {
-          lineupId,
+          // lineupId,
           ids: nonActive,
         },
         SETTING.week,
@@ -71,13 +72,13 @@ const PlayerRoster = () => {
     }
   }
   const handleProtectedSubmit = async () => {
-    const lineupId = practiveSquadData[0]?._id
+    // const lineupId = practiveSquadData[0]?._id
 
     if (protectedCheck?.length === 4) {
       setSubmitLoading(true)
       await setProtectedPlayer(
         {
-          lineupId,
+          // lineupId,
           ids: protectedCheck,
         },
         SETTING.week,
@@ -95,7 +96,7 @@ const PlayerRoster = () => {
     const filterdData = depthCardData?.filter((v) => v?.type === activeFilter?.toLocaleLowerCase())
     setData(filterdData)
     getData()
-  }, [activeFilter])
+  }, [activeFilter, SETTING?.week])
 
   const getData = async () => {
     setLoading(true)
@@ -119,8 +120,6 @@ const PlayerRoster = () => {
           protectedPlayer.push(v?.players?.PlayerID)
         }
       })
-      console.log(nonAcitvePlayer)
-      console.log(protectedPlayer)
       setActivePlayerData(res?.active)
       setPractiveSquadData(res?.practice)
       setNonActive(nonAcitvePlayer)

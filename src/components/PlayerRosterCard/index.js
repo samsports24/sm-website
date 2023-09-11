@@ -3,12 +3,13 @@ import React from 'react'
 import { Checkbox } from 'antd'
 
 import { useNavigate } from 'react-router-dom'
+import { isLocked } from '../../config/constants'
 
 const PlayerRosterCard = ({ data, index, style, state, handleClick, isPractice = false }) => {
   const {
     players: {
       PlayerID,
-      _id,
+      // _id,
       Name,
       pts,
       Age,
@@ -19,6 +20,7 @@ const PlayerRosterCard = ({ data, index, style, state, handleClick, isPractice =
       Position,
       UpcomingGameOpponent,
     },
+    // _id: lineupId,
   } = data
   const navigate = useNavigate()
 
@@ -28,7 +30,7 @@ const PlayerRosterCard = ({ data, index, style, state, handleClick, isPractice =
         <h3
           style={{ cursor: 'pointer' }}
           onClick={() => {
-            navigate(`/player-interface/${_id}`)
+            navigate(`/player-interface/${PlayerID}`)
           }}
         >
           {index + 1}. &nbsp;&nbsp; {Name} ({Position})
@@ -37,6 +39,7 @@ const PlayerRosterCard = ({ data, index, style, state, handleClick, isPractice =
           <Checkbox
             onChange={(event) => handleClick(event.target.checked, PlayerID)}
             checked={state?.includes(PlayerID)}
+            disabled={isLocked()}
           >
             Protected
           </Checkbox>
@@ -44,6 +47,7 @@ const PlayerRosterCard = ({ data, index, style, state, handleClick, isPractice =
           <Checkbox
             onChange={(event) => handleClick(event.target.checked, PlayerID)}
             checked={state?.includes(PlayerID)}
+            disabled={isLocked()}
           >
             Non-Active
           </Checkbox>

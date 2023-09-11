@@ -63,8 +63,9 @@ export const authLogin = (payload, navigate) => {
           attachToken()
           dispatch({
             type: SET_USER_DETAILS,
-            payload: res.data.data.user,
+            payload: res.data.data,
           })
+          localStorage.setItem('week', res?.data?.data?.setting?.week)
           notification.success({
             description: res.data.data.message,
             duration: 2,

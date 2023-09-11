@@ -22,8 +22,11 @@ import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import { getRosterPlayer } from '../redux/actions/rosterAction'
 import { useEffect, useState } from 'react'
 import Loader from '../components/Loader'
+import { useSelector } from 'react-redux'
+import { isLocked } from '../config/constants'
 
 const PlayerInterface = () => {
+  const SETTING = useSelector((state) => state?.user?.setting)
   const [player, setPlayer] = useState({})
   const [news, setNews] = useState(null)
   const [activePlayers, setActivePlayers] = useState([])
@@ -33,13 +36,18 @@ const PlayerInterface = () => {
   const { id } = useParams()
   const navigate = useNavigate()
 
+  console.log(isLocked())
+
   useEffect(() => {
     getData()
   }, [id])
 
   const getData = async () => {
     setLoading(true)
-    const res = await getRosterPlayer(id)
+    const res = await getRosterPlayer({
+      id,
+      week: SETTING?.week,
+    })
     if (res) {
       setPlayer(res?.player)
       setNews(res?.news)
@@ -112,7 +120,7 @@ const PlayerInterface = () => {
       {/* HEADER */}
       <Header />
 
-      <ButtonsAndPagination />
+      <ButtonsAndPagination noWeek={true} />
 
       <hr className='divider' />
 
