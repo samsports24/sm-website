@@ -12,8 +12,10 @@ import ScoreCardTeam from '../components/cards/ScoreCardTeam'
 import ScoreCardPlayer from '../components/cards/ScoreCardPlayer'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import Loader from '../components/Loader'
+import { useSelector } from 'react-redux'
 
 const GameDetails = () => {
+  const SETTING = useSelector((state) => state?.user?.setting)
   const { state } = useLocation()
   const [Data, setData] = useState(null)
   const [backupPlayer, setBackupPlayer] = useState(null)
@@ -23,7 +25,7 @@ const GameDetails = () => {
 
   useEffect(() => {
     getData()
-  }, [])
+  }, [SETTING.week])
 
   const getData = async () => {
     setLoading(true)

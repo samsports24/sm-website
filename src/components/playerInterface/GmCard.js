@@ -35,7 +35,6 @@ const GmCard = ({
     HostedHeadshotNoBackgroundUrl,
   } = playerData
   const navigate = useNavigate()
-  console.log(playerData)
 
   return (
     <section className='player_info_box_new'>

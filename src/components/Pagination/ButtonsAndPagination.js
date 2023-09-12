@@ -2,7 +2,7 @@ import { Button, Typography, Dropdown } from 'antd'
 import WeekPagination from '../WeekPagination'
 import { useNavigate } from 'react-router-dom'
 import { isLocked } from '../../config/constants'
-const ButtonsAndPagination = ({ noWeek }) => {
+const ButtonsAndPagination = ({ noWeek, goLive = false }) => {
   const navigate = useNavigate()
 
   const playerItems = [
@@ -223,7 +223,6 @@ const ButtonsAndPagination = ({ noWeek }) => {
       ),
     },
   ]
-  console.log('isLocked', isLocked())
 
   return (
     <>
@@ -248,7 +247,7 @@ const ButtonsAndPagination = ({ noWeek }) => {
             <Button type='primary'>League</Button>
           </Dropdown>
         </div>
-        {!noWeek && <WeekPagination />}
+        {!noWeek && <WeekPagination goLive={goLive} />}
       </section>
       {isLocked() && (
         <div className='locked_box'>

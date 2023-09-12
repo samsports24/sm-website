@@ -4,8 +4,9 @@ import React, { useEffect, useState } from 'react'
 import { FiArrowRight, FiArrowLeft } from 'react-icons/fi'
 import { useSelector, useDispatch } from 'react-redux'
 import { updateWeek } from '../../redux'
+import { Button } from 'antd'
 
-const WeekPagination = () => {
+const WeekPagination = ({ goLive }) => {
   const SETTING = useSelector((state) => state?.user)
   const { week: currentWeek } = useSelector((state) => state?.user?.setting)
 
@@ -110,6 +111,7 @@ const WeekPagination = () => {
           <FiArrowRight />
         </button>
       </div>
+      {goLive && <Button className='go_live_button'>Go Live</Button>}
     </ul>
   )
 }

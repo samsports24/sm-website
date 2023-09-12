@@ -73,7 +73,6 @@ const InjuredReserve = () => {
               <div className='standing-table-bg'>
                 {injuredReserve?.map((v, i) => {
                   const { player: p } = v
-                  console.log(v)
                   return (
                     <div key={i} className='squad_card_box'>
                       <div className='squad_content_body'>

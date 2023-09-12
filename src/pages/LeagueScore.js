@@ -14,15 +14,18 @@ import { useNavigate } from 'react-router-dom'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import { getScheduleByWeek } from '../redux'
 import Loader from '../components/Loader'
+import { useSelector } from 'react-redux'
 
 const LeagueScore = () => {
+  const CURRENT_WEEK = useSelector((state) => state?.user.currentWeek)
+
   const navigate = useNavigate()
   const isAuthenticated = localStorage.getItem('token')
   !isAuthenticated && navigate('/transactions')
 
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
-  const [week, setWeek] = useState(1)
+  const [week, setWeek] = useState(CURRENT_WEEK)
 
   useEffect(() => {
     getDataByWeek()
@@ -39,6 +42,7 @@ const LeagueScore = () => {
   const handlePagination = (page) => {
     setWeek(page)
   }
+
   return (
     <div className='league_container'>
       {/* HEADER */}
