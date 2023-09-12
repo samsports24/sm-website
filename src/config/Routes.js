@@ -1,4 +1,4 @@
-import { Routes, Route, BrowserRouter, Outlet } from 'react-router-dom'
+import { Routes, Route, BrowserRouter, Outlet, useNavigate } from 'react-router-dom'
 import PrivateWrapper from './PrivateRoutes'
 import Layout from '../layout/Layout'
 import Login from '../pages/Login'
@@ -59,11 +59,33 @@ import League from '../pages/League'
 // import TeamTrade from '../pages/TeamTrade'
 // import GmDashboard from '../pages/GmDashboard'
 
+import { version } from './constants'
+import { notification } from 'antd'
+import { useEffect } from 'react'
+
+// HOCKEY
+// import TeamLine from '../pages/TeamLine'
+
 const Routers = () => {
   const Component = () => {
     // let token = localStorage.getItem('token')
     // if (token) return <Navigate to={'/dashboard'} />
     // else
+
+    const navigate = useNavigate()
+
+    useEffect(() => {
+      if (localStorage.getItem('version') !== version) {
+        navigate('/login')
+        localStorage.clear()
+        localStorage.setItem('version', version)
+        notification.error({
+          message: `Try login again!`,
+          duration: 6,
+        })
+      }
+    }, [])
+
     return (
       <Layout>
         <Outlet />
@@ -134,6 +156,9 @@ const Routers = () => {
           {/* <Route path='/roster' element={<Roster />} /> */}
           {/* <Route path='/roster-fullformat' element={<RosterFullFormat />} /> */}
           {/* <Route path='/practice-squad' element={<PracticeSquad />} /> */}
+
+          {/* HOCKEY */}
+          {/* <Route path='/team-line' element={<TeamLine />} /> */}
         </Route>
 
         <Route path='/login' element={<Login />} />

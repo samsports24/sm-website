@@ -77,7 +77,7 @@ const InjuredReserve = () => {
                     <div key={i} className='squad_card_box'>
                       <div className='squad_content_body'>
                         <div className='squad_image_box'>
-                          {v?.HostedHeadshotNoBackgroundUrl ? (
+                          {p?.HostedHeadshotNoBackgroundUrl ? (
                             <img src={p?.HostedHeadshotNoBackgroundUrl} />
                           ) : (
                             <GiAmericanFootballPlayer size={45} color={'#c4c4c4'} />

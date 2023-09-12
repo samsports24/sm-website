@@ -23,7 +23,6 @@ import { getRosterPlayer } from '../redux/actions/rosterAction'
 import { useEffect, useState } from 'react'
 import Loader from '../components/Loader'
 import { useSelector } from 'react-redux'
-import { isLocked } from '../config/constants'
 
 const PlayerInterface = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
@@ -35,8 +34,6 @@ const PlayerInterface = () => {
 
   const { id } = useParams()
   const navigate = useNavigate()
-
-  console.log(isLocked())
 
   useEffect(() => {
     getData()

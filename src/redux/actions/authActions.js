@@ -1,11 +1,12 @@
 import { notification } from 'antd'
-import { publicAPI, attachToken, privateAPI } from '../../config/constants'
+import { publicAPI, attachToken, privateAPI, version } from '../../config/constants'
 import { SET_USER_DETAILS } from '../types/generalTypes'
 
 export const authSignup = async (payload, navigate) => {
   try {
     const res = await publicAPI.post('/auth/register', payload)
     if (res) {
+      localStorage.setItem('version', version)
       localStorage.setItem('email', payload.email)
       attachToken()
       notification.success({
@@ -28,6 +29,7 @@ export const otpVerification = (otp, navigate) => {
       let email = localStorage.getItem('email')
       const res = await publicAPI.post('/auth/verifyAccount', { email, otp })
       if (res) {
+        localStorage.setItem('version', version)
         localStorage.setItem('token', res.data.data.token)
         localStorage.setItem('userName', res.data.data.user.name)
         localStorage.setItem('userId', res.data.data.user._id)
@@ -57,6 +59,7 @@ export const authLogin = (payload, navigate) => {
       const res = await publicAPI.post('/auth/login', payload)
       if (res) {
         if (res.data.data.user.accountVerified) {
+          localStorage.setItem('version', version)
           localStorage.setItem('token', res.data.data.token)
           localStorage.setItem('userName', res.data.data.user.name)
           localStorage.setItem('userId', res.data.data.user._id)

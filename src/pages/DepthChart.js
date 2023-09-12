@@ -42,6 +42,7 @@ const DepthChart = () => {
 
     const res = await getActiveRosterCount({
       type: activeFilter === 'special team' ? 'special' : activeFilter,
+      week: SETTING?.week,
     })
     if (res) {
       setActiveCount(res?.count)

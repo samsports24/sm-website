@@ -90,3 +90,6 @@
 @import './pages/leagueNotification.css';
 @import './pages/totalPayment.css';
 @import './pages/league.css';
+
+/* HOCKEY */
+@import './pages/teamLIne.css';

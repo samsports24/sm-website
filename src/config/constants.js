@@ -26,6 +26,8 @@ export const firstLetterCap = (str) => {
   return str !== '' ? str?.charAt(0).toUpperCase() + str.slice(1) : str
 }
 
+export const version = '2.0.0'
+
 export const activeRosterCount = 53
 export const practiceRosterCount = 53
 export const legalPlayers = 46
