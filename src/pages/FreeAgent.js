@@ -112,7 +112,7 @@ const FreeAgent = () => {
       {/* HEADER */}
       <Header />
 
-      <ButtonsAndPagination />
+      <ButtonsAndPagination noWeek={true} />
 
       <hr className='divider' />
 
@@ -164,7 +164,6 @@ const FreeAgent = () => {
             <div className='standing-table-bg'>
               {!isEmpty &&
                 freeAgents?.players?.map((v, i) => {
-                  console.log(v)
                   return (
                     <div key={i} className='squad_card_box'>
                       <div className='squad_content_body'>
@@ -213,12 +212,6 @@ const FreeAgent = () => {
                           <p className='squad_text2'>player cap #</p>
                           <p className='squad_text1'>{v?.PlayerCap || '-'}</p>
                         </div>
-                        {/* <div>
-                          <p className='squad_text2'>
-                            year left <br /> experation &nbsp;
-                            <span className='squad_text2'>{v?.YearLeftExperation || '-'}</span>
-                          </p>
-                        </div> */}
                         <div>
                           <p className='squad_text2'>PF &nbsp;</p>
                           <p className='squad_text1'>{v?.pointsPerGame || '-'}</p>

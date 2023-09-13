@@ -3,8 +3,10 @@ import { Modal, Spin, Button } from 'antd'
 
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import { assignPlayerToStarter, getPlayersByPosition } from '../../redux/actions/depthChartAction'
+import { useSelector } from 'react-redux'
 
 const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartData }) => {
+  const SETTING = useSelector((state) => state?.user?.setting)
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState([])
   const [starter, setStarter] = useState(null)
@@ -24,6 +26,7 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
           ? 'QB'
           : propsData.Position?.toUpperCase(),
       classKey: propsData?.classKey && propsData?.classKey,
+      week: SETTING?.week,
     })
     if (res) {
       setStarter(res?.starterPlayer)
@@ -39,10 +42,11 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
   const handleStarter = async (id) => {
     setPlayerId(id)
     const res = await assignPlayerToStarter({
-      oldPlayerId: starter?._id ? starter?.player?._id : '',
+      oldPlayerId: starter?.players?._id ? starter?.players?._id : '',
       playerId: id,
       classKey: propsData?.classKey,
       isBackup: propsData?.Position === 'backup qb' ? true : false,
+      week: SETTING?.week,
     })
     if (res) {
       await getData()
@@ -59,47 +63,47 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
   }
 
   const Card = ({ data, button = false }) => {
-    const { _id, ImageUrl, team, Position, Name, InjuryStatus, UpcomingGameOpponent, Projection } =
-      data
+    const { players: p } = data
+
     return (
       <div className='content_body'>
         <div className='image_box'>
-          {ImageUrl ? (
-            <img src={ImageUrl} />
+          {p?.HostedHeadshotNoBackgroundUrl ? (
+            <img src={p?.HostedHeadshotNoBackgroundUrl} />
           ) : (
             <GiAmericanFootballPlayer size={35} color={'#c4c4c4'} />
           )}
         </div>
         <div>
           <p className='text1'>Team</p>
-          <p className='text2'>{team?.name || '-'}</p>
+          <p className='text2'>{data?.team?.name || '-'}</p>
         </div>
         <div>
           <p className='text1'>POS</p>
-          <p className='text2'>{Position || '-'}</p>
+          <p className='text2'>{p?.Position || '-'}</p>
         </div>
         <div>
           <p className='text1'>Player Name</p>
-          <p className='text2'>{Name || '-'}</p>
+          <p className='text2'>{p?.Name || '-'}</p>
         </div>
         <div>
           <p className='text1'>Injury</p>
-          <p className='text2'>{InjuryStatus || '-'}</p>
+          <p className='text2'>{p?.InjuryStatus || '-'}</p>
         </div>
         <div>
           <p className='text1'>OPP</p>
-          <p className='text2'>{UpcomingGameOpponent || '-'}</p>
+          <p className='text2'>{p?.UpcomingGameOpponent || '-'}</p>
         </div>
         <div>
           <p className='text1'>Projection</p>
-          <p className='text2'>{Projection || '-'}</p>
+          <p className='text2'>{p?.Projection || '-'}</p>
         </div>
         {button && (
           <Button
             type='primary'
             className='add_starter_button'
-            loading={playerId === _id ? true : false}
-            onClick={() => handleStarter(_id)}
+            loading={playerId === p?._id ? true : false}
+            onClick={() => handleStarter(p?._id)}
           >
             {propsData?.Position === 'backup qb' ? 'Add to Backup' : 'Add to Starter'}
           </Button>
@@ -107,16 +111,6 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
       </div>
     )
   }
-
-  // const EmptyCard = () => {
-  //   return (
-  //     <div className='content_body'>
-  //       <div className='image_box'>
-  //         <GiAmericanFootballPlayer size={35} color={'#c4c4c4'} />
-  //       </div>
-  //     </div>
-  //   )
-  // }
 
   return (
     <Modal
@@ -135,7 +129,7 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
               <h2>Starter</h2>
               <h2 style={{ textTransform: 'uppercase' }}>{propsData?.Position}</h2>
             </div>
-            {loading ? <Spinner /> : !!starter && <Card data={starter?.player} />}
+            {loading ? <Spinner /> : !!starter && <Card data={starter} />}
           </div>
         )}
         {propsData?.Position === 'backup qb' && (
@@ -145,7 +139,7 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
               <h2 style={{ textTransform: 'uppercase' }}>{propsData?.Position}</h2>
             </div>
             <div className='scroll_section'>
-              {loading ? <Spinner /> : !!starter && <Card data={starter?.player} />}
+              {loading ? <Spinner /> : !!starter && <Card data={starter} />}
             </div>
           </div>
         )}

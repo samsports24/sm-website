@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Image, Select } from 'antd'
+import {
+  Button,
+  Image,
+  // Select
+} from 'antd'
 
 import Versus from '../assets/versus-1.png'
 
@@ -12,8 +16,10 @@ import ScoreCardTeam from '../components/cards/ScoreCardTeam'
 import ScoreCardPlayer from '../components/cards/ScoreCardPlayer'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import Loader from '../components/Loader'
+import { useSelector } from 'react-redux'
 
 const GameDetails = () => {
+  const SETTING = useSelector((state) => state?.user?.setting)
   const { state } = useLocation()
   const [Data, setData] = useState(null)
   const [backupPlayer, setBackupPlayer] = useState(null)
@@ -22,14 +28,15 @@ const GameDetails = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    getData()
-  }, [])
+    SETTING.week !== 0 && getData()
+  }, [SETTING.week])
 
   const getData = async () => {
     setLoading(true)
     let data = await getGameDetails({
       team1: state?.team1?._id,
       team2: state?.team2?._id,
+      week: SETTING?.week,
     })
 
     const filterdBackupPlayer = data?.starters?.find((v) => v?.position?.toLowerCase() === 'bqb')
@@ -79,7 +86,7 @@ const GameDetails = () => {
 
       <main className='practice_squad_container wrapper'>
         {/* <ScheduleBox /> */}
-        <ButtonsAndPagination />
+        <ButtonsAndPagination noWeek={true} />
 
         {/* SCHEDULE TWO */}
         <section className='schedule_box2'>
@@ -117,7 +124,7 @@ const GameDetails = () => {
           <>
             <section className='starters-sec'>
               <h3>Starters</h3>
-              <div className='select_box'>
+              {/* <div className='select_box'>
                 <Select
                   defaultValue='week-1'
                   style={{ minWidth: 140 }}
@@ -129,7 +136,7 @@ const GameDetails = () => {
                     },
                   ]}
                 />
-              </div>
+              </div> */}
             </section>
             {/* PLAYER COMPARISION */}
             <section className='player-cards-container'>

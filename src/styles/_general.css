@@ -363,3 +363,17 @@ p {
   font-size: 13px;
   font-weight: 400;
 }
+
+/* You are viewing previous week data in view only mode */
+.locked_box {
+  display: flex;
+  padding: 30px 30px 0px 30px;
+  align-items: center;
+  justify-content: center;
+}
+.locked_box p {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--primary) !important;
+}

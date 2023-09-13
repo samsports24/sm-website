@@ -1,0 +1,299 @@
+.time_line_container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.time_line_container .buttons_and_pagination {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+.time_line_container .buttons_and_pagination .buttons_group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.time_line_container .buttons_and_pagination .buttons_group button {
+  padding: 10px 28px;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  border: 2px solid var(--primary);
+}
+.time_line_container .buttons_and_pagination .buttons_group button:hover {
+  background-color: transparent !important;
+}
+
+/* -------------------------------------------------- */
+.time_line_container .body_wrapper {
+  width: 100%;
+  overflow-x: auto;
+  /* display: flex; */
+  /* justify-content: center; */
+  /* align-items: center; */
+}
+
+.time_line_container .body_content {
+  width: 1500px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* LEFT */
+.time_line_container .body_content .body_content_left {
+  display: flex;
+}
+.time_line_container .body_content .body_content_left .card_01 {
+  width: 130px !important;
+  padding: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid var(--borderColor);
+  border-radius: 16px;
+  height: max-content;
+}
+.time_line_container .body_content .body_content_left .card_01 p {
+  color: var(--text);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  opacity: 0.5;
+}
+.time_line_container .body_content .body_content_left .card_01 h2 {
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+/* CENTER */
+.time_line_container .body_content .body_content_center {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.time_line_container .body_content .timeline_row {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  border-radius: 16px;
+  border: 1px solid var(--borderColor);
+  padding: 12px;
+}
+
+/* RIGHT */
+.time_line_container .body_content .body_content_right {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* BENCH */
+.bench_player_box {
+  width: 800px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  margin-left: 250px;
+  margin-bottom: 30px;
+  overflow: hidden;
+}
+.bench_player_box header {
+  width: 100%;
+  background-color: var(--primaryPurple);
+  border-radius: 16px 16px 0px 0px;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 17px;
+}
+.bench_player_box header h3 {
+  color: var(--text);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+}
+.bench_player_box header p {
+  color: var(--primary) !important;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+}
+.bench_player_box .bench_player_body {
+  padding: 19px 17px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 386px;
+  overflow-y: auto;
+}
+.bench_player_box .bench_player_body .bench_player_card {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  border: 1px solid var(--borderColor);
+  background-color: var(--primaryPurple);
+  padding: 12px;
+  border-radius: 10px;
+}
+.bench_player_box .bench_player_body .bench_player_card .left {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  border: 1px solid var(--borderColor);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bench_player_box .bench_player_body .bench_player_card .left img {
+  width: auto;
+  height: 80px;
+  border-radius: 10px;
+}
+.bench_player_box .bench_player_body .bench_player_card .center {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
+  border-radius: 10px;
+  border: 1px solid var(--borderColor);
+  padding: 12px 18px;
+}
+.bench_player_box .bench_player_body .bench_player_card .center div .text1 {
+  color: var(--text);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  opacity: 0.5;
+}
+.bench_player_box .bench_player_body .bench_player_card .center div .text2 {
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
+}
+.bench_player_box .bench_player_body .bench_player_card .center div .last_text {
+  color: var(--text);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  opacity: 0.5;
+}
+
+.bench_player_box .bench_player_body .bench_player_card .right {
+  width: max-content;
+  height: 80px;
+  border-radius: 10px;
+  border: 1px solid var(--borderColor);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding-inline: 30px;
+}
+.bench_player_box .bench_player_body .bench_player_card .right p {
+  color: var(--text);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  opacity: 0.5;
+}
+.bench_player_box .bench_player_body .bench_player_card .right h4 {
+  color: var(--text);
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+/* EMPTY */
+.timeline_card_line {
+  width: 170px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.timeline_card_line p {
+  color: var(--text);
+  font-size: 34px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+}
+/* CARD */
+.timeline_card {
+  width: 170px;
+  border-radius: 10px;
+  border: 1px solid var(--borderColor);
+}
+.timeline_card .image_box {
+  width: 170px;
+  height: 130px;
+  padding: 8px 24px 0px 24px;
+  overflow: hidden;
+}
+.timeline_card .image_box img {
+  width: auto;
+  height: 100%;
+}
+.hockey_icon_box {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 8px;
+}
+.hockey_icon_box svg {
+  color: var(--primary);
+}
+
+.timeline_card .text_box {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  height: 35px;
+  background-color: var(--primaryPurple);
+}
+
+.timeline_card h4 {
+  color: var(--text);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1;
+}
+.timeline_card p {
+  color: var(--text);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}

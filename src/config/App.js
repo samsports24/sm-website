@@ -6,11 +6,12 @@ import '../styles/style.css'
 import Routes from './Routes'
 import { light, dark } from './theme'
 import { getUser } from '../redux'
+// import { version } from './constants'
+// import { notification } from 'antd'
 
 const App = () => {
   const theme = useSelector((state) => state.theme.theme)
   const dispatch = useDispatch()
-
   useEffect(() => {
     if (theme === 'light') {
       Object.keys(light).forEach((key) => {
@@ -24,6 +25,15 @@ const App = () => {
   }, [theme])
 
   useEffect(() => {
+    // if (localStorage.getItem('version') !== version) {
+    //   window.location.href = '/login'
+    //   localStorage.clear()
+    //   localStorage.setItem('version', version)
+    //   notification.error({
+    //     message: `Try login again!`,
+    //     duration: 6,
+    //   })
+    // }
     if (localStorage.getItem('token')) {
       dispatch(getUser())
     }

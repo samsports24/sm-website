@@ -123,7 +123,7 @@ const TeamSetting = () => {
       {/* HEADER */}
       <Header />
 
-      <ButtonsAndPagination />
+      <ButtonsAndPagination noWeek={true} />
 
       <hr className='divider' />
 

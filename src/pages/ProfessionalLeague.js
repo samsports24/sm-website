@@ -12,21 +12,31 @@ import RollingNewsFeed from '../components/RollingNewsFeed'
 import TransactionTracker from '../components/TransactionTracker'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import { getProfessionalLeagueRanks, getScheduleByWeek } from '../redux'
+import { useSelector } from 'react-redux'
+import Loader from '../components/Loader'
+
+// WILL BE RENDER FOR HOCKEY
+// import LeagueStandingsHockey from '../components/LeagueStandingsHockey'
 
 const ProfessionalLeague = () => {
+  const SETTING = useSelector((state) => state?.user?.setting)
   const [ranks, setRanks] = useState(null)
   const [data, setData] = useState([])
+  const [isLoading, setIsloading] = useState(true)
 
   useEffect(() => {
-    ;(async () => {
-      let data = await getProfessionalLeagueRanks()
-      setRanks(data)
-      getDataByWeek()
-    })()
-  }, [])
+    getTeamAndPlayerRank()
+  }, [SETTING?.week])
 
+  const getTeamAndPlayerRank = async () => {
+    setIsloading(true)
+    let data = await getProfessionalLeagueRanks(SETTING?.week)
+    setRanks(data)
+    await getDataByWeek()
+    setIsloading(false)
+  }
   const getDataByWeek = async () => {
-    const res = await getScheduleByWeek(1)
+    const res = await getScheduleByWeek(SETTING?.week)
     setData(res)
   }
 
@@ -54,24 +64,33 @@ const ProfessionalLeague = () => {
       {/* HEADER */}
       <Header />
 
-      <ButtonsAndPagination />
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <>
+          <ButtonsAndPagination />
 
-      <section className='league_details_container'>
-        <div className='left'>
-          <LeagueStandings data={ranks?.teamRanks} />
-        </div>
-        <div className='center'>
-          {[data?.[0]].map((item, index) => (
-            <MatchUpOfTheWeek key={index} data={{ ...item }} />
-          ))}
-          <RollingNewsFeed />
-          <TransactionTracker />
-        </div>
-        <div className='right'>
-          <PowerRanking data={ranks?.teamRanks} />
-          <PlayerRanking data={ranks?.playerRanks} />
-        </div>
-      </section>
+          <section className='league_details_container'>
+            <div className='left'>
+              <LeagueStandings data={ranks?.teamRanks} />
+
+              {/* WILL BE RENDER FOR HOCKEY */}
+              {/* <LeagueStandingsHockey data={[]} /> */}
+            </div>
+            <div className='center'>
+              {[data?.[0]].map((item, index) => (
+                <MatchUpOfTheWeek key={index} data={{ ...item }} />
+              ))}
+              <RollingNewsFeed />
+              <TransactionTracker />
+            </div>
+            <div className='right'>
+              <PowerRanking data={ranks?.teamRanks} />
+              <PlayerRanking data={ranks?.playerRanks} />
+            </div>
+          </section>
+        </>
+      )}
     </div>
   )
 }

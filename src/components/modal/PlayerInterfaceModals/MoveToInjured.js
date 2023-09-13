@@ -2,8 +2,10 @@ import { Button, Modal } from 'antd'
 import React, { useState } from 'react'
 import { moveToIr } from '../../../redux/actions/rosterAction'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 const MoveToInjured = ({ disabled, getData }) => {
+  const SETTING = useSelector((state) => state?.user?.setting)
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const showModal = () => setOpen(true)
@@ -16,6 +18,7 @@ const MoveToInjured = ({ disabled, getData }) => {
     setLoading(true)
     const res = await moveToIr({
       id,
+      week: SETTING?.week,
     })
     if (res) {
       await getData()

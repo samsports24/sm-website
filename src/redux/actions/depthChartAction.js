@@ -1,7 +1,7 @@
 import { notification } from 'antd'
 import {
   attachToken,
-  legalPlayers,
+  // legalPlayers,
   //  legalPlayers,
   privateAPI,
 } from '../../config/constants'
@@ -9,12 +9,13 @@ import {
 export const getActiveRosterCount = async (payload) => {
   try {
     attachToken()
-    const res = await privateAPI.get('/depthChart/get-active-roster-count')
+    const res = await privateAPI.get(`/depthChart/get-active-roster-count/${payload.week}`)
     if (res) {
-      const depthChart =
-        (res.data.data?.activePlayers === legalPlayers && (await getDepthChartByType(payload))) ||
-        []
-      // const depthChart = (await getDepthChartByType(payload)) || []
+      // const depthChart =
+      //   (res.data.data?.activePlayers === legalPlayers && (await getDepthChartByType(payload))) ||
+      //   []
+
+      const depthChart = (await getDepthChartByType(payload)) || []
       return { count: res.data.data?.activePlayers, data: depthChart }
     }
   } catch (err) {

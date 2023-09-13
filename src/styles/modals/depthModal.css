@@ -51,10 +51,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 50%;
 }
 .depth_modal .depth_modal_content .card_box .content_body .image_box img {
   height: 100%;
   width: auto;
+  border-radius: 50%;
 }
 .depth_modal .depth_modal_content .card_box .content_body .text1 {
   color: var(--text);

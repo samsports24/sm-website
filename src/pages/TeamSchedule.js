@@ -19,29 +19,28 @@ import {
   //  getAllTeam,
   getTeamSchedule,
 } from '../redux/actions/teamActions'
+import { useSelector } from 'react-redux'
 // import { useSelector } from 'react-redux'
 // import { GrFormClose } from 'react-icons/gr'
 
 const TeamSchedule = () => {
-  // const user = useSelector((state) => state.user.userDetails)
+  const { week } = useSelector((state) => state.user.setting)
   const [data, setData] = useState([])
   // const [allTeam, setAllTeam] = useState([])
   const [loading, setLoading] = useState(true)
   // const [selectedTeam, setSelectedTeam] = useState('')
 
-  useEffect(
-    () => {
-      getData()
-    },
-    [
-      // selectedTeam
-    ],
-  )
+  useEffect(() => {
+    getData()
+  }, [
+    week,
+    // selectedTeam
+  ])
 
   const getData = async () => {
     setLoading(true)
     // const res = await getTeamSchedule({ teamFilter: selectedTeam })
-    const res = await getTeamSchedule({ teamFilter: '' })
+    const res = await getTeamSchedule({ teamFilter: '', week })
     setData(res)
     setLoading(false)
   }

@@ -5,7 +5,7 @@ import { BiRightArrowAlt } from 'react-icons/bi'
 // Mock Data
 import { transactionTrackerData } from '../../pages/mockData'
 
-const TransactionTracker = () => {
+const TransactionTracker = ({ height = '343px' }) => {
   return (
     <div className='transaction_tracker_box'>
       <header>
@@ -14,7 +14,7 @@ const TransactionTracker = () => {
           View All <BiRightArrowAlt size={18} />
         </p>
       </header>
-      <section className='transaction_tracker_body'>
+      <section className='transaction_tracker_body' style={{ maxHeight: height }}>
         {transactionTrackerData?.map((v, i) => {
           return (
             <div key={i} className='card_box'>

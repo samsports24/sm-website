@@ -399,9 +399,10 @@
   /* background-blend-mode: color-dodge; */
 }
 .player_interface_container .player_info_box_new .left {
-  background: url('../../assets/player-img-2.png');
-  background-repeat: no-repeat;
-  background-position: right bottom;
+  /* background: url('../../assets/player-img-2.png'); */
+  background-repeat: no-repeat !important;
+  background-position: right bottom !important;
+  background-size: 50% auto !important;
   /* height: 380px; */
   height: 100%;
   min-height: 415px;

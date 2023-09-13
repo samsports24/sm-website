@@ -1,7 +1,8 @@
 import { Button, Typography, Dropdown } from 'antd'
 import WeekPagination from '../WeekPagination'
 import { useNavigate } from 'react-router-dom'
-const ButtonsAndPagination = ({ noWeek }) => {
+import { isLocked } from '../../config/constants'
+const ButtonsAndPagination = ({ noWeek, goLive = false }) => {
   const navigate = useNavigate()
 
   const playerItems = [
@@ -224,29 +225,36 @@ const ButtonsAndPagination = ({ noWeek }) => {
   ]
 
   return (
-    <section className='buttons_and_pagination'>
-      <div className='buttons_group'>
-        <Button
-          type='primary'
-          onClick={() => {
-            navigate('/professional-league')
-          }}
-        >
-          Home
-        </Button>
-        <Dropdown trigger={['hover', 'click']} menu={{ items: teamItems }}>
-          <Button type='primary'>Team</Button>
-        </Dropdown>
-        <Dropdown trigger={['hover', 'click']} menu={{ items: playerItems }}>
-          <Button type='primary'>Players</Button>
-        </Dropdown>
+    <>
+      <section className='buttons_and_pagination'>
+        <div className='buttons_group'>
+          <Button
+            type='primary'
+            onClick={() => {
+              navigate('/professional-league')
+            }}
+          >
+            Home
+          </Button>
+          <Dropdown trigger={['hover', 'click']} menu={{ items: teamItems }}>
+            <Button type='primary'>Team</Button>
+          </Dropdown>
+          <Dropdown trigger={['hover', 'click']} menu={{ items: playerItems }}>
+            <Button type='primary'>Players</Button>
+          </Dropdown>
 
-        <Dropdown trigger={['hover', 'click']} menu={{ items: leagueItems }}>
-          <Button type='primary'>League</Button>
-        </Dropdown>
-      </div>
-      {!noWeek && <WeekPagination />}
-    </section>
+          <Dropdown trigger={['hover', 'click']} menu={{ items: leagueItems }}>
+            <Button type='primary'>League</Button>
+          </Dropdown>
+        </div>
+        {!noWeek && <WeekPagination goLive={goLive} />}
+      </section>
+      {isLocked() && (
+        <div className='locked_box'>
+          <p>You are viewing previous week data in view only mode.</p>
+        </div>
+      )}
+    </>
   )
 }
 

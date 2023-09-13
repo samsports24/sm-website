@@ -1,8 +1,11 @@
-import dayjs from 'dayjs'
 import React from 'react'
+import dayjs from 'dayjs'
 import { BiRightArrowAlt } from 'react-icons/bi'
+import { useNavigate } from 'react-router-dom'
 
 const MatchUpOfTheWeek = ({ data: v }) => {
+  const navigate = useNavigate()
+
   return (
     <div className='match_up_box'>
       <div className='header'>
@@ -38,7 +41,19 @@ const MatchUpOfTheWeek = ({ data: v }) => {
           </div>
         </div>
       </div>
-      <div className='footer'>
+      <div
+        className='footer'
+        onClick={() => {
+          navigate('/game-details', {
+            state: {
+              team1: v?.opponentOne,
+              team2: v?.opponentTwo,
+              scoreOne: v?.opponentOne?.points,
+              scoreTwo: v?.opponentTwo?.points,
+            },
+          })
+        }}
+      >
         <h3>
           Must-Watch Game of the Week <BiRightArrowAlt size={20} style={{ marginBottom: '-4px' }} />
         </h3>

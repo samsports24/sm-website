@@ -31,23 +31,23 @@ const LeagueStandings = ({ data }) => {
               <div className='content'>
                 <div>
                   <p className='text1'>W‑L‑T</p>
-                  <p className='text2'>{`${v?.win}-${v?.lose}-${v?.tie}`}</p>
+                  <p className='text2'>{`${v?.teamScore?.win}-${v?.teamScore?.lose}-${v?.teamScore?.tie}`}</p>
                 </div>
                 <div>
                   <p className='text1'>AVG PF</p>
-                  <p className='text2'>{v?.avgPf}</p>
+                  <p className='text2'>{v?.teamScore?.avgPf}</p>
                 </div>
                 <div>
                   <p className='text1'>AVG PA</p>
-                  <p className='text2'>{v?.avgPa}</p>
+                  <p className='text2'>{v?.teamScore?.avgPa}</p>
                 </div>
                 <div>
                   <p className='text1'>DIV W‑L‑T</p>
-                  <p className='text2'>{`${v?.divWin}-${v?.divLose}-${v?.divTie}`}</p>
+                  <p className='text2'>{`${v?.teamScore?.divWin}-${v?.teamScore?.divLose}-${v?.teamScore?.divTie}`}</p>
                 </div>
                 <div>
                   <p className='text1'>DIV W‑L‑T</p>
-                  <p className='text2'>{`${v?.confWin}-${v?.confLose}-${v?.confTie}`}</p>
+                  <p className='text2'>{`${v?.teamScore?.confWin}-${v?.teamScore?.confLose}-${v?.teamScore?.confTie}`}</p>
                 </div>
               </div>
             </div>

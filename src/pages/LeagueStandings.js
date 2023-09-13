@@ -9,11 +9,13 @@ import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 // import { leagueStandingData } from './mockData'
 import { getLeagueStandings } from '../redux'
 import Loader from '../components/Loader'
+import { useSelector } from 'react-redux'
 
 const LeagueStandings = () => {
   // const handlePagination = (page) => {
   //   console.log(page)
   // }
+  const setting = useSelector((state) => state?.user?.setting)
 
   const [standings, setStandings] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -21,7 +23,7 @@ const LeagueStandings = () => {
   useEffect(() => {
     ;(async () => {
       setLoading(true)
-      let data = await getLeagueStandings()
+      let data = await getLeagueStandings(setting?.week)
       setStandings(data)
       setLoading(false)
     })()

@@ -3,6 +3,7 @@ import { Tooltip } from 'antd'
 import React, { useState } from 'react'
 
 import DepthChartModal from '../modal/DepthChart'
+import { isLocked } from '../../config/constants'
 
 const DepthCard = ({ data, index, getDepthChartData }) => {
   const [modalIndex, setModalIndex] = useState(-1)
@@ -18,9 +19,12 @@ const DepthCard = ({ data, index, getDepthChartData }) => {
       <div
         className={`depth_card_box ${classKey}`}
         onClick={() => {
-          setModalIndex(index)
-          setOpenModal(true)
+          if (!isLocked()) {
+            setModalIndex(index)
+            setOpenModal(true)
+          }
         }}
+        style={{ cursor: isLocked() ? 'no-drop' : 'pointer' }}
       >
         <div className='image_box'>
           <img src={imageUrl} />

@@ -3,8 +3,10 @@ import React, { useState } from 'react'
 import { releasePlayer } from '../../../redux/actions/rosterAction'
 import { useParams, useNavigate } from 'react-router-dom'
 import Processed from './Processed'
+import { useSelector } from 'react-redux'
 
 const ReleasePlayer = () => {
+  const SETTING = useSelector((state) => state?.user?.setting)
   const [open, setOpen] = useState(false)
   const [confirmModal, setConfirmModal] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -16,7 +18,7 @@ const ReleasePlayer = () => {
 
   const _releasePlayer = async () => {
     setLoading(true)
-    const res = await releasePlayer(id)
+    const res = await releasePlayer({ id: Number(id), week: SETTING?.week })
     if (res) {
       setConfirmModal(false)
       closeModal()

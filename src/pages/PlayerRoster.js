@@ -2,18 +2,22 @@ import React, { useEffect, useState } from 'react'
 
 import { Breadcrumb, Button, notification } from 'antd'
 import Arrow from '../assets/arrow-right.svg'
+
 // Component
 import DepthCard from '../components/DepthCard'
 import Header from '../components/Header'
-
-// Mock Data
-import { depthCardData } from './mockData'
 import PlayerRosterCard from '../components/PlayerRosterCard'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import Loader from '../components/Loader'
+
+// Mock Data
+import { depthCardData } from './mockData'
+
 import { getRoster, setNonActivePlayer, setProtectedPlayer } from '../redux/actions/rosterAction'
+import { useSelector } from 'react-redux'
 
 const PlayerRoster = () => {
+  const SETTING = useSelector((state) => state?.user?.setting)
   const [activeFilter] = useState('Roster')
   const [data, setData] = useState([])
   const [activePlayerData, setActivePlayerData] = useState([])
@@ -36,9 +40,16 @@ const PlayerRoster = () => {
     }
   }
   const handleSubmit = async () => {
+    // const lineupId = activePlayerData[0]?._id
     if (nonActive?.length === 7) {
       setSubmitLoading(true)
-      await setNonActivePlayer(nonActive)
+      await setNonActivePlayer(
+        {
+          // lineupId,
+          ids: nonActive,
+        },
+        SETTING.week,
+      )
       setSubmitLoading(false)
     } else {
       notification.error({
@@ -61,9 +72,17 @@ const PlayerRoster = () => {
     }
   }
   const handleProtectedSubmit = async () => {
+    // const lineupId = practiveSquadData[0]?._id
+
     if (protectedCheck?.length === 4) {
       setSubmitLoading(true)
-      await setProtectedPlayer(protectedCheck)
+      await setProtectedPlayer(
+        {
+          // lineupId,
+          ids: protectedCheck,
+        },
+        SETTING.week,
+      )
       setSubmitLoading(false)
     } else {
       notification.error({
@@ -77,47 +96,32 @@ const PlayerRoster = () => {
     const filterdData = depthCardData?.filter((v) => v?.type === activeFilter?.toLocaleLowerCase())
     setData(filterdData)
     getData()
-  }, [activeFilter])
+  }, [activeFilter, SETTING?.week])
 
   const getData = async () => {
     setLoading(true)
-    const res = await getRoster()
+    const res = await getRoster(SETTING?.week)
     if (res) {
-      // const filtered = res?.players?.map((v) => {
-      //   const filterStats = res?.stats?.filter((x) => v?._id === x?.player)
-      //   let updateStats = {}
-      //   filterStats?.forEach((val) => {
-      //     if (v.ByeWeek && v.ByeWeek === val.weekNo) {
-      //       updateStats[`score${val.weekNo}`] = 'B'
-      //     } else {
-      //       updateStats[`score${val.weekNo}`] = val.score
-      //     }
-      //   })
-      //   return {
-      //     ...v,
-      //     stats: updateStats,
-      //   }
-      // })
-      const activePlayer = res?.players?.filter(
-        (v) => v?.inPracticeSquad == false && v?.isPlayerInjured == false,
-      )
-      const practiceSquad = res?.players?.filter(
-        (v) => v?.inPracticeSquad === true && v?.isPlayerInjured == false,
-      )
+      // const activePlayer = res?.players?.filter(
+      //   (v) => v?.inPracticeSquad == false && v?.isPlayerInjured == false,
+      // )
+      // const practiceSquad = res?.players?.filter(
+      //   (v) => v?.inPracticeSquad === true && v?.isPlayerInjured == false,
+      // )
       const nonAcitvePlayer = []
-      activePlayer?.forEach((v) => {
-        if (v?.isActive !== true) {
-          nonAcitvePlayer.push(v?._id)
+      res?.active?.forEach((v) => {
+        if (v?.players?.isActive !== true) {
+          nonAcitvePlayer.push(v?.players?.PlayerID)
         }
       })
       const protectedPlayer = []
-      practiceSquad?.forEach((v) => {
-        if (v?.isPlayerProtected == true) {
-          protectedPlayer.push(v?._id)
+      res?.practice?.forEach((v) => {
+        if (v?.players?.isPlayerProtected == true) {
+          protectedPlayer.push(v?.players?.PlayerID)
         }
       })
-      setActivePlayerData(activePlayer)
-      setPractiveSquadData(practiceSquad)
+      setActivePlayerData(res?.active)
+      setPractiveSquadData(res?.practice)
       setNonActive(nonAcitvePlayer)
       setProtectedCheck(protectedPlayer)
     }
