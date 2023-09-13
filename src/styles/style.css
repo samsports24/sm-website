@@ -91,5 +91,8 @@
 @import './pages/totalPayment.css';
 @import './pages/league.css';
 
-/* HOCKEY */
+/* COMPONENT HOCKEY */
+@import './components/leagueStandingsHockey.css';
+
+/* PAGE HOCKEY */
 @import './pages/teamLIne.css';

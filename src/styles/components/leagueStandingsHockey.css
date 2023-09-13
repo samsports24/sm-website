@@ -1,0 +1,189 @@
+.league_standings_box {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+
+.league_standings_box header {
+  width: 100%;
+  background-color: var(--primaryPurple);
+  border-radius: 16px 16px 0px 0px;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 17px;
+}
+.league_standings_box header h3 {
+  color: var(--text);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+}
+.league_standings_box header p {
+  color: var(--primary);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+}
+
+.league_standings_box .league_standings_body {
+  padding: 19px 17px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 850px;
+  overflow-y: auto;
+}
+
+.league_standings_box .league_standings_body .header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-block: 0px;
+  margin-bottom: 7px;
+}
+.league_standings_box .league_standings_body .header .header_1 {
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.league_standings_box .league_standings_body .header .header_1 h2 {
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+  opacity: 0.5;
+}
+.league_standings_box .league_standings_body .header .header_2 {
+  flex: 1;
+  margin-right: 12px;
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+}
+.league_standings_box .league_standings_body .header .header_2 h2 {
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+.league_standings_box .league_standings_body .header .header_3 {
+  margin-right: 12px;
+  min-width: 40px;
+}
+.league_standings_box .league_standings_body .header .header_3 h2,
+.league_standings_box .league_standings_body .header .header_4 h2 {
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  color: var(--primary) !important;
+}
+.league_standings_box .league_standings_body .header .header_4 {
+  min-width: 50px;
+}
+
+.league_standings_box .league_standings_card_box .heading {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 12px;
+  opacity: 0.5;
+  background: #080611;
+  color: var(--text);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.league_standings_box .league_standings_card_box {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.league_standings_box .league_standings_body .row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-block: 5px;
+  background-color: var(--primaryPurple);
+}
+.league_standings_box .league_standings_body .row .row_1 {
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.league_standings_box .league_standings_body .row .row_1 h2 {
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+  opacity: 0.5;
+}
+.league_standings_box .league_standings_body .row .row_2 {
+  flex: 1;
+  margin-right: 12px;
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+}
+.league_standings_box .league_standings_body .row .row_2 div {
+  width: 28px;
+  height: 28px;
+  overflow: hidden;
+}
+.league_standings_box .league_standings_body .row .row_2 div img {
+  width: auto;
+  height: 28px;
+}
+.league_standings_box .league_standings_body .row .row_2 h2 {
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  color: var(--primary) !important;
+}
+.league_standings_box .league_standings_body .row .row_3 {
+  margin-right: 12px;
+  min-width: 40px;
+}
+.league_standings_box .league_standings_body .row .row_3 h2,
+.league_standings_box .league_standings_body .row .row_4 h2 {
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  color: var(--text) !important;
+}
+.league_standings_box .league_standings_body .row .row_4 {
+  min-width: 50px;
+}
+
+@media (max-width: 768px) {
+  .league_standings_box header {
+    flex-wrap: wrap;
+    gap: 0px;
+  }
+  .league_standings_box header h3 {
+    font-size: 13px;
+  }
+  .league_standings_box header p {
+    font-size: 12px;
+  }
+}

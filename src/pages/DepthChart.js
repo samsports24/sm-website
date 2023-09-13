@@ -19,7 +19,10 @@ import {
   legalPlayers,
   nonActivePlayers,
 } from '../config/constants'
+
 import { useSelector } from 'react-redux'
+
+import { MdLock } from 'react-icons/md'
 
 const DepthChart = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
@@ -100,13 +103,31 @@ const DepthChart = () => {
         <Loader />
       ) : (
         <section style={{ position: 'relative' }}>
+          {/* ILLEGAL ROSTER */}
           <div
             className='overlay'
-            style={{ display: activeCount == legalPlayers ? 'none' : 'flex' }}
+            style={{
+              display:
+                activeCount != legalPlayers && SETTING?.isGameLocked === false ? 'flex' : 'none',
+            }}
           >
             <h2>{`You have an illegal Roster`}</h2>
             <h4>{`kindly have ${activeRosterCount} players and ${nonActivePlayers} non active players on the roster`}</h4>
           </div>
+
+          {/* LOCKED */}
+          <div
+            className='overlay'
+            style={{
+              display: SETTING?.isGameLocked ? 'flex' : 'none',
+            }}
+          >
+            <MdLock size={100} color={'#fff'} />
+            <h1
+              style={{ fontSize: '30px', color: '#fff !important' }}
+            >{`Depth chart is locked till the game ends.`}</h1>
+          </div>
+
           {/* FILTER */}
           <ColorFilter
             data={['offense', 'defense', 'special team']}

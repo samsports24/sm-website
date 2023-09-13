@@ -15,6 +15,9 @@ import { getProfessionalLeagueRanks, getScheduleByWeek } from '../redux'
 import { useSelector } from 'react-redux'
 import Loader from '../components/Loader'
 
+// WILL BE RENDER FOR HOCKEY
+// import LeagueStandingsHockey from '../components/LeagueStandingsHockey'
+
 const ProfessionalLeague = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
   const [ranks, setRanks] = useState(null)
@@ -70,6 +73,9 @@ const ProfessionalLeague = () => {
           <section className='league_details_container'>
             <div className='left'>
               <LeagueStandings data={ranks?.teamRanks} />
+
+              {/* WILL BE RENDER FOR HOCKEY */}
+              {/* <LeagueStandingsHockey data={[]} /> */}
             </div>
             <div className='center'>
               {[data?.[0]].map((item, index) => (

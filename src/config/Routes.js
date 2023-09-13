@@ -64,7 +64,7 @@ import { notification } from 'antd'
 import { useEffect } from 'react'
 
 // HOCKEY
-// import TeamLine from '../pages/TeamLine'
+import TeamLine from '../pages/TeamLine'
 
 const Routers = () => {
   const Component = () => {
@@ -158,7 +158,7 @@ const Routers = () => {
           {/* <Route path='/practice-squad' element={<PracticeSquad />} /> */}
 
           {/* HOCKEY */}
-          {/* <Route path='/team-line' element={<TeamLine />} /> */}
+          <Route path='/team-line' element={<TeamLine />} />
         </Route>
 
         <Route path='/login' element={<Login />} />

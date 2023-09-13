@@ -63,7 +63,6 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
   }
 
   const Card = ({ data, button = false }) => {
-    console.log('DATA', data)
     const { players: p } = data
 
     return (
@@ -113,16 +112,6 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
     )
   }
 
-  // const EmptyCard = () => {
-  //   return (
-  //     <div className='content_body'>
-  //       <div className='image_box'>
-  //         <GiAmericanFootballPlayer size={35} color={'#c4c4c4'} />
-  //       </div>
-  //     </div>
-  //   )
-  // }
-
   return (
     <Modal
       centered
@@ -150,7 +139,7 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
               <h2 style={{ textTransform: 'uppercase' }}>{propsData?.Position}</h2>
             </div>
             <div className='scroll_section'>
-              {loading ? <Spinner /> : !!starter && <Card data={starter?.player} />}
+              {loading ? <Spinner /> : !!starter && <Card data={starter} />}
             </div>
           </div>
         )}

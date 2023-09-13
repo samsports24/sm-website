@@ -3,6 +3,7 @@ const initialState = {
   currentWeek: localStorage.getItem('week'),
   setting: {
     week: localStorage.getItem('week'),
+    isGameLocked: false,
   },
 }
 
@@ -17,6 +18,7 @@ const userReducer = (state = initialState, action) => {
         setting: {
           ...state?.setting,
           week: payload?.setting?.week,
+          isGameLocked: payload?.setting?.isGameLocked,
         },
       }
     }

@@ -1,4 +1,4 @@
-.league-score-card {
+/* .league-score-card {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -56,4 +56,75 @@
   padding-block: 50px;
   font-weight: 700;
   font-size: 15px;
+} */
+
+.league_score_card_new {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1 0 0;
+  background: var(--primaryPurple);
+  border-radius: 16px;
+  width: 100%;
+  padding: 15px 20px;
+}
+.league_score_card_content_main {
+  display: flex;
+  flex-direction: row;
+  /* gap: 30px; */
+  width: 100%;
+}
+.league_score_card_heading_top {
+  height: 45px;
+}
+.league_score_card_heading_top h4 {
+  padding-left: 20px;
+  text-align: right;
+  padding-top: 18px;
+}
+.league_score_box {
+  border-top: 1px solid var(--borderColor);
+  border-bottom: 1px solid var(--borderColor);
+  padding-block: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100px;
+}
+/* .league_score_box .img_box {
+  width: 20px;
+  height: 20px;
+}
+.league_score_box .img_box img {
+  width: 20px;
+  height: auto;
+} */
+.league_score_box h4,
+.league_score_box p {
+  padding-left: 20px;
+}
+.league_score_box p {
+  margin-top: 2px;
+}
+
+.league_score_card_new .opacity {
+  opacity: 0.5;
+}
+
+@media (max-width: 550px) {
+  .league_score_card_heading_top h2 {
+    font-size: 16px;
+  }
+  .league_score_box h3 {
+    font-size: 13px;
+  }
+  .league_score_card_heading_top h4 {
+    font-size: 10px;
+  }
+  .league_score_box p {
+    min-width: 65px;
+    font-size: 13px;
+    margin-top: 0px;
+  }
 }

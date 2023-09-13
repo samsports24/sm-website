@@ -1,6 +1,5 @@
-import { Button } from 'antd'
-// import moment from 'moment'
 import React from 'react'
+import { Button } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { AiOutlineArrowRight } from 'react-icons/ai'
 import dayjs from 'dayjs'
@@ -9,42 +8,50 @@ const LeagueScoreCard = ({ data: v }) => {
   const navigate = useNavigate()
 
   return (
-    <div className='league-score-card'>
-      <h2>
-        {`${dayjs(v?.matchStartDate).format('ddd DD')} / ${dayjs(v?.matchEndDate).format('DD')}`}
-      </h2>
-      <div className='line'></div>
-      {/* {data?.scores?.map((v, index) => ( */}
-      <div className='score-row'>
-        <div className='d-flex' style={{ gap: '10px' }}>
-          <img src={v?.image} />
-          <p>
-            {v?.opponentOne?.name}&nbsp;
-            <span style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }}>
-              ({v?.scoreOne})
-            </span>
-          </p>
+    <div className='league_score_card_new'>
+      <div className='league_score_card_content_main'>
+        <div className='league_score_card_content_left'>
+          <div className='league_score_card_heading_top'>
+            <h2>
+              {`${dayjs(v?.matchStartDate).format('ddd DD')} / ${dayjs(v?.matchEndDate).format(
+                'DD',
+              )}`}
+            </h2>
+          </div>
+          <div className='league_score_box'>
+            <div className='d-flex' style={{ gap: '10px', alignItems: 'center' }}>
+              {/* <div className='img_box'>
+                <img src={v?.opponentOne?.logo} />
+              </div> */}
+              <h3 className='opacity'>{v?.opponentOne?.name}</h3>
+            </div>
+            <div className='d-flex' style={{ gap: '10px', alignItems: 'center' }}>
+              {/* <div className='img_box'>
+                <img src={v?.opponentTwo?.logo} />
+              </div> */}
+              <h3 className='opacity'>{v?.opponentTwo?.name}</h3>
+            </div>
+          </div>
         </div>
-        <h6>
-          0-0-<span>0</span>
-        </h6>
-      </div>
-      <div className='score-row'>
-        <div className='d-flex' style={{ gap: '10px' }}>
-          <img src={v?.image} />
-          <p>
-            {v?.opponentTwo?.name}&nbsp;
-            <span style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }}>
-              ({v?.scoreTwo})
-            </span>
-          </p>
+        <div className='league_score_card_content_center'>
+          <div className='league_score_card_heading_top'>
+            <h4>Record</h4>
+          </div>
+          <div className='league_score_box'>
+            <p className='opacity'>0-0-0</p>
+            <p className='opacity'>0-0-0</p>
+          </div>
         </div>
-        <h6>
-          0-0-<span>0</span>
-        </h6>
+        <div className='league_score_card_content_right' style={{ flex: 1 }}>
+          <div className='league_score_card_heading_top'>
+            <h4 style={{ textAlign: 'right' }}>GAME SCORE</h4>
+          </div>
+          <div className='league_score_box'>
+            <p style={{ textAlign: 'right' }}>{v?.scoreOne}</p>
+            <p style={{ textAlign: 'right' }}>{v?.scoreTwo}</p>
+          </div>
+        </div>
       </div>
-      {/* ))} */}
-      <div className='line'></div>
       <Button
         onClick={() => {
           navigate('/game-details', {
