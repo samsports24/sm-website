@@ -35,7 +35,6 @@ const LeagueScore = () => {
     setLoading(true)
     const res = await getScheduleByWeek(week)
     setData(res)
-    console.log('res ===>', res)
     setLoading(false)
   }
 
