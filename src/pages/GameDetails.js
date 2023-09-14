@@ -189,7 +189,7 @@ const GameDetails = () => {
             <section className='player-cards-container'>
               {Data?.bench1?.map((v, i) => (
                 <div key={i} className='row'>
-                  <ScoreCardPlayer alignment='left' data={{ player: { ...v } }} />
+                  <ScoreCardPlayer alignment='left' data={{ player: { ...v?.players } }} />
                   <div
                     className='position-label'
                     style={{ color: '#0CD9F5', backgroundColor: 'gray' }}
@@ -199,7 +199,7 @@ const GameDetails = () => {
                   <ScoreCardPlayer
                     alignment='right'
                     data={{
-                      player: { ...Data?.bench2[i] },
+                      player: { ...Data?.bench2[i]?.players },
                     }}
                   />
                 </div>

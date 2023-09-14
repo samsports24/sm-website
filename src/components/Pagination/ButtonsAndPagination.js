@@ -224,6 +224,11 @@ const ButtonsAndPagination = ({ noWeek, goLive = false }) => {
     },
   ]
 
+  console.log(
+    'window.location.href',
+    window.location.href,
+    !window.location.href?.includes('/leagueScore'),
+  )
   return (
     <>
       <section className='buttons_and_pagination'>
@@ -249,7 +254,7 @@ const ButtonsAndPagination = ({ noWeek, goLive = false }) => {
         </div>
         {!noWeek && <WeekPagination goLive={goLive} />}
       </section>
-      {isLocked() && (
+      {isLocked() && !window.location.href?.includes('/leagueScore') && (
         <div className='locked_box'>
           <p>You are viewing previous week data in view only mode.</p>
         </div>
