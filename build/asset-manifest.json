@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.68291182.css",
-    "main.js": "/static/js/main.59865354.js",
+    "main.js": "/static/js/main.de1ac6a2.js",
     "static/media/trans-league-banner.png": "/static/media/trans-league-banner.c6b03968a9f61ec4cad1.png",
     "static/media/rectangle-3.png": "/static/media/rectangle-3.aebbca7e8e6696c5f7c4.png",
     "static/media/login-pic-1.png": "/static/media/login-pic-1.38add10a7452b82cda4b.png",
@@ -17,7 +17,6 @@
     "static/media/banner-img-mob.png": "/static/media/banner-img-mob.dc68704617b7fd75f885.png",
     "static/media/img.png": "/static/media/img.6a67002e44345a678b48.png",
     "static/media/keith-johnston-basketball.png": "/static/media/keith-johnston-basketball.56806c3047d7eccd953f.png",
-    "static/media/hockey-1.png": "/static/media/hockey-1.bcd332943a3c39f10697.png",
     "static/media/news-feed-1.jpg": "/static/media/news-feed-1.fab9de4160634381dbb5.jpg",
     "static/media/rectangle-5.png": "/static/media/rectangle-5.2d3bdef16d75bdf891c5.png",
     "static/media/rectangle-7.png": "/static/media/rectangle-7.02920d6d234401ad0829.png",
@@ -62,9 +61,7 @@
     "static/media/defiance.png": "/static/media/defiance.8427e358605c6d85178d.png",
     "static/media/the_beast.png": "/static/media/the_beast.c764e52f4a29f5eaf762.png",
     "static/media/empire.png": "/static/media/empire.baf785a7a3bc4f7e9abf.png",
-    "static/media/hockey-2.png": "/static/media/hockey-2.e513fba71b8ee66d1bf6.png",
     "static/media/grid-iron-seals-square-2.png": "/static/media/grid-iron-seals-square-2.788aaf39a8f50703ed1e.png",
-    "static/media/hockey-3.png": "/static/media/hockey-3.a48ffb9455fb501c8854.png",
     "static/media/the_flying_foxes.png": "/static/media/the_flying_foxes.5ef4036d2b43115b4eb7.png",
     "static/media/seven_angles.png": "/static/media/seven_angles.0589342f7faab083a0ce.png",
     "static/media/surfdogs.png": "/static/media/surfdogs.fd7a456868d9d29499f3.png",
@@ -118,10 +115,10 @@
     "static/media/youtube.svg": "/static/media/youtube.7af310466ac639302e497d811125f845.svg",
     "static/media/fb.svg": "/static/media/fb.16c5459973b0c91dc2db50341cb0e76e.svg",
     "main.68291182.css.map": "/static/css/main.68291182.css.map",
-    "main.59865354.js.map": "/static/js/main.59865354.js.map"
+    "main.de1ac6a2.js.map": "/static/js/main.de1ac6a2.js.map"
   },
   "entrypoints": [
     "static/css/main.68291182.css",
-    "static/js/main.59865354.js"
+    "static/js/main.de1ac6a2.js"
   ]
 }
