@@ -144,13 +144,13 @@ const GameDetails = () => {
                 ?.filter((v) => v?.position?.toLowerCase() !== 'bqb')
                 .map((player, i) => (
                   <div key={player.position + i} className='row'>
-                    <ScoreCardPlayer alignment='left' data={player.player1} />
+                    <ScoreCardPlayer alignment='left' data={{ player: player.player1?.players }} />
                     <div className='position-label' style={{ color: '#0CD9F5' }}>
                       {player?.position?.split('/').map((pos) => (
                         <span key={pos}>{pos}</span>
                       ))}
                     </div>
-                    <ScoreCardPlayer alignment='right' data={player.player2} />
+                    <ScoreCardPlayer alignment='right' data={{ player: player.player2?.players }} />
                   </div>
                 ))}
               {/* <div className='row'>
@@ -171,11 +171,17 @@ const GameDetails = () => {
                 {/* PLAYER COMPARISION */}
                 <section className='player-cards-container'>
                   <div className='row'>
-                    <ScoreCardPlayer alignment='left' data={backupPlayer.player1} />
+                    <ScoreCardPlayer
+                      alignment='left'
+                      data={{ player: { ...backupPlayer.player1?.players } }}
+                    />
                     <div className='position-label' style={{ color: '#0CD9F5' }}>
                       <span>{backupPlayer?.position}</span>
                     </div>
-                    <ScoreCardPlayer alignment='right' data={backupPlayer.player2} />
+                    <ScoreCardPlayer
+                      alignment='right'
+                      data={{ player: { ...backupPlayer.player2?.players } }}
+                    />
                   </div>
                 </section>
               </>
