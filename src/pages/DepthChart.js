@@ -22,7 +22,7 @@ import {
 
 import { useSelector } from 'react-redux'
 
-import { MdLock } from 'react-icons/md'
+// import { MdLock } from 'react-icons/md'
 
 const DepthChart = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
@@ -52,6 +52,7 @@ const DepthChart = () => {
 
       if (res?.data?.length > 0) {
         res?.data.map((item) => {
+          console.log('item', item)
           let index = filtered.findIndex((item2) => {
             return item2.classKey === item.classKey
           })
@@ -62,6 +63,7 @@ const DepthChart = () => {
               Position: filtered[index].Position,
               classKey: filtered[index].classKey,
               type: filtered[index].type,
+              isPlayerLocked: item?.player?.isPlayerLocked ? item?.player?.isPlayerLocked : false,
             })
           }
         })
@@ -107,8 +109,9 @@ const DepthChart = () => {
           <div
             className='overlay'
             style={{
-              display:
-                activeCount != legalPlayers && SETTING?.isGameLocked === false ? 'flex' : 'none',
+              display: activeCount != legalPlayers ? 'flex' : 'none',
+              // display:
+              //   activeCount != legalPlayers && SETTING?.isGameLocked === false ? 'flex' : 'none',
             }}
           >
             <h2>{`You have an illegal Roster`}</h2>
@@ -116,7 +119,7 @@ const DepthChart = () => {
           </div>
 
           {/* LOCKED */}
-          <div
+          {/* <div
             className='overlay'
             style={{
               display: SETTING?.isGameLocked ? 'flex' : 'none',
@@ -126,7 +129,7 @@ const DepthChart = () => {
             <h1
               style={{ fontSize: '30px', color: '#fff !important' }}
             >{`Depth chart is locked till the game ends.`}</h1>
-          </div>
+          </div> */}
 
           {/* FILTER */}
           <ColorFilter

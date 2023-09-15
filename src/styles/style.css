@@ -55,6 +55,7 @@
 @import './components/sportsButtonMenu.css';
 @import './components/routesButton.css';
 @import './components/draftOrder.css';
+@import './components/squareBox.css';
 
 /* Page CSS */
 @import './pages/login.css';

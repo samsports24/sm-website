@@ -5,7 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import Processed from './Processed'
 import { useSelector } from 'react-redux'
 
-const ReleasePlayer = () => {
+const ReleasePlayer = ({ disabled }) => {
   const SETTING = useSelector((state) => state?.user?.setting)
   const [open, setOpen] = useState(false)
   const [confirmModal, setConfirmModal] = useState(false)
@@ -29,7 +29,7 @@ const ReleasePlayer = () => {
 
   return (
     <>
-      <Button type='primary' className='action-bar-btn' onClick={showModal}>
+      <Button disabled={disabled} type='primary' className='action-bar-btn' onClick={showModal}>
         Release Player
       </Button>
       <Modal

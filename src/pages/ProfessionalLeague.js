@@ -73,7 +73,6 @@ const ProfessionalLeague = () => {
           <section className='league_details_container'>
             <div className='left'>
               <LeagueStandings data={ranks?.teamRanks} />
-
               {/* WILL BE RENDER FOR HOCKEY */}
               {/* <LeagueStandingsHockey data={[]} /> */}
             </div>

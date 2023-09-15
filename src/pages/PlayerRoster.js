@@ -4,22 +4,16 @@ import { Breadcrumb, Button, notification } from 'antd'
 import Arrow from '../assets/arrow-right.svg'
 
 // Component
-import DepthCard from '../components/DepthCard'
 import Header from '../components/Header'
 import PlayerRosterCard from '../components/PlayerRosterCard'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import Loader from '../components/Loader'
-
-// Mock Data
-import { depthCardData } from './mockData'
 
 import { getRoster, setNonActivePlayer, setProtectedPlayer } from '../redux/actions/rosterAction'
 import { useSelector } from 'react-redux'
 
 const PlayerRoster = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
-  const [activeFilter] = useState('Roster')
-  const [data, setData] = useState([])
   const [activePlayerData, setActivePlayerData] = useState([])
   const [practiveSquadData, setPractiveSquadData] = useState([])
   const [nonActive, setNonActive] = useState([])
@@ -93,21 +87,13 @@ const PlayerRoster = () => {
   }
 
   useEffect(() => {
-    const filterdData = depthCardData?.filter((v) => v?.type === activeFilter?.toLocaleLowerCase())
-    setData(filterdData)
-    getData()
-  }, [activeFilter, SETTING?.week])
+    SETTING?.week !== 0 && getData()
+  }, [SETTING?.week])
 
   const getData = async () => {
     setLoading(true)
     const res = await getRoster(SETTING?.week)
     if (res) {
-      // const activePlayer = res?.players?.filter(
-      //   (v) => v?.inPracticeSquad == false && v?.isPlayerInjured == false,
-      // )
-      // const practiceSquad = res?.players?.filter(
-      //   (v) => v?.inPracticeSquad === true && v?.isPlayerInjured == false,
-      // )
       const nonAcitvePlayer = []
       res?.active?.forEach((v) => {
         if (v?.players?.isActive !== true) {
@@ -143,7 +129,7 @@ const PlayerRoster = () => {
               title: <p>Depth-Chart</p>,
             },
             {
-              title: <p>{activeFilter}</p>,
+              title: <p>Roster</p>,
             },
           ]}
         />
@@ -155,29 +141,17 @@ const PlayerRoster = () => {
       {/* FILTER */}
       <ButtonsAndPagination />
 
-      <section className='depth_chart_wrapper'>
-        <div
-          className={`depth_chart_cards ${
-            activeFilter === 'special team' ? 'special_team_container' : activeFilter + '_container'
-          }`}
-        >
-          {data?.map((v, i) => {
-            return <DepthCard key={i} data={v} index={i} />
-          })}
-        </div>
-      </section>
-
-      <div className='submit_button_box'>
-        <Button loading={submitLoading} onClick={handleSubmit} type='primary'>
-          Submit
-        </Button>
-      </div>
-
-      {/* STATS */}
       {loading ? (
         <Loader />
       ) : (
         <>
+          <div className='submit_button_box'>
+            <Button loading={submitLoading} onClick={handleSubmit} type='primary'>
+              Submit
+            </Button>
+          </div>
+
+          {/* ACTIVE SQUAD */}
           <section className='stats_container'>
             {activePlayerData?.map((v, i) => {
               return (
@@ -202,7 +176,7 @@ const PlayerRoster = () => {
             </Button>
           </div>
 
-          {/* STATS */}
+          {/* PRACTICE SQUAD */}
           <section className='stats_container'>
             {practiveSquadData?.map((v, i) => {
               return (
