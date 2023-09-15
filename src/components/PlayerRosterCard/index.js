@@ -29,9 +29,9 @@ const PlayerRosterCard = ({ data, index, style, state, handleClick, isPractice =
 
   return (
     <div className='stats_card_container' style={style || null}>
-      <div className='stats_card_locked_box' style={{ display: isPlayerLocked ? 'flex' : 'none' }}>
+      {/* <div className='stats_card_locked_box' style={{ display: isPlayerLocked ? 'flex' : 'none' }}>
         <MdLock size={25} color={'#fff'}></MdLock>
-      </div>
+      </div> */}
       <header>
         <h3
           style={{ cursor: 'pointer' }}
@@ -39,7 +39,8 @@ const PlayerRosterCard = ({ data, index, style, state, handleClick, isPractice =
             navigate(`/player-interface/${PlayerID}`)
           }}
         >
-          {index + 1}. &nbsp;&nbsp; {Name} ({Position})
+          {index + 1}. &nbsp;&nbsp; {Name} ({Position}){' '}
+          {isPlayerLocked && <MdLock size={20} color={'#fff'} style={{ marginBottom: '-3px' }} />}
         </h3>
         {isPractice ? (
           <Checkbox
