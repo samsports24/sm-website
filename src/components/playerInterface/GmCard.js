@@ -33,6 +33,7 @@ const GmCard = ({
     inPracticeSquad,
     PlayerID,
     HostedHeadshotNoBackgroundUrl,
+    isPlayerLocked,
   } = playerData
   const navigate = useNavigate()
 
@@ -119,16 +120,19 @@ const GmCard = ({
             ) : (
               <div className='action-bar'>
                 <h4>Player Action Bar</h4>
-                <AuctionPlayer />
+                <AuctionPlayer disabled={isPlayerLocked} />
 
-                <TradePlayer />
-                <ReleasePlayer />
+                <TradePlayer disabled={isPlayerLocked} />
+                <ReleasePlayer disabled={isPlayerLocked} />
 
-                <MoveToInjured disabled={InjuryStatus?.toLowerCase() != 'out'} getData={getData} />
+                <MoveToInjured
+                  disabled={InjuryStatus?.toLowerCase() != 'out' || isPlayerLocked}
+                  getData={getData}
+                />
 
                 <ActivateFromPracticeSquad
                   activePlayers={activePlayers}
-                  disabled={!inPracticeSquad}
+                  disabled={!inPracticeSquad || isPlayerLocked}
                   getData={getData}
                   playerId={PlayerID}
                 />
@@ -136,7 +140,7 @@ const GmCard = ({
                 <MoveToPracticeSquad
                   activePlayersCount={activePlayers?.length}
                   practicePlayers={practicePlayers}
-                  disabled={inPracticeSquad}
+                  disabled={inPracticeSquad || isPlayerLocked}
                   getData={getData}
                   playerId={PlayerID}
                 />

@@ -5,6 +5,8 @@ import { Checkbox } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { isLocked } from '../../config/constants'
 
+import { MdLock } from 'react-icons/md'
+
 const PlayerRosterCard = ({ data, index, style, state, handleClick, isPractice = false }) => {
   const {
     players: {
@@ -19,6 +21,7 @@ const PlayerRosterCard = ({ data, index, style, state, handleClick, isPractice =
       PlayerCap,
       Position,
       UpcomingGameOpponent,
+      isPlayerLocked,
     },
     // _id: lineupId,
   } = data
@@ -26,6 +29,9 @@ const PlayerRosterCard = ({ data, index, style, state, handleClick, isPractice =
 
   return (
     <div className='stats_card_container' style={style || null}>
+      <div className='stats_card_locked_box' style={{ display: isPlayerLocked ? 'flex' : 'none' }}>
+        <MdLock size={25} color={'#fff'}></MdLock>
+      </div>
       <header>
         <h3
           style={{ cursor: 'pointer' }}
@@ -39,7 +45,7 @@ const PlayerRosterCard = ({ data, index, style, state, handleClick, isPractice =
           <Checkbox
             onChange={(event) => handleClick(event.target.checked, PlayerID)}
             checked={state?.includes(PlayerID)}
-            disabled={isLocked()}
+            disabled={isLocked() || isPlayerLocked}
           >
             Protected
           </Checkbox>
@@ -47,7 +53,7 @@ const PlayerRosterCard = ({ data, index, style, state, handleClick, isPractice =
           <Checkbox
             onChange={(event) => handleClick(event.target.checked, PlayerID)}
             checked={state?.includes(PlayerID)}
-            disabled={isLocked()}
+            disabled={isLocked() || isPlayerLocked}
           >
             Non-Active
           </Checkbox>

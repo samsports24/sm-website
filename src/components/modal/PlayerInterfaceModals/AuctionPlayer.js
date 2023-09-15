@@ -1,14 +1,14 @@
 import { Button, Modal } from 'antd'
 import React, { useState } from 'react'
 
-const AuctionPlayer = () => {
+const AuctionPlayer = ({ disabled }) => {
   const [open, setOpen] = useState(false)
   const showModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
 
   return (
     <>
-      <Button type='primary' className='action-bar-btn' onClick={showModal}>
+      <Button disabled={disabled} type='primary' className='action-bar-btn' onClick={showModal}>
         auction player
       </Button>
       <Modal

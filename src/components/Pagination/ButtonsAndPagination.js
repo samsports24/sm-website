@@ -224,11 +224,6 @@ const ButtonsAndPagination = ({ noWeek, goLive = false }) => {
     },
   ]
 
-  console.log(
-    'window.location.href',
-    window.location.href,
-    !window.location.href?.includes('/leagueScore'),
-  )
   return (
     <>
       <section className='buttons_and_pagination'>
