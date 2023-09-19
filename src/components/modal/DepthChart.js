@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Modal, Spin, Button } from 'antd'
 
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
+import { DeleteOutlined } from '@ant-design/icons'
 import { assignPlayerToStarter, getPlayersByPosition } from '../../redux/actions/depthChartAction'
 import { useSelector } from 'react-redux'
 
@@ -98,6 +99,22 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
           <p className='text1'>Projection</p>
           <p className='text2'>{p?.Projection || '-'}</p>
         </div>
+        {!button && (
+          <span>
+            <Button
+              shape='circle'
+              icon={
+                <DeleteOutlined
+                  style={{
+                    fontSize: '20px',
+                    color: 'red',
+                  }}
+                />
+              }
+              onClick={() => handleStarter(p?._id)}
+            ></Button>
+          </span>
+        )}
         {button && (
           <Button
             type='primary'
