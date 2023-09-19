@@ -3,12 +3,17 @@ import { Modal, Spin, Button } from 'antd'
 
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import { DeleteOutlined } from '@ant-design/icons'
-import { assignPlayerToStarter, getPlayersByPosition } from '../../redux/actions/depthChartAction'
+import {
+  assignPlayerToStarter,
+  getPlayersByPosition,
+  removePlayerFromStarter,
+} from '../../redux/actions/depthChartAction'
 import { useSelector } from 'react-redux'
 
 const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartData }) => {
   const SETTING = useSelector((state) => state?.user?.setting)
   const [loading, setLoading] = useState(true)
+  const [deleteLoading, setDeleteLoading] = useState(false)
   const [data, setData] = useState([])
   const [starter, setStarter] = useState(null)
   const [playerId, setPlayerId] = useState('')
@@ -50,9 +55,19 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
       week: SETTING?.week,
     })
     if (res) {
-      await getData()
+      // await getData()
       await getDepthChartData()
     }
+  }
+
+  const handleRemoveStarter = async (id) => {
+    setDeleteLoading(true)
+    const res = await removePlayerFromStarter(id)
+    if (res) {
+      // await getData()
+      await getDepthChartData()
+    }
+    setDeleteLoading(false)
   }
 
   const Spinner = () => {
@@ -101,18 +116,22 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
         </div>
         {!button && (
           <span>
-            <Button
-              shape='circle'
-              icon={
-                <DeleteOutlined
-                  style={{
-                    fontSize: '20px',
-                    color: 'red',
-                  }}
-                />
-              }
-              onClick={() => handleStarter(p?._id)}
-            ></Button>
+            {deleteLoading ? (
+              <Spin />
+            ) : (
+              <Button
+                shape='circle'
+                icon={
+                  <DeleteOutlined
+                    style={{
+                      fontSize: '20px',
+                      color: 'red',
+                    }}
+                  />
+                }
+                onClick={() => handleRemoveStarter(data?._id)}
+              ></Button>
+            )}
           </span>
         )}
         {button && (

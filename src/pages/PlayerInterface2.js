@@ -30,6 +30,7 @@ const PlayerInterface = () => {
   const [news, setNews] = useState(null)
   const [activePlayers, setActivePlayers] = useState([])
   const [practicePlayers, setPracticePlayers] = useState([])
+  const [playerContract, setPlayerContract] = useState(null)
   const [loading, setLoading] = useState(true)
 
   const { id } = useParams()
@@ -50,6 +51,7 @@ const PlayerInterface = () => {
       setNews(res?.news)
       setActivePlayers(res?.activePlayers)
       setPracticePlayers(res?.practicePlayers)
+      setPlayerContract(res?.playerContract)
     }
     setLoading(false)
   }
@@ -74,6 +76,10 @@ const PlayerInterface = () => {
     {
       title: 'Years in League',
       value: player?.Experience <= 1 ? `${player?.Experience} Year` : `${player?.Experience} Years`,
+    },
+    {
+      title: 'Player Caps',
+      value: playerContract?.PlayerCap ? `$${playerContract?.PlayerCap?.toLocaleString()}` : '-',
     },
     {
       title: 'Player College',
@@ -141,9 +147,16 @@ const PlayerInterface = () => {
           </div>
           <hr className='divider' />
 
+          <div className='player_caps_box'>
+            <h1>
+              Player Cap Hit:{' '}
+              {playerContract?.PlayerCap ? `$${playerContract?.PlayerCap?.toLocaleString()}` : '-'}
+            </h1>
+          </div>
+
           <section className='player_info_container'>
             <PlayerStats />
-            <ContractInfo />
+            <ContractInfo data={playerContract} />
           </section>
         </>
       )}

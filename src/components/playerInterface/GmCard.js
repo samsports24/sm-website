@@ -60,7 +60,16 @@ const GmCard = ({
                 </div>
                 <div className='injury-status'>
                   <p>Injury Status</p>
-                  <h4>{InjuryStatus || '-'}</h4>
+                  <h4
+                    style={{
+                      color: InjuryStatus?.toLowerCase() == 'out' ? 'red !important' : '#00c008',
+                    }}
+                    className={`${
+                      InjuryStatus?.toLowerCase() == 'out' ? 'redColor' : 'greenColor'
+                    }`}
+                  >
+                    {InjuryStatus || '-'}
+                  </h4>
                 </div>
               </div>
             </div>

@@ -70,3 +70,18 @@ export const assignPlayerToStarter = async (payload) => {
     })
   }
 }
+
+export const removePlayerFromStarter = async (id) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/depthChart/remove-player-from-starter', { id })
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
