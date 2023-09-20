@@ -4,6 +4,7 @@ import { BiRightArrowAlt } from 'react-icons/bi'
 import { useNavigate } from 'react-router-dom'
 
 const MatchUpOfTheWeek = ({ data: v }) => {
+  console.log('🚀 ~ file: index.js:7 ~ MatchUpOfTheWeek ~ v:', v)
   const navigate = useNavigate()
 
   return (
@@ -22,7 +23,7 @@ const MatchUpOfTheWeek = ({ data: v }) => {
           <div className='content'>
             <h3>{v?.opponentOne?.name}</h3>
             <p>
-              <span>Points:</span> {v?.opponentOne?.points || 0}
+              <span>Points:</span> {v?.scoreOne || 0}
             </p>
           </div>
         </div>
@@ -33,7 +34,7 @@ const MatchUpOfTheWeek = ({ data: v }) => {
           <div className='content'>
             <h3>{v?.opponentTwo?.name}</h3>
             <p>
-              <span>Points:</span> {v?.opponentTwo?.points || 0}
+              <span>Points:</span> {v?.scoreTwo || 0}
             </p>
           </div>
           <div className='image_div'>
@@ -48,8 +49,8 @@ const MatchUpOfTheWeek = ({ data: v }) => {
             state: {
               team1: v?.opponentOne,
               team2: v?.opponentTwo,
-              scoreOne: v?.opponentOne?.points,
-              scoreTwo: v?.opponentTwo?.points,
+              scoreOne: v?.scoreOne ? v?.scoreOne : null,
+              scoreTwo: v?.scoreTwo ? v?.scoreTwo : null,
             },
           })
         }}

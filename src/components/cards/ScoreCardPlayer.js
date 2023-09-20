@@ -22,6 +22,7 @@ const ScoreCardPlayer = ({ alignment, data }) => {
             className='player-img'
             alt='player'
             src={data?.player?.HostedHeadshotNoBackgroundUrl || Player1}
+            preview={false}
           />
           <p className='name'>{data?.player?.Name}</p>
           <p className='position'>

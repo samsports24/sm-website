@@ -64,10 +64,11 @@ export const authLogin = (payload, navigate) => {
           localStorage.setItem('userName', res.data.data.user.name)
           localStorage.setItem('userId', res.data.data.user._id)
           attachToken()
-          dispatch({
-            type: SET_USER_DETAILS,
-            payload: res.data.data,
-          })
+          // dispatch({
+          //   type: SET_USER_DETAILS,
+          //   payload: res.data.data,
+          // })
+          dispatch(getUser())
           localStorage.setItem('week', res?.data?.data?.setting?.week)
           notification.success({
             description: res.data.data.message,

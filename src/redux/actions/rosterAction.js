@@ -57,7 +57,7 @@ export const setProtectedPlayer = async (data, week) => {
 export const getRosterPlayer = async (payload) => {
   try {
     attachToken()
-    const res = await privateAPI.post(`/player/get-player`, payload)
+    const res = await privateAPI.post(`/player/get-player`, { id: payload })
     if (res) {
       return res.data.data
     }

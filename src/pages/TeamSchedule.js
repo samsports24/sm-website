@@ -131,7 +131,7 @@ const TeamSchedule = () => {
             <Loader />
           ) : data?.length > 0 ? (
             data?.map((v, i) => (
-              <Col key={i} xs={24} lg={12}>
+              <Col key={i} xs={24}>
                 <MatchUpOfTheWeek data={{ ...v }} />
               </Col>
             ))

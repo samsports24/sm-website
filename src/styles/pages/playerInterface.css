@@ -508,6 +508,7 @@
   margin: 0 auto;
   width: 80%;
   flex-wrap: wrap;
+  gap: 10px;
 }
 
 .player_interface_container .info-card h3 {
@@ -645,4 +646,18 @@
 .player_interface_container .player_caps_box h1 {
   color: #fff;
   font-size: 30px;
+}
+
+.player_info_box_new .roster_player_image {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 50%;
+  height: auto;
+  border-radius: 50%;
+}
+.player_info_box_new .roster_player_image img {
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
 }
