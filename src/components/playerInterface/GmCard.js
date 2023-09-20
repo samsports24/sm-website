@@ -48,7 +48,8 @@ const GmCard = ({
           <div
             className='left'
             style={{
-              background: `url(${HostedHeadshotNoBackgroundUrl})`,
+              // background: `url(${HostedHeadshotNoBackgroundUrl})`,
+              position: 'relative',
             }}
           >
             <div>
@@ -80,6 +81,9 @@ const GmCard = ({
             <div className='box'>
               <p className='text1'>League Rank:</p>
               <p className='text2'>#{LeagueRank > 0 ? LeagueRank : 0}</p>
+            </div>
+            <div className='roster_player_image'>
+              <img src={HostedHeadshotNoBackgroundUrl} />
             </div>
           </div>
         </Col>

@@ -5,6 +5,7 @@ const initialState = {
     week: localStorage.getItem('week'),
     isGameLocked: false,
   },
+  teamSalaryCap: 0,
 }
 
 const userReducer = (state = initialState, action) => {
@@ -20,6 +21,7 @@ const userReducer = (state = initialState, action) => {
           week: payload?.setting?.week,
           isGameLocked: payload?.setting?.isGameLocked,
         },
+        teamSalaryCap: payload?.teamSalaryCap,
       }
     }
     case 'UPDATE_WEEK': {

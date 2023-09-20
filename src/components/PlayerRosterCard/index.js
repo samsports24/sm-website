@@ -7,7 +7,15 @@ import { isLocked } from '../../config/constants'
 
 import { MdLock } from 'react-icons/md'
 
-const PlayerRosterCard = ({ data, index, style, state, handleClick, isPractice = false }) => {
+const PlayerRosterCard = ({
+  data,
+  index,
+  style,
+  state,
+  handleClick,
+  isPractice = false,
+  playerCaps,
+}) => {
   const {
     players: {
       PlayerID,
@@ -18,7 +26,6 @@ const PlayerRosterCard = ({ data, index, style, state, handleClick, isPractice =
       Team,
       ByeWeek,
       PlayerRank,
-      PlayerCap,
       Position,
       UpcomingGameOpponent,
       isPlayerLocked,
@@ -84,7 +91,9 @@ const PlayerRosterCard = ({ data, index, style, state, handleClick, isPractice =
         </div>
         <div>
           <p className='text1'>Player Cap #:</p>
-          <p className='text2'>{PlayerCap ? `$${PlayerCap}` : '-'}</p>
+          <p className='text2'>
+            {playerCaps[PlayerID] ? `$${playerCaps[PlayerID]?.toLocaleString()}` : '-'}
+          </p>
         </div>
         <div>
           <p className='text1'>Player Rank:</p>

@@ -26,6 +26,7 @@ const InjuredReserve = () => {
     const res = await getAllIr()
     if (res) {
       setInjuredReserve(res)
+      console.log('🚀 ~ file: InjuredReserve.js:29 ~ getData ~ res:', res)
     }
     setLoading(false)
   }
@@ -71,7 +72,7 @@ const InjuredReserve = () => {
           <>
             {injuredReserve?.length > 0 ? (
               <div className='standing-table-bg'>
-                {injuredReserve?.map((v, i) => {
+                {injuredReserve?.data?.map((v, i) => {
                   const { player: p } = v
                   return (
                     <div key={i} className='squad_card_box'>
@@ -109,7 +110,11 @@ const InjuredReserve = () => {
                         </div>
                         <div>
                           <p className='squad_text2'>player cap #</p>
-                          <p className='squad_text1'>{p?.PlayerCap || '-'}</p>
+                          <p className='squad_text1'>
+                            {injuredReserve?.playerCaps[p?.PlayerID]
+                              ? `$${injuredReserve?.playerCaps[p?.PlayerID]?.toLocaleString()}`
+                              : '-'}
+                          </p>
                         </div>
                         <div>
                           <p className='squad_text2'>PF &nbsp;</p>

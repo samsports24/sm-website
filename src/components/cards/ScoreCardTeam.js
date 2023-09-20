@@ -12,7 +12,7 @@ const ScoreCardTeam = ({ alignment, data, score }) => {
         }}
       >
         <div className='image-container'>
-          <Image alt='team-logo' src={data?.logo} />
+          <Image preview={false} alt='team-logo' src={data?.logo} />
         </div>
         <div className='content'>
           <div className='top'>

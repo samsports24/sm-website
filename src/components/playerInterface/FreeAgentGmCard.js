@@ -55,7 +55,7 @@ const GmCard = ({ playerData, news }) => {
                 <Typography.Title level={2}>2021</Typography.Title>
               </div>
             </div>
-            {team?.logo && <img src={team?.logo} height={'100px'} />}
+            {team != null && team?.logo && <img src={team?.logo} height={'100px'} />}
           </div>
         </Col>
         {/* <Col xs={24} xl={4}>

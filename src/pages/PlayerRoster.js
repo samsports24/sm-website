@@ -18,6 +18,7 @@ const PlayerRoster = () => {
   const [practiveSquadData, setPractiveSquadData] = useState([])
   const [nonActive, setNonActive] = useState([])
   const [protectedCheck, setProtectedCheck] = useState([])
+  const [playerCaps, setPlayerCaps] = useState(null)
   const [loading, setLoading] = useState(true)
   const [submitLoading, setSubmitLoading] = useState(false)
 
@@ -106,6 +107,7 @@ const PlayerRoster = () => {
           protectedPlayer.push(v?.players?.PlayerID)
         }
       })
+      setPlayerCaps(res?.playerCaps)
       setActivePlayerData(res?.active)
       setPractiveSquadData(res?.practice)
       setNonActive(nonAcitvePlayer)
@@ -156,12 +158,12 @@ const PlayerRoster = () => {
             {activePlayerData?.map((v, i) => {
               return (
                 <PlayerRosterCard
-                  // style={{ margin: '20px 0px' }}
                   key={i}
                   data={v}
                   index={i}
                   state={nonActive}
                   handleClick={handleNonActive}
+                  playerCaps={playerCaps}
                 />
               )
             })}
@@ -181,13 +183,13 @@ const PlayerRoster = () => {
             {practiveSquadData?.map((v, i) => {
               return (
                 <PlayerRosterCard
-                  // style={{ margin: '20px 0px' }}
                   key={i}
                   data={v}
                   index={i}
                   state={protectedCheck}
                   handleClick={handleProtectedCheckbox}
                   isPractice={true}
+                  playerCaps={playerCaps}
                 />
               )
             })}

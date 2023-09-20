@@ -184,7 +184,7 @@ const FreeAgent = () => {
                           </p>
                           <p
                             onClick={() => {
-                              navigate(`/agent-player-interface/${v?._id}`)
+                              navigate(`/agent-player-interface/${v?.PlayerID}`)
                             }}
                             style={{ cursor: 'pointer' }}
                             className='squad_text1 name_text_hover'
@@ -210,7 +210,9 @@ const FreeAgent = () => {
                         </div>
                         <div>
                           <p className='squad_text2'>player cap #</p>
-                          <p className='squad_text1'>{v?.PlayerCap || '-'}</p>
+                          <p className='squad_text1'>
+                            {v?.PlayerCap ? `$${v?.PlayerCap?.toLocaleString()}` : '-'}
+                          </p>
                         </div>
                         <div>
                           <p className='squad_text2'>PF &nbsp;</p>

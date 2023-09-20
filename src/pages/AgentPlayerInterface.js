@@ -26,6 +26,7 @@ import Loader from '../components/Loader'
 const AgentPlayerInterface = () => {
   const [player, setPlayer] = useState({})
   const [news, setNews] = useState(null)
+  const [playerContract, setPlayerCntract] = useState(null)
   const [loading, setLoading] = useState(true)
 
   const navigate = useNavigate()
@@ -39,7 +40,8 @@ const AgentPlayerInterface = () => {
     setLoading(true)
     const res = await getRosterPlayer(id)
     if (res) {
-      setPlayer(res?.player)
+      setPlayerCntract(null)
+      setPlayer({})
       setNews(res?.news)
     }
     setLoading(false)
@@ -48,31 +50,34 @@ const AgentPlayerInterface = () => {
   let infoData = [
     {
       title: 'Team',
-      value: player?.Team || '-',
+      value: player ? player?.Team : '-',
     },
     {
       title: 'Opponent',
-      value: player?.UpcomingGameOpponent,
+      value: player ? player?.UpcomingGameOpponent : '-',
     },
     {
       title: 'Postion',
-      value: player?.Position || '-',
+      value: player ? player?.Position : '-',
     },
     {
       title: 'Height',
-      value: player?.Height || '-',
+      value: player ? player?.Height : '-',
     },
     {
       title: 'Years in League',
-      value: player?.Experience <= 1 ? `${player?.Experience} Year` : `${player?.Experience} Years`,
+      value:
+        player && player?.Experience <= 1
+          ? `${player?.Experience} Year`
+          : `${player?.Experience} Years`,
     },
     {
       title: 'Player College',
-      value: player?.College,
+      value: player ? player?.College : '-',
     },
     {
       title: 'Age',
-      value: `${player?.Age} (${player?.BirthDateString})`,
+      value: player ? `${player?.Age} (${player?.BirthDateString})` : '-',
     },
   ]
 
@@ -112,46 +117,6 @@ const AgentPlayerInterface = () => {
 
       <hr className='divider' />
 
-      {/* MODALS */}
-      {/* <section className='filter_box'>
-        <AuctionPlayer />
-
-        <span className='divider_bar'>|</span>
-
-        <TradePlayer />
-
-        <span className='divider_bar'>|</span>
-
-        <ReleasePlayer />
-
-        <span className='divider_bar'>|</span>
-
-        <MoveToInjured />
-
-        <span className='divider_bar'>|</span>
-
-        <ActivateFromPracticeSquad />
-
-        <span className='divider_bar'>|</span>
-
-        <MoveToPracticeSquad />
-
-        <span className='divider_bar'>|</span>
-
-        <h2
-          onClick={() => {
-            navigate('/team-trade')
-          }}
-          className='modal_button_text'
-        >
-          MAKE OFFER
-        </h2>
-
-        <span className='divider_bar'>|</span>
-
-        <PoachPlayer />
-      </section> */}
-
       {loading ? (
         <Loader />
       ) : (
@@ -165,6 +130,13 @@ const AgentPlayerInterface = () => {
             ))}
           </div>
           <hr className='divider' />
+
+          <div className='player_caps_box'>
+            <h1>
+              Player Cap Hit:{' '}
+              {playerContract?.PlayerCap ? `$${playerContract?.PlayerCap?.toLocaleString()}` : '-'}
+            </h1>
+          </div>
 
           <section className='player_info_container'>
             <PlayerStats />

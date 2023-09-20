@@ -109,7 +109,7 @@ const GameDetails = () => {
             score={state?.scoreOne || Data?.team1Score?.score || 0}
           />
           <div className='versus-container'>
-            <Image alt='vs' src={Versus} />
+            <Image preview={false} alt='vs' src={Versus} />
           </div>
           <ScoreCardTeam
             alignment='right'
