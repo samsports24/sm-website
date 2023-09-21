@@ -40,10 +40,6 @@ const GmCard = ({
   return (
     <section className='player_info_box_new'>
       <Row gutter={[30, 20]}>
-        {/* {isButton && (
-          <Col xs={24}>
-          </Col>
-        )} */}
         <Col xs={24} xl={10}>
           <div
             className='left'
@@ -97,7 +93,6 @@ const GmCard = ({
           <div className='player-news'>
             <Typography.Title level={3}>{`Player News`}</Typography.Title>
             <p>{news}</p>
-            {/* <p>{playerInterfaceData?.playerNews}</p> */}
           </div>
 
           <div className='stats-bar'>
@@ -133,7 +128,10 @@ const GmCard = ({
             ) : (
               <div className='action-bar'>
                 <h4>Player Action Bar</h4>
-                <AuctionPlayer disabled={isPlayerLocked} />
+                <AuctionPlayer
+                  playerIds={{ PlayerID, player_id: playerData?._id }}
+                  disabled={isPlayerLocked}
+                />
 
                 <TradePlayer disabled={isPlayerLocked} />
                 <ReleasePlayer disabled={isPlayerLocked} />

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Button, Breadcrumb, Typography } from 'antd'
+import { Button, Breadcrumb, Typography, Tooltip } from 'antd'
 
 import Arrow from '../assets/arrow-right.svg'
 
@@ -12,8 +12,12 @@ import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
+import { getAuctionPlayer } from '../redux/actions/rosterAction'
+import { useSelector } from 'react-redux'
 
 const PlayerAuction = () => {
+  const USER = useSelector((state) => state?.user?.userDetails)
+
   const [isLoading, setIsLoading] = useState(false)
   const [data, setData] = useState([])
 
@@ -25,44 +29,22 @@ const PlayerAuction = () => {
 
   const getData = async () => {
     setIsLoading(true)
-    setTimeout(() => {
-      setData([
-        {
-          HostedHeadshotNoBackgroundUrl: 'https://pngimg.com/d/spider_man_PNG60.png',
-          Position: 'OL',
-          Name: 'Khizram Saeed',
-          Age: 50,
-          Team: 'FFF',
-          Opponent: 'HHH',
-          ByeWeek: 8,
-          TimeLeft: new Date('2023-09-21T08:00:00').toISOString(),
-        },
-        {
-          HostedHeadshotNoBackgroundUrl: 'https://pngimg.com/d/spider_man_PNG60.png',
-          Position: 'OL',
-          Name: 'Bilal Ali',
-          Age: 50,
-          Team: 'FFF',
-          Opponent: 'HHH',
-          ByeWeek: 8,
-          TimeLeft: new Date('2023-09-25T12:30:00').toISOString(),
-        },
-      ])
-      setIsLoading(false)
-    }, 1000)
+    const res = await getAuctionPlayer()
+    setData(res)
+    setIsLoading(false)
   }
 
-  const AuctionCard = ({ data: v }) => {
+  const AuctionCard = ({ data: v, payButton }) => {
     const [remainingTime, setRemainingTime] = useState('')
 
     useEffect(() => {
       const interval = setInterval(() => {
         const now = moment()
-        const end = moment(v?.TimeLeft)
+        const end = moment(v?.endDate)
         const duration = moment.duration(end.diff(now))
         if (duration.asSeconds() <= 0) {
           clearInterval(interval)
-          setRemainingTime('Time is up!')
+          setRemainingTime('Auction Ended!')
         } else {
           const days = Math.floor(duration.asDays())
           const hours = String(duration.hours()).padStart(2, '0')
@@ -79,21 +61,21 @@ const PlayerAuction = () => {
       return () => {
         clearInterval(interval)
       }
-    }, [v?.TimeLeft])
+    }, [v?.endDate])
 
     return (
       <div className='squad_card_box'>
         <div className='squad_content_body'>
           <div className='squad_image_box'>
-            {v?.HostedHeadshotNoBackgroundUrl ? (
-              <img src={v?.HostedHeadshotNoBackgroundUrl} />
+            {v?.player_id?.HostedHeadshotNoBackgroundUrl ? (
+              <img src={v?.player_id?.HostedHeadshotNoBackgroundUrl} />
             ) : (
               <GiAmericanFootballPlayer size={35} color={'#c4c4c4'} />
             )}
           </div>
           <div>
             <p className='squad_text2'>position</p>
-            <p className='squad_text1'>{v?.Position || '-'}</p>
+            <p className='squad_text1'>{v?.player_id?.Position || '-'}</p>
           </div>
           <div>
             <p style={{ width: '160px' }} className='squad_text2'>
@@ -101,41 +83,47 @@ const PlayerAuction = () => {
             </p>
             <p
               onClick={() => {
-                navigate(`/player-live-auction/${v?._id}`)
+                if (v?.hasAuctionEnded) {
+                  navigate(`/player-winning-bid/${v?.player_id?.PlayerID}`, {
+                    state: v,
+                  })
+                } else {
+                  navigate(`/player-live-auction/${v?.player_id?.PlayerID}`, {
+                    state: v,
+                  })
+                }
               }}
               style={{ cursor: 'pointer' }}
               className='squad_text1 name_text_hover'
             >
-              {v?.Name || '-'}
+              {v?.player_id?.Name || '-'}
             </p>
           </div>
           <div>
             <p className='squad_text2'>age</p>
-            <p className='squad_text1'>{v?.Age || '-'}</p>
+            <p className='squad_text1'>{v?.player_id?.Age || '-'}</p>
           </div>
           <div>
             <p className='squad_text2'>team</p>
-            <p className='squad_text1'>{v?.Team || '-'}</p>
+            <p className='squad_text1'>{v?.player_id?.Team || '-'}</p>
           </div>
           <div>
             <p className='squad_text2'>opp</p>
-            <p className='squad_text1'>{v?.Opponent || '-'}</p>
+            <p className='squad_text1'>{v?.player_id?.UpcomingGameOpponent || '-'}</p>
           </div>
           <div>
             <p className='squad_text2'>bye</p>
-            <p className='squad_text1'>{v?.ByeWeek || '-'}</p>
+            <p className='squad_text1'>{v?.player_id?.ByeWeek || '-'}</p>
           </div>
           <div>
             <p className='squad_text2'>player cap #</p>
-            <p className='squad_text1'>{v?.PlayerCap || '-'}</p>
+            <p className='squad_text1'>{v?.player_id?.PlayerCap || '-'}</p>
           </div>
           <div>
-            <p className='squad_text2'>PF &nbsp;</p>
-            <p className='squad_text1'>{v?.pointsPerGame || '-'}</p>
-          </div>
-          <div>
-            <p className='squad_text2'>player rank</p>
-            <p className='squad_text1'>{v?.playerRank || '-'}</p>
+            <p className='squad_text2'>current bid</p>
+            <p className='squad_text1'>
+              {v?.highestCurrentBid ? `$${v?.highestCurrentBid?.toLocaleString()}` : '-'}
+            </p>
           </div>
           <div style={{ minWidth: '130px' }}>
             <p className='squad_text2'>time left</p>
@@ -143,7 +131,25 @@ const PlayerAuction = () => {
               {remainingTime || '-'}
             </p>
           </div>
-          <Button type='primary'>PAY</Button>
+          {payButton && v?.assigned?.user === USER?._id && (
+            <Tooltip
+              placement='top'
+              title={
+                <>
+                  <p>Pay Before:</p>
+                  <p style={{ fontWeight: 700 }}>{`${moment(v?.payBefore).format(
+                    'ddd, YYYY-MM-DD hh:mm a',
+                  )}`}</p>
+                  <p>
+                    to add this player to your active roster in the upcoming week otherwise the
+                    auction will be cancelled.
+                  </p>
+                </>
+              }
+            >
+              <Button type='primary'>PAY</Button>
+            </Tooltip>
+          )}
         </div>
       </div>
     )
@@ -181,30 +187,57 @@ const PlayerAuction = () => {
       <ButtonsAndPagination noWeek={true} />
 
       <section className='squad_card_container transparent' style={{ marginTop: '45px' }}>
-        <div className='header'>
-          <h2>PLAYER AUCTION</h2>
-        </div>
-
         {isLoading ? (
           <Loader />
-        ) : data?.length > 0 ? (
-          <div className='standing-table-bg'>
-            {data?.map((v, i) => {
-              return <AuctionCard key={i} data={v} />
-            })}
-          </div>
         ) : (
-          <div
-            style={{
-              minHeight: '70vh',
-              border: '1px solid rgba(255,255,255,0.4)',
-              padding: '30px',
-            }}
-          >
-            <Typography.Title level={5} style={{ color: 'white' }}>
-              AUCTION IS EMPTY
-            </Typography.Title>
-          </div>
+          <>
+            <div className='header'>
+              <h2>ALL AUCTION</h2>
+            </div>
+            {data?.allAuctions?.length > 0 ? (
+              <>
+                <div className='standing-table-bg'>
+                  {data?.allAuctions?.map((v, i) => {
+                    return <AuctionCard key={i} data={v} />
+                  })}
+                </div>
+              </>
+            ) : (
+              <div
+                style={{
+                  minHeight: '30vh',
+                  border: '1px solid rgba(255,255,255,0.4)',
+                  padding: '30px',
+                }}
+              >
+                <Typography.Title level={5} style={{ color: 'white' }}>
+                  ALL AUCTION IS EMPTY
+                </Typography.Title>
+              </div>
+            )}
+            <div className='header'>
+              <h2>MY AUCTION</h2>
+            </div>
+            {data?.myAuctions?.length > 0 ? (
+              <div className='standing-table-bg'>
+                {data?.myAuctions?.map((v, i) => {
+                  return <AuctionCard key={i} data={v} payButton />
+                })}
+              </div>
+            ) : (
+              <div
+                style={{
+                  minHeight: '30vh',
+                  border: '1px solid rgba(255,255,255,0.4)',
+                  padding: '30px',
+                }}
+              >
+                <Typography.Title level={5} style={{ color: 'white' }}>
+                  MY AUCTION IS EMPTY
+                </Typography.Title>
+              </div>
+            )}
+          </>
         )}
       </section>
     </div>

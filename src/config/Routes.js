@@ -147,7 +147,7 @@ const Routers = () => {
           <Route path='/choose-your-league-step4' element={<ChooseYourLeagueStep4 />} />
           <Route path='/total-payment' element={<TotalPayment />} />
           <Route path='/public-league' element={<PublicLeague />} />
-          <Route path='/player-winning-bid' element={<PlayerWinningBid />} />
+          <Route path='/player-winning-bid/:id' element={<PlayerWinningBid />} />
           <Route path='/terms-condition' element={<TermsAndCondition />} />
           <Route path='/agent-player-interface/:id' element={<AgentPlayerInterface />} />
           <Route path='/my-league' element={<MyLeague />} />

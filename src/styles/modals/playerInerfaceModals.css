@@ -41,6 +41,11 @@
   backdrop-filter: blur(12px) !important;
 }
 
+.player_interface_modals
+  :where(.css-dev-only-do-not-override-1jqvr6p).ant-input-status-error:not(.ant-input-disabled):not(.ant-input-borderless).ant-input {
+  border-color: var(--colors-theme-border-color, rgba(110, 105, 128, 0.4)) !important;
+}
+
 /* BODY */
 .player_interface_modals .modal_body {
   width: 100%;
@@ -114,6 +119,52 @@
   gap: 20px;
   flex-wrap: wrap;
 }
+.player_interface_modals .auction_button_groups .wrapper {
+  width: calc(50% - 10px);
+}
+.player_interface_modals .auction_button_groups .wrapper .error_text {
+  font-size: 14px;
+  color: red !important;
+  margin-top: 3px;
+  font-weight: 500;
+}
+.player_interface_modals .auction_button_groups .ant-picker {
+  /* width: calc(50% - 10px); */
+  border-radius: 8px;
+  border: 1px solid var(--colors-theme-border-color, rgba(110, 105, 128, 0.4));
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: uppercase;
+  background-color: transparent !important;
+  height: 45px;
+}
+.player_interface_modals .auction_button_groups .ant-picker input {
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: uppercase;
+  text-align: center;
+}
+.player_interface_modals .auction_button_groups .ant-input {
+  /* width: calc(50% - 10px); */
+  border-radius: 8px;
+  border: 1px solid var(--colors-theme-border-color, rgba(110, 105, 128, 0.4));
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: uppercase;
+  background-color: transparent !important;
+  height: 45px;
+  text-align: center;
+}
+
 .player_interface_modals .auction_button_groups button {
   width: calc(50% - 10px);
   border-radius: 8px;

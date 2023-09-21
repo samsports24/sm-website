@@ -22,6 +22,7 @@ import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import { useEffect, useState } from 'react'
 import { getRosterPlayer } from '../redux/actions/rosterAction'
 import Loader from '../components/Loader'
+import PlayerInfoBottom from '../components/PlayerInfoBottom'
 
 const AgentPlayerInterface = () => {
   const [player, setPlayer] = useState({})
@@ -47,39 +48,44 @@ const AgentPlayerInterface = () => {
     setLoading(false)
   }
 
-  let infoData = [
-    {
-      title: 'Team',
-      value: player ? player?.Team : '-',
-    },
-    {
-      title: 'Opponent',
-      value: player ? player?.UpcomingGameOpponent : '-',
-    },
-    {
-      title: 'Postion',
-      value: player ? player?.Position : '-',
-    },
-    {
-      title: 'Height',
-      value: player ? player?.Height : '-',
-    },
-    {
-      title: 'Years in League',
-      value:
-        player && player?.Experience <= 1
-          ? `${player?.Experience} Year`
-          : `${player?.Experience} Years`,
-    },
-    {
-      title: 'Player College',
-      value: player ? player?.College : '-',
-    },
-    {
-      title: 'Age',
-      value: player ? `${player?.Age} (${player?.BirthDateString})` : '-',
-    },
-  ]
+  // let infoData = [
+  //   {
+  //     title: 'Team',
+  //     value: player?.Team || '-',
+  //   },
+  //   {
+  //     title: 'Opponent',
+  //     value: player?.UpcomingGameOpponent || '-',
+  //   },
+  //   {
+  //     title: 'Postion',
+  //     value: player?.Position || '-',
+  //   },
+  //   {
+  //     title: 'Height',
+  //     value: player?.Height || '-',
+  //   },
+  //   {
+  //     title: 'Years in League',
+  //     value: player?.Experience
+  //       ? player?.Experience <= 1
+  //         ? `${player?.Experience} Year`
+  //         : `${player?.Experience} Years`
+  //       : '-',
+  //   },
+  //   {
+  //     title: 'Player Caps',
+  //     value: playerContract?.PlayerCap ? `$${playerContract?.PlayerCap?.toLocaleString()}` : '-',
+  //   },
+  //   {
+  //     title: 'Player College',
+  //     value: player?.College || '-',
+  //   },
+  //   {
+  //     title: 'Age',
+  //     value: player?.age ? `${player?.Age} (${player?.BirthDateString})` : '-',
+  //   },
+  // ]
 
   return (
     <div className='player_interface_container'>
@@ -122,13 +128,22 @@ const AgentPlayerInterface = () => {
       ) : (
         <>
           <GmCard playerData={player} news={news} />
-          <div className='info-card'>
+
+          <PlayerInfoBottom
+            player={player}
+            contract={
+              playerContract?.PlayerCap ? `$${playerContract?.PlayerCap?.toLocaleString()}` : '-'
+            }
+          />
+
+          {/* <div className='info-card'>
             {infoData.map((item, index) => (
               <h3 key={index}>
                 {item.title} : <span>{item.value}</span>
               </h3>
             ))}
           </div>
+
           <hr className='divider' />
 
           <div className='player_caps_box'>
@@ -136,7 +151,7 @@ const AgentPlayerInterface = () => {
               Player Cap Hit:{' '}
               {playerContract?.PlayerCap ? `$${playerContract?.PlayerCap?.toLocaleString()}` : '-'}
             </h1>
-          </div>
+          </div> */}
 
           <section className='player_info_container'>
             <PlayerStats />

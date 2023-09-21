@@ -11,6 +11,7 @@ import Loader from '../components/Loader'
 
 import { getRoster, setNonActivePlayer, setProtectedPlayer } from '../redux/actions/rosterAction'
 import { useSelector } from 'react-redux'
+import { isLocked } from '../config/constants'
 
 const PlayerRoster = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
@@ -147,10 +148,13 @@ const PlayerRoster = () => {
         <Loader />
       ) : (
         <>
-          <div className='submit_button_box'>
-            <Button loading={submitLoading} onClick={handleSubmit} type='primary'>
-              Submit
-            </Button>
+          <div className='practice_squad_header' style={{ marginTop: '30px' }}>
+            <p className='heading'>Active Squad</p>
+            {!isLocked() && (
+              <Button loading={submitLoading} onClick={handleSubmit} type='primary'>
+                Submit
+              </Button>
+            )}
           </div>
 
           {/* ACTIVE SQUAD */}
@@ -173,9 +177,11 @@ const PlayerRoster = () => {
 
           <div className='practice_squad_header'>
             <p className='heading'>Practice Squad</p>
-            <Button loading={submitLoading} onClick={handleProtectedSubmit} type='primary'>
-              Submit
-            </Button>
+            {!isLocked() && (
+              <Button loading={submitLoading} onClick={handleProtectedSubmit} type='primary'>
+                Submit
+              </Button>
+            )}
           </div>
 
           {/* PRACTICE SQUAD */}
