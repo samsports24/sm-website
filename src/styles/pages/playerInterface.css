@@ -471,7 +471,12 @@
 }
 
 .player_interface_container .player_info_box_new .player-news {
-  padding-top: 50px;
+  margin-top: 50px;
+}
+.player_interface_container .player_info_box_new .player_news_scroll {
+  width: 100%;
+  max-height: 240px !important;
+  overflow-y: auto !important;
 }
 
 .player_interface_container .player_info_box_new .player-news p {
@@ -481,7 +486,7 @@
   font-weight: 400;
   line-height: 28px;
   opacity: 0.5;
-  margin-top: 10px !important;
+  /* margin-top: 10px !important; */
 }
 
 .player_interface_container .player_info_box_new .stats-bar {

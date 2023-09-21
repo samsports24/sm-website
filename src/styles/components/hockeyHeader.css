@@ -1,0 +1,264 @@
+.hockey-header {
+  width: 100%;
+  /* min-height: 250px; */
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  padding: 20px;
+  border-radius: 16px;
+  background-color: var(--secondaryPurple);
+  border: 1px solid #6e6980;
+}
+
+/* LEFT */
+.hockey-header .left {
+  width: 170px !important;
+  text-align: center;
+}
+.hockey-header .left .image_div {
+  border: 1px solid #6e6980;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  min-height: 165px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hockey-header .left p > span {
+  color: var(--lightGrayText);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+}
+
+/* CENTER */
+.hockey-header .center {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+.hockey-header .center .center_left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.hockey-header .center .center_right {
+  flex: 1;
+}
+
+.hockey-header .center .center_left .title_box {
+  min-height: 70px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border: 1px solid #6e6980;
+  border-radius: 8px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.hockey-header .center .center_left .title_box h1 {
+  color: var(--text);
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+}
+.hockey-header .center .center_left .title_box p {
+  cursor: pointer;
+}
+.hockey-header .center .center_left .title_box p > span {
+  text-align: right;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--lightGrayText);
+}
+
+.hockey-header .center .button_and_team_box {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.hockey-header .center .center_left .button_and_team_box .button_box {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.hockey-header .center .center_left .button_and_team_box button {
+  background-color: transparent !important;
+  border: 1px solid #6e6980;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1;
+  height: 45px;
+}
+
+.hockey-header .center .center_right .team_financials_box {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #6e6980;
+  border-radius: 8px;
+  flex: 1;
+  padding: 20px 20px;
+  gap: 20px;
+  height: 100%;
+}
+.hockey-header .center .center_right .team_financials_box div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.hockey-header .center .center_right .team_financials_box div h4 {
+  color: var(--primary) !important;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700 !important;
+  line-height: normal;
+}
+.hockey-header .center .center_right .team_financials_box div p {
+  color: var(--text);
+  text-align: left;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.2;
+  opacity: 0.5;
+}
+.hockey-header .center .center_right .team_financials_box div span {
+  color: var(--text);
+  text-align: right;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  line-height: 1;
+}
+
+.hockey-header .right {
+  width: 285px;
+  text-align: center;
+}
+.hockey-header .right h1 {
+  color: var(--text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  text-align: right;
+  margin-top: 16px;
+}
+.hockey-header .right .content {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 20px 30px;
+  border: 1px solid #6e6980;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+.hockey-header .right .content .top {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.hockey-header .right .content span {
+  color: var(--text) !important;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1;
+}
+.hockey-header .right .content p {
+  color: var(--text);
+  text-align: right;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  opacity: 0.5;
+}
+.hockey-header .right .content .content2 {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+.hockey-header .right .content .content2 .image_div {
+  width: 120px;
+}
+.hockey-header .right .content .content2 .content3 {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+@media (max-width: 1600px) {
+  .hockey-header .center .button_and_team_box .button_box button {
+    width: 160px;
+    min-width: 160px;
+  }
+}
+@media (max-width: 1300px) {
+  .hockey-header .center .button_and_team_box .button_box button {
+    width: 100%;
+  }
+  .hockey-header .center .button_and_team_box {
+    flex-direction: column;
+  }
+}
+@media (max-width: 1200px) {
+  .hockey-header {
+    flex-direction: column;
+    align-items: center;
+  }
+  .hockey-header .center {
+    width: 100%;
+  }
+  .hockey-header .center .button_and_team_box {
+    flex-direction: row;
+  }
+}
+
+@media (max-width: 600px) {
+  .hockey-header .center .button_and_team_box {
+    flex-direction: column;
+  }
+  .hockey-header .center .button_and_team_box .button_box {
+    width: 100%;
+  }
+  .hockey-header .center .button_and_team_box .button_box button {
+    width: 0vw !important;
+    width: 100% !important;
+    min-width: 160px;
+  }
+  .hockey-header .center .title_box h1 {
+    font-size: 22px;
+  }
+  .hockey-header .center .button_and_team_box .team_financials_box {
+    width: 100%;
+  }
+}
