@@ -57,7 +57,7 @@ export const setProtectedPlayer = async (data, week) => {
 export const getRosterPlayer = async (payload) => {
   try {
     attachToken()
-    const res = await privateAPI.post(`/player/get-player`, { id: payload })
+    const res = await privateAPI.post(`/player/get-player`, payload)
     if (res) {
       return res.data.data
     }
@@ -200,6 +200,62 @@ export const moveIrToPractice = async (paylaod) => {
   try {
     attachToken()
     const res = await privateAPI.post('/player/move-ir-to-practice', paylaod)
+    if (res) {
+      notification.success({
+        message: res.data.data,
+        duration: 3,
+      })
+    }
+    return res.data.data
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const createAuction = async (paylaod) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/auction/create', paylaod)
+    if (res) {
+      notification.success({
+        message: res.data.data,
+        duration: 3,
+      })
+    }
+    return res.data.data
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const getAuctionPlayer = async () => {
+  try {
+    attachToken()
+    const res = await privateAPI.get('/auction/getall')
+    if (res) {
+      notification.success({
+        message: res.data.data,
+        duration: 3,
+      })
+    }
+    return res.data.data
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+export const addBid = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/auction/add-bid', payload)
     if (res) {
       notification.success({
         message: res.data.data,

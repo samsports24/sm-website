@@ -1,61 +1,21 @@
 import { Button, Breadcrumb, Row, Col, Typography } from 'antd'
-// import { useNavigate } from 'react-router-dom'
 
 import Arrow from '../assets/arrow-right.svg'
 import Image from '../assets/logo2.png'
 
+import { useLocation } from 'react-router-dom'
+import moment from 'moment'
+
 // Component
 import Header from '../components/Header'
-
-// import {
-//   ActivateFromPracticeSquad,
-//   AuctionPlayer,
-//   MoveToInjured,
-//   PoachPlayer,
-//   ReleasePlayer,
-//   MoveToPracticeSquad,
-//   TradePlayer,
-// } from '../components/modal/PlayerInterfaceModals'
 import GmCard from '../components/playerInterface/GmCard'
 import PlayerStats from '../components/playerInterface/PlayerStats'
 import ContractInfo from '../components/playerInterface/ContractInfo'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
-import { useState } from 'react'
+import PlayerInfoBottom from '../components/PlayerInfoBottom'
 
 const PlayerWinningBid = () => {
-  // const navigate = useNavigate()
-  const [player] = useState({})
-
-  let infoData = [
-    {
-      title: 'Team',
-      value: player?.Team || '-',
-    },
-    {
-      title: 'Opponent',
-      value: player?.UpcomingGameOpponent,
-    },
-    {
-      title: 'Postion',
-      value: player?.Position || '-',
-    },
-    {
-      title: 'Height',
-      value: player?.Height || '-',
-    },
-    {
-      title: 'Years in League',
-      value: player?.Experience <= 1 ? `${player?.Experience} Year` : `${player?.Experience} Years`,
-    },
-    {
-      title: 'Player College',
-      value: player?.College,
-    },
-    {
-      title: 'Age',
-      value: `${player?.Age} (${player?.BirthDateString})`,
-    },
-  ]
+  const { state } = useLocation()
 
   return (
     <div className='player_interface_container'>
@@ -93,63 +53,21 @@ const PlayerWinningBid = () => {
 
       <hr className='divider' />
 
-      {/* MODALS */}
-      {/* <section className='filter_box'>
-        <AuctionPlayer />
+      <GmCard playerData={state?.player_id} bidWinningPage={true} />
 
-        <span className='divider_bar'>|</span>
+      <PlayerInfoBottom
+        player={state?.player_id}
+        contract={state?.player_id?.PlayerCap?.toLocaleString() || '-'}
+      />
 
-        <TradePlayer />
-
-        <span className='divider_bar'>|</span>
-
-        <ReleasePlayer />
-
-        <span className='divider_bar'>|</span>
-
-        <MoveToInjured />
-
-        <span className='divider_bar'>|</span>
-
-        <ActivateFromPracticeSquad />
-
-        <span className='divider_bar'>|</span>
-
-        <MoveToPracticeSquad />
-
-        <span className='divider_bar'>|</span>
-
-        <h2
-          onClick={() => {
-            navigate('/team-trade')
-          }}
-          className='modal_button_text'
-        >
-          MAKE OFFER
-        </h2>
-
-        <span className='divider_bar'>|</span>
-
-        <PoachPlayer />
-      </section> */}
-
-      <GmCard bidWinningPage={true} />
-
-      <div className='info-card'>
-        {infoData.map((item, index) => (
-          <h3 key={index}>
-            {item.title} : <span>{item.value}</span>
-          </h3>
-        ))}
-      </div>
-      <hr className='divider' />
-
-      <section className='bid_section'>
+      <section className='bid_section' style={{ marginTop: '30px' }}>
         <Row gutter={[30, 30]} align={'middle'}>
           <Col xs={24}>
             <div className='bid_card'>
               <img src={Image} />
-              <Typography.Title level={2}>Winning Bid</Typography.Title>
+              <Typography.Title level={2}>
+                Winning Bid {`$${state?.highestCurrentBid?.toLocaleString()}`}
+              </Typography.Title>
             </div>
           </Col>
         </Row>
@@ -163,6 +81,35 @@ const PlayerWinningBid = () => {
       <section className='bid_history_container'>
         <div className='header'>
           <h2>BID HISTORY</h2>
+        </div>
+        <div className='bid_history_body'>
+          {state?.bidHistory
+            ?.slice()
+            ?.sort((a, b) => b.bid - a.bid)
+            ?.map((v, i) => {
+              return (
+                <div key={i} className='squad_card_box'>
+                  <div>
+                    <p className='squad_text2'>date</p>
+                    <p className='squad_text1'>
+                      {moment(v?.date_time).format('YYYY-MM-DD') || '-'}
+                    </p>
+                  </div>
+                  <div>
+                    <p className='squad_text2'>user name</p>
+                    <p className='squad_text1'>{v?.user?.userName || '-'}</p>
+                  </div>
+                  <div>
+                    <p className='squad_text2'>team</p>
+                    <p className='squad_text1'>{v?.user?.team?.name || '-'}</p>
+                  </div>
+                  <div style={{ minWidth: '100px' }}>
+                    <p className='squad_text2'>bid</p>
+                    <p className='squad_text1'>{`$${v?.bid?.toLocaleString()}` || '-'}</p>
+                  </div>
+                </div>
+              )
+            })}
         </div>
       </section>
     </div>

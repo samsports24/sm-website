@@ -23,6 +23,7 @@ import { getRosterPlayer } from '../redux/actions/rosterAction'
 import { useEffect, useState } from 'react'
 import Loader from '../components/Loader'
 import { useSelector } from 'react-redux'
+import PlayerInfoBottom from '../components/PlayerInfoBottom'
 
 const PlayerInterface = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
@@ -55,41 +56,6 @@ const PlayerInterface = () => {
     }
     setLoading(false)
   }
-
-  let infoData = [
-    {
-      title: 'Team',
-      value: player?.Team || '-',
-    },
-    {
-      title: 'Opponent',
-      value: player?.UpcomingGameOpponent,
-    },
-    {
-      title: 'Postion',
-      value: player?.Position || '-',
-    },
-    {
-      title: 'Height',
-      value: player?.Height || '-',
-    },
-    {
-      title: 'Years in League',
-      value: player?.Experience <= 1 ? `${player?.Experience} Year` : `${player?.Experience} Years`,
-    },
-    {
-      title: 'Player Caps',
-      value: playerContract?.PlayerCap ? `$${playerContract?.PlayerCap?.toLocaleString()}` : '-',
-    },
-    {
-      title: 'Player College',
-      value: player?.College,
-    },
-    {
-      title: 'Age',
-      value: `${player?.Age} (${player?.BirthDateString})`,
-    },
-  ]
 
   return (
     <div className='player_interface_container'>
@@ -138,21 +104,12 @@ const PlayerInterface = () => {
             getData={getData}
             news={news}
           />
-          <div className='info-card'>
-            {infoData.map((item, index) => (
-              <h3 key={index}>
-                {item.title} : <span>{item.value}</span>
-              </h3>
-            ))}
-          </div>
-          <hr className='divider' />
-
-          <div className='player_caps_box'>
-            <h1>
-              Player Cap Hit:{' '}
-              {playerContract?.PlayerCap ? `$${playerContract?.PlayerCap?.toLocaleString()}` : '-'}
-            </h1>
-          </div>
+          <PlayerInfoBottom
+            player={player}
+            contract={
+              playerContract?.PlayerCap ? `$${playerContract?.PlayerCap?.toLocaleString()}` : '-'
+            }
+          />
 
           <section className='player_info_container'>
             <PlayerStats />

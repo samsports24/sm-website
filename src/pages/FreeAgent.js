@@ -9,7 +9,7 @@ import { SearchOutlined } from '@ant-design/icons'
 import Header from '../components/Header'
 
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
-import { getFreeAgent } from '../redux/actions/rosterAction'
+import { createAuction, getFreeAgent } from '../redux/actions/rosterAction'
 import Loader from '../components/Loader'
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import { GrFormClose } from 'react-icons/gr'
@@ -22,6 +22,7 @@ const FreeAgent = () => {
     players: [],
   })
   const [loading, setLoading] = useState(true)
+  const [playerID, setPlayerID] = useState(false)
   const [limit] = useState(10)
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
@@ -78,6 +79,19 @@ const FreeAgent = () => {
     })
     setFreeAgents(res)
     setLoading(false)
+  }
+
+  const handleCreateAuction = async (playerID, player_id) => {
+    setPlayerID(playerID)
+    const res = await createAuction({
+      PlayerID: playerID,
+      player_id: player_id,
+      auctionFrom: 'nonowner',
+    })
+    if (res) {
+      navigate('/player-auction')
+    }
+    setPlayerID('')
   }
 
   return (
@@ -164,6 +178,7 @@ const FreeAgent = () => {
             <div className='standing-table-bg'>
               {!isEmpty &&
                 freeAgents?.players?.map((v, i) => {
+                  console.log(playerID === v?.Player_ID)
                   return (
                     <div key={i} className='squad_card_box'>
                       <div className='squad_content_body'>
@@ -222,7 +237,16 @@ const FreeAgent = () => {
                           <p className='squad_text2'>player rank</p>
                           <p className='squad_text1'>{v?.playerRank || '-'}</p>
                         </div>
-                        <Button type='primary'>Auction</Button>
+                        <Button
+                          loading={playerID == v?.PlayerID}
+                          type='primary'
+                          onClick={() => {
+                            console.log(v?.PlayerID, v?._id)
+                            handleCreateAuction(v?.PlayerID, v?._id)
+                          }}
+                        >
+                          Auction
+                        </Button>
                       </div>
                     </div>
                   )

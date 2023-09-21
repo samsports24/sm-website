@@ -1,5 +1,5 @@
 import { Button, Breadcrumb, Row, Col, Typography, Input } from 'antd'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 
 import Arrow from '../assets/arrow-right.svg'
 import Image from '../assets/logo2.png'
@@ -13,58 +13,116 @@ import ContractInfo from '../components/playerInterface/ContractInfo'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import Loader from '../components/Loader'
 import { useEffect, useState } from 'react'
+import PlayerInfoBottom from '../components/PlayerInfoBottom'
+import moment from 'moment'
+import { addBid } from '../redux/actions/rosterAction'
 
 const PlayerLiveAuction = () => {
-  const [isLoading, setIsLoading] = useState(true)
-  const [player, setPlayer] = useState({})
+  const { state } = useLocation()
+  const [remainingTime, setRemainingTime] = useState('')
+  const [isLoading, setIsLoading] = useState({
+    type: 'data',
+    status: true,
+  })
+  const [manualBid, setManualBid] = useState('')
+  const [bidError, setBidError] = useState('')
   const [news, setNews] = useState('')
   const navigate = useNavigate()
   const { id } = useParams()
+
   console.log(id)
+
+  useEffect(() => {
+    bidError && setBidError(false)
+  }, [manualBid])
 
   useEffect(() => {
     getData()
   }, [])
+
   const getData = async () => {
-    setIsLoading(true)
+    setIsLoading({
+      type: 'data',
+      status: true,
+    })
     // API CALL
-    setTimeout(() => {
-      setPlayer({})
-      setNews()
-      setIsLoading(false)
-    }, 1000)
+    setNews()
+    setIsLoading({
+      type: 'data',
+      status: false,
+    })
   }
 
-  let infoData = [
-    {
-      title: 'Team',
-      value: player?.Team || '-',
-    },
-    {
-      title: 'Opponent',
-      value: player?.UpcomingGameOpponent,
-    },
-    {
-      title: 'Postion',
-      value: player?.Position || '-',
-    },
-    {
-      title: 'Height',
-      value: player?.Height || '-',
-    },
-    {
-      title: 'Years in League',
-      value: player?.Experience <= 1 ? `${player?.Experience} Year` : `${player?.Experience} Years`,
-    },
-    {
-      title: 'Player College',
-      value: player?.College,
-    },
-    {
-      title: 'Age',
-      value: `${player?.Age} (${player?.BirthDateString})`,
-    },
-  ]
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = moment()
+      const end = moment(state?.endDate)
+      const duration = moment.duration(end.diff(now))
+      if (duration.asSeconds() <= 0) {
+        clearInterval(interval)
+        setRemainingTime('Time is up!')
+      } else {
+        const days = Math.floor(duration.asDays())
+        const hours = String(duration.hours()).padStart(2, '0')
+        const minutes = String(duration.minutes()).padStart(2, '0')
+        const seconds = String(duration.seconds()).padStart(2, '0')
+        setRemainingTime(
+          days === 0
+            ? `${hours}h ${minutes}m ${seconds}s`
+            : `${days}d ${hours}h ${minutes}m ${seconds}s`,
+        )
+      }
+    }, 1000)
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [state?.endDate])
+
+  const handleManualBid = async () => {
+    if (manualBid?.trim() == '') {
+      setBidError('ENTER BID BEFORE SUBMIT')
+      return
+    }
+    if (state?.highestCurrentBid >= manualBid) {
+      setBidError('PLACE BID HIGHER THEN CURRENT BID')
+      return
+    }
+
+    setIsLoading({
+      type: 'submit',
+      status: true,
+    })
+    const res = await addBid({
+      auctionId: state?._id,
+      bidAmount: Number(manualBid),
+    })
+    if (res) {
+      navigate('/player-auction')
+    }
+    setIsLoading({
+      type: 'submit',
+      status: false,
+    })
+  }
+
+  const handleQuickBid = async () => {
+    setIsLoading({
+      type: 'quick',
+      status: true,
+    })
+    const res = await addBid({
+      auctionId: state?._id,
+      bidAmount: Number(state?.highestCurrentBid) + 5,
+    })
+    if (res) {
+      navigate('/player-auction')
+    }
+    setIsLoading({
+      type: 'quick',
+      status: false,
+    })
+  }
 
   return (
     <div className='player_interface_container'>
@@ -102,54 +160,72 @@ const PlayerLiveAuction = () => {
 
       <hr className='divider' />
 
-      {isLoading ? (
+      {isLoading?.status && isLoading?.type === 'data' ? (
         <Loader />
       ) : (
         <>
           <GmCard
-            playerData={player}
+            playerData={state?.player_id}
             news={news}
             isButton={false}
             bidWinningPage={false}
             isAction={false}
           />
 
-          <div className='info-card'>
-            {infoData.map((item, index) => (
-              <h3 key={index}>
-                {item.title} : <span>{item.value}</span>
-              </h3>
-            ))}
-          </div>
-          <hr className='divider' />
+          <PlayerInfoBottom
+            player={state?.player_id}
+            contract={state?.player_id?.PlayerCap?.toLocaleString() || '-'}
+          />
 
-          <section className='bid_section'>
-            <Row gutter={[30, 30]} align={'middle'}>
-              <Col xs={24} md={12} lg={12} xl={6}>
-                <div className='bid_card'>
+          <section className='bid_section' style={{ marginTop: '30px' }}>
+            <Row gutter={[30, 30]}>
+              <Col xs={24} md={12} lg={12} xl={12} xxl={6}>
+                <div className='bid_card' style={{ flexDirection: 'column' }}>
                   <img src={Image} />
-                  <Typography.Title level={2}>
-                    CURRENT
+                  <Typography.Title level={3}>
+                    CURRENT HIGHEST BID
                     <br />
-                    HIGHEST BID
+                    {`$${state?.highestCurrentBid?.toLocaleString()}`}
                   </Typography.Title>
                 </div>
               </Col>
-              <Col xs={24} md={12} lg={12} xl={6}>
+              <Col xs={24} md={12} lg={12} xl={12} xxl={6}>
                 <div className='bid_card'>
-                  <Typography.Title level={2}>AUCTION CLOCK</Typography.Title>
+                  <Typography.Title level={3}>
+                    AUCTION CLOCK <br /> {remainingTime}
+                  </Typography.Title>
                 </div>
               </Col>
-              <Col xs={24} md={12} lg={12} xl={6}>
+              <Col xs={24} md={12} lg={12} xl={12} xxl={6}>
                 <div className='bid_card bid_card_normal'>
-                  <Typography.Title level={2}>MANUAL BID ENTRY</Typography.Title>
-                  <Input value={'*********'} disabled style={{ textAlign: 'center' }} />
+                  <Typography.Title level={3}>MANUAL BID ENTRY</Typography.Title>
+                  <Input
+                    value={manualBid}
+                    type='number'
+                    placeholder='Enter here'
+                    style={{ textAlign: 'center' }}
+                    onChange={(e) => setManualBid(e.target.value)}
+                  />
+                  {bidError != '' && <p className='error_text'>{bidError}</p>}
                 </div>
               </Col>
               <Col xs={24} md={12} lg={12} xl={6}>
                 <div className='bid_card_btns'>
-                  <Button type='primary'>Submit</Button>
-                  <Button type='primary'>Quick Bid</Button>
+                  <Button
+                    loading={isLoading?.status && isLoading?.type === 'submit'}
+                    type='primary'
+                    onClick={handleManualBid}
+                  >
+                    Submit
+                  </Button>
+                  &nbsp; &nbsp;
+                  <Button
+                    loading={isLoading?.status && isLoading?.type === 'quick'}
+                    type='primary'
+                    onClick={handleQuickBid}
+                  >
+                    Quick Bid
+                  </Button>
                 </div>
               </Col>
             </Row>
@@ -163,6 +239,35 @@ const PlayerLiveAuction = () => {
           <section className='bid_history_container'>
             <div className='header'>
               <h2>BID HISTORY</h2>
+            </div>
+            <div className='bid_history_body'>
+              {state?.bidHistory
+                ?.slice()
+                ?.sort((a, b) => b.bid - a.bid)
+                ?.map((v, i) => {
+                  return (
+                    <div key={i} className='squad_card_box'>
+                      <div>
+                        <p className='squad_text2'>date</p>
+                        <p className='squad_text1'>
+                          {moment(v?.date_time).format('YYYY-MM-DD') || '-'}
+                        </p>
+                      </div>
+                      <div>
+                        <p className='squad_text2'>user name</p>
+                        <p className='squad_text1'>{v?.user?.userName || '-'}</p>
+                      </div>
+                      <div>
+                        <p className='squad_text2'>team</p>
+                        <p className='squad_text1'>{v?.user?.team?.name || '-'}</p>
+                      </div>
+                      <div style={{ minWidth: '100px' }}>
+                        <p className='squad_text2'>bid</p>
+                        <p className='squad_text1'>{`$${v?.bid?.toLocaleString()}` || '-'}</p>
+                      </div>
+                    </div>
+                  )
+                })}
             </div>
           </section>
         </>
