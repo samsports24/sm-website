@@ -70,7 +70,7 @@ const InjuredReserve = () => {
           <Loader />
         ) : (
           <>
-            {injuredReserve?.length > 0 ? (
+            {injuredReserve?.data?.length > 0 ? (
               <div className='standing-table-bg'>
                 {injuredReserve?.data?.map((v, i) => {
                   const { player: p } = v

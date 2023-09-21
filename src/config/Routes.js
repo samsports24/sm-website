@@ -24,7 +24,7 @@ import TeamSetting from '../pages/TeamSettings'
 import InjuredReserve from '../pages/InjuredReserve'
 import FreeAgent from '../pages/FreeAgent'
 import AgentPlayerInterface from '../pages/AgentPlayerInterface'
-// import PlayerAuction from '../pages/PlayerAuction'
+import PlayerAuction from '../pages/PlayerAuction'
 import PlayerStandings from '../pages/PlayerStandings'
 import PlayerLiveAuction from '../pages/PlayerLiveAuction'
 import PlayerWinningBid from '../pages/PlayerWinningBid'
@@ -138,8 +138,8 @@ const Routers = () => {
           <Route path='/depth-chart' element={<DepthChart />} />
           <Route path='/league-standings' element={<LeagueStandings />} />
           <Route path='/free-agent' element={<FreeAgent />} />
-          {/* <Route path='/player-auction' element={<PlayerAuction />} /> */}
-          <Route path='/player-auction' element={<ComingSoon />} />
+          <Route path='/player-auction' element={<PlayerAuction />} />
+          {/* <Route path='/player-auction' element={<ComingSoon />} /> */}
           <Route path='/player-standing' element={<PlayerStandings />} />
           <Route path='/playoff' element={<Playoff />} />
           <Route path='/choose-your-game-step1' element={<ChooseYourGame />} />
