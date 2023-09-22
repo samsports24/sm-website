@@ -90,13 +90,15 @@ const GmCard = ({
             </Button>
           )}
 
-          <div className='player-news'>
+          <div className='player-news '>
             <Typography.Title level={3}>{`Player News`}</Typography.Title>
-            <p>{news}</p>
+            <div className='player_news_scroll'>
+              <p>{news}</p>
+            </div>
           </div>
 
           <div className='stats-bar'>
-            <div className='player-news'>
+            <div className='player-news' style={{ marginTop: '0px' }}>
               <p>Past Year Stats Bar</p>
               <div className='years'>
                 <Typography.Title level={2}>2023</Typography.Title>

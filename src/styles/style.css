@@ -95,6 +95,7 @@
 
 /* COMPONENT HOCKEY */
 @import './components/leagueStandingsHockey.css';
+@import './components/hockeyHeader.css';
 
 /* PAGE HOCKEY */
 @import './pages/teamLIne.css';
