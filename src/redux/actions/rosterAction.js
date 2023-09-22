@@ -252,21 +252,24 @@ export const getAuctionPlayer = async () => {
     })
   }
 }
-export const addBid = async (payload) => {
+export const addBid = async (payload, navigate, customnotification) => {
   try {
     attachToken()
     const res = await privateAPI.post('/auction/add-bid', payload)
     if (res) {
-      notification.success({
-        message: res.data.data,
+      customnotification.success({
+        message: res.data.data.message,
         duration: 3,
       })
+      navigate('/player-auction')
     }
-    return res.data.data
+    // return res.data.data
   } catch (err) {
-    notification.error({
-      message: err?.response?.data?.message || 'Server Error',
+    console.log('err', err)
+    customnotification.error({
+      message: err?.response?.data?.data?.message || 'Server Error',
       duration: 3,
     })
+    // navigate('/player-auction')
   }
 }

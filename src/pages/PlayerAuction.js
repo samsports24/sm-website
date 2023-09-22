@@ -125,12 +125,21 @@ const PlayerAuction = () => {
               {v?.highestCurrentBid ? `$${v?.highestCurrentBid?.toLocaleString()}` : '-'}
             </p>
           </div>
-          <div style={{ minWidth: '130px' }}>
-            <p className='squad_text2'>time left</p>
-            <p className='squad_text1' style={{ textTransform: 'lowercase' }}>
-              {remainingTime || '-'}
-            </p>
-          </div>
+          {v?.hasAuctionStarted ? (
+            <div style={{ minWidth: '130px' }}>
+              <p className='squad_text2'>time left</p>
+              <p className='squad_text1' style={{ textTransform: 'lowercase' }}>
+                {remainingTime || '-'}
+              </p>
+            </div>
+          ) : (
+            <div style={{ minWidth: '130px' }}>
+              <p className='squad_text2'>time left</p>
+              <p className='squad_text1' style={{ textTransform: 'lowercase' }}>
+                Auction will start on {moment(v?.startDate).format('YYYY-MM-DD hh:mm a')}
+              </p>
+            </div>
+          )}
           {payButton && v?.assigned?.user === USER?._id && (
             <Tooltip
               placement='top'

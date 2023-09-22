@@ -75,7 +75,7 @@ const AmericalFootballBanner = () => {
         <>
           {/* Desktop */}
           <div className='american-football-banner-dekstop'>
-            <img src={require('../../assets/rectangle-9.png')} />
+            <img src={require('../../assets/hockey_banner.png')} />
             <div className='content_wrapper'>
               <div className='left'>
                 <h1>Try out our public leagues</h1>
@@ -89,7 +89,7 @@ const AmericalFootballBanner = () => {
 
           {/* Tablet */}
           <div className='american-football-banner-tab'>
-            <img src={require('../../assets/banner-img-tab.png')} />
+            <img src={require('../../assets/hockey_banner.png')} />
             <div className='content_wrapper'>
               <div className='left'>
                 <h1>Try out our public leagues</h1>
@@ -103,7 +103,50 @@ const AmericalFootballBanner = () => {
 
           {/* Mobile */}
           <div className='american-football-banner-mobile'>
-            <img src={require('../../assets/banner-img-mob.png')} />
+            <img src={require('../../assets/hockey_banner.png')} />
+            <div className='content_wrapper'>
+              <div className='left'>
+                <h1>Try out our public leagues</h1>
+                <p>That&apos;s where your GM experience starts.</p>
+              </div>
+            </div>
+            <h1 onClick={handleNavigate} className='play_now_text'>
+              Play Now!
+            </h1>
+          </div>
+        </>
+        <>
+          {/* Desktop */}
+          <div className='american-football-banner-dekstop'>
+            <img src={require('../../assets/baseball_banner.png')} />
+            <div className='content_wrapper'>
+              <div className='left'>
+                <h1>Try out our public leagues</h1>
+                <p>That&apos;s where your GM experience starts.</p>
+              </div>
+            </div>
+            <h1 onClick={handleNavigate} className='play_now_text'>
+              Play Now!
+            </h1>
+          </div>
+
+          {/* Tablet */}
+          <div className='american-football-banner-tab'>
+            <img src={require('../../assets/baseball_banner.png')} />
+            <div className='content_wrapper'>
+              <div className='left'>
+                <h1>Try out our public leagues</h1>
+                <p>That&apos;s where your GM experience starts.</p>
+              </div>
+            </div>
+            <h1 onClick={handleNavigate} className='play_now_text'>
+              Play Now!
+            </h1>
+          </div>
+
+          {/* Mobile */}
+          <div className='american-football-banner-mobile'>
+            <img src={require('../../assets/baseball_banner.png')} />
             <div className='content_wrapper'>
               <div className='left'>
                 <h1>Try out our public leagues</h1>

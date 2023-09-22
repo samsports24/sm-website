@@ -1,4 +1,4 @@
-import { Button, Breadcrumb, Row, Col, Typography, Input } from 'antd'
+import { Button, Breadcrumb, Row, Col, Typography, Input, notification } from 'antd'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 
 import Arrow from '../assets/arrow-right.svg'
@@ -18,6 +18,7 @@ import moment from 'moment'
 import { addBid } from '../redux/actions/rosterAction'
 
 const PlayerLiveAuction = () => {
+  const [noti, contextHolder] = notification.useNotification()
   const { state } = useLocation()
   const [remainingTime, setRemainingTime] = useState('')
   const [isLoading, setIsLoading] = useState({
@@ -93,13 +94,17 @@ const PlayerLiveAuction = () => {
       type: 'submit',
       status: true,
     })
-    const res = await addBid({
-      auctionId: state?._id,
-      bidAmount: Number(manualBid),
-    })
-    if (res) {
-      navigate('/player-auction')
-    }
+    await addBid(
+      {
+        auctionId: state?._id,
+        bidAmount: Number(manualBid),
+      },
+      navigate,
+      noti,
+    )
+    // if (res) {
+    //   navigate('/player-auction')
+    // }
     setIsLoading({
       type: 'submit',
       status: false,
@@ -111,13 +116,17 @@ const PlayerLiveAuction = () => {
       type: 'quick',
       status: true,
     })
-    const res = await addBid({
-      auctionId: state?._id,
-      bidAmount: Number(state?.highestCurrentBid) + 5,
-    })
-    if (res) {
-      navigate('/player-auction')
-    }
+    await addBid(
+      {
+        auctionId: state?._id,
+        bidAmount: Number(state?.highestCurrentBid) + 5,
+      },
+      navigate,
+      noti,
+    )
+    // if (res) {
+    //   ('/player-auction')
+    // }
     setIsLoading({
       type: 'quick',
       status: false,
@@ -126,6 +135,7 @@ const PlayerLiveAuction = () => {
 
   return (
     <div className='player_interface_container'>
+      {contextHolder}
       {/* BACK BUTTON */}
       <Button className='back_button' type='primary' onClick={() => navigate(-1)}>
         Back

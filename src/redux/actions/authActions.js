@@ -53,10 +53,10 @@ export const otpVerification = (otp, navigate) => {
   }
 }
 
-export const authLogin = (payload, navigate) => {
+export const authLogin = (payload, navigate, walletAddress) => {
   return async (dispatch) => {
     try {
-      const res = await publicAPI.post('/auth/login', payload)
+      const res = await publicAPI.post('/auth/login', { ...payload, walletAddress })
       if (res) {
         if (res.data.data.user.accountVerified) {
           localStorage.setItem('version', version)
