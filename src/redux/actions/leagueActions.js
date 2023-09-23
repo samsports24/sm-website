@@ -9,6 +9,7 @@ export const getProfessionalLeagueRanks = async (week) => {
       return res.data.data
     }
   } catch (err) {
+    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
@@ -39,6 +40,7 @@ export const getScheduleByWeek = async (week) => {
       return res.data.data
     }
   } catch (err) {
+    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,

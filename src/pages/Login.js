@@ -11,66 +11,65 @@ import YouTube from '../assets/youtube.svg'
 import Banner from '../assets/login-pic-1.png'
 import { authLogin } from '../redux'
 import { useDispatch } from 'react-redux'
-import { ethers } from 'ethers'
 
 const SignIn = () => {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const connectEthereumWallet = async (values) => {
-    setLoading(true)
+  // const connectEthereumWallet = async (values) => {
+  //   setLoading(true)
 
-    if (!window?.ethereum) {
-      notification.error('Ethereum provider not detected')
-      setLoading(false)
-      return
-    }
+  //   if (!window?.ethereum) {
+  //     notification.error('Ethereum provider not detected')
+  //     setLoading(false)
+  //     return
+  //   }
 
-    const provider = new ethers.BrowserProvider(window?.ethereum)
+  //   const provider = new ethers.BrowserProvider(window?.ethereum)
 
-    try {
-      // This will request the user to grant permission to access their Ethereum wallet
-      const accounts = await provider.send('eth_requestAccounts', [])
-      // console.log(accounts)
-      if (accounts.length) {
-        // notification.success(`Connected to ${accounts[0]}`)
-        // navigate('/connect-wallet') // Navigate after successful connection
-        // document.getElementById('walletStatus').textContent = 'Connected'
-        const connectedAddress = accounts[0]
-        const walletBalance = await provider.getBalance(connectedAddress)
+  //   try {
+  //     // This will request the user to grant permission to access their Ethereum wallet
+  //     const accounts = await provider.send('eth_requestAccounts', [])
+  //     // console.log(accounts)
+  //     if (accounts.length) {
+  //       // notification.success(`Connected to ${accounts[0]}`)
+  //       // navigate('/connect-wallet') // Navigate after successful connection
+  //       // document.getElementById('walletStatus').textContent = 'Connected'
+  //       const connectedAddress = accounts[0]
+  //       const walletBalance = await provider.getBalance(connectedAddress)
 
-        console.log('connectedAddress', connectedAddress)
-        console.log('walletBalance', ethers.formatEther(walletBalance))
-        if (connectedAddress) {
-          await dispatch(authLogin(values, navigate, connectedAddress))
-        } else {
-          notification.error({
-            description: 'Wallet Not Connected.',
-            duration: 5,
-          })
-        }
-        // context.setAddress(connectedAddress)
-        // context.setBalance(ethers.formatEther(walletBalance))
-        // document.getElementById('walletStatus').textContent = 'Connected'
-        // setWalletStatus(true)
-      } else {
-        notification.warn('No account connected')
-      }
-    } catch (err) {
-      notification.error('Failed to connect to wallet')
-      console.error(err)
-    }
+  //       console.log('connectedAddress', connectedAddress)
+  //       console.log('walletBalance', ethers.formatEther(walletBalance))
+  //       if (connectedAddress) {
+  //         await dispatch(authLogin(values, navigate, connectedAddress))
+  //       } else {
+  //         notification.error({
+  //           description: 'Wallet Not Connected.',
+  //           duration: 5,
+  //         })
+  //       }
+  //       // context.setAddress(connectedAddress)
+  //       // context.setBalance(ethers.formatEther(walletBalance))
+  //       // document.getElementById('walletStatus').textContent = 'Connected'
+  //       // setWalletStatus(true)
+  //     } else {
+  //       notification.warn('No account connected')
+  //     }
+  //   } catch (err) {
+  //     notification.error('Failed to connect to wallet')
+  //     console.error(err)
+  //   }
 
-    setLoading(false)
-  }
+  //   setLoading(false)
+  // }
 
   const onFinish = async (values) => {
     if (values.userName && values.password) {
-      // setLoading(true)
-      await connectEthereumWallet(values)
-      // await dispatch(authLogin(values, navigate))
-      // setLoading(false)
+      setLoading(true)
+      // await connectEthereumWallet(values)
+      await dispatch(authLogin(values, navigate))
+      setLoading(false)
     } else {
       notification.error({ message: 'username or password is missing.', duration: 7 })
     }

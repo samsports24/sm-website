@@ -1,6 +1,7 @@
 import { notification } from 'antd'
 import { publicAPI, attachToken, privateAPI, version } from '../../config/constants'
 import { SET_USER_DETAILS } from '../types/generalTypes'
+import { ethers } from 'ethers'
 
 export const authSignup = async (payload, navigate) => {
   try {
@@ -34,10 +35,11 @@ export const otpVerification = (otp, navigate) => {
         localStorage.setItem('userName', res.data.data.user.name)
         localStorage.setItem('userId', res.data.data.user._id)
         attachToken()
-        dispatch({
-          type: SET_USER_DETAILS,
-          payload: res.data.data.user,
-        })
+        dispatch(getUser())
+        // dispatch({
+        //   type: SET_USER_DETAILS,
+        //   payload: res.data.data.user,
+        // })
         notification.success({
           description: res.data.data.message,
           duration: 2,
@@ -53,28 +55,94 @@ export const otpVerification = (otp, navigate) => {
   }
 }
 
-export const authLogin = (payload, navigate, walletAddress) => {
+const connectEthereumWallet = () => {
+  return new Promise(async function (resolve, reject) {
+    if (!window?.ethereum) {
+      console.log('Ethereum provider not detected')
+      resolve({
+        message: 'Metamask not detected, make sure to connect your wallet to make payments.',
+        status: 'warning',
+      })
+    }
+    const provider = new ethers.BrowserProvider(window?.ethereum)
+    try {
+      const accounts = await provider.send('eth_requestAccounts', [])
+      if (accounts.length) {
+        const connectedAddress = accounts[0]
+        const walletBalance = await provider.getBalance(connectedAddress)
+
+        console.log('connectedAddress', connectedAddress)
+        console.log('walletBalance', ethers.formatEther(walletBalance))
+        if (connectedAddress) {
+          resolve({ message: 'Wallet Connected', status: 'success', connectedAddress })
+        } else {
+          reject({
+            message: 'Wallet Not Connected.',
+          })
+        }
+      } else {
+        reject({
+          message: 'No account created',
+        })
+      }
+    } catch (err) {
+      console.error(err)
+      reject({
+        message: 'Failed to connect to wallet',
+      })
+    }
+  })
+}
+
+export const authLogin = (payload, navigate) => {
   return async (dispatch) => {
     try {
-      const res = await publicAPI.post('/auth/login', { ...payload, walletAddress })
+      const res = await publicAPI.post('/auth/login', payload)
       if (res) {
         if (res.data.data.user.accountVerified) {
-          localStorage.setItem('version', version)
-          localStorage.setItem('token', res.data.data.token)
-          localStorage.setItem('userName', res.data.data.user.name)
-          localStorage.setItem('userId', res.data.data.user._id)
-          attachToken()
-          // dispatch({
-          //   type: SET_USER_DETAILS,
-          //   payload: res.data.data,
-          // })
-          dispatch(getUser())
-          localStorage.setItem('week', res?.data?.data?.setting?.week)
-          notification.success({
-            description: res.data.data.message,
-            duration: 2,
-          })
-          navigate('/fantasy-league')
+          if (res.data.data.user.userType === 'owner') {
+            await connectEthereumWallet()
+              .then(async (response) => {
+                notification[response.status]({
+                  message: response.message,
+                  duration: 5,
+                })
+                localStorage.setItem('version', version)
+                localStorage.setItem('token', res.data.data.token)
+                localStorage.setItem('userName', res.data.data.user.name)
+                localStorage.setItem('userId', res.data.data.user._id)
+                attachToken()
+                dispatch(getUser())
+                if (response.status === 'success') {
+                  await saveWallet(response.connectedAddress)
+                }
+                localStorage.setItem('week', res?.data?.data?.setting?.week)
+                notification.success({
+                  description: res.data.data.message,
+                  duration: 2,
+                })
+                navigate('/fantasy-league')
+              })
+              .catch((err) => {
+                notification.error({
+                  message: err.message,
+                  duration: 5,
+                })
+              })
+          } else {
+            attachToken()
+            localStorage.setItem('version', version)
+            localStorage.setItem('token', res.data.data.token)
+            localStorage.setItem('userName', res.data.data.user.name)
+            localStorage.setItem('userId', res.data.data.user._id)
+            dispatch(getUser())
+            localStorage.setItem('week', res?.data?.data?.setting?.week)
+            notification.success({
+              description: res.data.data.message,
+              duration: 2,
+            })
+            navigate('/fantasy-league')
+          }
         } else {
           localStorage.setItem('email', res.data.data.user.email)
           notification.error({
@@ -91,6 +159,18 @@ export const authLogin = (payload, navigate, walletAddress) => {
         duration: 3,
       })
     }
+  }
+}
+
+export const saveWallet = async (walletAddress) => {
+  try {
+    attachToken()
+    await privateAPI.post('/auth/save-wallet', { walletAddress })
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
   }
 }
 
@@ -119,6 +199,57 @@ export const updateUserProfile = async (payload) => {
   try {
     attachToken()
     const res = await privateAPI.post('/user/update', payload)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const createStaff = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/user/create-staff', payload)
+    if (res) {
+      notification.success({
+        message: res?.data?.data?.message,
+        duration: 3,
+      })
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const updateStaff = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/user/update-staff', payload)
+    if (res) {
+      notification.success({
+        message: res?.data?.data?.message,
+        duration: 3,
+      })
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const getStaff = async () => {
+  try {
+    attachToken()
+    const res = await privateAPI.get('/user/get-all-staff')
     if (res) {
       return res.data.data
     }

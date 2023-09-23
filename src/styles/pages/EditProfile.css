@@ -13,6 +13,11 @@
   border-radius: 16px;
   margin-bottom: 50px;
 }
+.profile-container .staff .title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .profile-container .profile .title {
   padding-bottom: 22px;
 }

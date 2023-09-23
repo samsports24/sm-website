@@ -19,7 +19,7 @@ import Loader from '../components/Loader'
 // import LeagueStandingsHockey from '../components/LeagueStandingsHockey'
 
 const ProfessionalLeague = () => {
-  const SETTING = useSelector((state) => state?.user?.setting)
+  const SETTING = useSelector((state) => state.user.setting)
   const [ranks, setRanks] = useState(null)
   const [data, setData] = useState([])
   const [isLoading, setIsloading] = useState(true)

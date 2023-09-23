@@ -12,19 +12,22 @@ import RoutesButton from '../RoutesButton'
 import { leagueSalaryCap } from '../../config/constants'
 
 const Header = () => {
+  // const userTemp = useSelector((state) => state.user)
   const user = useSelector((state) => state.user.userDetails)
   const teamSalary = useSelector((state) => state.user.teamSalaryCap)
   const [notificationCount] = useState(null)
   const [auctionCount] = useState(null)
   const navigate = useNavigate()
 
+  console.log('user', user)
   const teamFinancials = () => {}
 
-  return user?.team ? (
+  if (!user) return <>Redirecting ...</>
+  return 'team' in user ? (
     <header className='gd-header'>
       <div className='left'>
         <div className='image_div'>
-          <Image preview={false} src={user?.team.logo} />
+          <Image preview={false} src={user?.team?.logo} />
         </div>
         <p style={{ cursor: 'pointer' }} onClick={() => navigate('/league-notification')}>
           <span>League Notification</span>{' '}
@@ -39,7 +42,7 @@ const Header = () => {
       </div>
       <div className='center'>
         <div className='title_box'>
-          <h1>{user?.team?.name}</h1>
+          {/* <h1>{user?.team?.name}</h1> */}
           <p onClick={() => navigate('/player-auction')}>
             <span>Live Player Auction</span>{' '}
             {auctionCount ? (
@@ -109,8 +112,8 @@ const Header = () => {
   ) : (
     <>
       <header className='gd-header'>
-        <div className='center' style={!user && { columnGap: '20px', rowGap: '0' }}>
-          <div className='title_box' style={!user && { minHeight: '110px' }}>
+        <div className='center' style={!user ? { columnGap: '20px', rowGap: '0' } : null}>
+          <div className='title_box' style={!user ? { minHeight: '110px' } : null}>
             <div>
               <p style={{ marginBottom: '20px !important' }}>SFL Prize-Pool</p>
               <h1>{`23' SAMS 1,491,526`}</h1>

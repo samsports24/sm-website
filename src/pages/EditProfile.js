@@ -1,18 +1,32 @@
-import { useState } from 'react'
-import { Row, Col, Form, Input, DatePicker, Button, notification } from 'antd'
+import { useEffect, useState } from 'react'
+import { Row, Col, Form, Input, DatePicker, Button, notification, Table } from 'antd'
 import User1 from '../assets/user-pic-1.png'
-import Color from '../assets/color-icon.svg'
-import { HiOutlineCamera } from 'react-icons/hi'
+// import Color from '../assets/color-icon.svg'
+import { HiOutlineCamera, HiPencil } from 'react-icons/hi'
 import { useSelector } from 'react-redux'
-import { updateUserProfile } from '../redux'
+import { getStaff, updateUserProfile } from '../redux'
 import dayjs from 'dayjs'
+import AddUser from '../components/modal/AddUser'
 
 const EditProfile = () => {
   const user = useSelector((state) => state.user.userDetails)
   const [loading, setLoading] = useState(false)
+  const [staffLoading, setStaffLoading] = useState(false)
   const [file, setFile] = useState(null)
+  const [allStaff, setAllStaff] = useState([])
   const [imageSrc, setImageSrc] = useState(null)
   const [form] = Form.useForm()
+
+  useEffect(() => {
+    getData()
+  }, [])
+
+  const getData = async () => {
+    setStaffLoading(true)
+    const res = await getStaff()
+    setAllStaff(res)
+    setStaffLoading(false)
+  }
 
   const handleFile = (file) => {
     setFile(file)
@@ -426,7 +440,52 @@ const EditProfile = () => {
         </div>
       </div>
 
-      <div className='setting-container'>
+      {user?.userType === 'owner' && (
+        <div className='profile staff'>
+          <div className='title'>
+            <h2>My Staff</h2>
+            <AddUser />
+          </div>
+          <div className=''>
+            <Table
+              columns={[
+                {
+                  dataIndex: 'no',
+                  title: 'sr#',
+                },
+                {
+                  dataIndex: 'name',
+                  title: 'Name',
+                },
+                {
+                  dataIndex: 'email',
+                  title: 'Email',
+                },
+                {
+                  dataIndex: 'type',
+                  title: 'Employement',
+                },
+                {
+                  dataIndex: 'action',
+                  title: 'Actions',
+                },
+              ]}
+              dataSource={allStaff?.map((staff, index) => ({
+                key: staff?._id,
+                no: index + 1,
+                name: staff?.name,
+                email: staff?.email,
+                type: staff?.userType?.toUpperCase(),
+                action: <AddUser edit={true} data={staff} />,
+              }))}
+              size='small'
+              pagination={false}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* <div className='setting-container'>
         <h2>Settings</h2>
         <div className='setting-flex'>
           <div className='setting'>
@@ -454,7 +513,7 @@ const EditProfile = () => {
             <Button type='primary'>Save Changes</Button>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }
