@@ -126,7 +126,7 @@ const _defenderData = [
   },
 ]
 
-const forwarApi = [
+const forwardApi = [
   {
     _id: '123456781',
     Name: 'Alex Tuch',
@@ -260,7 +260,14 @@ const defenderApi = [
     Name: 'Alex Tuch',
     PlayerID: 123437,
     HostedHeadshotNoBackgroundUrl: require('../assets/hockey-1.png'),
-    classKey: 'pairing4-1',
+    classKey: 'goalie',
+  },
+  {
+    _id: '123456737',
+    Name: 'Alex Tuch',
+    PlayerID: 123438,
+    HostedHeadshotNoBackgroundUrl: require('../assets/hockey-1.png'),
+    classKey: 'pairing4-2',
   },
 ]
 const benchApi = [
@@ -319,22 +326,22 @@ const TeamLine = () => {
   useEffect(() => {
     setLoading(true)
     setTimeout(() => {
-      if (forwarApi?.length > 0) {
-        forwarApi.map((item) => {
-          let index = forwarApi.findIndex((item2) => {
+      if (forwardApi?.length > 0) {
+        forwardApi.map((item) => {
+          let index = forwardApi.findIndex((item2) => {
             return item2.classKey === item.classKey
           })
           if (index !== -1) {
-            forwarApi.splice(index, 1, {
-              picture: item?.HostedHeadshotNoBackgroundUrl || forwarApi[index].picture,
+            forwardApi.splice(index, 1, {
+              picture: item?.HostedHeadshotNoBackgroundUrl || forwardApi[index].picture,
               name: item?.Name || '',
-              classKey: forwarApi[index].classKey,
+              classKey: forwardApi[index].classKey,
             })
           }
         })
-        setForwardData([...forwarApi])
+        setForwardData([...forwardApi])
       } else {
-        setForwardData([...forwarApi])
+        setForwardData([...forwardApi])
       }
       if (defenderApi?.length > 0) {
         defenderApi.map((item) => {
@@ -359,12 +366,12 @@ const TeamLine = () => {
   }, [])
 
   const TimelineCard = ({ forward, defender, data }) => {
-    const { name, picture } = data
+    const { name, picture, classKey } = data
     return (
       <div className='timeline_card'>
         <div className='text_box' style={{ borderRadius: '10px 10px 0px 0px' }}>
           {forward && <h4>Forward</h4>}
-          {defender && <h4>Defender</h4>}
+          {defender && <h4>{classKey === 'goalie' ? 'Goalie' : 'Defender'}</h4>}
         </div>
         <div className='image_box'>
           {picture ? (
@@ -450,7 +457,6 @@ const TeamLine = () => {
                   </div>
                   <div className='timeline_row'>
                     {forwardData?.slice(9, 12)?.map((v) => {
-                      console.log(v)
                       return <TimelineCard key={v?.classKey} forward data={v} />
                     })}
                     <Line number={'4th'} text={'Line'} />
@@ -477,7 +483,7 @@ const TeamLine = () => {
                   </div>
                   <div className='timeline_row'>
                     <Line number={''} text={''} />
-                    {defenderData?.slice(6, 7)?.map((v) => {
+                    {defenderData?.slice(6, 8)?.map((v) => {
                       return <TimelineCard key={v?.classKey} defender data={v} />
                     })}
                   </div>

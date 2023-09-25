@@ -16,6 +16,21 @@ export const getRoster = async (week) => {
   }
 }
 
+export const getTeamRoster = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/team/get-other-roster`, payload)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
 export const setNonActivePlayer = async (data, week) => {
   try {
     attachToken()
@@ -58,6 +73,21 @@ export const getRosterPlayer = async (payload) => {
   try {
     attachToken()
     const res = await privateAPI.post(`/player/get-player`, payload)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const getFreeAgentRosterPlayer = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/player/get-free-agent-player`, payload)
     if (res) {
       return res.data.data
     }

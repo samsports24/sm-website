@@ -53,7 +53,8 @@
   padding: 0px 40px 10px 40px;
   display: flex;
   flex-direction: row;
-  gap: 30px;
+  /* gap: 20px; */
+  column-gap: 30px;
 }
 .stats_card_container .center div {
   /* min-width: 180px; */
@@ -84,12 +85,12 @@
 }
 
 @media (max-width: 1440px) {
-  .stats_card_container .center {
+  /* .stats_card_container .center {
     padding: 30px;
-  }
-  .stats_card_container header {
+  } */
+  /* .stats_card_container header {
     padding: 30px;
-  }
+  } */
   .stats_card_container .center {
     flex-wrap: wrap;
   }
@@ -98,12 +99,12 @@
   }
 }
 @media (max-width: 768px) {
-  .stats_card_container header {
+  /* .stats_card_container header {
     padding: 20px;
-  }
-  .stats_card_container .center {
+  } */
+  /* .stats_card_container .center {
     padding: 20px;
-  }
+  } */
   .stats_card_container .center div {
     min-width: 80px;
   }

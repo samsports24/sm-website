@@ -1,7 +1,7 @@
 import { Button, Breadcrumb } from 'antd'
 
 import Arrow from '../assets/arrow-right.svg'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 
 // Component
 import Header from '../components/Header'
@@ -36,6 +36,7 @@ const PlayerInterface = () => {
 
   const { id } = useParams()
   const navigate = useNavigate()
+  const { state } = useLocation()
 
   useEffect(() => {
     getData()
@@ -46,6 +47,7 @@ const PlayerInterface = () => {
     const res = await getRosterPlayer({
       id,
       week: SETTING?.week,
+      team: state?.teamId,
     })
     if (res) {
       setPlayer(res?.player)
@@ -60,7 +62,7 @@ const PlayerInterface = () => {
   return (
     <div className='player_interface_container'>
       {/* BACK BUTTON */}
-      <Button className='back_button' type='primary' onClick={() => navigate('/player-roster')}>
+      <Button className='back_button' type='primary' onClick={() => navigate(-1)}>
         Back
       </Button>
 
@@ -97,13 +99,21 @@ const PlayerInterface = () => {
         <Loader />
       ) : (
         <>
+          {state?.teamId && (
+            <div className='viewing_roster_heading'>
+              <h2>Your are viewing {state?.teamName} rosters.</h2>
+            </div>
+          )}
+
           <GmCard
             playerData={player}
             activePlayers={activePlayers}
             practicePlayers={practicePlayers}
             getData={getData}
             news={news}
+            bidWinningPage={state?.teamId ? true : false}
           />
+
           <PlayerInfoBottom
             player={player}
             contract={

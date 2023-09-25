@@ -2,9 +2,12 @@ import React from 'react'
 
 import { Image, Table } from 'antd'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 const LeagueStandingCard = ({ data, index }) => {
+  const USER = useSelector((state) => state.user.userDetails)
   const navigate = useNavigate()
+
   // Table Column
   const columns = [
     {
@@ -59,23 +62,35 @@ const LeagueStandingCard = ({ data, index }) => {
     },
   ]
 
+  const handleNavigate = (id) => {
+    if (USER?.team?._id === id) {
+      navigate(`/player-roster`)
+    } else {
+      navigate(`/team-roster/${id}`)
+    }
+  }
+
   return (
-    <div
-      onClick={() => navigate('/standing-detail')}
-      className='league_standing_card'
-      style={{ marginTop: index === 0 && '0px' }}
-    >
+    <div className='league_standing_card' style={{ marginTop: index === 0 && '0px' }}>
       <h3 className='text'>
         {data?.conference} - {data?._id}
       </h3>
       {data?.standing?.map((v, i) => {
         return (
           <div key={i} className='table_card'>
-            <div className='table_header'>
+            <div
+              className='table_header'
+              onClick={() => handleNavigate(v?.teamId)}
+              style={{ cursor: 'pointer' }}
+            >
               <h3>{v?.team?.name}</h3>
             </div>
             <div className='table_body'>
-              <div className='table_image'>
+              <div
+                className='table_image'
+                style={{ cursor: 'pointer' }}
+                onClick={() => handleNavigate(v?.teamId)}
+              >
                 <Image preview={false} src={v?.team?.logo} alt={v?.team?.name} />
               </div>
               <div className='main_ls_table'>
@@ -87,10 +102,10 @@ const LeagueStandingCard = ({ data, index }) => {
                       pct: v?.teamScore?.pct,
                       gb: v?.teamScore?.gb,
                       strk: v?.teamScore?.strk ? v?.teamScore?.strk : '-',
-                      pf: v?.teamScore?.pf,
-                      avgpf: v?.teamScore?.avgPf,
-                      pa: v?.teamScore?.pa,
-                      avgpa: v?.teamScore?.avgPa,
+                      pf: v?.teamScore?.pf?.toFixed(2),
+                      avgpf: v?.teamScore?.avgPf?.toFixed(2),
+                      pa: v?.teamScore?.pa?.toFixed(2),
+                      avgpa: v?.teamScore?.avgPa?.toFixed(2),
                       divwlt: `${v?.teamScore?.divWin}-${v?.teamScore?.divLose}-${v?.teamScore?.divTie}`,
                       confwlt: `${v?.teamScore?.confWin}-${v?.teamScore?.confLose}-${v?.teamScore?.confTie}`,
                     },

@@ -26,7 +26,6 @@ const InjuredReserve = () => {
     const res = await getAllIr()
     if (res) {
       setInjuredReserve(res)
-      console.log('🚀 ~ file: InjuredReserve.js:29 ~ getData ~ res:', res)
     }
     setLoading(false)
   }
