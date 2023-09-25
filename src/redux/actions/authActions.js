@@ -100,49 +100,49 @@ export const authLogin = (payload, navigate) => {
       const res = await publicAPI.post('/auth/login', payload)
       if (res) {
         if (res.data.data.user.accountVerified) {
-          if (res.data.data.user.userType === 'owner') {
-            await connectEthereumWallet()
-              .then(async (response) => {
-                notification[response.status]({
-                  message: response.message,
-                  duration: 5,
-                })
-                localStorage.setItem('version', version)
-                localStorage.setItem('token', res.data.data.token)
-                localStorage.setItem('userName', res.data.data.user.name)
-                localStorage.setItem('userId', res.data.data.user._id)
-                attachToken()
-                dispatch(getUser())
-                if (response.status === 'success') {
-                  await saveWallet(response.connectedAddress)
-                }
-                localStorage.setItem('week', res?.data?.data?.setting?.week)
-                notification.success({
-                  description: res.data.data.message,
-                  duration: 2,
-                })
-                navigate('/fantasy-league')
-              })
-              .catch((err) => {
-                notification.error({
-                  message: err.message,
-                  duration: 5,
-                })
-              })
-          } else {
-            attachToken()
-            localStorage.setItem('version', version)
-            localStorage.setItem('token', res.data.data.token)
-            localStorage.setItem('userName', res.data.data.user.name)
-            localStorage.setItem('userId', res.data.data.user._id)
-            dispatch(getUser())
-            localStorage.setItem('week', res?.data?.data?.setting?.week)
-            notification.success({
-              description: res.data.data.message,
-              duration: 2,
-            })
-            navigate('/fantasy-league')
-          }
+          // if (res.data.data.user.userType === 'owner') {
+          // await connectEthereumWallet()
+          //     .then(async (response) => {
+          //       notification[response.status]({
+          //         message: response.message,
+          //         duration: 5,
+          //       })
+          //       localStorage.setItem('version', version)
+          //       localStorage.setItem('token', res.data.data.token)
+          //       localStorage.setItem('userName', res.data.data.user.name)
+          //       localStorage.setItem('userId', res.data.data.user._id)
+          //       attachToken()
+          //       dispatch(getUser())
+          //       if (response.status === 'success') {
+          //         await saveWallet(response.connectedAddress)
+          //       }
+          //       localStorage.setItem('week', res?.data?.data?.setting?.week)
+          //       notification.success({
+          //         description: res.data.data.message,
+          //         duration: 2,
+          //       })
+          //       navigate('/fantasy-league')
+          //     })
+          //     .catch((err) => {
+          //       notification.error({
+          //         message: err.message,
+          //         duration: 5,
+          //       })
+          //     })
+          // } else {
+          attachToken()
+          localStorage.setItem('version', version)
+          localStorage.setItem('token', res.data.data.token)
+          localStorage.setItem('userName', res.data.data.user.name)
+          localStorage.setItem('userId', res.data.data.user._id)
+          dispatch(getUser())
+          localStorage.setItem('week', res?.data?.data?.setting?.week)
+          notification.success({
+            description: res.data.data.message,
+            duration: 2,
+          })
+          navigate('/fantasy-league')
+          // }
         } else {
           localStorage.setItem('email', res.data.data.user.email)
           notification.error({

@@ -19,10 +19,8 @@ const Header = () => {
   const [auctionCount] = useState(null)
   const navigate = useNavigate()
 
-  console.log('user', user)
   const teamFinancials = () => {}
 
-  if (!user) return <>Redirecting ...</>
   return 'team' in user ? (
     <header className='gd-header'>
       <div className='left'>
