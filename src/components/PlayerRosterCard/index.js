@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Checkbox } from 'antd'
 
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { isLocked } from '../../config/constants'
 
 import { MdLock } from 'react-icons/md'
@@ -31,8 +31,10 @@ const PlayerRosterCard = ({
       isPlayerLocked,
     },
     // _id: lineupId,
+    team,
   } = data
   const navigate = useNavigate()
+  const { id } = useParams()
 
   return (
     <div className='stats_card_container' style={style || null}>
@@ -43,7 +45,12 @@ const PlayerRosterCard = ({
         <h3
           style={{ cursor: 'pointer' }}
           onClick={() => {
-            navigate(`/player-interface/${PlayerID}`)
+            navigate(`/player-interface/${PlayerID}`, {
+              state: {
+                teamId: id ? id : null,
+                teamName: team?.name ? team?.name : '',
+              },
+            })
           }}
         >
           {index + 1}. &nbsp;&nbsp; {Name} ({Position}){' '}

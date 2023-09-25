@@ -1,33 +1,25 @@
+import { useEffect, useState } from 'react'
 import { Button, Breadcrumb } from 'antd'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 import Arrow from '../assets/arrow-right.svg'
 
 // Component
 import Header from '../components/Header'
-
-// import {
-//   ActivateFromPracticeSquad,
-//   AuctionPlayer,
-//   MoveToInjured,
-//   PoachPlayer,
-//   ReleasePlayer,
-//   MoveToPracticeSquad,
-//   TradePlayer,
-// } from '../components/modal/PlayerInterfaceModals'
 import GmCard from '../components/playerInterface/FreeAgentGmCard'
 import PlayerStats from '../components/playerInterface/PlayerStats'
 import ContractInfo from '../components/playerInterface/ContractInfo'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
-import { useEffect, useState } from 'react'
-import { getRosterPlayer } from '../redux/actions/rosterAction'
 import Loader from '../components/Loader'
 import PlayerInfoBottom from '../components/PlayerInfoBottom'
+import { getFreeAgentRosterPlayer } from '../redux/actions/rosterAction'
 
 const AgentPlayerInterface = () => {
+  const SETTING = useSelector((state) => state?.user?.setting)
   const [player, setPlayer] = useState({})
   const [news, setNews] = useState(null)
-  const [playerContract, setPlayerCntract] = useState(null)
+  const [playerContract, setPlayerContract] = useState(null)
   const [loading, setLoading] = useState(true)
 
   const navigate = useNavigate()
@@ -39,53 +31,14 @@ const AgentPlayerInterface = () => {
 
   const getData = async () => {
     setLoading(true)
-    const res = await getRosterPlayer(id)
+    const res = await getFreeAgentRosterPlayer({ id: Number(id), week: SETTING?.week })
     if (res) {
-      setPlayerCntract(null)
-      setPlayer({})
+      setPlayerContract(null)
+      setPlayer(res?.player)
       setNews(res?.news)
     }
     setLoading(false)
   }
-
-  // let infoData = [
-  //   {
-  //     title: 'Team',
-  //     value: player?.Team || '-',
-  //   },
-  //   {
-  //     title: 'Opponent',
-  //     value: player?.UpcomingGameOpponent || '-',
-  //   },
-  //   {
-  //     title: 'Postion',
-  //     value: player?.Position || '-',
-  //   },
-  //   {
-  //     title: 'Height',
-  //     value: player?.Height || '-',
-  //   },
-  //   {
-  //     title: 'Years in League',
-  //     value: player?.Experience
-  //       ? player?.Experience <= 1
-  //         ? `${player?.Experience} Year`
-  //         : `${player?.Experience} Years`
-  //       : '-',
-  //   },
-  //   {
-  //     title: 'Player Caps',
-  //     value: playerContract?.PlayerCap ? `$${playerContract?.PlayerCap?.toLocaleString()}` : '-',
-  //   },
-  //   {
-  //     title: 'Player College',
-  //     value: player?.College || '-',
-  //   },
-  //   {
-  //     title: 'Age',
-  //     value: player?.age ? `${player?.Age} (${player?.BirthDateString})` : '-',
-  //   },
-  // ]
 
   return (
     <div className='player_interface_container'>
@@ -135,23 +88,6 @@ const AgentPlayerInterface = () => {
               playerContract?.PlayerCap ? `$${playerContract?.PlayerCap?.toLocaleString()}` : '-'
             }
           />
-
-          {/* <div className='info-card'>
-            {infoData.map((item, index) => (
-              <h3 key={index}>
-                {item.title} : <span>{item.value}</span>
-              </h3>
-            ))}
-          </div>
-
-          <hr className='divider' />
-
-          <div className='player_caps_box'>
-            <h1>
-              Player Cap Hit:{' '}
-              {playerContract?.PlayerCap ? `$${playerContract?.PlayerCap?.toLocaleString()}` : '-'}
-            </h1>
-          </div> */}
 
           <section className='player_info_container'>
             <PlayerStats />

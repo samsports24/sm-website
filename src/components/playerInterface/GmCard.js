@@ -22,6 +22,7 @@ const GmCard = ({
   getData,
   news,
   isAction = true,
+  isViewer,
 }) => {
   const {
     team,

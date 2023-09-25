@@ -5,7 +5,7 @@
   flex-direction: column;
   gap: 20px;
   margin-top: 40px;
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 /* The Manning Conference - North */
 .league_standing_card .text {
@@ -35,6 +35,9 @@
   font-weight: 600;
   line-height: normal;
   padding: 8px 24px;
+}
+.league_standing_card .table_card .table_header h3:hover {
+  color: var(--primary) !important;
 }
 .league_standing_card .table_card .table_body {
   width: 100%;

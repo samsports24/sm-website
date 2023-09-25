@@ -87,3 +87,22 @@
   font-weight: 600;
   line-height: normal;
 }
+
+.team_roster_container .ant-checkbox-wrapper,
+.team_roster_container .ant-checkbox > * {
+  cursor: no-drop !important;
+}
+
+.viewing_roster_heading {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 30px 0px 30px;
+}
+.viewing_roster_heading h2 {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--primary) !important;
+}

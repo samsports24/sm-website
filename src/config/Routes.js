@@ -62,6 +62,7 @@ import League from '../pages/League'
 import { version } from './constants'
 import { notification } from 'antd'
 import { useEffect } from 'react'
+import TeamRoster from '../pages/TeamRoster'
 
 // HOCKEY
 // import TeamLine from '../pages/TeamLine'
@@ -135,6 +136,7 @@ const Routers = () => {
           <Route path='/fantasy-league' element={<FantasyLeague />} />
           <Route path='/professional-league' element={<ProfessionalLeague />} />
           <Route path='/player-roster' element={<PlayerRoster />} />
+          <Route path='/team-roster/:id' element={<TeamRoster />} />
           <Route path='/depth-chart' element={<DepthChart />} />
           <Route path='/league-standings' element={<LeagueStandings />} />
           <Route path='/free-agent' element={<FreeAgent />} />

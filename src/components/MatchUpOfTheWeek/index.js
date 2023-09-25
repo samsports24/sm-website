@@ -4,7 +4,6 @@ import { BiRightArrowAlt } from 'react-icons/bi'
 import { useNavigate } from 'react-router-dom'
 
 const MatchUpOfTheWeek = ({ data: v }) => {
-  console.log('🚀 ~ file: index.js:7 ~ MatchUpOfTheWeek ~ v:', v)
   const navigate = useNavigate()
 
   return (

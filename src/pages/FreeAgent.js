@@ -178,7 +178,6 @@ const FreeAgent = () => {
             <div className='standing-table-bg'>
               {!isEmpty &&
                 freeAgents?.players?.map((v, i) => {
-                  console.log(playerID === v?.Player_ID)
                   return (
                     <div key={i} className='squad_card_box'>
                       <div className='squad_content_body'>
