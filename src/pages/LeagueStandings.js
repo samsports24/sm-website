@@ -27,7 +27,7 @@ const LeagueStandings = () => {
       setStandings(data)
       setLoading(false)
     })()
-  }, [])
+  }, [setting?.week])
 
   return (
     <div className='standing_container pro_league_container standing_header_container'>
