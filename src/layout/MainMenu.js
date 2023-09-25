@@ -94,7 +94,7 @@ const MainMenu = ({ active }) => {
           // key='dashboard'
           className={'sidebar-menu'}
           icon={<img src={ScoreIcon} />}
-          onClick={() => window.open('https://sam-wallet-2.web.app/')}
+          onClick={() => window.open('https://sam-wallet-10b1f.web.app/')}
         >
           SAM Sports Token
         </Menu.Item>
