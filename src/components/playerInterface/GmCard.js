@@ -132,7 +132,7 @@ const GmCard = ({
                 <h4>Player Action Bar</h4>
                 <AuctionPlayer
                   playerIds={{ PlayerID, player_id: playerData?._id }}
-                  disabled={isPlayerLocked}
+                  disabled={true || isPlayerLocked}
                 />
 
                 <TradePlayer disabled={isPlayerLocked} />

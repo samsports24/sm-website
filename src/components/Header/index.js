@@ -21,7 +21,7 @@ const Header = () => {
 
   const teamFinancials = () => {}
 
-  return 'team' in user ? (
+  return user?.team ? (
     <header className='gd-header'>
       <div className='left'>
         <div className='image_div'>
