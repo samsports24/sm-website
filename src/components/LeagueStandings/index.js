@@ -35,11 +35,11 @@ const LeagueStandings = ({ data }) => {
                 </div>
                 <div>
                   <p className='text1'>AVG PF</p>
-                  <p className='text2'>{v?.teamScore?.avgPf}</p>
+                  <p className='text2'>{v?.teamScore?.avgPf?.toFixed(2)}</p>
                 </div>
                 <div>
                   <p className='text1'>AVG PA</p>
-                  <p className='text2'>{v?.teamScore?.avgPa}</p>
+                  <p className='text2'>{v?.teamScore?.avgPa?.toFixed(2)}</p>
                 </div>
                 <div>
                   <p className='text1'>DIV W‑L‑T</p>

@@ -12,12 +12,13 @@ import Pagination from '../components/Pagination'
 // import { leagueScoreData } from './mockData'
 import { useNavigate } from 'react-router-dom'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
-import { getScheduleByWeek } from '../redux'
+import { getScheduleByWeek, updateWeek } from '../redux'
 import Loader from '../components/Loader'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 const LeagueScore = () => {
-  const CURRENT_WEEK = useSelector((state) => state?.user.currentWeek)
+  // const CURRENT_WEEK = useSelector((state) => state?.user.currentWeek)
+  const SETTING = useSelector((state) => state?.user?.setting)
 
   const navigate = useNavigate()
   const isAuthenticated = localStorage.getItem('token')
@@ -25,21 +26,24 @@ const LeagueScore = () => {
 
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
-  const [week, setWeek] = useState(CURRENT_WEEK)
+  // const [week, setWeek] = useState(CURRENT_WEEK)
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
     getDataByWeek()
-  }, [week])
+  }, [SETTING?.week])
 
   const getDataByWeek = async () => {
     setLoading(true)
-    const res = await getScheduleByWeek(week)
+    const res = await getScheduleByWeek(SETTING?.week)
     setData(res)
     setLoading(false)
   }
 
   const handlePagination = (page) => {
-    setWeek(page)
+    // setWeek(page)
+    dispatch(updateWeek(page))
   }
 
   return (
@@ -58,7 +62,7 @@ const LeagueScore = () => {
           <h1>League Scores </h1>
           <Pagination
             title='Go To Week:'
-            defaultCurrent={week}
+            defaultCurrent={SETTING?.week}
             total={180}
             onChange={handlePagination}
           />

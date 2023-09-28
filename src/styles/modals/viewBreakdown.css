@@ -1,0 +1,28 @@
+.view_button {
+  background-color: transparent;
+  outline: none;
+  border: none;
+  color: #fff;
+  opacity: 0.5;
+  cursor: pointer;
+}
+.view_button:hover {
+  color: var(--primary);
+  opacity: 1;
+}
+
+.view_breakdown_modal {
+  width: 850px !important;
+}
+.view_breakdown_modal .ant-modal-content {
+  padding: 38px 33px !important;
+  border-radius: 16px !important;
+  border: 1px solid #289fc9 !important;
+  background-color: rgba(48, 33, 93, 0.4) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.view_breakdown_modal
+  :where(.css-dev-only-do-not-override-1jqvr6p).ant-input-status-error:not(.ant-input-disabled):not(.ant-input-borderless).ant-input {
+  border-color: var(--colors-theme-border-color, rgba(110, 105, 128, 0.4)) !important;
+}
