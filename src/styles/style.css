@@ -14,6 +14,7 @@
 @import './modals/depthModal.css';
 @import './modals/playerInerfaceModals.css';
 @import './modals/couponModal.css';
+@import './modals/viewBreakdown.css';
 
 /* Component CSS */
 @import './components/header.css';

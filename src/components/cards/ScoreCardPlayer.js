@@ -2,6 +2,7 @@ import React from 'react'
 import { Image } from 'antd'
 
 import Player1 from '../../assets/player-img-60x60.png'
+import ViewBreakdown from '../modal/ViewBreakdown'
 // import Player2 from '../../assets/player-img-2-60x60.png'
 
 const ScoreCardPlayer = ({ alignment, data }) => {
@@ -40,7 +41,7 @@ const ScoreCardPlayer = ({ alignment, data }) => {
       >
         <div style={{ flexDirection: alignment == 'right' ? 'row-reverse' : 'row' }}>
           <p className='time'>Next Opponent: {data?.player?.UpcomingGameOpponent}</p>
-          <p className='decimal'>0</p>
+          {data?.player?.Position !== 'OL' && <ViewBreakdown data={data} />}
         </div>
         <p className='handle'>{data?.handle}</p>
       </div>
