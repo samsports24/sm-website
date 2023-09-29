@@ -41,7 +41,7 @@ const ScoreCardPlayer = ({ alignment, data }) => {
       >
         <div style={{ flexDirection: alignment == 'right' ? 'row-reverse' : 'row' }}>
           <p className='time'>Next Opponent: {data?.player?.UpcomingGameOpponent}</p>
-          {data?.player?.Position !== 'OL' && <ViewBreakdown data={data} />}
+          {data?.player?.playerScoreBreakDown?.length > 0 && <ViewBreakdown data={data} />}
         </div>
         <p className='handle'>{data?.handle}</p>
       </div>

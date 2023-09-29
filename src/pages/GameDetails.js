@@ -29,7 +29,7 @@ const GameDetails = () => {
 
   useEffect(() => {
     SETTING.week !== 0 && getData()
-  }, [SETTING.week])
+  }, [])
 
   const getData = async () => {
     setLoading(true)
@@ -144,13 +144,13 @@ const GameDetails = () => {
                 ?.filter((v) => v?.position?.toLowerCase() !== 'bqb')
                 .map((player, i) => (
                   <div key={player.position + i} className='row'>
-                    <ScoreCardPlayer alignment='left' data={{ player: player.player1?.players }} />
+                    <ScoreCardPlayer alignment='left' data={{ player: player.player1 }} />
                     <div className='position-label' style={{ color: '#0CD9F5' }}>
                       {player?.position?.split('/').map((pos) => (
                         <span key={pos}>{pos}</span>
                       ))}
                     </div>
-                    <ScoreCardPlayer alignment='right' data={{ player: player.player2?.players }} />
+                    <ScoreCardPlayer alignment='right' data={{ player: player.player2 }} />
                   </div>
                 ))}
               {/* <div className='row'>
