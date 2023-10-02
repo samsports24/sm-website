@@ -155,6 +155,19 @@ const VerticalLayout = ({ children, active }) => {
           <Content className='main-content'>{children}</Content>
           <Footer className='mainFooter'>
             <p>© Sam Sports, Inc. All rights reserved.</p>
+            <a
+              href='https://app.termly.io/document/terms-of-service/372d4c41-9267-4833-8bbb-aba80f6fbbb8'
+              target='_blank'
+              rel='noreferrer'
+              style={{
+                color: 'white',
+                fontWeight: 600,
+                fontSize: '20px',
+                textDecoration: 'underline',
+              }}
+            >
+              TERMS OF SERVICE
+            </a>
 
             <a href='https://sportsdata.io' target='_blank' rel='noreferrer'>
               <img
