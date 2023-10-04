@@ -33,7 +33,8 @@
   opacity: 0.5;
   text-align: center;
   cursor: pointer;
-  min-width: 90px;
+  /* min-width: 90px; */
+  min-width: max-content;
 }
 
 .week_pagination_ul .pre_next_box {
@@ -71,4 +72,8 @@
   border: 1px solid #fff;
   color: #fff;
   font-weight: 500;
+  opacity: 0.5;
+}
+.week_pagination_ul .go_live_button:hover {
+  opacity: 1;
 }

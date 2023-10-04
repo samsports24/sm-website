@@ -2,7 +2,7 @@ import { Button, Typography, Dropdown } from 'antd'
 import WeekPagination from '../WeekPagination'
 import { useNavigate } from 'react-router-dom'
 import { isLocked } from '../../config/constants'
-const ButtonsAndPagination = ({ noWeek, goLive = false }) => {
+const ButtonsAndPagination = ({ noWeek, goLive = true }) => {
   const navigate = useNavigate()
 
   const playerItems = [

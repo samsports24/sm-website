@@ -22,6 +22,7 @@ const initialState = {
     isGameLocked: false,
   },
   teamSalaryCap: 0,
+  record: null,
 }
 
 const userReducer = (state = initialState, action) => {
@@ -33,6 +34,7 @@ const userReducer = (state = initialState, action) => {
         userDetails: payload?.user,
         currentWeek: payload?.setting?.week,
         weekSection: getInitSection(payload?.setting?.week),
+        record: payload?.record,
         setting: {
           ...state?.setting,
           week: payload?.setting?.week,

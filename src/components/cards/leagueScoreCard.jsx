@@ -38,8 +38,12 @@ const LeagueScoreCard = ({ data: v }) => {
             <h4>Record</h4>
           </div>
           <div className='league_score_box'>
-            <p className='opacity'>0-0-0</p>
-            <p className='opacity'>0-0-0</p>
+            <p className='opacity'>
+              {v?.record?.teamOne?.win}-{v?.record?.teamOne?.lose}-{v?.record?.teamOne?.tie}
+            </p>
+            <p className='opacity'>
+              {v?.record?.teamTwo?.win}-{v?.record?.teamTwo?.lose}-{v?.record?.teamTwo?.tie}
+            </p>
           </div>
         </div>
         <div className='league_score_card_content_right' style={{ flex: 1 }}>

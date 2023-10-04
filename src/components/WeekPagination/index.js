@@ -21,6 +21,8 @@ const WeekPagination = ({ goLive }) => {
     }
   }
 
+  const goLiveFunction = () => dispatch(updateWeek(currentWeek))
+
   return (
     <ul className='week_pagination_ul'>
       {weekSection === 1 && (
@@ -116,7 +118,11 @@ const WeekPagination = ({ goLive }) => {
           <FiArrowRight />
         </button>
       </div>
-      {goLive && <Button className='go_live_button'>Go Live</Button>}
+      {goLive && (
+        <Button className='go_live_button' onClick={goLiveFunction}>
+          Go Live
+        </Button>
+      )}
     </ul>
   )
 }

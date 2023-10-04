@@ -84,7 +84,7 @@
   flex-direction: column;
   gap: 20px;
 }
-.gd-header .center .button_and_team_box .button_box button {
+.gd-header .center .button_and_team_box .button_box div {
   background-color: transparent !important;
   border: 1px solid #6e6980;
   border-radius: 8px;
@@ -96,7 +96,16 @@
   height: 45px;
   width: 20vw;
   min-width: 160px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  align-items: center;
+  gap: 3px;
+  flex-wrap: wrap;
+  padding-inline: 20px;
 }
+
 .gd-header .center .button_and_team_box .team_financials_box {
   display: flex;
   flex-direction: column;
@@ -200,18 +209,34 @@
 }
 
 @media (max-width: 1600px) {
-  .gd-header .center .button_and_team_box .button_box button {
-    width: 160px;
-    min-width: 160px;
+  .gd-header .center .button_and_team_box .button_box div {
+    width: 220px;
+    min-width: 220px;
   }
 }
-@media (max-width: 1300px) {
-  .gd-header .center .button_and_team_box .button_box button {
-    width: 100%;
-  }
+@media (max-width: 1450px) {
   .gd-header .center .button_and_team_box {
     flex-direction: column;
   }
+  .gd-header .center .button_and_team_box .button_box {
+    width: 100%;
+  }
+  .gd-header .center .button_and_team_box .button_box div {
+    width: 0vw !important;
+    width: 100% !important;
+    min-width: 160px;
+  }
+  .gd-header .center .button_and_team_box .team_financials_box {
+    width: 100%;
+  }
+}
+@media (max-width: 1300px) {
+  .gd-header .center .button_and_team_box .button_box div {
+    width: 100%;
+  }
+  /* .gd-header .center .button_and_team_box {
+    flex-direction: column;
+  } */
 }
 @media (max-width: 1200px) {
   .gd-header {
@@ -222,7 +247,7 @@
     width: 100%;
   }
   .gd-header .center .button_and_team_box {
-    flex-direction: row;
+    flex-direction: column;
   }
 }
 
@@ -233,7 +258,7 @@
   .gd-header .center .button_and_team_box .button_box {
     width: 100%;
   }
-  .gd-header .center .button_and_team_box .button_box button {
+  .gd-header .center .button_and_team_box .button_box div {
     width: 0vw !important;
     width: 100% !important;
     min-width: 160px;

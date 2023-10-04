@@ -12,7 +12,7 @@ import RoutesButton from '../RoutesButton'
 import { leagueSalaryCap } from '../../config/constants'
 
 const Header = () => {
-  // const userTemp = useSelector((state) => state.user)
+  const { overall, division } = useSelector((state) => state.user.record)
   const user = useSelector((state) => state.user.userDetails)
   const teamSalary = useSelector((state) => state.user.teamSalaryCap)
   const [notificationCount] = useState(null)
@@ -20,6 +20,7 @@ const Header = () => {
   const navigate = useNavigate()
 
   const teamFinancials = () => {}
+  // console.log('🚀 ~ file: index.js:16 ~ Header ~ record:', record)
 
   return user?.team ? (
     <header className='gd-header'>
@@ -54,8 +55,18 @@ const Header = () => {
         </div>
         <div className='button_and_team_box'>
           <div className='button_box'>
-            <Button>Overall Record</Button>
-            <Button>Division Record</Button>
+            <div>
+              <span>Overall Record</span>
+              <span>
+                {overall?.win}-{overall?.lose}-{overall?.tie}
+              </span>
+            </div>
+            <div>
+              <span>Division Record</span>
+              <span>
+                {division?.win}-{division?.lose}-{division?.tie}
+              </span>
+            </div>
           </div>
           <div className='team_financials_box'>
             <div style={{ cursor: 'pointer' }} onClick={teamFinancials}>
