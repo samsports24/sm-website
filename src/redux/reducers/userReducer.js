@@ -1,6 +1,22 @@
+const getInitSection = () => {
+  const currentWeek = localStorage.getItem('week')
+  return currentWeek >= 1 && currentWeek <= 4
+    ? 1
+    : currentWeek >= 5 && currentWeek <= 8
+    ? 2
+    : currentWeek >= 9 && currentWeek <= 12
+    ? 3
+    : currentWeek >= 13 && currentWeek <= 16
+    ? 4
+    : currentWeek >= 17 && currentWeek <= 18
+    ? 5
+    : 1
+}
+
 const initialState = {
   userDetails: null,
   currentWeek: localStorage.getItem('week'),
+  weekSection: getInitSection(),
   setting: {
     week: localStorage.getItem('week'),
     isGameLocked: false,
@@ -31,6 +47,12 @@ const userReducer = (state = initialState, action) => {
           ...state?.setting,
           week: payload,
         },
+      }
+    }
+    case 'UPDATE_SECTION': {
+      return {
+        ...state,
+        weekSection: payload,
       }
     }
     default:

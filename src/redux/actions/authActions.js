@@ -267,3 +267,10 @@ export const updateWeek = (week) => {
     payload: week,
   }
 }
+
+export const updateSection = (payload) => {
+  return {
+    type: 'UPDATE_SECTION',
+    payload: payload,
+  }
+}
