@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Image, Button, Badge } from 'antd'
+import { Image, Badge } from 'antd'
 
 // Image
 import bellIcon from '../../assets/bell-icon.svg'
@@ -12,7 +12,7 @@ import RoutesButton from '../RoutesButton'
 import { leagueSalaryCap } from '../../config/constants'
 
 const Header = () => {
-  const { overall, division } = useSelector((state) => state.user.record)
+  const record = useSelector((state) => state.user.record)
   const user = useSelector((state) => state.user.userDetails)
   const teamSalary = useSelector((state) => state.user.teamSalaryCap)
   const [notificationCount] = useState(null)
@@ -20,7 +20,6 @@ const Header = () => {
   const navigate = useNavigate()
 
   const teamFinancials = () => {}
-  // console.log('🚀 ~ file: index.js:16 ~ Header ~ record:', record)
 
   return user?.team ? (
     <header className='gd-header'>
@@ -58,13 +57,13 @@ const Header = () => {
             <div>
               <span>Overall Record</span>
               <span>
-                {overall?.win}-{overall?.lose}-{overall?.tie}
+                {record?.overall?.win}-{record?.overall?.lose}-{record?.overall?.tie}
               </span>
             </div>
             <div>
               <span>Division Record</span>
               <span>
-                {division?.win}-{division?.lose}-{division?.tie}
+                {record?.division?.win}-{record?.division?.lose}-{record?.division?.tie}
               </span>
             </div>
           </div>
