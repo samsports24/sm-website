@@ -1,5 +1,5 @@
-const getInitSection = () => {
-  const currentWeek = localStorage.getItem('week')
+const getInitSection = (currentWeek) => {
+  // const currentWeek = localStorage.getItem('week')
   return currentWeek >= 1 && currentWeek <= 4
     ? 1
     : currentWeek >= 5 && currentWeek <= 8
@@ -16,7 +16,7 @@ const getInitSection = () => {
 const initialState = {
   userDetails: null,
   currentWeek: localStorage.getItem('week'),
-  weekSection: getInitSection(),
+  weekSection: getInitSection(localStorage.getItem('week')),
   setting: {
     week: localStorage.getItem('week'),
     isGameLocked: false,
@@ -32,6 +32,7 @@ const userReducer = (state = initialState, action) => {
         ...state,
         userDetails: payload?.user,
         currentWeek: payload?.setting?.week,
+        weekSection: getInitSection(payload?.setting?.week),
         setting: {
           ...state?.setting,
           week: payload?.setting?.week,
@@ -43,6 +44,7 @@ const userReducer = (state = initialState, action) => {
     case 'UPDATE_WEEK': {
       return {
         ...state,
+        weekSection: getInitSection(payload),
         setting: {
           ...state?.setting,
           week: payload,
