@@ -40,7 +40,7 @@ const Header = () => {
       </div>
       <div className='center'>
         <div className='title_box'>
-          {/* <h1>{user?.team?.name}</h1> */}
+          <h1>{user?.team?.name}</h1>
           <p onClick={() => navigate('/player-auction')}>
             <span>Live Player Auction</span>{' '}
             {auctionCount ? (
