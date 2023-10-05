@@ -2,7 +2,6 @@ import { Row, Col, Typography, Button } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { isLocked } from '../../config/constants'
 
-// import { playerInterfaceData } from '../../pages/mockData'
 import {
   ActivateFromPracticeSquad,
   AuctionPlayer,
@@ -13,29 +12,17 @@ import {
   PoachPlayer,
 } from '../../components/modal/PlayerInterfaceModals'
 
-const GmCard = ({
-  isButton,
-  bidWinningPage = false,
-  playerData: data,
-  activePlayers,
-  practicePlayers,
-  getData,
-  news,
-  isAction = true,
-  // isViewer,
-}) => {
-  // const {
-  //   // team,
-  //   Name,
-  //   Active,
-  //   InjuryStatus,
-  //   PositionRank,
-  //   LeagueRank,
-  //   inPracticeSquad,
-  //   PlayerID,
-  //   HostedHeadshotNoBackgroundUrl,
-  //   isPlayerLocked,
-  // } = playerData
+const GmCard = (props) => {
+  const {
+    isButton,
+    bidWinningPage = false,
+    playerData: data,
+    activePlayers,
+    practicePlayers,
+    getData,
+    news,
+    isAction = true,
+  } = props
   const navigate = useNavigate()
 
   return (
@@ -134,7 +121,7 @@ const GmCard = ({
                 <h4>Player Action Bar</h4>
                 <AuctionPlayer
                   playerIds={{ PlayerID: data?.PlayerID, player_id: data?._id }}
-                  disabled={true || data?.isPlayerLocked}
+                  disabled={data?.isPlayerLocked}
                 />
 
                 <TradePlayer disabled={data?.isPlayerLocked} />
