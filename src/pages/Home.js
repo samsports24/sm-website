@@ -154,10 +154,10 @@ const Home = () => {
       </Carousel>
 
       {/* CLIENT FEEDBACK */}
-      <h2 style={{ marginTop: '80px', marginBottom: '24px', color: '#fff' }}>Client Feedback</h2>
-      <h4 style={{ marginTop: '20px', marginBottom: '54px', color: '#fff' }}>
+      <h2 style={{ marginTop: '80px', marginBottom: '54px', color: '#fff' }}>Client Feedback</h2>
+      {/* <h4 style={{ marginTop: '20px', marginBottom: '54px', color: '#fff' }}>
         See what millions of users say about us
-      </h4>
+      </h4> */}
       <Carousel
         swipeable={true}
         draggable={true}

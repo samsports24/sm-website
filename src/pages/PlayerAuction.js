@@ -12,11 +12,7 @@ import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
-import {
-  //  auctionEnded,
-  getAuctionPlayer,
-  markAsPaid,
-} from '../redux/actions/rosterAction'
+import { auctionEnded, getAuctionPlayer, markAsPaid } from '../redux/actions/rosterAction'
 import { useSelector } from 'react-redux'
 
 const PlayerAuction = () => {
@@ -51,9 +47,12 @@ const PlayerAuction = () => {
       }
     }
 
-    // const ended = async () => {
-    //   await auctionEnded({ auctionId: v?._id })
-    // }
+    const ended = async () => {
+      const res = await auctionEnded({ auctionId: v?._id })
+      if (res) {
+        await getData()
+      }
+    }
 
     useEffect(() => {
       let interval
@@ -63,10 +62,10 @@ const PlayerAuction = () => {
           const end = moment(v?.endDate)
           const duration = moment.duration(end.diff(now))
           if (duration.asSeconds() <= 0) {
+            console.log('Duration >>', duration.asSeconds() <= 0)
             clearInterval(interval)
             setRemainingTime('Auction Ended!')
-            // ended()
-            // getData()
+            ended()
           } else {
             const days = Math.floor(duration.asDays())
             const hours = String(duration.hours()).padStart(2, '0')
