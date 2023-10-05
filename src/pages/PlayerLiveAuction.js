@@ -1,5 +1,5 @@
 import { Button, Breadcrumb, Row, Col, Typography, Input, notification } from 'antd'
-import { useParams, useNavigate, useLocation } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import Arrow from '../assets/arrow-right.svg'
 import Image from '../assets/logo2.png'
@@ -15,11 +15,11 @@ import Loader from '../components/Loader'
 import { useEffect, useState } from 'react'
 import PlayerInfoBottom from '../components/PlayerInfoBottom'
 import moment from 'moment'
-import { addBid } from '../redux/actions/rosterAction'
+import { addBid, getSingleAuctionPlayer } from '../redux/actions/rosterAction'
 
 const PlayerLiveAuction = () => {
   const [noti, contextHolder] = notification.useNotification()
-  const { state } = useLocation()
+  const [state, setState] = useState(null)
   const [remainingTime, setRemainingTime] = useState('')
   const [isLoading, setIsLoading] = useState({
     type: 'data',
@@ -29,9 +29,7 @@ const PlayerLiveAuction = () => {
   const [bidError, setBidError] = useState('')
   const [news, setNews] = useState('')
   const navigate = useNavigate()
-  const { id } = useParams()
-
-  console.log(id)
+  const params = useParams()
 
   useEffect(() => {
     bidError && setBidError(false)
@@ -47,6 +45,10 @@ const PlayerLiveAuction = () => {
       status: true,
     })
     // API CALL
+    const res = await getSingleAuctionPlayer(params?.id)
+    if (res) {
+      setState(res)
+    }
     setNews()
     setIsLoading({
       type: 'data',
@@ -55,25 +57,30 @@ const PlayerLiveAuction = () => {
   }
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      const now = moment()
-      const end = moment(state?.endDate)
-      const duration = moment.duration(end.diff(now))
-      if (duration.asSeconds() <= 0) {
-        clearInterval(interval)
-        setRemainingTime('Time is up!')
-      } else {
-        const days = Math.floor(duration.asDays())
-        const hours = String(duration.hours()).padStart(2, '0')
-        const minutes = String(duration.minutes()).padStart(2, '0')
-        const seconds = String(duration.seconds()).padStart(2, '0')
-        setRemainingTime(
-          days === 0
-            ? `${hours}h ${minutes}m ${seconds}s`
-            : `${days}d ${hours}h ${minutes}m ${seconds}s`,
-        )
-      }
-    }, 1000)
+    let interval
+    if (!state?.hasAuctionEnded) {
+      interval = setInterval(() => {
+        const now = moment()
+        const end = moment(state?.endDate)
+        const duration = moment.duration(end.diff(now))
+        if (duration.asSeconds() <= 0) {
+          clearInterval(interval)
+          setRemainingTime('Time is up!')
+        } else {
+          const days = Math.floor(duration.asDays())
+          const hours = String(duration.hours()).padStart(2, '0')
+          const minutes = String(duration.minutes()).padStart(2, '0')
+          const seconds = String(duration.seconds()).padStart(2, '0')
+          setRemainingTime(
+            days === 0
+              ? `${hours}h ${minutes}m ${seconds}s`
+              : `${days}d ${hours}h ${minutes}m ${seconds}s`,
+          )
+        }
+      }, 1000)
+    } else {
+      setRemainingTime('Time is up!')
+    }
 
     return () => {
       clearInterval(interval)
@@ -269,7 +276,7 @@ const PlayerLiveAuction = () => {
                       </div>
                       <div>
                         <p className='squad_text2'>team</p>
-                        <p className='squad_text1'>{v?.user?.team?.name || '-'}</p>
+                        <p className='squad_text1'>{v?.team?.name || '-'}</p>
                       </div>
                       <div style={{ minWidth: '100px' }}>
                         <p className='squad_text2'>bid</p>

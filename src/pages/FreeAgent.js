@@ -237,7 +237,7 @@ const FreeAgent = () => {
                           <p className='squad_text1'>{v?.playerRank || '-'}</p>
                         </div>
                         <Button
-                          disabled={true}
+                          disabled={false}
                           loading={playerID == v?.PlayerID}
                           type='primary'
                           onClick={() => {

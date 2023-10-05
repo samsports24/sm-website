@@ -282,6 +282,23 @@ export const getAuctionPlayer = async () => {
     })
   }
 }
+
+export const getSingleAuctionPlayer = async (id) => {
+  try {
+    attachToken()
+    const res = await privateAPI.get(`/auction/get-auction/${id}`)
+    if (res) {
+      console.log('🚀 ~ file: auctionActions.js:27 ~ return ~ res:', res)
+      return res?.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
 export const addBid = async (payload, navigate, customnotification) => {
   try {
     attachToken()
@@ -301,5 +318,37 @@ export const addBid = async (payload, navigate, customnotification) => {
       duration: 3,
     })
     // navigate('/player-auction')
+  }
+}
+
+export const markAsPaid = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/auction/mark-as-paid', payload)
+    if (res) {
+      notification.success({
+        message: res.data.data.message,
+        duration: 10,
+      })
+    }
+    return true
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const auctionEnded = async (payload) => {
+  try {
+    attachToken()
+    await privateAPI.post('/auction/end-auction', payload)
+    return true
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
   }
 }

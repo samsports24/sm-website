@@ -16,26 +16,26 @@ import {
 const GmCard = ({
   isButton,
   bidWinningPage = false,
-  playerData,
+  playerData: data,
   activePlayers,
   practicePlayers,
   getData,
   news,
   isAction = true,
-  isViewer,
+  // isViewer,
 }) => {
-  const {
-    team,
-    Name,
-    Active,
-    InjuryStatus,
-    PositionRank,
-    LeagueRank,
-    inPracticeSquad,
-    PlayerID,
-    HostedHeadshotNoBackgroundUrl,
-    isPlayerLocked,
-  } = playerData
+  // const {
+  //   // team,
+  //   Name,
+  //   Active,
+  //   InjuryStatus,
+  //   PositionRank,
+  //   LeagueRank,
+  //   inPracticeSquad,
+  //   PlayerID,
+  //   HostedHeadshotNoBackgroundUrl,
+  //   isPlayerLocked,
+  // } = playerData
   const navigate = useNavigate()
 
   return (
@@ -50,37 +50,38 @@ const GmCard = ({
             }}
           >
             <div>
-              <Typography.Title level={2}>{Name}</Typography.Title>
+              <Typography.Title level={2}>{data?.Name}</Typography.Title>
               <div className='player-active-status'>
                 <div className='active'>
-                  <div className={Active ? `active_btn` : 'in-active_btn'} />
-                  <p>{Active ? 'Active Player' : 'In-active Player'}</p>
+                  <div className={data?.Active ? `active_btn` : 'in-active_btn'} />
+                  <p>{data?.Active ? 'Active Player' : 'In-active Player'}</p>
                 </div>
                 <div className='injury-status'>
                   <p>Injury Status</p>
                   <h4
                     style={{
-                      color: InjuryStatus?.toLowerCase() == 'out' ? 'red !important' : '#00c008',
+                      color:
+                        data?.InjuryStatus?.toLowerCase() == 'out' ? 'red !important' : '#00c008',
                     }}
                     className={`${
-                      InjuryStatus?.toLowerCase() == 'out' ? 'redColor' : 'greenColor'
+                      data?.InjuryStatus?.toLowerCase() == 'out' ? 'redColor' : 'greenColor'
                     }`}
                   >
-                    {InjuryStatus || '-'}
+                    {data?.InjuryStatus || '-'}
                   </h4>
                 </div>
               </div>
             </div>
             <div className='box'>
               <p className='text1'>Position Rank:</p>
-              <p className='text2'>#{PositionRank > 0 ? PositionRank : 0}</p>
+              <p className='text2'>#{data?.PositionRank > 0 ? data?.PositionRank : 0}</p>
             </div>
             <div className='box'>
               <p className='text1'>League Rank:</p>
-              <p className='text2'>#{LeagueRank > 0 ? LeagueRank : 0}</p>
+              <p className='text2'>#{data?.LeagueRank > 0 ? data?.LeagueRank : 0}</p>
             </div>
             <div className='roster_player_image'>
-              <img src={HostedHeadshotNoBackgroundUrl} />
+              <img src={data?.HostedHeadshotNoBackgroundUrl} />
             </div>
           </div>
         </Col>
@@ -107,7 +108,7 @@ const GmCard = ({
                 <Typography.Title level={2}>2021</Typography.Title>
               </div>
             </div>
-            {team?.logo && <img src={team?.logo} height={'100px'} />}
+            {data?.team?.logo && <img src={data?.team?.logo} height={'100px'} />}
           </div>
         </Col>
         {isAction && (
@@ -132,31 +133,31 @@ const GmCard = ({
               <div className='action-bar'>
                 <h4>Player Action Bar</h4>
                 <AuctionPlayer
-                  playerIds={{ PlayerID, player_id: playerData?._id }}
-                  disabled={true || isPlayerLocked}
+                  playerIds={{ PlayerID: data?.PlayerID, player_id: data?._id }}
+                  disabled={true || data?.isPlayerLocked}
                 />
 
-                <TradePlayer disabled={isPlayerLocked} />
-                <ReleasePlayer disabled={isPlayerLocked} />
+                <TradePlayer disabled={data?.isPlayerLocked} />
+                <ReleasePlayer disabled={data?.isPlayerLocked} />
 
                 <MoveToInjured
-                  disabled={InjuryStatus?.toLowerCase() != 'out' || isPlayerLocked}
+                  disabled={data?.InjuryStatus?.toLowerCase() != 'out' || data?.isPlayerLocked}
                   getData={getData}
                 />
 
                 <ActivateFromPracticeSquad
                   activePlayers={activePlayers}
-                  disabled={!inPracticeSquad || isPlayerLocked}
+                  disabled={!data?.inPracticeSquad || data?.isPlayerLocked}
                   getData={getData}
-                  playerId={PlayerID}
+                  playerId={data?.PlayerID}
                 />
 
                 <MoveToPracticeSquad
                   activePlayersCount={activePlayers?.length}
                   practicePlayers={practicePlayers}
-                  disabled={inPracticeSquad || isPlayerLocked}
+                  disabled={data?.inPracticeSquad || data?.isPlayerLocked}
                   getData={getData}
-                  playerId={PlayerID}
+                  playerId={data?.PlayerID}
                 />
               </div>
             )}

@@ -12,7 +12,11 @@ import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
-import { getAuctionPlayer } from '../redux/actions/rosterAction'
+import {
+  //  auctionEnded,
+  getAuctionPlayer,
+  markAsPaid,
+} from '../redux/actions/rosterAction'
 import { useSelector } from 'react-redux'
 
 const PlayerAuction = () => {
@@ -36,27 +40,48 @@ const PlayerAuction = () => {
 
   const AuctionCard = ({ data: v, payButton }) => {
     const [remainingTime, setRemainingTime] = useState('')
+    const [loadingId, setLoadingId] = useState('')
+
+    const pay = async (id) => {
+      setLoadingId(id)
+      const res = await markAsPaid({ auctionId: id })
+      if (res) {
+        setLoadingId('')
+        getData()
+      }
+    }
+
+    // const ended = async () => {
+    //   await auctionEnded({ auctionId: v?._id })
+    // }
 
     useEffect(() => {
-      const interval = setInterval(() => {
-        const now = moment()
-        const end = moment(v?.endDate)
-        const duration = moment.duration(end.diff(now))
-        if (duration.asSeconds() <= 0) {
-          clearInterval(interval)
-          setRemainingTime('Auction Ended!')
-        } else {
-          const days = Math.floor(duration.asDays())
-          const hours = String(duration.hours()).padStart(2, '0')
-          const minutes = String(duration.minutes()).padStart(2, '0')
-          const seconds = String(duration.seconds()).padStart(2, '0')
-          setRemainingTime(
-            days === 0
-              ? `${hours}h ${minutes}m ${seconds}s`
-              : `${days}d ${hours}h ${minutes}m ${seconds}s`,
-          )
-        }
-      }, 1000)
+      let interval
+      if (!v?.hasAuctionEnded) {
+        interval = setInterval(() => {
+          const now = moment()
+          const end = moment(v?.endDate)
+          const duration = moment.duration(end.diff(now))
+          if (duration.asSeconds() <= 0) {
+            clearInterval(interval)
+            setRemainingTime('Auction Ended!')
+            // ended()
+            // getData()
+          } else {
+            const days = Math.floor(duration.asDays())
+            const hours = String(duration.hours()).padStart(2, '0')
+            const minutes = String(duration.minutes()).padStart(2, '0')
+            const seconds = String(duration.seconds()).padStart(2, '0')
+            setRemainingTime(
+              days === 0
+                ? `${hours}h ${minutes}m ${seconds}s`
+                : `${days}d ${hours}h ${minutes}m ${seconds}s`,
+            )
+          }
+        }, 1000)
+      } else {
+        setRemainingTime('Auction Ended!')
+      }
 
       return () => {
         clearInterval(interval)
@@ -84,11 +109,9 @@ const PlayerAuction = () => {
             <p
               onClick={() => {
                 if (v?.hasAuctionEnded) {
-                  navigate(`/player-winning-bid/${v?.player_id?.PlayerID}`, {
-                    state: v,
-                  })
+                  navigate(`/player-winning-bid/${v?._id}`)
                 } else {
-                  navigate(`/player-live-auction/${v?.player_id?.PlayerID}`, {
+                  navigate(`/player-live-auction/${v?._id}`, {
                     state: v,
                   })
                 }
@@ -144,19 +167,36 @@ const PlayerAuction = () => {
             <Tooltip
               placement='top'
               title={
-                <>
-                  <p>Pay Before:</p>
-                  <p style={{ fontWeight: 700 }}>{`${moment(v?.payBefore).format(
-                    'ddd, YYYY-MM-DD hh:mm a',
-                  )}`}</p>
-                  <p>
-                    to add this player to your active roster in the upcoming week otherwise the
-                    auction will be cancelled.
-                  </p>
-                </>
+                v?.isPaid ? (
+                  <>
+                    <p>
+                      The Auction has been mark as paid, the player will be transferred after admin
+                      approval, and if the player is locked then the player will come up in the next
+                      week roster
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p>Pay Before:</p>
+                    <p style={{ fontWeight: 700 }}>{`${moment(v?.payBefore).format(
+                      'ddd, YYYY-MM-DD hh:mm a',
+                    )}`}</p>
+                    <p>
+                      to add this player to your active roster in the upcoming week otherwise the
+                      auction will be cancelled.
+                    </p>
+                  </>
+                )
               }
             >
-              <Button type='primary'>PAY</Button>
+              <Button
+                disabled={v?.isPaid}
+                loading={loadingId === v?._id}
+                onClick={() => pay(v?._id)}
+                type='primary'
+              >
+                {v?.isPaid ? 'PAID' : 'PAY'}
+              </Button>
             </Tooltip>
           )}
         </div>
@@ -230,7 +270,7 @@ const PlayerAuction = () => {
             {data?.myAuctions?.length > 0 ? (
               <div className='standing-table-bg'>
                 {data?.myAuctions?.map((v, i) => {
-                  return <AuctionCard key={i} data={v} payButton />
+                  return <AuctionCard key={i + Date.now()} data={v} payButton />
                 })}
               </div>
             ) : (
