@@ -47,8 +47,8 @@ const LeagueStandings = () => {
         <Loader />
       ) : (
         <div className='league_standing_card_container' style={{ width: '100%' }}>
-          {standings?.map((v, i) => (
-            <LeagueStandingCard key={i} data={v} index={i} />
+          {standings?.teamRanks?.map((v, i) => (
+            <LeagueStandingCard key={i} data={v} index={i} teams={standings?.teams} />
           ))}
         </div>
       )}

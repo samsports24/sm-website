@@ -4,7 +4,7 @@ import { Image, Table } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
-const LeagueStandingCard = ({ data, index }) => {
+const LeagueStandingCard = ({ data, index, teams }) => {
   const USER = useSelector((state) => state.user.userDetails)
   const navigate = useNavigate()
 
@@ -76,6 +76,9 @@ const LeagueStandingCard = ({ data, index }) => {
         {data?.conference} - {data?._id}
       </h3>
       {data?.standing?.map((v, i) => {
+        const team = teams.find((x) => {
+          return v?.teamId === x?._id
+        })
         return (
           <div key={i} className='table_card'>
             <div
@@ -83,7 +86,7 @@ const LeagueStandingCard = ({ data, index }) => {
               onClick={() => handleNavigate(v?.teamId)}
               style={{ cursor: 'pointer' }}
             >
-              <h3>{v?.team?.name}</h3>
+              <h3>{team?.name}</h3>
             </div>
             <div className='table_body'>
               <div
@@ -91,7 +94,7 @@ const LeagueStandingCard = ({ data, index }) => {
                 style={{ cursor: 'pointer' }}
                 onClick={() => handleNavigate(v?.teamId)}
               >
-                <Image preview={false} src={v?.team?.logo} alt={v?.team?.name} />
+                <Image preview={false} src={team?.logo} alt={v?.team?.name} />
               </div>
               <div className='main_ls_table'>
                 <Table
