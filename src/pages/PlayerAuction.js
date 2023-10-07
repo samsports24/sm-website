@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Button, Breadcrumb, Typography, Tooltip } from 'antd'
+import { Button, Breadcrumb, Tooltip } from 'antd'
 
 import Arrow from '../assets/arrow-right.svg'
 
@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
 import { auctionEnded, getAuctionPlayer, markAsPaid } from '../redux/actions/rosterAction'
 import { useSelector } from 'react-redux'
+import Empty from '../components/Empty'
 
 const PlayerAuction = () => {
   const USER = useSelector((state) => state?.user?.userDetails)
@@ -251,17 +252,7 @@ const PlayerAuction = () => {
                 </div>
               </>
             ) : (
-              <div
-                style={{
-                  minHeight: '30vh',
-                  border: '1px solid rgba(255,255,255,0.4)',
-                  padding: '30px',
-                }}
-              >
-                <Typography.Title level={5} style={{ color: 'white' }}>
-                  ALL AUCTION IS EMPTY
-                </Typography.Title>
-              </div>
+              <Empty text={'ALL AUCTION IS EMPTY'} />
             )}
             <div className='header'>
               <h2>MY AUCTION</h2>
@@ -273,17 +264,7 @@ const PlayerAuction = () => {
                 })}
               </div>
             ) : (
-              <div
-                style={{
-                  minHeight: '30vh',
-                  border: '1px solid rgba(255,255,255,0.4)',
-                  padding: '30px',
-                }}
-              >
-                <Typography.Title level={5} style={{ color: 'white' }}>
-                  MY AUCTION IS EMPTY
-                </Typography.Title>
-              </div>
+              <Empty text={'MY AUCTION IS EMPTY'} />
             )}
           </>
         )}

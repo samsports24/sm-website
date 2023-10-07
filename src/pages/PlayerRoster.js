@@ -12,6 +12,7 @@ import Loader from '../components/Loader'
 import { getRoster, setNonActivePlayer, setProtectedPlayer } from '../redux/actions/rosterAction'
 import { useSelector } from 'react-redux'
 import { isLocked } from '../config/constants'
+import Empty from '../components/Empty'
 
 const PlayerRoster = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
@@ -159,20 +160,23 @@ const PlayerRoster = () => {
 
           {/* ACTIVE SQUAD */}
           <section className='stats_container'>
-            {activePlayerData?.map((v, i) => {
-              return (
-                <PlayerRosterCard
-                  key={i}
-                  data={v}
-                  index={i}
-                  state={nonActive}
-                  handleClick={handleNonActive}
-                  playerCaps={playerCaps}
-                />
-              )
-            })}
+            {activePlayerData?.length > 0 ? (
+              activePlayerData?.map((v, i) => {
+                return (
+                  <PlayerRosterCard
+                    key={i}
+                    data={v}
+                    index={i}
+                    state={nonActive}
+                    handleClick={handleNonActive}
+                    playerCaps={playerCaps}
+                  />
+                )
+              })
+            ) : (
+              <Empty text={'Active Squad IS EMPTY'} />
+            )}
           </section>
-
           <hr style={{ marginBlock: '40px' }} />
 
           <div className='practice_squad_header'>
@@ -186,19 +190,23 @@ const PlayerRoster = () => {
 
           {/* PRACTICE SQUAD */}
           <section className='stats_container'>
-            {practiveSquadData?.map((v, i) => {
-              return (
-                <PlayerRosterCard
-                  key={i}
-                  data={v}
-                  index={i}
-                  state={protectedCheck}
-                  handleClick={handleProtectedCheckbox}
-                  isPractice={true}
-                  playerCaps={playerCaps}
-                />
-              )
-            })}
+            {practiveSquadData?.length > 0 ? (
+              practiveSquadData?.map((v, i) => {
+                return (
+                  <PlayerRosterCard
+                    key={i}
+                    data={v}
+                    index={i}
+                    state={protectedCheck}
+                    handleClick={handleProtectedCheckbox}
+                    isPractice={true}
+                    playerCaps={playerCaps}
+                  />
+                )
+              })
+            ) : (
+              <Empty text={'practice Squad IS EMPTY'} />
+            )}
           </section>
         </>
       )}

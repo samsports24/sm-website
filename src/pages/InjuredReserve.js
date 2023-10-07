@@ -12,6 +12,7 @@ import MoveToRoster from '../components/modal/PlayerInterfaceModals/MoveToRoster
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import { getAllIr } from '../redux/actions/rosterAction'
 import Loader from '../components/Loader'
+import Empty from '../components/Empty'
 
 const InjuredReserve = () => {
   const [injuredReserve, setInjuredReserve] = useState([])
@@ -136,17 +137,7 @@ const InjuredReserve = () => {
                 })}
               </div>
             ) : (
-              <div
-                style={{
-                  minHeight: '70vh',
-                  border: '1px solid rgba(255,255,255,0.4)',
-                  padding: '30px',
-                }}
-              >
-                <Typography.Title level={5} style={{ color: 'white' }}>
-                  I.R IS EMPTY
-                </Typography.Title>
-              </div>
+              <Empty text={'I.R IS EMPTY'} />
             )}
           </>
         )}

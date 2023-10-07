@@ -6,7 +6,7 @@ import SignUp from '../pages/SignUp'
 import ForgotPassword from '../pages/ForgotPassword'
 import Authentication from '../pages/Authentication'
 import Home from '../pages/Home'
-import Dashboard from '../pages/Dashboard'
+// import Dashboard from '../pages/Dashboard'
 import FantasyLeague from '../pages/FantasyLeague'
 import ComingSoon from '../pages/CommingSoon'
 import LeagueScore from '../pages/LeagueScore'
@@ -64,9 +64,6 @@ import { notification } from 'antd'
 import { useEffect } from 'react'
 import TeamRoster from '../pages/TeamRoster'
 
-// HOCKEY
-// import TeamLine from '../pages/TeamLine'
-
 const Routers = () => {
   const Component = () => {
     // let token = localStorage.getItem('token')
@@ -99,8 +96,7 @@ const Routers = () => {
       <Routes>
         {/* Uncommit next line to apply token security */}
         <Route element={<PrivateWrapper />}>
-          {/* <Layout active={'dashboard'}> */}
-          <Route path='/dashboard' element={<Dashboard />} />
+          {/* <Route path='/dashboard' element={<Dashboard />} /> */}
           <Route path='*' element={<ComingSoon />} />
           <Route path='/leagueScore' element={<LeagueScore />} />
           <Route path='/game-details' element={<GameDetails />} />
@@ -110,6 +106,17 @@ const Routers = () => {
           <Route path='/injured-reserve' element={<InjuredReserve />} />
           <Route path='/league-notification' element={<LeagueNotification />} />
           <Route path='/player-live-auction/:id' element={<PlayerLiveAuction />} />
+          <Route path='/player-interface/:id' element={<PlayerInterface />} />
+          <Route path='/professional-league' element={<ProfessionalLeague />} />
+          <Route path='/player-roster' element={<PlayerRoster />} />
+          <Route path='/team-roster/:id' element={<TeamRoster />} />
+          <Route path='/depth-chart' element={<DepthChart />} />
+          <Route path='/league-standings' element={<LeagueStandings />} />
+          <Route path='/free-agent' element={<FreeAgent />} />
+          <Route path='/player-auction' element={<PlayerAuction />} />
+          <Route path='/player-standing' element={<PlayerStandings />} />
+          <Route path='/player-winning-bid/:id' element={<PlayerWinningBid />} />
+          <Route path='/agent-player-interface/:id' element={<AgentPlayerInterface />} />
           {/* <Route path='/teams' element={<Teams />} />
           <Route path='/player-details' element={<PlayerDetails />} />
           <Route path='/players' element={<Players />} />
@@ -132,40 +139,27 @@ const Routers = () => {
 
         <Route element={<Component />}>
           <Route path='/' element={<Home />} />
-          <Route path='/player-interface/:id' element={<PlayerInterface />} />
-          <Route path='/fantasy-league' element={<FantasyLeague />} />
-          <Route path='/professional-league' element={<ProfessionalLeague />} />
-          <Route path='/player-roster' element={<PlayerRoster />} />
-          <Route path='/team-roster/:id' element={<TeamRoster />} />
-          <Route path='/depth-chart' element={<DepthChart />} />
-          <Route path='/league-standings' element={<LeagueStandings />} />
-          <Route path='/free-agent' element={<FreeAgent />} />
-          <Route path='/player-auction' element={<PlayerAuction />} />
+
           {/* <Route path='/player-auction' element={<ComingSoon />} /> */}
-          <Route path='/player-standing' element={<PlayerStandings />} />
-          <Route path='/playoff' element={<Playoff />} />
+          <Route path='/fantasy-league' element={<FantasyLeague />} />
           <Route path='/choose-your-game-step1' element={<ChooseYourGame />} />
           <Route path='/choose-your-league-step2' element={<ChooseYourLeague />} />
           <Route path='/choose-your-league-step3' element={<ChooseYourLeagueStep3 />} />
           <Route path='/choose-your-league-step4' element={<ChooseYourLeagueStep4 />} />
           <Route path='/total-payment' element={<TotalPayment />} />
           <Route path='/public-league' element={<PublicLeague />} />
-          <Route path='/player-winning-bid/:id' element={<PlayerWinningBid />} />
           <Route path='/terms-condition' element={<TermsAndCondition />} />
-          <Route path='/agent-player-interface/:id' element={<AgentPlayerInterface />} />
           <Route path='/my-league' element={<MyLeague />} />
           <Route path='/league' element={<League />} />
+          <Route path='/playoff' element={<Playoff />} />
           {/* <Route path='/roster-wstats' element={<RosterWStats />} /> */}
           {/* <Route path='/roster' element={<Roster />} /> */}
           {/* <Route path='/roster-fullformat' element={<RosterFullFormat />} /> */}
           {/* <Route path='/practice-squad' element={<PracticeSquad />} /> */}
-
-          {/* HOCKEY */}
-          {/* <Route path='/team-line' element={<TeamLine />} /> */}
         </Route>
 
-        <Route path='/login' element={<Login />} />
         {/* <Route path='/login-screen2' element={<Login2 />} /> */}
+        <Route path='/login' element={<Login />} />
         <Route path='/sign-up' element={<SignUp />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
         <Route path='/authentication' element={<Authentication />} />

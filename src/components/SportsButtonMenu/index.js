@@ -16,10 +16,12 @@ const SportsButtonMenu = () => {
               {
                 name: 'Professional Leagues',
                 navigate: '/professional-league',
+                link: '',
               },
               {
                 name: 'Public Leagues',
                 navigate: '/public-league',
+                link: '',
               },
             ],
           }}
@@ -39,7 +41,18 @@ const SportsButtonMenu = () => {
         <ButtonMenu
           data={{
             buttonName: 'Hockey',
-            item: [],
+            item: [
+              {
+                name: 'Professional Leagues',
+                navigate: '',
+                link: 'http://13.39.108.1:3003/professional-league',
+              },
+              {
+                name: 'Public Leagues',
+                navigate: '',
+                link: 'http://13.39.108.1:3003/public-league',
+              },
+            ],
           }}
         />
         <ButtonMenu

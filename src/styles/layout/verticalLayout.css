@@ -57,3 +57,11 @@
   opacity: 0.5;
   padding: 5px 10px;
 }
+.v-layout .sider-bottom .caution a {
+  color: inherit;
+}
+.v-layout .sider-bottom .caution a:hover {
+  color: var(--primary) !important;
+  opacity: 1 !important;
+  cursor: pointer;
+}

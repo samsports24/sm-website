@@ -20,7 +20,16 @@ const ButtonMenu = ({ data }) => {
           {item?.length > 0 ? (
             item?.map((v, i) => {
               return (
-                <li key={i} onClick={() => navigate(v?.navigate)}>
+                <li
+                  key={i}
+                  onClick={() => {
+                    if (v?.navigate !== '') {
+                      navigate(v?.navigate)
+                    } else {
+                      window.open(v?.link, '_blank', 'noreferrer')
+                    }
+                  }}
+                >
                   <img src={RightIcon} /> {v?.name}
                 </li>
               )

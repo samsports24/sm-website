@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Layout, Dropdown } from 'antd'
 import account from '../assets/account.svg'
 import MainMenu from './MainMenu'
-import Logo from '../assets/Logo.svg'
+import Logo from '../assets/sam-football.png'
 import Insta from '../assets/insta.svg'
 import Fb from '../assets/fb.svg'
 import Twitter from '../assets/twitter.svg'
@@ -72,7 +72,17 @@ const VerticalLayout = ({ children, active }) => {
               <img src={YouTube} />
             </div>
             <div className='caution'>
-              <p>API • Privacy • Terms • Jobs • Responsible Play</p>
+              <p style={{ lineHeight: 1.5 }}>
+                API • Privacy •{' '}
+                <a
+                  href='https://app.termly.io/document/terms-of-service/372d4c41-9267-4833-8bbb-aba80f6fbbb8'
+                  target='_blank'
+                  rel='noreferrer'
+                >
+                  Terms
+                </a>{' '}
+                • Jobs • Responsible Play
+              </p>
             </div>
           </div>
         </Sider>

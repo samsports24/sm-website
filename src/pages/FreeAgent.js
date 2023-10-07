@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Button, Breadcrumb, Typography, Input, Pagination as AntPagination } from 'antd'
+import { Button, Breadcrumb, Input, Pagination as AntPagination } from 'antd'
 
 import Arrow from '../assets/arrow-right.svg'
 import { SearchOutlined } from '@ant-design/icons'
@@ -14,9 +14,9 @@ import Loader from '../components/Loader'
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import { GrFormClose } from 'react-icons/gr'
 import { useNavigate } from 'react-router-dom'
+import Empty from '../components/Empty'
 
 const FreeAgent = () => {
-  const [isEmpty] = useState(false)
   const [freeAgents, setFreeAgents] = useState({
     total: 0,
     players: [],
@@ -26,7 +26,6 @@ const FreeAgent = () => {
   const [limit] = useState(10)
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
-  // const [filterBy, setFilterBy] = useState('')
 
   const navigate = useNavigate()
 
@@ -42,8 +41,6 @@ const FreeAgent = () => {
     })
     setLoading(true)
     const res = await getFreeAgent({
-      // searchTeam: filterBy === 'team' ? search : '',
-      // searchPosition: filterBy === 'position' ? search : '',
       search,
       limit: limit,
       page: page,
@@ -55,24 +52,21 @@ const FreeAgent = () => {
   const handlePagination = (val) => setPage(val)
 
   const handleFilterBy = async () => {
-    // setFilterBy(val)
+    setLoading(true)
     if (search?.trim() !== '') {
       const res = await getFreeAgent({
-        // searchTeam: val === 'team' ? search : '',
-        // searchPosition: val === 'position' ? search : '',
         search,
         limit: limit,
         page: 1,
       })
       setFreeAgents(res)
     }
+    setLoading(false)
   }
 
   const onFieldClear = async () => {
     setLoading(true)
     const res = await getFreeAgent({
-      // searchTeam: '',
-      // searchPosition: '',
       search: '',
       limit: limit,
       page: 1,
@@ -144,40 +138,21 @@ const FreeAgent = () => {
                   onFieldClear()
                 }
               }}
-              // allowClear
               allowClear={{ clearIcon: <GrFormClose size={25} onClick={onFieldClear} /> }}
             />
-            {/* <Button type='primary' onClick={() => handleFilterBy('team')}>
-              TEAM
-            </Button>
-            <Button type='primary' onClick={() => handleFilterBy('position')}>
-              POSITION
-            </Button> */}
             <Button type='primary' onClick={handleFilterBy}>
               SEARCH
             </Button>
           </div>
         </div>
-        {isEmpty && (
-          <div
-            style={{
-              minHeight: '70vh',
-              border: '1px solid rgba(255,255,255,0.4)',
-              padding: '30px',
-            }}
-          >
-            <Typography.Title level={5} style={{ color: 'white' }}>
-              NO FREE AGENTS
-            </Typography.Title>
-          </div>
-        )}
+
         {loading ? (
           <Loader />
         ) : (
           <>
-            <div className='standing-table-bg'>
-              {!isEmpty &&
-                freeAgents?.players?.map((v, i) => {
+            {freeAgents?.players?.length > 0 ? (
+              <div className='standing-table-bg'>
+                {freeAgents?.players?.map((v, i) => {
                   return (
                     <div key={i} className='squad_card_box'>
                       <div className='squad_content_body'>
@@ -241,7 +216,6 @@ const FreeAgent = () => {
                           loading={playerID == v?.PlayerID}
                           type='primary'
                           onClick={() => {
-                            console.log(v?.PlayerID, v?._id)
                             handleCreateAuction(v?.PlayerID, v?._id)
                           }}
                         >
@@ -251,7 +225,10 @@ const FreeAgent = () => {
                     </div>
                   )
                 })}
-            </div>
+              </div>
+            ) : (
+              <Empty text={'NO FREE AGENTS'} height={'200px'} />
+            )}
             <div className='custom_pagination_box pagination_box'>
               <AntPagination
                 defaultCurrent={page}
