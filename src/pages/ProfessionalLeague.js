@@ -52,7 +52,7 @@ const ProfessionalLeague = () => {
               title: <p>Fantasy Leagues</p>,
             },
             {
-              title: <p>Football</p>,
+              title: <p>Hockey</p>,
             },
             {
               title: <p>Professional League</p>,

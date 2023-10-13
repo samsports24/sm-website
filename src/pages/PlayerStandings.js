@@ -1,18 +1,70 @@
-import { Button, Breadcrumb } from 'antd'
+import { useEffect, useState } from 'react'
+import { Button, Breadcrumb, Table } from 'antd'
+const { Column, ColumnGroup } = Table
+
+import { useNavigate } from 'react-router-dom'
 
 import Arrow from '../assets/arrow-right.svg'
 
 // Component
 import Header from '../components/Header'
-
-import { PlayerStandingData } from './mockData'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
+import { getPlayerStandings } from '../redux'
+import { useSelector } from 'react-redux'
+
 const PlayerStandings = () => {
+  const SETTING = useSelector((state) => state?.user?.setting)
+  const USER = useSelector((state) => state?.user)
+  const [isLoading, setIsLoading] = useState(true)
+  const [data, setData] = useState([])
+  const [activeButton, setActiveButton] = useState('ALL')
+  const [filterData, setFilterData] = useState([])
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    USER?.userDetails && getData()
+  }, [SETTING.week])
+
+  useEffect(() => {
+    if (activeButton === 'ALL') {
+      setFilterData(data)
+    } else if (activeButton === 'OL') {
+      setFilterData(data?.filter((v) => v?.FantasyPosition === activeButton))
+    } else if (activeButton === 'PK') {
+      setFilterData(data?.filter((v) => v?.Position === 'K'))
+    } else if (activeButton === 'PN') {
+      setFilterData(data?.filter((v) => v?.Position === 'P'))
+    } else {
+      setFilterData(data?.filter((v) => v?.Position === activeButton))
+    }
+  }, [activeButton])
+
+  const getData = async () => {
+    !isLoading && setIsLoading(true)
+    const res = await getPlayerStandings({
+      week: SETTING.week,
+    })
+
+    setData(res)
+    setFilterData(res)
+    setIsLoading(false)
+  }
+
+  const getPoints = (array, value) => {
+    if (array.length > 0) {
+      const point = array.find((v) => v?.metric === value)
+      return point?.total?.toFixed(2)
+    } else {
+      return '-'
+    }
+  }
+
   return (
     <div className='practice_squad_container team_trade_main'>
       {/* BACK BUTTON */}
-      <Button className='back_button' type='primary'>
+      <Button className='back_button' type='primary' onClick={() => navigate()}>
         Back
       </Button>
 
@@ -45,100 +97,159 @@ const PlayerStandings = () => {
 
       <hr className='divider' />
 
-      <section className='squad_card_container transparent'>
+      <section className='squad_card_container transparent player_standing_page'>
         <div className='header'>
           <h2>PLAYER STANDING</h2>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-            <Button type='primary'>QB</Button>
-            <Button type='primary'>RB</Button>
-            <Button type='primary'>WR</Button>
-            <Button type='primary'>TE</Button>
-            <Button type='primary'>OL</Button>
-            <Button type='primary'>PK</Button>
-            <Button type='primary'>DT</Button>
-            <Button type='primary'>DE</Button>
-            <Button type='primary'>LB</Button>
-            <Button type='primary'>CB</Button>
-            <Button type='primary'>S</Button>
-            <Button type='primary'>PN</Button>
+
+          <div className='player_standing_filter_button'>
+            {['ALL', 'QB', 'RB', 'WR', 'TE', 'OL', 'PK', 'DT', 'DE', 'LB', 'CB', 'S', 'PN'].map(
+              (v) => {
+                return (
+                  <Button
+                    className={`${activeButton === v && 'activeFilterBtn'}`}
+                    key={v}
+                    type='primary'
+                    onClick={() => setActiveButton(v)}
+                  >
+                    {v}
+                  </Button>
+                )
+              },
+            )}
           </div>
         </div>
-        <div className='standing-table-bg'>
-          {PlayerStandingData?.map((v, i) => {
-            return (
-              <div key={i} className='squad_card_box'>
-                <div className='squad_header'>
-                  <h2>{v.title.left}</h2>
-                  <h3>{v.title.right}</h3>
-                </div>
 
-                <div
-                  className='squad_header'
-                  style={{ margin: '20px 0', justifyContent: 'space-around' }}
-                >
-                  {v.breakers.map((item) => (
-                    <h2 key={item}>{item}</h2>
-                  ))}
+        <Table
+          loading={isLoading}
+          dataSource={filterData}
+          pagination={{ showSizeChanger: false }}
+          scroll={{ x: 1500, y: 500 }}
+          bordered
+        >
+          {/* <Column
+            title=' ' // Empty with space
+            dataIndex='HostedHeadshotNoBackgroundUrl'
+            key='image'
+            render={(value) => {
+              return (
+                <div className='image_box'>
+                  <img src={value ? value : require('../assets/player-img-6.png')} />
                 </div>
-
-                <div className='squad_content_body'>
-                  <div className='squad_image_box'>
-                    <img src={require('../assets/player-img-6.png')} />
-                  </div>
-                  <div>
-                    <p className='squad_text1'>PTS</p>
-                    <p className='squad_text2'>{v?.points}</p>
-                  </div>
-                  <div>
-                    <p className='squad_text1'>ATT</p>
-                    <p className='squad_text2'>{v?.att}</p>
-                  </div>
-                  <div>
-                    <p className='squad_text1'>YD</p>
-                    <p className='squad_text2'>{v?.yd}</p>
-                  </div>
-                  <div>
-                    <p className='squad_text1'>TD</p>
-                    <p className='squad_text2'>{v?.td}</p>
-                  </div>
-                  <div>
-                    <p className='squad_text1'>REC</p>
-                    <p className='squad_text2'>{v?.rec}</p>
-                  </div>
-                  <div>
-                    <p className='squad_text1'>TAR</p>
-                    <p className='squad_text2'>{v?.tar}</p>
-                  </div>
-
-                  <div>
-                    <p className='squad_text1'>YD</p>
-                    <p className='squad_text2'>{v?.yd2}</p>
-                  </div>
-                  <div>
-                    <p className='squad_text1'>TD</p>
-                    <p className='squad_text2'>{v?.td2}</p>
-                  </div>
-                  <div>
-                    <p className='squad_text1'>CMP</p>
-                    <p className='squad_text2'>{v?.cmp}</p>
-                  </div>
-                  <div>
-                    <p className='squad_text1'>ATT</p>
-                    <p className='squad_text2'>{v?.att2}</p>
-                  </div>
-                  <div>
-                    <p className='squad_text1'>YD</p>
-                    <p className='squad_text2'>{v?.yd3}</p>
-                  </div>
-                  <div>
-                    <p className='squad_text1'>TD</p>
-                    <p className='squad_text2'>{v?.td3}</p>
-                  </div>
-                </div>
-              </div>
-            )
-          })}
-        </div>
+              )
+            }}
+          /> */}
+          <Column title='NAME' dataIndex='Name' key='name' />
+          <Column
+            title='POSITION/TEAM'
+            dataIndex='Team'
+            key='team'
+            render={(_, obj) => {
+              return (
+                <p>
+                  {obj?.Position}-{obj?.Team}({obj?.Number}){' '}
+                  {obj.UpcomingGameOpponent && `VS ${obj.UpcomingGameOpponent}`}
+                </p>
+              )
+            }}
+          />
+          <ColumnGroup title='FANTASY'>
+            <Column title='PTS' dataIndex='playerScore' key='fantasy-pts' />
+          </ColumnGroup>
+          <ColumnGroup title='RUSHING'>
+            <Column
+              title='ATT'
+              dataIndex='points'
+              key='rushing-att'
+              render={(_, obj) => {
+                return <p>{getPoints(obj?.playerScoreBreakDown, 'RushingAttempts')}</p>
+              }}
+            />
+            <Column
+              title='YD'
+              dataIndex='yd'
+              key='rushing-yd'
+              render={(_, obj) => {
+                return <p>{getPoints(obj?.playerScoreBreakDown, 'RushingYards')}</p>
+              }}
+            />
+            <Column
+              title='TD'
+              dataIndex='td'
+              key='rushing-td'
+              render={(_, obj) => {
+                return <p>{getPoints(obj?.playerScoreBreakDown, 'RushingTouchdowns')}</p>
+              }}
+            />
+          </ColumnGroup>
+          <ColumnGroup title='RECEIVING'>
+            <Column
+              title='REC'
+              dataIndex='rec'
+              key='receiving-rec'
+              render={(_, obj) => {
+                return <p>{getPoints(obj?.playerScoreBreakDown, 'Receptions')}</p>
+              }}
+            />
+            <Column
+              title='TAR'
+              dataIndex='tar'
+              key='receiving-tar'
+              render={(_, obj) => {
+                return <p>{getPoints(obj?.playerScoreBreakDown, 'ReceivingTargets')}</p>
+              }}
+            />
+            <Column
+              title='YD'
+              dataIndex='yd2'
+              key='receiving-yd'
+              render={(_, obj) => {
+                return <p>{getPoints(obj?.playerScoreBreakDown, 'ReceivingYards')}</p>
+              }}
+            />
+            <Column
+              title='TD'
+              dataIndex='td2'
+              key='receiving-td'
+              render={(_, obj) => {
+                return <p>{getPoints(obj?.playerScoreBreakDown, 'ReceivingTouchdowns')}</p>
+              }}
+            />
+          </ColumnGroup>
+          <ColumnGroup title='PASSING'>
+            <Column
+              title='CMP'
+              dataIndex='cmp'
+              key='passing-rec'
+              render={(_, obj) => {
+                return <p>{getPoints(obj?.playerScoreBreakDown, 'PassingCompletions')}</p>
+              }}
+            />
+            <Column
+              title='ATT'
+              dataIndex='att2'
+              key='passing-tar'
+              render={(_, obj) => {
+                return <p>{getPoints(obj?.playerScoreBreakDown, 'PassingAttempts')}</p>
+              }}
+            />
+            <Column
+              title='YD'
+              dataIndex='yd3'
+              key='passing-yd'
+              render={(_, obj) => {
+                return <p>{getPoints(obj?.playerScoreBreakDown, 'PassingYards')}</p>
+              }}
+            />
+            <Column
+              title='TD'
+              dataIndex='td3'
+              key='passing-td'
+              render={(_, obj) => {
+                return <p>{getPoints(obj?.playerScoreBreakDown, 'PassingTouchdowns')}</p>
+              }}
+            />
+          </ColumnGroup>
+        </Table>
       </section>
     </div>
   )

@@ -40,8 +40,8 @@ const GmCard = (props) => {
               <Typography.Title level={2}>{data?.Name}</Typography.Title>
               <div className='player-active-status'>
                 <div className='active'>
-                  <div className={data?.Active ? `active_btn` : 'in-active_btn'} />
-                  <p>{data?.Active ? 'Active Player' : 'In-active Player'}</p>
+                  <div className={data?.isActive ? `active_btn` : 'in-active_btn'} />
+                  <p>{data?.isActive ? 'Active Player' : 'In-active Player'}</p>
                 </div>
                 <div className='injury-status'>
                   <p>Injury Status</p>

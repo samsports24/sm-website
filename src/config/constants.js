@@ -2,7 +2,7 @@ import Axios from 'axios'
 import store from '../redux/store'
 
 // export const base_url = 'http://192.168.100.16:8000'
-export const base_url = 'https://backend.samsports.io'
+export const base_url = 'https://backend.samsports.iso'
 
 export const publicAPI = Axios.create({ baseURL: base_url })
 

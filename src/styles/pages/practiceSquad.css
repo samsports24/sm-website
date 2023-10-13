@@ -85,6 +85,7 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  padding-block: 10px;
 }
 .squad_card_container .squad_card_box h2 {
   color: var(--text);
@@ -92,7 +93,7 @@
   font-style: normal;
   font-weight: 700;
   line-height: 28px;
-  margin-bottom: 24px;
+  /* margin-bottom: 24px; */
   text-transform: uppercase;
 }
 .squad_card_container .squad_card_box .squad_content_body {
@@ -188,4 +189,44 @@
 }
 .team_setting .file_button:hover {
   background-color: transparent;
+}
+
+.player_standing_page .ant-table-container {
+  border-left: none !important;
+}
+.player_standing_page table {
+  border-top: 1px solid #4b4b4b !important;
+}
+.player_standing_page thead th,
+.player_standing_page tbody td {
+  text-align: center !important;
+}
+.player_standing_page thead tr th:first-child {
+  border-left: 1px solid #4b4b4b !important;
+}
+.player_standing_page tbody td {
+  border-right: none !important;
+}
+.player_standing_page .image_box {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+.player_standing_page .image_box img {
+  height: 100%;
+  width: auto;
+  border-radius: 50%;
+}
+
+.player_standing_page .player_standing_filter_button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.player_standing_page .activeFilterBtn {
+  background-color: transparent !important;
 }
