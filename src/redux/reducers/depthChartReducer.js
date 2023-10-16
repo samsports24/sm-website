@@ -178,9 +178,9 @@ const STATIC_DATA = [
 
 const initialState = {
   isLoading: true,
-  data: [],
   staticData: STATIC_DATA,
-  activeCount: null,
+  data: [],
+  rosterCount: null,
   activeFilter: 'offense',
 }
 
@@ -191,6 +191,43 @@ const depthChartReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: payload,
+      }
+    }
+    case 'SET_DEPTH_CHART_DATA': {
+      const filtered = state?.staticData?.filter((obj) => obj.type === state?.activeFilter)
+      const getData = () => {
+        if (payload?.data?.length > 0) {
+          payload?.data.map((item) => {
+            let index = filtered.findIndex((item2) => {
+              return item2.classKey === item.classKey
+            })
+            if (index !== -1) {
+              filtered.splice(index, 1, {
+                imageUrl: item?.player?.HostedHeadshotNoBackgroundUrl || filtered[index].imageUrl,
+                Name: item?.player?.Name,
+                Position: filtered[index].Position,
+                classKey: filtered[index].classKey,
+                type: filtered[index].type,
+                isPlayerLocked: item?.player?.isPlayerLocked ? item?.player?.isPlayerLocked : false,
+              })
+            }
+          })
+          return [...filtered]
+        } else {
+          return [...filtered]
+        }
+      }
+
+      return {
+        ...state,
+        rosterCount: payload?.data,
+        data: getData(),
+      }
+    }
+    case 'SET_ACTIVE_FILTER': {
+      return {
+        ...state,
+        activeFilter: payload,
       }
     }
     default:

@@ -16,7 +16,7 @@ const FilterBox = ({ data, handleFilter = () => {} }) => {
           <div key={i} className='filter_box_text'>
             <h2
               onClick={() => handleActiveFilter(v)}
-              className={`${activeFilter === v && 'activeFilter'}`}
+              className={`${activeFilter === v ? 'activeFilter' : ''}`}
             >
               {v}
             </h2>
@@ -42,7 +42,10 @@ export const ColorFilter = ({ data, handleFilter, activeFilter }) => {
         const isLastItem = i === arr.length - 1
         return (
           <div className='wrapper' key={i}>
-            <h2 onClick={() => handleActiveFilter(v)} className={activeFilter === v && 'active'}>
+            <h2
+              onClick={() => handleActiveFilter(v)}
+              className={activeFilter === v ? 'active' : ''}
+            >
               {v}
             </h2>
             <p style={{ display: isLastItem ? 'none' : 'inline' }}>|</p>

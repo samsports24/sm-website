@@ -52,7 +52,6 @@ const DepthChart = () => {
 
       if (res?.data?.length > 0) {
         res?.data.map((item) => {
-          console.log('item', item)
           let index = filtered.findIndex((item2) => {
             return item2.classKey === item.classKey
           })

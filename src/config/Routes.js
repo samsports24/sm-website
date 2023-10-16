@@ -25,7 +25,7 @@ import InjuredReserve from '../pages/InjuredReserve'
 import FreeAgent from '../pages/FreeAgent'
 import AgentPlayerInterface from '../pages/AgentPlayerInterface'
 import PlayerAuction from '../pages/PlayerAuction'
-import PlayerStandings from '../pages/PlayerStandings'
+// import PlayerStandings from '../pages/PlayerStandings'
 import PlayerLiveAuction from '../pages/PlayerLiveAuction'
 import PlayerWinningBid from '../pages/PlayerWinningBid'
 import ChooseYourGame from '../pages/ChooseYourGame'
@@ -114,7 +114,7 @@ const Routers = () => {
           <Route path='/league-standings' element={<LeagueStandings />} />
           <Route path='/free-agent' element={<FreeAgent />} />
           <Route path='/player-auction' element={<PlayerAuction />} />
-          <Route path='/player-standing' element={<PlayerStandings />} />
+          {/* <Route path='/player-standing' element={<PlayerStandings />} /> */}
           <Route path='/player-winning-bid/:id' element={<PlayerWinningBid />} />
           <Route path='/agent-player-interface/:id' element={<AgentPlayerInterface />} />
           {/* <Route path='/teams' element={<Teams />} />

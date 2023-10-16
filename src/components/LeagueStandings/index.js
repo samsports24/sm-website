@@ -5,7 +5,7 @@ import { BiRightArrowAlt } from 'react-icons/bi'
 // import { proLeagueStandingsData } from '../../pages/mockData'
 import { useNavigate } from 'react-router-dom'
 
-const LeagueStandings = ({ data }) => {
+const LeagueStandings = ({ data, maxHeight }) => {
   const navigate = useNavigate()
   return (
     <div className='league_standings_box'>
@@ -20,7 +20,10 @@ const LeagueStandings = ({ data }) => {
           See Details <BiRightArrowAlt size={18} />
         </p>
       </header>
-      <section className='league_standings_body'>
+      <section
+        className='league_standings_body'
+        style={{ maxHeight: maxHeight ? maxHeight : '1172px' }}
+      >
         {data?.map((v) => {
           return (
             <div key={v._id} className='card_box'>

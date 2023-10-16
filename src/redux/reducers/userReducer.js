@@ -1,5 +1,4 @@
 const getInitSection = (currentWeek) => {
-  // const currentWeek = localStorage.getItem('week')
   return currentWeek >= 1 && currentWeek <= 4
     ? 1
     : currentWeek >= 5 && currentWeek <= 8

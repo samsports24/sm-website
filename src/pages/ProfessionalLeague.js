@@ -11,12 +11,10 @@ import MatchUpOfTheWeek from '../components/MatchUpOfTheWeek'
 import RollingNewsFeed from '../components/RollingNewsFeed'
 import TransactionTracker from '../components/TransactionTracker'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
-import { getProfessionalLeagueRanks, getScheduleByWeek } from '../redux'
-import { useSelector } from 'react-redux'
 import Loader from '../components/Loader'
 
-// WILL BE RENDER FOR HOCKEY
-// import LeagueStandingsHockey from '../components/LeagueStandingsHockey'
+import { getProfessionalLeagueRanks, getScheduleByWeek } from '../redux'
+import { useSelector } from 'react-redux'
 
 const ProfessionalLeague = () => {
   const SETTING = useSelector((state) => state.user.setting)
@@ -72,9 +70,7 @@ const ProfessionalLeague = () => {
 
           <section className='league_details_container'>
             <div className='left'>
-              <LeagueStandings data={ranks?.teamRanks} />
-              {/* WILL BE RENDER FOR HOCKEY */}
-              {/* <LeagueStandingsHockey data={[]} /> */}
+              <LeagueStandings data={ranks?.teamRanks} maxHeight={'1172px'} />
             </div>
             <div className='center'>
               {[data?.[0]].map((item, index) => (

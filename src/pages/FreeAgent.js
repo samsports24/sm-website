@@ -91,7 +91,7 @@ const FreeAgent = () => {
   return (
     <div className='practice_squad_container team_trade_main'>
       {/* BACK BUTTON */}
-      <Button className='back_button' type='primary'>
+      <Button className='back_button' type='primary' onClick={() => navigate(-1)}>
         Back
       </Button>
 

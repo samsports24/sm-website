@@ -1,7 +1,7 @@
 import React from 'react'
 import { Pagination as AntPagination } from 'antd'
 
-const Pagination = ({ title, defaultCurrent, current, pageSize, total, onChange }) => {
+const Pagination = ({ title, defaultCurrent, current, pageSize = 10, total, onChange }) => {
   return (
     <div className='custom_pagination_box'>
       <h2>{title}</h2>
