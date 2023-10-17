@@ -24,38 +24,40 @@ const LeagueStandings = ({ data, maxHeight }) => {
         className='league_standings_body'
         style={{ maxHeight: maxHeight ? maxHeight : '1172px' }}
       >
-        {data?.map((v) => {
-          return (
-            <div key={v._id} className='card_box'>
-              <div className='header'>
-                <p>{v?.team?.name}</p>
-                <BiRightArrowAlt size={18} />
+        {data
+          ?.sort((a, b) => b?.teamScore?.win - a?.teamScore?.win)
+          ?.map((v) => {
+            return (
+              <div key={v._id} className='card_box'>
+                <div className='header'>
+                  <p>{v?.team?.name}</p>
+                  <BiRightArrowAlt size={18} />
+                </div>
+                <div className='content'>
+                  <div>
+                    <p className='text1'>W‑L‑T</p>
+                    <p className='text2'>{`${v?.teamScore?.win}-${v?.teamScore?.lose}-${v?.teamScore?.tie}`}</p>
+                  </div>
+                  <div>
+                    <p className='text1'>AVG PF</p>
+                    <p className='text2'>{v?.teamScore?.avgPf?.toFixed(2)}</p>
+                  </div>
+                  <div>
+                    <p className='text1'>AVG PA</p>
+                    <p className='text2'>{v?.teamScore?.avgPa?.toFixed(2)}</p>
+                  </div>
+                  <div>
+                    <p className='text1'>DIV W‑L‑T</p>
+                    <p className='text2'>{`${v?.teamScore?.divWin}-${v?.teamScore?.divLose}-${v?.teamScore?.divTie}`}</p>
+                  </div>
+                  <div>
+                    <p className='text1'>CONF W‑L‑T</p>
+                    <p className='text2'>{`${v?.teamScore?.confWin}-${v?.teamScore?.confLose}-${v?.teamScore?.confTie}`}</p>
+                  </div>
+                </div>
               </div>
-              <div className='content'>
-                <div>
-                  <p className='text1'>W‑L‑T</p>
-                  <p className='text2'>{`${v?.teamScore?.win}-${v?.teamScore?.lose}-${v?.teamScore?.tie}`}</p>
-                </div>
-                <div>
-                  <p className='text1'>AVG PF</p>
-                  <p className='text2'>{v?.teamScore?.avgPf?.toFixed(2)}</p>
-                </div>
-                <div>
-                  <p className='text1'>AVG PA</p>
-                  <p className='text2'>{v?.teamScore?.avgPa?.toFixed(2)}</p>
-                </div>
-                <div>
-                  <p className='text1'>DIV W‑L‑T</p>
-                  <p className='text2'>{`${v?.teamScore?.divWin}-${v?.teamScore?.divLose}-${v?.teamScore?.divTie}`}</p>
-                </div>
-                <div>
-                  <p className='text1'>DIV W‑L‑T</p>
-                  <p className='text2'>{`${v?.teamScore?.confWin}-${v?.teamScore?.confLose}-${v?.teamScore?.confTie}`}</p>
-                </div>
-              </div>
-            </div>
-          )
-        })}
+            )
+          })}
       </section>
     </div>
   )

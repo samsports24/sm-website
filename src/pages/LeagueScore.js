@@ -62,6 +62,7 @@ const LeagueScore = () => {
           <h1>League Scores </h1>
           <Pagination
             title='Go To Week:'
+            current={SETTING?.week}
             defaultCurrent={SETTING?.week}
             total={180}
             onChange={handlePagination}
