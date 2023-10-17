@@ -57,7 +57,7 @@ const MoveToRoster = ({ activeDate, injuredDate, injuredId, playerId, getData })
           </Button>
         </Tooltip>
       ) : (
-        <Button type='primary' className='action-bar-btn' onClick={showModal}>
+        <Button disabled={true} type='primary' className='action-bar-btn' onClick={showModal}>
           Move to Roster
         </Button>
       )}
