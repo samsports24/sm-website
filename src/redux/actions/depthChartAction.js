@@ -76,3 +76,18 @@ export const removePlayerFromStarter = async (id) => {
     })
   }
 }
+
+export const clearDepthChart = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/depthChart/clear-lineup', payload)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}

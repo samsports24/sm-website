@@ -161,21 +161,21 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
       <div className='depth_modal_content'>
         {propsData?.Position !== 'backup qb' && (
           <div className='card_box'>
-            <div className='header' style={{ marginBottom: starter ? '0px' : '20px' }}>
+            <div className='header' style={{ marginBottom: starter?.player ? '0px' : '20px' }}>
               <h2>Starter</h2>
               <h2 style={{ textTransform: 'uppercase' }}>{propsData?.Position}</h2>
             </div>
-            {loading ? <Spinner /> : !!starter && <Card data={starter} />}
+            {loading ? <Spinner /> : starter?.player && <Card data={starter} />}
           </div>
         )}
         {propsData?.Position === 'backup qb' && (
           <div className='card_box'>
-            <div className='header' style={{ marginBottom: starter ? '0px' : '20px' }}>
+            <div className='header' style={{ marginBottom: starter?.player ? '0px' : '20px' }}>
               <h2>Back-up</h2>
               <h2 style={{ textTransform: 'uppercase' }}>{propsData?.Position}</h2>
             </div>
             <div className='scroll_section'>
-              {loading ? <Spinner /> : !!starter && <Card data={starter} />}
+              {loading ? <Spinner /> : starter?.player && <Card data={starter} />}
             </div>
           </div>
         )}

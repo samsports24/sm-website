@@ -80,3 +80,14 @@
 .depth_chart_container .depth_chart_wrapper .special_team_container {
   height: 400px;
 }
+
+.clear_button_box {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -30px;
+  margin-bottom: 30px;
+}
+.clear_button_box button {
+  text-transform: uppercase;
+}

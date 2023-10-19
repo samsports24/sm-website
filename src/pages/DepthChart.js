@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Breadcrumb } from 'antd'
+import { Breadcrumb, Button } from 'antd'
 
 // Component
 import Header from '../components/Header'
@@ -12,7 +12,7 @@ import Loader from '../components/Loader'
 // Mock Data
 import { depthCardData } from './mockData'
 
-import { getActiveRosterCount } from '../redux/actions/depthChartAction'
+import { clearDepthChart, getActiveRosterCount } from '../redux/actions/depthChartAction'
 import {
   activeRosterCount,
   firstLetterCap,
@@ -25,11 +25,12 @@ import { useSelector } from 'react-redux'
 // import { MdLock } from 'react-icons/md'
 
 const DepthChart = () => {
-  const SETTING = useSelector((state) => state?.user?.setting)
+  const USER = useSelector((state) => state?.user)
   const [activeFilter, setActiveFilter] = useState('offense')
   const [data, setData] = useState([])
   const [activeCount, setActiveCount] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [clearBtnLoading, setClearBtnLoading] = useState(false)
 
   const handleFilter = (value) => {
     setActiveFilter(value)
@@ -37,7 +38,7 @@ const DepthChart = () => {
 
   useEffect(() => {
     getDepthChartData()
-  }, [activeFilter, SETTING?.week])
+  }, [activeFilter, USER?.setting?.week])
 
   const getDepthChartData = async () => {
     const filtered = depthCardData.filter((obj) => obj.type === activeFilter)
@@ -45,11 +46,10 @@ const DepthChart = () => {
 
     const res = await getActiveRosterCount({
       type: activeFilter === 'special team' ? 'special' : activeFilter,
-      week: SETTING?.week,
+      week: USER?.setting?.week,
     })
     if (res) {
       setActiveCount(res?.count)
-
       if (res?.data?.length > 0) {
         res?.data.map((item) => {
           let index = filtered.findIndex((item2) => {
@@ -63,6 +63,7 @@ const DepthChart = () => {
               classKey: filtered[index].classKey,
               type: filtered[index].type,
               isPlayerLocked: item?.player?.isPlayerLocked ? item?.player?.isPlayerLocked : false,
+              _id: item?.player?._id ? item?.player?._id : false,
             })
           }
         })
@@ -72,6 +73,24 @@ const DepthChart = () => {
       }
     }
     setLoading(false)
+  }
+
+  const clearDepthChartRoster = async () => {
+    setClearBtnLoading(true)
+    let playerIds = []
+    data?.forEach((v) => {
+      if (!v?.isPlayerLocked && v?._id) {
+        playerIds.push(v?._id)
+      }
+    })
+    const res = await clearDepthChart({
+      type: activeFilter,
+      ids: playerIds,
+    })
+    setClearBtnLoading(false)
+    if (res) {
+      await getDepthChartData()
+    }
   }
 
   return (
@@ -136,6 +155,14 @@ const DepthChart = () => {
             activeFilter={activeFilter}
             handleFilter={handleFilter}
           />
+
+          {USER?.setting?.week == USER?.currentWeek && (
+            <div className='clear_button_box'>
+              <Button loading={clearBtnLoading} type='primary' onClick={clearDepthChartRoster}>
+                Clear {activeFilter}
+              </Button>
+            </div>
+          )}
 
           <section className='depth_chart_wrapper'>
             <div
