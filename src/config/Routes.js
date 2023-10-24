@@ -56,7 +56,8 @@ import League from '../pages/League'
 // import LeagueCalendar from '../pages/LeagueCalendar'
 // import AllReports from '../pages/AllReports'
 // import PracticeSquad from '../pages/PracticeSquad'
-// import TeamTrade from '../pages/TeamTrade'
+import TeamTrade from '../pages/TeamTrade'
+import CounterTrade from '../pages/CounterTrade'
 // import GmDashboard from '../pages/GmDashboard'
 
 import { version } from './constants'
@@ -117,6 +118,8 @@ const Routers = () => {
           <Route path='/player-standing' element={<PlayerStandings />} />
           <Route path='/player-winning-bid/:id' element={<PlayerWinningBid />} />
           <Route path='/agent-player-interface/:id' element={<AgentPlayerInterface />} />
+          <Route path='/team-trade' element={<TeamTrade />} />
+          <Route path='/counter-trade' element={<CounterTrade />} />
           {/* <Route path='/teams' element={<Teams />} />
           <Route path='/player-details' element={<PlayerDetails />} />
           <Route path='/players' element={<Players />} />
@@ -133,7 +136,6 @@ const Routers = () => {
           <Route path='/all-reports' element={<AllReports />} />
           <Route path='/coming-soon' element={<ComingSoon />} />
           <Route path='/gm-dashboard' element={<GmDashboard />} />
-          <Route path='/team-trade' element={<TeamTrade />} />
           {/* </Layout> */}
         </Route>
 

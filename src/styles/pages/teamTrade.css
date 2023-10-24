@@ -4,6 +4,12 @@
   padding: 20px;
 }
 
+.team_trade_main .heading {
+  color: white;
+  font-size: 34px;
+  font-weight: 800;
+}
+
 .team_trade_main .header {
   display: flex;
   justify-content: space-between;
@@ -16,7 +22,7 @@
 }
 .team_trade_main .header h2 {
   color: white;
-  font-size: 34px;
+  font-size: 28px;
   font-weight: 800;
 }
 .team_trade_main .header .left h2 {
@@ -61,3 +67,18 @@
 /* .team_trade_main .ant-pagination-options {
   border: none !important;
 } */
+
+.select_box_label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+}
+.select_box_label img {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+}
+.select_box_label p {
+  margin-top: 4px !important;
+}

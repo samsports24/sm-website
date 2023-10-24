@@ -63,14 +63,40 @@
   line-height: 22px;
 }
 
-.league_notification .no_notification_box {
+.league_notification .league_standings_body .card_box .content {
   width: 100%;
-  height: 200px;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
 }
-.league_notification .no_notification_box p {
+.league_notification .league_standings_body .card_box .content p {
   color: var(--text);
-  font-weight: 500;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  opacity: 0.5;
+  line-height: 22px;
+}
+
+.league_notification .button_box_approve_reject {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  justify-content: flex-end;
+}
+.league_notification .button_box_approve_reject button {
+  width: 100px;
+  height: 30px;
+}
+.league_notification .button_box_approve_reject .approve_button {
+  border: 2px solid #00a7e5;
+  background: #00a7e5;
+}
+.league_notification .button_box_approve_reject .approve_button:hover {
+  border: 2px solid #00a7e5;
+  background: transparent;
+  color: #fff;
 }
