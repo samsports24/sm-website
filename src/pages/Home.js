@@ -18,6 +18,7 @@ import { popularLeaguesData, popularSportsData, clientFeedbacksData } from './mo
 import SportsButtonMenu from '../components/SportsButtonMenu'
 
 const Home = () => {
+  const isAuthenticated = localStorage.getItem('token')
   // const user = useSelector((state) => state.user.userDetails)
 
   // let upcomingMatches = [
@@ -85,7 +86,7 @@ const Home = () => {
   return (
     <div className='home-page'>
       {/* FANTASY LEAGUE */}
-      {window.location.pathname == '/fantasy-league' && <SportsButtonMenu />}
+      {window.location.pathname == '/fantasy-league' && isAuthenticated && <SportsButtonMenu />}
 
       {/* {!!user && window.location.pathname == '/' && (
         <>

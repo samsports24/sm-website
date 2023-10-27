@@ -1,26 +1,43 @@
 .side_bar_menu_main {
   background: #140f26;
-  min-height: 65vh;
+  height: 65vh;
   padding-inline: 20px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center !important;
+  overflow-y: auto !important;
 }
 .sidebar-menu {
-  background-color: transparent !important;
+  border-radius: 0px !important;
   color: var(--text) !important;
-  font-size: 14px;
-  padding-block: 10px !important;
-  padding-inline: 20px !important;
-  border-radius: 20px !important;
-  margin-bottom: 10px !important;
+  /* font-size: 13px; */
+  margin-right: 20px !important;
+  padding: 0 !important;
+  background-color: var(--primaryPurple) !important;
+  display: flex;
+  flex-direction: column;
+  width: 70px !important;
+  height: 70px !important;
+  border: 1px solid transparent !important;
+}
+.sidebar-menu:hover {
+  border: 1px solid var(--primary) !important;
+}
+.activeRoute {
+  border: 1px solid var(--primary) !important;
 }
 .sidebar-menu img {
-  width: 24px;
-  height: 24px;
+  width: 35px;
+  height: 35px;
 }
 .sidebar-menu:hover {
   background-color: var(--primaryPurple) !important;
 }
 .ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected {
-  background-color: var(--primaryPurple) !important;
+  /* background-color: var(--primaryPurple) !important; */
+  border: 1px solid var(--primary) !important;
+
   /* border-right: 4px solid var(--primary) !important;
   border-radius: 0 !important;
   width: calc(100% - 4px) !important; */
@@ -28,4 +45,26 @@
 .ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected span,
 .ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected svg {
   color: var(--siderbarActive) !important;
+}
+
+.ant-menu-title {
+  margin: 0 !important;
+  line-height: 1 !important;
+}
+.sidebar-menu-item-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.sidebar-menu-item-inner p {
+  line-height: 1.2 !important;
+  font-size: 9px;
+  text-align: center;
+}
+.sidebar-menu-item-inner svg {
+  font-size: 30px;
 }

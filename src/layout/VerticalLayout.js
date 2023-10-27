@@ -74,14 +74,14 @@ const VerticalLayout = ({ children, active }) => {
             <div className='caution'>
               <p style={{ lineHeight: 1.5 }}>
                 API • Privacy •{' '}
-                <a
+                {/* <a
                   href='https://app.termly.io/document/terms-of-service/372d4c41-9267-4833-8bbb-aba80f6fbbb8'
                   target='_blank'
                   rel='noreferrer'
                 >
                   Terms
-                </a>{' '}
-                • Jobs • Responsible Play
+                </a>{' '} •*/}
+                Jobs • Responsible Play
               </p>
             </div>
           </div>
@@ -165,7 +165,7 @@ const VerticalLayout = ({ children, active }) => {
           <Content className='main-content'>{children}</Content>
           <Footer className='mainFooter'>
             <p>© Sam Sports, Inc. All rights reserved.</p>
-            <a
+            {/* <a
               href='https://app.termly.io/document/terms-of-service/372d4c41-9267-4833-8bbb-aba80f6fbbb8'
               target='_blank'
               rel='noreferrer'
@@ -177,7 +177,7 @@ const VerticalLayout = ({ children, active }) => {
               }}
             >
               TERMS OF SERVICE
-            </a>
+            </a> */}
 
             <a href='https://sportsdata.io' target='_blank' rel='noreferrer'>
               <img
