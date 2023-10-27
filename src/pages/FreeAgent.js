@@ -182,6 +182,14 @@ const FreeAgent = () => {
                           </p>
                         </div>
                         <div>
+                          <p className='squad_text2'>PF &nbsp;</p>
+                          <p className='squad_text1'>{v?.pointsPerGame || '-'}</p>
+                        </div>
+                        <div>
+                          <p className='squad_text2'>player rank</p>
+                          <p className='squad_text1'>{v?.playerRank || '-'}</p>
+                        </div>
+                        <div>
                           <p className='squad_text2'>age</p>
                           <p className='squad_text1'>{v?.Age || '-'}</p>
                         </div>
@@ -203,14 +211,7 @@ const FreeAgent = () => {
                             {v?.PlayerCap ? `$${v?.PlayerCap?.toLocaleString()}` : '-'}
                           </p>
                         </div>
-                        <div>
-                          <p className='squad_text2'>PF &nbsp;</p>
-                          <p className='squad_text1'>{v?.pointsPerGame || '-'}</p>
-                        </div>
-                        <div>
-                          <p className='squad_text2'>player rank</p>
-                          <p className='squad_text1'>{v?.playerRank || '-'}</p>
-                        </div>
+
                         <Button
                           disabled={false}
                           loading={playerID == v?.PlayerID}

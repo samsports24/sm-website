@@ -125,7 +125,7 @@ const TeamTrade = () => {
       ) : (
         <section className='squad_card_container transparent'>
           <Row gutter={[30, 30]}>
-            <Col xs={24} lg={12}>
+            {/* <Col xs={24} lg={12}>
               <Select
                 placeholder='Teams'
                 style={{ minWidth: 250, float: 'right' }}
@@ -143,16 +143,33 @@ const TeamTrade = () => {
                   }
                 })}
               />
-            </Col>
-            <Col xs={24} lg={12}>
-              <Button
+            </Col> */}
+            <Col xs={24} lg={24}>
+              {/* <Button
                 loading={btnLoading}
                 type='primary'
                 style={{ float: 'right' }}
                 onClick={createTrade}
               >
                 Submit
-              </Button>
+              </Button> */}
+              <Select
+                placeholder='Team'
+                style={{ minWidth: 250, float: 'right' }}
+                value={selectTeam}
+                onChange={(e) => setSelectTeam(e)}
+                options={teams?.map((v) => {
+                  return {
+                    value: v?._id,
+                    label: (
+                      <div className='select_box_label'>
+                        <img src={v?.logo} alt='logo' />
+                        <p>{v?.name}</p>
+                      </div>
+                    ),
+                  }
+                })}
+              />
             </Col>
             <Col xs={24} lg={12}>
               <div className='add-player'>
@@ -255,7 +272,7 @@ const TeamTrade = () => {
                 </div>
                 {[
                   {
-                    title: 'UFAFL TOTAL CAP',
+                    title: 'SFL TOTAL CAP',
                     value: `$${leagueSalaryCap?.toLocaleString()}`,
                   },
                   {
@@ -283,7 +300,7 @@ const TeamTrade = () => {
                   </div>
                   {[
                     {
-                      title: 'UFAFL TOTAL CAP',
+                      title: 'SFL TOTAL CAP',
                       value: `$${leagueSalaryCap?.toLocaleString()}`,
                     },
                     {
@@ -301,6 +318,17 @@ const TeamTrade = () => {
                 </div>
               </Col>
             )}
+
+            <Col xs={24} lg={24}>
+              <Button
+                loading={btnLoading}
+                type='primary'
+                style={{ float: 'right' }}
+                onClick={createTrade}
+              >
+                Submit
+              </Button>
+            </Col>
           </Row>
         </section>
       )}

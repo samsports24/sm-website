@@ -119,7 +119,9 @@ const MainMenu = () => {
             >
               <div className='sidebar-menu-item-inner'>
                 <FaRegChartBar />
-                <p>DEPTH CHART</p>
+                <p>
+                  DEPTH <br /> CHART
+                </p>
               </div>
             </Menu.Item>
             <Menu.Item
@@ -161,7 +163,9 @@ const MainMenu = () => {
             >
               <div className='sidebar-menu-item-inner'>
                 <BsShop />
-                <p>FREE AGENTS</p>
+                <p>
+                  FREE <br /> AGENTS
+                </p>
               </div>
             </Menu.Item>
             <Menu.Item
@@ -216,7 +220,7 @@ const MainMenu = () => {
             <p>TOKEN</p>
           </div>
         </Menu.Item>
-        <Menu.Item
+        {/* <Menu.Item
           key='terms'
           className={'sidebar-menu'}
           onClick={() =>
@@ -229,7 +233,7 @@ const MainMenu = () => {
             <SlBookOpen />
             <p>TERMS</p>
           </div>
-        </Menu.Item>
+        </Menu.Item> */}
         {/* <Menu.Item
           // key='dashboard'
           className={'sidebar-menu'}
