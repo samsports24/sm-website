@@ -70,7 +70,7 @@ const ProfessionalLeague = () => {
 
           <section className='league_details_container'>
             <div className='left'>
-              <LeagueStandings data={ranks?.teamRanks} maxHeight={'1172px'} />
+              <LeagueStandings data={ranks} maxHeight={'1172px'} />
             </div>
             <div className='center'>
               {[data?.[0]].map((item, index) => (
@@ -80,8 +80,8 @@ const ProfessionalLeague = () => {
               <TransactionTracker />
             </div>
             <div className='right'>
-              <PowerRanking data={ranks?.teamRanks} />
-              <PlayerRanking data={ranks?.playerRanks} />
+              <PowerRanking data={ranks} />
+              <PlayerRanking data={ranks} />
             </div>
           </section>
         </>

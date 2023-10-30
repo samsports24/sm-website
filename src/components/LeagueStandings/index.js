@@ -24,13 +24,14 @@ const LeagueStandings = ({ data, maxHeight }) => {
         className='league_standings_body'
         style={{ maxHeight: maxHeight ? maxHeight : '1172px' }}
       >
-        {data
+        {data?.teamRanks
           ?.sort((a, b) => b?.teamScore?.win - a?.teamScore?.win)
           ?.map((v) => {
+            const team = data?.teams?.find((x) => v?.teamId === x?._id)
             return (
               <div key={v._id} className='card_box'>
                 <div className='header'>
-                  <p>{v?.team?.name}</p>
+                  <p>{team?.name}</p>
                   <BiRightArrowAlt size={18} />
                 </div>
                 <div className='content'>

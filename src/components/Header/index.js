@@ -15,7 +15,7 @@ const Header = () => {
   const record = useSelector((state) => state.user.record)
   const user = useSelector((state) => state.user.userDetails)
   const teamSalary = useSelector((state) => state.user.teamSalaryCap)
-  const [notificationCount] = useState(null)
+  const { notificationCount } = useSelector((state) => state.user)
   const [auctionCount] = useState(null)
   const navigate = useNavigate()
 

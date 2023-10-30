@@ -15,7 +15,7 @@ const PlayerRanking = ({ data }) => {
         </p>
       </header>
       <section className='player_ranking_body'>
-        {data?.map((v, i) => {
+        {data?.playerRanks?.map((v, i) => {
           return (
             <div key={i} className='card_box'>
               <h6>{i + 1}.</h6>

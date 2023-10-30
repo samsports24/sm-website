@@ -22,6 +22,7 @@ const initialState = {
   },
   teamSalaryCap: 0,
   record: null,
+  notificationCount: null,
 }
 
 const userReducer = (state = initialState, action) => {
@@ -56,6 +57,12 @@ const userReducer = (state = initialState, action) => {
       return {
         ...state,
         weekSection: payload,
+      }
+    }
+    case 'SET_NOTIFICATION_COUNT': {
+      return {
+        ...state,
+        notificationCount: payload,
       }
     }
     default:

@@ -14,14 +14,15 @@ const PowerRanking = ({ data }) => {
         </p> */}
       </header>
       <section className='power_ranking_body'>
-        {data?.map((v, i) => {
+        {data?.teamRanks?.map((v, i) => {
+          const team = data?.teams?.find((x) => v?.teamId === x?._id)
           return (
             <div key={i} className='card_box'>
               <h6>{i + 1}.</h6>
               <div className='image_box'>
-                <img src={v?.team?.logo} />
+                <img src={team?.logo} />
               </div>
-              <h3>{v?.team?.name}</h3>
+              <h3>{team?.name}</h3>
               <p>{v?.teamScore?.score}</p>
               {/* <p>{v?.score2}</p> */}
             </div>

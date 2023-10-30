@@ -13,6 +13,9 @@ import Loader from '../components/Loader'
 import { getTeamRoster } from '../redux/actions/rosterAction'
 import { useSelector } from 'react-redux'
 
+import { draftData } from '../config/draftData'
+import Empty from '../components/Empty'
+
 const TeamRoster = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
   const [activePlayerData, setActivePlayerData] = useState([])
@@ -21,8 +24,9 @@ const TeamRoster = () => {
   const [protectedCheck, setProtectedCheck] = useState([])
   const [playerCaps, setPlayerCaps] = useState(null)
   const [loading, setLoading] = useState(true)
-
   const { id } = useParams()
+
+  const [draftPickData] = useState(draftData?.find((v) => v?.teamId === id))
 
   useEffect(() => {
     SETTING?.week !== 0 && getData()
@@ -129,6 +133,28 @@ const TeamRoster = () => {
                 />
               )
             })}
+          </section>
+
+          <hr style={{ marginBlock: '40px' }} />
+
+          <div className='practice_squad_header'>
+            <p className='heading'>
+              Draft<b>Picks</b>
+            </p>
+          </div>
+
+          <section className='stats_container'>
+            {draftPickData?.draft?.length > 0 ? (
+              draftPickData?.draft?.map((v, i) => {
+                return (
+                  <div key={i} className='draft_pick_row'>
+                    <p>{v} Pick</p>
+                  </div>
+                )
+              })
+            ) : (
+              <Empty text={'practice Squad IS EMPTY'} />
+            )}
           </section>
         </>
       )}

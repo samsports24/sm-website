@@ -13,9 +13,11 @@ import { getRoster, setNonActivePlayer, setProtectedPlayer } from '../redux/acti
 import { useSelector } from 'react-redux'
 import { isLocked } from '../config/constants'
 import Empty from '../components/Empty'
+import { draftData } from '../config/draftData'
 
 const PlayerRoster = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
+  const USER = useSelector((state) => state?.user)
   const [activePlayerData, setActivePlayerData] = useState([])
   const [practiveSquadData, setPractiveSquadData] = useState([])
   const [nonActive, setNonActive] = useState([])
@@ -23,6 +25,9 @@ const PlayerRoster = () => {
   const [playerCaps, setPlayerCaps] = useState(null)
   const [loading, setLoading] = useState(true)
   const [submitLoading, setSubmitLoading] = useState(false)
+  const [draftPickData] = useState(
+    draftData?.find((v) => v?.teamId === USER?.userDetails?.team?._id),
+  )
 
   const handleNonActive = (event, id) => {
     if (event) {
@@ -91,6 +96,7 @@ const PlayerRoster = () => {
 
   useEffect(() => {
     SETTING?.week !== 0 && getData()
+    console.log(draftData?.length)
   }, [SETTING?.week])
 
   const getData = async () => {
@@ -177,6 +183,7 @@ const PlayerRoster = () => {
               <Empty text={'Active Squad IS EMPTY'} />
             )}
           </section>
+
           <hr style={{ marginBlock: '40px' }} />
 
           <div className='practice_squad_header'>
@@ -206,6 +213,28 @@ const PlayerRoster = () => {
               })
             ) : (
               <Empty text={'practice Squad IS EMPTY'} />
+            )}
+          </section>
+
+          <hr style={{ marginBlock: '40px' }} />
+
+          <div className='practice_squad_header'>
+            <p className='heading'>
+              Draft<b>Picks</b>
+            </p>
+          </div>
+
+          <section className='stats_container'>
+            {draftPickData?.draft?.length > 0 ? (
+              draftPickData?.draft?.map((v, i) => {
+                return (
+                  <div key={i} className='draft_pick_row'>
+                    <p>{v} Pick</p>
+                  </div>
+                )
+              })
+            ) : (
+              <Empty text={'DRAFT PICK IS EMPTY'} />
             )}
           </section>
         </>
