@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { isLocked } from '../../config/constants'
 
 import { MdLock } from 'react-icons/md'
+import { HiPlusCircle } from 'react-icons/hi'
 
 const PlayerRosterCard = ({
   data,
@@ -29,6 +30,7 @@ const PlayerRosterCard = ({
       Position,
       UpcomingGameOpponent,
       isPlayerLocked,
+      InjuryStatus,
     },
     // _id: lineupId,
     team,
@@ -43,7 +45,7 @@ const PlayerRosterCard = ({
       </div> */}
       <header>
         <h3
-          style={{ cursor: 'pointer' }}
+          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
           onClick={() => {
             navigate(`/player-interface/${PlayerID}`, {
               state: {
@@ -55,6 +57,24 @@ const PlayerRosterCard = ({
         >
           {index + 1}. &nbsp;&nbsp; {Name} ({Position}){' '}
           {isPlayerLocked && <MdLock size={20} color={'#fff'} style={{ marginBottom: '-3px' }} />}
+          {InjuryStatus === 'Out' ? (
+            <>
+              <span className='injury_plus_circle'>
+                <b>+</b>
+              </span>
+              <span style={{ marginLeft: '5px', color: 'red' }}>O</span>
+            </>
+          ) : InjuryStatus === 'Questionable' ? (
+            <span className='injury_plus_Span'>Q</span>
+          ) : InjuryStatus === 'Doubtful' ? (
+            <span className='injury_plus_Span'>D</span>
+          ) : InjuryStatus === 'Suspended' ? (
+            <span className='injury_plus_Span'>SSPD</span>
+          ) : InjuryStatus === 'Injured Reserve' ? (
+            <span className='injury_plus_Span'>IR</span>
+          ) : (
+            ''
+          )}
         </h3>
         {isPractice ? (
           <Checkbox

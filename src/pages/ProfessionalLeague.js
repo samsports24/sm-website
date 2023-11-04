@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import { Breadcrumb } from 'antd'
 
-// Component
+// Components
 import Header from '../components/Header'
 import LeagueStandings from '../components/LeagueStandings'
 import PowerRanking from '../components/PowerRanking'
@@ -41,7 +41,7 @@ const ProfessionalLeague = () => {
   return (
     <div className='pro_league_container'>
       {/* BREADCRUMB */}
-      <section className='breadcrumb'>
+      <section className='_breadcrumb'>
         <Breadcrumb
           className='customize_breadcrumb'
           separator='|'

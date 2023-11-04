@@ -377,3 +377,26 @@ p {
   font-weight: 700;
   color: var(--primary) !important;
 }
+
+/* --------------------------------- */
+.injury_plus_circle {
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background-color: red;
+  margin-left: 5px;
+}
+.injury_plus_circle b {
+  font-size: 28px !important;
+  margin-bottom: 5px;
+  color: var(--text);
+}
+.injury_plus_Span {
+  margin-left: 5px;
+  color: #00c008;
+}
+/* --------------------------------- */
