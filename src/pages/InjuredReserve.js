@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Button, Breadcrumb, Typography } from 'antd'
+import { Button, Breadcrumb, Table } from 'antd'
 
 import Arrow from '../assets/arrow-right.svg'
 
@@ -11,12 +11,13 @@ import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import MoveToRoster from '../components/modal/PlayerInterfaceModals/MoveToRoster'
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import { getAllIr } from '../redux/actions/rosterAction'
-import Loader from '../components/Loader'
-import Empty from '../components/Empty'
+import { useNavigate } from 'react-router-dom'
 
 const InjuredReserve = () => {
   const [injuredReserve, setInjuredReserve] = useState([])
   const [loading, setLoading] = useState(true)
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     getData()
@@ -30,12 +31,106 @@ const InjuredReserve = () => {
     }
     setLoading(false)
   }
+  const columns = [
+    {
+      title: ' ',
+      dataIndex: 'HostedHeadshotNoBackgroundUrl',
+      key: 'HostedHeadshotNoBackgroundUrl',
+      render: (_, obj) => {
+        return (
+          <div className='squad_image_box'>
+            {obj?.player?.HostedHeadshotNoBackgroundUrl ? (
+              <img src={obj?.player?.HostedHeadshotNoBackgroundUrl} alt={'Player'} />
+            ) : (
+              <GiAmericanFootballPlayer size={45} color={'#c4c4c4'} />
+            )}
+          </div>
+        )
+      },
+    },
+    {
+      title: 'POSITION',
+      dataIndex: 'Position',
+      key: 'Position',
+      render: (_, obj) => <p>{obj?.player?.Position || '-'}</p>,
+    },
+    {
+      title: 'PLAYER NAME',
+      dataIndex: 'Name',
+      key: 'Name',
+      render: (_, obj) => <p>{obj?.player?.Name || '-'}</p>,
+    },
+    {
+      title: 'AGE',
+      dataIndex: 'Age',
+      key: 'Age',
+      render: (_, obj) => <p>{obj?.player?.Age || '-'}</p>,
+    },
+    {
+      title: 'TEAM',
+      dataIndex: 'Team',
+      key: 'Team',
+      render: (_, obj) => <p>{obj?.player?.Team || '-'}</p>,
+    },
+    {
+      title: 'OPP',
+      dataIndex: 'UpcomingGameOpponent',
+      key: 'UpcomingGameOpponent',
+      render: (_, obj) => <p>{obj?.player?.UpcomingGameOpponent || '-'}</p>,
+    },
+    {
+      title: 'BYE',
+      dataIndex: 'ByeWeek',
+      key: 'ByeWeek',
+      render: (_, obj) => <p>{obj?.player?.ByeWeek || '-'}</p>,
+    },
+    {
+      title: 'PLAYER CAP #',
+      dataIndex: 'PlayerCap',
+      key: 'PlayerCap',
+      render: (_, obj) => (
+        <p>
+          {' '}
+          {injuredReserve?.playerCaps[obj?.player?.PlayerID]
+            ? `$${injuredReserve?.playerCaps[obj?.player?.PlayerID]?.toLocaleString()}`
+            : '-'}
+        </p>
+      ),
+    },
+    {
+      title: 'PF',
+      dataIndex: 'pointsPerGame',
+      key: 'pointsPerGame',
+      render: (_, obj) => <p>{obj?.player?.pointPerGame > 0 ? obj?.player?.pointPerGame : '-'}</p>,
+    },
+    {
+      title: 'PLAYER RANK',
+      dataIndex: 'playerRank',
+      key: 'playerRank',
+      render: (_, obj) => <p>{obj?.player?.playerRank > 0 ? obj?.player?.playerRank : '-'}</p>,
+    },
+    {
+      title: ' ',
+      dataIndex: 'auction',
+      key: 'auction',
+      render: (_, obj) => {
+        return (
+          <MoveToRoster
+            activeDate={obj?.activeDate}
+            injuredDate={obj?.injuredDate}
+            playerId={obj?.PlayerID}
+            injuredId={obj?._id}
+            getData={getData}
+          />
+        )
+      },
+    },
+  ]
 
   return (
     <div className='practice_squad_container team_trade_main'>
-      {/* BREADCRUMB */}
       <section className='_breadcrumb'>
-        <Button className='_back_button' type='primary'>
+        <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
           Back
         </Button>
         <Breadcrumb
@@ -57,19 +152,34 @@ const InjuredReserve = () => {
           ]}
         />
       </section>
-      {/* HEADER */}
+
       <Header />
+
       <ButtonsAndPagination noWeek={true} />
+
       <hr className='divider' />
-      <section className='squad_card_container transparent'>
-        <div className='header'>
-          <h2>INJURED RESERVE</h2>
-        </div>
+
+      <div className='header' style={{ marginBottom: '20px' }}>
+        <h2>INJURED RESERVE</h2>
+      </div>
+
+      <div className='new_table_container'>
+        <Table
+          loading={loading}
+          dataSource={injuredReserve?.data}
+          columns={columns}
+          bordered={false}
+          pagination={false}
+          scroll={{ x: 1100 }}
+        />
+      </div>
+
+      {/* <section className='squad_card_container transparent'>
         {loading ? (
           <Loader />
         ) : (
           <>
-            {injuredReserve?.data?.length > 0 ? (
+            {injuredReserve?.data?.length < 0 ? (
               <div className='standing-table-bg'>
                 {injuredReserve?.data?.map((v, i) => {
                   const { player: p } = v
@@ -140,7 +250,7 @@ const InjuredReserve = () => {
             )}
           </>
         )}
-      </section>
+      </section> */}
     </div>
   )
 }
