@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Button, Breadcrumb, Input, Pagination as AntPagination } from 'antd'
+import { Button, Breadcrumb, Input, Pagination as AntPagination, Table } from 'antd'
 
 import Arrow from '../assets/arrow-right.svg'
 import { SearchOutlined } from '@ant-design/icons'
@@ -10,11 +10,9 @@ import Header from '../components/Header'
 
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import { createAuction, getFreeAgent } from '../redux/actions/rosterAction'
-import Loader from '../components/Loader'
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import { GrFormClose } from 'react-icons/gr'
 import { useNavigate } from 'react-router-dom'
-import Empty from '../components/Empty'
 
 const FreeAgent = () => {
   const [freeAgents, setFreeAgents] = useState({
@@ -88,6 +86,111 @@ const FreeAgent = () => {
     setPlayerID('')
   }
 
+  const columns = [
+    {
+      title: ' ',
+      dataIndex: 'HostedHeadshotNoBackgroundUrl',
+      key: 'HostedHeadshotNoBackgroundUrl',
+      render: (text) => {
+        return (
+          <div className='squad_image_box'>
+            {text ? (
+              <img src={text} alt={'Player'} />
+            ) : (
+              <GiAmericanFootballPlayer size={45} color={'#c4c4c4'} />
+            )}
+          </div>
+        )
+      },
+    },
+    {
+      title: 'POSITION',
+      dataIndex: 'Position',
+      key: 'Position',
+    },
+    {
+      title: 'PLAYER NAME',
+      dataIndex: 'Name',
+      key: 'Name',
+      render: (t, obj) => {
+        return (
+          <p
+            onClick={() => {
+              navigate(`/agent-player-interface/${obj?.PlayerID}`)
+            }}
+            style={{ cursor: 'pointer' }}
+            className='name_text_hover'
+          >
+            {t || '-'}
+          </p>
+        )
+      },
+    },
+    {
+      title: 'PF',
+      dataIndex: 'pointsPerGame',
+      key: 'pointsPerGame',
+      render: (t) => <p>{t > 0 ? t : '-'}</p>,
+    },
+    {
+      title: 'PLAYER RANK',
+      dataIndex: 'playerRank',
+      key: 'playerRank',
+      render: (t) => <p>{t > 0 ? t : '-'}</p>,
+    },
+    {
+      title: 'AGE',
+      dataIndex: 'Age',
+      key: 'Age',
+      render: (t) => <p>{t || '-'}</p>,
+    },
+    {
+      title: 'TEAM',
+      dataIndex: 'Team',
+      key: 'Team',
+      render: (t) => <p>{t || '-'}</p>,
+    },
+    {
+      title: 'OPP',
+      dataIndex: 'UpcomingGameOpponent',
+      key: 'UpcomingGameOpponent',
+      render: (t) => <p>{t || '-'}</p>,
+    },
+    {
+      title: 'BYE',
+      dataIndex: 'ByeWeek',
+      key: 'ByeWeek',
+      render: (t) => <p>{t || '-'}</p>,
+    },
+    {
+      title: 'PLAYER CAP #',
+      dataIndex: 'PlayerCap',
+      key: 'PlayerCap',
+      render: (t) => <p> {t ? `$${t?.toLocaleString()}` : '-'}</p>,
+    },
+
+    {
+      title: ' ',
+      dataIndex: 'auction',
+      key: 'auction',
+      render: (_, obj) => {
+        return (
+          <Button
+            disabled={false}
+            loading={playerID == obj?.PlayerID}
+            type='primary'
+            className='_button'
+            onClick={() => {
+              handleCreateAuction(obj?.PlayerID, obj?._id)
+            }}
+          >
+            Auction
+          </Button>
+        )
+      },
+    },
+  ]
+
   return (
     <div className='practice_squad_container team_trade_main'>
       {/* BREADCRUMB */}
@@ -144,102 +247,25 @@ const FreeAgent = () => {
             </Button>
           </div>
         </div>
-
-        {loading ? (
-          <Loader />
-        ) : (
-          <>
-            {freeAgents?.players?.length > 0 ? (
-              <div className='standing-table-bg'>
-                {freeAgents?.players?.map((v, i) => {
-                  return (
-                    <div key={i} className='squad_card_box'>
-                      <div className='squad_content_body'>
-                        <div className='squad_image_box'>
-                          {v?.HostedHeadshotNoBackgroundUrl ? (
-                            <img src={v?.HostedHeadshotNoBackgroundUrl} />
-                          ) : (
-                            <GiAmericanFootballPlayer size={45} color={'#c4c4c4'} />
-                          )}
-                        </div>
-                        <div>
-                          <p className='squad_text2'>position</p>
-                          <p className='squad_text1'>{v?.Position || '-'}</p>
-                        </div>
-                        <div>
-                          <p style={{ width: '160px' }} className='squad_text2'>
-                            player name
-                          </p>
-                          <p
-                            onClick={() => {
-                              navigate(`/agent-player-interface/${v?.PlayerID}`)
-                            }}
-                            style={{ cursor: 'pointer' }}
-                            className='squad_text1 name_text_hover'
-                          >
-                            {v?.Name || '-'}
-                          </p>
-                        </div>
-                        <div>
-                          <p className='squad_text2'>PF &nbsp;</p>
-                          <p className='squad_text1'>{v?.pointsPerGame || '-'}</p>
-                        </div>
-                        <div>
-                          <p className='squad_text2'>player rank</p>
-                          <p className='squad_text1'>{v?.playerRank || '-'}</p>
-                        </div>
-                        <div>
-                          <p className='squad_text2'>age</p>
-                          <p className='squad_text1'>{v?.Age || '-'}</p>
-                        </div>
-                        <div>
-                          <p className='squad_text2'>team</p>
-                          <p className='squad_text1'>{v?.Team || '-'}</p>
-                        </div>
-                        <div>
-                          <p className='squad_text2'>opp</p>
-                          <p className='squad_text1'>{v?.UpcomingGameOpponent || '-'}</p>
-                        </div>
-                        <div>
-                          <p className='squad_text2'>bye</p>
-                          <p className='squad_text1'>{v?.ByeWeek || '-'}</p>
-                        </div>
-                        <div>
-                          <p className='squad_text2'>player cap #</p>
-                          <p className='squad_text1'>
-                            {v?.PlayerCap ? `$${v?.PlayerCap?.toLocaleString()}` : '-'}
-                          </p>
-                        </div>
-
-                        <Button
-                          disabled={false}
-                          loading={playerID == v?.PlayerID}
-                          type='primary'
-                          onClick={() => {
-                            handleCreateAuction(v?.PlayerID, v?._id)
-                          }}
-                        >
-                          Auction
-                        </Button>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            ) : (
-              <Empty text={'NO FREE AGENTS'} height={'200px'} />
-            )}
-            <div className='custom_pagination_box pagination_box'>
-              <AntPagination
-                defaultCurrent={page}
-                total={freeAgents?.total}
-                showSizeChanger={false}
-                onChange={handlePagination}
-                pageSize={limit}
-              />
-            </div>
-          </>
-        )}
+        <div className='new_table_container'>
+          <Table
+            loading={loading}
+            dataSource={freeAgents?.players}
+            columns={columns}
+            bordered={false}
+            pagination={false}
+            scroll={{ x: 1100 }}
+          />
+        </div>
+        <div className='custom_pagination_box pagination_box'>
+          <AntPagination
+            defaultCurrent={page}
+            total={freeAgents?.total}
+            showSizeChanger={false}
+            onChange={handlePagination}
+            pageSize={limit}
+          />
+        </div>
       </section>
     </div>
   )

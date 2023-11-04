@@ -238,3 +238,109 @@
 .player_standing_page .activeFilterBtn {
   background-color: transparent !important;
 }
+
+/* NEW TABLE */
+.new_table_container {
+  width: 100%;
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid rgba(110, 105, 128, 0.4);
+  background: linear-gradient(180deg, #291c4a 0%, #080611 100%);
+}
+
+.new_table_container table {
+  border-spacing: 0px 7px !important;
+}
+
+.new_table_container .ant-table-measure-row {
+  display: none !important;
+}
+
+.new_table_container td,
+.new_table_container th {
+  background-color: var(--primaryPurple) !important;
+  border-top: 1px solid rgba(110, 105, 128, 0.4);
+  padding-inline: 10px !important;
+}
+.new_table_container td {
+  padding-block: 8px !important;
+  color: var(--text);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  text-transform: uppercase;
+}
+.new_table_container th {
+  color: var(--text);
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  opacity: 0.5;
+  text-transform: uppercase;
+}
+
+.new_table_container td:first-child,
+.new_table_container th:first-child {
+  border-top-left-radius: 16px !important;
+  border-left: 1px solid rgba(110, 105, 128, 0.4);
+}
+.new_table_container td:last-child,
+.new_table_container th:last-child {
+  border-top-right-radius: 16px !important;
+  border-right: 1px solid rgba(110, 105, 128, 0.4);
+  width: 160px;
+}
+.new_table_container td:last-child {
+  text-align: right !important;
+}
+
+.new_table_container .squad_image_box {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+.new_table_container .squad_image_box img {
+  height: auto;
+  width: 100%;
+  border-radius: 50%;
+}
+
+.new_table_container .name_text_hover:hover {
+  color: var(--primary) !important;
+}
+
+.new_table_container button {
+  padding: 10px 28px;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1;
+  border: 1px solid var(--border) !important;
+  background-color: transparent !important;
+  text-transform: uppercase;
+  border-radius: 0px;
+}
+.new_table_container button:hover {
+  background-color: var(--primary) !important;
+}
+.new_table_container :where(.css-dev-only-do-not-override-1jqvr6p).ant-btn-primary:disabled {
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ALL AUCTION */
+.new_table_container .all_auction_table td:last-child {
+  text-align: left !important;
+}
+/* MY AUCTION */
+.new_table_container .my_auction_table th:first-child {
+  min-width: 60px !important;
+}
+
+/* .new_table_container .ant-table-tbody > tr:hover:not(.ant-table-expanded-row) > td {
+  background-color: var(--primaryPurple) !important;
+} */
