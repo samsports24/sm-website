@@ -192,8 +192,8 @@ const PlayerLiveAuction = () => {
             contract={state?.player_id?.PlayerCap?.toLocaleString() || '-'}
           />
 
-          <section className='bid_section' style={{ marginTop: '30px' }}>
-            <Row gutter={[30, 30]}>
+          <section className='bid_section' style={{ marginTop: '20px' }}>
+            <Row gutter={[20, 20]}>
               <Col xs={24} md={12} lg={12} xl={12} xxl={6}>
                 <div className='bid_card' style={{ flexDirection: 'column' }}>
                   <img src={Image} />

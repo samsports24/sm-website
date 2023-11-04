@@ -156,7 +156,7 @@ const TeamTrade = () => {
               </Button> */}
               <Select
                 placeholder='Team'
-                style={{ minWidth: 250, float: 'right' }}
+                className='team_select_box'
                 value={selectTeam}
                 onChange={(e) => setSelectTeam(e)}
                 options={teams?.map((v) => {

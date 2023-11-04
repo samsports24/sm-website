@@ -40,7 +40,7 @@
   display: flex;
   flex-direction: row;
   gap: 27px;
-  margin-top: 50px;
+  margin-top: 20px;
 }
 
 .pro_league_container .league_details_container .left,

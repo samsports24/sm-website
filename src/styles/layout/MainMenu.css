@@ -1,70 +1,39 @@
-.side_bar_menu_main {
+.sidebar_menu {
   background: #140f26;
   height: 65vh;
-  padding-inline: 20px;
+  padding-inline: 30px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: center !important;
-  overflow-y: auto !important;
+  justify-content: center;
+  overflow-y: auto;
+  gap: 10px;
 }
-.sidebar-menu {
-  border-radius: 0px !important;
-  color: var(--text) !important;
-  /* font-size: 13px; */
-  margin-right: 20px !important;
-  padding: 0 !important;
-  background-color: var(--primaryPurple) !important;
-  display: flex;
-  flex-direction: column;
-  width: 70px !important;
-  height: 70px !important;
-  border: 1px solid transparent !important;
-}
-.sidebar-menu:hover {
-  border: 1px solid var(--primary) !important;
-}
-.activeRoute {
-  border: 1px solid var(--primary) !important;
-}
-.sidebar-menu img {
-  width: 35px;
-  height: 35px;
-}
-.sidebar-menu:hover {
-  background-color: var(--primaryPurple) !important;
-}
-.ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected {
-  /* background-color: var(--primaryPurple) !important; */
-  border: 1px solid var(--primary) !important;
-
-  /* border-right: 4px solid var(--primary) !important;
-  border-radius: 0 !important;
-  width: calc(100% - 4px) !important; */
-}
-.ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected span,
-.ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected svg {
-  color: var(--siderbarActive) !important;
-}
-
-.ant-menu-title {
-  margin: 0 !important;
-  line-height: 1 !important;
-}
-.sidebar-menu-item-inner {
-  width: 100%;
-  height: 100%;
+.sidebar_menu .sidebar_menu_item {
+  width: 70px;
+  height: 70px;
+  border: 1px solid transparent;
+  background-color: var(--primaryPurple);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 5px;
+  cursor: pointer;
 }
-.sidebar-menu-item-inner p {
-  line-height: 1.2 !important;
+.sidebar_menu .sidebar_menu_item:hover {
+  border: 1px solid var(--primary) !important;
+}
+.sidebar_menu .sidebar_menu_item p {
+  line-height: 1.2;
   font-size: 9px;
   text-align: center;
+  text-transform: uppercase;
 }
-.sidebar-menu-item-inner svg {
+.sidebar_menu .sidebar_menu_item svg {
   font-size: 30px;
+  color: var(--text);
+}
+.sidebar_menu .activeRoute {
+  border: 1px solid var(--primary);
 }

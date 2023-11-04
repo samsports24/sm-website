@@ -34,6 +34,7 @@ export const light = {
   loaderBg: 'rgba(0, 0, 0, 0.6)',
   dateCard: '#fcfcfcc4',
   dateText: 'rgb(145, 145, 145)',
+  newBorderLight: 'rgb(255,255,255,0.8)',
 }
 
 export const dark = {
@@ -84,4 +85,5 @@ export const dark = {
   grayText: 'rgba(255, 255, 255, 0.40)',
   lightGrayText: 'rgba(255, 255, 255, 0.60)',
   greenText: '#3FBE94',
+  newBorderLight: 'rgb(255,255,255,0.8)',
 }

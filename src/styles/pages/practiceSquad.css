@@ -50,7 +50,7 @@
 .practice_squad_container .divider {
   color: #fff;
   opacity: 0.4;
-  margin-block: 35px;
+  margin-block: 20px;
 }
 
 /* ----------------------------- */
@@ -58,8 +58,8 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 36px;
-  padding: 20px;
+  gap: 20px;
+  /* padding: 20px; */
   border-radius: 16px;
   border: 1px solid var(--colors-theme-border-color, rgba(110, 105, 128, 0.4));
   background: var(--colors-theme-gradient, linear-gradient(180deg, #291c4a 0%, #080611 100%));
@@ -151,6 +151,14 @@
   border: 1px solid rgba(110, 105, 128, 0.4);
   background: linear-gradient(180deg, #291c4a 0%, #080611 100%);
   overflow-x: auto;
+}
+
+.free_agent_search_input {
+  border-radius: 30px;
+  padding-inline: 15px;
+}
+.free_agent_search_input input::placeholder {
+  color: gray !important;
 }
 
 @media (max-width: 1440px) {

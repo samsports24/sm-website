@@ -82,3 +82,16 @@
 .select_box_label p {
   margin-top: 4px !important;
 }
+
+.team_select_box {
+  min-width: 250px;
+  float: right;
+  margin-top: -38px;
+}
+
+@media (max-width: 600px) {
+  .team_select_box {
+    min-width: 100%;
+    margin-top: 20px;
+  }
+}

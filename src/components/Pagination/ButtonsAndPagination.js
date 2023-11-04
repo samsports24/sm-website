@@ -226,8 +226,8 @@ const ButtonsAndPagination = ({ noWeek, goLive = true }) => {
 
   return (
     <>
-      <section className='buttons_and_pagination'>
-        <div className='buttons_group'>
+      <section className='_buttons_and_pagination'>
+        <div className='_buttons_group'>
           <Button
             type='primary'
             onClick={() => {

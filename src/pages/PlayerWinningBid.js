@@ -82,7 +82,7 @@ const PlayerWinningBid = () => {
             contract={state?.player_id?.PlayerCap?.toLocaleString() || '-'}
           />
 
-          <section className='bid_section' style={{ marginTop: '30px' }}>
+          <section className='bid_section' style={{ marginTop: '20px' }}>
             <Row gutter={[30, 30]} align={'middle'}>
               <Col xs={24}>
                 <div className='bid_card'>

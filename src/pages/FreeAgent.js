@@ -127,8 +127,9 @@ const FreeAgent = () => {
           <h2>FREE AGENT</h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <Input
-              size='large'
-              placeholder='SEARCH'
+              className='free_agent_search_input'
+              size='small'
+              placeholder='Search here...'
               prefix={<SearchOutlined />}
               onChange={(e) => {
                 setSearch(e.target.value)

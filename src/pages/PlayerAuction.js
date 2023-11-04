@@ -233,7 +233,7 @@ const PlayerAuction = () => {
 
       <ButtonsAndPagination noWeek={true} />
 
-      <section className='squad_card_container transparent' style={{ marginTop: '45px' }}>
+      <section className='squad_card_container transparent' style={{ marginTop: '20px' }}>
         {isLoading ? (
           <Loader />
         ) : (

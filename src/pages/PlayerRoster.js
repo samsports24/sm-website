@@ -156,7 +156,7 @@ const PlayerRoster = () => {
         <Loader />
       ) : (
         <>
-          <div className='practice_squad_header' style={{ marginTop: '30px' }}>
+          <div className='practice_squad_header' style={{ marginTop: '20px' }}>
             <p className='heading'>Active Squad</p>
             {!isLocked() && (
               <Button loading={submitLoading} onClick={handleSubmit} type='primary'>
@@ -185,7 +185,7 @@ const PlayerRoster = () => {
             )}
           </section>
 
-          <hr style={{ marginBlock: '40px' }} />
+          <hr style={{ marginBlock: '20px' }} />
 
           <div className='practice_squad_header'>
             <p className='heading'>Practice Squad</p>
@@ -217,7 +217,7 @@ const PlayerRoster = () => {
             )}
           </section>
 
-          <hr style={{ marginBlock: '40px' }} />
+          <hr style={{ marginBlock: '20px' }} />
 
           <div className='practice_squad_header'>
             <p className='heading'>
