@@ -285,6 +285,7 @@
 .new_table_container th:first-child {
   border-top-left-radius: 16px !important;
   border-left: 1px solid rgba(110, 105, 128, 0.4);
+  min-width: 55px !important;
 }
 .new_table_container td:last-child,
 .new_table_container th:last-child {
@@ -344,3 +345,7 @@
 /* .new_table_container .ant-table-tbody > tr:hover:not(.ant-table-expanded-row) > td {
   background-color: var(--primaryPurple) !important;
 } */
+.auction_table_container {
+  max-height: 600px;
+  overflow-y: auto;
+}
