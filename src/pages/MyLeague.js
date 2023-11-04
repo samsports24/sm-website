@@ -10,15 +10,11 @@ const MyLeague = () => {
 
   return (
     <div className='total_payment_container'>
-      {/* BACK */}
-      <div>
-        <Button type='primary' onClick={() => navigate(-1)}>
+      {/* BREADCRUMB */}
+      <section className='_breadcrumb'>
+        <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
           Back
         </Button>
-      </div>
-
-      {/* BREADCRUMB */}
-      <section className='breadcrumb'>
         <Breadcrumb
           className='customize_breadcrumb'
           separator={<img src={Arrow} />}

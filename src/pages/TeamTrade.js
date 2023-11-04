@@ -18,6 +18,7 @@ import { getAllTeam } from '../redux/actions/teamActions'
 import { getRoster } from '../redux/actions/rosterAction'
 
 import { leagueSalaryCap } from '../config/constants'
+import { useNavigate } from 'react-router-dom'
 
 const TeamTrade = () => {
   const SETTING = useSelector((state) => state?.user)
@@ -32,6 +33,8 @@ const TeamTrade = () => {
   const [otherTeamSelected, setOtherTeamSelected] = useState([])
 
   const [selectTeam, setSelectTeam] = useState(null)
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     getTeams()
@@ -84,13 +87,11 @@ const TeamTrade = () => {
 
   return (
     <div className='practice_squad_container team_trade_main'>
-      {/* BACK BUTTON */}
-      <Button className='back_button' type='primary'>
-        Back
-      </Button>
-
       {/* BREADCRUMB */}
-      <section className='breadcrumb'>
+      <section className='_breadcrumb'>
+        <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
+          Back
+        </Button>
         <Breadcrumb
           className='customize_breadcrumb'
           separator={<img src={Arrow} />}

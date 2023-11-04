@@ -77,13 +77,11 @@ const CounterTrade = () => {
 
   return (
     <div className='practice_squad_container team_trade_main'>
-      {/* BACK BUTTON */}
-      <Button className='back_button' type='primary'>
-        Back
-      </Button>
-
       {/* BREADCRUMB */}
-      <section className='breadcrumb'>
+      <section className='_breadcrumb'>
+        <Button className='_back_button' type='primary'>
+          Back
+        </Button>
         <Breadcrumb
           className='customize_breadcrumb'
           separator={<img src={Arrow} />}

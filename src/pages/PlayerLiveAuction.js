@@ -143,13 +143,11 @@ const PlayerLiveAuction = () => {
   return (
     <div className='player_interface_container'>
       {contextHolder}
-      {/* BACK BUTTON */}
-      <Button className='back_button' type='primary' onClick={() => navigate(-1)}>
-        Back
-      </Button>
-
       {/* BREADCRUMB */}
-      <section className='breadcrumb'>
+      <section className='_breadcrumb'>
+        <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
+          Back
+        </Button>
         <Breadcrumb
           className='customize_breadcrumb'
           separator={<img src={Arrow} />}

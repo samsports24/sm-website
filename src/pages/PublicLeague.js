@@ -120,7 +120,7 @@ const PublicLeague = () => {
   return (
     <div className='pro_league_container'>
       {/* BREADCRUMB */}
-      <section className='breadcrumb'>
+      <section className='_breadcrumb'>
         <Breadcrumb
           className='customize_breadcrumb'
           separator='|'

@@ -20,6 +20,7 @@ import {
   getTeamSchedule,
 } from '../redux/actions/teamActions'
 import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 // import { useSelector } from 'react-redux'
 // import { GrFormClose } from 'react-icons/gr'
 
@@ -29,6 +30,8 @@ const TeamSchedule = () => {
   // const [allTeam, setAllTeam] = useState([])
   const [loading, setLoading] = useState(true)
   // const [selectedTeam, setSelectedTeam] = useState('')
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     getData()
@@ -70,13 +73,11 @@ const TeamSchedule = () => {
 
   return (
     <div className='practice_squad_container team_trade_main'>
-      {/* BACK BUTTON */}
-      <Button className='back_button' type='primary'>
-        Back
-      </Button>
-
       {/* BREADCRUMB */}
-      <section className='breadcrumb'>
+      <section className='_breadcrumb'>
+        <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
+          Back
+        </Button>
         <Breadcrumb
           className='customize_breadcrumb'
           separator={<img src={Arrow} />}

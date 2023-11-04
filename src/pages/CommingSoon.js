@@ -53,7 +53,7 @@ const ComingSoon = () => {
   return (
     <div className='coming_soon_container'>
       {/* BREADCRUMB */}
-      {/* <section className='breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Breadcrumb
           className='customize_breadcrumb'
           separator={<img src={Arrow} />}

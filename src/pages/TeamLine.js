@@ -401,7 +401,7 @@ const TeamLine = () => {
   return (
     <div className='time_line_container'>
       {/* BREADCRUMB */}
-      <section className='breadcrumb'>
+      <section className='_breadcrumb'>
         <Breadcrumb
           className='customize_breadcrumb'
           separator={'|'}

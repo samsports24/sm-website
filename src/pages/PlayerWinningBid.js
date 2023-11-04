@@ -14,7 +14,7 @@ import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import PlayerInfoBottom from '../components/PlayerInfoBottom'
 import { getSingleAuctionPlayer } from '../redux/actions/rosterAction'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import Loader from '../components/Loader'
 
 const PlayerWinningBid = () => {
@@ -22,6 +22,7 @@ const PlayerWinningBid = () => {
   const [isLoading, setIsLoading] = useState(true)
 
   const params = useParams()
+  const navigate = useNavigate()
 
   useEffect(() => {
     getData()
@@ -38,13 +39,11 @@ const PlayerWinningBid = () => {
 
   return (
     <div className='player_interface_container'>
-      {/* BACK BUTTON */}
-      <Button className='back_button' type='primary'>
-        Back
-      </Button>
-
       {/* BREADCRUMB */}
-      <section className='breadcrumb'>
+      <section className='_breadcrumb'>
+        <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
+          Back
+        </Button>
         <Breadcrumb
           className='customize_breadcrumb'
           separator={<img src={Arrow} />}

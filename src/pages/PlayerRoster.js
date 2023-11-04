@@ -128,7 +128,7 @@ const PlayerRoster = () => {
   return (
     <div className='player_roster_container'>
       {/* BREADCRUMB */}
-      <section className='breadcrumb'>
+      <section className='_breadcrumb'>
         <Breadcrumb
           className='customize_breadcrumb'
           separator={<img src={Arrow} />}

@@ -96,7 +96,7 @@ const DepthChart = () => {
   return (
     <div className='depth_chart_container'>
       {/* BREADCRUMB */}
-      <section className='breadcrumb'>
+      <section className='_breadcrumb'>
         <Breadcrumb
           className='customize_breadcrumb'
           separator='>'
