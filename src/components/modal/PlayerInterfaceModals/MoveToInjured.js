@@ -32,7 +32,7 @@ const MoveToInjured = ({ disabled, getData }) => {
     <>
       <Button disabled={disabled} type='primary' className='action-bar-btn' onClick={showModal}>
         MOVE TO (I.R.)
-        <span>Practice Squad</span>
+        {/* <span>Practice Squad</span> */}
       </Button>
       <Modal
         centered

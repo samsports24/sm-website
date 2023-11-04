@@ -46,7 +46,7 @@ const AuctionPlayer = ({ playerIds, disabled }) => {
   return (
     <>
       <Button disabled={disabled} type='primary' className='action-bar-btn' onClick={showModal}>
-        auction player
+        Auction Player
       </Button>
       <Modal
         centered

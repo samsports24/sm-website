@@ -58,6 +58,7 @@
 @import './components/draftOrder.css';
 @import './components/squareBox.css';
 @import './components/playerInfoBottom.css';
+@import './components/playerInterfacePopup.css';
 
 /* Page CSS */
 @import './pages/login.css';
