@@ -8,6 +8,7 @@ import {
   ReleasePlayer,
   TradePlayer,
 } from '../modal/PlayerInterfaceModals'
+import { AiOutlineCloseCircle } from 'react-icons/ai'
 
 const PlayerInterfacePopup = ({ data }) => {
   // const isReserve = true
@@ -29,6 +30,7 @@ const PlayerInterfacePopup = ({ data }) => {
 
   return (
     <div className='player_interface_popup'>
+      <AiOutlineCloseCircle className='close_icon' />
       <div className='wrapper'>
         <div className='top_row'>
           <div className='top_row_left'></div>

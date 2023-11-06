@@ -2,7 +2,7 @@ import { Button, Typography, Dropdown } from 'antd'
 import WeekPagination from '../WeekPagination'
 import { useNavigate } from 'react-router-dom'
 import { isLocked } from '../../config/constants'
-const ButtonsAndPagination = ({ noWeek, goLive = true }) => {
+const ButtonsAndPagination = ({ noWeek, isLink = true, goLive = true }) => {
   const navigate = useNavigate()
 
   const playerItems = [
@@ -227,26 +227,30 @@ const ButtonsAndPagination = ({ noWeek, goLive = true }) => {
   return (
     <>
       <section className='_buttons_and_pagination'>
-        <div className='_buttons_group'>
-          <Button
-            type='primary'
-            onClick={() => {
-              navigate('/professional-league')
-            }}
-          >
-            Home
-          </Button>
-          <Dropdown trigger={['hover', 'click']} menu={{ items: teamItems }}>
-            <Button type='primary'>Team</Button>
-          </Dropdown>
-          <Dropdown trigger={['hover', 'click']} menu={{ items: playerItems }}>
-            <Button type='primary'>Players</Button>
-          </Dropdown>
+        {isLink ? (
+          <div className='_buttons_group'>
+            <Button
+              type='primary'
+              onClick={() => {
+                navigate('/professional-league')
+              }}
+            >
+              Home
+            </Button>
+            <Dropdown trigger={['hover', 'click']} menu={{ items: teamItems }}>
+              <Button type='primary'>Team</Button>
+            </Dropdown>
+            <Dropdown trigger={['hover', 'click']} menu={{ items: playerItems }}>
+              <Button type='primary'>Players</Button>
+            </Dropdown>
 
-          <Dropdown trigger={['hover', 'click']} menu={{ items: leagueItems }}>
-            <Button type='primary'>League</Button>
-          </Dropdown>
-        </div>
+            <Dropdown trigger={['hover', 'click']} menu={{ items: leagueItems }}>
+              <Button type='primary'>League</Button>
+            </Dropdown>
+          </div>
+        ) : (
+          <div />
+        )}
         {!noWeek && <WeekPagination goLive={goLive} />}
       </section>
       {isLocked() && !window.location.href?.includes('/leagueScore') && (

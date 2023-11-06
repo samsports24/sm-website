@@ -14,7 +14,6 @@ import { useSelector } from 'react-redux'
 import { isLocked } from '../config/constants'
 import Empty from '../components/Empty'
 import { draftData } from '../config/draftData'
-// import PlayerInterfacePopup from '../components/PlayerInterfacePopup'
 
 const PlayerRoster = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
@@ -240,8 +239,6 @@ const PlayerRoster = () => {
           </section>
         </>
       )}
-
-      {/* <PlayerInterfacePopup /> */}
     </div>
   )
 }

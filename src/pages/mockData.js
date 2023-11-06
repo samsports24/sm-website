@@ -6664,14 +6664,14 @@ export const depthCardData = [
     Name: '',
     Position: 'k',
     classKey: 'special_team_pk',
-    type: 'special team',
+    type: 'special',
   },
   {
     imageUrl: require('../assets/player-img-6.png'),
     Name: '',
     Position: 'p',
     classKey: 'special_team_pn',
-    type: 'special team',
+    type: 'special',
   },
 ]
 

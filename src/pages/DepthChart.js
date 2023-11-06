@@ -31,6 +31,11 @@ const DepthChart = () => {
   const [activeCount, setActiveCount] = useState(null)
   const [loading, setLoading] = useState(true)
   const [clearBtnLoading, setClearBtnLoading] = useState(false)
+  const [filterKey] = useState({
+    offense: 'offense',
+    defense: 'defense',
+    special: 'special',
+  })
 
   const handleFilter = (value) => {
     setActiveFilter(value)
@@ -45,7 +50,7 @@ const DepthChart = () => {
     setLoading(true)
 
     const res = await getActiveRosterCount({
-      type: activeFilter === 'special team' ? 'special' : activeFilter,
+      type: activeFilter,
       week: USER?.setting?.week,
     })
     if (res) {
@@ -117,44 +122,46 @@ const DepthChart = () => {
       {/* HEADER */}
       <Header />
 
-      <ButtonsAndPagination />
+      <ButtonsAndPagination isLink={false} />
+
+      <div className='filter_chart_box'>
+        <Button
+          type='primary'
+          onClick={() => handleFilter(filterKey.offense)}
+          className={`${activeFilter === filterKey.offense ? 'active_filter' : ''}`}
+        >
+          OFFENSE
+        </Button>
+        <Button
+          type='primary'
+          onClick={() => handleFilter(filterKey.defense)}
+          className={`${activeFilter === filterKey.defense ? 'active_filter' : ''}`}
+        >
+          DEFENSE
+        </Button>
+        <Button
+          type='primary'
+          onClick={() => handleFilter(filterKey.special)}
+          className={`${activeFilter === filterKey.special ? 'active_filter' : ''}`}
+        >
+          SPECIAL TEAM
+        </Button>
+      </div>
 
       {loading ? (
         <Loader />
       ) : (
-        <section style={{ position: 'relative' }}>
+        <section style={{ position: 'relative', marginTop: '20px' }}>
           {/* ILLEGAL ROSTER */}
           <div
             className='overlay'
             style={{
               display: activeCount != legalPlayers ? 'flex' : 'none',
-              // display:
-              //   activeCount != legalPlayers && SETTING?.isGameLocked === false ? 'flex' : 'none',
             }}
           >
             <h2>{`You have an illegal Roster`}</h2>
             <h4>{`kindly have ${activeRosterCount} players and ${nonActivePlayers} non active players on the roster`}</h4>
           </div>
-
-          {/* LOCKED */}
-          {/* <div
-            className='overlay'
-            style={{
-              display: SETTING?.isGameLocked ? 'flex' : 'none',
-            }}
-          >
-            <MdLock size={100} color={'#fff'} />
-            <h1
-              style={{ fontSize: '30px', color: '#fff !important' }}
-            >{`Depth chart is locked till the game ends.`}</h1>
-          </div> */}
-
-          {/* FILTER */}
-          <ColorFilter
-            data={['offense', 'defense', 'special team']}
-            activeFilter={activeFilter}
-            handleFilter={handleFilter}
-          />
 
           {USER?.setting?.week == USER?.currentWeek && (
             <div className='clear_button_box'>
@@ -167,7 +174,7 @@ const DepthChart = () => {
           <section className='depth_chart_wrapper'>
             <div
               className={`depth_chart_cards ${
-                activeFilter === 'special team'
+                activeFilter === filterKey.special
                   ? 'special_team_container'
                   : activeFilter + '_container'
               }`}
