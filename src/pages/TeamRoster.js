@@ -89,6 +89,7 @@ const TeamRoster = () => {
           <h2>Your are viewing {activePlayerData[0]?.team?.name} rosters.</h2>
         )}
       </div>
+      <hr className='divider' />
 
       {loading ? (
         <Loader />

@@ -1,23 +1,17 @@
 import React, { useEffect, useState } from 'react'
-// Third
 import { Col, Row } from 'antd'
+import { useNavigate } from 'react-router-dom'
 
 // Component
 import Header from '../components/Header'
-// import ScheduleBox from '../components/ScheduleBox'
 import LeagueScoreCard from '../components/cards/leagueScoreCard'
 import Pagination from '../components/Pagination'
-
-// Mock Data
-// import { leagueScoreData } from './mockData'
-import { useNavigate } from 'react-router-dom'
-import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
-import { getScheduleByWeek, updateWeek } from '../redux'
 import Loader from '../components/Loader'
+
+import { getScheduleByWeek, updateWeek } from '../redux'
 import { useSelector, useDispatch } from 'react-redux'
 
 const LeagueScore = () => {
-  // const CURRENT_WEEK = useSelector((state) => state?.user.currentWeek)
   const SETTING = useSelector((state) => state?.user?.setting)
 
   const navigate = useNavigate()
@@ -26,7 +20,6 @@ const LeagueScore = () => {
 
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
-  // const [week, setWeek] = useState(CURRENT_WEEK)
 
   const dispatch = useDispatch()
 
@@ -42,7 +35,6 @@ const LeagueScore = () => {
   }
 
   const handlePagination = (page) => {
-    // setWeek(page)
     dispatch(updateWeek(page))
   }
 
@@ -52,12 +44,6 @@ const LeagueScore = () => {
       <Header />
 
       <main className='practice_squad_container wrapper'>
-        {/* SCHEDULE ONE */}
-        {/* <ScheduleBox /> */}
-
-        <ButtonsAndPagination noWeek={true} />
-
-        {/* SCHEDULE TWO */}
         <section className='schedule_box2'>
           <h1>League Scores </h1>
           <Pagination

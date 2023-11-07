@@ -126,36 +126,17 @@ const PlayerRoster = () => {
 
   return (
     <div className='player_roster_container'>
-      {/* BREADCRUMB */}
-      {/* <section className='_breadcrumb'>
-        <Breadcrumb
-          className='customize_breadcrumb'
-          separator={<img src={Arrow} />}
-          items={[
-            {
-              title: <p>Team</p>,
-            },
-            {
-              title: <p>Depth-Chart</p>,
-            },
-            {
-              title: <p>Roster</p>,
-            },
-          ]}
-        />
-      </section> */}
-
-      {/* HEADER */}
       <Header />
 
-      {/* FILTER */}
       <ButtonsAndPagination />
+
+      <hr className='divider' />
 
       {loading ? (
         <Loader />
       ) : (
         <>
-          <div className='practice_squad_header' style={{ marginTop: '20px' }}>
+          <div className='practice_squad_header'>
             <p className='heading'>Active Squad</p>
             {!isLocked() && (
               <Button loading={submitLoading} onClick={handleSubmit} type='primary'>

@@ -5,7 +5,6 @@ import { BiArrowBack } from 'react-icons/bi'
 
 import MainMenu from './MainMenu'
 import WhiteLogo from '../assets/Logo.svg'
-// import BlueLogo from '../assets/Logo.svg'
 import { useSelector } from 'react-redux'
 
 const MenuStyle = {

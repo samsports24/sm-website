@@ -2,7 +2,7 @@ import { Button, Typography, Dropdown } from 'antd'
 import WeekPagination from '../WeekPagination'
 import { useNavigate } from 'react-router-dom'
 import { isLocked } from '../../config/constants'
-const ButtonsAndPagination = ({ noWeek, isLink = true, goLive = true }) => {
+const ButtonsAndPagination = ({ noWeek, isLink = false, goLive = true }) => {
   const navigate = useNavigate()
 
   const playerItems = [
@@ -75,7 +75,7 @@ const ButtonsAndPagination = ({ noWeek, isLink = true, goLive = true }) => {
           className='dropdown-link'
           level={4}
         >
-          DEPTH CHART
+          STARTERS
         </Typography.Title>
       ),
     },

@@ -2,17 +2,15 @@ import React, { useEffect, useState } from 'react'
 
 import { Button, Input, Pagination as AntPagination, Table } from 'antd'
 
-// import Arrow from '../assets/arrow-right.svg'
 import { SearchOutlined } from '@ant-design/icons'
+import { GiAmericanFootballPlayer } from 'react-icons/gi'
+import { GrFormClose } from 'react-icons/gr'
+import { useNavigate } from 'react-router-dom'
 
 // Component
 import Header from '../components/Header'
 
-import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import { createAuction, getFreeAgent } from '../redux/actions/rosterAction'
-import { GiAmericanFootballPlayer } from 'react-icons/gi'
-import { GrFormClose } from 'react-icons/gr'
-import { useNavigate } from 'react-router-dom'
 
 const FreeAgent = () => {
   const [freeAgents, setFreeAgents] = useState({
@@ -193,35 +191,7 @@ const FreeAgent = () => {
 
   return (
     <div className='practice_squad_container team_trade_main'>
-      {/* BREADCRUMB */}
-      {/* <section className='_breadcrumb'>
-        <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
-          Back
-        </Button>
-        <Breadcrumb
-          className='customize_breadcrumb'
-          separator={<img src={Arrow} />}
-          items={[
-            {
-              title: <p>Home</p>,
-            },
-            {
-              title: <p>Team</p>,
-            },
-            {
-              title: <p>Roster</p>,
-            },
-            {
-              title: <p>Player Interface</p>,
-            },
-          ]}
-        />
-      </section> */}
-
-      {/* HEADER */}
       <Header />
-
-      <ButtonsAndPagination noWeek={true} />
 
       <hr className='divider' />
 

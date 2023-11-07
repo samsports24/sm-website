@@ -28,7 +28,7 @@
 
 .league_container .wrapper {
   width: 100%;
-  margin-top: 36px;
+  margin-top: 20px;
   max-height: 800px;
   overflow-y: auto !important;
   overflow-x: hidden;
@@ -43,7 +43,7 @@
   justify-content: space-between;
   gap: 20px;
   flex-wrap: wrap;
-  margin-top: 40px;
+  /* margin-top: 40px; */
 }
 
 .league_container .schedule_box2 h1 {

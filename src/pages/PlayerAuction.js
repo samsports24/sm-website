@@ -2,19 +2,15 @@ import React, { useEffect, useState } from 'react'
 
 import { Button, Tooltip, Table } from 'antd'
 
-// import Arrow from '../assets/arrow-right.svg'
-
 // Component
 import Header from '../components/Header'
-// import Loader from '../components/Loader'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import { useNavigate } from 'react-router-dom'
-import moment from 'moment'
 import { auctionEnded, getAuctionPlayer, markAsPaid } from '../redux/actions/rosterAction'
 import { useSelector } from 'react-redux'
-// import Empty from '../components/Empty'
+import moment from 'moment'
 
 const PlayerAuction = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -142,34 +138,11 @@ const PlayerAuction = () => {
 
   return (
     <div className='practice_squad_container team_trade_main'>
-      {/* BREADCRUMB */}
-      {/* <section className='_breadcrumb'>
-        <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
-          Back
-        </Button>
-        <Breadcrumb
-          className='customize_breadcrumb'
-          separator={<img src={Arrow} />}
-          items={[
-            {
-              title: <p>Home</p>,
-            },
-            {
-              title: <p>Player</p>,
-            },
-            {
-              title: <p>Player Auction</p>,
-            },
-          ]}
-        />
-      </section> */}
-
-      {/* HEADER */}
       <Header />
 
-      <ButtonsAndPagination noWeek={true} />
+      <hr className='divider' />
 
-      <div className='header' style={{ marginBlock: '20px' }}>
+      <div className='header' style={{ marginBottom: '20px' }}>
         <h2>ALL AUCTION</h2>
       </div>
 

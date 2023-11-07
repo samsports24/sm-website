@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button, Menu } from 'antd'
+import { Button } from 'antd'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { HiOutlineHome } from 'react-icons/hi'
@@ -7,9 +7,11 @@ import { MdDashboard } from 'react-icons/md'
 import { FaPlusCircle, FaRegChartBar } from 'react-icons/fa'
 import { RiAuctionLine, RiDraftLine } from 'react-icons/ri'
 import { BsShop } from 'react-icons/bs'
-import { GiStarMedal, GiTrade, GiCoins } from 'react-icons/gi'
+import { GiStarMedal, GiTrade, GiCoins, GiBabyfootPlayers } from 'react-icons/gi'
 import { PiUsersThreeLight, PiNotebookLight } from 'react-icons/pi'
 import { FaQuestion } from 'react-icons/fa6'
+import { TbLivePhoto } from 'react-icons/tb'
+import { AiOutlineSetting, AiOutlineSchedule } from 'react-icons/ai'
 
 const MainMenu = () => {
   const isAuthenticated = localStorage.getItem('token')
@@ -54,6 +56,18 @@ const MainMenu = () => {
       }
       case '/player-standing': {
         return setActive('player-ranking')
+      }
+      case '/leagueScore': {
+        return setActive('leagueScore')
+      }
+      case '/playoff': {
+        return setActive('playoff')
+      }
+      case '/team-setting': {
+        return setActive('team-setting')
+      }
+      case '/team-schedule': {
+        return setActive('team-schedule')
       }
       default:
         setActive('')
@@ -134,6 +148,34 @@ const MainMenu = () => {
             >
               <GiStarMedal />
               <p>players ranking</p>
+            </div>
+            <div
+              className={`sidebar_menu_item ${active === 'leagueScore' ? 'activeRoute' : ''}`}
+              onClick={() => navigate('/leagueScore')}
+            >
+              <TbLivePhoto />
+              <p>live scoring</p>
+            </div>
+            <div
+              className={`sidebar_menu_item ${active === 'playoff' ? 'activeRoute' : ''}`}
+              onClick={() => navigate('/playoff')}
+            >
+              <GiBabyfootPlayers />
+              <p>playoff</p>
+            </div>
+            <div
+              className={`sidebar_menu_item ${active === 'team-setting' ? 'activeRoute' : ''}`}
+              onClick={() => navigate('/team-setting')}
+            >
+              <AiOutlineSetting />
+              <p>team setting</p>
+            </div>
+            <div
+              className={`sidebar_menu_item ${active === 'team-schedule' ? 'activeRoute' : ''}`}
+              onClick={() => navigate('/team-schedule')}
+            >
+              <AiOutlineSchedule />
+              <p>team schedule</p>
             </div>
           </>
         )}

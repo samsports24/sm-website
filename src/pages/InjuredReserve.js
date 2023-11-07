@@ -2,22 +2,17 @@ import React, { useEffect, useState } from 'react'
 
 import { Table } from 'antd'
 
-// import Arrow from '../assets/arrow-right.svg'
-
 // Component
 import Header from '../components/Header'
-
-import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import MoveToRoster from '../components/modal/PlayerInterfaceModals/MoveToRoster'
-import { GiAmericanFootballPlayer } from 'react-icons/gi'
+
 import { getAllIr } from '../redux/actions/rosterAction'
-import { useNavigate } from 'react-router-dom'
+
+import { GiAmericanFootballPlayer } from 'react-icons/gi'
 
 const InjuredReserve = () => {
   const [injuredReserve, setInjuredReserve] = useState([])
   const [loading, setLoading] = useState(true)
-
-  const navigate = useNavigate()
 
   useEffect(() => {
     getData()
@@ -129,33 +124,7 @@ const InjuredReserve = () => {
 
   return (
     <div className='practice_squad_container team_trade_main'>
-      {/* <section className='_breadcrumb'>
-        <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
-          Back
-        </Button>
-        <Breadcrumb
-          className='customize_breadcrumb'
-          separator={<img src={Arrow} />}
-          items={[
-            {
-              title: <p>Home</p>,
-            },
-            {
-              title: <p>Team</p>,
-            },
-            {
-              title: <p>Roster</p>,
-            },
-            {
-              title: <p>Player Interface</p>,
-            },
-          ]}
-        />
-      </section> */}
-
       <Header />
-
-      <ButtonsAndPagination noWeek={true} />
 
       <hr className='divider' />
 
@@ -256,6 +225,3 @@ const InjuredReserve = () => {
 }
 
 export default InjuredReserve
-
-// Your roster is full, it has all 53 players
-// However, you can move this player to the practice squad

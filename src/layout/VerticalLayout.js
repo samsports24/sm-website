@@ -8,13 +8,16 @@ import Fb from '../assets/fb.svg'
 import Twitter from '../assets/twitter.svg'
 import YouTube from '../assets/youtube.svg'
 import { Footer } from 'antd/es/layout/layout'
-import { useNavigate, useLocation } from 'react-router-dom'
+import {
+  useNavigate,
+  // useLocation
+} from 'react-router-dom'
 // import { isAuthenticated } from '../functions/auth'
 
 const VerticalLayout = ({ children, active }) => {
-  const { Header, Sider, Content } = Layout
+  const { Sider, Content } = Layout
   const navigate = useNavigate()
-  const { pathname } = useLocation()
+  // const { pathname } = useLocation()
 
   const logout = () => {
     navigate('/login')
@@ -56,11 +59,6 @@ const VerticalLayout = ({ children, active }) => {
           }}
         >
           <div className='company-logo'>
-            {/* {theme === 'light' ? (
-              <img src={BlueLogo} alt='logo' />
-            ) : (
-              <img src={WhiteLogo} alt='logo' />
-            )} */}
             <img src={Logo} alt='image' />
           </div>
           <MainMenu active={active} />
@@ -87,9 +85,9 @@ const VerticalLayout = ({ children, active }) => {
           </div>
         </Sider>
         <Layout className='site-layout' style={{ marginLeft: 256 }}>
-          <Header className='mainHeader'>
+          <div className='mainHeader'>
             <div>
-              {pathname === '/fantasy-league' && (
+              {/* {pathname === '/fantasy-league' && (
                 <h1 className='header_title'>
                   Fantasy <b>Leagues</b>
                 </h1>
@@ -99,11 +97,7 @@ const VerticalLayout = ({ children, active }) => {
                   Professional <b>Leagues</b>
                 </h1>
               )}
-              {pathname === '/depth-chart' && (
-                <h1 className='header_title'>
-                  depth - <b>chart</b>
-                </h1>
-              )}
+              {pathname === '/depth-chart' && <h1 className='header_title'>starters</h1>}
               {pathname === '/coming-soon' && (
                 <h1 className='header_title'>
                   COMING <b>SOON</b>
@@ -133,7 +127,7 @@ const VerticalLayout = ({ children, active }) => {
                 <h1 className='header_title'>
                   Public <b>Leagues</b>
                 </h1>
-              )}
+              )} */}
             </div>
 
             {localStorage.getItem('token') ? (
@@ -161,24 +155,10 @@ const VerticalLayout = ({ children, active }) => {
                 </Button>
               </div>
             )}
-          </Header>
+          </div>
           <Content className='main-content'>{children}</Content>
           <Footer className='mainFooter'>
             <p>© Sam Sports, Inc. All rights reserved.</p>
-            {/* <a
-              href='https://app.termly.io/document/terms-of-service/372d4c41-9267-4833-8bbb-aba80f6fbbb8'
-              target='_blank'
-              rel='noreferrer'
-              style={{
-                color: 'white',
-                fontWeight: 600,
-                fontSize: '20px',
-                textDecoration: 'underline',
-              }}
-            >
-              TERMS OF SERVICE
-            </a> */}
-
             <a href='https://sportsdata.io' target='_blank' rel='noreferrer'>
               <img
                 style={{ height: '50px', width: 'auto' }}
