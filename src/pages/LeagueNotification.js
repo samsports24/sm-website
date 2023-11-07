@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-import { Button, Breadcrumb, notification } from 'antd'
+import { Button, notification } from 'antd'
 
-import Arrow from '../assets/arrow-right.svg'
+// import Arrow from '../assets/arrow-right.svg'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -102,7 +102,7 @@ const LeagueNotification = () => {
   return (
     <div className='practice_squad_container team_trade_main league_notification_container'>
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
           Back
         </Button>
@@ -118,7 +118,7 @@ const LeagueNotification = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       {/* HEADER */}
       <Header />

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Button, Breadcrumb, Table } from 'antd'
+import { Button, Table } from 'antd'
 const { Column, ColumnGroup } = Table
 
 import { useNavigate } from 'react-router-dom'
 
-import Arrow from '../assets/arrow-right.svg'
+// import Arrow from '../assets/arrow-right.svg'
 
 // Component
 import Header from '../components/Header'
@@ -64,7 +64,7 @@ const PlayerStandings = () => {
   return (
     <div className='practice_squad_container team_trade_main'>
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Button className='_back_button' type='primary' onClick={() => navigate()}>
           Back
         </Button>
@@ -86,7 +86,7 @@ const PlayerStandings = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       {/* HEADER */}
       <Header />

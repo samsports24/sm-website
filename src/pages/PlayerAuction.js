@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 
-import { Button, Breadcrumb, Tooltip, Table } from 'antd'
+import { Button, Tooltip, Table } from 'antd'
 
-import Arrow from '../assets/arrow-right.svg'
+// import Arrow from '../assets/arrow-right.svg'
 
 // Component
 import Header from '../components/Header'
-import Loader from '../components/Loader'
+// import Loader from '../components/Loader'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
 import { auctionEnded, getAuctionPlayer, markAsPaid } from '../redux/actions/rosterAction'
 import { useSelector } from 'react-redux'
-import Empty from '../components/Empty'
+// import Empty from '../components/Empty'
 
 const PlayerAuction = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -143,7 +143,7 @@ const PlayerAuction = () => {
   return (
     <div className='practice_squad_container team_trade_main'>
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
           Back
         </Button>
@@ -162,7 +162,7 @@ const PlayerAuction = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       {/* HEADER */}
       <Header />

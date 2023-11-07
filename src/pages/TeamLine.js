@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Breadcrumb } from 'antd'
+// import { Breadcrumb } from 'antd'
 import { BiRightArrowAlt } from 'react-icons/bi'
 import { GiHockey } from 'react-icons/gi'
 
@@ -401,7 +401,7 @@ const TeamLine = () => {
   return (
     <div className='time_line_container'>
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Breadcrumb
           className='customize_breadcrumb'
           separator={'|'}
@@ -414,7 +414,7 @@ const TeamLine = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       {/* HEADER */}
       <Header />

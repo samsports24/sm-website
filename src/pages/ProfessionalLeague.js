@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Breadcrumb } from 'antd'
+// import { Breadcrumb } from 'antd'
 
 // Components
 import Header from '../components/Header'
@@ -41,7 +41,7 @@ const ProfessionalLeague = () => {
   return (
     <div className='pro_league_container'>
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Breadcrumb
           className='customize_breadcrumb'
           separator='|'
@@ -57,7 +57,7 @@ const ProfessionalLeague = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       {/* HEADER */}
       <Header />

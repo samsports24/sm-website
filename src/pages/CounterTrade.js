@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-import { Button, Breadcrumb, Row, Col, notification } from 'antd'
+import { Button, Row, Col, notification } from 'antd'
 
-import Arrow from '../assets/arrow-right.svg'
+// import Arrow from '../assets/arrow-right.svg'
 import { AiFillCloseCircle } from 'react-icons/ai'
 
 // Component
@@ -78,7 +78,7 @@ const CounterTrade = () => {
   return (
     <div className='practice_squad_container team_trade_main'>
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Button className='_back_button' type='primary'>
           Back
         </Button>
@@ -100,7 +100,7 @@ const CounterTrade = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       {/* HEADER */}
       <Header />

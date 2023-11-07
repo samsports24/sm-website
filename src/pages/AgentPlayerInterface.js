@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Button, Breadcrumb } from 'antd'
-import { useNavigate, useParams } from 'react-router-dom'
+// import { Button, Breadcrumb } from 'antd'
+import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import Arrow from '../assets/arrow-right.svg'
@@ -22,7 +22,7 @@ const AgentPlayerInterface = () => {
   const [playerContract, setPlayerContract] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
   const { id } = useParams()
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const AgentPlayerInterface = () => {
   return (
     <div className='player_interface_container'>
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Button className='_back_button' type='primary' onClick={() => navigate('/free-agent')}>
           Back
         </Button>
@@ -65,7 +65,7 @@ const AgentPlayerInterface = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       {/* HEADER */}
       <Header />

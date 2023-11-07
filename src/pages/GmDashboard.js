@@ -1,6 +1,6 @@
-import { Button, Breadcrumb } from 'antd'
+// import { Button, Breadcrumb } from 'antd'
 
-import Arrow from '../assets/arrow-right.svg'
+// import Arrow from '../assets/arrow-right.svg'
 import Twitter from '../assets/twitter.svg'
 import { useNavigate } from 'react-router-dom'
 
@@ -51,7 +51,7 @@ const GmDashboard = () => {
   return (
     <div className='player_interface_container'>
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Button className='_back_button' type='primary'>
           Back
         </Button>
@@ -73,7 +73,7 @@ const GmDashboard = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       {/* HEADER */}
       <Header />

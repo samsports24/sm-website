@@ -1,6 +1,6 @@
-import { Button, Breadcrumb, Row, Col, Typography } from 'antd'
+import { Row, Col, Typography } from 'antd'
 
-import Arrow from '../assets/arrow-right.svg'
+// import Arrow from '../assets/arrow-right.svg'
 import Image from '../assets/logo2.png'
 
 import moment from 'moment'
@@ -40,7 +40,7 @@ const PlayerWinningBid = () => {
   return (
     <div className='player_interface_container'>
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
           Back
         </Button>
@@ -62,7 +62,7 @@ const PlayerWinningBid = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       {/* HEADER */}
       <Header />

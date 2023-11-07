@@ -1,7 +1,7 @@
-import { Breadcrumb, Button, Col, Row } from 'antd'
+import { Button, Col, Row } from 'antd'
 import { useNavigate } from 'react-router-dom'
 
-import Arrow from '../assets/arrow-right.svg'
+// import Arrow from '../assets/arrow-right.svg'
 import DollorIcon from '../assets/dollor-icon.svg'
 import AddCoupon from '../components/modal/AddCoupon'
 
@@ -36,7 +36,7 @@ const TotalPayment = () => {
   return (
     <div className='total_payment_container'>
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
           Back
         </Button>
@@ -52,7 +52,7 @@ const TotalPayment = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       <h1 className='heading'>Choose Your Game</h1>
 

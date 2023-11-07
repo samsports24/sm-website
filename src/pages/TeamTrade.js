@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-import { Button, Breadcrumb, Row, Col, Select, notification } from 'antd'
+import { Button, Row, Col, Select, notification } from 'antd'
 
-import Arrow from '../assets/arrow-right.svg'
+// import Arrow from '../assets/arrow-right.svg'
 import { AiFillCloseCircle } from 'react-icons/ai'
 
 import { useSelector } from 'react-redux'
@@ -18,7 +18,7 @@ import { getAllTeam } from '../redux/actions/teamActions'
 import { getRoster } from '../redux/actions/rosterAction'
 
 import { leagueSalaryCap } from '../config/constants'
-import { useNavigate } from 'react-router-dom'
+// import { useNavigate } from 'react-router-dom'
 
 const TeamTrade = () => {
   const SETTING = useSelector((state) => state?.user)
@@ -34,7 +34,7 @@ const TeamTrade = () => {
 
   const [selectTeam, setSelectTeam] = useState(null)
 
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
 
   useEffect(() => {
     getTeams()
@@ -88,7 +88,7 @@ const TeamTrade = () => {
   return (
     <div className='practice_squad_container team_trade_main'>
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
           Back
         </Button>
@@ -110,12 +110,12 @@ const TeamTrade = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       {/* HEADER */}
       <Header />
 
-      <ButtonsAndPagination />
+      <ButtonsAndPagination isLink={false} />
 
       <hr className='divider' />
 
@@ -158,18 +158,23 @@ const TeamTrade = () => {
                 placeholder='Team'
                 className='team_select_box'
                 value={selectTeam}
-                onChange={(e) => setSelectTeam(e)}
-                options={teams?.map((v) => {
-                  return {
-                    value: v?._id,
-                    label: (
-                      <div className='select_box_label'>
-                        <img src={v?.logo} alt='logo' />
-                        <p>{v?.name}</p>
-                      </div>
-                    ),
-                  }
-                })}
+                onChange={(e) => {
+                  setSelectTeam(e)
+                  setOtherTeamSelected([])
+                }}
+                options={teams
+                  ?.filter((x) => x?._id !== SETTING?.userDetails?.team?._id)
+                  ?.map((v) => {
+                    return {
+                      value: v?._id,
+                      label: (
+                        <div className='select_box_label'>
+                          <img src={v?.logo} alt='logo' />
+                          <p>{v?.name}</p>
+                        </div>
+                      ),
+                    }
+                  })}
               />
             </Col>
             <Col xs={24} lg={12}>

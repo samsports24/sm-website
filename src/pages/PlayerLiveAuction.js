@@ -1,7 +1,7 @@
-import { Button, Breadcrumb, Row, Col, Typography, Input, notification } from 'antd'
+import { Button, Row, Col, Typography, Input, notification } from 'antd'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import Arrow from '../assets/arrow-right.svg'
+// import Arrow from '../assets/arrow-right.svg'
 import Image from '../assets/logo2.png'
 
 // Component
@@ -144,7 +144,7 @@ const PlayerLiveAuction = () => {
     <div className='player_interface_container'>
       {contextHolder}
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
           Back
         </Button>
@@ -166,7 +166,7 @@ const PlayerLiveAuction = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       {/* HEADER */}
       <Header />

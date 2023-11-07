@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-import { Button, Breadcrumb, Table } from 'antd'
+import { Table } from 'antd'
 
-import Arrow from '../assets/arrow-right.svg'
+// import Arrow from '../assets/arrow-right.svg'
 
 // Component
 import Header from '../components/Header'
@@ -129,7 +129,7 @@ const InjuredReserve = () => {
 
   return (
     <div className='practice_squad_container team_trade_main'>
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
           Back
         </Button>
@@ -151,7 +151,7 @@ const InjuredReserve = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       <Header />
 

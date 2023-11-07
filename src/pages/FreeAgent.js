@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-import { Button, Breadcrumb, Input, Pagination as AntPagination, Table } from 'antd'
+import { Button, Input, Pagination as AntPagination, Table } from 'antd'
 
-import Arrow from '../assets/arrow-right.svg'
+// import Arrow from '../assets/arrow-right.svg'
 import { SearchOutlined } from '@ant-design/icons'
 
 // Component
@@ -194,7 +194,7 @@ const FreeAgent = () => {
   return (
     <div className='practice_squad_container team_trade_main'>
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
           Back
         </Button>
@@ -216,7 +216,7 @@ const FreeAgent = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       {/* HEADER */}
       <Header />

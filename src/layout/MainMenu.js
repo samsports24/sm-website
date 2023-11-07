@@ -91,7 +91,7 @@ const MainMenu = () => {
               onClick={() => navigate('/depth-chart')}
             >
               <FaRegChartBar />
-              <p>DEPTH CHART</p>
+              <p>starters</p>
             </div>
             <div
               className={`sidebar_menu_item ${active === 'trade' ? 'activeRoute' : ''}`}

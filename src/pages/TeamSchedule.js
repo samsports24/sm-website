@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 
 import {
-  Button,
-  Breadcrumb,
+  // Button,
+  // Breadcrumb,
   Row,
   Col,
   // Select
 } from 'antd'
 
-import Arrow from '../assets/arrow-right.svg'
+// import Arrow from '../assets/arrow-right.svg'
 
 // Component
 import Header from '../components/Header'
@@ -31,7 +31,7 @@ const TeamSchedule = () => {
   const [loading, setLoading] = useState(true)
   // const [selectedTeam, setSelectedTeam] = useState('')
 
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
 
   useEffect(() => {
     getData()
@@ -74,7 +74,7 @@ const TeamSchedule = () => {
   return (
     <div className='practice_squad_container team_trade_main'>
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
           Back
         </Button>
@@ -96,7 +96,7 @@ const TeamSchedule = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       {/* HEADER */}
       <Header />

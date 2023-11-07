@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { Breadcrumb, Button } from 'antd'
+import { Button } from 'antd'
 
 // Component
 import Header from '../components/Header'
@@ -120,7 +120,7 @@ const PublicLeague = () => {
   return (
     <div className='pro_league_container'>
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Breadcrumb
           className='customize_breadcrumb'
           separator='|'
@@ -136,7 +136,7 @@ const PublicLeague = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       {/* HEADER */}
       <Header />

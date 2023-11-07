@@ -1,7 +1,7 @@
-import { Button, Breadcrumb } from 'antd'
+// import { Button, Breadcrumb } from 'antd'
 
-import Arrow from '../assets/arrow-right.svg'
-import { useParams, useNavigate, useLocation } from 'react-router-dom'
+// import Arrow from '../assets/arrow-right.svg'
+import { useParams, useLocation } from 'react-router-dom'
 
 // Component
 import Header from '../components/Header'
@@ -35,7 +35,7 @@ const PlayerInterface = () => {
   const [loading, setLoading] = useState(true)
 
   const { id } = useParams()
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
   const { state } = useLocation()
 
   useEffect(() => {
@@ -62,7 +62,7 @@ const PlayerInterface = () => {
   return (
     <div className='player_interface_container'>
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
           Back
         </Button>
@@ -84,7 +84,7 @@ const PlayerInterface = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       {/* HEADER */}
       <Header />

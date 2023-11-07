@@ -1,7 +1,7 @@
-import { Breadcrumb, Button, Col, Row } from 'antd'
+import { Col, Row } from 'antd'
 import { useNavigate } from 'react-router-dom'
 
-import Arrow from '../assets/arrow-right.svg'
+// import Arrow from '../assets/arrow-right.svg'
 import { popularLeaguesData } from './mockData'
 import PopularLeagueCard from '../components/cards/popularLeagueCard'
 
@@ -11,7 +11,7 @@ const MyLeague = () => {
   return (
     <div className='total_payment_container'>
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
           Back
         </Button>
@@ -27,7 +27,7 @@ const MyLeague = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       <h1 className='heading'>My League</h1>
 

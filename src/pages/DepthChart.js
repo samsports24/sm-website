@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
-import { Breadcrumb, Button } from 'antd'
+import { Button } from 'antd'
 
 // Component
 import Header from '../components/Header'
 import DepthCard from '../components/DepthCard'
-import { ColorFilter } from '../components/FilterComponent'
+// import { ColorFilter } from '../components/FilterComponent'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import Loader from '../components/Loader'
 
@@ -15,7 +15,7 @@ import { depthCardData } from './mockData'
 import { clearDepthChart, getActiveRosterCount } from '../redux/actions/depthChartAction'
 import {
   activeRosterCount,
-  firstLetterCap,
+  // firstLetterCap,
   legalPlayers,
   nonActivePlayers,
 } from '../config/constants'
@@ -101,7 +101,7 @@ const DepthChart = () => {
   return (
     <div className='depth_chart_container'>
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Breadcrumb
           className='customize_breadcrumb'
           separator='>'
@@ -117,7 +117,7 @@ const DepthChart = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       {/* HEADER */}
       <Header />

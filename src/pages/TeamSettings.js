@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 
-import { Button, Breadcrumb, Row, Col, Form, Input, Avatar } from 'antd'
+import { Button, Row, Col, Form, Input, Avatar } from 'antd'
 
-import Arrow from '../assets/arrow-right.svg'
+// import Arrow from '../assets/arrow-right.svg'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -92,7 +92,7 @@ const TeamSetting = () => {
       {/* BACK BUTTON */}
 
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Button
           className='_back_button'
           type='primary'
@@ -118,7 +118,7 @@ const TeamSetting = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       {/* HEADER */}
       <Header />

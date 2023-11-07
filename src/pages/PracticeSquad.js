@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { Button, Breadcrumb } from 'antd'
+// import { Button, Breadcrumb } from 'antd'
 
-import Arrow from '../assets/arrow-right.svg'
+// import Arrow from '../assets/arrow-right.svg'
 
 // Component
 import Header from '../components/Header'
@@ -11,14 +11,14 @@ import barIcon from '../assets/bar-icon.svg'
 
 import { practiceSquadData } from './mockData'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
-import { useNavigate } from 'react-router-dom'
+// import { useNavigate } from 'react-router-dom'
 
 const PracticeSquad = () => {
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
   return (
     <div className='practice_squad_container'>
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
           Back
         </Button>
@@ -40,7 +40,7 @@ const PracticeSquad = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       {/* HEADER */}
       <Header />

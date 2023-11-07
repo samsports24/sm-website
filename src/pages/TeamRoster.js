@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
-import { Breadcrumb } from 'antd'
-import Arrow from '../assets/arrow-right.svg'
+// import { Breadcrumb } from 'antd'
+// import Arrow from '../assets/arrow-right.svg'
 import { useParams } from 'react-router-dom'
 
 // Component
@@ -60,7 +60,7 @@ const TeamRoster = () => {
   return (
     <div className='player_roster_container team_roster_container'>
       {/* BREADCRUMB */}
-      <section className='_breadcrumb'>
+      {/* <section className='_breadcrumb'>
         <Breadcrumb
           className='customize_breadcrumb'
           separator={<img src={Arrow} />}
@@ -76,7 +76,7 @@ const TeamRoster = () => {
             },
           ]}
         />
-      </section>
+      </section> */}
 
       {/* HEADER */}
       <Header />
