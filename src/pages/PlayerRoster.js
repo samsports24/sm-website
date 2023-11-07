@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux'
 import { isLocked } from '../config/constants'
 import Empty from '../components/Empty'
 import { draftData } from '../config/draftData'
+import NewRosterCard from '../components/NewRosterCard'
 
 const PlayerRoster = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
@@ -144,6 +145,24 @@ const PlayerRoster = () => {
               </Button>
             )}
           </div>
+          {/* <section className='stats_container'>
+            {activePlayerData?.length > 0 ? (
+              activePlayerData?.map((v, i) => {
+                return (
+                  <NewRosterCard
+                    key={i}
+                    data={v}
+                    index={i}
+                    state={nonActive}
+                    handleClick={handleNonActive}
+                    playerCaps={playerCaps}
+                  />
+                )
+              })
+            ) : (
+              <Empty text={'Active Squad IS EMPTY'} />
+            )}
+          </section> */}
 
           {/* ACTIVE SQUAD */}
           <section className='stats_container'>

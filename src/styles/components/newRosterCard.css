@@ -1,0 +1,120 @@
+.nrc_container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+}
+.nrc_container .serial_number {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--secondaryPurple);
+}
+.nrc_container .serial_number p {
+  font-weight: 700;
+}
+.nrc_container .content_box {
+  padding: 5px 20px;
+  flex: 1;
+  background-color: var(--secondaryPurple);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+.nrc_container .content_box .content_box_left {
+  width: 60px;
+  border: 1px solid var(--borderColor);
+  padding: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+}
+.nrc_container .content_box .content_box_left span {
+  font-size: 18px;
+  font-weight: 700;
+}
+.nrc_container .content_box .content_box_center {
+  flex: 1;
+}
+.nrc_container .content_box .content_box_center .top {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.nrc_container .content_box .content_box_center .top h2 {
+  cursor: pointer;
+  font-weight: 700;
+  line-height: 1;
+  font-size: 18px;
+}
+.nrc_container .content_box .content_box_center .top h2:hover {
+  color: var(--primary) !important;
+}
+.nrc_container .content_box .content_box_center .bottom {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.nrc_container .content_box .content_box_center .top p,
+.nrc_container .content_box .content_box_center .bottom p {
+  font-weight: 500;
+  opacity: 0.5;
+  align-self: flex-end;
+  text-transform: uppercase;
+}
+.nrc_container .content_box .content_box_right {
+}
+
+.nrc_container .ant-checkbox-inner {
+  background-color: transparent;
+}
+
+.nrc_container :where(.css-dev-only-do-not-override-1jqvr6p).ant-checkbox-disabled + span {
+  color: #fff !important;
+}
+.nrc_container
+  :where(.css-dev-only-do-not-override-1jqvr6p).ant-checkbox-disabled
+  .ant-checkbox-inner:after {
+  border-color: #fff !important;
+}
+
+.nrc_container :where(.css-1jqvr6p).ant-checkbox-disabled + span {
+  color: #fff !important;
+}
+
+.nrc_container .injury_plus {
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background-color: red;
+}
+.nrc_container .injury_plus b {
+  font-size: 24px !important;
+  margin-bottom: 5px;
+  color: var(--text);
+}
+.nrc_container .injury_plus_text {
+  color: red !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+}
+.nrc_container .injury_status {
+  color: #00c008 !important;
+  opacity: 1 !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+}
