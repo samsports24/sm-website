@@ -16,7 +16,7 @@ export const attachToken = async () => {
 
 privateAPI.interceptors.response.use(
   async (response) => {
-    store?.dispatch(getNotiCount())
+    // store?.dispatch(getNotiCount())
     return response
   },
   (error) => {

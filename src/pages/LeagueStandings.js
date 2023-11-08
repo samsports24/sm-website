@@ -7,6 +7,7 @@ import Loader from '../components/Loader'
 
 import { getLeagueStandings } from '../redux'
 import { useSelector } from 'react-redux'
+import { Col, Row } from 'antd'
 
 const LeagueStandings = () => {
   const setting = useSelector((state) => state?.user?.setting)
@@ -37,9 +38,13 @@ const LeagueStandings = () => {
         <Loader />
       ) : (
         <div className='league_standing_card_container' style={{ width: '100%' }}>
-          {standings?.teamRanks?.map((v, i) => (
-            <LeagueStandingCard key={i} data={v} index={i} teams={standings?.teams} />
-          ))}
+          <Row gutter={[20, 20]}>
+            {standings?.teamRanks?.map((v, i) => (
+              <Col key={i} xs={24} lg={12}>
+                <LeagueStandingCard data={v} index={i} teams={standings?.teams} />
+              </Col>
+            ))}
+          </Row>
         </div>
       )}
     </div>

@@ -1,113 +1,239 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   ActivateFromPracticeSquad,
   AuctionPlayer,
   MoveToInjured,
   MoveToPracticeSquad,
-  // MoveToReserve,
+  PoachPlayer,
   ReleasePlayer,
   TradePlayer,
 } from '../modal/PlayerInterfaceModals'
+import { getRosterPlayer } from '../../redux/actions/rosterAction'
+import { useSelector } from 'react-redux'
+import Loader from '../Loader'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
+import { Button } from 'antd'
+import { useNavigate } from 'react-router-dom'
 
-const PlayerInterfacePopup = ({ data }) => {
-  // const isReserve = true
-  const getData = () => {}
-  const activePlayers = []
-  const practicePlayers = []
-  // const reservedPlayers = []
+const PlayerInterfacePopup = ({ state, closeModal, showModal }) => {
+  const SETTING = useSelector((state) => state?.user?.setting)
+  const [isLoading, setIsLoading] = useState(true)
+  const [data, setData] = useState({
+    player: {},
+    news: '',
+    activePlayers: [],
+    practicePlayers: [],
+    playerContract: {},
+  })
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    getData()
+  }, [showModal])
+
+  const getData = async () => {
+    setIsLoading(true)
+    const res = await getRosterPlayer({
+      id: state?.playerID,
+      week: SETTING?.week,
+      team: state?.teamId,
+    })
+    if (res) {
+      setData(res)
+    }
+    setIsLoading(false)
+  }
 
   const playerCenterData = [
-    { name: 'Team:', value: 'SJ' || '-' },
-    { name: 'Opponent:', value: '' || '-' },
-    { name: 'Postion:', value: 'C' || '-' },
-    { name: 'Height:', value: 75 || '-' },
-    { name: 'Years in League:', value: null || '-' },
-    { name: 'Player Caps:', value: '$8,137,500' || '-' },
-    { name: 'Player College:', value: null || '-' },
-    { name: 'Age:', value: null || '-' },
+    { name: 'Team:', value: data?.player?.Team || '-' },
+    { name: 'Opponent:', value: data?.player?.UpcomingGameOpponent || '-' },
+    { name: 'Postion:', value: data?.player?.Position || '-' },
+    { name: 'Height:', value: data?.player?.Height || '-' },
+    {
+      name: 'Years in League:',
+      value: data?.player?.Experience
+        ? data?.player?.Experience <= 1
+          ? `${data?.player?.Experience} Year`
+          : `${data?.player?.Experience} Years`
+        : '-',
+    },
+    {
+      name: 'Player Caps:',
+      value: data?.playerContract?.PlayerCap
+        ? `$${data?.playerContract?.PlayerCap?.toLocaleString()}`
+        : '-',
+    },
+    { name: 'Player College:', value: data?.player?.College || '-' },
+    { name: 'Age:', value: data?.player?.Age || '-' },
   ]
+
+  const playerIdBig = data?.player?._id
+  const playerIdSmall = data?.player?.PlayerID
+  const isPlayerLocked = data?.player?.isPlayerLocked
+  const inPracticeSquad = data?.player?.inPracticeSquad
+
+  const getBgImage = (position) => {
+    const p = position?.toLowerCase()
+    return p === 'back up qb'
+      ? 'BACK_UP_QB'
+      : p === 'bqb'
+      ? 'BQB'
+      : p === 'cb'
+      ? 'CB'
+      : p === 'de'
+      ? 'DE'
+      : p === 'dt'
+      ? 'DT'
+      : p === 'dl'
+      ? 'DT'
+      : p === 'flex'
+      ? 'FLEX'
+      : p === 'k'
+      ? 'K'
+      : p === 'lb'
+      ? 'LB'
+      : p === 'ol'
+      ? 'OL'
+      : p === 'olb'
+      ? 'OL'
+      : p === 'ot'
+      ? 'OL'
+      : p === 'p'
+      ? 'P'
+      : p === 'qb'
+      ? 'QB'
+      : p === 's'
+      ? 'S'
+      : p === 'ss'
+      ? 'S'
+      : p === 'te'
+      ? 'TE'
+      : p === 'wr'
+      ? 'WR'
+      : 'FLEX'
+  }
 
   return (
     <div className='player_interface_popup'>
-      <AiOutlineCloseCircle className='close_icon' />
-      <div className='wrapper'>
-        <div className='top_row'>
-          <div className='top_row_left'></div>
-          <div className='top_row_center'>
-            <h2>Player news:</h2>
-            <p>
-              {
-                "According to a source, the New York Giants hosted free-agent linebacker Anthony Barr for a visit on Thursday, but no deal is imminent. Barr also recently visited with the New Orleans Saints as he looks to find a new home before the start of the 2023 regular season in early September. The former ninth overall pick of the Minnesota Vikings in 2014 out of UCLA has been hurt by injuries in recent seasons and hasn't played a whole year since 2017 with the Vikes. The four-time Pro Bowler spent the 2022 campaign with the Dallas Cowboys, recording 58 tackles (35 solo), one sack, four QB hits, and two fumble recoveries in 14 games (10 starts). If he signs with the G-Men, he'll provide depth at linebacker this year."
-              }
-            </p>
-          </div>
-          <div className='top_row_right'>
-            <AuctionPlayer
-              disabled={data?.isPlayerLocked}
-              playerIds={{
-                PlayerID: data?.player_id?.PlayerID,
-                player_id: data?.player_id?._id,
-              }}
-            />
+      <AiOutlineCloseCircle className='close_icon' onClick={closeModal} />
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className='wrapper'>
+          {state?.teamId && (
+            <div className='viewing_roster_heading'>
+              <h2>Your are viewing {state?.teamName || 'other team'} rosters.</h2>
+            </div>
+          )}
+          <div className='top_row'>
+            <div className='top_row_left'>
+              <div className='image_box'>
+                <img
+                  className='bg_image'
+                  src={require(`../../assets/interface-card/${getBgImage(
+                    data?.player?.Position,
+                  )}.png`)}
+                />
+                <div className='player_img_box'>
+                  {data?.player?.HostedHeadshotNoBackgroundUrl && (
+                    <img src={data?.player?.HostedHeadshotNoBackgroundUrl} />
+                  )}
+                </div>
+                <h2 className='player_name'>{data?.player?.Name || '-'}</h2>
+                <h2 className='player_opponent'>{data?.player?.UpcomingGameOpponent || '-'}</h2>
+                <h2 className='player_team'>{data?.player?.Team || '-'}</h2>
+                <h2 className='player_projection'>{data?.player?.InjuryStatus || '-'}</h2>
+              </div>
+            </div>
+            <div className='top_row_center'>
+              <h2>Player news:</h2>
+              <p>{data?.news || '-'}</p>
+            </div>
+            <div className='top_row_right'>
+              {state?.teamId ? (
+                <>
+                  <Button
+                    type='primary'
+                    onClick={() => {
+                      navigate('/team-trade')
+                    }}
+                  >
+                    Make Offer
+                  </Button>
+                  <PoachPlayer />
+                </>
+              ) : (
+                <>
+                  <AuctionPlayer
+                    disabled={isPlayerLocked}
+                    playerIds={{
+                      PlayerID: playerIdSmall,
+                      player_id: playerIdBig,
+                    }}
+                    pInterfaceModalClose={closeModal}
+                  />
 
-            <TradePlayer disabled={data?.isPlayerLocked} />
+                  <TradePlayer disabled={isPlayerLocked} pInterfaceModalClose={closeModal} />
 
-            <ReleasePlayer disabled={data?.isPlayerLocked} playerId={data?.player_id?._id} />
+                  <ReleasePlayer
+                    disabled={isPlayerLocked}
+                    playerId={playerIdBig}
+                    pInterfaceModalClose={closeModal}
+                  />
 
-            <MoveToInjured
-              disabled={
-                data?.player_id?.InjuryStatus?.toLowerCase() != 'out' || data?.isPlayerLocked
-              }
-              playerId={data?.player_id?._id}
-              getData={getData}
-            />
+                  <MoveToInjured
+                    disabled={data?.player?.InjuryStatus?.toLowerCase() != 'out' || isPlayerLocked}
+                    playerId={playerIdBig}
+                    getData={getData}
+                    pInterfaceModalClose={closeModal}
+                  />
 
-            <ActivateFromPracticeSquad
-              disabled={!data?.inPracticeSquad || data?.isPlayerLocked}
-              playerId={data?.player_id?._id}
-              getData={getData}
-              activePlayers={activePlayers}
-            />
+                  <ActivateFromPracticeSquad
+                    disabled={!inPracticeSquad || isPlayerLocked}
+                    playerId={playerIdBig}
+                    getData={getData}
+                    activePlayers={data?.activePlayers}
+                    pInterfaceModalClose={closeModal}
+                  />
 
-            <MoveToPracticeSquad
-              disabled={data?.inPracticeSquad || data?.isPlayerLocked}
-              playerId={data?.player_id?._id}
-              getData={getData}
-              activePlayersCount={activePlayers?.length}
-              practicePlayers={practicePlayers}
-            />
-          </div>
-        </div>
-        <div className='middle_row'>
-          {playerCenterData?.map((v) => {
-            return (
-              <h3 key={v?.name}>
-                {v?.name}
-                <span>{v?.value}</span>
-              </h3>
-            )
-          })}
-        </div>
-        <div className='bottom_row'>
-          <div className='left'>
-            <h2>Player past projected stats & scores</h2>
-            <div className='coming_soon_box'>
-              <h1>Coming Soon</h1>
+                  <MoveToPracticeSquad
+                    disabled={inPracticeSquad || isPlayerLocked}
+                    playerId={playerIdBig}
+                    getData={getData}
+                    activePlayersCount={data?.activePlayers?.length}
+                    practicePlayers={data?.practicePlayers}
+                    pInterfaceModalClose={closeModal}
+                  />
+                </>
+              )}
             </div>
           </div>
-          <div className='right'>
-            <div className='right_wrapper'>
-              <h2>Player Contract Info</h2>
-              <p>
-                Anthony Barr signed a 1 year, $2,000,000 contract with the Dallas Cowboys, including
-                a $500,000 signing bonus, $1,750,000 guaranteed, and an average annual salary of
-                $2,000,000.
-              </p>
+          <div className='middle_row'>
+            {playerCenterData?.map((v) => {
+              return (
+                <h3 key={v?.name}>
+                  {v?.name}
+                  <span>{v?.value}</span>
+                </h3>
+              )
+            })}
+          </div>
+          <div className='bottom_row'>
+            <div className='left'>
+              <h2>Player past projected stats & scores</h2>
+              <div className='coming_soon_box'>
+                <h1>Coming Soon</h1>
+              </div>
+            </div>
+            <div className='right'>
+              <div className='right_wrapper'>
+                <h2>Player Contract Info</h2>
+                <p>{data?.playerContract?.contractInfo || '-'}</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

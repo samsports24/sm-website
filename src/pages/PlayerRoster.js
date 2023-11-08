@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 
 import { Button, notification } from 'antd'
-// import Arrow from '../assets/arrow-right.svg'
 
 // Component
 import Header from '../components/Header'
-import PlayerRosterCard from '../components/PlayerRosterCard'
+// import PlayerRosterCard from '../components/PlayerRosterCard'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import Loader from '../components/Loader'
 
@@ -26,9 +25,7 @@ const PlayerRoster = () => {
   const [playerCaps, setPlayerCaps] = useState(null)
   const [loading, setLoading] = useState(true)
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [draftPickData] = useState(
-    draftData?.find((v) => v?.teamId === USER?.userDetails?.team?._id),
-  )
+  const [draftPickData, setDraftPickData] = useState([])
 
   const handleNonActive = (event, id) => {
     if (event) {
@@ -97,7 +94,7 @@ const PlayerRoster = () => {
 
   useEffect(() => {
     SETTING?.week !== 0 && getData()
-    console.log(draftData?.length)
+    setDraftPickData(draftData?.find((v) => v?.teamId === USER?.userDetails?.team?._id))
   }, [SETTING?.week])
 
   const getData = async () => {
@@ -128,44 +125,45 @@ const PlayerRoster = () => {
   return (
     <div className='player_roster_container'>
       <Header />
-
       <ButtonsAndPagination />
-
       <hr className='divider' />
 
       {loading ? (
         <Loader />
       ) : (
         <>
-          <div className='practice_squad_header'>
-            <p className='heading'>Active Squad</p>
-            {!isLocked() && (
-              <Button loading={submitLoading} onClick={handleSubmit} type='primary'>
-                Submit
-              </Button>
-            )}
-          </div>
-          {/* <section className='stats_container'>
-            {activePlayerData?.length > 0 ? (
-              activePlayerData?.map((v, i) => {
-                return (
-                  <NewRosterCard
-                    key={i}
-                    data={v}
-                    index={i}
-                    state={nonActive}
-                    handleClick={handleNonActive}
-                    playerCaps={playerCaps}
-                  />
-                )
-              })
-            ) : (
-              <Empty text={'Active Squad IS EMPTY'} />
-            )}
-          </section> */}
+          <div style={{ overflowX: 'auto' }}>
+            <div style={{ minWidth: '800px' }}>
+              <div className='practice_squad_header'>
+                <p className='heading'>
+                  Active<b>Squad</b>
+                </p>
+                {!isLocked() && (
+                  <Button loading={submitLoading} onClick={handleSubmit} type='primary'>
+                    Submit
+                  </Button>
+                )}
+              </div>
+              <section className='stats_container'>
+                {activePlayerData?.length > 0 ? (
+                  activePlayerData?.map((v, i) => {
+                    return (
+                      <NewRosterCard
+                        key={i}
+                        data={v}
+                        index={i}
+                        state={nonActive}
+                        handleClick={handleNonActive}
+                        playerCaps={playerCaps}
+                      />
+                    )
+                  })
+                ) : (
+                  <Empty text={'Active Squad IS EMPTY'} />
+                )}
+              </section>
 
-          {/* ACTIVE SQUAD */}
-          <section className='stats_container'>
+              {/* <section className='stats_container'>
             {activePlayerData?.length > 0 ? (
               activePlayerData?.map((v, i) => {
                 return (
@@ -182,21 +180,42 @@ const PlayerRoster = () => {
             ) : (
               <Empty text={'Active Squad IS EMPTY'} />
             )}
-          </section>
+          </section> */}
 
-          <hr style={{ marginBlock: '20px' }} />
+              <hr style={{ marginBlock: '20px' }} />
 
-          <div className='practice_squad_header'>
-            <p className='heading'>Practice Squad</p>
-            {!isLocked() && (
-              <Button loading={submitLoading} onClick={handleProtectedSubmit} type='primary'>
-                Submit
-              </Button>
-            )}
-          </div>
+              <div className='practice_squad_header'>
+                <p className='heading'>
+                  Practice<b>Squad</b>
+                </p>
+                {!isLocked() && (
+                  <Button loading={submitLoading} onClick={handleProtectedSubmit} type='primary'>
+                    Submit
+                  </Button>
+                )}
+              </div>
 
-          {/* PRACTICE SQUAD */}
-          <section className='stats_container'>
+              {/* PRACTICE SQUAD */}
+              <section className='stats_container'>
+                {practiveSquadData?.length > 0 ? (
+                  practiveSquadData?.map((v, i) => {
+                    return (
+                      <NewRosterCard
+                        key={i}
+                        data={v}
+                        index={i}
+                        state={protectedCheck}
+                        handleClick={handleProtectedCheckbox}
+                        isPractice={true}
+                        playerCaps={playerCaps}
+                      />
+                    )
+                  })
+                ) : (
+                  <Empty text={'Active Squad IS EMPTY'} />
+                )}
+              </section>
+              {/* <section className='stats_container'>
             {practiveSquadData?.length > 0 ? (
               practiveSquadData?.map((v, i) => {
                 return (
@@ -214,29 +233,32 @@ const PlayerRoster = () => {
             ) : (
               <Empty text={'practice Squad IS EMPTY'} />
             )}
-          </section>
+          </section> */}
 
-          <hr style={{ marginBlock: '20px' }} />
+              <hr style={{ marginBlock: '20px' }} />
 
-          <div className='practice_squad_header'>
-            <p className='heading'>
-              Draft<b>Picks</b>
-            </p>
+              <div className='practice_squad_header'>
+                <p className='heading'>
+                  Draft<b>Picks</b>
+                </p>
+              </div>
+
+              <section className='stats_container'>
+                {draftPickData?.draft?.length > 0 ? (
+                  draftPickData?.draft?.map((v, i) => {
+                    return (
+                      <div key={i} className='draft_pick_row'>
+                        <p>{v} Pick</p>
+                      </div>
+                    )
+                  })
+                ) : (
+                  <Empty text={'DRAFT PICK IS EMPTY'} />
+                )}
+              </section>
+            </div>
+            {/* <div style={{ width: '400px' }}></div> */}
           </div>
-
-          <section className='stats_container'>
-            {draftPickData?.draft?.length > 0 ? (
-              draftPickData?.draft?.map((v, i) => {
-                return (
-                  <div key={i} className='draft_pick_row'>
-                    <p>{v} Pick</p>
-                  </div>
-                )
-              })
-            ) : (
-              <Empty text={'DRAFT PICK IS EMPTY'} />
-            )}
-          </section>
         </>
       )}
     </div>

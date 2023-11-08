@@ -75,57 +75,53 @@ const LeagueStandingCard = ({ data, index, teams }) => {
       <h3 className='text'>
         {data?.conference} - {data?._id}
       </h3>
-      <Row gutter={[20, 20]}>
-        {data?.standing?.map((v, i) => {
-          const team = teams.find((x) => v?.teamId === x?._id)
-          return (
-            <Col key={i} xs={24} lg={12}>
-              <div className='table_card'>
-                <div
-                  className='table_header'
-                  onClick={() => handleNavigate(v?.teamId)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <h3>{team?.name}</h3>
-                </div>
-                <div className='table_body'>
-                  <div
-                    className='table_image'
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => handleNavigate(v?.teamId)}
-                  >
-                    <img src={team?.logo} alt={v?.team?.name} />
-                  </div>
-                  <div className='main_ls_table'>
-                    <Table
-                      dataSource={[
-                        {
-                          key: v?.teamScore?._id,
-                          wlt: `${v?.teamScore?.win}-${v?.teamScore?.lose}-${v?.teamScore?.tie}`,
-                          pct: v?.teamScore?.pct,
-                          gb: v?.teamScore?.gb,
-                          strk: v?.teamScore?.strk ? v?.teamScore?.strk : '-',
-                          pf: v?.teamScore?.pf?.toFixed(2),
-                          avgpf: v?.teamScore?.avgPf?.toFixed(2),
-                          pa: v?.teamScore?.pa?.toFixed(2),
-                          avgpa: v?.teamScore?.avgPa?.toFixed(2),
-                          divwlt: `${v?.teamScore?.divWin}-${v?.teamScore?.divLose}-${v?.teamScore?.divTie}`,
-                          confwlt: `${v?.teamScore?.confWin}-${v?.teamScore?.confLose}-${v?.teamScore?.confTie}`,
-                        },
-                      ]}
-                      columns={columns}
-                      bordered={false}
-                      pagination={false}
-                      size='small'
-                      scroll={{ x: 800 }}
-                    />
-                  </div>
-                </div>
+      {data?.standing?.map((v, i) => {
+        const team = teams.find((x) => v?.teamId === x?._id)
+        return (
+          <div key={i} className='table_card'>
+            <div
+              className='table_header'
+              onClick={() => handleNavigate(v?.teamId)}
+              style={{ cursor: 'pointer' }}
+            >
+              <h3>{team?.name}</h3>
+            </div>
+            <div className='table_body'>
+              <div
+                className='table_image'
+                style={{ cursor: 'pointer' }}
+                onClick={() => handleNavigate(v?.teamId)}
+              >
+                <img src={team?.logo} alt={v?.team?.name} />
               </div>
-            </Col>
-          )
-        })}
-      </Row>
+              <div className='main_ls_table'>
+                <Table
+                  dataSource={[
+                    {
+                      key: v?.teamScore?._id,
+                      wlt: `${v?.teamScore?.win}-${v?.teamScore?.lose}-${v?.teamScore?.tie}`,
+                      pct: v?.teamScore?.pct,
+                      gb: v?.teamScore?.gb,
+                      strk: v?.teamScore?.strk ? v?.teamScore?.strk : '-',
+                      pf: v?.teamScore?.pf?.toFixed(2),
+                      avgpf: v?.teamScore?.avgPf?.toFixed(2),
+                      pa: v?.teamScore?.pa?.toFixed(2),
+                      avgpa: v?.teamScore?.avgPa?.toFixed(2),
+                      divwlt: `${v?.teamScore?.divWin}-${v?.teamScore?.divLose}-${v?.teamScore?.divTie}`,
+                      confwlt: `${v?.teamScore?.confWin}-${v?.teamScore?.confLose}-${v?.teamScore?.confTie}`,
+                    },
+                  ]}
+                  columns={columns}
+                  bordered={false}
+                  pagination={false}
+                  size='small'
+                  scroll={{ x: 800 }}
+                />
+              </div>
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }

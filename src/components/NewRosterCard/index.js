@@ -2,6 +2,8 @@ import { Checkbox } from 'antd'
 import React from 'react'
 import { isLocked } from '../../config/constants'
 import { MdLock } from 'react-icons/md'
+import PlayerDetailsModal from '../modal/PlayerDetailsModal'
+import { useParams } from 'react-router-dom'
 
 const NewRosterCard = (props) => {
   const { data, index, state, handleClick, isPractice = false, playerCaps } = props
@@ -21,7 +23,7 @@ const NewRosterCard = (props) => {
     },
     team,
   } = data
-  console.log(InjuryStatus)
+  const { id } = useParams()
 
   const getColor = () => {
     const red = Math.floor(Math.random() * 128) + 128 // 128-255
@@ -42,7 +44,16 @@ const NewRosterCard = (props) => {
         </div>
         <div className='content_box_center'>
           <div className='top'>
-            <h2>{Name}</h2>
+            {/* PLAYER DETAILS MODAL */}
+            <PlayerDetailsModal
+              button={Name}
+              state={{
+                playerID: PlayerID,
+                teamId: id ? id : null,
+                teamName: team?.name ? team?.name : '',
+              }}
+            />
+
             <p style={{ marginLeft: '-10px' }}>-{Team}</p>
             {isPlayerLocked && <MdLock size={18} color={'#fff'} style={{ marginBottom: '-3px' }} />}
             {InjuryStatus === 'Out' ? (

@@ -21,7 +21,7 @@
   padding: 5px 20px;
   flex: 1;
   background-color: var(--secondaryPurple);
-  border-radius: 10px;
+  border-radius: 12px;
   display: flex;
   flex-direction: row;
   align-items: center;
