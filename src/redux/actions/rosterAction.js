@@ -1,11 +1,16 @@
 import { notification } from 'antd'
 import { attachToken, privateAPI } from '../../config/constants'
+import store from '../store'
 
 export const getRoster = async (week) => {
   try {
     attachToken()
     const res = await privateAPI.get(`/team/get-roster/${week}`)
     if (res) {
+      store.dispatch({
+        type: 'SET_ROSTERS',
+        payload: res.data.data,
+      })
       return res.data.data
     }
   } catch (err) {
