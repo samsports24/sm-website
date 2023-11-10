@@ -1,29 +1,25 @@
 import { Button, Modal } from 'antd'
 import React, { useState } from 'react'
-import { moveToIr } from '../../../redux/actions/rosterAction'
-import { useParams, useNavigate } from 'react-router-dom'
+import { getRoster, moveToIr } from '../../../redux/actions/rosterAction'
 import { useSelector } from 'react-redux'
 
-const MoveToInjured = ({ disabled, getData }) => {
+const MoveToInjured = ({ playerId, disabled, pInterfaceModalClose }) => {
   const SETTING = useSelector((state) => state?.user?.setting)
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const showModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
 
-  const { id } = useParams()
-  const navigate = useNavigate()
-
   const _moveToIr = async () => {
     setLoading(true)
     const res = await moveToIr({
-      id,
+      id: playerId,
       week: SETTING?.week,
     })
     if (res) {
-      await getData()
       closeModal()
-      navigate('/player-roster')
+      pInterfaceModalClose()
+      getRoster(SETTING?.week)
     }
     setLoading(false)
   }

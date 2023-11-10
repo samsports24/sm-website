@@ -57,6 +57,20 @@
   padding: 6px 0px 6px 0px;
 }
 
+/* -------------------------------------- */
+.new_depth_card_box {
+  width: 130px;
+  height: 200px;
+  border-radius: 10px;
+  /* border: 1px solid var(--border); */
+  cursor: pointer;
+  position: absolute;
+}
+.new_depth_card_box .card_bg_img {
+  width: 130px;
+  height: 200px;
+}
+
 /* DEFENSE */
 .defense_s {
   top: 0px !important;

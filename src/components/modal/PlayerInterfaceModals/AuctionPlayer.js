@@ -6,7 +6,7 @@ import dayjs from 'dayjs'
 import { createAuction } from '../../../redux/actions/rosterAction'
 import { useNavigate } from 'react-router-dom'
 
-const AuctionPlayer = ({ playerIds, disabled }) => {
+const AuctionPlayer = ({ playerIds, disabled, pInterfaceModalClose }) => {
   const [form] = Form.useForm()
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -17,6 +17,7 @@ const AuctionPlayer = ({ playerIds, disabled }) => {
   const closeModal = () => {
     form.resetFields()
     setOpen(false)
+    pInterfaceModalClose()
   }
 
   const onFinish = async (values) => {
@@ -63,10 +64,6 @@ const AuctionPlayer = ({ playerIds, disabled }) => {
         <Form form={form} name='login' className='modal_body' layout='vertical' onFinish={onFinish}>
           <h1 className='modal_header_heading main_heading'>Player Auction Creation</h1>
           <div className='auction_button_groups'>
-            {/* <Button type='default'>Auction Start Date</Button> */}
-            {/* <Button type='default'>Auction End Date</Button> */}
-            {/* <Button type='default'>Opening Bid Price</Button> */}
-            {/* <Button type='default'>Reserve Bid Price</Button> */}
             <div className='wrapper'>
               <Form.Item
                 name='auctionStartDate'

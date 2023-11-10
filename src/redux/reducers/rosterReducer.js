@@ -13,6 +13,12 @@ const initialState = {
 const rosterReducer = (state = initialState, action) => {
   const { type, payload } = action
   switch (type) {
+    case 'SET_ROSTER_LOADING': {
+      return {
+        ...state,
+        isLoading: payload,
+      }
+    }
     case 'SET_ROSTERS': {
       let _nonActivePlayer = []
       payload?.active?.forEach((v) => {

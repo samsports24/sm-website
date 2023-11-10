@@ -1,11 +1,10 @@
 import { Button, Modal } from 'antd'
 import React, { useState } from 'react'
-import { releasePlayer } from '../../../redux/actions/rosterAction'
-import { useParams, useNavigate } from 'react-router-dom'
+import { getRoster, releasePlayer } from '../../../redux/actions/rosterAction'
 import Processed from './Processed'
 import { useSelector } from 'react-redux'
 
-const ReleasePlayer = ({ disabled }) => {
+const ReleasePlayer = ({ disabled, pInterfaceModalClose, playerId }) => {
   const SETTING = useSelector((state) => state?.user?.setting)
   const [open, setOpen] = useState(false)
   const [confirmModal, setConfirmModal] = useState(false)
@@ -13,16 +12,14 @@ const ReleasePlayer = ({ disabled }) => {
   const showModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
 
-  const { id } = useParams()
-  const navigate = useNavigate()
-
   const _releasePlayer = async () => {
     setLoading(true)
-    const res = await releasePlayer({ id: Number(id), week: SETTING?.week })
+    const res = await releasePlayer({ id: Number(playerId), week: SETTING?.week })
     if (res) {
       setConfirmModal(false)
       closeModal()
-      navigate('/player-roster')
+      pInterfaceModalClose()
+      getRoster(SETTING?.week)
     }
     setLoading(false)
   }

@@ -10,7 +10,23 @@ const DepthCard = ({ data, index, getDepthChartData }) => {
   const [modalIndex, setModalIndex] = useState(-1)
   const [openModal, setOpenModal] = useState(false)
 
+  // const _positions = {
+  //   te: 'te',
+  //   ol: 'ol',
+  //   wr: 'wr',
+  //   rbwrte: 'rbwrte',
+  //   qb: 'qb',
+  //   rb: 'rb',
+  //   bqb: 'bqb',
+  // }
+
+  // const getImage = (position) => {
+  //   const p = position
+  //   return p === 'rb/wr/te' ? 'rbwrte' : p === 'backup qb' ? 'bqb' : p
+  // }
+
   const { imageUrl, Name, Position, classKey, isPlayerLocked } = data
+  // console.log('🚀 ~ file: index.js:14 ~ DepthCard ~ Position:', Position)
 
   const updatedName = (name) => {
     return name === 'k' ? 'kicker' : name === 'p' ? 'punter' : name
@@ -22,6 +38,12 @@ const DepthCard = ({ data, index, getDepthChartData }) => {
           <MdLock size={50} color={'#fff'} />
         </div>
       )}
+      {/* <div className={`new_depth_card_box ${classKey}`}>
+        <img
+          className='card_bg_img'
+          src={require(`../../assets/offense-card/${getImage(Position)}.png`)}
+        />
+      </div> */}
       <div
         className={`depth_card_box ${classKey}`}
         onClick={() => {
@@ -34,14 +56,7 @@ const DepthCard = ({ data, index, getDepthChartData }) => {
           if (check()) {
             setModalIndex(index)
             setOpenModal(true)
-          } else {
-            // if (!isPlayerLocked) {
-            //   setModalIndex(index)
-            //   setOpenModal(true)
-            // }
           }
-          console.log('!isLocked()', isLocked())
-          console.log('!isPlayerLocked', isPlayerLocked)
         }}
         style={{ cursor: isLocked() || isPlayerLocked ? 'no-drop' : 'pointer' }}
       >

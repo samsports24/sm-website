@@ -96,6 +96,8 @@ const PlayerInterfacePopup = ({ state, closeModal, showModal }) => {
       ? 'OL'
       : p === 'olb'
       ? 'OL'
+      : p === 'ilb'
+      ? 'OL'
       : p === 'ot'
       ? 'OL'
       : p === 'p'
@@ -131,7 +133,7 @@ const PlayerInterfacePopup = ({ state, closeModal, showModal }) => {
                 <img
                   className='bg_image'
                   src={require(`../../assets/interface-card/${getBgImage(
-                    data?.player?.Position,
+                    data?.player?.FantasyPosition === 'OL' ? 'OL' : data?.player?.Position,
                   )}.png`)}
                 />
                 <div className='player_img_box'>
@@ -177,29 +179,26 @@ const PlayerInterfacePopup = ({ state, closeModal, showModal }) => {
 
                   <ReleasePlayer
                     disabled={isPlayerLocked}
-                    playerId={playerIdBig}
+                    playerId={playerIdSmall}
                     pInterfaceModalClose={closeModal}
                   />
 
                   <MoveToInjured
                     disabled={data?.player?.InjuryStatus?.toLowerCase() != 'out' || isPlayerLocked}
-                    playerId={playerIdBig}
-                    getData={getData}
+                    playerId={playerIdSmall}
                     pInterfaceModalClose={closeModal}
                   />
 
                   <ActivateFromPracticeSquad
                     disabled={!inPracticeSquad || isPlayerLocked}
-                    playerId={playerIdBig}
-                    getData={getData}
+                    playerId={playerIdSmall}
                     activePlayers={data?.activePlayers}
                     pInterfaceModalClose={closeModal}
                   />
 
                   <MoveToPracticeSquad
                     disabled={inPracticeSquad || isPlayerLocked}
-                    playerId={playerIdBig}
-                    getData={getData}
+                    playerId={playerIdSmall}
                     activePlayersCount={data?.activePlayers?.length}
                     practicePlayers={data?.practicePlayers}
                     pInterfaceModalClose={closeModal}

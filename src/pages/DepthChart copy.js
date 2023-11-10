@@ -140,7 +140,6 @@ const DepthChart = () => {
           DEFENSE
         </Button>
         <Button
-          // disabled
           type='primary'
           onClick={() => handleFilter(filterKey.special)}
           className={`${activeFilter === filterKey.special ? 'active_filter' : ''}`}
@@ -183,7 +182,6 @@ const DepthChart = () => {
                   : activeFilter + '_container'
               }`}
             >
-              {/* <img src={require('../assets/depth-chart-bg.png')} /> */}
               {data?.map((v, i) => {
                 return (
                   <DepthCard key={i} data={v} index={i} getDepthChartData={getDepthChartData} />

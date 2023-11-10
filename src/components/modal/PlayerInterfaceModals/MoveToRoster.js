@@ -31,10 +31,8 @@ const MoveToRoster = ({ activeDate, injuredDate, injuredId, playerId, getData })
     setLoading(false)
   }
   const _moveToPractice = async () => {
-    console.log(playerId)
     setLoading(true)
     const res = await moveIrToPractice({
-      // playerId,
       injuredId,
     })
     if (res) {

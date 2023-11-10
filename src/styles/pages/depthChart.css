@@ -34,14 +34,21 @@
 }
 .depth_chart_container .depth_chart_wrapper .depth_chart_cards {
   width: 1600px;
+  height: 850px;
   position: relative;
 }
 
 .depth_chart_container .depth_chart_wrapper .offense_container {
-  height: 930px;
+  height: 850px;
+  position: relative;
+}
+.depth_chart_container .depth_chart_wrapper .offense_container > img {
+  height: 850px;
+  width: 1600px;
+  position: absolute;
 }
 .depth_chart_container .depth_chart_wrapper .defense_container {
-  height: 930px;
+  height: 850px;
 }
 .depth_chart_container .depth_chart_wrapper .special_team_container {
   height: 400px;
@@ -87,6 +94,7 @@
     margin-top: 20px;
   }
 } */
+
 @media (max-width: 600px) {
   .depth_chart_container .filter_chart_box button {
     padding: 10px 10px;

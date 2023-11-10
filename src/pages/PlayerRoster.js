@@ -8,7 +8,6 @@ import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import Loader from '../components/Loader'
 import Empty from '../components/Empty'
 import NewRosterCard from '../components/NewRosterCard'
-// import PlayerRosterCard from '../components/PlayerRosterCard'
 
 import { useSelector } from 'react-redux'
 import { isLocked } from '../config/constants'
@@ -18,13 +17,9 @@ import { draftData } from '../config/draftData'
 const PlayerRoster = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
   const USER = useSelector((state) => state?.user)
-  const { data } = useSelector((state) => state?.roster)
-  // const [activePlayerData, setActivePlayerData] = useState([])
-  // const [practiveSquadData, setPractiveSquadData] = useState([])
-  // const [playerCaps, setPlayerCaps] = useState(null)
+  const { isLoading, data } = useSelector((state) => state?.roster)
   const [nonActive, setNonActive] = useState([])
   const [protectedCheck, setProtectedCheck] = useState([])
-  const [loading, setLoading] = useState(true)
   const [submitLoading, setSubmitLoading] = useState(false)
   const [draftPickData, setDraftPickData] = useState([])
 
@@ -73,13 +68,10 @@ const PlayerRoster = () => {
     }
   }
   const handleProtectedSubmit = async () => {
-    // const lineupId = practiveSquadData[0]?._id
-
     if (protectedCheck?.length === 4) {
       setSubmitLoading(true)
       await setProtectedPlayer(
         {
-          // lineupId,
           ids: protectedCheck,
         },
         SETTING.week,
@@ -104,26 +96,7 @@ const PlayerRoster = () => {
   }, [data])
 
   const getData = async () => {
-    setLoading(true)
     await getRoster(SETTING?.week)
-    // if (res) {
-    // const nonAcitvePlayer = []
-    // res?.active?.forEach((v) => {
-    //   if (v?.players?.isActive !== true) {
-    //     nonAcitvePlayer.push(v?.players?.PlayerID)
-    //   }
-    // })
-    // const protectedPlayer = []
-    // res?.practice?.forEach((v) => {
-    //   if (v?.players?.isPlayerProtected == true) {
-    //     protectedPlayer.push(v?.players?.PlayerID)
-    //   }
-    // })
-    // setPlayerCaps(res?.playerCaps)
-    // setActivePlayerData(res?.active)
-    // setPractiveSquadData(res?.practice)
-    // }
-    setLoading(false)
   }
 
   return (
@@ -132,7 +105,7 @@ const PlayerRoster = () => {
       <ButtonsAndPagination />
       <hr className='divider' />
 
-      {loading ? (
+      {isLoading ? (
         <Loader />
       ) : (
         <>
@@ -140,6 +113,7 @@ const PlayerRoster = () => {
             <Col xs={24} lg={16}>
               <div style={{ overflowX: 'auto' }}>
                 <div style={{ minWidth: '800px' }}>
+                  {/* ---------------------------------------------------- */}
                   <div className='practice_squad_header'>
                     <p className='heading'>
                       Active<b>Squad</b>
@@ -168,28 +142,8 @@ const PlayerRoster = () => {
                       <Empty text={'Active Squad IS EMPTY'} />
                     )}
                   </section>
-
-                  {/* <section className='stats_container'>
-            {activePlayerData?.length > 0 ? (
-              activePlayerData?.map((v, i) => {
-                return (
-                  <PlayerRosterCard
-                    key={i}
-                    data={v}
-                    index={i}
-                    state={nonActive}
-                    handleClick={handleNonActive}
-                    playerCaps={playerCaps}
-                  />
-                )
-              })
-            ) : (
-              <Empty text={'Active Squad IS EMPTY'} />
-            )}
-          </section> */}
-
+                  {/* ---------------------------------------------------- */}
                   <hr style={{ marginBlock: '20px' }} />
-
                   <div className='practice_squad_header'>
                     <p className='heading'>
                       Practice<b>Squad</b>
@@ -204,8 +158,6 @@ const PlayerRoster = () => {
                       </Button>
                     )}
                   </div>
-
-                  {/* PRACTICE SQUAD */}
                   <section className='stats_container'>
                     {data?.practice?.length > 0 ? (
                       data?.practice?.map((v, i) => {
@@ -225,34 +177,13 @@ const PlayerRoster = () => {
                       <Empty text={'Active Squad IS EMPTY'} />
                     )}
                   </section>
-                  {/* <section className='stats_container'>
-            {practiveSquadData?.length > 0 ? (
-              practiveSquadData?.map((v, i) => {
-                return (
-                  <PlayerRosterCard
-                    key={i}
-                    data={v}
-                    index={i}
-                    state={protectedCheck}
-                    handleClick={handleProtectedCheckbox}
-                    isPractice={true}
-                    playerCaps={playerCaps}
-                  />
-                )
-              })
-            ) : (
-              <Empty text={'practice Squad IS EMPTY'} />
-            )}
-          </section> */}
-
+                  {/* ---------------------------------------------------- */}
                   <hr style={{ marginBlock: '20px' }} />
-
                   <div className='practice_squad_header'>
                     <p className='heading'>
                       Draft<b>Picks</b>
                     </p>
                   </div>
-
                   <section className='stats_container'>
                     {draftPickData?.draft?.length > 0 ? (
                       draftPickData?.draft?.map((v, i) => {
@@ -266,8 +197,8 @@ const PlayerRoster = () => {
                       <Empty text={'DRAFT PICK IS EMPTY'} />
                     )}
                   </section>
+                  {/* ---------------------------------------------------- */}
                 </div>
-                {/* <div style={{ width: '400px' }}></div> */}
               </div>
             </Col>
             <Col xs={24} lg={8}></Col>

@@ -1,15 +1,14 @@
 import React, { useState } from 'react'
 import { Button, Modal, notification } from 'antd'
-// import { useParams } from 'react-router-dom'
-import { moveFromPractice } from '../../../redux/actions/rosterAction'
+import { getRoster, moveFromPractice } from '../../../redux/actions/rosterAction'
 import { activeRosterCount } from '../../../config/constants'
+import { useSelector } from 'react-redux'
 
-const ActivateFromPracticeSquad = ({ disabled, getData, activePlayers, playerId }) => {
+const ActivateFromPracticeSquad = ({ disabled, pInterfaceModalClose, activePlayers, playerId }) => {
+  const SETTING = useSelector((state) => state?.user?.setting)
   const [open, setOpen] = useState(false)
   const [selectedId, setSelectedId] = useState(null)
   const [loading, setLoading] = useState(false)
-
-  // const { id } = useParams()
 
   const showModal = () => setOpen(true)
   const closeModal = () => {
@@ -22,9 +21,10 @@ const ActivateFromPracticeSquad = ({ disabled, getData, activePlayers, playerId 
     await moveFromPractice({
       id: playerId,
     })
-    await getData()
     setLoading(false)
     closeModal()
+    pInterfaceModalClose()
+    getRoster(SETTING?.week)
   }
 
   const handleSubmit = async () => {
