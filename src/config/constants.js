@@ -30,10 +30,6 @@ export const isLocked = () => {
   // true is when we have selected current week
 }
 
-export const firstLetterCap = (str) => {
-  return str !== '' ? str?.charAt(0).toUpperCase() + str.slice(1) : str
-}
-
 export const version = '2.0.2'
 
 export const activeRosterCount = 53

@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux'
 
 import { draftData } from '../config/draftData'
 import NewRosterCard from '../components/NewRosterCard'
+import { sortedArray } from '../config/helperFunctions'
 
 const TeamRoster = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
@@ -84,7 +85,7 @@ const TeamRoster = () => {
               </p>
             </div>
             <section className='stats_container'>
-              {activePlayerData?.map((v, i) => {
+              {sortedArray(activePlayerData)?.map((v, i) => {
                 return (
                   <NewRosterCard
                     key={i}
@@ -119,7 +120,7 @@ const TeamRoster = () => {
               </p>
             </div>
             <section className='stats_container'>
-              {practiveSquadData?.map((v, i) => {
+              {sortedArray(practiveSquadData)?.map((v, i) => {
                 return (
                   <NewRosterCard
                     key={i}

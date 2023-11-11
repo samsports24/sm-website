@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux'
 import { isLocked } from '../config/constants'
 import { getRoster, setNonActivePlayer, setProtectedPlayer } from '../redux/actions/rosterAction'
 import { draftData } from '../config/draftData'
+import { sortedArray } from '../config/helperFunctions'
 
 const PlayerRoster = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
@@ -126,7 +127,7 @@ const PlayerRoster = () => {
                   </div>
                   <section className='stats_container'>
                     {data?.active?.length > 0 ? (
-                      data?.active?.map((v, i) => {
+                      sortedArray(data?.active)?.map((v, i) => {
                         return (
                           <NewRosterCard
                             key={i}
@@ -160,7 +161,7 @@ const PlayerRoster = () => {
                   </div>
                   <section className='stats_container'>
                     {data?.practice?.length > 0 ? (
-                      data?.practice?.map((v, i) => {
+                      sortedArray(data?.practice)?.map((v, i) => {
                         return (
                           <NewRosterCard
                             key={i}
@@ -210,3 +211,36 @@ const PlayerRoster = () => {
 }
 
 export default PlayerRoster
+
+const o = [
+  {
+    players: {
+      Position: 'QB',
+    },
+    team: {},
+  },
+  {
+    players: {
+      Position: 'OL',
+    },
+    team: {},
+  },
+  {
+    players: {
+      Position: 'K',
+    },
+    team: {},
+  },
+  {
+    players: {
+      Position: 'P',
+    },
+    team: {},
+  },
+  {
+    players: {
+      Position: 'DT',
+    },
+    team: {},
+  },
+]

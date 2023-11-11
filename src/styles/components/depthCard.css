@@ -12,7 +12,7 @@
   height: 184px;
   background-color: var(--primaryPurple);
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   border-radius: 10px 10px 0px 0px;
 }
 .depth_card_box .image_box img {

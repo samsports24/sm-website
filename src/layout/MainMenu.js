@@ -133,7 +133,10 @@ const MainMenu = () => {
               onClick={() => navigate('/free-agent')}
             >
               <BsShop />
-              <p>free agents</p>
+              <p>
+                free
+                <br /> agents
+              </p>
             </div>
             <div
               className={`sidebar_menu_item ${active === 'league-standings' ? 'activeRoute' : ''}`}

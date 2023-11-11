@@ -12,7 +12,7 @@ import { getRosterPlayer } from '../../redux/actions/rosterAction'
 import { useSelector } from 'react-redux'
 import Loader from '../Loader'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
-import { Button } from 'antd'
+import { Button, Table } from 'antd'
 import { useNavigate } from 'react-router-dom'
 
 const PlayerInterfacePopup = ({ state, closeModal, showModal }) => {
@@ -44,28 +44,28 @@ const PlayerInterfacePopup = ({ state, closeModal, showModal }) => {
     setIsLoading(false)
   }
 
-  const playerCenterData = [
-    { name: 'Team:', value: data?.player?.Team || '-' },
-    { name: 'Opponent:', value: data?.player?.UpcomingGameOpponent || '-' },
-    { name: 'Postion:', value: data?.player?.Position || '-' },
-    { name: 'Height:', value: data?.player?.Height || '-' },
-    {
-      name: 'Years in League:',
-      value: data?.player?.Experience
-        ? data?.player?.Experience <= 1
-          ? `${data?.player?.Experience} Year`
-          : `${data?.player?.Experience} Years`
-        : '-',
-    },
-    {
-      name: 'Player Caps:',
-      value: data?.playerContract?.PlayerCap
-        ? `$${data?.playerContract?.PlayerCap?.toLocaleString()}`
-        : '-',
-    },
-    { name: 'Player College:', value: data?.player?.College || '-' },
-    { name: 'Age:', value: data?.player?.Age || '-' },
-  ]
+  // const playerCenterData = [
+  //   { name: 'Team:', value: data?.player?.Team || '-' },
+  //   { name: 'Opponent:', value: data?.player?.UpcomingGameOpponent || '-' },
+  //   { name: 'Postion:', value: data?.player?.Position || '-' },
+  //   { name: 'Height:', value: data?.player?.Height || '-' },
+  //   {
+  //     name: 'Years in League:',
+  //     value: data?.player?.Experience
+  //       ? data?.player?.Experience <= 1
+  //         ? `${data?.player?.Experience} Year`
+  //         : `${data?.player?.Experience} Years`
+  //       : '-',
+  //   },
+  //   {
+  //     name: 'Player Caps:',
+  //     value: data?.playerContract?.PlayerCap
+  //       ? `$${data?.playerContract?.PlayerCap?.toLocaleString()}`
+  //       : '-',
+  //   },
+  //   { name: 'Player College:', value: data?.player?.College || '-' },
+  //   { name: 'Age:', value: data?.player?.Age || '-' },
+  // ]
 
   const playerIdBig = data?.player?._id
   const playerIdSmall = data?.player?.PlayerID
@@ -112,7 +112,221 @@ const PlayerInterfacePopup = ({ state, closeModal, showModal }) => {
       ? 'TE'
       : p === 'wr'
       ? 'WR'
+      : p === 'rb'
+      ? 'RB'
       : 'FLEX'
+  }
+
+  const columns = [
+    {
+      title: 'YEAR',
+      dataIndex: 'year',
+      key: 'year',
+      render: (t) => (t ? t : '-'),
+    },
+    {
+      title: 'TOTAL POINTS',
+      dataIndex: 'totalPoints',
+      key: 'totalPoints',
+      render: (t) => (t ? t : '-'),
+      width: 130,
+    },
+    {
+      title: 'AVG. POINTS',
+      dataIndex: 'avgPoints',
+      key: 'avgPoints',
+      render: (t) => (t ? t : '-'),
+      width: 130,
+    },
+    {
+      title: (
+        <p>
+          WK<b>1</b>
+        </p>
+      ),
+      dataIndex: 'week1',
+      key: 'week1',
+      render: (t) => (t ? t : '-'),
+    },
+    {
+      title: (
+        <p>
+          WK<b>2</b>
+        </p>
+      ),
+      dataIndex: 'week2',
+      key: 'week2',
+      render: (t) => (t ? t : '-'),
+    },
+    {
+      title: (
+        <p>
+          WK<b>3</b>
+        </p>
+      ),
+      dataIndex: 'week3',
+      key: 'week3',
+      render: (t) => (t ? t : '-'),
+    },
+    {
+      title: (
+        <p>
+          WK<b>4</b>
+        </p>
+      ),
+      dataIndex: 'week4',
+      key: 'week4',
+      render: (t) => (t ? t : '-'),
+    },
+    {
+      title: (
+        <p>
+          WK<b>5</b>
+        </p>
+      ),
+      dataIndex: 'week5',
+      key: 'week5',
+      render: (t) => (t ? t : '-'),
+    },
+    {
+      title: (
+        <p>
+          WK<b>6</b>
+        </p>
+      ),
+      dataIndex: 'week6',
+      key: 'week6',
+      render: (t) => (t ? t : '-'),
+    },
+    {
+      title: (
+        <p>
+          WK<b>7</b>
+        </p>
+      ),
+      dataIndex: 'week7',
+      key: 'week7',
+      render: (t) => (t ? t : '-'),
+    },
+    {
+      title: (
+        <p>
+          WK<b>8</b>
+        </p>
+      ),
+      dataIndex: 'week8',
+      key: 'week8',
+      render: (t) => (t ? t : '-'),
+    },
+    {
+      title: (
+        <p>
+          WK<b>9</b>
+        </p>
+      ),
+      dataIndex: 'week9',
+      key: 'week9',
+      render: (t) => (t ? t : '-'),
+    },
+    {
+      title: (
+        <p>
+          WK<b>10</b>
+        </p>
+      ),
+      dataIndex: 'week10',
+      key: 'week10',
+      render: (t) => (t ? t : '-'),
+    },
+    {
+      title: (
+        <p>
+          WK<b>11</b>
+        </p>
+      ),
+      dataIndex: 'week11',
+      key: 'week11',
+      render: (t) => (t ? t : '-'),
+    },
+    {
+      title: (
+        <p>
+          WK<b>12</b>
+        </p>
+      ),
+      dataIndex: 'week12',
+      key: 'week12',
+      render: (t) => (t ? t : '-'),
+    },
+    {
+      title: (
+        <p>
+          WK<b>13</b>
+        </p>
+      ),
+      dataIndex: 'week13',
+      key: 'week13',
+      render: (t) => (t ? t : '-'),
+    },
+    {
+      title: (
+        <p>
+          WK<b>14</b>
+        </p>
+      ),
+      dataIndex: 'week14',
+      key: 'week14',
+      render: (t) => (t ? t : '-'),
+    },
+    {
+      title: (
+        <p>
+          WK<b>15</b>
+        </p>
+      ),
+      dataIndex: 'week15',
+      key: 'week15',
+      render: (t) => (t ? t : '-'),
+    },
+    {
+      title: (
+        <p>
+          WK<b>16</b>
+        </p>
+      ),
+      dataIndex: 'week16',
+      key: 'week16',
+      render: (t) => (t ? t : '-'),
+    },
+    {
+      title: (
+        <p>
+          WK<b>17</b>
+        </p>
+      ),
+      dataIndex: 'week17',
+      key: 'week17',
+      render: (t) => (t ? t : '-'),
+    },
+    {
+      title: (
+        <p>
+          WK<b>18</b>
+        </p>
+      ),
+      dataIndex: 'week18',
+      key: 'week18',
+      render: (t) => (t ? t : '-'),
+    },
+  ]
+
+  const getYear = (contract) => {
+    const signed = contract?.split(' signed a ')[1][0]
+    if (signed) {
+      return new Date().getFullYear() - 1 + Number(signed)
+    } else {
+      return '-'
+    }
   }
 
   return (
@@ -128,7 +342,7 @@ const PlayerInterfacePopup = ({ state, closeModal, showModal }) => {
             </div>
           )}
           <div className='top_row'>
-            <div className='top_row_left'>
+            <div className='top_row_1'>
               <div className='image_box'>
                 <img
                   className='bg_image'
@@ -147,11 +361,74 @@ const PlayerInterfacePopup = ({ state, closeModal, showModal }) => {
                 <h2 className='player_projection'>{data?.player?.InjuryStatus || '-'}</h2>
               </div>
             </div>
-            <div className='top_row_center'>
-              <h2>Player news:</h2>
-              <p>{data?.news || '-'}</p>
+            <div className='top_row_2'>
+              <p className='top_player_name'>
+                {data?.player?.FirstName}
+                <b>{data?.player?.LastName}</b>
+              </p>
+              <div className='player_details_box'>
+                <p>
+                  <b>position:</b>
+                  {data?.player?.Position}
+                </p>
+                <p>
+                  <b>team:</b>
+                  {data?.player?.Team}
+                </p>
+              </div>
+              <div className='player_details_box'>
+                <p>
+                  <b>age:</b>
+                  {data?.player?.Age}
+                </p>
+                <p>
+                  <b>height:</b>
+                  {data?.player?.Height ? data?.player?.Height : '-'}
+                </p>
+                <p>
+                  <b>weight:</b>
+                  {data?.player?.Weight ? (
+                    <>
+                      {data?.player?.Weight}
+                      <span>lbs</span>
+                    </>
+                  ) : (
+                    '-'
+                  )}
+                </p>
+                <p>
+                  <b>exp:</b>
+                  {data?.player?.Experience ? (
+                    data?.player?.Experience <= 1 ? (
+                      <>
+                        {data?.player?.Experience}
+                        <span>Year</span>
+                      </>
+                    ) : (
+                      <>
+                        {data?.player?.Experience}
+                        <span>Years</span>
+                      </>
+                    )
+                  ) : (
+                    '-'
+                  )}
+                </p>
+              </div>
+              <div className='player_news_box'>
+                <p className='title'>
+                  player<b>news</b>
+                </p>
+                <p className='news_text'>{data?.news || 'No news available'}</p>
+              </div>
             </div>
-            <div className='top_row_right'>
+            <div className='top_row_3'>
+              <p>
+                OWNING<b>TEAM</b>
+              </p>
+              <img src={state?.teamLogo} alt='Team Logo' />
+            </div>
+            <div className='top_row_4'>
               {state?.teamId ? (
                 <>
                   <Button
@@ -207,27 +484,98 @@ const PlayerInterfacePopup = ({ state, closeModal, showModal }) => {
               )}
             </div>
           </div>
-          <div className='middle_row'>
-            {playerCenterData?.map((v) => {
-              return (
-                <h3 key={v?.name}>
-                  {v?.name}
-                  <span>{v?.value}</span>
-                </h3>
-              )
-            })}
-          </div>
           <div className='bottom_row'>
             <div className='left'>
-              <h2>Player past projected stats & scores</h2>
-              <div className='coming_soon_box'>
-                <h1>Coming Soon</h1>
+              <div className='left_top'>
+                <div>
+                  <h2>Player Rank</h2>
+                  <div className='player_rank_box'>
+                    <div>
+                      <p className='text_1'>#</p>
+                      <p className='text_2'>POSITION</p>
+                    </div>
+                    <div style={{ alignSelf: 'flex-start' }}>
+                      <p className='text_2' style={{ fontSize: '18px' }}>
+                        |
+                      </p>
+                    </div>
+                    <div>
+                      <p className='text_1'>#</p>
+                      <p className='text_2'>OVERALL</p>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <h2>Ownership</h2>
+                  <div className='ownership_box'>
+                    <div>
+                      <p className='text_1'>0%</p>
+                      <p className='text_2'>ROSTERED</p>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <h2>TPF / APF</h2>
+                  <div className='tpf_apf_box'>
+                    <p>-</p>
+                    <span style={{ fontSize: '22px', color: '#fff' }}>|</span>
+                    <p>-</p>
+                  </div>
+                </div>
+              </div>
+              <div className='left_bottom'>
+                <p>
+                  PLAYER<b>HISTORY</b>
+                </p>
+                <Table
+                  loading={false}
+                  dataSource={[]}
+                  columns={columns}
+                  bordered={false}
+                  pagination={false}
+                  scroll={{ x: 1700, y: 200 }}
+                  className='interface_table'
+                />
               </div>
             </div>
             <div className='right'>
-              <div className='right_wrapper'>
-                <h2>Player Contract Info</h2>
-                <p>{data?.playerContract?.contractInfo || '-'}</p>
+              <p>
+                PLAYER<b>CONTRACT</b>
+              </p>
+              <div className='contract_box'>
+                <div className='caphit_box'>
+                  <p>
+                    CAP<b>HIT</b>
+                  </p>
+                  <p>
+                    <b>23&apos;</b>{' '}
+                    {data?.playerContract?.PlayerCap
+                      ? `$${data?.playerContract?.PlayerCap?.toLocaleString()}`
+                      : '-'}
+                  </p>
+                </div>
+                <div className='caphit_year_box'>
+                  <p>
+                    24&apos; CAP<b>HIT</b>
+                  </p>
+                  <div>
+                    <p>$-</p>
+                  </div>
+                </div>
+                <div className='caphit_year_box'>
+                  <p>
+                    FINAL<b>YEAR</b>
+                  </p>
+                  <div>
+                    <p>{getYear(data?.playerContract?.contractInfo)}</p>
+                  </div>
+                </div>
+                <div className='contract_info_box'>
+                  <p>
+                    CONTRACT<b>INFO:</b>
+                  </p>
+                  <p>{data?.playerContract?.contractInfo || 'No contract available'}</p>
+                </div>
               </div>
             </div>
           </div>
