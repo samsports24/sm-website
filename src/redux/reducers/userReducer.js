@@ -39,6 +39,7 @@ const userReducer = (state = initialState, action) => {
           ...state?.setting,
           week: payload?.setting?.week,
           isGameLocked: payload?.setting?.isGameLocked,
+          season: payload?.setting?.season,
         },
         teamSalaryCap: payload?.teamSalaryCap,
       }

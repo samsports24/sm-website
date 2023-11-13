@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 
 import { Button, Row, Col, Select, notification } from 'antd'
 
-// import Arrow from '../assets/arrow-right.svg'
 import { AiFillCloseCircle } from 'react-icons/ai'
 
 import { useSelector } from 'react-redux'
@@ -18,7 +17,9 @@ import { getAllTeam } from '../redux/actions/teamActions'
 import { getRoster } from '../redux/actions/rosterAction'
 
 import { leagueSalaryCap } from '../config/constants'
-// import { useNavigate } from 'react-router-dom'
+
+import { draftData } from '../config/draftData'
+import Empty from '../components/Empty'
 
 const TeamTrade = () => {
   const SETTING = useSelector((state) => state?.user)
@@ -34,11 +35,15 @@ const TeamTrade = () => {
 
   const [selectTeam, setSelectTeam] = useState(null)
 
-  // const navigate = useNavigate()
+  const [draftCurrentTeam, setDraftCurrentTeam] = useState([])
+  const [draftOppTeam, setDraftOppTeam] = useState([])
+  console.log('🚀 ~ file: TeamTrade.js:31 ~ TeamTrade ~ myTeam:', myTeam)
 
   useEffect(() => {
     getTeams()
     getMyTeam()
+    SETTING?.userDetails?.team?._id &&
+      setDraftCurrentTeam(draftData?.find((v) => v?.teamId === SETTING?.userDetails?.team?._id))
   }, [])
 
   useEffect(() => {
@@ -60,6 +65,7 @@ const TeamTrade = () => {
   const getOtherTeam = async () => {
     setLoading2(true)
     const res = await getOtherTeamTrade({ id: selectTeam })
+    setDraftOppTeam(draftData?.find((v) => v?.teamId === selectTeam))
     setOtherTeam(res)
     setLoading2(false)
   }
@@ -87,32 +93,6 @@ const TeamTrade = () => {
 
   return (
     <div className='practice_squad_container team_trade_main'>
-      {/* BREADCRUMB */}
-      {/* <section className='_breadcrumb'>
-        <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
-          Back
-        </Button>
-        <Breadcrumb
-          className='customize_breadcrumb'
-          separator={<img src={Arrow} />}
-          items={[
-            {
-              title: <p>Home</p>,
-            },
-            {
-              title: <p>Team</p>,
-            },
-            {
-              title: <p>Roster</p>,
-            },
-            {
-              title: <p>Player Interface</p>,
-            },
-          ]}
-        />
-      </section> */}
-
-      {/* HEADER */}
       <Header />
 
       <ButtonsAndPagination isLink={false} />
@@ -126,34 +106,7 @@ const TeamTrade = () => {
       ) : (
         <section className='squad_card_container transparent'>
           <Row gutter={[30, 30]}>
-            {/* <Col xs={24} lg={12}>
-              <Select
-                placeholder='Teams'
-                style={{ minWidth: 250, float: 'right' }}
-                value={selectTeam}
-                onChange={(e) => setSelectTeam(e)}
-                options={teams?.map((v) => {
-                  return {
-                    value: v?._id,
-                    label: (
-                      <div className='select_box_label'>
-                        <img src={v?.logo} alt='logo' />
-                        <p>{v?.name}</p>
-                      </div>
-                    ),
-                  }
-                })}
-              />
-            </Col> */}
             <Col xs={24} lg={24}>
-              {/* <Button
-                loading={btnLoading}
-                type='primary'
-                style={{ float: 'right' }}
-                onClick={createTrade}
-              >
-                Submit
-              </Button> */}
               <Select
                 placeholder='Team'
                 className='team_select_box'
@@ -180,10 +133,6 @@ const TeamTrade = () => {
             <Col xs={24} lg={12}>
               <div className='add-player'>
                 <div className='header'>
-                  {/* <div className='left'>
-                  <h2>ADD PLAYER</h2>
-                  <Input style={{ width: '200px', height: '40px' }} />
-                </div> */}
                   <h2>{(myTeam && myTeam?.active[0]?.team?.name) || 'Your Team'}</h2>
                 </div>
                 {myTeamSelected?.map((v) => (
@@ -224,10 +173,6 @@ const TeamTrade = () => {
               ) : (
                 <div className='add-player'>
                   <div className='header'>
-                    {/* <div className='left'>
-                  <h2>ADD PLAYER</h2>
-                  <Input style={{ width: '200px', height: '40px' }} />
-                </div> */}
                     <h2>{(otherTeam && otherTeam?.team?.name) || 'Other Team'}</h2>
                   </div>
                   {otherTeamSelected?.map((v) => (
@@ -263,7 +208,6 @@ const TeamTrade = () => {
                       selected={otherTeamSelected}
                       setSelected={setOtherTeamSelected}
                     />
-                    {/* <p>Team name here</p> */}
                   </div>
                 </div>
               )}
@@ -338,6 +282,39 @@ const TeamTrade = () => {
           </Row>
         </section>
       )}
+
+      <Row gutter={[30, 30]} style={{ marginTop: '30px' }}>
+        <Col xs={24} lg={12}>
+          <section className='draft_pick_box'>
+            {draftCurrentTeam?.draft?.length > 0 ? (
+              draftCurrentTeam?.draft?.map((v, i) => {
+                return (
+                  <div key={i} className='draft_pick_row'>
+                    <p>{v} Pick</p>
+                  </div>
+                )
+              })
+            ) : (
+              <Empty text={'DRAFT PICK IS EMPTY'} />
+            )}
+          </section>
+        </Col>
+        <Col xs={24} lg={12}>
+          <section className='draft_pick_box'>
+            {draftOppTeam?.draft?.length > 0 ? (
+              draftOppTeam?.draft?.map((v, i) => {
+                return (
+                  <div key={i} className='draft_pick_row'>
+                    <p>{v} Pick</p>
+                  </div>
+                )
+              })
+            ) : (
+              <Empty text={'DRAFT PICK IS EMPTY'} />
+            )}
+          </section>
+        </Col>
+      </Row>
     </div>
   )
 }

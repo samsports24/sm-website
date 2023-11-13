@@ -89,6 +89,25 @@
   margin-top: -38px;
 }
 
+.draft_pick_box {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.draft_pick_row {
+  width: 100%;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 10px 40px;
+}
+.draft_pick_row p {
+  font-size: 14px;
+}
+
 @media (max-width: 600px) {
   .team_select_box {
     min-width: 100%;

@@ -156,7 +156,7 @@ const TeamRoster = () => {
                 Draft<b>Picks</b>
               </p>
             </div>
-            <section className='stats_container'>
+            <section className='draft_pick_box'>
               {draftPickData?.draft?.length > 0 ? (
                 draftPickData?.draft?.map((v, i) => {
                   return (

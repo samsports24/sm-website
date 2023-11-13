@@ -185,7 +185,7 @@ const PlayerRoster = () => {
                       Draft<b>Picks</b>
                     </p>
                   </div>
-                  <section className='stats_container'>
+                  <section className='draft_pick_box'>
                     {draftPickData?.draft?.length > 0 ? (
                       draftPickData?.draft?.map((v, i) => {
                         return (
@@ -211,36 +211,3 @@ const PlayerRoster = () => {
 }
 
 export default PlayerRoster
-
-const o = [
-  {
-    players: {
-      Position: 'QB',
-    },
-    team: {},
-  },
-  {
-    players: {
-      Position: 'OL',
-    },
-    team: {},
-  },
-  {
-    players: {
-      Position: 'K',
-    },
-    team: {},
-  },
-  {
-    players: {
-      Position: 'P',
-    },
-    team: {},
-  },
-  {
-    players: {
-      Position: 'DT',
-    },
-    team: {},
-  },
-]

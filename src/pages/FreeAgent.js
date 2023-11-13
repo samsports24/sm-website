@@ -11,8 +11,11 @@ import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 
 import { createAuction, getFreeAgent } from '../redux/actions/rosterAction'
+import PlayerDetailsModal from '../components/modal/PlayerDetailsModal'
+import { useSelector } from 'react-redux'
 
 const FreeAgent = () => {
+  const SETTING = useSelector((s) => s.user.setting)
   const [freeAgents, setFreeAgents] = useState({
     total: 0,
     players: [],
@@ -84,6 +87,17 @@ const FreeAgent = () => {
     setPlayerID('')
   }
 
+  const getScore = (arr) => {
+    const pf =
+      arr?.filter((v) => v?.season == SETTING?.season)?.reduce((acc, obj) => acc + obj.score, 0) ||
+      0
+    const avg = pf > 0 ? pf / arr?.length : 0
+    return {
+      pf,
+      avg,
+    }
+  }
+
   const columns = [
     {
       title: ' ',
@@ -106,29 +120,60 @@ const FreeAgent = () => {
       dataIndex: 'Position',
       key: 'Position',
     },
+
     {
       title: 'PLAYER NAME',
       dataIndex: 'Name',
       key: 'Name',
       render: (t, obj) => {
         return (
-          <p
-            onClick={() => {
-              navigate(`/agent-player-interface/${obj?.PlayerID}`)
+          // <p
+          //   onClick={() => {
+          //     navigate(`/agent-player-interface/${obj?.PlayerID}`)
+          //   }}
+          //   style={{ cursor: 'pointer' }}
+          //   className='name_text_hover'
+          // >
+          //   {t || '-'}
+          // </p>
+          <PlayerDetailsModal
+            button={<span className='fa_p_name name_text_hover'>{t}</span>}
+            state={{
+              playerID: obj?.PlayerID,
+              teamId: null,
+              teamName: '',
+              teamLogo: null,
+              isFreeAgent: true,
             }}
-            style={{ cursor: 'pointer' }}
-            className='name_text_hover'
-          >
-            {t || '-'}
-          </p>
+          />
         )
       },
     },
     {
       title: 'PF',
-      dataIndex: 'pointsPerGame',
-      key: 'pointsPerGame',
-      render: (t) => <p>{t > 0 ? t : '-'}</p>,
+      dataIndex: 'playerScore',
+      key: 'playerScore',
+      render: (_, obj) => {
+        return (
+          <p>
+            {0}
+            {/* {getScore(obj?.weeklyScoring)?.pf} */}
+          </p>
+        )
+      },
+    },
+    {
+      title: 'AVG. PF',
+      dataIndex: 'playerScore',
+      key: 'playerScore',
+      render: (_, obj) => {
+        return (
+          <p>
+            {0}
+            {/* {getScore(obj?.weeklyScoring)?.avg} */}
+          </p>
+        )
+      },
     },
     {
       title: 'PLAYER RANK',

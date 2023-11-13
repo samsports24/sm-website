@@ -311,6 +311,11 @@
   border-radius: 50%;
 }
 
+.fa_p_name {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+}
 .new_table_container .name_text_hover:hover {
   color: var(--primary) !important;
 }

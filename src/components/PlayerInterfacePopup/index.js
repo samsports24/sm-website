@@ -8,7 +8,7 @@ import {
   ReleasePlayer,
   TradePlayer,
 } from '../modal/PlayerInterfaceModals'
-import { getRosterPlayer } from '../../redux/actions/rosterAction'
+import { getFreeAgentRosterPlayer, getRosterPlayer } from '../../redux/actions/rosterAction'
 import { useSelector } from 'react-redux'
 import Loader from '../Loader'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
@@ -33,39 +33,18 @@ const PlayerInterfacePopup = ({ state, closeModal, showModal }) => {
 
   const getData = async () => {
     setIsLoading(true)
-    const res = await getRosterPlayer({
-      id: state?.playerID,
-      week: SETTING?.week,
-      team: state?.teamId,
-    })
+    const res = state?.isFreeAgent
+      ? await getFreeAgentRosterPlayer({ id: state?.playerID, week: SETTING?.week })
+      : await getRosterPlayer({
+          id: state?.playerID,
+          week: SETTING?.week,
+          team: state?.teamId,
+        })
     if (res) {
       setData(res)
     }
     setIsLoading(false)
   }
-
-  // const playerCenterData = [
-  //   { name: 'Team:', value: data?.player?.Team || '-' },
-  //   { name: 'Opponent:', value: data?.player?.UpcomingGameOpponent || '-' },
-  //   { name: 'Postion:', value: data?.player?.Position || '-' },
-  //   { name: 'Height:', value: data?.player?.Height || '-' },
-  //   {
-  //     name: 'Years in League:',
-  //     value: data?.player?.Experience
-  //       ? data?.player?.Experience <= 1
-  //         ? `${data?.player?.Experience} Year`
-  //         : `${data?.player?.Experience} Years`
-  //       : '-',
-  //   },
-  //   {
-  //     name: 'Player Caps:',
-  //     value: data?.playerContract?.PlayerCap
-  //       ? `$${data?.playerContract?.PlayerCap?.toLocaleString()}`
-  //       : '-',
-  //   },
-  //   { name: 'Player College:', value: data?.player?.College || '-' },
-  //   { name: 'Age:', value: data?.player?.Age || '-' },
-  // ]
 
   const playerIdBig = data?.player?._id
   const playerIdSmall = data?.player?.PlayerID
@@ -422,14 +401,20 @@ const PlayerInterfacePopup = ({ state, closeModal, showModal }) => {
                 <p className='news_text'>{data?.news || 'No news available'}</p>
               </div>
             </div>
-            <div className='top_row_3'>
-              <p>
-                OWNING<b>TEAM</b>
-              </p>
-              <img src={state?.teamLogo} alt='Team Logo' />
-            </div>
+            {!state?.isFreeAgent && (
+              <div className='top_row_3'>
+                <p>
+                  OWNING<b>TEAM</b>
+                </p>
+                {state?.teamLogo && <img src={state?.teamLogo} alt='Team Logo' />}
+              </div>
+            )}
             <div className='top_row_4'>
-              {state?.teamId ? (
+              {state?.isFreeAgent ? (
+                <>
+                  <Button type='primary'>AUCTION PLAYER</Button>
+                </>
+              ) : state?.teamId ? (
                 <>
                   <Button
                     type='primary'
