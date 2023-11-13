@@ -1,13 +1,14 @@
 {
   "files": {
-    "main.css": "/static/css/main.4301d8a5.css",
-    "main.js": "/static/js/main.4d5b0e7c.js",
+    "main.css": "/static/css/main.08b8fd86.css",
+    "main.js": "/static/js/main.a1522cb5.js",
     "static/media/trans-league-banner.png": "/static/media/trans-league-banner.c6b03968a9f61ec4cad1.png",
     "static/media/rectangle-3.png": "/static/media/rectangle-3.aebbca7e8e6696c5f7c4.png",
     "static/media/login-pic-1.png": "/static/media/login-pic-1.38add10a7452b82cda4b.png",
     "static/media/banner-img-tab.png": "/static/media/banner-img-tab.aed4890e8ac288d1846e.png",
     "static/media/baseball_banner.png": "/static/media/baseball_banner.940bcc97f33ebb9ba5e8.png",
     "static/media/hockey_banner.png": "/static/media/hockey_banner.1aa55924c9d5de4f967c.png",
+    "static/media/depth-chart-bg.png": "/static/media/depth-chart-bg.513174acdcdf448cab4c.png",
     "static/media/landigBanner.png": "/static/media/landigBanner.252d5c811a26b66d9a96.png",
     "static/media/rectangle-9.png": "/static/media/rectangle-9.199c777792f6b75576d2.png",
     "static/media/BQB.png": "/static/media/BQB.ca83c51b48fcc7fbe349.png",
@@ -25,10 +26,28 @@
     "static/media/keith-johnston-vd-1-cz-99-sr-4-unsplash-1.png": "/static/media/keith-johnston-vd-1-cz-99-sr-4-unsplash-1.83eb21b9257217ac9222.png",
     "static/media/P.png": "/static/media/P.29cf328f129728b3bb23.png",
     "static/media/LB.png": "/static/media/LB.2e0337ae8cc81e07b45d.png",
+    "static/media/bqb.png": "/static/media/bqb.724b7e5f9777dbc97217.png",
     "static/media/keith-johnston-baseball.png": "/static/media/keith-johnston-baseball.eecc4391e5bca26e6f8b.png",
+    "static/media/lbcbs.png": "/static/media/lbcbs.aa75f6831f1b19f03fd9.png",
+    "static/media/rbwrte.png": "/static/media/rbwrte.0e51404b6d998f501ab0.png",
+    "static/media/cbs.png": "/static/media/cbs.b55625632d899cc79881.png",
+    "static/media/dtde.png": "/static/media/dtde.05dcc623497aa846b2e6.png",
+    "static/media/dtlb.png": "/static/media/dtlb.9bcfe2ad8895f9075d13.png",
+    "static/media/qb.png": "/static/media/qb.0e2b0b84b4c7c6fe6066.png",
     "static/media/keith-johnston-hockey.png": "/static/media/keith-johnston-hockey.3fa596b61d005fc0c1e2.png",
+    "static/media/s.png": "/static/media/s.f58ec2674d85300925c6.png",
+    "static/media/wr.png": "/static/media/wr.265e091f311910cd6dcf.png",
+    "static/media/dt.png": "/static/media/dt.535dcf1dc3ed82e4947e.png",
+    "static/media/de.png": "/static/media/de.76a2ad4df3f203b5f12a.png",
+    "static/media/cb.png": "/static/media/cb.8094a684339f725a4e33.png",
+    "static/media/ol.png": "/static/media/ol.d67cdda124786e9a997b.png",
+    "static/media/te.png": "/static/media/te.f7dd897fee3aa295db80.png",
+    "static/media/k.png": "/static/media/k.e7da1407b455cd0aca6f.png",
+    "static/media/rb.png": "/static/media/rb.7b8dfcfa9dd2d466acce.png",
     "static/media/RB.png": "/static/media/RB.3cdb684bc6724308be20.png",
     "static/media/banner-img-mob.png": "/static/media/banner-img-mob.dc68704617b7fd75f885.png",
+    "static/media/p.png": "/static/media/p.7abf13887a6146f76bfe.png",
+    "static/media/lb.png": "/static/media/lb.8c78ca4ea33a1d65ae2a.png",
     "static/media/keith-johnston-basketball.png": "/static/media/keith-johnston-basketball.56806c3047d7eccd953f.png",
     "static/media/news-feed-1.jpg": "/static/media/news-feed-1.fab9de4160634381dbb5.jpg",
     "static/media/rectangle-5.png": "/static/media/rectangle-5.2d3bdef16d75bdf891c5.png",
@@ -107,11 +126,11 @@
     "static/media/arrow-right.svg": "/static/media/arrow-right.fa8032f7bdce2c4cee175e363666f7ca.svg",
     "static/media/youtube.svg": "/static/media/youtube.ed864766e3b013e4e67a2b38107f1313.svg",
     "static/media/fb.svg": "/static/media/fb.99d8a901875e4a0b67073c0d8b4b57fa.svg",
-    "main.4301d8a5.css.map": "/static/css/main.4301d8a5.css.map",
-    "main.4d5b0e7c.js.map": "/static/js/main.4d5b0e7c.js.map"
+    "main.08b8fd86.css.map": "/static/css/main.08b8fd86.css.map",
+    "main.a1522cb5.js.map": "/static/js/main.a1522cb5.js.map"
   },
   "entrypoints": [
-    "static/css/main.4301d8a5.css",
-    "static/js/main.4d5b0e7c.js"
+    "static/css/main.08b8fd86.css",
+    "static/js/main.a1522cb5.js"
   ]
 }
