@@ -4,7 +4,7 @@
   position: relative;
   background: var(--primaryPurple);
   background-image: url('../../assets/interface-bg.jpeg');
-  background-size: center;
+  background-size: cover;
   background-repeat: no-repeat;
   /* border-radius: 16px; */
   border: 1px solid #fff;
@@ -426,15 +426,75 @@
   }
 }
 @media (max-width: 1000px) {
-  /* .player_interface_popup .wrapper .top_row {
-    width: 100%;
-    display: flex;
+  .player_interface_popup .wrapper .top_row {
     flex-direction: column;
-    min-height: 300px;
-  } */
-}
-/*@media (max-width: 500px) {
+  }
+  .player_interface_popup .wrapper .top_row .top_row_1 {
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+  .player_interface_popup .wrapper .top_row .top_row_2 {
+    padding: 0px;
+  }
+  .player_interface_popup .wrapper .top_row .top_row_2 .top_player_name {
+    margin-left: 20px;
+  }
+  .player_interface_popup .wrapper .top_row .top_row_2 .player_details_box {
+    padding-inline: 20px;
+  }
+  .player_interface_popup .wrapper .top_row .top_row_2 .player_news_box {
+    padding: 20px;
+    height: auto;
+    max-height: 200px;
+  }
+  .player_interface_popup .wrapper .top_row .top_row_3 {
+    width: 100%;
+    padding: 20px;
+  }
+  .player_interface_popup .wrapper .top_row .top_row_4 {
+    width: 100%;
+    padding: 20px;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
   .player_interface_popup .wrapper .top_row .top_row_4 > button {
+    flex: 1;
+  }
+  .player_interface_popup .wrapper .bottom_row {
+    flex-direction: column;
+  }
+  .player_interface_popup .wrapper .bottom_row .left {
+    width: 100%;
+    padding: 20px;
+  }
+  .player_interface_popup .wrapper .bottom_row .left_top {
+    flex-wrap: wrap;
+  }
+  .player_interface_popup .wrapper .bottom_row .left_bottom {
+    padding: 0px;
+  }
+  .player_interface_popup .wrapper .bottom_row .right {
+    width: 100%;
+    padding: 0px 20px 20px 20px;
+    align-items: flex-start;
+  }
+  .player_interface_popup .wrapper .bottom_row .right .contract_box {
     width: 100%;
   }
-} */
+  .player_interface_popup .wrapper .bottom_row .right > p {
+    margin-left: 40px;
+  }
+  .player_interface_popup .wrapper .top_row .top_row_2 .player_news_box .news_text {
+    max-height: 130px;
+  }
+}
+@media (max-width: 600px) {
+  .player_interface_popup .wrapper .bottom_row .left_top {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .player_interface_popup .wrapper .top_row .top_row_2 .top_player_name {
+    font-size: 26px;
+  }
+}
