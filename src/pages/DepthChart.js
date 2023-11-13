@@ -5,7 +5,6 @@ import { Button } from 'antd'
 // Component
 import Header from '../components/Header'
 import DepthCard from '../components/DepthCard'
-// import { ColorFilter } from '../components/FilterComponent'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import Loader from '../components/Loader'
 
@@ -13,16 +12,9 @@ import Loader from '../components/Loader'
 import { depthCardData } from './mockData'
 
 import { clearDepthChart, getActiveRosterCount } from '../redux/actions/depthChartAction'
-import {
-  activeRosterCount,
-  // firstLetterCap,
-  legalPlayers,
-  nonActivePlayers,
-} from '../config/constants'
+import { activeRosterCount, legalPlayers, nonActivePlayers } from '../config/constants'
 
 import { useSelector } from 'react-redux'
-
-// import { MdLock } from 'react-icons/md'
 
 const DepthChart = () => {
   const USER = useSelector((state) => state?.user)
@@ -34,7 +26,6 @@ const DepthChart = () => {
   const [filterKey] = useState({
     offense: 'offense',
     defense: 'defense',
-    special: 'special',
   })
 
   const handleFilter = (value) => {
@@ -64,6 +55,9 @@ const DepthChart = () => {
             filtered.splice(index, 1, {
               imageUrl: item?.player?.HostedHeadshotNoBackgroundUrl || filtered[index].imageUrl,
               Name: item?.player?.Name,
+              Opponent: item?.player?.UpcomingGameOpponent,
+              Team: item?.player?.Team,
+              InjuryStatus: item?.player?.InjuryStatus,
               Position: filtered[index].Position,
               classKey: filtered[index].classKey,
               type: filtered[index].type,
@@ -100,26 +94,6 @@ const DepthChart = () => {
 
   return (
     <div className='depth_chart_container'>
-      {/* BREADCRUMB */}
-      {/* <section className='_breadcrumb'>
-        <Breadcrumb
-          className='customize_breadcrumb'
-          separator='>'
-          items={[
-            {
-              title: <p>Team</p>,
-            },
-            {
-              title: <p>Depth-Chart</p>,
-            },
-            {
-              title: <p>{firstLetterCap(activeFilter)}</p>,
-            },
-          ]}
-        />
-      </section> */}
-
-      {/* HEADER */}
       <Header />
 
       <ButtonsAndPagination isLink={false} />
@@ -138,14 +112,6 @@ const DepthChart = () => {
           className={`${activeFilter === filterKey.defense ? 'active_filter' : ''}`}
         >
           DEFENSE
-        </Button>
-        <Button
-          // disabled
-          type='primary'
-          onClick={() => handleFilter(filterKey.special)}
-          className={`${activeFilter === filterKey.special ? 'active_filter' : ''}`}
-        >
-          SPECIAL TEAM
         </Button>
       </div>
 
@@ -183,7 +149,7 @@ const DepthChart = () => {
                   : activeFilter + '_container'
               }`}
             >
-              {/* <img src={require('../assets/depth-chart-bg.png')} /> */}
+              <img src={require('../assets/depth-chart-bg.png')} />
               {data?.map((v, i) => {
                 return (
                   <DepthCard key={i} data={v} index={i} getDepthChartData={getDepthChartData} />

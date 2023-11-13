@@ -6582,6 +6582,22 @@ export const depthCardData = [
     classKey: 'offense_qb-2',
     type: 'offense',
   },
+  // ---------------------------------
+  {
+    imageUrl: require('../assets/player-img-2.png'),
+    Name: '',
+    Position: 'k',
+    classKey: 'special_team_pk',
+    type: 'offense', // special
+  },
+  {
+    imageUrl: require('../assets/player-img-6.png'),
+    Name: '',
+    Position: 'p',
+    classKey: 'special_team_pn',
+    type: 'offense', // special
+  },
+  // ---------------------------------
   {
     imageUrl: require('../assets/player-img-2.png'),
     Name: '',
@@ -6658,20 +6674,6 @@ export const depthCardData = [
     Position: 'cb',
     classKey: 'defense_cb-2',
     type: 'defense',
-  },
-  {
-    imageUrl: require('../assets/player-img-2.png'),
-    Name: '',
-    Position: 'k',
-    classKey: 'special_team_pk',
-    type: 'special',
-  },
-  {
-    imageUrl: require('../assets/player-img-6.png'),
-    Name: '',
-    Position: 'p',
-    classKey: 'special_team_pn',
-    type: 'special',
   },
 ]
 

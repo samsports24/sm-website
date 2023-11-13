@@ -10,42 +10,34 @@ const DepthCard = ({ data, index, getDepthChartData }) => {
   const [modalIndex, setModalIndex] = useState(-1)
   const [openModal, setOpenModal] = useState(false)
 
-  // const _positions = {
-  //   te: 'te',
-  //   ol: 'ol',
-  //   wr: 'wr',
-  //   rbwrte: 'rbwrte',
-  //   qb: 'qb',
-  //   rb: 'rb',
-  //   bqb: 'bqb',
-  // }
-
-  // const getImage = (position) => {
-  //   const p = position
-  //   return p === 'rb/wr/te' ? 'rbwrte' : p === 'backup qb' ? 'bqb' : p
-  // }
-
-  const { imageUrl, Name, Position, classKey, isPlayerLocked } = data
-  // console.log('🚀 ~ file: index.js:14 ~ DepthCard ~ Position:', Position)
-
-  const updatedName = (name) => {
-    return name === 'k' ? 'kicker' : name === 'p' ? 'punter' : name
+  const getImage = (position) => {
+    const p = position
+    return p === 'rb/wr/te'
+      ? 'rbwrte'
+      : p === 'backup qb'
+      ? 'bqb'
+      : p === 'cb/s'
+      ? 'cbs'
+      : p === 'dt/de'
+      ? 'dtde'
+      : p === 'dt/lb'
+      ? 'dtlb'
+      : p === 'lb/cb/s'
+      ? 'lbcbs'
+      : p
   }
+
+  const { imageUrl, Name, Position, classKey, Opponent, Team, InjuryStatus, isPlayerLocked } = data
+
   return (
     <>
       {isPlayerLocked && (
         <div className={`depth_card_player_locked ${classKey}`}>
-          <MdLock size={50} color={'#fff'} />
+          <MdLock size={30} color={'#fff'} />
         </div>
       )}
-      {/* <div className={`new_depth_card_box ${classKey}`}>
-        <img
-          className='card_bg_img'
-          src={require(`../../assets/offense-card/${getImage(Position)}.png`)}
-        />
-      </div> */}
       <div
-        className={`depth_card_box ${classKey}`}
+        className={`new_depth_card_box ${classKey}`}
         onClick={() => {
           const check = () => {
             if (isLocked()) return false
@@ -60,16 +52,22 @@ const DepthCard = ({ data, index, getDepthChartData }) => {
         }}
         style={{ cursor: isLocked() || isPlayerLocked ? 'no-drop' : 'pointer' }}
       >
-        <div className='image_box'>
-          <img src={imageUrl} />
-        </div>
-        <div className='name'>
-          <Tooltip title={Name}>
-            <p>{Name}</p>
-          </Tooltip>
-        </div>
-        <div className='text'>
-          <h2>{updatedName(Position)}</h2>
+        <div className='wrapper'>
+          <img
+            className='card_bg_img'
+            src={require(`../../assets/offense-card/${getImage(Position)}.png`)}
+          />
+          <div className='image_box'>
+            <img src={imageUrl} />
+          </div>
+          <div className='player_name'>
+            <Tooltip title={Name}>
+              <h2>{Name}</h2>
+            </Tooltip>
+          </div>
+          <p className='opponent_text'>{Opponent || '-'}</p>
+          <p className='team_text'>{Team || '-'}</p>
+          <p className='injury_text'>{InjuryStatus || '-'}</p>
         </div>
       </div>
 

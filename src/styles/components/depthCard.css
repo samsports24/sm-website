@@ -59,137 +59,191 @@
 
 /* -------------------------------------- */
 .new_depth_card_box {
-  width: 130px;
+  width: 143px;
   height: 200px;
-  border-radius: 10px;
-  /* border: 1px solid var(--border); */
-  cursor: pointer;
+  border-radius: 30px;
+  /* cursor: pointer; */
   position: absolute;
 }
-.new_depth_card_box .card_bg_img {
-  width: 130px;
+.new_depth_card_box .wrapper {
+  width: 143px;
   height: 200px;
+  border-radius: 30px;
+  /* cursor: pointer; */
+  position: relative;
+}
+.new_depth_card_box .wrapper .card_bg_img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 143px;
+  height: 200px;
+}
+.new_depth_card_box .wrapper .image_box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 143px;
+  height: 120px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 5;
+}
+.new_depth_card_box .wrapper .image_box img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.new_depth_card_box .wrapper .player_name {
+  width: 100%;
+  position: absolute;
+  top: 141px;
+  padding-left: 20px;
+}
+.new_depth_card_box .wrapper .player_name h2 {
+  font-size: 11px;
+  width: 100px;
+  overflow: hidden;
+  height: 13px;
+}
+.new_depth_card_box .wrapper .opponent_text,
+.new_depth_card_box .wrapper .team_text,
+.new_depth_card_box .wrapper .injury_text {
+  position: absolute;
+  top: 160px;
+  font-size: 11px;
+  width: 25px;
+  overflow: hidden;
+  height: 13px;
+  font-weight: 500;
+}
+.new_depth_card_box .wrapper .opponent_text {
+  left: 25px;
+}
+.new_depth_card_box .wrapper .team_text {
+  left: 53px;
+}
+.new_depth_card_box .wrapper .injury_text {
+  left: 85px;
 }
 
 /* DEFENSE */
 .defense_s {
-  top: 0px !important;
-  left: 1160px !important;
+  top: 100px !important;
+  left: 1300px !important;
 }
 .defense_cbs {
-  top: 220px !important;
-  left: 156px !important;
+  top: 100px !important;
+  left: 550px !important;
 }
 .defense_lb-1 {
-  top: 260px !important;
-  left: 390px !important;
+  top: 200px !important;
+  left: 730px !important;
 }
 .defense_lb-2 {
-  top: 260px !important;
-  left: 680px !important;
+  top: 200px !important;
+  left: 900px !important;
 }
 .defense_lbcbs {
-  top: 260px !important;
-  left: 610px !important;
-}
-.defense_lbcbs {
-  top: 260px !important;
-  left: 920px !important;
+  top: 200px !important;
+  left: 1070px !important;
 }
 .defense_cb-1 {
-  top: 580px !important;
-  left: 0px !important;
+  top: 380px !important;
+  left: 400px !important;
 }
 .defense_cb-2 {
-  top: 650px !important;
-  left: 1350px !important;
+  top: 380px !important;
+  left: 1440px !important;
 }
 .defense_de {
-  top: 650px !important;
-  left: 290px !important;
+  top: 440px !important;
+  left: 640px !important;
 }
 .defense_dt {
-  top: 650px !important;
-  left: 520px !important;
+  top: 440px !important;
+  left: 815px !important;
 }
 .defense_dtde {
-  top: 650px !important;
-  left: 755px !important;
+  top: 440px !important;
+  left: 990px !important;
 }
 .defense_dtlb {
-  top: 650px !important;
-  left: 1005px !important;
+  top: 440px !important;
+  left: 1165px !important;
 }
 
 /* OFFENSE */
 .offense_te {
-  top: 0 !important;
-  left: 150px !important;
+  top: 280px !important;
+  left: 1300px !important;
 }
 .offense_ol-1 {
-  top: 0 !important;
-  left: 350px !important;
+  top: 270px !important;
+  left: 600px !important;
 }
 .offense_ol-2 {
-  top: 0 !important;
-  left: 550px !important;
+  top: 265px !important;
+  left: 740px !important;
 }
 .offense_ol-3 {
-  top: 0 !important;
-  left: 750px !important;
+  top: 260px !important;
+  left: 880px !important;
 }
 .offense_ol-4 {
-  top: 0 !important;
-  left: 950px !important;
+  top: 265px !important;
+  left: 1020px !important;
 }
 .offense_ol-5 {
-  top: 0 !important;
-  left: 1150px !important;
+  top: 270px !important;
+  left: 1160px !important;
 }
 .offense_wr-1 {
-  top: 300px !important;
-  left: 0px !important;
+  top: 270px !important;
+  left: 330px !important;
 }
 .offense_rbwrte {
-  top: 300px !important;
-  left: 290px !important;
+  top: 390px !important;
+  left: 460px !important;
 }
 .offense_qb-1 {
-  top: 300px !important;
-  left: 760px !important;
+  top: 430px !important;
+  left: 880px !important;
 }
 .offense_rb {
-  top: 300px !important;
-  left: 970px !important;
+  top: 435px !important;
+  left: 680px !important;
 }
 .offense_wr-2 {
-  top: 300px !important;
-  left: 1420px !important;
+  top: 320px !important;
+  left: 1470px !important;
 }
 .offense_qb-2 {
-  top: 560px !important;
-  left: 760px !important;
+  top: 20px !important;
+  left: 260px !important;
 }
 
 /* SPECIAL TEAM */
 .special_team_pk {
-  top: 0;
-  left: 550px;
+  top: 200px;
+  left: 150px;
 }
 .special_team_pn {
-  top: 0;
-  left: 870px;
+  top: 380px;
+  left: 50px;
 }
 
 .depth_card_player_locked {
   z-index: 999 !important;
-  width: 180px;
-  height: 260px;
-  border: 1px solid var(--border);
+  width: 143px;
+  height: 200px;
+  /* border: 1px solid var(--border); */
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.5);
   position: absolute;
-  border-radius: 10px;
+  border-radius: 3px;
 }
