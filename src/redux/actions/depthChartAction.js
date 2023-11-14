@@ -4,10 +4,17 @@ import { attachToken, privateAPI } from '../../config/constants'
 export const getActiveRosterCount = async (payload) => {
   try {
     attachToken()
-    const res = await privateAPI.get(`/depthChart/get-active-roster-count/${payload.week}`)
-    if (res) {
-      const depthChart = (await getDepthChartByType(payload)) || []
-      return { count: res.data.data?.activePlayers, data: depthChart }
+    if (payload?.teamId) {
+      const res = await getDepthChartByType(payload)
+      if (res) {
+        return { count: 0, data: res }
+      }
+    } else {
+      const res = await privateAPI.get(`/depthChart/get-active-roster-count/${payload.week}`)
+      if (res) {
+        const depthChart = (await getDepthChartByType(payload)) || []
+        return { count: res.data.data?.activePlayers, data: depthChart }
+      }
     }
   } catch (err) {
     notification.error({

@@ -69,6 +69,17 @@ const LeagueStandingCard = ({ data, index, teams }) => {
       navigate(`/team-roster/${id}`)
     }
   }
+  const handleStartersNavigate = (id, teamName) => {
+    if (USER?.team?._id === id) {
+      navigate(`/depth-chart`)
+    } else {
+      navigate(`/team-starters/${id}`, {
+        state: {
+          teamName,
+        },
+      })
+    }
+  }
 
   return (
     <div className='league_standing_card' style={{ marginTop: index === 0 && '0px' }}>
@@ -79,12 +90,11 @@ const LeagueStandingCard = ({ data, index, teams }) => {
         const team = teams.find((x) => v?.teamId === x?._id)
         return (
           <div key={i} className='table_card'>
-            <div
-              className='table_header'
-              onClick={() => handleNavigate(v?.teamId)}
-              style={{ cursor: 'pointer' }}
-            >
-              <h3>{team?.name}</h3>
+            <div className='table_header'>
+              <h3 onClick={() => handleNavigate(v?.teamId)}>{team?.name}</h3>
+              <div>
+                <h4 onClick={() => handleStartersNavigate(v?.teamId, team?.name)}>View Starters</h4>
+              </div>
             </div>
             <div className='table_body'>
               <div

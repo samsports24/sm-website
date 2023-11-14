@@ -15,6 +15,7 @@ import { clearDepthChart, getActiveRosterCount } from '../redux/actions/depthCha
 import { activeRosterCount, legalPlayers, nonActivePlayers } from '../config/constants'
 
 import { useSelector } from 'react-redux'
+import { useLocation, useParams } from 'react-router-dom'
 
 const DepthChart = () => {
   const USER = useSelector((state) => state?.user)
@@ -27,6 +28,9 @@ const DepthChart = () => {
     offense: 'offense',
     defense: 'defense',
   })
+
+  const { teamID } = useParams()
+  const { state } = useLocation()
 
   const handleFilter = (value) => {
     setActiveFilter(value)
@@ -43,6 +47,7 @@ const DepthChart = () => {
     const res = await getActiveRosterCount({
       type: activeFilter,
       week: USER?.setting?.week,
+      teamId: teamID ? teamID : null,
     })
     if (res) {
       setActiveCount(res?.count)
@@ -98,6 +103,12 @@ const DepthChart = () => {
 
       <ButtonsAndPagination isLink={false} />
 
+      {teamID && (
+        <div className='viewing_roster_heading'>
+          <h2>Your are viewing {state?.teamName || 'other Team'} rosters.</h2>
+        </div>
+      )}
+
       <div className='filter_chart_box'>
         <Button
           type='primary'
@@ -123,17 +134,19 @@ const DepthChart = () => {
           style={{ position: 'relative', marginTop: '20px' }}
         >
           {/* ILLEGAL ROSTER */}
-          <div
-            className='overlay'
-            style={{
-              display: activeCount != legalPlayers ? 'flex' : 'none',
-            }}
-          >
-            <h2>{`You have an illegal Roster`}</h2>
-            <h4>{`kindly have ${activeRosterCount} players and ${nonActivePlayers} non active players on the roster`}</h4>
-          </div>
+          {!teamID && (
+            <div
+              className='overlay'
+              style={{
+                display: activeCount != legalPlayers ? 'flex' : 'none',
+              }}
+            >
+              <h2>{`You have an illegal Roster`}</h2>
+              <h4>{`kindly have ${activeRosterCount} players and ${nonActivePlayers} non active players on the roster`}</h4>
+            </div>
+          )}
 
-          {USER?.setting?.week == USER?.currentWeek && (
+          {!teamID && USER?.setting?.week == USER?.currentWeek && (
             <div className='clear_button_box'>
               <Button loading={clearBtnLoading} type='primary' onClick={clearDepthChartRoster}>
                 Clear {activeFilter}

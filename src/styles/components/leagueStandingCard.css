@@ -27,6 +27,10 @@
 .league_standing_card .table_card .table_header {
   width: 100%;
   border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 .league_standing_card .table_card .table_header h3 {
   color: var(--text);
@@ -35,8 +39,19 @@
   font-weight: 600;
   line-height: normal;
   padding: 8px 24px;
+  cursor: pointer;
 }
-.league_standing_card .table_card .table_header h3:hover {
+.league_standing_card .table_card .table_header h4 {
+  color: var(--text);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  padding: 8px 24px;
+  cursor: pointer;
+}
+.league_standing_card .table_card .table_header h3:hover,
+.league_standing_card .table_card .table_header h4:hover {
   color: var(--primary) !important;
 }
 .league_standing_card .table_card .table_body {

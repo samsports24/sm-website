@@ -112,6 +112,7 @@ const Routers = () => {
           <Route path='/player-roster' element={<PlayerRoster />} />
           <Route path='/team-roster/:id' element={<TeamRoster />} />
           <Route path='/depth-chart' element={<DepthChart />} />
+          <Route path='/team-starters/:teamID' element={<DepthChart />} />
           <Route path='/league-standings' element={<LeagueStandings />} />
           <Route path='/free-agent' element={<FreeAgent />} />
           <Route path='/player-auction' element={<PlayerAuction />} />

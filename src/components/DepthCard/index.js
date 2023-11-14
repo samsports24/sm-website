@@ -5,10 +5,13 @@ import React, { useState } from 'react'
 import DepthChartModal from '../modal/DepthChart'
 import { isLocked } from '../../config/constants'
 import { MdLock } from 'react-icons/md'
+import { useParams } from 'react-router-dom'
 
 const DepthCard = ({ data, index, getDepthChartData }) => {
   const [modalIndex, setModalIndex] = useState(-1)
   const [openModal, setOpenModal] = useState(false)
+
+  const { teamID } = useParams()
 
   const getImage = (position) => {
     const p = position
@@ -39,15 +42,17 @@ const DepthCard = ({ data, index, getDepthChartData }) => {
       <div
         className={`new_depth_card_box ${classKey}`}
         onClick={() => {
-          const check = () => {
-            if (isLocked()) return false
-            if (isPlayerLocked) return false
-            if (!isPlayerLocked) return true
-          }
+          if (!teamID) {
+            const check = () => {
+              if (isLocked()) return false
+              if (isPlayerLocked) return false
+              if (!isPlayerLocked) return true
+            }
 
-          if (check()) {
-            setModalIndex(index)
-            setOpenModal(true)
+            if (check()) {
+              setModalIndex(index)
+              setOpenModal(true)
+            }
           }
         }}
         style={{ cursor: isLocked() || isPlayerLocked ? 'no-drop' : 'pointer' }}
