@@ -13,9 +13,10 @@ import Header from '../components/Header'
 import { createAuction, getFreeAgent } from '../redux/actions/rosterAction'
 import PlayerDetailsModal from '../components/modal/PlayerDetailsModal'
 import { useSelector } from 'react-redux'
+import { getPfScore } from '../config/helperFunctions'
 
 const FreeAgent = () => {
-  const SETTING = useSelector((s) => s.user.setting)
+  const SETTING = useSelector((state) => state.user.setting)
   const [freeAgents, setFreeAgents] = useState({
     total: 0,
     players: [],
@@ -87,17 +88,6 @@ const FreeAgent = () => {
     setPlayerID('')
   }
 
-  const getScore = (arr) => {
-    const pf =
-      arr?.filter((v) => v?.season == SETTING?.season)?.reduce((acc, obj) => acc + obj.score, 0) ||
-      0
-    const avg = pf > 0 ? pf / arr?.length : 0
-    return {
-      pf,
-      avg,
-    }
-  }
-
   const columns = [
     {
       title: ' ',
@@ -127,15 +117,6 @@ const FreeAgent = () => {
       key: 'Name',
       render: (t, obj) => {
         return (
-          // <p
-          //   onClick={() => {
-          //     navigate(`/agent-player-interface/${obj?.PlayerID}`)
-          //   }}
-          //   style={{ cursor: 'pointer' }}
-          //   className='name_text_hover'
-          // >
-          //   {t || '-'}
-          // </p>
           <PlayerDetailsModal
             button={<span className='fa_p_name name_text_hover'>{t}</span>}
             state={{
@@ -154,12 +135,8 @@ const FreeAgent = () => {
       dataIndex: 'playerScore',
       key: 'playerScore',
       render: (_, obj) => {
-        return (
-          <p>
-            {0}
-            {/* {getScore(obj?.weeklyScoring)?.pf} */}
-          </p>
-        )
+        console.log(obj)
+        return <p>{getPfScore(obj?.weeklyScoring)?.pf}</p>
       },
     },
     {
@@ -167,12 +144,7 @@ const FreeAgent = () => {
       dataIndex: 'playerScore',
       key: 'playerScore',
       render: (_, obj) => {
-        return (
-          <p>
-            {0}
-            {/* {getScore(obj?.weeklyScoring)?.avg} */}
-          </p>
-        )
+        return <p>{getPfScore(obj?.weeklyScoring)?.avg}</p>
       },
     },
     {

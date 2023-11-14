@@ -8,16 +8,22 @@ import {
   ReleasePlayer,
   TradePlayer,
 } from '../modal/PlayerInterfaceModals'
-import { getFreeAgentRosterPlayer, getRosterPlayer } from '../../redux/actions/rosterAction'
+import {
+  createAuction,
+  getFreeAgentRosterPlayer,
+  getRosterPlayer,
+} from '../../redux/actions/rosterAction'
 import { useSelector } from 'react-redux'
 import Loader from '../Loader'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { Button, Table } from 'antd'
 import { useNavigate } from 'react-router-dom'
+import { getPfScore } from '../../config/helperFunctions'
 
 const PlayerInterfacePopup = ({ state, closeModal, showModal }) => {
   const SETTING = useSelector((state) => state?.user?.setting)
   const [isLoading, setIsLoading] = useState(true)
+  const [auctionLoading, setAuctionLoading] = useState(false)
   const [data, setData] = useState({
     player: {},
     news: '',
@@ -308,6 +314,20 @@ const PlayerInterfacePopup = ({ state, closeModal, showModal }) => {
     }
   }
 
+  const handleCreateAuction = async () => {
+    setAuctionLoading(true)
+    const res = await createAuction({
+      PlayerID: playerIdSmall,
+      player_id: playerIdBig,
+      auctionFrom: 'nonowner',
+    })
+    if (res) {
+      closeModal()
+      navigate('/player-auction')
+    }
+    setAuctionLoading(false)
+  }
+
   return (
     <div className='player_interface_popup'>
       <AiOutlineCloseCircle className='close_icon' onClick={closeModal} />
@@ -412,7 +432,9 @@ const PlayerInterfacePopup = ({ state, closeModal, showModal }) => {
             <div className='top_row_4'>
               {state?.isFreeAgent ? (
                 <>
-                  <Button type='primary'>AUCTION PLAYER</Button>
+                  <Button loading={auctionLoading} onClick={handleCreateAuction} type='primary'>
+                    AUCTION PLAYER
+                  </Button>
                 </>
               ) : state?.teamId ? (
                 <>
@@ -502,9 +524,9 @@ const PlayerInterfacePopup = ({ state, closeModal, showModal }) => {
                 <div>
                   <h2>TPF / APF</h2>
                   <div className='tpf_apf_box'>
-                    <p>-</p>
+                    <p>{getPfScore(data?.playerContract?.weeklyScoring)?.pf}</p>
                     <span style={{ fontSize: '22px', color: '#fff' }}>|</span>
-                    <p>-</p>
+                    <p>{getPfScore(data?.playerContract?.weeklyScoring)?.avg}</p>
                   </div>
                 </div>
               </div>

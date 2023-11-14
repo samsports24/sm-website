@@ -6,7 +6,7 @@ import PlayerDetailsModal from '../modal/PlayerDetailsModal'
 import { useParams } from 'react-router-dom'
 
 const NewRosterCard = (props) => {
-  const { data, index, state, handleClick, isPractice = false, playerCaps } = props
+  const { data, index, state, handleClick, isPractice = false, playerCaps, checkBox = true } = props
   const {
     players: {
       PlayerID,
@@ -115,22 +115,26 @@ const NewRosterCard = (props) => {
           </div>
         </div>
         <div className='content_box_right'>
-          {isPractice ? (
-            <Checkbox
-              onChange={(event) => handleClick(event.target.checked, PlayerID)}
-              checked={state?.includes(PlayerID)}
-              disabled={isLocked() || isPlayerLocked}
-            >
-              Protected
-            </Checkbox>
-          ) : (
-            <Checkbox
-              onChange={(event) => handleClick(event.target.checked, PlayerID)}
-              checked={state?.includes(PlayerID)}
-              disabled={isLocked() || isPlayerLocked}
-            >
-              Non-Active
-            </Checkbox>
+          {checkBox && (
+            <>
+              {isPractice ? (
+                <Checkbox
+                  onChange={(event) => handleClick(event.target.checked, PlayerID)}
+                  checked={state?.includes(PlayerID)}
+                  disabled={isLocked() || isPlayerLocked}
+                >
+                  Protected
+                </Checkbox>
+              ) : (
+                <Checkbox
+                  onChange={(event) => handleClick(event.target.checked, PlayerID)}
+                  checked={state?.includes(PlayerID)}
+                  disabled={isLocked() || isPlayerLocked}
+                >
+                  Non-Active
+                </Checkbox>
+              )}
+            </>
           )}
         </div>
       </div>

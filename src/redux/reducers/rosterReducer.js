@@ -7,6 +7,10 @@ const initialState = {
     nonActivePlayer: [],
     protectedPlayer: [],
     retired: [],
+    filterActiveRoster: [],
+    filterNonActiveRoster: [],
+    filterPracticeRoster: [],
+    filterProtectedRoster: [],
   },
 }
 
@@ -38,6 +42,14 @@ const rosterReducer = (state = initialState, action) => {
           ...payload,
           nonActivePlayer: _nonActivePlayer,
           protectedPlayer: _protectedPlayer,
+          filterActiveRoster: payload?.active?.filter((x) => x?.players?.isActive === true),
+          filterNonActiveRoster: payload?.active?.filter((x) => x?.players?.isActive !== true),
+          filterPracticeRoster: payload?.practice?.filter(
+            (x) => x?.players?.isPlayerProtected !== true,
+          ),
+          filterProtectedRoster: payload?.practice?.filter(
+            (x) => x?.players?.isPlayerProtected === true,
+          ),
         },
       }
     }

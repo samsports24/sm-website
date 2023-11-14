@@ -1,3 +1,5 @@
+import store from '../redux/store'
+
 export const sortedArray = (arr) => {
   return arr?.sort((a, b) => {
     const positionOrder = {
@@ -33,4 +35,14 @@ export const sortedArray = (arr) => {
 
 export const firstLetterCap = (str) => {
   return str !== '' ? str?.charAt(0).toUpperCase() + str.slice(1) : str
+}
+
+export const getPfScore = (arr) => {
+  const season = store?.getState()?.user?.setting?.season
+  const pf = arr?.filter((v) => v?.season == season)?.reduce((acc, obj) => acc + obj.score, 0) || 0
+  const avg = pf > 0 ? pf / arr?.length : 0
+  return {
+    pf: pf?.toFixed(2),
+    avg: avg?.toFixed(2),
+  }
 }
