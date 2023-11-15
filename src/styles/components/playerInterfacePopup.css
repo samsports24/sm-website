@@ -182,7 +182,7 @@
   border: 1px solid var(--primary) !important;
 }
 .player_interface_popup .wrapper .top_row .top_row_4 > .ant-btn-primary:disabled {
-  color: rgba(255, 255, 255, 1) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 .player_interface_popup .wrapper .top_row .top_row_4 > .ant-btn-primary:disabled:hover {
   color: rgba(255, 255, 255, 1) !important;

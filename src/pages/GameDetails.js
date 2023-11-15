@@ -173,14 +173,14 @@ const GameDetails = () => {
                   <div className='row'>
                     <ScoreCardPlayer
                       alignment='left'
-                      data={{ player: { ...backupPlayer.player1?.players } }}
+                      data={{ player: { ...backupPlayer.player1 } }}
                     />
                     <div className='position-label' style={{ color: '#0CD9F5' }}>
                       <span>{backupPlayer?.position}</span>
                     </div>
                     <ScoreCardPlayer
                       alignment='right'
-                      data={{ player: { ...backupPlayer.player2?.players } }}
+                      data={{ player: { ...backupPlayer.player2 } }}
                     />
                   </div>
                 </section>
