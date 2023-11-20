@@ -5,6 +5,23 @@
   margin-top: 20px;
 }
 
+.clear_noti_btn {
+  border-radius: 4px !important;
+  background-color: transparent !important;
+  opacity: 0.5;
+  border: 1px solid #fff !important;
+}
+.clear_noti_btn:hover {
+  opacity: 1;
+  border: 1px solid var(--primary) !important;
+  color: var(--primary) !important;
+}
+
+.league_notification_container .ant-btn-primary:disabled {
+  color: #fff !important;
+  opacity: 0.5;
+}
+
 .league_notification header {
   width: 100%;
   background-color: var(--primaryPurple);

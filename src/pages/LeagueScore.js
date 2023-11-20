@@ -80,11 +80,16 @@ const LeagueScore = () => {
 const NewLLeagueScoreCard = ({ data }) => {
   const navigate = useNavigate()
 
+  // const getName = (name) => {
+  //   return name
+  //     ?.split(' ')
+  //     .map((v) => v[0])
+  //     .join('')
+  // }
   const getName = (name) => {
-    return name
-      ?.split(' ')
-      .map((v) => v[0])
-      .join('')
+    const array = name.split(' ')
+    const length = array[0]?.length <= 3 ? true : false
+    return length ? `${array[0]} ${array[1]}` : array[0]
   }
 
   return (
@@ -92,12 +97,13 @@ const NewLLeagueScoreCard = ({ data }) => {
       <div className='nls_card_top'>
         <div className='nls_card_top_left'>
           <p>
-            {data?.opponentOne?.name?.length > 12
+            {/* {data?.opponentOne?.name?.length > 12
               ? getName(data?.opponentOne?.name)
-              : data?.opponentOne?.name}
+              : data?.opponentOne?.name} */}
+            {getName(data?.opponentOne?.name)}
           </p>
           <p>
-            ( {data?.record?.teamOne?.win}-{data?.record?.teamOne?.lose})
+            ({data?.record?.teamOne?.win}-{data?.record?.teamOne?.lose})
           </p>
         </div>
         <div className='nls_card_top_center'>
@@ -122,9 +128,10 @@ const NewLLeagueScoreCard = ({ data }) => {
             ({data?.record?.teamTwo?.win}-{data?.record?.teamTwo?.lose})
           </p>
           <p>
-            {data?.opponentTwo?.name?.length > 12
+            {/* {data?.opponentTwo?.name?.length > 12
               ? getName(data?.opponentTwo?.name)
-              : data?.opponentTwo?.name}
+              : data?.opponentTwo?.name} */}
+            {getName(data?.opponentTwo?.name)}
           </p>
         </div>
       </div>

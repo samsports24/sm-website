@@ -2,30 +2,28 @@ import React, { useEffect, useState } from 'react'
 
 import { Button, notification } from 'antd'
 
-// import Arrow from '../assets/arrow-right.svg'
-
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+
+import moment from 'moment'
 
 // Component
 import Header from '../components/Header'
-// import Loader from '../components/Loader'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
-
-import { IoAlertCircleSharp } from 'react-icons/io5'
 import Loader from '../components/Loader'
-import { useSelector } from 'react-redux'
-import { getAllNotification } from '../redux/actions/notificationAction'
-import moment from 'moment'
+
+import { clearNotification, getAllNotification } from '../redux/actions/notificationAction'
 import { approveTrade, cancelTrade, payTrade } from '../redux/actions/teamTradeAction'
+import { IoAlertCircleSharp } from 'react-icons/io5'
 
 const LeagueNotification = () => {
   const SETTING = useSelector((state) => state?.user)
-  // const [date, setDate] = useState(SETTING?.currentWeek)
   const [notificationData, setNotificationData] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [approveId, setApproveId] = useState('')
   const [rejectId, setRejectId] = useState('')
   const [payId, setPayId] = useState('')
+  const [clearBtnLoading, setClearBtnLoading] = useState(false)
 
   const navigate = useNavigate()
 
@@ -99,31 +97,30 @@ const LeagueNotification = () => {
     }
   }
 
+  const clearAllNotification = async () => {
+    setClearBtnLoading(true)
+    const res = await clearNotification()
+    if (res) {
+      await getData()
+    }
+    setClearBtnLoading(false)
+  }
+  console.log('!!SETTING?.notificationCount', !SETTING?.notificationCount)
   return (
     <div className='practice_squad_container team_trade_main league_notification_container'>
-      {/* BREADCRUMB */}
-      {/* <section className='_breadcrumb'>
-        <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
-          Back
-        </Button>
-        <Breadcrumb
-          className='customize_breadcrumb'
-          separator={<img src={Arrow} />}
-          items={[
-            {
-              title: <p>Leagues</p>,
-            },
-            {
-              title: <p>League Notification</p>,
-            },
-          ]}
-        />
-      </section> */}
-
-      {/* HEADER */}
       <Header />
-
       <ButtonsAndPagination />
+      {/* <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+        <Button
+          loading={clearBtnLoading}
+          className='clear_noti_btn'
+          type='primary'
+          onClick={clearAllNotification}
+          disabled={notificationData?.data?.length > 0 ? false : true}
+        >
+          Clear Notification
+        </Button>
+      </div> */}
 
       <div className='league_notification'>
         <header>

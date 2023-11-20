@@ -20,7 +20,7 @@ import { Button, Table } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { getPfScore } from '../../config/helperFunctions'
 
-const PlayerInterfacePopup = ({ state, closeModal, showModal }) => {
+const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
   const SETTING = useSelector((state) => state?.user?.setting)
   const [isLoading, setIsLoading] = useState(true)
   const [auctionLoading, setAuctionLoading] = useState(false)
@@ -35,7 +35,7 @@ const PlayerInterfacePopup = ({ state, closeModal, showModal }) => {
 
   useEffect(() => {
     getData()
-  }, [showModal])
+  }, [isModalOpen])
 
   const getData = async () => {
     setIsLoading(true)

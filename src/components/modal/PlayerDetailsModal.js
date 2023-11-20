@@ -20,7 +20,7 @@ const PlayerDetailsModal = ({ button, state }) => {
         footer={false}
         className='player_details_modal'
       >
-        <PlayerInterfacePopup closeModal={handleCancel} showModal={showModal} state={state} />
+        <PlayerInterfacePopup closeModal={handleCancel} isModalOpen={isModalOpen} state={state} />
       </Modal>
     </>
   )

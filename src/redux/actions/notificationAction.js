@@ -37,3 +37,22 @@ export const getNotiCount = () => {
     }
   }
 }
+
+export const clearNotification = async () => {
+  try {
+    attachToken()
+    const res = await privateAPI.get(`/notification/clear`)
+    if (res) {
+      notification.success({
+        message: res?.data?.data?.message,
+        duration: 3,
+      })
+    }
+    return res?.data?.data?.message
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}

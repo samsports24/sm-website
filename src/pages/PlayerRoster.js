@@ -88,6 +88,7 @@ const PlayerRoster = () => {
 
   useEffect(() => {
     SETTING?.week !== 0 && getData()
+
     setDraftPickData(draftData?.find((v) => v?.teamId === USER?.userDetails?.team?._id))
   }, [SETTING?.week])
 

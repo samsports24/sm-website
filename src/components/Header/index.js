@@ -28,7 +28,9 @@ const Header = () => {
           <Image preview={false} src={user?.team?.logo} />
         </div>
         <p style={{ cursor: 'pointer' }} onClick={() => navigate('/league-notification')}>
-          <span>League Notification</span>{' '}
+          <span style={{ color: !!notificationCount ? 'red' : ' var(--lightGrayText)' }}>
+            League Notification
+          </span>{' '}
           {notificationCount ? (
             <Badge count={notificationCount}>
               <img src={bellIcon} alt='Icon' />

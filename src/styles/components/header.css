@@ -16,7 +16,7 @@
   text-align: center;
 }
 .gd-header .left .image_div {
-  border: 1px solid #6e6980;
+  /* border: 1px solid #6e6980; */
   margin-bottom: 10px;
   border-radius: 8px;
   min-height: 165px;
