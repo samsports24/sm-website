@@ -53,7 +53,6 @@
   font-weight: bold;
   line-height: normal;
 }
-/* PAGINATION CSS in seprate file pagination.css */
 
 /* SCORE CARD */
 .league_container .score_card_container {
@@ -61,9 +60,148 @@
   margin-top: 30px;
 }
 
+/* LEAGUE SCORE CARD */
+.nls_card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.nls_card_top {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: flex-end;
+  padding-bottom: 5px;
+}
+.nls_card_top_left,
+.nls_card_top_right {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.nls_card_top_left p,
+.nls_card_top_right p {
+  font-weight: 500;
+}
+.nls_card_top_left p:nth-child(1) {
+  flex: 1;
+}
+.nls_card_top_left p:nth-child(2) {
+  width: 70px;
+  text-align: right;
+  align-self: flex-end;
+}
+.nls_card_top_right p:nth-child(1) {
+  width: 70px;
+  text-align: left;
+  align-self: flex-end;
+}
+.nls_card_top_right p:nth-child(2) {
+  flex: 1;
+  text-align: right;
+}
+
+.nls_card_top_center .game_detail {
+  background-color: var(--secondaryPurple);
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  margin-bottom: 5px;
+  text-align: center;
+  cursor: pointer;
+}
+.nls_card_top_center .game_detail p {
+  font-weight: 600;
+}
+.nls_card_bottom {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  height: 80px;
+}
+.nls_card_left {
+  width: 55%;
+  border: 1px solid var(--border);
+  background-color: var(--secondaryPurple);
+  clip-path: polygon(0% 0%, 100% 0%, 81% 100%, 0% 100%);
+  margin-right: -25px;
+  display: flex;
+  flex-direction: row;
+}
+.nls_card_right {
+  width: 55%;
+  border: 1px solid var(--border);
+  background-color: var(--secondaryPurple);
+  clip-path: polygon(19% 0%, 100% 0%, 100% 100%, 0% 100%);
+  margin-left: -25px;
+  display: flex;
+  flex-direction: row;
+}
+.nls_img_box {
+  flex: 1;
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 150%;
+  background-color: black;
+}
+.nls_score_box_1,
+.nls_score_box_2 {
+  width: 160px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.nls_score_box_2 {
+  justify-content: flex-end;
+}
+.nls_score_box_1 p,
+.nls_score_box_2 p {
+  font-weight: 700;
+  font-size: 26px;
+  transform: scaleY(1.7);
+}
+.nls_score_box_1 p {
+  margin-left: 20px;
+}
+.nls_score_box_2 p {
+  margin-right: 20px;
+}
+
 @media (max-width: 600px) {
   .league_container .schedule_box2 {
     flex-direction: column-reverse;
     align-items: flex-start;
+  }
+  .nls_card_top_left {
+    flex-direction: column;
+  }
+  .nls_card_top_right {
+    flex-direction: column-reverse;
+  }
+  .nls_score_box_1 p,
+  .nls_score_box_2 p {
+    font-size: 12px;
+  }
+  .nls_score_box_1,
+  .nls_score_box_2 {
+    width: 100px;
+  }
+  .nls_card_top_left p:nth-child(2) {
+    width: max-content;
+    text-align: left;
+    align-self: flex-start;
+  }
+  .nls_card_top_right p:nth-child(1) {
+    width: max-content;
+    text-align: right;
+    align-self: flex-end;
+  }
+  .nls_card_top_center .game_detail p {
+    font-weight: 600;
+    font-size: 12px;
+  }
+  .nls_card_right {
+    margin-left: 0px;
   }
 }

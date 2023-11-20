@@ -57,13 +57,14 @@ const LeagueScore = () => {
 
         {/* CARDS */}
         <section className='score_card_container'>
-          <Row gutter={[30, 20]}>
+          <Row gutter={[100, 40]}>
             {loading ? (
               <Loader />
             ) : data?.length > 0 ? (
               data?.map((value, index) => (
-                <Col xs={24} lg={12} xl={12} xxl={8} key={index}>
-                  <LeagueScoreCard data={{ ...value, index }} />
+                <Col xs={24} xl={12} key={index}>
+                  {/* <LeagueScoreCard data={{ ...value, index }} /> */}
+                  <NewLLeagueScoreCard data={{ ...value, index }} />
                 </Col>
               ))
             ) : (
@@ -72,6 +73,81 @@ const LeagueScore = () => {
           </Row>
         </section>
       </main>
+    </div>
+  )
+}
+
+const NewLLeagueScoreCard = ({ data }) => {
+  const navigate = useNavigate()
+
+  const getName = (name) => {
+    return name
+      ?.split(' ')
+      .map((v) => v[0])
+      .join('')
+  }
+
+  return (
+    <div className='nls_card'>
+      <div className='nls_card_top'>
+        <div className='nls_card_top_left'>
+          <p>
+            {data?.opponentOne?.name?.length > 12
+              ? getName(data?.opponentOne?.name)
+              : data?.opponentOne?.name}
+          </p>
+          <p>
+            ( {data?.record?.teamOne?.win}-{data?.record?.teamOne?.lose})
+          </p>
+        </div>
+        <div className='nls_card_top_center'>
+          <div
+            className='game_detail'
+            onClick={() => {
+              navigate('/game-details', {
+                state: {
+                  team1: data?.opponentOne,
+                  team2: data?.opponentTwo,
+                  scoreOne: data?.scoreOne,
+                  scoreTwo: data?.scoreTwo,
+                },
+              })
+            }}
+          >
+            <p>GAME DETAILS</p>
+          </div>
+        </div>
+        <div className='nls_card_top_right'>
+          <p>
+            ({data?.record?.teamTwo?.win}-{data?.record?.teamTwo?.lose})
+          </p>
+          <p>
+            {data?.opponentTwo?.name?.length > 12
+              ? getName(data?.opponentTwo?.name)
+              : data?.opponentTwo?.name}
+          </p>
+        </div>
+      </div>
+      <div className='nls_card_bottom'>
+        <div className='nls_card_left'>
+          <div
+            className='nls_img_box'
+            style={{ backgroundImage: `url(${data?.opponentOne?.logo})` }}
+          ></div>
+          <div className='nls_score_box_1'>
+            <p>{data?.scoreOne}</p>
+          </div>
+        </div>
+        <div className='nls_card_right'>
+          <div className='nls_score_box_2'>
+            <p>{data?.scoreTwo}</p>
+          </div>
+          <div
+            className='nls_img_box'
+            style={{ backgroundImage: `url(${data?.opponentTwo?.logo})` }}
+          ></div>
+        </div>
+      </div>
     </div>
   )
 }
