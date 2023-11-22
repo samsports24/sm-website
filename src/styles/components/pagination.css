@@ -44,3 +44,32 @@
   color: #6e6980 !important;
   font-size: 10px;
 }
+
+/* ------------------------------------------------------ */
+/* HEADING AND PAGINATION */
+.heading_and_week {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.heading_and_week > h2 {
+  font-size: 28px;
+}
+
+/* You are viewing previous week data in view only mode */
+.locked_box {
+  display: flex;
+  padding: 20px 30px 0px 30px;
+  align-items: center;
+  justify-content: center;
+}
+.locked_box p {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--primary) !important;
+}

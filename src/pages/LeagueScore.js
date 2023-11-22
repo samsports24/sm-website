@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 
 // Component
 import Header from '../components/Header'
-import LeagueScoreCard from '../components/cards/leagueScoreCard'
 import Pagination from '../components/Pagination'
 import Loader from '../components/Loader'
 
@@ -40,7 +39,6 @@ const LeagueScore = () => {
 
   return (
     <div className='league_container'>
-      {/* HEADER */}
       <Header />
 
       <main className='practice_squad_container wrapper'>
@@ -63,7 +61,6 @@ const LeagueScore = () => {
             ) : data?.length > 0 ? (
               data?.map((value, index) => (
                 <Col xs={24} xl={12} key={index}>
-                  {/* <LeagueScoreCard data={{ ...value, index }} /> */}
                   <NewLLeagueScoreCard data={{ ...value, index }} />
                 </Col>
               ))
@@ -78,28 +75,28 @@ const LeagueScore = () => {
 }
 
 const NewLLeagueScoreCard = ({ data }) => {
+  const USER = useSelector((state) => state.user.userDetails)
   const navigate = useNavigate()
 
-  // const getName = (name) => {
-  //   return name
-  //     ?.split(' ')
-  //     .map((v) => v[0])
-  //     .join('')
-  // }
   const getName = (name) => {
     const array = name.split(' ')
     const length = array[0]?.length <= 3 ? true : false
     return length ? `${array[0]} ${array[1]}` : array[0]
   }
 
+  const handleNavigate = (id) => {
+    if (USER?.team?._id === id) {
+      navigate(`/player-roster`)
+    } else {
+      navigate(`/team-roster/${id}`)
+    }
+  }
+
   return (
     <div className='nls_card'>
       <div className='nls_card_top'>
         <div className='nls_card_top_left'>
-          <p>
-            {/* {data?.opponentOne?.name?.length > 12
-              ? getName(data?.opponentOne?.name)
-              : data?.opponentOne?.name} */}
+          <p onClick={() => handleNavigate(data?.opponentOne?._id)}>
             {getName(data?.opponentOne?.name)}
           </p>
           <p>
@@ -127,10 +124,7 @@ const NewLLeagueScoreCard = ({ data }) => {
           <p>
             ({data?.record?.teamTwo?.win}-{data?.record?.teamTwo?.lose})
           </p>
-          <p>
-            {/* {data?.opponentTwo?.name?.length > 12
-              ? getName(data?.opponentTwo?.name)
-              : data?.opponentTwo?.name} */}
+          <p onClick={() => handleNavigate(data?.opponentTwo?._id)}>
             {getName(data?.opponentTwo?.name)}
           </p>
         </div>

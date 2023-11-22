@@ -95,6 +95,7 @@
 @import './pages/leagueNotification.css';
 @import './pages/totalPayment.css';
 @import './pages/league.css';
+@import './pages/teamFinancials.css';
 
 /* COMPONENT HOCKEY */
 @import './components/leagueStandingsHockey.css';

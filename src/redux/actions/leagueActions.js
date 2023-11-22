@@ -77,3 +77,19 @@ export const getPlayerStandings = async (payload) => {
     })
   }
 }
+
+export const getTeamFinancials = async () => {
+  try {
+    attachToken()
+    const res = await privateAPI.get(`/ranking/get-team-financials`)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}

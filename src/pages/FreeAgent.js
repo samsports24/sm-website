@@ -135,7 +135,6 @@ const FreeAgent = () => {
       dataIndex: 'playerScore',
       key: 'playerScore',
       render: (_, obj) => {
-        console.log(obj)
         return <p>{getPfScore(obj?.weeklyScoring)?.pf}</p>
       },
     },

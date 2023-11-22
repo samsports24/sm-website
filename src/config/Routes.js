@@ -64,6 +64,7 @@ import { version } from './constants'
 import { notification } from 'antd'
 import { useEffect } from 'react'
 import TeamRoster from '../pages/TeamRoster'
+import TeamFinancials from '../pages/TeamFinancials'
 
 const Routers = () => {
   const Component = () => {
@@ -121,6 +122,7 @@ const Routers = () => {
           <Route path='/agent-player-interface/:id' element={<AgentPlayerInterface />} />
           <Route path='/team-trade' element={<TeamTrade />} />
           <Route path='/counter-trade' element={<CounterTrade />} />
+          <Route path='/team-financials' element={<TeamFinancials />} />
           {/* <Route path='/teams' element={<Teams />} />
           <Route path='/player-details' element={<PlayerDetails />} />
           <Route path='/players' element={<Players />} />

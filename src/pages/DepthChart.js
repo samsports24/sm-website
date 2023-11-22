@@ -16,6 +16,7 @@ import { activeRosterCount, legalPlayers, nonActivePlayers } from '../config/con
 
 import { useSelector } from 'react-redux'
 import { useLocation, useParams } from 'react-router-dom'
+import ConfirmationModal from '../components/modal/ConfirmationModal'
 
 const DepthChart = () => {
   const USER = useSelector((state) => state?.user)
@@ -148,9 +149,24 @@ const DepthChart = () => {
 
           {!teamID && USER?.setting?.week == USER?.currentWeek && (
             <div className='clear_button_box'>
-              <Button loading={clearBtnLoading} type='primary' onClick={clearDepthChartRoster}>
+              <ConfirmationModal
+                onClick={clearDepthChartRoster}
+                content={{
+                  title: 'ARE YOU SURE?',
+                  mainButton: {
+                    disbaled: false,
+                    text: `Clear ${activeFilter}`,
+                  },
+                  submitButton: {
+                    disbaled: false,
+                    text: 'Confirm',
+                    loading: clearBtnLoading,
+                  },
+                }}
+              />
+              {/* <Button loading={clearBtnLoading} type='primary' onClick={clearDepthChartRoster}>
                 Clear {activeFilter}
-              </Button>
+              </Button> */}
             </div>
           )}
 

@@ -1,0 +1,108 @@
+.tf_container {
+  width: 100%;
+}
+
+/* COLOR CARD */
+.tf_container .filters_section {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  margin-top: 20px;
+}
+.tf_container .filters_section .filter_card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+.tf_container .filters_section .filter_card .filter_color {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+}
+
+/* TABLE */
+.border_table_container {
+  width: 100%;
+  margin-top: 20px;
+}
+.border_table_container table {
+  /* border-spacing: 0px 7px !important; */
+}
+.border_table_container .ant-table-measure-row {
+  /* display: none !important; */
+}
+
+.border_table_container .ant-table-tbody > tr > td {
+  border-color: var(--border) !important;
+}
+
+.border_table_container .ant-table-thead .ant-table-cell {
+  color: var(--text);
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 22px;
+  border-top: 2px solid var(--primary) !important;
+  border-bottom: 2px solid var(--primary) !important;
+}
+.border_table_container .ant-table-thead .ant-table-cell:first-child {
+  border-top-left-radius: 0px !important;
+  border-left: 2px solid var(--primary) !important;
+}
+.border_table_container .ant-table-thead .ant-table-cell:last-child {
+  border-top-right-radius: 0px !important;
+  border-right: 2px solid var(--primary) !important;
+}
+
+.border_table_container td {
+  /* background-color: var(--primaryPurple) !important; */
+}
+.border_table_container td {
+  padding-block: 8px !important;
+  color: var(--text);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+.border_table_container td:first-child {
+  border-top-left-radius: 0px !important;
+  border-left: 1px solid rgba(110, 105, 128, 0.4);
+}
+.border_table_container td:last-child {
+  border-top-right-radius: 0px !important;
+  border-right: 1px solid rgba(110, 105, 128, 0.4);
+}
+.border_table_container .ant-table-column-sort {
+  background-color: transparent !important;
+}
+
+.border_table_container .green {
+  color: #7ed957 !important;
+}
+.border_table_container .red {
+  color: #ff3131 !important;
+}
+
+.border_table_container .squad_image_box {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+.border_table_container .squad_image_box img {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.border_table_container .view_roster_text {
+  cursor: pointer;
+}
+.border_table_container .view_roster_text:hover {
+  color: var(--primary) !important;
+}

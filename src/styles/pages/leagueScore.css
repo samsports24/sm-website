@@ -84,9 +84,7 @@
 .nls_card_top_right p {
   font-weight: 500;
 }
-.nls_card_top_left p:nth-child(1) {
-  flex: 1;
-}
+
 .nls_card_top_left p:nth-child(2) {
   width: 70px;
   text-align: right;
@@ -98,8 +96,12 @@
   align-self: flex-end;
 }
 .nls_card_top_right p:nth-child(2) {
-  flex: 1;
   text-align: right;
+}
+.nls_card_top_left p:nth-child(1):hover,
+.nls_card_top_right p:nth-child(2):hover {
+  color: var(--primary) !important;
+  cursor: pointer;
 }
 
 .nls_card_top_center .game_detail {
