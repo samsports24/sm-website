@@ -155,6 +155,7 @@ const PlayerAuction = () => {
           pagination={false}
           scroll={{ x: 1100 }}
           className='all_auction_table '
+          rowKey='_id'
         />
       </div>
 
@@ -171,6 +172,7 @@ const PlayerAuction = () => {
           pagination={false}
           scroll={{ x: 1200 }}
           className='my_auction_table'
+          rowKey='_id'
         />
       </div>
     </div>

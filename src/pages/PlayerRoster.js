@@ -4,10 +4,10 @@ import { Button, Col, Row, notification } from 'antd'
 
 // Component
 import Header from '../components/Header'
-import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import Loader from '../components/Loader'
 import Empty from '../components/Empty'
 import NewRosterCard from '../components/NewRosterCard'
+import HeadingAndWeek from '../components/Pagination/HeadingAndWeek'
 
 import { useSelector } from 'react-redux'
 import { isLocked } from '../config/constants'
@@ -104,7 +104,7 @@ const PlayerRoster = () => {
   return (
     <div className='player_roster_container'>
       <Header />
-      <ButtonsAndPagination />
+      <HeadingAndWeek />
       <hr className='divider' />
 
       {isLoading ? (

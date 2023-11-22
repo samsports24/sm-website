@@ -241,6 +241,7 @@ const FreeAgent = () => {
             bordered={false}
             pagination={false}
             scroll={{ x: 1100 }}
+            rowKey='_id'
           />
         </div>
         <div className='custom_pagination_box pagination_box'>

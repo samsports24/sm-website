@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 
 import Header from '../components/Header'
 import LeagueStandingCard from '../components/LeagueStandingCard'
-import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import Loader from '../components/Loader'
 
 import { getLeagueStandings } from '../redux'
 import { useSelector } from 'react-redux'
 import { Col, Row } from 'antd'
+import HeadingAndWeek from '../components/Pagination/HeadingAndWeek'
 
 const LeagueStandings = () => {
   const setting = useSelector((state) => state?.user?.setting)
@@ -28,7 +28,7 @@ const LeagueStandings = () => {
     <div className='standing_container pro_league_container standing_header_container'>
       <h1>SAM FOOTBALL LEAGUE</h1>
       <Header />
-      <ButtonsAndPagination />
+      <HeadingAndWeek />
       <hr className='divider' />
       <div className='heading_box'>
         <h2>League Standings</h2>

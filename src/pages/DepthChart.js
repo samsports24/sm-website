@@ -5,8 +5,9 @@ import { Button } from 'antd'
 // Component
 import Header from '../components/Header'
 import DepthCard from '../components/DepthCard'
-import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import Loader from '../components/Loader'
+import ConfirmationModal from '../components/modal/ConfirmationModal'
+import HeadingAndWeek from '../components/Pagination/HeadingAndWeek'
 
 // Mock Data
 import { depthCardData } from './mockData'
@@ -16,7 +17,6 @@ import { activeRosterCount, legalPlayers, nonActivePlayers } from '../config/con
 
 import { useSelector } from 'react-redux'
 import { useLocation, useParams } from 'react-router-dom'
-import ConfirmationModal from '../components/modal/ConfirmationModal'
 
 const DepthChart = () => {
   const USER = useSelector((state) => state?.user)
@@ -101,8 +101,7 @@ const DepthChart = () => {
   return (
     <div className='depth_chart_container'>
       <Header />
-
-      <ButtonsAndPagination isLink={false} />
+      <HeadingAndWeek />
 
       {teamID && (
         <div className='viewing_roster_heading'>
@@ -164,9 +163,6 @@ const DepthChart = () => {
                   },
                 }}
               />
-              {/* <Button loading={clearBtnLoading} type='primary' onClick={clearDepthChartRoster}>
-                Clear {activeFilter}
-              </Button> */}
             </div>
           )}
 

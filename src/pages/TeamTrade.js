@@ -9,17 +9,16 @@ import { useSelector } from 'react-redux'
 // Component
 import Header from '../components/Header'
 import AddPlayerToTrade from '../components/modal/PlayerInterfaceModals/AddPlayerToTrade'
-import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import Loader from '../components/Loader'
+import Empty from '../components/Empty'
+import HeadingAndWeek from '../components/Pagination/HeadingAndWeek'
 
 import { createTeamTrade, getOtherTeamTrade } from '../redux/actions/teamTradeAction'
 import { getAllTeam } from '../redux/actions/teamActions'
 import { getRoster } from '../redux/actions/rosterAction'
 
 import { leagueSalaryCap } from '../config/constants'
-
 import { draftData } from '../config/draftData'
-import Empty from '../components/Empty'
 
 const TeamTrade = () => {
   const SETTING = useSelector((state) => state?.user)
@@ -37,7 +36,6 @@ const TeamTrade = () => {
 
   const [draftCurrentTeam, setDraftCurrentTeam] = useState([])
   const [draftOppTeam, setDraftOppTeam] = useState([])
-  console.log('🚀 ~ file: TeamTrade.js:31 ~ TeamTrade ~ myTeam:', myTeam)
 
   useEffect(() => {
     getTeams()
@@ -95,7 +93,7 @@ const TeamTrade = () => {
     <div className='practice_squad_container team_trade_main'>
       <Header />
 
-      <ButtonsAndPagination isLink={false} />
+      <HeadingAndWeek />
 
       <hr className='divider' />
 

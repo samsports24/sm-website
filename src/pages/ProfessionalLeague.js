@@ -10,8 +10,8 @@ import PlayerRanking from '../components/PlayerRanking'
 import MatchUpOfTheWeek from '../components/MatchUpOfTheWeek'
 import RollingNewsFeed from '../components/RollingNewsFeed'
 import TransactionTracker from '../components/TransactionTracker'
-import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import Loader from '../components/Loader'
+import HeadingAndWeek from '../components/Pagination/HeadingAndWeek'
 
 import { getProfessionalLeagueRanks, getScheduleByWeek } from '../redux'
 import { useSelector } from 'react-redux'
@@ -40,33 +40,13 @@ const ProfessionalLeague = () => {
 
   return (
     <div className='pro_league_container'>
-      {/* BREADCRUMB */}
-      {/* <section className='_breadcrumb'>
-        <Breadcrumb
-          className='customize_breadcrumb'
-          separator='|'
-          items={[
-            {
-              title: <p>Fantasy Leagues</p>,
-            },
-            {
-              title: <p>Hockey</p>,
-            },
-            {
-              title: <p>Professional League</p>,
-            },
-          ]}
-        />
-      </section> */}
-
-      {/* HEADER */}
       <Header />
 
       {isLoading ? (
         <Loader />
       ) : (
         <>
-          <ButtonsAndPagination />
+          <HeadingAndWeek />
 
           <section className='league_details_container'>
             <div className='left'>

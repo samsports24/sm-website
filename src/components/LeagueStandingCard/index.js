@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Col, Row, Table } from 'antd'
+import { Table } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
@@ -89,7 +89,7 @@ const LeagueStandingCard = ({ data, index, teams }) => {
       {data?.standing?.map((v, i) => {
         const team = teams.find((x) => v?.teamId === x?._id)
         return (
-          <div key={i} className='table_card'>
+          <div key={team?.name} className='table_card'>
             <div className='table_header'>
               <h3 onClick={() => handleNavigate(v?.teamId)}>{team?.name}</h3>
               <div>
@@ -126,6 +126,7 @@ const LeagueStandingCard = ({ data, index, teams }) => {
                   pagination={false}
                   size='small'
                   scroll={{ x: 800 }}
+                  rowKey={'_id'}
                 />
               </div>
             </div>

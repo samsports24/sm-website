@@ -140,6 +140,7 @@ const InjuredReserve = () => {
           bordered={false}
           pagination={false}
           scroll={{ x: 1100 }}
+          rowKey='_id'
         />
       </div>
 

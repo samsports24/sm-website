@@ -286,12 +286,12 @@ export const getAuctionPlayer = async () => {
   try {
     attachToken()
     const res = await privateAPI.get('/auction/getall')
-    if (res) {
-      notification.success({
-        message: res.data.data,
-        duration: 3,
-      })
-    }
+    // if (res) {
+    //   notification.success({
+    //     message: res.data.data,
+    //     duration: 3,
+    //   })
+    // }
     return res.data.data
   } catch (err) {
     notification.error({

@@ -4,11 +4,9 @@ const { Column, ColumnGroup } = Table
 
 import { useNavigate } from 'react-router-dom'
 
-// import Arrow from '../assets/arrow-right.svg'
-
 // Component
 import Header from '../components/Header'
-import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
+import HeadingAndWeek from '../components/Pagination/HeadingAndWeek'
 
 import { getPlayerStandings } from '../redux'
 import { useSelector } from 'react-redux'
@@ -63,35 +61,8 @@ const PlayerStandings = () => {
 
   return (
     <div className='practice_squad_container team_trade_main'>
-      {/* BREADCRUMB */}
-      {/* <section className='_breadcrumb'>
-        <Button className='_back_button' type='primary' onClick={() => navigate()}>
-          Back
-        </Button>
-        <Breadcrumb
-          className='customize_breadcrumb'
-          separator={<img src={Arrow} />}
-          items={[
-            {
-              title: <p>Home</p>,
-            },
-            {
-              title: <p>Team</p>,
-            },
-            {
-              title: <p>Roster</p>,
-            },
-            {
-              title: <p>Player Interface</p>,
-            },
-          ]}
-        />
-      </section> */}
-
-      {/* HEADER */}
       <Header />
-
-      <ButtonsAndPagination />
+      <HeadingAndWeek />
 
       <hr className='divider' />
 
@@ -123,19 +94,8 @@ const PlayerStandings = () => {
           pagination={{ showSizeChanger: false }}
           scroll={{ x: 2000, y: 500 }}
           bordered
+          rowKey='_id'
         >
-          {/* <Column
-            title=' ' // Empty with space
-            dataIndex='HostedHeadshotNoBackgroundUrl'
-            key='image'
-            render={(value) => {
-              return (
-                <div className='image_box'>
-                  <img src={value ? value : require('../assets/player-img-6.png')} />
-                </div>
-              )
-            }}
-          /> */}
           <Column title='NAME' dataIndex='Name' key='name' />
           <Column
             title='POSITION / TEAM'
