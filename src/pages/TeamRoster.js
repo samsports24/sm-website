@@ -100,7 +100,10 @@ const TeamRoster = () => {
                       key={i}
                       data={v}
                       index={i}
-                      state={nonActive}
+                      state={{
+                        isTeamRoster: { status: true },
+                      }}
+                      checkBoxIds={nonActive}
                       handleClick={() => {}}
                       playerCaps={playerCaps}
                       checkBox={false}
@@ -125,7 +128,10 @@ const TeamRoster = () => {
                       key={i}
                       data={v}
                       index={i}
-                      state={nonActive}
+                      state={{
+                        isTeamRoster: { status: true },
+                      }}
+                      checkBoxIds={nonActive}
                       handleClick={() => {}}
                       playerCaps={playerCaps}
                       checkBox={false}
@@ -151,7 +157,10 @@ const TeamRoster = () => {
                       key={i}
                       data={v}
                       index={i}
-                      state={protectedCheck}
+                      state={{
+                        isTeamRoster: { status: true },
+                      }}
+                      checkBoxIds={protectedCheck}
                       handleClick={() => {}}
                       playerCaps={playerCaps}
                       isPractice={true}
@@ -177,7 +186,10 @@ const TeamRoster = () => {
                       key={i}
                       data={v}
                       index={i}
-                      state={protectedCheck}
+                      state={{
+                        isTeamRoster: { status: true },
+                      }}
+                      checkBoxIds={protectedCheck}
                       handleClick={() => {}}
                       playerCaps={playerCaps}
                       isPractice={true}

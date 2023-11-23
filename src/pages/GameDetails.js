@@ -27,8 +27,6 @@ const GameDetails = () => {
   const [loading, setLoading] = useState(null)
 
   const navigate = useNavigate()
-  console.log('🚀 ~ file: GameDetails.js:26 ~ GameDetails ~ benchPlayer:', benchPlayer)
-  console.log('🚀 ~ file: GameDetails.js:27 ~ GameDetails ~ lockedPlayer:', Data)
 
   useEffect(() => {
     SETTING.week !== 0 && getData()
@@ -313,7 +311,8 @@ const PlayerCardRow = ({ data }) => {
                 {data?.player1?.Position} - {data?.player1?.Team}
               </span>
             </div>
-            <p>FINAL L 31-33 to CLE</p>
+            {/* <p>FINAL L 31-33 to CLE</p> */}
+            <p>FINAL </p>
           </div>
           <div className='breakdown_box'>
             {data?.player1?.playerScoreBreakDown?.length > 0 && (

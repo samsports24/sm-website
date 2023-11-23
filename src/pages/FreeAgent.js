@@ -124,7 +124,9 @@ const FreeAgent = () => {
               teamId: null,
               teamName: '',
               teamLogo: null,
-              isFreeAgent: true,
+              isFreeAgent: {
+                status: true,
+              },
             }}
           />
         )

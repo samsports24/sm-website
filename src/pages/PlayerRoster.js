@@ -134,7 +134,12 @@ const PlayerRoster = () => {
                             key={i}
                             data={v}
                             index={i}
-                            state={nonActive}
+                            state={{
+                              isOwnRoster: {
+                                status: true,
+                              },
+                            }}
+                            checkBoxIds={nonActive}
                             handleClick={handleNonActive}
                             playerCaps={data?.playerCaps}
                           />
@@ -158,7 +163,12 @@ const PlayerRoster = () => {
                             key={i}
                             data={v}
                             index={i}
-                            state={nonActive}
+                            state={{
+                              isOwnRoster: {
+                                status: true,
+                              },
+                            }}
+                            checkBoxIds={nonActive}
                             handleClick={handleNonActive}
                             playerCaps={data?.playerCaps}
                           />
@@ -192,7 +202,12 @@ const PlayerRoster = () => {
                             key={i}
                             data={v}
                             index={i}
-                            state={protectedCheck}
+                            state={{
+                              isOwnRoster: {
+                                status: true,
+                              },
+                            }}
+                            checkBoxIds={protectedCheck}
                             handleClick={handleProtectedCheckbox}
                             isPractice={true}
                             playerCaps={data?.playerCaps}
@@ -217,7 +232,12 @@ const PlayerRoster = () => {
                             key={i}
                             data={v}
                             index={i}
-                            state={protectedCheck}
+                            state={{
+                              isOwnRoster: {
+                                status: true,
+                              },
+                            }}
+                            checkBoxIds={protectedCheck}
                             handleClick={handleProtectedCheckbox}
                             isPractice={true}
                             playerCaps={data?.playerCaps}

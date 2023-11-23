@@ -6,7 +6,16 @@ import PlayerDetailsModal from '../modal/PlayerDetailsModal'
 import { useParams } from 'react-router-dom'
 
 const NewRosterCard = (props) => {
-  const { data, index, state, handleClick, isPractice = false, playerCaps, checkBox = true } = props
+  const {
+    data,
+    index,
+    checkBoxIds,
+    state,
+    handleClick,
+    isPractice = false,
+    playerCaps,
+    checkBox = true,
+  } = props
   const {
     players: {
       PlayerID,
@@ -75,6 +84,7 @@ const NewRosterCard = (props) => {
             <PlayerDetailsModal
               button={Name}
               state={{
+                ...state,
                 playerID: PlayerID,
                 teamId: id ? id : null,
                 teamName: team?.name ? team?.name : '',
@@ -120,7 +130,7 @@ const NewRosterCard = (props) => {
               {isPractice ? (
                 <Checkbox
                   onChange={(event) => handleClick(event.target.checked, PlayerID)}
-                  checked={state?.includes(PlayerID)}
+                  checked={checkBoxIds?.includes(PlayerID)}
                   disabled={isLocked() || isPlayerLocked}
                 >
                   Protected
@@ -128,7 +138,7 @@ const NewRosterCard = (props) => {
               ) : (
                 <Checkbox
                   onChange={(event) => handleClick(event.target.checked, PlayerID)}
-                  checked={state?.includes(PlayerID)}
+                  checked={checkBoxIds?.includes(PlayerID)}
                   disabled={isLocked() || isPlayerLocked}
                 >
                   Non-Active

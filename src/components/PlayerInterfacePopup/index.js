@@ -19,6 +19,7 @@ import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { Button, Table } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { getPfScore } from '../../config/helperFunctions'
+import { isLocked } from '../../config/constants'
 
 const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
   const SETTING = useSelector((state) => state?.user?.setting)
@@ -33,29 +34,35 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
   })
   const navigate = useNavigate()
 
+  const playerIdBig = data?.player?._id
+  const playerIdSmall = data?.player?.PlayerID
+  const isPlayerLocked = data?.player?.isPlayerLocked
+  const inPracticeSquad = data?.player?.inPracticeSquad
+
+  const isOwnRoster = state?.isOwnRoster?.status
+  const isTeamRoster = state?.isTeamRoster?.status
+  const isFreeAgent = state?.isFreeAgent?.status
+
   useEffect(() => {
     getData()
   }, [isModalOpen])
 
   const getData = async () => {
     setIsLoading(true)
-    const res = state?.isFreeAgent
-      ? await getFreeAgentRosterPlayer({ id: state?.playerID, week: SETTING?.week })
-      : await getRosterPlayer({
-          id: state?.playerID,
-          week: SETTING?.week,
-          team: state?.teamId,
-        })
-    if (res) {
-      setData(res)
+    console.log(isFreeAgent, isOwnRoster, isTeamRoster)
+    if (isFreeAgent) {
+      const res = await getFreeAgentRosterPlayer({ id: state?.playerID, week: SETTING?.week })
+      if (res) setData(res)
+    } else if (isOwnRoster || isTeamRoster) {
+      const res = await getRosterPlayer({
+        id: state?.playerID,
+        week: SETTING?.week,
+        team: state?.teamId,
+      })
+      if (res) setData(res)
     }
     setIsLoading(false)
   }
-
-  const playerIdBig = data?.player?._id
-  const playerIdSmall = data?.player?.PlayerID
-  const isPlayerLocked = data?.player?.isPlayerLocked
-  const inPracticeSquad = data?.player?.inPracticeSquad
 
   const getBgImage = (position) => {
     const p = position?.toLowerCase()
@@ -77,9 +84,9 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
       ? 'K'
       : p === 'lb'
       ? 'LB'
-      : p === 'ol'
-      ? 'OL'
       : p === 'olb'
+      ? 'LB'
+      : p === 'ol'
       ? 'OL'
       : p === 'ilb'
       ? 'OL'
@@ -368,17 +375,21 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
               <div className='player_details_box'>
                 <p>
                   <b>position:</b>
-                  {data?.player?.Position}
+                  {data?.player?.Position || '-'}
                 </p>
                 <p>
                   <b>team:</b>
-                  {data?.player?.Team}
+                  {data?.player?.Team || '-'}
+                </p>
+                <p>
+                  <b>bye:</b>
+                  {data?.player?.ByeWeek || '-'}
                 </p>
               </div>
               <div className='player_details_box'>
                 <p>
                   <b>age:</b>
-                  {data?.player?.Age}
+                  {data?.player?.Age || '-'}
                 </p>
                 <p>
                   <b>height:</b>
@@ -421,7 +432,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
                 <p className='news_text'>{data?.news || 'No news available'}</p>
               </div>
             </div>
-            {!state?.isFreeAgent && (
+            {!isFreeAgent && (
               <div className='top_row_3'>
                 <p>
                   OWNING<b>TEAM</b>
@@ -430,25 +441,8 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
               </div>
             )}
             <div className='top_row_4'>
-              {state?.isFreeAgent ? (
-                <>
-                  <Button loading={auctionLoading} onClick={handleCreateAuction} type='primary'>
-                    AUCTION PLAYER
-                  </Button>
-                </>
-              ) : state?.teamId ? (
-                <>
-                  <Button
-                    type='primary'
-                    onClick={() => {
-                      navigate('/team-trade')
-                    }}
-                  >
-                    Make Offer
-                  </Button>
-                  <PoachPlayer />
-                </>
-              ) : (
+              {/* --------- OWN ROSTER --------- */}
+              {isOwnRoster && !isLocked() && (
                 <>
                   <AuctionPlayer
                     disabled={isPlayerLocked}
@@ -489,6 +483,35 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
                   />
                 </>
               )}
+              {isOwnRoster && isLocked() && <PreviousDayView />}
+              {/* --------- OWN ROSTER --------- */}
+
+              {/* --------- FREE AGENT --------- */}
+              {isFreeAgent && (
+                <>
+                  <Button loading={auctionLoading} onClick={handleCreateAuction} type='primary'>
+                    AUCTION PLAYER
+                  </Button>
+                </>
+              )}
+              {/* --------- FREE AGENT --------- */}
+
+              {/* --------- TEAM ROSTER --------- */}
+              {isTeamRoster && state?.teamId && !isLocked() && (
+                <>
+                  <Button
+                    type='primary'
+                    onClick={() => {
+                      navigate('/team-trade')
+                    }}
+                  >
+                    Make Offer
+                  </Button>
+                  <PoachPlayer />
+                </>
+              )}
+              {isTeamRoster && state?.teamId && isLocked() && <PreviousDayView />}
+              {/* --------- TEAM ROSTER --------- */}
             </div>
           </div>
           <div className='bottom_row'>
@@ -588,6 +611,14 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+const PreviousDayView = () => {
+  return (
+    <div style={{ height: '200px' }}>
+      <p style={{ textAlign: 'center' }}>You are viewing previous day data in view only mode.</p>
     </div>
   )
 }
