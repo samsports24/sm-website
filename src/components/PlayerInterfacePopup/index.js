@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Button, Input, Spin, Table, notification } from 'antd'
 import {
   ActivateFromPracticeSquad,
   AuctionPlayer,
@@ -9,17 +10,26 @@ import {
   TradePlayer,
 } from '../modal/PlayerInterfaceModals'
 import {
+  addBid,
+  auctionEnded,
   createAuction,
   getFreeAgentRosterPlayer,
   getRosterPlayer,
+  getSingleAuctionPlayer,
 } from '../../redux/actions/rosterAction'
+
 import { useSelector } from 'react-redux'
-import Loader from '../Loader'
-import { AiOutlineCloseCircle } from 'react-icons/ai'
-import { Button, Table } from 'antd'
 import { useNavigate } from 'react-router-dom'
+
 import { getPfScore } from '../../config/helperFunctions'
 import { isLocked } from '../../config/constants'
+
+import Image from '../../assets/logo2.png'
+
+import { AiOutlineCloseCircle } from 'react-icons/ai'
+
+import Loader from '../Loader'
+import moment from 'moment'
 
 const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
   const SETTING = useSelector((state) => state?.user?.setting)
@@ -42,14 +52,16 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
   const isOwnRoster = state?.isOwnRoster?.status
   const isTeamRoster = state?.isTeamRoster?.status
   const isFreeAgent = state?.isFreeAgent?.status
+  const isAuction = state?.isAuction
 
   useEffect(() => {
-    getData()
+    if (isModalOpen) {
+      getData()
+    }
   }, [isModalOpen])
 
   const getData = async () => {
     setIsLoading(true)
-    console.log(isFreeAgent, isOwnRoster, isTeamRoster)
     if (isFreeAgent) {
       const res = await getFreeAgentRosterPlayer({ id: state?.playerID, week: SETTING?.week })
       if (res) setData(res)
@@ -60,6 +72,16 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
         team: state?.teamId,
       })
       if (res) setData(res)
+    } else if (isAuction?.status) {
+      const res = await getSingleAuctionPlayer(isAuction?.auctionId)
+      if (res)
+        setData({
+          ...res,
+          player: res?.player_id,
+          activePlayers: [],
+          practicePlayers: [],
+          reservedPlayers: [],
+        })
     }
     setIsLoading(false)
   }
@@ -432,7 +454,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
                 <p className='news_text'>{data?.news || 'No news available'}</p>
               </div>
             </div>
-            {!isFreeAgent && (
+            {state?.teamLogo && (
               <div className='top_row_3'>
                 <p>
                   OWNING<b>TEAM</b>
@@ -512,6 +534,13 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
               )}
               {isTeamRoster && state?.teamId && isLocked() && <PreviousDayView />}
               {/* --------- TEAM ROSTER --------- */}
+
+              {/* --------- AUCTION --------- */}
+              {isAuction?.status && !isAuction?.hasAuctionEnded && (
+                <LiveAuctionBid data={data} getData={getData} />
+              )}
+              {isAuction?.status && isAuction?.hasAuctionEnded && <WinningBid data={data} />}
+              {/* --------- AUCTION --------- */}
             </div>
           </div>
           <div className='bottom_row'>
@@ -622,5 +651,211 @@ const PreviousDayView = () => {
     </div>
   )
 }
+const WinningBid = ({ data }) => {
+  return (
+    <section className='winning_bid_section'>
+      <div className='wb_top_row'>
+        <img src={Image} />
+        <p>Winning Bid</p>
+        <p>
+          <b>{`$${data?.highestCurrentBid?.toLocaleString()}`}</b>
+        </p>
+      </div>
+      <BidHistoryBox data={data?.bidHistory} height={'130px'} />
+    </section>
+  )
+}
+const LiveAuctionBid = ({ data, getData }) => {
+  const [noti, contextHolder] = notification.useNotification()
+  const [remainingTime, setRemainingTime] = useState('')
+  const [isLoading, setIsLoading] = useState({
+    type: 'data',
+    status: true,
+  })
+  const [manualBid, setManualBid] = useState('')
+  const [bidError, setBidError] = useState('')
 
+  useEffect(() => {
+    bidError && setBidError(false)
+  }, [manualBid])
+
+  const ended = async () => {
+    const res = await auctionEnded({ auctionId: data?._id })
+    if (res) {
+      await getData()
+    }
+  }
+
+  useEffect(() => {
+    let interval
+    if (!data?.hasAuctionEnded) {
+      interval = setInterval(() => {
+        const now = moment()
+        const end = moment(data?.endDate)
+        const duration = moment.duration(end.diff(now))
+        if (duration.asSeconds() <= 0) {
+          clearInterval(interval)
+          setRemainingTime('Time is up!')
+          ended()
+        } else {
+          const days = Math.floor(duration.asDays())
+          const hours = String(duration.hours()).padStart(2, '0')
+          const minutes = String(duration.minutes()).padStart(2, '0')
+          const seconds = String(duration.seconds()).padStart(2, '0')
+          setRemainingTime(
+            days === 0
+              ? `${hours} : ${minutes} : ${seconds}`
+              : `${days} : ${hours} : ${minutes} : ${seconds}`,
+          )
+        }
+      }, 1000)
+    } else {
+      setRemainingTime('Time is up!')
+    }
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [data?.endDate])
+
+  const handleManualBid = async () => {
+    if (manualBid?.trim() == '') {
+      setBidError('ENTER BID BEFORE SUBMIT')
+      return
+    }
+    if (data?.highestCurrentBid >= manualBid) {
+      setBidError('PLACE BID HIGHER THEN CURRENT BID')
+      return
+    }
+
+    setIsLoading({
+      type: 'submit',
+      status: true,
+    })
+    const res = await addBid(
+      {
+        auctionId: data?._id,
+        bidAmount: Number(manualBid),
+      },
+      noti,
+    )
+    if (res) {
+      getData()
+    }
+    setIsLoading({
+      type: 'submit',
+      status: false,
+    })
+  }
+
+  const handleQuickBid = async () => {
+    setIsLoading({
+      type: 'quick',
+      status: true,
+    })
+    const res = await addBid(
+      {
+        auctionId: data?._id,
+        bidAmount: Number(data?.highestCurrentBid) + 5,
+      },
+      noti,
+    )
+    if (res) {
+      getData()
+    }
+    setIsLoading({
+      type: 'quick',
+      status: false,
+    })
+  }
+  return (
+    <>
+      {contextHolder}
+      <div className='live_auction_bid'>
+        <div className='auction_clock'>
+          <p>
+            AUCTION<b>CLOCK</b>
+          </p>
+          <p>{remainingTime || '00 : 00 : 00'}</p>
+        </div>
+        <div className='top_bid'>
+          <div className='top_bid_amount'>
+            <div className='logo'>
+              <img
+                src={data?.bidHistory?.find((x) => x?.bid === data?.highestCurrentBid)?.team?.logo}
+              />
+            </div>
+            <div className='amount'>
+              <p>
+                TOP<b>BID</b>
+              </p>
+              <p>{data?.highestCurrentBid && `$${data?.highestCurrentBid?.toLocaleString()}`}</p>
+            </div>
+          </div>
+          <div className='bid_button' onClick={handleQuickBid}>
+            {isLoading?.status && isLoading?.type === 'quick' ? (
+              <Spin />
+            ) : (
+              <>
+                <p>QUICK BID</p>
+                <p>$ 5</p>
+              </>
+            )}
+          </div>
+        </div>
+        <div className='manual_entry'>
+          <div className='input_box'>
+            <p className='manual_bid_text'>
+              MANUAL<b>BID</b>
+            </p>
+            <Input
+              value={manualBid}
+              type='number'
+              placeholder='Enter here'
+              style={{ textAlign: 'center' }}
+              onChange={(e) => setManualBid(e.target.value)}
+            />
+            {bidError != '' && <p className='error_text'>{bidError}</p>}
+          </div>
+          <div className='bid_button' onClick={handleManualBid}>
+            {isLoading?.status && isLoading?.type === 'submit' ? <Spin /> : <p>SUBMIT</p>}
+          </div>
+        </div>
+        <BidHistoryBox data={data?.bidHistory} height={'90px'} />
+      </div>
+    </>
+  )
+}
+const BidHistoryBox = ({ data, height }) => {
+  return (
+    <div className='bid_history_box'>
+      <p>
+        BID<b>HISTORY</b>
+      </p>
+      <div className='bid_card_box' style={{ height }}>
+        <div className='bid_card_header'>
+          <div style={{ width: '25px' }}></div>
+          <p>USERNAME</p>
+          <h3>
+            BID
+            <br />
+            AMOUNT
+          </h3>
+        </div>
+        {data
+          ?.slice()
+          ?.sort((a, b) => b.bid - a.bid)
+          ?.map((v, i) => {
+            return (
+              <div key={i} className='bid_card'>
+                <img src={v?.team?.logo} />
+                <p>{v?.user?.userName}</p>
+                <h3>{v?.bid && `$${v?.bid?.toLocaleString()}`}</h3>
+              </div>
+            )
+          })}
+      </div>
+    </div>
+  )
+}
 export default PlayerInterfacePopup

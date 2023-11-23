@@ -11,10 +11,11 @@ import { useNavigate } from 'react-router-dom'
 import { auctionEnded, getAuctionPlayer, markAsPaid } from '../redux/actions/rosterAction'
 import { useSelector } from 'react-redux'
 import moment from 'moment'
+import PlayerDetailsModal from '../components/modal/PlayerDetailsModal'
 
 const PlayerAuction = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const [data, setData] = useState([])
+  const { data } = useSelector((state) => state.auction)
 
   const navigate = useNavigate()
 
@@ -24,8 +25,7 @@ const PlayerAuction = () => {
 
   const getData = async () => {
     setIsLoading(true)
-    const res = await getAuctionPlayer()
-    setData(res)
+    await getAuctionPlayer()
     setIsLoading(false)
   }
 
@@ -58,22 +58,37 @@ const PlayerAuction = () => {
       key: 'Name',
       render: (_, obj) => {
         return (
-          <p
-            onClick={() => {
-              if (obj?.hasAuctionEnded) {
-                navigate(`/player-winning-bid/${obj?._id}`)
-              } else {
-                navigate(`/player-live-auction/${obj?._id}`, {
-                  state: obj,
-                })
-              }
+          <PlayerDetailsModal
+            button={<span className='fa_p_name name_text_hover'>{obj?.player_id?.Name}</span>}
+            state={{
+              playerID: null,
+              isReserve: false,
+              teamId: null,
+              teamName: '',
+              teamLogo: null,
+              isAuction: {
+                status: true,
+                auctionId: obj?._id,
+                hasAuctionEnded: obj?.hasAuctionEnded,
+              },
             }}
-            style={{ cursor: 'pointer' }}
-            className='name_text_hover'
-          >
-            {obj?.player_id?.Name || '-'}{' '}
-            {obj?.module === 'waiver' && <span className='waiver_tag'>Waiver</span>}
-          </p>
+          />
+          // <p
+          //   onClick={() => {
+          //     if (obj?.hasAuctionEnded) {
+          //       navigate(`/player-winning-bid/${obj?._id}`)
+          //     } else {
+          //       navigate(`/player-live-auction/${obj?._id}`, {
+          //         state: obj,
+          //       })
+          //     }
+          //   }}
+          //   style={{ cursor: 'pointer' }}
+          //   className='name_text_hover'
+          // >
+          //   {obj?.player_id?.Name || '-'}{' '}
+          //   {obj?.module === 'waiver' && <span className='waiver_tag'>Waiver</span>}
+          // </p>
         )
       },
     },

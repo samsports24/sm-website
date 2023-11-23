@@ -343,7 +343,8 @@ const PlayerCardRow = ({ data }) => {
                 {data?.player2?.Position} - {data?.player2?.Team}
               </span>
             </div>
-            <p>FINAL L 31-33 to CLE</p>
+            {/* <p>FINAL L 31-33 to CLE</p> */}
+            <p>FINAL </p>
           </div>
           <div className='breakdown_box'>
             {data?.player2?.playerScoreBreakDown?.length > 0 && (

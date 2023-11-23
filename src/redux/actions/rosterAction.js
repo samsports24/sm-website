@@ -14,6 +14,18 @@ const setRosterData = (payload) => {
     payload: payload,
   }
 }
+const setAuctionData = (payload) => {
+  return {
+    type: 'SET_AUCTIONS',
+    payload: payload,
+  }
+}
+const setAuctionPlayer = (payload) => {
+  return {
+    type: 'SET_AUCTION_PLAYER',
+    payload: payload,
+  }
+}
 
 export const getRoster = async (week) => {
   try {
@@ -269,7 +281,7 @@ export const createAuction = async (paylaod) => {
     const res = await privateAPI.post('/auction/create', paylaod)
     if (res) {
       notification.success({
-        message: res.data.data,
+        message: res.data.data?.message,
         duration: 3,
       })
     }
@@ -286,12 +298,9 @@ export const getAuctionPlayer = async () => {
   try {
     attachToken()
     const res = await privateAPI.get('/auction/getall')
-    // if (res) {
-    //   notification.success({
-    //     message: res.data.data,
-    //     duration: 3,
-    //   })
-    // }
+    if (res) {
+      store?.dispatch(setAuctionData(res.data.data))
+    }
     return res.data.data
   } catch (err) {
     notification.error({
@@ -306,7 +315,6 @@ export const getSingleAuctionPlayer = async (id) => {
     attachToken()
     const res = await privateAPI.get(`/auction/get-auction/${id}`)
     if (res) {
-      console.log('🚀 ~ file: auctionActions.js:27 ~ return ~ res:', res)
       return res?.data.data
     }
   } catch (err) {
@@ -317,18 +325,18 @@ export const getSingleAuctionPlayer = async (id) => {
   }
 }
 
-export const addBid = async (payload, navigate, customnotification) => {
+export const addBid = async (payload, customnotification) => {
   try {
     attachToken()
     const res = await privateAPI.post('/auction/add-bid', payload)
+    store?.dispatch(setAuctionPlayer(res?.data?.data?.auction))
     if (res) {
       customnotification.success({
-        message: res.data.data.message,
+        message: res?.data?.data?.message,
         duration: 3,
       })
-      navigate('/player-auction')
     }
-    // return res.data.data
+    return res
   } catch (err) {
     console.log('err', err)
     customnotification.error({

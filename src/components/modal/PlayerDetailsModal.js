@@ -4,8 +4,11 @@ import PlayerInterfacePopup from '../PlayerInterfacePopup'
 
 const PlayerDetailsModal = ({ button, state }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const showModal = () => setIsModalOpen(true)
-  const handleOk = () => setIsModalOpen(false)
+  const [remountKey, setRemountKey] = useState(0)
+  const showModal = () => {
+    setIsModalOpen(true)
+    setRemountKey((prevKey) => prevKey + 1)
+  }
   const handleCancel = () => setIsModalOpen(false)
 
   return (
@@ -15,10 +18,10 @@ const PlayerDetailsModal = ({ button, state }) => {
         title=''
         centered
         open={isModalOpen}
-        onOk={handleOk}
         onCancel={handleCancel}
         footer={false}
         className='player_details_modal'
+        key={remountKey}
       >
         <PlayerInterfacePopup closeModal={handleCancel} isModalOpen={isModalOpen} state={state} />
       </Modal>

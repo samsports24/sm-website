@@ -4,12 +4,14 @@ import theme from './reducers/themeReducer'
 import user from './reducers/userReducer'
 import depthChart from './reducers/depthChartReducer'
 import roster from './reducers/rosterReducer'
+import auction from './reducers/auctionReducer'
 
 const rootReducer = combineReducers({
   theme,
   user,
   depthChart,
   roster,
+  auction,
 })
 
 export default rootReducer
