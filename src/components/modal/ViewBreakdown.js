@@ -59,9 +59,7 @@ const ViewBreakdown = ({ data }) => {
 
   return (
     <>
-      <button className='view_button' onClick={showModal}>
-        View Breakdown
-      </button>
+      <p onClick={showModal}>View Breakdown</p>
       <Modal
         centered
         open={open}
@@ -73,20 +71,18 @@ const ViewBreakdown = ({ data }) => {
       >
         <div className='view_breakdown_modal_body'>
           <Table
-            columns={data?.player?.FantasyPosition === 'OL' ? OLcolumns : columns}
+            columns={data?.FantasyPosition === 'OL' ? OLcolumns : columns}
             dataSource={
-              data?.player?.FantasyPosition === 'OL'
-                ? Object.entries(data?.player?.playerScoreBreakDown?.[0]).map(
-                    ([metric, units], index) => ({
-                      key: index,
-                      metric:
-                        metric === 'playerSnap'
-                          ? addSpacesToCamelCase(metric + 'Percentage')
-                          : addSpacesToCamelCase(metric),
-                      units: metric === 'playerSnap' ? units + '%' : units,
-                    }),
-                  )
-                : data?.player?.playerScoreBreakDown
+              data?.FantasyPosition === 'OL'
+                ? Object.entries(data?.playerScoreBreakDown?.[0]).map(([metric, units], index) => ({
+                    key: index,
+                    metric:
+                      metric === 'playerSnap'
+                        ? addSpacesToCamelCase(metric + 'Percentage')
+                        : addSpacesToCamelCase(metric),
+                    units: metric === 'playerSnap' ? units + '%' : units,
+                  }))
+                : data?.playerScoreBreakDown
             }
             pagination={false}
             scroll={{
@@ -96,13 +92,13 @@ const ViewBreakdown = ({ data }) => {
             bordered={false}
             summary={() => {
               return (
-                data?.player?.FantasyPosition !== 'OL' && (
+                data?.FantasyPosition !== 'OL' && (
                   <Table.Summary fixed>
                     <Table.Summary.Row>
                       <Table.Summary.Cell index={0} colSpan={3}>
                         Total
                       </Table.Summary.Cell>
-                      <Table.Summary.Cell index={1}>{data?.player?.playerScore}</Table.Summary.Cell>
+                      <Table.Summary.Cell index={1}>{data?.playerScore}</Table.Summary.Cell>
                     </Table.Summary.Row>
                   </Table.Summary>
                 )
