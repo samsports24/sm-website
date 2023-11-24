@@ -94,6 +94,8 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
       ? 'BQB'
       : p === 'cb'
       ? 'CB'
+      : p === 'db'
+      ? 'CB'
       : p === 'de'
       ? 'DE'
       : p === 'dt'

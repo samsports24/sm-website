@@ -46,7 +46,7 @@
 .nrc_container .content_box .content_box_center .top {
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 15px;
   align-items: center;
   margin-bottom: 5px;
 }
@@ -62,7 +62,7 @@
 .nrc_container .content_box .content_box_center .bottom {
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 15px;
 }
 
 .nrc_container .content_box .content_box_center .top p,
