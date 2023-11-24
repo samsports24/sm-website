@@ -284,7 +284,6 @@
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
-  justify-content: end;
   gap: 5px;
 }
 .game_details .gd_card_box .gdc_content .name_box > div p {

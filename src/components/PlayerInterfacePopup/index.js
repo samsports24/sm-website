@@ -21,7 +21,7 @@ import {
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
-import { getPfScore } from '../../config/helperFunctions'
+import { getPf, getPfScore } from '../../config/helperFunctions'
 import { isLocked } from '../../config/constants'
 
 import Image from '../../assets/logo2.png'
@@ -576,9 +576,9 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
                 <div>
                   <h2>TPF / APF</h2>
                   <div className='tpf_apf_box'>
-                    <p>{getPfScore(data?.playerContract?.weeklyScoring)?.pf}</p>
+                    <p>{getPf(data?.playerContract?.weeklyScoring)?.tpf}</p>
                     <span style={{ fontSize: '22px', color: '#fff' }}>|</span>
-                    <p>{getPfScore(data?.playerContract?.weeklyScoring)?.avg}</p>
+                    <p>{getPf(data?.playerContract?.weeklyScoring)?.apf}</p>
                   </div>
                 </div>
               </div>

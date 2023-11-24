@@ -45,7 +45,7 @@
 
 .pro_league_container .league_details_container .left,
 .pro_league_container .league_details_container .right {
-  width: 400px !important;
+  width: 430px !important;
 }
 .pro_league_container .league_details_container .right {
   display: flex;
@@ -53,7 +53,7 @@
   gap: 20px;
 }
 .pro_league_container .league_details_container .center {
-  width: calc(100% - 854px);
+  width: calc(100% - 914px);
   display: flex;
   flex-direction: column;
   gap: 16px;

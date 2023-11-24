@@ -142,6 +142,7 @@ const PlayerRoster = () => {
                             checkBoxIds={nonActive}
                             handleClick={handleNonActive}
                             playerCaps={data?.playerCaps}
+                            averagePf={data?.averagePf}
                           />
                         )
                       })
@@ -171,6 +172,7 @@ const PlayerRoster = () => {
                             checkBoxIds={nonActive}
                             handleClick={handleNonActive}
                             playerCaps={data?.playerCaps}
+                            averagePf={data?.averagePf}
                           />
                         )
                       })
@@ -211,6 +213,7 @@ const PlayerRoster = () => {
                             handleClick={handleProtectedCheckbox}
                             isPractice={true}
                             playerCaps={data?.playerCaps}
+                            averagePf={data?.averagePf}
                           />
                         )
                       })
@@ -241,6 +244,7 @@ const PlayerRoster = () => {
                             handleClick={handleProtectedCheckbox}
                             isPractice={true}
                             playerCaps={data?.playerCaps}
+                            averagePf={data?.averagePf}
                           />
                         )
                       })

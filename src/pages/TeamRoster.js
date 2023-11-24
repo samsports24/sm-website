@@ -23,6 +23,7 @@ const TeamRoster = () => {
   const [nonActive, setNonActive] = useState([])
   const [protectedCheck, setProtectedCheck] = useState([])
   const [playerCaps, setPlayerCaps] = useState(null)
+  const [averagePf, setAveragePf] = useState(null)
   const [loading, setLoading] = useState(true)
   const { id } = useParams()
 
@@ -57,6 +58,7 @@ const TeamRoster = () => {
       })
 
       setPlayerCaps(res?.playerCaps)
+      setAveragePf(res?.averagePf)
       setActivePlayerData(res?.active)
       setPractiveSquadData(res?.practice)
       setNonActive(nonAcitvePlayer)
@@ -106,6 +108,7 @@ const TeamRoster = () => {
                       checkBoxIds={nonActive}
                       handleClick={() => {}}
                       playerCaps={playerCaps}
+                      averagePf={averagePf}
                       checkBox={false}
                     />
                   )
@@ -134,6 +137,7 @@ const TeamRoster = () => {
                       checkBoxIds={nonActive}
                       handleClick={() => {}}
                       playerCaps={playerCaps}
+                      averagePf={averagePf}
                       checkBox={false}
                     />
                   )
@@ -163,6 +167,7 @@ const TeamRoster = () => {
                       checkBoxIds={protectedCheck}
                       handleClick={() => {}}
                       playerCaps={playerCaps}
+                      averagePf={averagePf}
                       isPractice={true}
                       checkBox={false}
                     />
@@ -192,6 +197,7 @@ const TeamRoster = () => {
                       checkBoxIds={protectedCheck}
                       handleClick={() => {}}
                       playerCaps={playerCaps}
+                      averagePf={averagePf}
                       isPractice={true}
                       checkBox={false}
                     />

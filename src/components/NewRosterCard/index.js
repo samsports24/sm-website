@@ -4,6 +4,8 @@ import { isLocked } from '../../config/constants'
 import { MdLock } from 'react-icons/md'
 import PlayerDetailsModal from '../modal/PlayerDetailsModal'
 import { useParams } from 'react-router-dom'
+import store from '../../redux/store'
+import { getPf } from '../../config/helperFunctions'
 
 const NewRosterCard = (props) => {
   const {
@@ -15,6 +17,7 @@ const NewRosterCard = (props) => {
     isPractice = false,
     playerCaps,
     checkBox = true,
+    averagePf,
   } = props
   const {
     players: {
@@ -67,6 +70,7 @@ const NewRosterCard = (props) => {
     }
     return obj[value]
   }
+
   return (
     <div className='nrc_container'>
       <div className='serial_number'>
@@ -96,9 +100,7 @@ const NewRosterCard = (props) => {
             {isPlayerLocked && <MdLock size={18} color={'#fff'} style={{ marginBottom: '-3px' }} />}
             {InjuryStatus === 'Out' ? (
               <>
-                <span className='injury_plus'>
-                  <b>+</b>
-                </span>
+                <img src={require('../../assets/plus-icon.png')} width={20} height={20} />
                 <p className='injury_plus_text'>O</p>
               </>
             ) : InjuryStatus === 'Questionable' ? (
@@ -116,6 +118,7 @@ const NewRosterCard = (props) => {
             <p>BYE:{ByeWeek || '-'}</p>
           </div>
           <div className='bottom'>
+            <p>AVG.PF:{averagePf[PlayerID] ? getPf(averagePf[PlayerID])?.apf : '-'}</p>
             <p>PPG:{pts || '-'}</p>
             <p>P-RANK:{PlayerRank ? `#${PlayerRank}` : '-'}</p>
             <p>OPP:{UpcomingGameOpponent || '-'}</p>
