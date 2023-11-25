@@ -39,11 +39,28 @@ const LeagueStandings = () => {
       ) : (
         <div className='league_standing_card_container' style={{ width: '100%' }}>
           <Row gutter={[20, 20]}>
-            {standings?.teamRanks?.map((v, i) => (
-              <Col key={i} xs={24} lg={12}>
-                <LeagueStandingCard data={v} index={i} teams={standings?.teams} />
-              </Col>
-            ))}
+            <Col xs={24} lg={12}>
+              <Row gutter={[20, 20]}>
+                {standings?.teamRanks
+                  ?.filter((v) => v?.conference?.includes('Elite'))
+                  ?.map((v, i) => (
+                    <Col key={i} xs={24}>
+                      <LeagueStandingCard data={v} index={i} teams={standings?.teams} />
+                    </Col>
+                  ))}
+              </Row>
+            </Col>
+            <Col xs={24} lg={12}>
+              <Row gutter={[20, 20]}>
+                {standings?.teamRanks
+                  ?.filter((v) => v?.conference?.includes('Premier'))
+                  ?.map((v, i) => (
+                    <Col key={i} xs={24}>
+                      <LeagueStandingCard data={v} index={i} teams={standings?.teams} />
+                    </Col>
+                  ))}
+              </Row>
+            </Col>
           </Row>
         </div>
       )}

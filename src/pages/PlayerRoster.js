@@ -249,7 +249,7 @@ const PlayerRoster = () => {
                         )
                       })
                     ) : (
-                      <Empty text={'PRACTICE Squad IS EMPTY'} />
+                      <Empty text={'Protected Squad IS EMPTY'} />
                     )}
                   </section>
                   {/* ---------------------------------------------------- */}

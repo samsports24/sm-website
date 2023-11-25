@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react'
 
-import Versus from '../assets/versus-1.png'
+import Versus from '../assets/cloud.png'
 
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { getGameDetails } from '../redux'
 
 import { useSelector } from 'react-redux'
 
 // Component
 import Header from '../components/Header'
-// import ScoreCardTeam from '../components/cards/ScoreCardTeam'
-// import ScoreCardPlayer from '../components/cards/ScoreCardPlayer'
 import Loader from '../components/Loader'
 import HeadingAndWeek from '../components/Pagination/HeadingAndWeek'
 
@@ -26,7 +24,18 @@ const GameDetails = () => {
   const [lockedPlayer, setLockedPlayer] = useState(null)
   const [loading, setLoading] = useState(null)
 
-  const navigate = useNavigate()
+  const { data } = state
+  const team1Starters = data?.record?.teamOne?.starterSum?.toFixed(2)
+  const team2Starters = data?.record?.teamTwo?.starterSum?.toFixed(2)
+
+  const team1Bench = data?.record?.teamOne?.benchSum?.toFixed(2)
+  const team2Bench = data?.record?.teamTwo?.benchSum?.toFixed(2)
+
+  const team1Bench25 = data?.record?.teamOne?.bench25Sum?.toFixed(2)
+  const team2Bench25 = data?.record?.teamTwo?.bench25Sum?.toFixed(2)
+
+  const team1Id = data?.opponentOne?._id
+  const team2Id = data?.opponentTwo?._id
 
   useEffect(() => {
     SETTING.week !== 0 && getData()
@@ -35,8 +44,8 @@ const GameDetails = () => {
   const getData = async () => {
     setLoading(true)
     let data = await getGameDetails({
-      team1: state?.team1?._id,
-      team2: state?.team2?._id,
+      team1: team1Id,
+      team2: team2Id,
       week: SETTING?.week,
     })
 
@@ -156,13 +165,13 @@ const GameDetails = () => {
 
             <div className='gd_score_box'>
               <div className='gdsb_left'>
-                <p>-</p>
+                <p>{team1Starters}</p>
               </div>
               <div className='gdsb_center'>
                 <h2>STARTERS SCORE</h2>
               </div>
               <div className='gdsb_right'>
-                <p>-</p>
+                <p>{team2Starters}</p>
               </div>
             </div>
 
@@ -176,18 +185,18 @@ const GameDetails = () => {
             ))}
             <div className='gd_score_box'>
               <div className='gdsb_left'>
-                <p>-</p>
+                <p>{team1Bench}</p>
               </div>
               <div className='gdsb_center'>
                 <h2>SCORE</h2>
               </div>
               <div className='gdsb_right'>
-                <p>-</p>
+                <p>{team2Bench}</p>
               </div>
             </div>
             <div className='gd_score_box'>
               <div className='gdsb_left'>
-                <p>-</p>
+                <p>{team1Bench25}</p>
               </div>
               <div className='gdsb_center'>
                 <h2>
@@ -196,7 +205,7 @@ const GameDetails = () => {
                 </h2>
               </div>
               <div className='gdsb_right'>
-                <p>-</p>
+                <p>{team2Bench25}</p>
               </div>
             </div>
             <div style={{ height: '30px' }} />
@@ -209,6 +218,28 @@ const GameDetails = () => {
 }
 
 const GameHeader = ({ state, lockedPlayer }) => {
+  const { data } = state
+  const team1WinLose = `(${data?.record?.teamOne?.win}-${data?.record?.teamOne?.lose})`
+  const team2WinLose = `(${data?.record?.teamTwo?.win}-${data?.record?.teamTwo?.lose})`
+
+  const score1 = data?.scoreOne
+  const score2 = data?.scoreTwo
+
+  const team1Logo = data?.opponentOne?.logo
+  const team2Logo = data?.opponentTwo?.logo
+
+  const team1Name = data?.opponentOne?.name
+  const team2Name = data?.opponentTwo?.name
+
+  const team1Starters = data?.record?.teamOne?.starterSum?.toFixed(2)
+  const team2Starters = data?.record?.teamTwo?.starterSum?.toFixed(2)
+
+  const team1Bench = data?.record?.teamOne?.benchSum?.toFixed(2)
+  const team2Bench = data?.record?.teamTwo?.benchSum?.toFixed(2)
+
+  const team1Bench25 = data?.record?.teamOne?.bench25Sum?.toFixed(2)
+  const team2Bench25 = data?.record?.teamTwo?.bench25Sum?.toFixed(2)
+
   return (
     <div className='game_header'>
       <div className='gh_left'>
@@ -221,26 +252,24 @@ const GameHeader = ({ state, lockedPlayer }) => {
         <div className='wrapper'>
           <div className='stats'>
             <p className='text1'>STARTERS</p>
-            <p className='points_text'>{'-'}</p>
+            <p className='points_text'>{team1Starters}</p>
             <p className='text1'>BENCH</p>
-            <p className='text2'>{'-'}</p>
+            <p className='text2'>{team1Bench}</p>
             <p className='text3'>25%</p>
-            <p className='points_text'>{'-'}</p>
+            <p className='points_text'>{team1Bench25}</p>
           </div>
           <div className='logo_box'>
-            <img src={state?.team1?.logo} />
+            <img src={team1Logo} />
           </div>
           <div className='name_box'>
-            <p>{state?.team1?.name}</p>
-            <p>{`(${state?.team1Win}-${state?.team1Lose})`}</p>
+            <p>{team1Name}</p>
+            <p>{team1WinLose}</p>
           </div>
           <div className='points_box'>
-            <p>{state?.scoreOne?.toFixed(2)}</p>
-            {state?.scoreOne != state?.scoreTwo ? (
-              <p className={`${state?.scoreOne > state?.scoreTwo ? 'green' : 'red'}`}>
-                {`${state?.scoreOne >= state?.scoreTwo ? '+' : '-'}${Math.abs(
-                  state?.scoreOne - state?.scoreTwo,
-                )?.toFixed(2)}`}
+            <p>{score1?.toFixed(2)}</p>
+            {score1 != score2 ? (
+              <p className={`${score1 > score2 ? 'green' : 'red'}`}>
+                {`${score1 >= score2 ? '+' : '-'}${Math.abs(score1 - score2)?.toFixed(2)}`}
               </p>
             ) : (
               <p></p>
@@ -250,6 +279,7 @@ const GameHeader = ({ state, lockedPlayer }) => {
       </div>
       <div className='gh_center'>
         <div className='vs_box'>
+          <div className='vs_text'>VS</div>
           <img src={Versus} alt='VS' />
         </div>
       </div>
@@ -263,26 +293,24 @@ const GameHeader = ({ state, lockedPlayer }) => {
         <div className='wrapper'>
           <div className='stats'>
             <p className='text1'>STARTERS</p>
-            <p className='points_text'>{'-'}</p>
+            <p className='points_text'>{team2Starters}</p>
             <p className='text1'>BENCH</p>
-            <p className='text2'>{'-'}</p>
+            <p className='text2'>{team2Bench}</p>
             <p className='text3'>25%</p>
-            <p className='points_text'>{'-'}</p>
+            <p className='points_text'>{team2Bench25}</p>
           </div>
           <div className='logo_box'>
-            <img src={state?.team2?.logo} />
+            <img src={team2Logo} />
           </div>
           <div className='name_box'>
-            <p>{state?.team2?.name}</p>
-            <p>{`(${state?.team2Win}-${state?.team2Lose})`}</p>
+            <p>{team2Name}</p>
+            <p>{team2WinLose}</p>
           </div>
           <div className='points_box'>
-            <p>{state?.scoreTwo?.toFixed(2)}</p>
-            {state?.scoreTwo != state?.scoreOne ? (
-              <p className={`${state?.scoreOne > state?.scoreTwo ? 'red' : 'green'}`}>
-                {`${state?.scoreTwo >= state?.scoreOne ? '+' : '-'}${Math.abs(
-                  state?.scoreOne - state?.scoreTwo,
-                )?.toFixed(2)}`}
+            <p>{score2?.toFixed(2)}</p>
+            {score2 != score1 ? (
+              <p className={`${score1 > score2 ? 'red' : 'green'}`}>
+                {`${score2 >= score1 ? '+' : '-'}${Math.abs(score1 - score2)?.toFixed(2)}`}
               </p>
             ) : (
               <p></p>

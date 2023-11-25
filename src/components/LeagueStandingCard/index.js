@@ -86,7 +86,7 @@ const LeagueStandingCard = ({ data, index, teams }) => {
       <h3 className='text'>
         {data?.conference} - {data?._id}
       </h3>
-      {data?.standing?.map((v, i) => {
+      {data?.standing?.map((v) => {
         const team = teams.find((x) => v?.teamId === x?._id)
         return (
           <div key={team?.name} className='table_card'>
@@ -108,7 +108,7 @@ const LeagueStandingCard = ({ data, index, teams }) => {
                 <Table
                   dataSource={[
                     {
-                      key: v?.teamScore?._id,
+                      key: v?._id,
                       wlt: `${v?.teamScore?.win}-${v?.teamScore?.lose}-${v?.teamScore?.tie}`,
                       pct: v?.teamScore?.pct,
                       gb: v?.teamScore?.gb,
@@ -126,7 +126,7 @@ const LeagueStandingCard = ({ data, index, teams }) => {
                   pagination={false}
                   size='small'
                   scroll={{ x: 800 }}
-                  rowKey={'_id'}
+                  // rowKey={'_id'}
                 />
               </div>
             </div>

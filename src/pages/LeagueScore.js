@@ -109,14 +109,7 @@ const NewLLeagueScoreCard = ({ data }) => {
             onClick={() => {
               navigate('/game-details', {
                 state: {
-                  team1: data?.opponentOne,
-                  team2: data?.opponentTwo,
-                  team1Win: data?.record?.teamOne?.win,
-                  team1Lose: data?.record?.teamOne?.lose,
-                  team2Win: data?.record?.teamTwo?.win,
-                  team2Lose: data?.record?.teamTwo?.lose,
-                  scoreOne: data?.scoreOne,
-                  scoreTwo: data?.scoreTwo,
+                  data,
                 },
               })
             }}

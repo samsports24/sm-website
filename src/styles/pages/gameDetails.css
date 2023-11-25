@@ -43,12 +43,27 @@
   font-size: 14px;
 }
 .game_details .game_header .gh_center {
-  padding: 50px;
+  padding: 0px 30px 30px 30px;
 }
 .game_details .game_header .gh_center .vs_box {
-  border-radius: 50%;
-  background-color: #fff;
-  padding: 10px;
+  width: 110px;
+  height: auto;
+  position: relative;
+}
+.game_details .game_header .gh_center .vs_box img {
+  width: 100%;
+  height: auto;
+  opacity: 0.8;
+}
+.game_details .game_header .gh_center .vs_box .vs_text {
+  font-size: 45px;
+  font-weight: 900;
+  position: absolute;
+  color: #1e1436;
+  z-index: 999;
+  left: 27px;
+  top: 15px;
+  letter-spacing: -1px;
 }
 
 .game_details .game_header .gh_left .bg_left,

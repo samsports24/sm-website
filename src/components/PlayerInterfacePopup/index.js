@@ -78,6 +78,9 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
         setData({
           ...res,
           player: res?.player_id,
+          playerContract: {
+            weeklyScoring: res?.player_id?.weeklyScoring,
+          },
           activePlayers: [],
           practicePlayers: [],
           reservedPlayers: [],

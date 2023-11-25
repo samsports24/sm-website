@@ -48,12 +48,19 @@ export const getPfScore = (arr) => {
 }
 
 export const getPf = (arr) => {
-  const setting = store?.getState()?.user?.setting
-  const filtered = arr.filter((v) => v?.season === setting?.season && v?.week <= setting?.week)
-  const tpf = filtered?.reduce((acc, obj) => acc + obj.score, 0) || 0
-  const apf = tpf > 0 ? tpf / arr?.length : 0
-  return {
-    tpf: tpf?.toFixed(2),
-    apf: apf?.toFixed(2),
+  if (arr && arr?.length > 0) {
+    const setting = store?.getState()?.user?.setting
+    const filtered = arr.filter((v) => v?.season === setting?.season && v?.week <= setting?.week)
+    const tpf = filtered?.reduce((acc, obj) => acc + obj.score, 0) || 0
+    const apf = tpf > 0 ? tpf / arr?.length : 0
+    return {
+      tpf: tpf?.toFixed(2),
+      apf: apf?.toFixed(2),
+    }
+  } else {
+    return {
+      tpf: Number(0).toFixed(2),
+      apf: Number(0).toFixed(2),
+    }
   }
 }
