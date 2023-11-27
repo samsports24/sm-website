@@ -23,8 +23,8 @@ const TeamFinancials = () => {
 
   const getData = async () => {
     !isLoading && setIsLoading(true)
-    // const res = await getTeamFinancials()
-    setData([])
+    const res = await getTeamFinancials()
+    setData(res)
     setIsLoading(false)
   }
 

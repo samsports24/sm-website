@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.68d0a822.css",
-    "main.js": "/static/js/main.4fc75e35.js",
+    "main.css": "/static/css/main.57b35a83.css",
+    "main.js": "/static/js/main.fed5e165.js",
     "static/media/trans-league-banner.png": "/static/media/trans-league-banner.c6b03968a9f61ec4cad1.png",
     "static/media/rectangle-3.png": "/static/media/rectangle-3.aebbca7e8e6696c5f7c4.png",
     "static/media/login-pic-1.png": "/static/media/login-pic-1.38add10a7452b82cda4b.png",
@@ -94,6 +94,7 @@
     "static/media/the_flying_foxes.png": "/static/media/the_flying_foxes.5ef4036d2b43115b4eb7.png",
     "static/media/seven_angles.png": "/static/media/seven_angles.0589342f7faab083a0ce.png",
     "static/media/surfdogs.png": "/static/media/surfdogs.fd7a456868d9d29499f3.png",
+    "static/media/cloud.png": "/static/media/cloud.e2348f4c865ac7c44f0c.png",
     "static/media/timber.png": "/static/media/timber.0457e3423522d971bdf8.png",
     "static/media/dragons-red-zone-square-1.png": "/static/media/dragons-red-zone-square-1.b5dd1de7d458fdccb4fd.png",
     "static/media/Logo.svg": "/static/media/Logo.09fe10b17ed61727ffe2375dc7bf3f1a.svg",
@@ -126,11 +127,11 @@
     "static/media/arrow-right.svg": "/static/media/arrow-right.fa8032f7bdce2c4cee175e363666f7ca.svg",
     "static/media/youtube.svg": "/static/media/youtube.ed864766e3b013e4e67a2b38107f1313.svg",
     "static/media/fb.svg": "/static/media/fb.99d8a901875e4a0b67073c0d8b4b57fa.svg",
-    "main.68d0a822.css.map": "/static/css/main.68d0a822.css.map",
-    "main.4fc75e35.js.map": "/static/js/main.4fc75e35.js.map"
+    "main.57b35a83.css.map": "/static/css/main.57b35a83.css.map",
+    "main.fed5e165.js.map": "/static/js/main.fed5e165.js.map"
   },
   "entrypoints": [
-    "static/css/main.68d0a822.css",
-    "static/js/main.4fc75e35.js"
+    "static/css/main.57b35a83.css",
+    "static/js/main.fed5e165.js"
   ]
 }

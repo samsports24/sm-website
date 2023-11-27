@@ -19,7 +19,9 @@ const Header = () => {
   const [auctionCount] = useState(null)
   const navigate = useNavigate()
 
-  const teamFinancials = () => {}
+  const teamFinancials = () => {
+    navigate('/team-financials')
+  }
 
   return user?.team ? (
     <header className='gd-header'>

@@ -64,6 +64,16 @@
   border: 1px solid var(--colors-theme-border-color, rgba(110, 105, 128, 0.4));
   background: var(--colors-theme-gradient, linear-gradient(180deg, #291c4a 0%, #080611 100%));
 }
+.squad_card_container .header .heading_selectBox {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.squad_card_container .header .heading_selectBox .filter_select_box {
+  width: 190px;
+}
+
 .squad_card_container .ant-input {
   color: black !important;
 }
@@ -353,4 +363,10 @@
 .auction_table_container {
   max-height: 600px;
   overflow-y: auto;
+}
+
+@media (max-width: 600px) {
+  .squad_card_container .header .heading_selectBox .filter_select_box {
+    width: 100%;
+  }
 }

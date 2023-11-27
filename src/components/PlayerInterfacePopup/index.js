@@ -60,31 +60,69 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
     }
   }, [isModalOpen])
 
+  const getWeeklyScoring = (arr) => {
+    if (arr?.length > 0) {
+      let unique_values = [...new Set(arr.map((v) => v?.season))]
+      const newArray = []
+
+      unique_values
+        ?.sort((a, b) => b - a)
+        ?.forEach((v) => {
+          const filteredSeasonScore = arr?.filter((x) => Number(x?.season) === v)
+
+          const finalScoring = {}
+          for (let i = 1; i <= 18; i++) {
+            if (filteredSeasonScore.find((x) => x?.week === i)) {
+              finalScoring[`week${i}`] = filteredSeasonScore.find((x) => x?.week === i)?.score
+            } else {
+              finalScoring[`week${i}`] = 0
+            }
+          }
+
+          const totalPf = filteredSeasonScore?.reduce((acc, obj) => acc + obj.score, 0)
+
+          newArray?.push({
+            season: v,
+            totalPoints: totalPf?.toFixed(2),
+            averagePoints: totalPf > 0 ? (totalPf / filteredSeasonScore?.length)?.toFixed(2) : 0,
+            weeklyScoring: finalScoring,
+          })
+        })
+      return newArray
+    }
+  }
+
   const getData = async () => {
     setIsLoading(true)
+
     if (isFreeAgent) {
       const res = await getFreeAgentRosterPlayer({ id: state?.playerID, week: SETTING?.week })
-      if (res) setData(res)
+      if (res) {
+        setData({ ...res, playerHistory: getWeeklyScoring(res?.player?.weeklyScoring) })
+      }
     } else if (isOwnRoster || isTeamRoster) {
       const res = await getRosterPlayer({
         id: state?.playerID,
         week: SETTING?.week,
         team: state?.teamId,
       })
-      if (res) setData(res)
+      if (res) {
+        setData({ ...res, playerHistory: getWeeklyScoring(res?.playerContract?.weeklyScoring) })
+      }
     } else if (isAuction?.status) {
       const res = await getSingleAuctionPlayer(isAuction?.auctionId)
-      if (res)
-        setData({
-          ...res,
-          player: res?.player_id,
-          playerContract: {
-            weeklyScoring: res?.player_id?.weeklyScoring,
-          },
-          activePlayers: [],
-          practicePlayers: [],
-          reservedPlayers: [],
-        })
+      if (res) getWeeklyScoring(res?.player_id?.weeklyScoring)
+      setData({
+        ...res,
+        player: res?.player_id,
+        playerContract: {
+          weeklyScoring: res?.player_id?.weeklyScoring,
+        },
+        activePlayers: [],
+        practicePlayers: [],
+        reservedPlayers: [],
+        playerHistory: getWeeklyScoring(res?.player_id?.weeklyScoring),
+      })
     }
     setIsLoading(false)
   }
@@ -139,8 +177,8 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
   const columns = [
     {
       title: 'YEAR',
-      dataIndex: 'year',
-      key: 'year',
+      dataIndex: 'season',
+      key: 'season',
       render: (t) => (t ? t : '-'),
     },
     {
@@ -152,191 +190,22 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
     },
     {
       title: 'AVG. POINTS',
-      dataIndex: 'avgPoints',
-      key: 'avgPoints',
+      dataIndex: 'averagePoints',
+      key: 'averagePoints',
       render: (t) => (t ? t : '-'),
       width: 130,
     },
-    {
+    ...Array.from({ length: 18 }, (_, index) => ({
       title: (
         <p>
-          WK<b>1</b>
+          WK<b>{index + 1}</b>
         </p>
       ),
-      dataIndex: 'week1',
-      key: 'week1',
-      render: (t) => (t ? t : '-'),
-    },
-    {
-      title: (
-        <p>
-          WK<b>2</b>
-        </p>
-      ),
-      dataIndex: 'week2',
-      key: 'week2',
-      render: (t) => (t ? t : '-'),
-    },
-    {
-      title: (
-        <p>
-          WK<b>3</b>
-        </p>
-      ),
-      dataIndex: 'week3',
-      key: 'week3',
-      render: (t) => (t ? t : '-'),
-    },
-    {
-      title: (
-        <p>
-          WK<b>4</b>
-        </p>
-      ),
-      dataIndex: 'week4',
-      key: 'week4',
-      render: (t) => (t ? t : '-'),
-    },
-    {
-      title: (
-        <p>
-          WK<b>5</b>
-        </p>
-      ),
-      dataIndex: 'week5',
-      key: 'week5',
-      render: (t) => (t ? t : '-'),
-    },
-    {
-      title: (
-        <p>
-          WK<b>6</b>
-        </p>
-      ),
-      dataIndex: 'week6',
-      key: 'week6',
-      render: (t) => (t ? t : '-'),
-    },
-    {
-      title: (
-        <p>
-          WK<b>7</b>
-        </p>
-      ),
-      dataIndex: 'week7',
-      key: 'week7',
-      render: (t) => (t ? t : '-'),
-    },
-    {
-      title: (
-        <p>
-          WK<b>8</b>
-        </p>
-      ),
-      dataIndex: 'week8',
-      key: 'week8',
-      render: (t) => (t ? t : '-'),
-    },
-    {
-      title: (
-        <p>
-          WK<b>9</b>
-        </p>
-      ),
-      dataIndex: 'week9',
-      key: 'week9',
-      render: (t) => (t ? t : '-'),
-    },
-    {
-      title: (
-        <p>
-          WK<b>10</b>
-        </p>
-      ),
-      dataIndex: 'week10',
-      key: 'week10',
-      render: (t) => (t ? t : '-'),
-    },
-    {
-      title: (
-        <p>
-          WK<b>11</b>
-        </p>
-      ),
-      dataIndex: 'week11',
-      key: 'week11',
-      render: (t) => (t ? t : '-'),
-    },
-    {
-      title: (
-        <p>
-          WK<b>12</b>
-        </p>
-      ),
-      dataIndex: 'week12',
-      key: 'week12',
-      render: (t) => (t ? t : '-'),
-    },
-    {
-      title: (
-        <p>
-          WK<b>13</b>
-        </p>
-      ),
-      dataIndex: 'week13',
-      key: 'week13',
-      render: (t) => (t ? t : '-'),
-    },
-    {
-      title: (
-        <p>
-          WK<b>14</b>
-        </p>
-      ),
-      dataIndex: 'week14',
-      key: 'week14',
-      render: (t) => (t ? t : '-'),
-    },
-    {
-      title: (
-        <p>
-          WK<b>15</b>
-        </p>
-      ),
-      dataIndex: 'week15',
-      key: 'week15',
-      render: (t) => (t ? t : '-'),
-    },
-    {
-      title: (
-        <p>
-          WK<b>16</b>
-        </p>
-      ),
-      dataIndex: 'week16',
-      key: 'week16',
-      render: (t) => (t ? t : '-'),
-    },
-    {
-      title: (
-        <p>
-          WK<b>17</b>
-        </p>
-      ),
-      dataIndex: 'week17',
-      key: 'week17',
-      render: (t) => (t ? t : '-'),
-    },
-    {
-      title: (
-        <p>
-          WK<b>18</b>
-        </p>
-      ),
-      dataIndex: 'week18',
-      key: 'week18',
-      render: (t) => (t ? t : '-'),
-    },
+      dataIndex: `week${index + 1}`,
+      key: `week${index + 1}`,
+      render: (_, obj) =>
+        obj?.weeklyScoring?.[`week${index + 1}`] ? obj?.weeklyScoring?.[`week${index + 1}`] : '-',
+    })),
   ]
 
   const getYear = (contract) => {
@@ -592,8 +461,8 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
                   PLAYER<b>HISTORY</b>
                 </p>
                 <Table
-                  loading={false}
-                  dataSource={[]}
+                  loading={isLoading}
+                  dataSource={data?.playerHistory}
                   columns={columns}
                   bordered={false}
                   pagination={false}

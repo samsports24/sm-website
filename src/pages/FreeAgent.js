@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Button, Input, Pagination as AntPagination, Table } from 'antd'
+import { Button, Input, Pagination as AntPagination, Table, Select } from 'antd'
 
 import { SearchOutlined } from '@ant-design/icons'
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
@@ -9,9 +9,9 @@ import { useNavigate } from 'react-router-dom'
 
 // Component
 import Header from '../components/Header'
+import PlayerDetailsModal from '../components/modal/PlayerDetailsModal'
 
 import { createAuction, getFreeAgent } from '../redux/actions/rosterAction'
-import PlayerDetailsModal from '../components/modal/PlayerDetailsModal'
 import { useSelector } from 'react-redux'
 import { getPfScore } from '../config/helperFunctions'
 
@@ -26,12 +26,14 @@ const FreeAgent = () => {
   const [limit] = useState(10)
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
+  // const [filterBy, setFilterBy] = useState('')
 
   const navigate = useNavigate()
 
   useEffect(() => {
     getData()
   }, [page])
+  // }, [page, filterBy])
 
   const getData = async () => {
     window.scrollTo({
@@ -44,6 +46,7 @@ const FreeAgent = () => {
       search,
       limit: limit,
       page: page,
+      // sort: filterBy,
     })
     setFreeAgents(res)
     setLoading(false)
@@ -51,13 +54,14 @@ const FreeAgent = () => {
 
   const handlePagination = (val) => setPage(val)
 
-  const handleFilterBy = async () => {
+  const handleFilterByText = async () => {
     setLoading(true)
     if (search?.trim() !== '') {
       const res = await getFreeAgent({
         search,
         limit: limit,
         page: 1,
+        // sort: '',
       })
       setFreeAgents(res)
     }
@@ -70,6 +74,7 @@ const FreeAgent = () => {
       search: '',
       limit: limit,
       page: 1,
+      // sort: '',
     })
     setFreeAgents(res)
     setLoading(false)
@@ -215,7 +220,34 @@ const FreeAgent = () => {
 
       <section className='squad_card_container transparent'>
         <div className='header'>
-          <h2>FREE AGENT</h2>
+          <div className='heading_selectBox'>
+            <h2>FREE AGENT</h2>
+            {/* <Select
+              placeholder='Filter by'
+              onChange={(v) => setFilterBy(v)}
+              allowClear={{ clearIcon: <GrFormClose size={25} onClick={() => {}} /> }}
+              options={[
+                {
+                  value: 'pf_asc',
+                  label: 'Total PF Ascending',
+                },
+                {
+                  value: 'pf_desc',
+                  label: 'Total PF Descending',
+                },
+                {
+                  value: 'apf_asc',
+                  label: 'Average PF Ascending',
+                },
+                {
+                  value: 'apf_desc',
+                  label: 'Average PF Descending',
+                },
+              ]}
+              className='filter_select_box'
+            /> */}
+          </div>
+
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <Input
               className='free_agent_search_input'
@@ -230,7 +262,7 @@ const FreeAgent = () => {
               }}
               allowClear={{ clearIcon: <GrFormClose size={25} onClick={onFieldClear} /> }}
             />
-            <Button type='primary' onClick={handleFilterBy}>
+            <Button type='primary' onClick={handleFilterByText}>
               SEARCH
             </Button>
           </div>
