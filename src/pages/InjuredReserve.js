@@ -9,6 +9,7 @@ import MoveToRoster from '../components/modal/PlayerInterfaceModals/MoveToRoster
 import { getAllIr } from '../redux/actions/rosterAction'
 
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
+import { getPf, getRankAndPosition } from '../config/helperFunctions'
 
 const InjuredReserve = () => {
   const [injuredReserve, setInjuredReserve] = useState([])
@@ -83,26 +84,34 @@ const InjuredReserve = () => {
       title: 'PLAYER CAP #',
       dataIndex: 'PlayerCap',
       key: 'PlayerCap',
-      render: (_, obj) => (
-        <p>
-          {' '}
-          {injuredReserve?.playerCaps[obj?.player?.PlayerID]
-            ? `$${injuredReserve?.playerCaps[obj?.player?.PlayerID]?.toLocaleString()}`
-            : '-'}
-        </p>
-      ),
+      render: (_, obj) => {
+        return (
+          <p>
+            {injuredReserve?.playerCaps?.[obj?.player?.PlayerID]
+              ? `$${injuredReserve?.playerCaps?.[obj?.player?.PlayerID]?.toLocaleString()}`
+              : '-'}
+          </p>
+        )
+      },
     },
     {
       title: 'PF',
       dataIndex: 'pointsPerGame',
       key: 'pointsPerGame',
-      render: (_, obj) => <p>{obj?.player?.pointPerGame > 0 ? obj?.player?.pointPerGame : '-'}</p>,
+      render: (_, obj) => <p>{getPf(injuredReserve?.averagePf?.[obj?.player?.PlayerID])?.tpf}</p>,
     },
     {
       title: 'PLAYER RANK',
       dataIndex: 'playerRank',
       key: 'playerRank',
-      render: (_, obj) => <p>{obj?.player?.playerRank > 0 ? obj?.player?.playerRank : '-'}</p>,
+      render: (_, obj) => (
+        <p>
+          {
+            getRankAndPosition(injuredReserve?.averagePf?.[obj?.player?.PlayerID])
+              ?.playerOverallRank
+          }
+        </p>
+      ),
     },
     {
       title: ' ',
@@ -143,84 +152,6 @@ const InjuredReserve = () => {
           rowKey='_id'
         />
       </div>
-
-      {/* <section className='squad_card_container transparent'>
-        {loading ? (
-          <Loader />
-        ) : (
-          <>
-            {injuredReserve?.data?.length < 0 ? (
-              <div className='standing-table-bg'>
-                {injuredReserve?.data?.map((v, i) => {
-                  const { player: p } = v
-                  return (
-                    <div key={i} className='squad_card_box'>
-                      <div className='squad_content_body'>
-                        <div className='squad_image_box'>
-                          {p?.HostedHeadshotNoBackgroundUrl ? (
-                            <img src={p?.HostedHeadshotNoBackgroundUrl} />
-                          ) : (
-                            <GiAmericanFootballPlayer size={45} color={'#c4c4c4'} />
-                          )}
-                        </div>
-                        <div>
-                          <p className='squad_text2'>position</p>
-                          <p className='squad_text1'>{p?.Position || '-'}</p>
-                        </div>
-                        <div>
-                          <p className='squad_text2'>player name</p>
-                          <p className='squad_text1'>{p?.Name || '-'}</p>
-                        </div>
-                        <div>
-                          <p className='squad_text2'>age</p>
-                          <p className='squad_text1'>{p?.Age || '-'}</p>
-                        </div>
-                        <div>
-                          <p className='squad_text2'>team</p>
-                          <p className='squad_text1'>{p?.Team || '-'}</p>
-                        </div>
-                        <div>
-                          <p className='squad_text2'>opp</p>
-                          <p className='squad_text1'>{p?.UpcomingGameOpponent || '-'}</p>
-                        </div>
-                        <div>
-                          <p className='squad_text2'>bye</p>
-                          <p className='squad_text1'>{p?.ByeWeek || '-'}</p>
-                        </div>
-                        <div>
-                          <p className='squad_text2'>player cap #</p>
-                          <p className='squad_text1'>
-                            {injuredReserve?.playerCaps[p?.PlayerID]
-                              ? `$${injuredReserve?.playerCaps[p?.PlayerID]?.toLocaleString()}`
-                              : '-'}
-                          </p>
-                        </div>
-                        <div>
-                          <p className='squad_text2'>PF &nbsp;</p>
-                          <p className='squad_text1'>{p?.pointsPerGame || '-'}</p>
-                        </div>
-                        <div>
-                          <p className='squad_text2'>player rank</p>
-                          <p className='squad_text1'>{p?.playerRank || '-'}</p>
-                        </div>
-                        <MoveToRoster
-                          activeDate={v?.activeDate}
-                          injuredDate={v?.injuredDate}
-                          playerId={v?.PlayerID}
-                          injuredId={v?._id}
-                          getData={getData}
-                        />
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            ) : (
-              <Empty text={'I.R IS EMPTY'} />
-            )}
-          </>
-        )}
-      </section> */}
     </div>
   )
 }

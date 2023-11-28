@@ -64,3 +64,22 @@ export const getPf = (arr) => {
     }
   }
 }
+
+export const getRankAndPosition = (arr) => {
+  const obj = {
+    playerOverallRank: 'N/A',
+    playerPositionRank: 'N/A',
+  }
+  if (arr && arr?.length > 0) {
+    const setting = store?.getState()?.user?.setting
+    const isExist = arr.find((v) => v?.season === setting?.season && v?.week === setting?.week)
+    const overall = isExist?.playerOverallRank
+    const position = isExist?.playerPositionRank
+
+    if (isExist) {
+      obj.playerOverallRank = overall <= 0 ? 'N/A' : `#${overall}`
+      obj.playerPositionRank = position <= 0 ? 'N/A' : `#${position}`
+    }
+  }
+  return obj
+}

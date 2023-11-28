@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux'
 import { draftData } from '../config/draftData'
 import NewRosterCard from '../components/NewRosterCard'
 import { sortedArray } from '../config/helperFunctions'
+import { Col, Row } from 'antd'
 
 const TeamRoster = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
@@ -87,148 +88,153 @@ const TeamRoster = () => {
       {loading ? (
         <Loader />
       ) : (
-        <div style={{ overflowX: 'auto' }}>
-          <div style={{ minWidth: '800px' }}>
-            <div className='practice_squad_header' style={{ marginTop: '20px' }}>
-              <p className='heading'>
-                Active<b>Squad</b>
-              </p>
+        <Row>
+          <Col xs={24} lg={16}>
+            <div style={{ overflowX: 'auto' }}>
+              <div style={{ minWidth: '800px' }}>
+                <div className='practice_squad_header' style={{ marginTop: '20px' }}>
+                  <p className='heading'>
+                    Active<b>Squad</b>
+                  </p>
+                </div>
+                <section className='stats_container'>
+                  {filterData?.filterActiveRoster?.length > 0 ? (
+                    sortedArray(filterData?.filterActiveRoster)?.map((v, i) => {
+                      return (
+                        <NewRosterCard
+                          key={i}
+                          data={v}
+                          index={i}
+                          state={{
+                            isTeamRoster: { status: true },
+                          }}
+                          checkBoxIds={nonActive}
+                          handleClick={() => {}}
+                          playerCaps={playerCaps}
+                          averagePf={averagePf}
+                          checkBox={false}
+                        />
+                      )
+                    })
+                  ) : (
+                    <Empty text={'Active Squad IS EMPTY'} />
+                  )}
+                </section>
+                {/* -------------------------------------------------- */}
+                <div className='practice_squad_header' style={{ marginTop: '20px' }}>
+                  <p className='heading'>
+                    Non-Active<b>Squad</b>
+                  </p>
+                </div>
+                <section className='stats_container'>
+                  {filterData?.filterNonActiveRoster?.length > 0 ? (
+                    sortedArray(filterData?.filterNonActiveRoster)?.map((v, i) => {
+                      return (
+                        <NewRosterCard
+                          key={i}
+                          data={v}
+                          index={i}
+                          state={{
+                            isTeamRoster: { status: true },
+                          }}
+                          checkBoxIds={nonActive}
+                          handleClick={() => {}}
+                          playerCaps={playerCaps}
+                          averagePf={averagePf}
+                          checkBox={false}
+                        />
+                      )
+                    })
+                  ) : (
+                    <Empty text={'Non-Active Squad IS EMPTY'} />
+                  )}
+                </section>
+                {/* -------------------------------------------------- */}
+                <hr style={{ marginBlock: '20px' }} />
+                <div className='practice_squad_header'>
+                  <p className='heading'>
+                    Practice<b>Squad</b>
+                  </p>
+                </div>
+                <section className='stats_container'>
+                  {filterData?.filterPracticeRoster?.length > 0 ? (
+                    sortedArray(filterData?.filterPracticeRoster)?.map((v, i) => {
+                      return (
+                        <NewRosterCard
+                          key={i}
+                          data={v}
+                          index={i}
+                          state={{
+                            isTeamRoster: { status: true },
+                          }}
+                          checkBoxIds={protectedCheck}
+                          handleClick={() => {}}
+                          playerCaps={playerCaps}
+                          averagePf={averagePf}
+                          isPractice={true}
+                          checkBox={false}
+                        />
+                      )
+                    })
+                  ) : (
+                    <Empty text={'Practice Squad IS EMPTY'} />
+                  )}
+                </section>
+                {/* -------------------------------------------------- */}
+                <div className='practice_squad_header' style={{ marginTop: '20px' }}>
+                  <p className='heading'>
+                    Protected<b>Squad</b>
+                  </p>
+                </div>
+                <section className='stats_container'>
+                  {filterData?.filterProtectedRoster?.length > 0 ? (
+                    sortedArray(filterData?.filterProtectedRoster)?.map((v, i) => {
+                      return (
+                        <NewRosterCard
+                          key={i}
+                          data={v}
+                          index={i}
+                          state={{
+                            isTeamRoster: { status: true },
+                          }}
+                          checkBoxIds={protectedCheck}
+                          handleClick={() => {}}
+                          playerCaps={playerCaps}
+                          averagePf={averagePf}
+                          isPractice={true}
+                          checkBox={false}
+                        />
+                      )
+                    })
+                  ) : (
+                    <Empty text={'Protected Squad IS EMPTY'} />
+                  )}
+                </section>
+                {/* -------------------------------------------------- */}
+                <hr style={{ marginBlock: '20px' }} />
+                <div className='practice_squad_header'>
+                  <p className='heading'>
+                    Draft<b>Picks</b>
+                  </p>
+                </div>
+                <section className='draft_pick_box'>
+                  {draftPickData?.draft?.length > 0 ? (
+                    draftPickData?.draft?.map((v, i) => {
+                      return (
+                        <div key={i} className='draft_pick_row'>
+                          <p>{v} Pick</p>
+                        </div>
+                      )
+                    })
+                  ) : (
+                    <Empty text={'Draft Data is empty'} />
+                  )}
+                </section>
+              </div>
             </div>
-            <section className='stats_container'>
-              {filterData?.filterActiveRoster?.length > 0 ? (
-                sortedArray(filterData?.filterActiveRoster)?.map((v, i) => {
-                  return (
-                    <NewRosterCard
-                      key={i}
-                      data={v}
-                      index={i}
-                      state={{
-                        isTeamRoster: { status: true },
-                      }}
-                      checkBoxIds={nonActive}
-                      handleClick={() => {}}
-                      playerCaps={playerCaps}
-                      averagePf={averagePf}
-                      checkBox={false}
-                    />
-                  )
-                })
-              ) : (
-                <Empty text={'Active Squad IS EMPTY'} />
-              )}
-            </section>
-            {/* -------------------------------------------------- */}
-            <div className='practice_squad_header' style={{ marginTop: '20px' }}>
-              <p className='heading'>
-                Non-Active<b>Squad</b>
-              </p>
-            </div>
-            <section className='stats_container'>
-              {filterData?.filterNonActiveRoster?.length > 0 ? (
-                sortedArray(filterData?.filterNonActiveRoster)?.map((v, i) => {
-                  return (
-                    <NewRosterCard
-                      key={i}
-                      data={v}
-                      index={i}
-                      state={{
-                        isTeamRoster: { status: true },
-                      }}
-                      checkBoxIds={nonActive}
-                      handleClick={() => {}}
-                      playerCaps={playerCaps}
-                      averagePf={averagePf}
-                      checkBox={false}
-                    />
-                  )
-                })
-              ) : (
-                <Empty text={'Non-Active Squad IS EMPTY'} />
-              )}
-            </section>
-            {/* -------------------------------------------------- */}
-            <hr style={{ marginBlock: '20px' }} />
-            <div className='practice_squad_header'>
-              <p className='heading'>
-                Practice<b>Squad</b>
-              </p>
-            </div>
-            <section className='stats_container'>
-              {filterData?.filterPracticeRoster?.length > 0 ? (
-                sortedArray(filterData?.filterPracticeRoster)?.map((v, i) => {
-                  return (
-                    <NewRosterCard
-                      key={i}
-                      data={v}
-                      index={i}
-                      state={{
-                        isTeamRoster: { status: true },
-                      }}
-                      checkBoxIds={protectedCheck}
-                      handleClick={() => {}}
-                      playerCaps={playerCaps}
-                      averagePf={averagePf}
-                      isPractice={true}
-                      checkBox={false}
-                    />
-                  )
-                })
-              ) : (
-                <Empty text={'Practice Squad IS EMPTY'} />
-              )}
-            </section>
-            {/* -------------------------------------------------- */}
-            <div className='practice_squad_header' style={{ marginTop: '20px' }}>
-              <p className='heading'>
-                Protected<b>Squad</b>
-              </p>
-            </div>
-            <section className='stats_container'>
-              {filterData?.filterProtectedRoster?.length > 0 ? (
-                sortedArray(filterData?.filterProtectedRoster)?.map((v, i) => {
-                  return (
-                    <NewRosterCard
-                      key={i}
-                      data={v}
-                      index={i}
-                      state={{
-                        isTeamRoster: { status: true },
-                      }}
-                      checkBoxIds={protectedCheck}
-                      handleClick={() => {}}
-                      playerCaps={playerCaps}
-                      averagePf={averagePf}
-                      isPractice={true}
-                      checkBox={false}
-                    />
-                  )
-                })
-              ) : (
-                <Empty text={'Protected Squad IS EMPTY'} />
-              )}
-            </section>
-            {/* -------------------------------------------------- */}
-            <hr style={{ marginBlock: '20px' }} />
-            <div className='practice_squad_header'>
-              <p className='heading'>
-                Draft<b>Picks</b>
-              </p>
-            </div>
-            <section className='draft_pick_box'>
-              {draftPickData?.draft?.length > 0 ? (
-                draftPickData?.draft?.map((v, i) => {
-                  return (
-                    <div key={i} className='draft_pick_row'>
-                      <p>{v} Pick</p>
-                    </div>
-                  )
-                })
-              ) : (
-                <Empty text={'Draft Data is empty'} />
-              )}
-            </section>
-          </div>
-        </div>
+          </Col>
+          <Col xs={24} lg={8}></Col>
+        </Row>
       )}
     </div>
   )

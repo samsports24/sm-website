@@ -5,7 +5,7 @@ import { MdLock } from 'react-icons/md'
 import PlayerDetailsModal from '../modal/PlayerDetailsModal'
 import { useParams } from 'react-router-dom'
 import store from '../../redux/store'
-import { getPf } from '../../config/helperFunctions'
+import { getPf, getRankAndPosition } from '../../config/helperFunctions'
 
 const NewRosterCard = (props) => {
   const {
@@ -19,6 +19,7 @@ const NewRosterCard = (props) => {
     checkBox = true,
     averagePf,
   } = props
+  console.log('props>>>', averagePf)
   const {
     players: {
       PlayerID,
@@ -120,7 +121,7 @@ const NewRosterCard = (props) => {
           <div className='bottom'>
             <p>AVG.PF:{averagePf[PlayerID] ? getPf(averagePf[PlayerID])?.apf : '-'}</p>
             <p>PPG:{pts || '-'}</p>
-            <p>P-RANK:{PlayerRank ? `#${PlayerRank}` : '-'}</p>
+            <p>P-RANK:{getRankAndPosition(averagePf[PlayerID])?.playerOverallRank}</p>
             <p>OPP:{UpcomingGameOpponent || '-'}</p>
             <p>
               CAPHIT:{playerCaps[PlayerID] ? `$${playerCaps[PlayerID]?.toLocaleString()}` : '-'}

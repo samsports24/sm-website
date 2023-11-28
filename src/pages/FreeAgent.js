@@ -13,7 +13,7 @@ import PlayerDetailsModal from '../components/modal/PlayerDetailsModal'
 
 import { createAuction, getFreeAgent } from '../redux/actions/rosterAction'
 import { useSelector } from 'react-redux'
-import { getPfScore } from '../config/helperFunctions'
+import { getPfScore, getRankAndPosition } from '../config/helperFunctions'
 
 const FreeAgent = () => {
   const SETTING = useSelector((state) => state.user.setting)
@@ -26,14 +26,13 @@ const FreeAgent = () => {
   const [limit] = useState(10)
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
-  // const [filterBy, setFilterBy] = useState('')
+  const [filterBy, setFilterBy] = useState('')
 
   const navigate = useNavigate()
 
   useEffect(() => {
     getData()
-  }, [page])
-  // }, [page, filterBy])
+  }, [page, filterBy])
 
   const getData = async () => {
     window.scrollTo({
@@ -46,7 +45,7 @@ const FreeAgent = () => {
       search,
       limit: limit,
       page: page,
-      // sort: filterBy,
+      sort: filterBy,
     })
     setFreeAgents(res)
     setLoading(false)
@@ -61,7 +60,7 @@ const FreeAgent = () => {
         search,
         limit: limit,
         page: 1,
-        // sort: '',
+        sort: '',
       })
       setFreeAgents(res)
     }
@@ -74,7 +73,7 @@ const FreeAgent = () => {
       search: '',
       limit: limit,
       page: 1,
-      // sort: '',
+      sort: '',
     })
     setFreeAgents(res)
     setLoading(false)
@@ -157,7 +156,7 @@ const FreeAgent = () => {
       title: 'PLAYER RANK',
       dataIndex: 'playerRank',
       key: 'playerRank',
-      render: (t) => <p>{t > 0 ? t : '-'}</p>,
+      render: (_, obj) => <p>{getRankAndPosition(obj?.weeklyScoring)?.playerOverallRank}</p>,
     },
     {
       title: 'AGE',
@@ -222,8 +221,8 @@ const FreeAgent = () => {
         <div className='header'>
           <div className='heading_selectBox'>
             <h2>FREE AGENT</h2>
-            {/* <Select
-              placeholder='Filter by'
+            <Select
+              placeholder='Sort by'
               onChange={(v) => setFilterBy(v)}
               allowClear={{ clearIcon: <GrFormClose size={25} onClick={() => {}} /> }}
               options={[
@@ -245,7 +244,7 @@ const FreeAgent = () => {
                 },
               ]}
               className='filter_select_box'
-            /> */}
+            />
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>

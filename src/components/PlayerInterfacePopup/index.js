@@ -21,7 +21,7 @@ import {
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
-import { getPf, getPfScore } from '../../config/helperFunctions'
+import { getPf, getPfScore, getRankAndPosition } from '../../config/helperFunctions'
 import { isLocked } from '../../config/constants'
 
 import Image from '../../assets/logo2.png'
@@ -424,7 +424,12 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
                   <h2>Player Rank</h2>
                   <div className='player_rank_box'>
                     <div>
-                      <p className='text_1'>#</p>
+                      <p className='text_1'>
+                        {
+                          getRankAndPosition(data?.playerContract?.weeklyScoring)
+                            ?.playerPositionRank
+                        }
+                      </p>
                       <p className='text_2'>POSITION</p>
                     </div>
                     <div style={{ alignSelf: 'flex-start' }}>
@@ -433,7 +438,9 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
                       </p>
                     </div>
                     <div>
-                      <p className='text_1'>#</p>
+                      <p className='text_1'>
+                        {getRankAndPosition(data?.playerContract?.weeklyScoring)?.playerOverallRank}
+                      </p>
                       <p className='text_2'>OVERALL</p>
                     </div>
                   </div>
