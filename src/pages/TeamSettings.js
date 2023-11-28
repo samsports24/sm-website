@@ -50,6 +50,7 @@ const TeamSetting = () => {
     const city = values?.city ? values?.city : user?.team?.city || ''
     const hometown = values?.hometown ? values?.hometown : user?.team?.hometown || ''
     const teamTwitter = values?.teamTwitter ? values?.teamTwitter : user?.team?.teamTwitter || ''
+    const teamColor = values?.teamColor ? values?.teamColor : user?.team?.teamColor || ''
 
     if (file) {
       let formdata = new FormData()
@@ -61,6 +62,7 @@ const TeamSetting = () => {
       formdata.append('city', city)
       formdata.append('hometown', hometown)
       formdata.append('teamTwitter', teamTwitter)
+      formdata.append('teamColor', teamColor)
 
       await _updateTeam(formdata)
     } else {
@@ -72,6 +74,7 @@ const TeamSetting = () => {
         city,
         hometown,
         teamTwitter,
+        teamColor,
       }
       await _updateTeam(obj)
     }
@@ -89,38 +92,6 @@ const TeamSetting = () => {
 
   return (
     <div className='practice_squad_container team_trade_main'>
-      {/* BACK BUTTON */}
-
-      {/* BREADCRUMB */}
-      {/* <section className='_breadcrumb'>
-        <Button
-          className='_back_button'
-          type='primary'
-          onClick={() => navigate('/professional-league')}
-        >
-          Back
-        </Button>
-        <Breadcrumb
-          className='customize_breadcrumb'
-          separator={<img src={Arrow} />}
-          items={[
-            {
-              title: <p>Home</p>,
-            },
-            {
-              title: <p>Team</p>,
-            },
-            {
-              title: <p>Roster</p>,
-            },
-            {
-              title: <p>Player Interface</p>,
-            },
-          ]}
-        />
-      </section> */}
-
-      {/* HEADER */}
       <Header />
 
       <ButtonsAndPagination noWeek={true} />
@@ -164,6 +135,10 @@ const TeamSetting = () => {
             {
               name: 'teamTwitter',
               value: user?.team?.teamTwitter,
+            },
+            {
+              name: 'teamColor',
+              value: user?.team?.teamColor,
             },
           ]}
         >
@@ -214,7 +189,7 @@ const TeamSetting = () => {
                 <Input placeholder='Hometown name here' />
               </Form.Item>
             </Col>
-            <Col lg={24} xl={8}>
+            <Col lg={24} xl={4}>
               <Form.Item name={'pictures'} label='Team Logo'>
                 <>
                   <label className='file_button' htmlFor='fileInput'>
@@ -228,6 +203,11 @@ const TeamSetting = () => {
                     accept='image/jpg,image/png,image/jpeg'
                   />
                 </>
+              </Form.Item>
+            </Col>
+            <Col lg={0} xl={4}>
+              <Form.Item name={'teamColor'} label='Team Color'>
+                <Input type='color' style={{ height: '40px', width: '70px' }} />
               </Form.Item>
             </Col>
             <Col lg={0} xl={8} />

@@ -49,8 +49,6 @@
   flex-direction: row;
   align-items: center;
   gap: 10px;
-  background-color: var(--primaryPurple);
-  padding: 12px;
 }
 .player_ranking_box .player_ranking_body .card_box h6 {
   color: var(--text);
@@ -60,30 +58,49 @@
   line-height: 28px;
   opacity: 0.5;
 }
+.player_ranking_box .player_ranking_body .card_box .team_image_box {
+  height: 50px;
+  width: 70px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 130%;
+}
 .player_ranking_box .player_ranking_body .card_box .image_box {
-  height: 30px;
-  width: 30px;
+  height: 50px;
+  width: 50px;
   border-radius: 50%;
 }
 .player_ranking_box .player_ranking_body .card_box img {
   height: 100%;
-  width: auto;
+  width: 100%;
   border-radius: 50%;
+  object-fit: cover;
 }
 .player_ranking_box .player_ranking_body .card_box h3 {
   color: var(--primary);
-  font-size: 14px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: 22px;
   flex: 1;
+
+  text-align: center;
 }
-.player_ranking_box .player_ranking_body .card_box p {
+.player_ranking_box .player_ranking_body .card_box .player_score_box {
+  height: 50px;
+  min-width: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000;
+}
+.player_ranking_box .player_ranking_body .card_box .player_score_box p {
   color: var(--text);
-  font-size: 16px;
+  font-size: 18px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+  opacity: 0.6;
 }
 
 @media (max-width: 768px) {
