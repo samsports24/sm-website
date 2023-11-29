@@ -12,17 +12,14 @@ import HeadingAndWeek from '../components/Pagination/HeadingAndWeek'
 import { useSelector } from 'react-redux'
 import { isLocked } from '../config/constants'
 import { getRoster, setNonActivePlayer, setProtectedPlayer } from '../redux/actions/rosterAction'
-import { draftData } from '../config/draftData'
 import { sortedArray } from '../config/helperFunctions'
 
 const PlayerRoster = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
-  const USER = useSelector((state) => state?.user)
   const { isLoading, data } = useSelector((state) => state?.roster)
   const [nonActive, setNonActive] = useState([])
   const [protectedCheck, setProtectedCheck] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [draftPickData, setDraftPickData] = useState([])
 
   const handleNonActive = (event, id) => {
     if (event) {
@@ -88,8 +85,6 @@ const PlayerRoster = () => {
 
   useEffect(() => {
     SETTING?.week !== 0 && getData()
-
-    setDraftPickData(draftData?.find((v) => v?.teamId === USER?.userDetails?.team?._id))
   }, [SETTING?.week])
 
   useEffect(() => {
@@ -260,11 +255,11 @@ const PlayerRoster = () => {
                     </p>
                   </div>
                   <section className='draft_pick_box'>
-                    {draftPickData?.draft?.length > 0 ? (
-                      draftPickData?.draft?.map((v, i) => {
+                    {data?.drafts?.length > 0 ? (
+                      data?.drafts?.map((v, i) => {
                         return (
                           <div key={i} className='draft_pick_row'>
-                            <p>{v} Pick</p>
+                            <p>{`${v?.season}' ${v?.team?.name} ${v?.round} Round Pick`}</p>
                           </div>
                         )
                       })

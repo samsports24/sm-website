@@ -457,9 +457,17 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
                 <div>
                   <h2>TPF / APF</h2>
                   <div className='tpf_apf_box'>
-                    <p>{getPf(data?.playerContract?.weeklyScoring)?.tpf}</p>
+                    <p>
+                      {isFreeAgent
+                        ? data?.player?.pf || '-'
+                        : getPf(data?.playerContract?.weeklyScoring)?.tpf}
+                    </p>
                     <span style={{ fontSize: '22px', color: '#fff' }}>|</span>
-                    <p>{getPf(data?.playerContract?.weeklyScoring)?.apf}</p>
+                    <p>
+                      {isFreeAgent
+                        ? data?.player?.avgPf || '-'
+                        : getPf(data?.playerContract?.weeklyScoring)?.apf}
+                    </p>
                   </div>
                 </div>
               </div>

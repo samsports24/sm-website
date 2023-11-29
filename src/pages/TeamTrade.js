@@ -34,14 +34,9 @@ const TeamTrade = () => {
 
   const [selectTeam, setSelectTeam] = useState(null)
 
-  const [draftCurrentTeam, setDraftCurrentTeam] = useState([])
-  const [draftOppTeam, setDraftOppTeam] = useState([])
-
   useEffect(() => {
     getTeams()
     getMyTeam()
-    SETTING?.userDetails?.team?._id &&
-      setDraftCurrentTeam(draftData?.find((v) => v?.teamId === SETTING?.userDetails?.team?._id))
   }, [])
 
   useEffect(() => {
@@ -63,7 +58,6 @@ const TeamTrade = () => {
   const getOtherTeam = async () => {
     setLoading2(true)
     const res = await getOtherTeamTrade({ id: selectTeam })
-    setDraftOppTeam(draftData?.find((v) => v?.teamId === selectTeam))
     setOtherTeam(res)
     setLoading2(false)
   }
@@ -278,41 +272,42 @@ const TeamTrade = () => {
               </Button>
             </Col>
           </Row>
+          <Row gutter={[30, 30]} style={{ marginTop: '30px' }}>
+            <Col xs={24} lg={12}>
+              <section className='draft_pick_box'>
+                {myTeam?.drafts?.length > 0 ? (
+                  myTeam?.drafts?.map((v, i) => {
+                    return (
+                      <div key={i} className='draft_pick_row'>
+                        <p>{`${v?.season}' ${v?.team?.name} ${v?.round} Round Pick`}</p>
+                      </div>
+                    )
+                  })
+                ) : (
+                  <Empty text={'DRAFT PICK IS EMPTY'} />
+                )}
+              </section>
+            </Col>
+            <Col xs={24} lg={12}>
+              {!loading2 && (
+                <section className='draft_pick_box'>
+                  {otherTeam?.drafts?.length > 0 ? (
+                    otherTeam?.drafts?.map((v, i) => {
+                      return (
+                        <div key={i} className='draft_pick_row'>
+                          <p>{`${v?.season}' ${v?.team?.name} ${v?.round} Round Pick`}</p>
+                        </div>
+                      )
+                    })
+                  ) : (
+                    <Empty text={'DRAFT PICK IS EMPTY'} />
+                  )}
+                </section>
+              )}
+            </Col>
+          </Row>
         </section>
       )}
-
-      <Row gutter={[30, 30]} style={{ marginTop: '30px' }}>
-        <Col xs={24} lg={12}>
-          <section className='draft_pick_box'>
-            {draftCurrentTeam?.draft?.length > 0 ? (
-              draftCurrentTeam?.draft?.map((v, i) => {
-                return (
-                  <div key={i} className='draft_pick_row'>
-                    <p>{v} Pick</p>
-                  </div>
-                )
-              })
-            ) : (
-              <Empty text={'DRAFT PICK IS EMPTY'} />
-            )}
-          </section>
-        </Col>
-        <Col xs={24} lg={12}>
-          <section className='draft_pick_box'>
-            {draftOppTeam?.draft?.length > 0 ? (
-              draftOppTeam?.draft?.map((v, i) => {
-                return (
-                  <div key={i} className='draft_pick_row'>
-                    <p>{v} Pick</p>
-                  </div>
-                )
-              })
-            ) : (
-              <Empty text={'DRAFT PICK IS EMPTY'} />
-            )}
-          </section>
-        </Col>
-      </Row>
     </div>
   )
 }

@@ -4,7 +4,6 @@ import { isLocked } from '../../config/constants'
 import { MdLock } from 'react-icons/md'
 import PlayerDetailsModal from '../modal/PlayerDetailsModal'
 import { useParams } from 'react-router-dom'
-import store from '../../redux/store'
 import { getPf, getRankAndPosition } from '../../config/helperFunctions'
 
 const NewRosterCard = (props) => {
@@ -19,7 +18,6 @@ const NewRosterCard = (props) => {
     checkBox = true,
     averagePf,
   } = props
-  console.log('props>>>', averagePf)
   const {
     players: {
       PlayerID,
@@ -28,7 +26,6 @@ const NewRosterCard = (props) => {
       Age,
       Team,
       ByeWeek,
-      PlayerRank,
       Position,
       UpcomingGameOpponent,
       isPlayerLocked,

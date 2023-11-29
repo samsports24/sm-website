@@ -12,7 +12,6 @@ import Empty from '../components/Empty'
 import { getTeamRoster } from '../redux/actions/rosterAction'
 import { useSelector } from 'react-redux'
 
-import { draftData } from '../config/draftData'
 import NewRosterCard from '../components/NewRosterCard'
 import { sortedArray } from '../config/helperFunctions'
 import { Col, Row } from 'antd'
@@ -25,6 +24,7 @@ const TeamRoster = () => {
   const [protectedCheck, setProtectedCheck] = useState([])
   const [playerCaps, setPlayerCaps] = useState(null)
   const [averagePf, setAveragePf] = useState(null)
+  const [drafts, setDrafts] = useState([])
   const [loading, setLoading] = useState(true)
   const { id } = useParams()
 
@@ -34,8 +34,6 @@ const TeamRoster = () => {
     filterPracticeRoster: [],
     filterProtectedRoster: [],
   })
-
-  const [draftPickData] = useState(draftData?.find((v) => v?.teamId === id))
 
   useEffect(() => {
     SETTING?.week !== 0 && getData()
@@ -59,6 +57,7 @@ const TeamRoster = () => {
       })
 
       setPlayerCaps(res?.playerCaps)
+      setDrafts(res?.drafts)
       setAveragePf(res?.averagePf)
       setActivePlayerData(res?.active)
       setPractiveSquadData(res?.practice)
@@ -218,16 +217,16 @@ const TeamRoster = () => {
                   </p>
                 </div>
                 <section className='draft_pick_box'>
-                  {draftPickData?.draft?.length > 0 ? (
-                    draftPickData?.draft?.map((v, i) => {
+                  {drafts?.length > 0 ? (
+                    drafts?.map((v, i) => {
                       return (
                         <div key={i} className='draft_pick_row'>
-                          <p>{v} Pick</p>
+                          <p>{`${v?.season}' ${v?.team?.name} ${v?.round} Round Pick`}</p>
                         </div>
                       )
                     })
                   ) : (
-                    <Empty text={'Draft Data is empty'} />
+                    <Empty text={'DRAFT PICK IS EMPTY'} />
                   )}
                 </section>
               </div>

@@ -60,6 +60,7 @@
 @import './components/playerInfoBottom.css';
 @import './components/playerInterfacePopup.css';
 @import './components/newRosterCard.css';
+@import './components/teamScheduleCarousel.css';
 
 /* Page CSS */
 @import './pages/login.css';

@@ -1,7 +1,7 @@
 import React from 'react'
 // import { BiRightArrowAlt } from 'react-icons/bi'
 
-const PowerRanking = ({ data }) => {
+const PowerRanking = ({ data, maxHeight = '500px' }) => {
   const getBoldName = (name) => {
     const splitted = name?.split(' ')
     let newText = ''
@@ -22,12 +22,12 @@ const PowerRanking = ({ data }) => {
   return (
     <div className='power_ranking_box'>
       <header>
-        <h3>Power Ranking (Top 200)</h3>
+        <h3>Power Ranking</h3>
         {/* <p>
           View All <BiRightArrowAlt size={18} />
         </p> */}
       </header>
-      <section className='power_ranking_body'>
+      <section className='power_ranking_body' style={{ maxHeight: maxHeight }}>
         {data?.teamRanks
           ?.sort((a, b) => b?.teamScore?.score - a?.teamScore?.score)
           ?.map((v, i) => {

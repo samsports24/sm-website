@@ -66,9 +66,9 @@ const MainMenu = () => {
       case '/team-setting': {
         return setActive('team-setting')
       }
-      case '/team-schedule': {
-        return setActive('team-schedule')
-      }
+      // case '/team-schedule': {
+      //   return setActive('team-schedule')
+      // }
       default:
         setActive('')
     }
@@ -173,13 +173,13 @@ const MainMenu = () => {
               <AiOutlineSetting />
               <p>team setting</p>
             </div>
-            <div
+            {/* <div
               className={`sidebar_menu_item ${active === 'team-schedule' ? 'activeRoute' : ''}`}
               onClick={() => navigate('/team-schedule')}
             >
               <AiOutlineSchedule />
               <p>team schedule</p>
-            </div>
+            </div> */}
           </>
         )}
         <div

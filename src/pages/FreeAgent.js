@@ -13,7 +13,7 @@ import PlayerDetailsModal from '../components/modal/PlayerDetailsModal'
 
 import { createAuction, getFreeAgent } from '../redux/actions/rosterAction'
 import { useSelector } from 'react-redux'
-import { getPfScore, getRankAndPosition } from '../config/helperFunctions'
+import { getRankAndPosition } from '../config/helperFunctions'
 
 const FreeAgent = () => {
   const SETTING = useSelector((state) => state.user.setting)
@@ -141,7 +141,7 @@ const FreeAgent = () => {
       dataIndex: 'playerScore',
       key: 'playerScore',
       render: (_, obj) => {
-        return <p>{getPfScore(obj?.weeklyScoring)?.pf}</p>
+        return <p>{obj?.pf || '-'}</p>
       },
     },
     {
@@ -149,7 +149,7 @@ const FreeAgent = () => {
       dataIndex: 'playerScore',
       key: 'playerScore',
       render: (_, obj) => {
-        return <p>{getPfScore(obj?.weeklyScoring)?.avg}</p>
+        return <p>{obj?.avgPf || '-'}</p>
       },
     },
     {

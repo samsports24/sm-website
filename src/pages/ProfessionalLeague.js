@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
 // import { Breadcrumb } from 'antd'
 
@@ -15,11 +15,16 @@ import HeadingAndWeek from '../components/Pagination/HeadingAndWeek'
 
 import { getProfessionalLeagueRanks, getScheduleByWeek } from '../redux'
 import { useSelector } from 'react-redux'
+import { getTeamSchedule } from '../redux/actions/teamActions'
+import TeamScheduleCarousel, {
+  TeamScheduleCustomCarousel,
+} from '../components/TeamScheduleCarousel'
 
 const ProfessionalLeague = () => {
   const SETTING = useSelector((state) => state.user.setting)
   const [ranks, setRanks] = useState(null)
   const [data, setData] = useState([])
+  const [teamSchedule, setTeamSchedule] = useState([])
   const [isLoading, setIsloading] = useState(true)
 
   useEffect(() => {
@@ -28,14 +33,23 @@ const ProfessionalLeague = () => {
 
   const getTeamAndPlayerRank = async () => {
     setIsloading(true)
+    await getProLeagueRank()
+    await getDataByWeek()
+    await getTeamScheduleFn()
+    setIsloading(false)
+  }
+
+  const getProLeagueRank = async () => {
     let data = await getProfessionalLeagueRanks(SETTING?.week)
     setRanks(data)
-    await getDataByWeek()
-    setIsloading(false)
   }
   const getDataByWeek = async () => {
     const res = await getScheduleByWeek(SETTING?.week)
     setData(res)
+  }
+  const getTeamScheduleFn = async () => {
+    const res = await getTeamSchedule({ teamFilter: '', week: SETTING?.week })
+    setTeamSchedule(res)
   }
 
   return (
@@ -48,9 +62,12 @@ const ProfessionalLeague = () => {
         <>
           <HeadingAndWeek />
 
+          <TeamScheduleCustomCarousel data={teamSchedule} />
+          {/* <TeamScheduleCarousel data={teamSchedule} /> */}
+
           <section className='league_details_container'>
             <div className='left'>
-              <LeagueStandings data={ranks} maxHeight={'1172px'} />
+              <LeagueStandings data={ranks} maxHeight={'1325px'} />
             </div>
             <div className='center'>
               {[data?.[0]].map((item, index) => (
@@ -60,8 +77,8 @@ const ProfessionalLeague = () => {
               <TransactionTracker />
             </div>
             <div className='right'>
-              <PowerRanking data={ranks} />
-              <PlayerRanking data={ranks} />
+              <PowerRanking data={ranks} maxHeight={'626px'} />
+              <PlayerRanking data={ranks} maxHeight={'626px'} />
             </div>
           </section>
         </>

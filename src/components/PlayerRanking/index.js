@@ -2,7 +2,7 @@ import React from 'react'
 import { BiRightArrowAlt } from 'react-icons/bi'
 import userImg from '../../assets/account.svg'
 
-const PlayerRanking = ({ data }) => {
+const PlayerRanking = ({ data, maxHeight = '500px' }) => {
   return (
     <div className='player_ranking_box'>
       <header>
@@ -11,7 +11,7 @@ const PlayerRanking = ({ data }) => {
           View All <BiRightArrowAlt size={18} />
         </p>
       </header>
-      <section className='player_ranking_body'>
+      <section className='player_ranking_body' style={{ maxHeight: maxHeight }}>
         {data?.playerRanks?.map((v, i) => {
           const team = data?.teams?.find((x) => v?.teamId === x?._id)
 

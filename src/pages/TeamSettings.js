@@ -205,7 +205,7 @@ const TeamSetting = () => {
                 </>
               </Form.Item>
             </Col>
-            <Col lg={0} xl={4}>
+            <Col lg={24} xl={4}>
               <Form.Item name={'teamColor'} label='Team Color'>
                 <Input type='color' style={{ height: '40px', width: '70px' }} />
               </Form.Item>

@@ -17,44 +17,53 @@ const RollingNewsFeed = ({ height = '463px' }) => {
   }, [])
 
   return (
-    <div className='rolling_news_feed'>
-      <header>
-        <h3>NFL Rolling News Feed</h3>
-        <p>
-          View All <BiRightArrowAlt size={18} />
-        </p>
-      </header>
-      <section className='content_body' style={{ maxHeight: height }}>
-        {news?.map((v) => {
-          return (
-            <div key={v.NewsID} className='card_box'>
-              <div className='card_box_header'>
-                <p>{v.Title}</p>
-                <BiRightArrowAlt size={18} />
-              </div>
-              <div className='news_feed_share'>
-                {/* <div className='left_side'>
+    <>
+      <div className='news_header_top'>
+        <h1>THE SAM NEWS</h1>
+        <div>
+          <p>Your latest sport news powered by Rotoballer</p>
+        </div>
+      </div>
+
+      <div className='rolling_news_feed'>
+        <header>
+          <h3>NFL Rolling News Feed</h3>
+          <p>
+            View All <BiRightArrowAlt size={18} />
+          </p>
+        </header>
+        <section className='content_body' style={{ maxHeight: height }}>
+          {news?.map((v) => {
+            return (
+              <div key={v.NewsID} className='card_box'>
+                <div className='card_box_header'>
+                  <p>{v.Title}</p>
+                  <BiRightArrowAlt size={18} />
+                </div>
+                <div className='news_feed_share'>
+                  {/* <div className='left_side'>
                   <h6>Share:</h6>
                   <img src={twitterIcon} />
                   <img src={icon} />
                   <img src={fbIcon} />
                 </div> */}
-                <p>{v.TimeAgo}</p>
+                  <p>{v.TimeAgo}</p>
+                </div>
+                <p className='news'>{v.Content}</p>
+                <div className='source'>
+                  <p>{v.Author}</p>
+                  <p>
+                    <b>
+                      Source: <span>{v.Source}</span>
+                    </b>
+                  </p>
+                </div>
               </div>
-              <p className='news'>{v.Content}</p>
-              <div className='source'>
-                <p>{v.Author}</p>
-                <p>
-                  <b>
-                    Source: <span>{v.Source}</span>
-                  </b>
-                </p>
-              </div>
-            </div>
-          )
-        })}
-      </section>
-    </div>
+            )
+          })}
+        </section>
+      </div>
+    </>
   )
 }
 
