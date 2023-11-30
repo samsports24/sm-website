@@ -14,7 +14,8 @@ import Loader from '../components/Loader'
 import { getTrade, updateCounterTrade } from '../redux/actions/teamTradeAction'
 
 import { leagueSalaryCap } from '../config/constants'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
+import Empty from '../components/Empty'
 
 const CounterTrade = () => {
   const [loading, setLoading] = useState(true)
@@ -25,7 +26,14 @@ const CounterTrade = () => {
   const [myTeamSelected, setMyTeamSelected] = useState([])
   const [otherTeamSelected, setOtherTeamSelected] = useState([])
 
+  const [myTeamDraft, setMyTeamDraft] = useState([])
+  const [otherTeamDraft, setOtherTeamDraft] = useState([])
+
+  const [myTeamSelectedDraft, setMyTeamSelectedDraft] = useState([])
+  const [otherTeamSelectedDraft, setOtherTeamSelectedDraft] = useState([])
+
   const { state } = useLocation()
+  const navigate = useNavigate()
 
   useEffect(() => {
     state?.tradeId && _getTrade()
@@ -35,7 +43,7 @@ const CounterTrade = () => {
     !loading && setLoading(true)
     const res = await getTrade({ tradeId: state?.tradeId })
     setData(res)
-    console.log('res?.teamData?.buyer', res?.teamData?.buyer)
+
     setMyTeamSelected(
       res?.teamData?.buyer?.players?.map((v) => {
         return {
@@ -50,18 +58,42 @@ const CounterTrade = () => {
         }
       }),
     )
+    setMyTeamSelectedDraft(res?.teamData?.buyer?.drafts)
+    setOtherTeamSelectedDraft(res?.teamData?.seller?.drafts)
+    let _myTeamDraft = []
+    res?.buyer?.buyerDrafts?.forEach((v) => {
+      const index = res?.teamData?.buyer?.drafts?.findIndex((x) => x?._id === v?._id)
+      if (index === -1) {
+        _myTeamDraft.push(v)
+      }
+    })
+    setMyTeamDraft(_myTeamDraft)
+    let _otherTeamDraft = []
+    res?.seller?.sellerDrafts?.map((v) => {
+      const index = res?.teamData?.seller?.drafts?.findIndex((x) => x?._id === v?._id)
+      if (index === -1) {
+        _otherTeamDraft.push(v)
+      }
+    })
+    setOtherTeamDraft(_otherTeamDraft)
     setLoading(false)
   }
 
   const createTrade = async () => {
-    if (myTeamSelected?.length > 0 && otherTeamSelected?.length > 0) {
+    const isMyTeam = myTeamSelected?.length > 0 || myTeamSelectedDraft?.length > 0
+    const isOtherTeam = otherTeamSelected?.length > 0 || otherTeamSelectedDraft?.length > 0
+
+    if (isMyTeam || isOtherTeam) {
       setBtnLoading(true)
       const res = await updateCounterTrade({
         buyerPlayers: myTeamSelected?.map((v) => v?.players?._id),
+        buyerDrafts: myTeamSelectedDraft?.map((v) => v._id),
         sellerPlayers: otherTeamSelected?.map((v) => v?.players?._id),
+        sellerDrafts: otherTeamSelectedDraft?.map((v) => v._id),
         tradeId: state?.tradeId,
         buyerId: data?.teamData?.buyer?.team?._id,
       })
+      navigate('/league-notification')
       notification.success({
         message: res,
         duration: 3,
@@ -69,40 +101,43 @@ const CounterTrade = () => {
       setBtnLoading(false)
     } else {
       notification.error({
-        message: 'Please select player',
+        message: 'Please select player or draft',
         duration: 3,
       })
     }
   }
 
+  const handleMyTeamSelectedDraft = (obj) => {
+    const index = myTeamDraft?.findIndex((v) => v?._id === obj?._id)
+    const temp = [...myTeamDraft]
+    temp.splice(index, 1)
+    setMyTeamDraft(temp)
+    setMyTeamSelectedDraft((pre) => [...pre, obj])
+  }
+  const handleRemoveMyTeamSelectedDraft = (obj) => {
+    const index = myTeamSelectedDraft?.findIndex((v) => v?._id === obj?._id)
+    const temp = [...myTeamSelectedDraft]
+    temp.splice(index, 1)
+    setMyTeamSelectedDraft(temp)
+    setMyTeamDraft((pre) => [...pre, obj])
+  }
+  const handleOtherTeamSelectedDraft = (obj) => {
+    const index = otherTeamDraft?.findIndex((v) => v?._id === obj?._id)
+    const temp = [...otherTeamDraft]
+    temp.splice(index, 1)
+    setOtherTeamDraft(temp)
+    setOtherTeamSelectedDraft((pre) => [...pre, obj])
+  }
+  const handleRemoveOtherTeamSelectedDraft = (obj) => {
+    const index = otherTeamSelectedDraft?.findIndex((v) => v?._id === obj?._id)
+    const temp = [...otherTeamSelectedDraft]
+    temp.splice(index, 1)
+    setOtherTeamSelectedDraft(temp)
+    setOtherTeamDraft((pre) => [...pre, obj])
+  }
+
   return (
     <div className='practice_squad_container team_trade_main'>
-      {/* BREADCRUMB */}
-      {/* <section className='_breadcrumb'>
-        <Button className='_back_button' type='primary'>
-          Back
-        </Button>
-        <Breadcrumb
-          className='customize_breadcrumb'
-          separator={<img src={Arrow} />}
-          items={[
-            {
-              title: <p>Home</p>,
-            },
-            {
-              title: <p>Team</p>,
-            },
-            {
-              title: <p>Roster</p>,
-            },
-            {
-              title: <p>Player Interface</p>,
-            },
-          ]}
-        />
-      </section> */}
-
-      {/* HEADER */}
       <Header />
 
       <ButtonsAndPagination />
@@ -116,16 +151,6 @@ const CounterTrade = () => {
       ) : (
         <section className='squad_card_container transparent'>
           <Row gutter={[30, 30]}>
-            <Col xs={24} lg={24}>
-              <Button
-                loading={btnLoading}
-                type='primary'
-                style={{ float: 'right' }}
-                onClick={createTrade}
-              >
-                Submit
-              </Button>
-            </Col>
             <Col xs={24} lg={12}>
               <div className='add-player'>
                 <div className='header'>
@@ -272,6 +297,113 @@ const CounterTrade = () => {
                   </div>
                 ))}
               </div>
+            </Col>
+
+            <Col xs={24} lg={24}>
+              <Button
+                loading={btnLoading}
+                type='primary'
+                style={{ float: 'right' }}
+                onClick={createTrade}
+              >
+                Submit
+              </Button>
+            </Col>
+          </Row>
+          <Row gutter={[30, 30]} style={{ marginTop: '30px' }}>
+            <Col xs={24} lg={12}>
+              <div className='draftPickMainBox'>
+                <h2 style={{ marginBottom: '20px' }}>SELECTED DRAFTS</h2>
+                <section className='draft_pick_box'>
+                  {myTeamSelectedDraft
+                    ?.sort((a, b) => a?.season - b?.season)
+                    ?.map((v, i) => {
+                      return (
+                        <div key={i} className='draft_pick_row'>
+                          <p>{`${v?.season}' ${v?.team?.name} ${v?.round} Round Pick`}</p>
+                          <AiFillCloseCircle
+                            color={'#fff'}
+                            size={20}
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleRemoveMyTeamSelectedDraft(v)}
+                          />
+                        </div>
+                      )
+                    })}
+                </section>
+              </div>
+              <div style={{ height: '20px' }} />
+              <div className='draftPickMainBox'>
+                <h2 style={{ marginBottom: '20px' }}>AVAILABLE DRAFTS</h2>
+                <section className='draft_pick_box'>
+                  {myTeamDraft?.length > 0 ? (
+                    myTeamDraft
+                      ?.sort((a, b) => a?.season - b?.season)
+                      ?.map((v, i) => {
+                        return (
+                          <div
+                            key={i}
+                            className='draft_pick_row'
+                            onClick={() => handleMyTeamSelectedDraft(v)}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <p>{`${v?.season}' ${v?.team?.name} ${v?.round} Round Pick`}</p>
+                          </div>
+                        )
+                      })
+                  ) : (
+                    <Empty text={'DRAFT PICK IS EMPTY'} />
+                  )}
+                </section>
+              </div>
+            </Col>
+            <Col xs={24} lg={12}>
+              <div className='draftPickMainBox'>
+                <h2 style={{ marginBottom: '20px' }}>SELECTED DRAFTS</h2>
+                <section className='draft_pick_box'>
+                  {otherTeamSelectedDraft
+                    ?.sort((a, b) => a?.season - b?.season)
+                    ?.map((v, i) => {
+                      return (
+                        <div key={i} className='draft_pick_row'>
+                          <p>{`${v?.season}' ${v?.team?.name} ${v?.round} Round Pick`}</p>
+                          <AiFillCloseCircle
+                            color={'#fff'}
+                            size={20}
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleRemoveOtherTeamSelectedDraft(v)}
+                          />
+                        </div>
+                      )
+                    })}
+                </section>
+              </div>
+              <div style={{ height: '20px' }} />
+              {/* {!loading2 && ( */}
+              <div className='draftPickMainBox'>
+                <h2 style={{ marginBottom: '20px' }}>AVAILABLE DRAFTS</h2>
+                <section className='draft_pick_box'>
+                  {otherTeamDraft?.length > 0 ? (
+                    otherTeamDraft
+                      ?.sort((a, b) => a?.season - b?.season)
+                      ?.map((v, i) => {
+                        return (
+                          <div
+                            key={i}
+                            className='draft_pick_row'
+                            onClick={() => handleOtherTeamSelectedDraft(v)}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <p>{`${v?.season}' ${v?.team?.name} ${v?.round} Round Pick`}</p>
+                          </div>
+                        )
+                      })
+                  ) : (
+                    <Empty text={'DRAFT PICK IS EMPTY'} />
+                  )}
+                </section>
+              </div>
+              {/* )} */}
             </Col>
           </Row>
         </section>

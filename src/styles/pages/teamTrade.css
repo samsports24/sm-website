@@ -97,12 +97,20 @@
   overflow-y: auto;
 }
 
+.draftPickMainBox {
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  padding: 20px;
+}
 .draft_pick_row {
   width: 100%;
   width: 100%;
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 10px 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 .draft_pick_row p {
   font-size: 14px;

@@ -178,7 +178,7 @@ const LeagueNotification = () => {
                             </>
                           )}
 
-                        {v?.metadata?.isApproved && (
+                        {v?.metadata?.isApproved && !v?.metadata?.isCancelled && (
                           <Button
                             disabled={isPayButtonDis(v?.metadata?.tradeId)}
                             loading={payId === v?.metadata?.tradeId?._id}

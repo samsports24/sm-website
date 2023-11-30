@@ -45,12 +45,12 @@ const SportsButtonMenu = () => {
               {
                 name: 'Professional Leagues',
                 navigate: '',
-                link: 'http://13.39.108.1:3003/professional-league',
+                link: 'https://hockey.samsports.io/professional-league',
               },
               {
                 name: 'Public Leagues',
                 navigate: '',
-                link: 'http://13.39.108.1:3003/public-league',
+                link: 'https://hockey.samsports.io/public-league',
               },
             ],
           }}
