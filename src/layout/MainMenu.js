@@ -7,7 +7,13 @@ import { MdDashboard } from 'react-icons/md'
 import { FaPlusCircle, FaRegChartBar } from 'react-icons/fa'
 import { RiAuctionLine, RiDraftLine } from 'react-icons/ri'
 import { BsShop } from 'react-icons/bs'
-import { GiStarMedal, GiTrade, GiCoins, GiBabyfootPlayers } from 'react-icons/gi'
+import {
+  GiStarMedal,
+  GiTrade,
+  GiCoins,
+  GiBabyfootPlayers,
+  GiAmericanFootballPlayer,
+} from 'react-icons/gi'
 import { PiUsersThreeLight, PiNotebookLight } from 'react-icons/pi'
 import { FaQuestion } from 'react-icons/fa6'
 import { TbLivePhoto } from 'react-icons/tb'
@@ -50,6 +56,9 @@ const MainMenu = () => {
       }
       case '/free-agent': {
         return setActive('free-agents')
+      }
+      case '/league-rosters': {
+        return setActive('league-rosters')
       }
       case '/league-standings': {
         return setActive('league-standings')
@@ -136,6 +145,15 @@ const MainMenu = () => {
               <p>
                 free
                 <br /> agents
+              </p>
+            </div>
+            <div
+              className={`sidebar_menu_item ${active === 'league-rosters' ? 'activeRoute' : ''}`}
+              onClick={() => navigate('/league-rosters')}
+            >
+              <GiAmericanFootballPlayer />
+              <p>
+                league <br /> rosters
               </p>
             </div>
             <div

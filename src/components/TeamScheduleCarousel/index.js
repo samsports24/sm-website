@@ -1,7 +1,8 @@
+import React from 'react'
 import moment from 'moment'
-import React, { useRef, useState } from 'react'
 import Carousel from 'react-multi-carousel'
 import { useSelector } from 'react-redux'
+import CustomCarousel from '../Carousel/CustomCarousel'
 
 const TeamScheduleCarousel = ({ data }) => {
   const SETTING = useSelector((state) => state.user)
@@ -97,16 +98,10 @@ const TeamScheduleCarousel = ({ data }) => {
     </div>
   )
 }
-
 export default TeamScheduleCarousel
 
 const TeamScheduleCustomCarousel = ({ data }) => {
   const SETTING = useSelector((state) => state.user)
-
-  const [dragging, setDragging] = useState(false)
-  const [startX, setStartX] = useState(0)
-  const [scrollLeft, setScrollLeft] = useState(0)
-  const wrapperRef = useRef(null)
 
   const findAndGet = (data) => {
     const { userDetails, currentWeek } = SETTING
@@ -138,53 +133,28 @@ const TeamScheduleCustomCarousel = ({ data }) => {
     return obj
   }
 
-  const handleMouseDown = (e) => {
-    setDragging(true)
-    setStartX(e.pageX - wrapperRef.current.offsetLeft)
-    setScrollLeft(wrapperRef.current.scrollLeft)
-  }
-
-  const handleMouseUp = () => {
-    setDragging(false)
-  }
-
-  const handleMouseMove = (e) => {
-    if (!dragging) return
-    const x = e.pageX - wrapperRef.current.offsetLeft
-    const walk = (x - startX) * 1
-    wrapperRef.current.scrollLeft = scrollLeft - walk
-  }
-
   return (
-    <div
-      className='teamScheduleCustomCarousel'
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseMove={handleMouseMove}
-      ref={wrapperRef}
-    >
-      <div className='wrapper'>
-        {data
-          ?.sort((a, b) => a?.week - b?.week)
-          ?.map((v, i) => {
-            return (
-              <div
-                key={i}
-                className={`tsc_card ${SETTING?.currentWeek == v?.week ? 'activeWeek' : ''}`}
-              >
-                <div className='tsc_card_left'>
-                  <p className='week_text'>Week {v?.week}</p>
-                  <p className='point_text'>{findAndGet(v)?.teamScore}</p>
-                </div>
-                <div
-                  className='tsc_card_right'
-                  style={{ backgroundImage: `url(${findAndGet(v)?.logo})` }}
-                />
+    <CustomCarousel height={'100px'}>
+      {data
+        ?.sort((a, b) => a?.week - b?.week)
+        ?.map((v, i) => {
+          return (
+            <div
+              key={i}
+              className={`tsc_card ${SETTING?.currentWeek == v?.week ? 'activeWeek' : ''}`}
+            >
+              <div className='tsc_card_left'>
+                <p className='week_text'>Week {v?.week}</p>
+                <p className='point_text'>{findAndGet(v)?.teamScore}</p>
               </div>
-            )
-          })}
-      </div>
-    </div>
+              <div
+                className='tsc_card_right'
+                style={{ backgroundImage: `url(${findAndGet(v)?.logo})` }}
+              />
+            </div>
+          )
+        })}
+    </CustomCarousel>
   )
 }
 

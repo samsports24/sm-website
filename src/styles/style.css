@@ -61,6 +61,7 @@
 @import './components/playerInterfacePopup.css';
 @import './components/newRosterCard.css';
 @import './components/teamScheduleCarousel.css';
+@import './components/customCarousel.css';
 
 /* Page CSS */
 @import './pages/login.css';
@@ -97,6 +98,7 @@
 @import './pages/totalPayment.css';
 @import './pages/league.css';
 @import './pages/teamFinancials.css';
+@import './pages/leagueRosters.css';
 
 /* COMPONENT HOCKEY */
 @import './components/leagueStandingsHockey.css';

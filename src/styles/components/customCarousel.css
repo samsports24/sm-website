@@ -1,0 +1,18 @@
+.custom_carousel {
+  width: 100%;
+  margin-top: 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: 100px;
+}
+
+.custom_carousel .wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  height: 100px;
+}
+
+.custom_carousel::-webkit-scrollbar {
+  display: none;
+}
