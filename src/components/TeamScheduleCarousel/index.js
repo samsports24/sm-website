@@ -141,7 +141,7 @@ const TeamScheduleCustomCarousel = ({ data }) => {
           return (
             <div
               key={i}
-              className={`tsc_card ${SETTING?.currentWeek == v?.week ? 'activeWeek' : ''}`}
+              className={`tsc_card ${SETTING?.currentWeek == v?.week ? 'tsc_activeWeek' : ''}`}
             >
               <div className='tsc_card_left'>
                 <p className='week_text'>Week {v?.week}</p>
