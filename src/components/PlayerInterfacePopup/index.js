@@ -187,7 +187,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
       dataIndex: 'totalPoints',
       key: 'totalPoints',
       render: (t) => (t ? t : '-'),
-      width: 130,
+      width: 145,
     },
     {
       title: 'AVG. POINTS',
@@ -482,7 +482,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
                   columns={columns}
                   bordered={false}
                   pagination={false}
-                  scroll={{ x: 1700, y: 200 }}
+                  scroll={{ x: 2000, y: 200 }}
                   className='interface_table'
                 />
               </div>
