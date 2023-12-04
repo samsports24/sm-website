@@ -22,8 +22,9 @@ export const positionOrder = {
   S: 19,
   SS: 20,
   DB: 21,
-  P: 22,
-  K: 23,
+  LS: 22,
+  P: 23,
+  K: 24,
 }
 
 export const sortedArray = (arr) => {
@@ -49,6 +50,9 @@ export const getPositionColor = (value) => {
     DE: '#E2E095',
 
     OL: '#FF72FF',
+    G: '#FF72FF',
+    OT: '#FF72FF',
+    C: '#FF72FF',
 
     RB: '#FFFF72',
     FB: '#FFFF72',

@@ -16,6 +16,21 @@ export const getAllTeam = async () => {
   }
 }
 
+export const getTeamByPlayerName = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/team/league-roster-player-search`, payload)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
 export const getTeamSchedule = async (payload) => {
   try {
     attachToken()

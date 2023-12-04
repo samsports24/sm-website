@@ -61,6 +61,21 @@ export const getTeamRoster = async (payload) => {
   }
 }
 
+export const getLeagueRoster = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/team/get-league-team-roster`, payload)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
 export const setNonActivePlayer = async (data, week) => {
   try {
     attachToken()

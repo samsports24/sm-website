@@ -1,34 +1,42 @@
 import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
-import { Input } from 'antd'
+import { Input, Spin } from 'antd'
 import { BiSearchAlt } from 'react-icons/bi'
 import CustomCarousel from '../components/Carousel/CustomCarousel'
 import { getProfessionalLeagueRanks } from '../redux'
 import { useSelector } from 'react-redux'
 import PlayerDetailsModal from '../components/modal/PlayerDetailsModal'
 import { getPositionColor, sortedObject } from '../config/helperFunctions'
-import { getTeamRoster } from '../redux/actions/rosterAction'
+import { getLeagueRoster, getTeamRoster } from '../redux/actions/rosterAction'
 import Loader from '../components/Loader'
+import { getTeamByPlayerName } from '../redux/actions/teamActions'
 
 const LeagueRosters = () => {
   const SETTING = useSelector((state) => state.user)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isLoading2, setIsLoading2] = useState(false)
+  const [isLoading, setIsLoading] = useState('all')
+  const [search, setSearch] = useState('')
   const [teams, setTeams] = useState(null)
   const [filterTeams, setFilterTeams] = useState(null)
   const [teamRosters, setTeamRosters] = useState(null)
   const [currentTeam, setCurrentTeam] = useState(null)
-  const [search, setSearch] = useState('')
+  const [foundTeam, setFoundTeam] = useState(null)
 
   useEffect(() => {
     getAll()
-  }, [SETTING?.userDetails?.team?._id])
+    return () => {
+      localStorage.removeItem('lrTeamId')
+    }
+  }, [])
 
   const getAll = async () => {
-    setIsLoading(true)
-    const teamsRes = await getTeam()
-    await getTeamRosters(SETTING?.userDetails?.team?._id, teamsRes)
-    setIsLoading(false)
+    const id = localStorage.getItem('lrTeamId')
+    const currTeamId = SETTING?.userDetails?.team?._id
+    setIsLoading('all')
+    await getTeam()
+    const res = await getTeamRosters(id ? id : currTeamId)
+    if (res) {
+      setIsLoading('')
+    }
   }
 
   const getTeam = async () => {
@@ -38,30 +46,59 @@ const LeagueRosters = () => {
     return teamsRes
   }
 
-  const getTeamRosters = async (id, teamsArr) => {
-    const res = await getTeamRoster({ week: SETTING?.setting?.week, team: id })
+  const getTeamRosters = async (id) => {
+    const res = await getLeagueRoster({ week: SETTING?.setting?.week, team: id })
     if (res) {
-      const mergedArray = [...res?.active, ...res?.practice, ...res?.retired]
-      const uniquePositionsSet = new Set(mergedArray?.map((v) => v?.players?.Position))
+      const uniquePositionsSet = new Set(res?.players?.map((v) => v?.players?.Position))
       const uniquePositionsArray = [...uniquePositionsSet]
       let newObj = {}
       uniquePositionsArray?.map((v) => {
-        newObj[v] = mergedArray?.filter((x) => x?.players?.Position === v)
+        newObj[v] = res?.players?.filter((x) => x?.players?.Position === v)
       })
       setTeamRosters(sortedObject(newObj))
-      setCurrentTeam(
-        teamsArr && teamsArr?.length > 0
-          ? teamsArr?.find((v) => v?._id === id)
-          : teams?.teams?.find((v) => v?._id === id),
-      )
+      setCurrentTeam(res?.team)
     }
     return res
   }
 
   const handleChangeTeam = async (id) => {
-    setIsLoading2(true)
-    await getTeamRosters(id)
-    setIsLoading2(false)
+    localStorage.setItem('lrTeamId', id)
+    setIsLoading('single-team')
+    const res = await getTeamRosters(id)
+    if (res) {
+      setIsLoading('')
+    }
+  }
+
+  const handleSearch = async (event) => {
+    if (event.keyCode === 13 && event.target.value?.trim() !== '') {
+      setIsLoading('team-filter')
+      const res = await getTeamByPlayerName({ name: event.target.value })
+      if (res) {
+        setFoundTeam(res)
+        const filteredTeam = teams?.teams?.filter((v) => res?.includes(v?._id))
+        setFilterTeams((pre) => ({ ...pre, teams: filteredTeam }))
+        if (res?.length === 1) {
+          await handleChangeTeam(filteredTeam[0]?._id)
+        }
+      }
+      setIsLoading('')
+    }
+  }
+  const handleSearchClick = async () => {
+    if (search?.trim() !== '') {
+      setIsLoading('team-filter')
+      const res = await getTeamByPlayerName({ name: search })
+      if (res) {
+        setFoundTeam(res)
+        const filteredTeam = teams?.teams?.filter((v) => res?.includes(v?._id))
+        setFilterTeams((pre) => ({ ...pre, teams: filteredTeam }))
+        if (res?.length === 1) {
+          await handleChangeTeam(filteredTeam[0]?._id)
+        }
+      }
+      setIsLoading('')
+    }
   }
 
   const filters = [
@@ -70,16 +107,24 @@ const LeagueRosters = () => {
       color: '#fff',
     },
     {
-      name: 'PRACTICE SQUAD',
+      name: 'NON-ACTIVE',
+      color: 'orange',
+    },
+    {
+      name: 'PRACTICE',
       color: '#7ed957',
     },
     {
-      name: 'PROTECTED SQUAD',
+      name: 'PROTECTED',
       color: '#0097b2',
     },
     {
       name: 'INJURIES RESERVE',
       color: '#ff3131',
+    },
+    {
+      name: 'RETIRED',
+      color: 'purple',
     },
   ]
 
@@ -94,63 +139,93 @@ const LeagueRosters = () => {
         <div className='input_box'>
           <Input
             placeholder='Search'
-            suffix={<BiSearchAlt color='#fff' size={20} />}
-            onChange={(e) => setSearch(e.target.value)}
+            value={search}
+            suffix={<BiSearchAlt onClick={handleSearchClick} color='#fff' size={20} />}
+            onChange={(e) => {
+              if (e.target.value?.trim() === '') {
+                setFilterTeams(teams)
+              }
+              setFoundTeam(null)
+              setSearch(e.target.value)
+            }}
+            onKeyUp={handleSearch}
           />
         </div>
       </div>
 
-      {isLoading ? (
+      {isLoading === 'all' ? (
         <Loader />
       ) : (
-        <div className='lr_body'>
-          <div className='rosters_team_box'>
-            <CustomCarousel height={'70px'}>
-              {filterTeams?.teams?.map((v, i) => {
+        <div className='lr_wrapper'>
+          <div className='lr_body'>
+            <div className='p_found_box'>
+              {foundTeam && foundTeam?.length > 0 && (
+                <p>
+                  {`The player '${search}' is found in '${foundTeam?.length}' ${
+                    foundTeam?.length > 1 ? 'teams' : 'team'
+                  }.`}
+                </p>
+              )}
+            </div>
+
+            <div className='rosters_team_box'>
+              <CustomCarousel height={'70px'}>
+                {isLoading === 'team-filter' ? (
+                  <div className='empty_team'>
+                    <Spin />
+                  </div>
+                ) : filterTeams?.teams?.length > 0 ? (
+                  filterTeams?.teams?.map((v, i) => {
+                    return (
+                      <div key={i} className='team_card' onClick={() => handleChangeTeam(v?._id)}>
+                        <img src={v?.logo} />
+                      </div>
+                    )
+                  })
+                ) : (
+                  <div className='empty_team'>
+                    <p>No player found</p>
+                  </div>
+                )}
+              </CustomCarousel>
+            </div>
+
+            <div className='filters_header'>
+              {filters.map((v) => {
                 return (
-                  <div key={i} className='team_card' onClick={() => handleChangeTeam(v?._id)}>
-                    <img src={v?.logo} />
+                  <div key={v?.name} className='filter_card'>
+                    <div className='filter_color' style={{ backgroundColor: v?.color }}></div>
+                    <p>{v?.name}</p>
                   </div>
                 )
               })}
-            </CustomCarousel>
-          </div>
-
-          <div className='filters_header'>
-            {filters.map((v) => {
-              return (
-                <div key={v?.name} className='filter_card'>
-                  <div className='filter_color' style={{ backgroundColor: v?.color }}></div>
-                  <p>{v?.name}</p>
-                </div>
-              )
-            })}
-          </div>
-
-          {isLoading2 ? (
-            <Loader />
-          ) : (
-            <div className='lr_team_details'>
-              <div
-                className='lrtd_header'
-                style={{
-                  backgroundColor: currentTeam?.teamColor
-                    ? currentTeam?.teamColor
-                    : 'var(--primaryPurple)',
-                }}
-              >
-                <div className='t_img_box'>
-                  <img src={currentTeam?.logo} />
-                </div>
-                <h2>{currentTeam?.name}</h2>
-              </div>
-              <div className='rosters_details'>
-                {teamRosters?.map((v, i) => {
-                  return <CardRow key={i} data={v} currentTeam={currentTeam} search={search} />
-                })}
-              </div>
             </div>
-          )}
+
+            {isLoading === 'single-team' ? (
+              <Loader />
+            ) : (
+              <div className='lr_team_details'>
+                <div
+                  className='lrtd_header'
+                  style={{
+                    backgroundColor: currentTeam?.teamColor
+                      ? currentTeam?.teamColor
+                      : 'var(--primaryPurple)',
+                  }}
+                >
+                  <div className='t_img_box'>
+                    <img src={currentTeam?.logo} />
+                  </div>
+                  <h2>{currentTeam?.name}</h2>
+                </div>
+                <div className='rosters_details'>
+                  {teamRosters?.map((v, i) => {
+                    return <CardRow key={i} data={v} currentTeam={currentTeam} search={search} />
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
@@ -164,15 +239,21 @@ const CardRow = ({ data, currentTeam, search }) => {
     const inPractice = obj?.players?.inPracticeSquad
     const isProtected = obj?.players?.isPlayerProtected
     const isIR = obj?.players?.isPlayerInjured
+    const isRetired = obj?.players?.isRetired
+
     let color = null
-    if (isActive && !isProtected && !isIR && !inPractice) {
+    if (isActive && !isProtected && !isIR && !inPractice && !isRetired) {
       color = '#fff'
-    } else if (inPractice) {
+    } else if (inPractice && !isProtected && !isIR && !isRetired) {
       color = '#7ed957'
-    } else if (isProtected) {
+    } else if (isProtected && !isIR && !isRetired) {
       color = '#0097b2'
     } else if (isIR) {
       color = '#ff3131'
+    } else if (!isActive && !isProtected && !isIR && !inPractice && !isRetired) {
+      color = 'orange'
+    } else if (isRetired) {
+      color = 'purple'
     }
     return color
   }
