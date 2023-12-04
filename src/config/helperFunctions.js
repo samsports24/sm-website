@@ -1,36 +1,78 @@
 import store from '../redux/store'
 
+export const positionOrder = {
+  QB: 1,
+  BQB: 2,
+  RB: 3,
+  FB: 4,
+  WR: 5,
+  TE: 6,
+  G: 7,
+  C: 8,
+  OT: 9,
+  OL: 10,
+  DT: 11,
+  NT: 12,
+  DE: 13,
+  DL: 14,
+  ILB: 15,
+  OLB: 16,
+  LB: 17,
+  CB: 18,
+  S: 19,
+  SS: 20,
+  DB: 21,
+  P: 22,
+  K: 23,
+}
+
 export const sortedArray = (arr) => {
   return arr?.sort((a, b) => {
-    const positionOrder = {
-      QB: 1,
-      BQB: 2,
-      RB: 3,
-      FB: 4,
-      WR: 5,
-      TE: 6,
-      G: 7,
-      C: 8,
-      OT: 9,
-      OL: 10,
-      DT: 11,
-      NT: 12,
-      DE: 13,
-      DL: 14,
-      ILB: 15,
-      OLB: 16,
-      LB: 17,
-      CB: 18,
-      S: 19,
-      SS: 20,
-      DB: 21,
-      P: 22,
-      K: 23,
-    }
     const positionComparison = positionOrder[a.players.Position] - positionOrder[b.players.Position]
     const nameComparison = a.players.Name.localeCompare(b.players.Name)
     return positionComparison !== 0 ? positionComparison : nameComparison
   })
+}
+
+export const sortedObject = (data) => {
+  const sortedPositions = Object.keys(data)?.sort((a, b) => positionOrder[a] - positionOrder[b])
+  const sortedDataArray = sortedPositions?.map((position) => ({ [position]: data[position] }))
+  return sortedDataArray
+}
+
+export const getPositionColor = (value) => {
+  const obj = {
+    BQB: '#FFBA9E',
+    K: '#D1D0C6',
+    P: '#E77E7F',
+    QB: '#FFE972',
+    DE: '#E2E095',
+
+    OL: '#FF72FF',
+
+    RB: '#FFFF72',
+    FB: '#FFFF72',
+
+    TE: '#EE909F',
+    WR: '#EE909F',
+
+    CB: '#C3E2A6',
+    DB: '#C3E2A6',
+
+    DT: '#93FF93',
+    DL: '#93FF93',
+    NT: '#93FF93',
+
+    LB: '#B3F6E3',
+    OLB: '#B3F6E3',
+    ILB: '#B3F6E3',
+
+    LS: '#CAFF70',
+
+    S: '#98CCE6',
+    SS: '#98CCE6',
+  }
+  return obj[value]
 }
 
 export const firstLetterCap = (str) => {

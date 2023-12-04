@@ -32,6 +32,7 @@ import Loader from '../Loader'
 import moment from 'moment'
 
 const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
+  console.log('state:', state)
   const SETTING = useSelector((state) => state?.user?.setting)
   const [isLoading, setIsLoading] = useState(true)
   const [auctionLoading, setAuctionLoading] = useState(false)

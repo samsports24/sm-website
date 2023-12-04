@@ -124,7 +124,7 @@ const Routers = () => {
           <Route path='/team-trade' element={<TeamTrade />} />
           <Route path='/counter-trade' element={<CounterTrade />} />
           <Route path='/team-financials' element={<TeamFinancials />} />
-          {/* <Route path='/league-rosters' element={<LeagueRosters />} /> */}
+          <Route path='/league-rosters' element={<LeagueRosters />} />
           {/* <Route path='/teams' element={<Teams />} />
           <Route path='/player-details' element={<PlayerDetails />} />
           <Route path='/players' element={<Players />} />

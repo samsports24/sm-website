@@ -4,7 +4,7 @@ import { isLocked } from '../../config/constants'
 import { MdLock } from 'react-icons/md'
 import PlayerDetailsModal from '../modal/PlayerDetailsModal'
 import { useParams } from 'react-router-dom'
-import { getPf, getRankAndPosition } from '../../config/helperFunctions'
+import { getPf, getPositionColor, getRankAndPosition } from '../../config/helperFunctions'
 
 const NewRosterCard = (props) => {
   const {
@@ -36,39 +36,6 @@ const NewRosterCard = (props) => {
   } = data
   const { id } = useParams()
 
-  const getColorObj = (value) => {
-    const obj = {
-      BQB: '#FFBA9E',
-      K: '#D1D0C6',
-      P: '#E77E7F',
-      QB: '#FFE972',
-      DE: '#E2E095',
-
-      OL: '#FF72FF',
-
-      RB: '#FFFF72',
-      FB: '#FFFF72',
-
-      TE: '#EE909F',
-      WR: '#EE909F',
-
-      CB: '#C3E2A6',
-      DB: '#C3E2A6',
-
-      DT: '#93FF93',
-      DL: '#93FF93',
-      NT: '#93FF93',
-
-      LB: '#B3F6E3',
-      OLB: '#B3F6E3',
-      ILB: '#B3F6E3',
-
-      S: '#98CCE6',
-      SS: '#98CCE6',
-    }
-    return obj[value]
-  }
-
   return (
     <div className='nrc_container'>
       <div className='serial_number'>
@@ -76,7 +43,7 @@ const NewRosterCard = (props) => {
       </div>
       <div className='content_box'>
         <div className='content_box_left'>
-          <span style={{ color: getColorObj(FantasyPosition === 'OL' ? 'OL' : Position) }}>
+          <span style={{ color: getPositionColor(FantasyPosition === 'OL' ? 'OL' : Position) }}>
             {Position}
           </span>
         </div>

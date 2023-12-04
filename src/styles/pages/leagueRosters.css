@@ -2,7 +2,7 @@
   width: 100%;
 }
 
-.league_roster_container .league_roster_header {
+.lr_header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -10,56 +10,130 @@
   gap: 20px;
   margin-top: 20px;
 }
-.league_roster_container .league_roster_header h2 {
+.lr_header h2 {
   font-size: 32px;
 }
-.league_roster_container .league_roster_header .input_box {
+.lr_header .input_box {
   width: 200px;
 }
-.league_roster_container .league_roster_header .ant-input-affix-wrapper {
+.lr_header .ant-input-affix-wrapper {
   border-radius: 0px !important;
   background: transparent;
   border-color: var(--primary);
 }
 
-.league_roster_container .league_roster_body {
+.lr_body {
   width: 100%;
 }
 
-.league_roster_container .league_roster_body .rosters_team_box {
+.lr_body .rosters_team_box {
   width: 100%;
   margin-block: 40px;
 }
-.league_roster_container .league_roster_body .rosters_team_box .team_card {
+.lr_body .rosters_team_box .team_card {
   height: 100%;
   width: auto;
-  pointer-events: none;
-  user-select: none;
+  /* pointer-events: none; */
+  /* user-select: none; */
+  cursor: pointer;
 }
-.league_roster_container .league_roster_body .rosters_team_box .team_card img {
+.lr_body .rosters_team_box .team_card img {
   height: 100%;
   width: auto;
   pointer-events: none;
 }
 
-.league_roster_container .league_roster_body .filters_header {
+.lr_body .filters_header {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 20px;
   margin-top: 20px;
 }
-.league_roster_container .league_roster_body .filters_header .filter_card {
+.lr_body .filters_header .filter_card {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 10px;
 }
-.league_roster_container .league_roster_body .filters_header .filter_card .filter_color {
+.lr_body .filters_header .filter_card .filter_color {
   width: 22px;
   height: 22px;
   border-radius: 50%;
 }
-.league_roster_container .league_roster_body .filters_header .filter_card p {
+.lr_body .filters_header .filter_card p {
   font-size: 16px;
+}
+
+.lr_body .lr_team_details {
+  width: 100%;
+  /* border: 1px solid #fff; */
+  margin-top: 20px;
+}
+
+.lr_body .lr_team_details .lrtd_header {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.lr_body .lr_team_details .lrtd_header .t_img_box {
+  width: auto;
+  height: 100px;
+  margin-right: 20px;
+}
+.lr_body .lr_team_details .lrtd_header .t_img_box img {
+  width: auto;
+  height: 100px;
+}
+.lr_body .lr_team_details .lrtd_header h2 {
+  font-size: 30px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.lr_body .lr_team_details .rosters_details {
+  width: 100%;
+  padding: 20px;
+  border: 1px solid #000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lr_body .lr_team_details .rosters_details .roster_row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+.lr_body .lr_team_details .rosters_details .roster_row .roster_position {
+  width: 50px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-block: 4px;
+  background-color: var(--primaryPurple);
+}
+.lr_body .lr_team_details .rosters_details .roster_row .roster_position span {
+  font-weight: 700;
+  text-transform: uppercase !important;
+}
+.lr_body .lr_team_details .rosters_details .roster_row .roster_content {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.lr_body .lr_team_details .rosters_details .roster_row .roster_content > h2 span {
+  text-transform: uppercase !important;
+  font-size: 18px;
+  cursor: pointer;
+  margin-right: 20px;
 }
