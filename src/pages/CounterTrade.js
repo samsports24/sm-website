@@ -11,15 +11,19 @@ import AddPlayerToTrade from '../components/modal/PlayerInterfaceModals/AddPlaye
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import Loader from '../components/Loader'
 
-import { getTrade, updateCounterTrade } from '../redux/actions/teamTradeAction'
+import {
+  approveTrade,
+  cancelTrade,
+  getTrade,
+  updateCounterTrade,
+} from '../redux/actions/teamTradeAction'
 
 import { leagueSalaryCap } from '../config/constants'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Empty from '../components/Empty'
 
 const CounterTrade = () => {
-  const [loading, setLoading] = useState(true)
-  const [btnLoading, setBtnLoading] = useState(false)
+  const [loading, setLoading] = useState('all')
 
   const [data, setData] = useState(null)
 
@@ -39,8 +43,12 @@ const CounterTrade = () => {
     state?.tradeId && _getTrade()
   }, [])
 
+  const navigateToNoti = () => {
+    navigate('/league-notification')
+  }
+
   const _getTrade = async () => {
-    !loading && setLoading(true)
+    setLoading('all')
     const res = await getTrade({ tradeId: state?.tradeId })
     setData(res)
 
@@ -76,7 +84,7 @@ const CounterTrade = () => {
       }
     })
     setOtherTeamDraft(_otherTeamDraft)
-    setLoading(false)
+    setLoading('')
   }
 
   const createTrade = async () => {
@@ -84,7 +92,7 @@ const CounterTrade = () => {
     const isOtherTeam = otherTeamSelected?.length > 0 || otherTeamSelectedDraft?.length > 0
 
     if (isMyTeam || isOtherTeam) {
-      setBtnLoading(true)
+      setLoading('counter')
       const res = await updateCounterTrade({
         buyerPlayers: myTeamSelected?.map((v) => v?.players?._id),
         buyerDrafts: myTeamSelectedDraft?.map((v) => v._id),
@@ -93,12 +101,12 @@ const CounterTrade = () => {
         tradeId: state?.tradeId,
         buyerId: data?.teamData?.buyer?.team?._id,
       })
-      navigate('/league-notification')
+      navigateToNoti()
       notification.success({
         message: res,
         duration: 3,
       })
-      setBtnLoading(false)
+      setLoading('')
     } else {
       notification.error({
         message: 'Please select player or draft',
@@ -136,6 +144,32 @@ const CounterTrade = () => {
     setOtherTeamDraft((pre) => [...pre, obj])
   }
 
+  const handleCancelTrade = async () => {
+    setLoading('cancel')
+    const res = await cancelTrade({ tradeId: state?.tradeId })
+    if (res) {
+      notification.success({
+        message: res,
+        duration: 3,
+      })
+      navigateToNoti()
+    }
+    setLoading('')
+  }
+
+  const handleApproveTrade = async () => {
+    setLoading('approve')
+    const res = await approveTrade({ tradeId: state?.tradeId })
+    if (res) {
+      notification.success({
+        message: res,
+        duration: 3,
+      })
+      navigateToNoti()
+    }
+    setLoading('')
+  }
+
   return (
     <div className='practice_squad_container team_trade_main'>
       <Header />
@@ -146,7 +180,7 @@ const CounterTrade = () => {
 
       <h1 className='heading'>COUNTER TRADE</h1>
 
-      {loading ? (
+      {loading === 'all' ? (
         <Loader />
       ) : (
         <section className='squad_card_container transparent'>
@@ -300,14 +334,27 @@ const CounterTrade = () => {
             </Col>
 
             <Col xs={24} lg={24}>
-              <Button
-                loading={btnLoading}
-                type='primary'
-                style={{ float: 'right' }}
-                onClick={createTrade}
-              >
-                Submit
-              </Button>
+              <div className='actions_btn_box'>
+                <Button
+                  loading={loading === 'approve'}
+                  type='primary'
+                  className='approve_button'
+                  onClick={handleApproveTrade}
+                >
+                  Approve
+                </Button>
+                <Button
+                  loading={loading === 'cancel'}
+                  type='primary'
+                  className='approve_button'
+                  onClick={handleCancelTrade}
+                >
+                  Deny
+                </Button>
+                <Button loading={loading === 'counter'} type='primary' onClick={createTrade}>
+                  Counter
+                </Button>
+              </div>
             </Col>
           </Row>
           <Row gutter={[30, 30]} style={{ marginTop: '30px' }}>

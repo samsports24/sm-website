@@ -24,6 +24,7 @@
   color: var(--primaryPurple) !important;
   font-size: 18px;
   font-weight: 600;
+  text-align: center;
 }
 
 .rolling_news_feed {
@@ -180,5 +181,10 @@
   }
   .rolling_news_feed .content_body .card_box .source p {
     font-size: 15px;
+  }
+}
+@media (max-width: 600px) {
+  .news_header_top h1 {
+    font-size: 32px;
   }
 }

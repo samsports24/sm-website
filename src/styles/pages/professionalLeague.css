@@ -61,7 +61,7 @@
 
 @media (max-width: 1800px) {
   .pro_league_container .league_details_container .center {
-    width: calc(100% - 427px);
+    width: calc(100% - 457px);
   }
   .pro_league_container .league_details_container {
     flex-wrap: wrap;

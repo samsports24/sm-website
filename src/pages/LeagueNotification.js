@@ -20,8 +20,8 @@ const LeagueNotification = () => {
   const SETTING = useSelector((state) => state?.user)
   const [notificationData, setNotificationData] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [approveId, setApproveId] = useState('')
-  const [rejectId, setRejectId] = useState('')
+  // const [approveId, setApproveId] = useState('')
+  // const [rejectId, setRejectId] = useState('')
   const [payId, setPayId] = useState('')
   const [clearBtnLoading, setClearBtnLoading] = useState(false)
 
@@ -40,31 +40,31 @@ const LeagueNotification = () => {
     setIsLoading(false)
   }
 
-  const handleCancelTrade = async (tradeId) => {
-    setRejectId(tradeId)
-    const res = await cancelTrade({ tradeId })
-    if (res) {
-      notification.success({
-        message: res,
-        duration: 3,
-      })
-      await getData()
-    }
-    setRejectId('')
-  }
+  // const handleCancelTrade = async (tradeId) => {
+  //   setRejectId(tradeId)
+  //   const res = await cancelTrade({ tradeId })
+  //   if (res) {
+  //     notification.success({
+  //       message: res,
+  //       duration: 3,
+  //     })
+  //     await getData()
+  //   }
+  //   setRejectId('')
+  // }
 
-  const handleApproveTrade = async (tradeId) => {
-    setApproveId(tradeId)
-    const res = await approveTrade({ tradeId })
-    if (res) {
-      notification.success({
-        message: res,
-        duration: 3,
-      })
-      getData()
-    }
-    setApproveId('')
-  }
+  // const handleApproveTrade = async (tradeId) => {
+  //   setApproveId(tradeId)
+  //   const res = await approveTrade({ tradeId })
+  //   if (res) {
+  //     notification.success({
+  //       message: res,
+  //       duration: 3,
+  //     })
+  //     getData()
+  //   }
+  //   setApproveId('')
+  // }
 
   const handlePay = async (tradeId) => {
     setPayId(tradeId)
@@ -105,7 +105,7 @@ const LeagueNotification = () => {
     }
     setClearBtnLoading(false)
   }
-  console.log('!!SETTING?.notificationCount', !SETTING?.notificationCount)
+
   return (
     <div className='practice_squad_container team_trade_main league_notification_container'>
       <Header />
@@ -146,7 +146,7 @@ const LeagueNotification = () => {
                           !v?.metadata?.isCancelled &&
                           !v?.metadata?.isApproved && (
                             <>
-                              <Button
+                              {/* <Button
                                 loading={approveId === v?.metadata?.tradeId?._id}
                                 type='primary'
                                 className='approve_button'
@@ -161,7 +161,7 @@ const LeagueNotification = () => {
                                 onClick={() => handleCancelTrade(v?.metadata?.tradeId?._id)}
                               >
                                 Deny
-                              </Button>
+                              </Button> */}
                               <Button
                                 type='primary'
                                 className='approve_button'
@@ -173,7 +173,7 @@ const LeagueNotification = () => {
                                   })
                                 }}
                               >
-                                Counter
+                                View
                               </Button>
                             </>
                           )}

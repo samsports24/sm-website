@@ -116,6 +116,13 @@
   font-size: 14px;
 }
 
+.team_trade_main .actions_btn_box {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 @media (max-width: 600px) {
   .team_select_box {
     min-width: 100%;
