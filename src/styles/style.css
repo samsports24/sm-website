@@ -1,4 +1,8 @@
 /* Third Party CSS */
+@font-face {
+  font-family: 'dot-font';
+  src: url('../assets/fonts/dot-font.ttf');
+}
 
 /* Theme CSS */
 @import './_general.css';
@@ -99,6 +103,7 @@
 @import './pages/league.css';
 @import './pages/teamFinancials.css';
 @import './pages/leagueRosters.css';
+@import './pages/draft.css';
 
 /* COMPONENT HOCKEY */
 @import './components/leagueStandingsHockey.css';

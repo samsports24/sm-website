@@ -37,6 +37,10 @@ import LeagueNotification from '../pages/LeagueNotification'
 import TotalPayment from '../pages/TotalPayment'
 import MyLeague from '../pages/MyLeague'
 import League from '../pages/League'
+import TeamTrade from '../pages/TeamTrade'
+import CounterTrade from '../pages/CounterTrade'
+import ProfessionalDraft from '../pages/Draft/ProfessionalDraft'
+import PublicDraft from '../pages/Draft/PublicDraft'
 // import Login2 from '../pages/Login2'
 // import Players from '../pages/Players'
 // import Teams from '../pages/Teams'
@@ -56,8 +60,6 @@ import League from '../pages/League'
 // import LeagueCalendar from '../pages/LeagueCalendar'
 // import AllReports from '../pages/AllReports'
 // import PracticeSquad from '../pages/PracticeSquad'
-import TeamTrade from '../pages/TeamTrade'
-import CounterTrade from '../pages/CounterTrade'
 // import GmDashboard from '../pages/GmDashboard'
 
 import { version } from './constants'
@@ -125,6 +127,8 @@ const Routers = () => {
           <Route path='/counter-trade' element={<CounterTrade />} />
           <Route path='/team-financials' element={<TeamFinancials />} />
           <Route path='/league-rosters' element={<LeagueRosters />} />
+          <Route path='/professional-draft' element={<ProfessionalDraft />} />
+          <Route path='/public-draft' element={<PublicDraft />} />
           {/* <Route path='/teams' element={<Teams />} />
           <Route path='/player-details' element={<PlayerDetails />} />
           <Route path='/players' element={<Players />} />
