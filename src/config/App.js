@@ -9,9 +9,16 @@ import { getUser } from '../redux'
 // import { version } from './constants'
 // import { notification } from 'antd'
 
+// import io from 'socket.io-client'
+// import { base_url } from './constants'
+
 const App = () => {
   const theme = useSelector((state) => state.theme.theme)
   const dispatch = useDispatch()
+  // const socket = io(base_url, {
+  //   transports: ['websocket'],
+  // })
+
   useEffect(() => {
     if (theme === 'light') {
       Object.keys(light).forEach((key) => {
@@ -37,6 +44,10 @@ const App = () => {
     if (localStorage.getItem('token')) {
       dispatch(getUser())
     }
+    // socket.emit('join', 'yolooooooooooooooooo')
+    // socket.on('test', (data) => {
+    //   console.log(data)
+    // })
   }, [])
 
   return <Routes />
