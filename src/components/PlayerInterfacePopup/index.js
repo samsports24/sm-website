@@ -151,9 +151,9 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
       ? 'LB'
       : p === 'olb'
       ? 'LB'
-      : p === 'ol'
-      ? 'OL'
       : p === 'ilb'
+      ? 'LB'
+      : p === 'ol'
       ? 'OL'
       : p === 'ot'
       ? 'OL'
@@ -533,6 +533,8 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
   )
 }
 
+export default PlayerInterfacePopup
+
 const PreviousDayView = () => {
   return (
     <div style={{ height: '200px' }}>
@@ -747,4 +749,3 @@ const BidHistoryBox = ({ data, height }) => {
     </div>
   )
 }
-export default PlayerInterfacePopup

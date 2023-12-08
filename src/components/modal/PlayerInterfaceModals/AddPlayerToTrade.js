@@ -33,7 +33,7 @@ const AddPlayerToTrade = ({ data, teamName, selected, setSelected }) => {
             <h1 className='modal_header_heading'>BUILD YOUR DEAL</h1>
             <p
               style={{ textTransform: 'uppercase' }}
-            >{`SELECT THE PLAYER YOU WISH TO BE APART OF THIS TRADE!`}</p>
+            >{`SELECT THE PLAYER YOU WISH TO BE A PART OF THIS TRADE!`}</p>
           </div>
 
           <h1 className='modal_header_heading'>TEAM ROSTER</h1>
