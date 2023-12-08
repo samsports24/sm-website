@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Image, Badge } from 'antd'
+import { Image, Badge, Spin } from 'antd'
 
 // Image
 import bellIcon from '../../assets/bell-icon.svg'
@@ -10,7 +10,6 @@ import { BiRightArrowAlt } from 'react-icons/bi'
 import { useNavigate } from 'react-router-dom'
 import RoutesButton from '../RoutesButton'
 import { leagueSalaryCap } from '../../config/constants'
-import Loader from '../Loader'
 
 const Header = () => {
   const record = useSelector((state) => state.user.record)
@@ -161,7 +160,9 @@ const Header = () => {
       <RoutesButton />
     </>
   ) : (
-    <Loader />
+    <div className='empty_header'>
+      <Spin />
+    </div>
   )
 }
 

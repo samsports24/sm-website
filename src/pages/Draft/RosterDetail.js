@@ -6,7 +6,7 @@ const RosterDetail = ({ playerFinancials }) => {
       <div className='rdb_left' />
       <div className='rdb_right'>
         <div className='rdb_right_row1'>
-          <p>Allen, Josh BUF QB</p>
+          <p>Allen, Josh</p>
           <p>#12 | QB, Team Name</p>
         </div>
         <div className='rdb_right_row2'>
