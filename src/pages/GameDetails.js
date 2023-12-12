@@ -219,8 +219,8 @@ const GameDetails = () => {
 
 const GameHeader = ({ state, lockedPlayer }) => {
   const { data } = state
-  const team1WinLose = `(${data?.record?.teamOne?.win}-${data?.record?.teamOne?.lose})`
-  const team2WinLose = `(${data?.record?.teamTwo?.win}-${data?.record?.teamTwo?.lose})`
+  const team1WinLose = `(${data?.record?.teamOne?.win || ''}-${data?.record?.teamOne?.lose || ''})`
+  const team2WinLose = `(${data?.record?.teamTwo?.win || ''}-${data?.record?.teamTwo?.lose || ''})`
 
   const score1 = data?.scoreOne
   const score2 = data?.scoreTwo
@@ -231,14 +231,14 @@ const GameHeader = ({ state, lockedPlayer }) => {
   const team1Name = data?.opponentOne?.name
   const team2Name = data?.opponentTwo?.name
 
-  const team1Starters = data?.record?.teamOne?.starterSum?.toFixed(2)
-  const team2Starters = data?.record?.teamTwo?.starterSum?.toFixed(2)
+  const team1Starters = data?.record?.teamOne?.starterSum?.toFixed(2) || '-'
+  const team2Starters = data?.record?.teamTwo?.starterSum?.toFixed(2) || '-'
 
-  const team1Bench = data?.record?.teamOne?.benchSum?.toFixed(2)
-  const team2Bench = data?.record?.teamTwo?.benchSum?.toFixed(2)
+  const team1Bench = data?.record?.teamOne?.benchSum?.toFixed(2) || '-'
+  const team2Bench = data?.record?.teamTwo?.benchSum?.toFixed(2) || '-'
 
-  const team1Bench25 = data?.record?.teamOne?.bench25Sum?.toFixed(2)
-  const team2Bench25 = data?.record?.teamTwo?.bench25Sum?.toFixed(2)
+  const team1Bench25 = data?.record?.teamOne?.bench25Sum?.toFixed(2) || '-'
+  const team2Bench25 = data?.record?.teamTwo?.bench25Sum?.toFixed(2) || '-'
 
   return (
     <div className='game_header'>

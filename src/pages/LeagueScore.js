@@ -133,12 +133,12 @@ const NewLLeagueScoreCard = ({ data }) => {
             style={{ backgroundImage: `url(${data?.opponentOne?.logo})` }}
           ></div>
           <div className='nls_score_box_1'>
-            <p>{data?.scoreOne}</p>
+            <p>{data?.scoreOne || '0.00'}</p>
           </div>
         </div>
         <div className='nls_card_right'>
           <div className='nls_score_box_2'>
-            <p>{data?.scoreTwo}</p>
+            <p>{data?.scoreTwo || '0.00'}</p>
           </div>
           <div
             className='nls_img_box'
