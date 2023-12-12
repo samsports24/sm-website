@@ -110,6 +110,23 @@ const WeekPagination = ({ goLive }) => {
           })}
         </>
       )}
+      {/* {weekSection === 6 && (
+        <>
+          {[' Week Nineteen', 'Week Twenty', 'Week TwentyOne', 'Week TwentyTwo'].map((v, i) => {
+            const index = i + 19
+            return (
+              <li
+                key={index}
+                onClick={() => handleWeekPagination(index)}
+                style={{ cursor: currentWeek >= index ? 'pointer' : 'no-drop' }}
+                className={`${setting?.week === index && 'active_week'}`}
+              >
+                {v}
+              </li>
+            )
+          })}
+        </>
+      )} */}
       <div className='pre_next_box'>
         <button className='previous' onClick={() => handleNextAndPrev('previous')}>
           <FiArrowLeft />

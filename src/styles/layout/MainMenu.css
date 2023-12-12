@@ -9,6 +9,14 @@
   overflow-y: auto;
   gap: 10px;
 }
+.sidebar_menu .wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  height: max-content;
+}
 .sidebar_menu .sidebar_menu_item {
   width: 70px;
   height: 70px;
