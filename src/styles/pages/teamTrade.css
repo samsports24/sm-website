@@ -86,7 +86,7 @@
 .team_select_box {
   min-width: 250px;
   float: right;
-  margin-top: -38px;
+  /* margin-top: -38px; */
 }
 
 .draft_pick_box {
@@ -126,6 +126,11 @@
 @media (max-width: 600px) {
   .team_select_box {
     min-width: 100%;
-    margin-top: 20px;
+    /* margin-top: 20px; */
   }
+}
+
+/* PENDING TRADE */
+.pending_trade_container {
+  width: 100%;
 }

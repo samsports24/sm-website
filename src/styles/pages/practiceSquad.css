@@ -344,7 +344,7 @@
 .new_table_container button:hover {
   background-color: var(--primary) !important;
 }
-.new_table_container :where(.css-dev-only-do-not-override-1jqvr6p).ant-btn-primary:disabled {
+.new_table_container .ant-btn-primary:disabled {
   color: rgba(255, 255, 255, 0.3) !important;
 }
 

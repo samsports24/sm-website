@@ -75,6 +75,7 @@ export const cancelTrade = async (payload) => {
     })
   }
 }
+
 export const approveTrade = async (payload) => {
   try {
     attachToken()
@@ -89,12 +90,28 @@ export const approveTrade = async (payload) => {
     })
   }
 }
+
 export const payTrade = async (payload) => {
   try {
     attachToken()
     const res = await privateAPI.post(`/trade/pay`, payload)
     if (res) {
       return res.data.data.message
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const getPendingTrade = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.get(`/trade/get-team-trade`, payload)
+    if (res) {
+      return res.data.data
     }
   } catch (err) {
     notification.error({

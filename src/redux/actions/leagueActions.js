@@ -48,6 +48,22 @@ export const getScheduleByWeek = async (week) => {
   }
 }
 
+export const getWeeklyNflSchedule = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/schedule/get-weekly-nfl-schedule`, payload)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
 export const getGameDetails = async (payload) => {
   try {
     attachToken()

@@ -16,6 +16,7 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
   const [deleteLoading, setDeleteLoading] = useState(false)
   const [data, setData] = useState([])
   const [starter, setStarter] = useState(null)
+  const [scores, setScores] = useState(null)
   const [playerId, setPlayerId] = useState('')
 
   const closeModal = () => {
@@ -37,6 +38,7 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
     if (res) {
       setStarter(res?.starterPlayer)
       setData(res?.bench)
+      setScores(res?.scores)
     }
     setLoading(false)
   }
@@ -78,7 +80,7 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
     )
   }
 
-  const Card = ({ data, button = false }) => {
+  const Card = ({ data, button = false, scores }) => {
     const { players: p } = data
 
     return (
@@ -90,10 +92,10 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
             <GiAmericanFootballPlayer size={35} color={'#c4c4c4'} />
           )}
         </div>
-        <div>
+        {/* <div>
           <p className='text1'>Team</p>
           <p className='text2'>{data?.team?.name || '-'}</p>
-        </div>
+        </div> */}
         <div>
           <p className='text1'>POS</p>
           <p className='text2'>{p?.Position || '-'}</p>
@@ -109,6 +111,18 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
         <div>
           <p className='text1'>OPP</p>
           <p className='text2'>{p?.UpcomingGameOpponent || '-'}</p>
+        </div>
+        <div>
+          <p className='text1'>PF</p>
+          <p className='text2'>{p?.pf || scores?.pf?.[p?.PlayerID] || '-'}</p>
+        </div>
+        <div>
+          <p className='text1'>APF</p>
+          <p className='text2'>{p?.avgPf || scores?.apf?.[p?.PlayerID] || '-'}</p>
+        </div>
+        <div>
+          <p className='text1'>Snap%</p>
+          <p className='text2'>{p?.Snap || '-'}</p>
         </div>
         <div>
           <p className='text1'>Projection</p>
@@ -189,7 +203,15 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
             ) : (
               data?.length > 0 &&
               data?.map((v, i) => {
-                return <Card button={true} key={i} data={v} handleStarter={handleStarter} />
+                return (
+                  <Card
+                    button={true}
+                    key={i}
+                    data={v}
+                    handleStarter={handleStarter}
+                    scores={scores}
+                  />
+                )
               })
             )}
           </div>

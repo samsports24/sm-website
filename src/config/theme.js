@@ -35,6 +35,7 @@ export const light = {
   dateCard: '#fcfcfcc4',
   dateText: 'rgb(145, 145, 145)',
   newBorderLight: 'rgb(255,255,255,0.8)',
+  eggBlue: '#00dcd3',
 }
 
 export const dark = {
@@ -86,4 +87,5 @@ export const dark = {
   lightGrayText: 'rgba(255, 255, 255, 0.60)',
   greenText: '#3FBE94',
   newBorderLight: 'rgb(255,255,255,0.8)',
+  eggBlue: '#00dcd3',
 }
