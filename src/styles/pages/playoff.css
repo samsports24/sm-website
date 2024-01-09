@@ -17,10 +17,12 @@
 }
 
 .bracket-wrapper .super-bowl {
-  width: 270px;
+  /* width: 270px; */
+  width: 450px;
   height: auto;
   position: absolute;
-  top: 0;
+  /* top: 0; */
+  top: -20px;
   left: 50%;
   transform: translate(-50%);
 }

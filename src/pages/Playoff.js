@@ -1,7 +1,8 @@
 import React from 'react'
 
 // Images
-import SuperBowl from '../assets/Super_Bowl_LIV.png'
+// import SuperBowl from '../assets/Super_Bowl_LIV.png'
+import SuperBowl from '../assets/SAMBOWL24.png'
 
 // Component
 import Header from '../components/Header'

@@ -216,6 +216,21 @@ export const getFreeAgent = async (payload) => {
   }
 }
 
+export const getNFLFreeAgent = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/player/get-free-nfl-players`, payload)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
 export const getAllIr = async () => {
   try {
     attachToken()
@@ -297,6 +312,26 @@ export const createAuction = async (paylaod) => {
     if (res) {
       notification.success({
         message: res.data.data?.message,
+        duration: 3,
+      })
+    }
+    return res.data.data
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+// Make request to pick player from NFL free players
+export const requestIsPicked = async (paylaod) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/player/request-pick', paylaod)
+    if (res) {
+      notification.success({
+        message: 'Player Picked Successfully',
         duration: 3,
       })
     }

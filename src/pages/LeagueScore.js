@@ -56,7 +56,8 @@ const LeagueScore = () => {
             title='Go To Week:'
             current={SETTING?.week}
             defaultCurrent={SETTING?.week}
-            total={180}
+            // total={180}
+            total={230}
             onChange={handlePagination}
           />
         </section>

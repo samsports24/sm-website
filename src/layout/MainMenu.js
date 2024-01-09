@@ -126,7 +126,7 @@ const MainMenu = () => {
               </div>
               <div
                 className={`sidebar_menu_item ${active === 'auctions' ? 'activeRoute' : ''}`}
-                onClick={() => navigate('/player-auction')}
+                // onClick={() => navigate('/player-auction')}
               >
                 <RiAuctionLine />
                 <p>auctions</p>
@@ -142,7 +142,7 @@ const MainMenu = () => {
               </div>
               <div
                 className={`sidebar_menu_item ${active === 'free-agents' ? 'activeRoute' : ''}`}
-                onClick={() => navigate('/free-agent')}
+                // onClick={() => navigate('/free-agent')}
               >
                 <BsShop />
                 <p>
@@ -214,7 +214,7 @@ const MainMenu = () => {
           </div>
           <div
             className={`sidebar_menu_item ${active === 'draft' ? 'activeRoute' : ''}`}
-            onClick={() => {}}
+            onClick={() => navigate('/drafts')}
           >
             <RiDraftLine />
             <p>draft</p>

@@ -7,8 +7,10 @@ const getInitSection = (currentWeek) => {
     ? 3
     : currentWeek >= 13 && currentWeek <= 16
     ? 4
-    : currentWeek >= 17 && currentWeek <= 18
+    : currentWeek >= 17 && currentWeek <= 20
     ? 5
+    : currentWeek >= 21 && currentWeek <= 23
+    ? 6
     : 1
 }
 

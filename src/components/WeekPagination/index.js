@@ -15,9 +15,9 @@ const WeekPagination = ({ goLive }) => {
 
   const handleNextAndPrev = (value) => {
     if (value === 'next') {
-      weekSection >= 5 ? dispatch(updateSection(1)) : dispatch(updateSection(weekSection + 1))
+      weekSection >= 6 ? dispatch(updateSection(1)) : dispatch(updateSection(weekSection + 1))
     } else {
-      weekSection <= 1 ? dispatch(updateSection(5)) : dispatch(updateSection(weekSection - 1))
+      weekSection <= 1 ? dispatch(updateSection(6)) : dispatch(updateSection(weekSection - 1))
     }
   }
 
@@ -95,8 +95,25 @@ const WeekPagination = ({ goLive }) => {
       )}
       {weekSection === 5 && (
         <>
-          {[' Week Seventeen', 'Week Eighteen'].map((v, i) => {
+          {['Week Seventeen', 'Week Eighteen', 'Week Nineteen', 'Week Twenty'].map((v, i) => {
             const index = i + 17
+            return (
+              <li
+                key={index}
+                onClick={() => handleWeekPagination(index)}
+                style={{ cursor: currentWeek >= index ? 'pointer' : 'no-drop' }}
+                className={`${setting?.week === index && 'active_week'}`}
+              >
+                {v}
+              </li>
+            )
+          })}
+        </>
+      )}
+      {weekSection === 6 && (
+        <>
+          {['Week TwentyOne', 'Week TwentyTwo', 'Week TwentyThree'].map((v, i) => {
+            const index = i + 21
             return (
               <li
                 key={index}

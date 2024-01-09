@@ -41,6 +41,7 @@ import TeamTrade from '../pages/TeamTrade'
 import CounterTrade from '../pages/CounterTrade'
 import ProfessionalDraft from '../pages/Draft/ProfessionalDraft'
 import PublicDraft from '../pages/Draft/PublicDraft'
+import NFLQualifiedFreeAgents from '../pages/Draft/NFLQualifiedFreeAgents'
 // import Login2 from '../pages/Login2'
 // import Players from '../pages/Players'
 // import Teams from '../pages/Teams'
@@ -118,8 +119,8 @@ const Routers = () => {
           <Route path='/depth-chart' element={<DepthChart />} />
           <Route path='/team-starters/:teamID' element={<DepthChart />} />
           <Route path='/league-standings' element={<LeagueStandings />} />
-          <Route path='/free-agent' element={<FreeAgent />} />
-          <Route path='/player-auction' element={<PlayerAuction />} />
+          {/* <Route path='/free-agent' element={<FreeAgent />} /> */}
+          {/* <Route path='/player-auction' element={<PlayerAuction />} /> */}
           <Route path='/player-standing' element={<PlayerStandings />} />
           <Route path='/player-winning-bid/:id' element={<PlayerWinningBid />} />
           <Route path='/agent-player-interface/:id' element={<AgentPlayerInterface />} />
@@ -129,6 +130,7 @@ const Routers = () => {
           <Route path='/league-rosters' element={<LeagueRosters />} />
           <Route path='/professional-draft' element={<ProfessionalDraft />} />
           <Route path='/public-draft' element={<PublicDraft />} />
+          <Route path='/drafts' element={<NFLQualifiedFreeAgents />} />
           {/* <Route path='/teams' element={<Teams />} />
           <Route path='/player-details' element={<PlayerDetails />} />
           <Route path='/players' element={<Players />} />
