@@ -8,10 +8,10 @@ import { GiAmericanFootballPlayer } from 'react-icons/gi'
 
 import Header from '../../components/Header'
 import { getNFLFreeAgent, requestIsPicked } from '../../redux/actions/rosterAction'
+import PlayerDetailsModal from '../../components/modal/PlayerDetailsModal'
 
 const NFLQualifiedFreeAgents = () => {
   const userTeam = useSelector((state) => state?.user?.userDetails?.team)
-  console.log('userTeam', userTeam)
   const [qualifiedTeams, setQualifiedTeams] = useState([])
   const [nflFreeAgents, setNflFreeAgents] = useState([])
   const [playerID, setPlayerID] = useState(false)
@@ -92,45 +92,66 @@ const NFLQualifiedFreeAgents = () => {
       title: 'PLAYER NAME',
       dataIndex: 'Name',
       key: 'Name',
-      render: (v, obj) => {
+      // render: (v, obj) => {
+      //   return (
+      //     <div style={{display: 'flex', alignItems:'center', gap: '5px'}}>
+      //       {v}
+      //       {obj?.InjuryStatus === 'Out' ? (
+      //         <>
+      //           <img src={require('../../assets/plus-icon.png')} width={20} height={20} />
+      //           <p className='injury_plus_text'>O</p>
+      //         </>
+      //       ) : obj?.InjuryStatus === 'Questionable' ? (
+      //         <p className='injury_status'>Q</p>
+      //       ) : obj?.InjuryStatus === 'Doubtful' ? (
+      //         <p className='injury_status'>D</p>
+      //       ) : obj?.InjuryStatus === 'Suspended' ? (
+      //         <p className='injury_status'>SSPD</p>
+      //       ) : obj?.InjuryStatus === 'Injured Reserve' ? (
+      //         <p className='injury_status'>IR</p>
+      //       ) : (
+      //         ''
+      //       )}
+      //     </div>
+      //   )
+      // },
+      render: (t, obj) => {
         return (
-          <div style={{display: 'flex', alignItems:'center', gap: '5px'}}>
-            {v}
-            {obj?.InjuryStatus === 'Out' ? (
-              <>
-                <img src={require('../../assets/plus-icon.png')} width={20} height={20} />
-                <p className='injury_plus_text'>O</p>
-              </>
-            ) : obj?.InjuryStatus === 'Questionable' ? (
-              <p className='injury_status'>Q</p>
-            ) : obj?.InjuryStatus === 'Doubtful' ? (
-              <p className='injury_status'>D</p>
-            ) : obj?.InjuryStatus === 'Suspended' ? (
-              <p className='injury_status'>SSPD</p>
-            ) : obj?.InjuryStatus === 'Injured Reserve' ? (
-              <p className='injury_status'>IR</p>
-            ) : (
-              ''
-            )}
-          </div>
+          <PlayerDetailsModal
+            // button={<span className='fa_p_name name_text_hover'>{t}</span>}
+            button={
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <span className='fa_p_name name_text_hover'>{t}</span>
+                {obj?.InjuryStatus === 'Out' ? (
+                  <>
+                    <img src={require('../../assets/plus-icon.png')} width={20} height={20} />
+                    <p className='injury_plus_text'>O</p>
+                  </>
+                ) : obj?.InjuryStatus === 'Questionable' ? (
+                  <p className='injury_status'>Q</p>
+                ) : obj?.InjuryStatus === 'Doubtful' ? (
+                  <p className='injury_status'>D</p>
+                ) : obj?.InjuryStatus === 'Suspended' ? (
+                  <p className='injury_status'>SSPD</p>
+                ) : obj?.InjuryStatus === 'Injured Reserve' ? (
+                  <p className='injury_status'>IR</p>
+                ) : (
+                  ''
+                )}
+              </div>
+            }
+            state={{
+              playerID: obj?.PlayerID,
+              teamId: null,
+              teamName: '',
+              teamLogo: null,
+              isFreeAgent: {
+                status: true,
+              },
+            }}
+          />
         )
       },
-      //   render: (t, obj) => {
-      //     return (
-      //     //   <PlayerDetailsModal
-      //     //     button={<span className='fa_p_name name_text_hover'>{t}</span>}
-      //     //     state={{
-      //     //       playerID: obj?.PlayerID,
-      //     //       teamId: null,
-      //     //       teamName: '',
-      //     //       teamLogo: null,
-      //     //       isFreeAgent: {
-      //     //         status: true,
-      //     //       },
-      //     //     }}
-      //     //   />
-      //     )
-      //   },
     },
     {
       title: 'TEAM',
