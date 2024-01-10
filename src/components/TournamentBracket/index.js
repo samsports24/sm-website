@@ -214,7 +214,7 @@ function Flow({ allTeams }) {
       type: 'textUpdater',
       data: {
         team1: { name: 'HYDRA', icon: allTeams?.filter((team) => team?.name === 'HYDRA')[0]?.logo },
-        team2: { name: 'OAKLAND', icon: allTeams?.filter((team) => team?.name === 'SILVERBACKS')[0]?.logo },
+        team2: { name: 'OAKLAND', icon: allTeams?.filter((team) => team?.name === 'OAKLAND SILVERBACKS')[0]?.logo },
       },
       // style: { border: '1px solid #777', padding: 10 },
       position: { x: 0, y: 400 },
@@ -273,8 +273,8 @@ function Flow({ allTeams }) {
       id: '8',
       type: 'textUpdater',
       data: {
-        team1: { name: '', icon: Logo },
-        team2: { name: '', icon: Logo },
+        team1: { name: 'CANWEST', icon: allTeams?.filter((team) => team?.name === 'CANWEST GLADIATORS')[0]?.logo },
+        team2: { name: 'DOOM', icon: allTeams?.filter((team) => team?.name === 'DOOM')[0]?.logo },
       },
       position: { x: 1600, y: 500 },
       targetPosition: 'left',
@@ -293,7 +293,7 @@ function Flow({ allTeams }) {
       id: '10',
       type: 'textUpdater',
       data: {
-        team1: { name: 'ATLANTA', icon: allTeams?.filter((team) => team?.name === 'LEGION')[0]?.logo },
+        team1: { name: 'ATLANTA', icon: allTeams?.filter((team) => team?.name === 'ATLANTA LEGION')[0]?.logo },
         team2: { name: 'SOUTH', icon: allTeams?.filter((team) => team?.name === 'SOUTH BEACH HURRICANES')[0]?.logo },
       },
       position: { x: 2000, y: 0 },
