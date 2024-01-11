@@ -9,9 +9,10 @@ import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import Header from '../../components/Header'
 import { getNFLFreeAgent, requestIsPicked } from '../../redux/actions/rosterAction'
 import PlayerDetailsModal from '../../components/modal/PlayerDetailsModal'
+import {includedTeams} from '../../config/constants'
 
 const NFLQualifiedFreeAgents = () => {
-  const userTeam = useSelector((state) => state?.user?.userDetails?.team)
+  const userDetail = useSelector((state) => state?.user?.userDetails)
   const [qualifiedTeams, setQualifiedTeams] = useState([])
   const [nflFreeAgents, setNflFreeAgents] = useState([])
   const [playerID, setPlayerID] = useState(false)
@@ -187,7 +188,7 @@ const NFLQualifiedFreeAgents = () => {
       key: 'auction',
       render: (_, obj) => {
         return (
-          <Button
+          includedTeams.indexOf(userDetail?.team?._id) !== -1 &&  <Button
             // disabled={qualifiedTeams.includes(userTeam?._id) ? false : true}
             disabled={!nflFreeAgents?.draftEnabled}
             loading={playerID == obj?.PlayerID}
