@@ -189,7 +189,7 @@ const NFLQualifiedFreeAgents = () => {
         return (
           <Button
             // disabled={qualifiedTeams.includes(userTeam?._id) ? false : true}
-            disabled={true}
+            disabled={!nflFreeAgents?.draftEnabled}
             loading={playerID == obj?.PlayerID}
             type='primary'
             className='_button'

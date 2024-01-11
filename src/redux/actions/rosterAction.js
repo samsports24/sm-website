@@ -330,8 +330,9 @@ export const requestIsPicked = async (paylaod) => {
     attachToken()
     const res = await privateAPI.post('/player/request-pick', paylaod)
     if (res) {
+      console.log('res',res)
       notification.success({
-        message: 'Player Picked Successfully',
+        message: res?.data?.data?.message,
         duration: 3,
       })
     }
