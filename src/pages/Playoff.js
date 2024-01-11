@@ -29,7 +29,7 @@ const Playoff = () => {
 
       <main className='wrapper'>
         {/* SCHEDULE ONE */}
-        <ScheduleBox />
+        <ScheduleBox title={'Playoffs'}/>
 
         <section className='bracket-wrapper'>
           {/* <TournamentBracket /> */}

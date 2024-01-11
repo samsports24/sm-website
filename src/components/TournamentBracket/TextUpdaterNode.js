@@ -15,8 +15,19 @@ function TextUpdaterNode({ data, isConnectable }) {
               borderBottom: '1px solid #6E698066',
             }}
           >
-            <div style={{ background: '#fff' }}>
-              <img src={data?.team1?.icon} style={{ width: '60px', height: '60px' }} />
+            {/* <div style={{ background: '#fff' }}> */}
+            <div
+              style={{
+                background: 'transparent',
+                width: '60px',
+                height: '60px',
+                overflow: 'hidden',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <img src={data?.team1?.icon} style={{ width: '100px', height: '100px' }} />
             </div>
             <div style={{ padding: '5px 20px 5px 10px' }}>
               <p style={{ color: 'white', fontSize: '13px', fontWeight: 500 }}>
@@ -30,8 +41,18 @@ function TextUpdaterNode({ data, isConnectable }) {
         {/* Bottom */}
         {data?.team2 && (
           <div style={{ display: 'flex', alignItems: 'center', background: '#30215D66' }}>
-            <div style={{ background: '#fff' }}>
-              <img src={data?.team2?.icon} style={{ width: '60px', height: '60px' }} />
+            <div
+              style={{
+                background: 'transparent',
+                width: '60px',
+                height: '60px',
+                overflow: 'hidden',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <img src={data?.team2?.icon} style={{ width: '100px', height: '100px' }} />
             </div>
             <div style={{ padding: '5px 20px 5px 10px' }}>
               <p style={{ color: 'white', fontSize: '13px', fontWeight: 500, minWidth: '70px' }}>
