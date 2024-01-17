@@ -387,7 +387,7 @@ function Flow({ allTeams }) {
       id: '4',
       type: 'textUpdater',
       data: {
-        team1: { name: '', icon: Logo },
+        team1: { name: 'HYDRA', icon: allTeams?.filter((team) => team?.name === 'HYDRA')[0]?.logo },
         team2: {
           name: 'CANWEST',
           icon: allTeams?.filter((team) => team?.name === 'CANWEST GLADIATORS')[0]?.logo,
@@ -401,8 +401,14 @@ function Flow({ allTeams }) {
       id: '5',
       type: 'textUpdater',
       data: {
-        team1: { name: '', icon: Logo },
-        team2: { name: '', icon: Logo },
+        team1: {
+          name: 'ATLANTA',
+          icon: allTeams?.filter((team) => team?.name === 'ATLANTA LEGION')[0]?.logo,
+        },
+        team2: {
+          name: 'CIRCA',
+          icon: allTeams?.filter((team) => team?.name === 'CIRCA SPORTS TROUT')[0]?.logo,
+        },
       },
       // style: { border: '1px solid #777', padding: 10 },
       position: { x: 400, y: 500 },
@@ -435,8 +441,14 @@ function Flow({ allTeams }) {
       //   team2: { name: 'DOOM', icon: allTeams?.filter((team) => team?.name === 'DOOM')[0]?.logo },
       // },
       data: {
-        team1: { name: '', icon: Logo },
-        team2: { name: '', icon: Logo },
+        team1: {
+          name: 'REDZONE',
+          icon: allTeams?.filter((team) => team?.name === 'REDZONE DRAGONS')[0]?.logo,
+        },
+        team2: {
+          name: 'GRIDIRON',
+          icon: allTeams?.filter((team) => team?.name === 'GRIDIRON SEALS')[0]?.logo,
+        },
       },
       position: { x: 1600, y: 500 },
       targetPosition: 'left',
@@ -445,7 +457,10 @@ function Flow({ allTeams }) {
       id: '9',
       type: 'textUpdater',
       data: {
-        team1: { name: '', icon: Logo },
+        team1: {
+          name: 'VALKYRIES',
+          icon: allTeams?.filter((team) => team?.name === 'VALKYRIES')[0]?.logo,
+        },
         // team2: { name: '', icon: Logo },
         team2: { name: 'DOOM', icon: allTeams?.filter((team) => team?.name === 'DOOM')[0]?.logo },
       },
