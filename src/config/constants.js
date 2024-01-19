@@ -42,16 +42,12 @@ export const nonActivePlayers = 7
 export const leagueSalaryCap = 199759446
 
 export const includedTeams = [
-  "64e5ee7d6e36d01a688fc6d0",
   "64e5ee7d6e36d01a688fc6d2",
-  "64e5ee7d6e36d01a688fc6e3",
-  "64e5ee7d6e36d01a688fc6dc",
-  "64e5ee7d6e36d01a688fc6df",
-  "64e5ee7d6e36d01a688fc6d5",
-  "64e5ee7d6e36d01a688fc6eb",
-  "64e5ee7d6e36d01a688fc6cf",
-  "64e5ee7d6e36d01a688fc6e8",
-  "64e5ee7d6e36d01a688fc6ed",
   "64e5ee7d6e36d01a688fc6de",
-  "64e5ee7d6e36d01a688fc6e5",
+  "64e5ee7d6e36d01a688fc6e3",
+  "64e5ee7d6e36d01a688fc6e1",
+  "64e5ee7d6e36d01a688fc6d5",
+  "64e5ee7d6e36d01a688fc6d4",
+  "64e5ee7d6e36d01a688fc6dc",
+  "64e5ee7d6e36d01a688fc6d0",
 ]
