@@ -3,6 +3,11 @@ import Carousel from 'react-multi-carousel'
 import 'react-multi-carousel/lib/styles.css'
 
 import BannerImage from '../../assets/playerOfTheWeek.png'
+// import PlayoffsBanner from '../../assets/sfl_playoffs.png'
+import PlayoffsBanner from '../../assets/sfl_playoffs_edit.png'
+import CfbBanner from '../../assets/CFB_banner_edit.png'
+import BaseballBanner from '../../assets/Baseball_banner_2_edit.png'
+import SoccerBanner from '../../assets/Soccer_banner_edit.png'
 import LeftArrow from '../../assets/leftArrow.svg'
 import RightArrow from '../../assets/rightArrow.svg'
 
@@ -15,19 +20,32 @@ const LandingBanner = () => {
     },
   }
   return (
-    <div className='landing-banner'>
-      <Carousel
-        swipeable={true}
-        draggable={true}
-        showDots={true}
-        responsive={responsive}
-        arrows={false}
-        infinite={true}
-        autoPlay={true}
-        autoPlaySpeed={3000}
-        keyBoardControl={true}
-      >
-        <div className='banner_wrapper'>
+      <div className='landing-banner'>
+        <Carousel
+          swipeable={true}
+          draggable={true}
+          showDots={false}
+          responsive={responsive}
+          arrows={false}
+          infinite={true}
+          autoPlay={true}
+          autoPlaySpeed={3000}
+          keyBoardControl={true}
+        >
+          <div className='banner_wrapper'>
+            <img src={PlayoffsBanner} className='new_image'/>
+          </div>
+          <div className='banner_wrapper' >
+            <img src={CfbBanner}  className='new_image'/>
+          </div>
+          <div className='banner_wrapper'>
+            <img src={BaseballBanner} className='new_image'/>
+          </div>
+          <div className='banner_wrapper'>
+            <img src={SoccerBanner} className='new_image'/>
+          </div>
+
+          {/* <div className='banner_wrapper'>
           <div className='banner_content'>
             <div className='arrow-icon'>
               <img src={LeftArrow} />
@@ -45,8 +63,9 @@ const LandingBanner = () => {
           <div className='image_div'>
             <img className='main_banner_image' src={BannerImage} />
           </div>
-        </div>
-        <div className='banner_wrapper'>
+        </div> */}
+
+          {/* <div className='banner_wrapper'>
           <div className='banner_content'>
             <div className='arrow-icon'>
               <img src={LeftArrow} />
@@ -64,9 +83,9 @@ const LandingBanner = () => {
           <div className='image_div'>
             <img className='main_banner_image' src={BannerImage} />
           </div>
-        </div>
-      </Carousel>
-    </div>
+        </div> */}
+        </Carousel>
+      </div>
   )
 }
 

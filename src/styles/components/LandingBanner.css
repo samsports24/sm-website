@@ -5,13 +5,18 @@
     border-radius: 16px;
     padding: 36px 0; */
   width: 100%;
-  background: url('../../assets/landigBanner.png'), #30215d 50% / cover no-repeat;
+  /* background: url('../../assets/landigBanner.png'), #30215d 50% / cover no-repeat; */
   background-blend-mode: color-dodge;
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: 16px;
-  min-height: 523px;
+  /* min-height: 523px; */
+  /* max-height: 500px; */
   /* display: flex; */
+  /* align-items: center; */
+  padding: 10px;
+  border-radius: 7%;
+  overflow: hidden;
   /* flex-direction: row; */
 }
 
@@ -21,10 +26,18 @@
   /* justify-content: flex-start; */
   /* align-items: center;     */
   /* flex: 1; */
+  height: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   /* z-index: 1; */
+  /* max-height: 500px; */
+}
+
+.landing-banner .banner_wrapper .new_image {
+  width: 100%;
+  height: auto;
+  border-radius: 6%;
 }
 
 .landing-banner .banner_wrapper .banner_content {
