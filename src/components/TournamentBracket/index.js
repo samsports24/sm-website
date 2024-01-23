@@ -417,8 +417,11 @@ function Flow({ allTeams }) {
       id: '6',
       type: 'textUpdater',
       data: {
-        team1: { name: '', icon: Logo },
-        team2: { name: '', icon: Logo },
+        team1: { name: 'HYDRA', icon: allTeams?.filter((team) => team?.name === 'HYDRA')[0]?.logo },
+        team2: {
+          name: 'CIRCA',
+          icon: allTeams?.filter((team) => team?.name === 'CIRCA SPORTS TROUT')[0]?.logo,
+        },
       },
       position: { x: 800, y: 300 },
       targetPosition: 'left',
@@ -427,8 +430,11 @@ function Flow({ allTeams }) {
       id: '7',
       type: 'textUpdater',
       data: {
-        team1: { name: '', icon: Logo },
-        team2: { name: '', icon: Logo },
+        team1: { name: 'DOOM', icon: allTeams?.filter((team) => team?.name === 'DOOM')[0]?.logo },
+        team2: {
+          name: 'REDZONE',
+          icon: allTeams?.filter((team) => team?.name === 'REDZONE DRAGONS')[0]?.logo,
+        },
       },
       position: { x: 1200, y: 300 },
       targetPosition: 'left',
