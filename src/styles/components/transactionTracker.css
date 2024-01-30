@@ -43,6 +43,10 @@
   overflow-y: auto;
 }
 
+.transaction_height_box .transaction_tracker_body {
+  height: 50vh;
+}
+
 .transaction_tracker_box .transaction_tracker_body .card_box {
   width: 100%;
   display: flex;
@@ -73,6 +77,12 @@
   font-style: normal;
   font-weight: 400;
   line-height: 22px;
+}
+
+.all_transaction_picker {
+  width: unset !important;
+  border: 1px solid #d9d9d9 !important;
+  background: transparent !important;
 }
 
 @media (max-width: 768px) {

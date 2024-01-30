@@ -109,3 +109,18 @@ export const getTeamFinancials = async () => {
     })
   }
 }
+
+export const getPlayerForWeeklyScoring = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/player/get-all-players`,payload)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}

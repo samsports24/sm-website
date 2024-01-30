@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Button, Tooltip, Table } from 'antd'
+import { Button, Tooltip, Table, Tabs } from 'antd'
 
 // Component
 import Header from '../components/Header'
@@ -16,6 +16,7 @@ import PlayerDetailsModal from '../components/modal/PlayerDetailsModal'
 const PlayerAuction = () => {
   const [isLoading, setIsLoading] = useState(false)
   const { data } = useSelector((state) => state.auction)
+  const [tab, setTab] = useState(1)
 
   const navigate = useNavigate()
 
@@ -151,28 +152,56 @@ const PlayerAuction = () => {
     },
   ]
 
+  const items = [
+    {
+      key: '1',
+      label: 'Live Auction',
+      children: (
+        <div className='new_table_container auction_table_container'>
+          <Table
+            loading={isLoading}
+            dataSource={data?.liveAuctions}
+            columns={columns}
+            bordered={false}
+            pagination={false}
+            scroll={{ x: 1100 }}
+            className='all_auction_table '
+            rowKey='_id'
+          />
+        </div>
+      ),
+    },
+    {
+      key: '2',
+      label: 'Past Auction',
+      children: (
+        <div className='new_table_container auction_table_container'>
+          <Table
+            loading={isLoading}
+            dataSource={data?.pastAuctions}
+            columns={columns}
+            bordered={false}
+            pagination={false}
+            scroll={{ x: 1100 }}
+            className='all_auction_table '
+            rowKey='_id'
+          />
+        </div>
+      ),
+    },
+  ]
+
   return (
     <div className='practice_squad_container team_trade_main'>
       <Header />
 
       <hr className='divider' />
 
-      <div className='header' style={{ marginBottom: '20px' }}>
-        <h2>ALL AUCTION</h2>
+      <div className='header' style={{ marginBlock: '20px' }}>
+        <h2>AUCTIONS</h2>
       </div>
 
-      <div className='new_table_container auction_table_container'>
-        <Table
-          loading={isLoading}
-          dataSource={data?.allAuctions}
-          columns={columns}
-          bordered={false}
-          pagination={false}
-          scroll={{ x: 1100 }}
-          className='all_auction_table '
-          rowKey='_id'
-        />
-      </div>
+      <Tabs size='large' defaultActiveKey='1' items={items} onChange={(key) => setTab(key)} />
 
       <div className='header' style={{ marginBlock: '20px' }}>
         <h2>MY AUCTION</h2>

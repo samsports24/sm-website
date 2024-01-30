@@ -19,6 +19,10 @@ const PlayerStandings = () => {
   const [activeButton, setActiveButton] = useState('ALL')
   const [filterData, setFilterData] = useState([])
 
+  useEffect(() => {
+    console.log('filterData --->',filterData)
+  }, [filterData])
+
   const navigate = useNavigate()
 
   useEffect(() => {

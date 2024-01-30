@@ -44,6 +44,7 @@ const userReducer = (state = initialState, action) => {
           season: payload?.setting?.season,
         },
         teamSalaryCap: payload?.teamSalaryCap,
+        auctionCount: payload?.liveAuctionCount
       }
     }
     case 'UPDATE_WEEK': {

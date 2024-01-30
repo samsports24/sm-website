@@ -33,7 +33,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build-old": "rimraf ./build && react-scripts --max_old_space_size=4096 build && rimraf ./build/*/.map",
-    "build" : "rimraf ./build && GENERATE_SOURCEMAP=false react-scripts --max_old_space_size=4096 build",
+    "build" : "rimraf ./build && set GENERATE_SOURCEMAP=false && react-scripts --max_old_space_size=4096 build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint src/**/*.{js,jsx}",

@@ -63,9 +63,12 @@ const MainMenu = () => {
       case '/league-standings': {
         return setActive('league-standings')
       }
-      case '/player-standing': {
+      case '/player-standing-weekly': {
         return setActive('player-ranking')
       }
+      // case '/player-standing': {
+      //   return setActive('player-ranking')
+      // }
       case '/leagueScore': {
         return setActive('leagueScore')
       }
@@ -170,7 +173,8 @@ const MainMenu = () => {
               </div>
               <div
                 className={`sidebar_menu_item ${active === 'player-ranking' ? 'activeRoute' : ''}`}
-                onClick={() => navigate('/player-standing')}
+                // onClick={() => navigate('/player-standing')}
+                onClick={() => navigate('/player-standing-weekly')}
               >
                 <GiStarMedal />
                 <p>players ranking</p>

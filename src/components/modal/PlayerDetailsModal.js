@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Modal } from 'antd'
 import PlayerInterfacePopup from '../PlayerInterfacePopup'
 
-const PlayerDetailsModal = ({ button, state }) => {
+const PlayerDetailsModal = ({ button, state, transaction, tableRow }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [remountKey, setRemountKey] = useState(0)
   const showModal = () => {
@@ -13,7 +13,20 @@ const PlayerDetailsModal = ({ button, state }) => {
 
   return (
     <>
-      <h2 onClick={showModal}>{button}</h2>
+      {tableRow && (
+        <p style={{ cursor: 'pointer' }} onClick={showModal}>
+          {button}
+        </p>
+      )}
+
+      {transaction && (
+        <span style={{ cursor: 'pointer' }} onClick={showModal}>
+          {button}
+        </span>
+      )}
+
+      {!tableRow && !transaction && <h2 onClick={showModal}>{button}</h2>}
+
       <Modal
         title=''
         centered

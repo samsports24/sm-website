@@ -112,7 +112,8 @@ const WeekPagination = ({ goLive }) => {
       )}
       {weekSection === 6 && (
         <>
-          {['Week TwentyOne', 'Week TwentyTwo', 'Week TwentyThree'].map((v, i) => {
+          {/* {['Week TwentyOne', 'Week TwentyTwo', 'Week TwentyThree'].map((v, i) => { */}
+          {['Week TwentyOne', 'Week TwentyThree'].map((v, i) => {
             const index = i + 21
             return (
               <li

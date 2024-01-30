@@ -535,8 +535,11 @@ function Flow({ allTeams }) {
       id: '14',
       type: 'textUpdater',
       data: {
-        team1: { name: '', icon: Logo },
-        team2: { name: '', icon: Logo },
+        team1: { name: 'DOOM', icon: allTeams?.filter((team) => team?.name === 'DOOM')[0]?.logo },
+        team2: {
+          name: 'CIRCA',
+          icon: allTeams?.filter((team) => team?.name === 'CIRCA SPORTS TROUT')[0]?.logo,
+        },
       },
       position: { x: 1000, y: 500 },
       targetPosition: 'left',

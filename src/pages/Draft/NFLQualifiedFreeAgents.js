@@ -201,6 +201,20 @@ const NFLQualifiedFreeAgents = () => {
             Pick
           </Button>
         )
+        // return (
+        //   <Button
+        //     // disabled={qualifiedTeams.includes(userTeam?._id) ? false : true}
+        //     // disabled={!nflFreeAgents?.draftEnabled}
+        //     loading={playerID == obj?.PlayerID}
+        //     type='primary'
+        //     className='_button'
+        //     onClick={() => {
+        //       handleIsPicked(obj?.PlayerID, obj?._id)
+        //     }}
+        //   >
+        //     Pick
+        //   </Button>
+        // )
       },
     },
   ]

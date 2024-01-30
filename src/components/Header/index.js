@@ -16,7 +16,7 @@ const Header = () => {
   const user = useSelector((state) => state.user.userDetails)
   const teamSalary = useSelector((state) => state.user.teamSalaryCap)
   const { notificationCount } = useSelector((state) => state.user)
-  const [auctionCount] = useState(null)
+  const { auctionCount } = useSelector((state) => state.user)
   const navigate = useNavigate()
 
   const teamFinancials = () => {
@@ -47,13 +47,18 @@ const Header = () => {
           <h1>{user?.team?.name}</h1>
           <p onClick={() => navigate('/player-auction')}>
             <span>Live Player Auction</span>{' '}
-            {auctionCount ? (
+            {/* {auctionCount ? (
               <Badge count={auctionCount}>
                 <img src={bellIcon} alt='Icon' />
               </Badge>
             ) : (
               <img src={bellIcon} alt='Icon' />
-            )}
+            )} */}
+            {
+              <Badge count={auctionCount} color='#cdb51b'>
+                <img src={bellIcon} alt='Icon' />
+              </Badge>
+            }
           </p>
         </div>
         <div className='button_and_team_box'>

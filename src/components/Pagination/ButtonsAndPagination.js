@@ -39,7 +39,8 @@ const ButtonsAndPagination = ({ noWeek, isLink = false, goLive = true }) => {
       label: (
         <Typography.Title
           onClick={() => {
-            navigate('/player-standing')
+            // navigate('/player-standing')
+            navigate('/player-standing-weekly')
           }}
           className='dropdown-link'
           level={4}
