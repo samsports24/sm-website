@@ -55,6 +55,7 @@ const PlayerStandingWeekly = () => {
         position: item?.Position,
         pf: item?.pf?.toFixed(2),
         avgPf: item?.avgPf?.toFixed(2),
+        nflGamesPlayed: item?.nflGamesPlayed,
       }
 
       tempResultArr.push(tempObj)
@@ -130,6 +131,7 @@ const PlayerStandingWeekly = () => {
               <Column title='POS' dataIndex='position' key='position' />
               <Column title='PF' dataIndex='pf' key='pf' />
               <Column title='APF' dataIndex='avgPf' key='avgPf' />
+              <Column title='NFL Games Played' dataIndex='nflGamesPlayed' key='nflGamesPlayed' />
               <ColumnGroup title='Weekly'>
                 {weeks?.map((v, index) => (
                   <Column

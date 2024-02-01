@@ -134,7 +134,7 @@ const Routers = () => {
           <Route path='/professional-draft' element={<ProfessionalDraft />} />
           <Route path='/public-draft' element={<PublicDraft />} />
           <Route path='/drafts' element={<NFLQualifiedFreeAgents />} />
-          {/* <Route path='/all-transaction' element={<AllTransaction />} /> */}
+          <Route path='/all-transaction' element={<AllTransaction />} />
           {/* <Route path='/teams' element={<Teams />} />
           <Route path='/player-details' element={<PlayerDetails />} />
           <Route path='/players' element={<Players />} />
