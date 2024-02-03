@@ -68,6 +68,7 @@
 @import './components/customCarousel.css';
 
 /* Page CSS */
+@import './pages/landing.css';
 @import './pages/login.css';
 @import './pages/EditProfile.css';
 @import './pages/teams.css';

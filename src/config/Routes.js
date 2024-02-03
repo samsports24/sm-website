@@ -71,6 +71,7 @@ import { useEffect } from 'react'
 import TeamRoster from '../pages/TeamRoster'
 import TeamFinancials from '../pages/TeamFinancials'
 import LeagueRosters from '../pages/LeagueRosters'
+import LandingPage from '../pages/LandingPage'
 
 const Routers = () => {
   const Component = () => {
@@ -155,7 +156,8 @@ const Routers = () => {
         </Route>
 
         <Route element={<Component />}>
-          <Route path='/' element={<Home />} />
+          {/* <Route path='/' element={<LandingPage />} /> */}
+          {/* <Route path='/' element={<Home />} /> */}
 
           {/* <Route path='/player-auction' element={<ComingSoon />} /> */}
           <Route path='/fantasy-league' element={<FantasyLeague />} />
@@ -180,6 +182,8 @@ const Routers = () => {
         <Route path='/sign-up' element={<SignUp />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
         <Route path='/authentication' element={<Authentication />} />
+        <Route path='/' element={<LandingPage />} />
+
       </Routes>
     </BrowserRouter>
   )
