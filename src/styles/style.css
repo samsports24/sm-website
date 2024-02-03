@@ -66,6 +66,7 @@
 @import './components/newRosterCard.css';
 @import './components/teamScheduleCarousel.css';
 @import './components/customCarousel.css';
+@import './components/newPopularLeagueCard.css';
 
 /* Page CSS */
 @import './pages/landing.css';
