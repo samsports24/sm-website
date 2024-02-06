@@ -55,12 +55,9 @@ const SelectGame = () => {
                   alt={v.name}
                   onClick={() => {
                     setGame(v.name)
-                    navigate('/signup', {
-                      state: {
-                        selectedGame: v.name,
-                        imagePath: v.imagePath,
-                      },
-                    })
+                    localStorage.setItem('selectedGame', v.name)
+                    localStorage.setItem('imagePath', v.imagePath)
+                    navigate('/signup')
                   }}
                 />
               </div>

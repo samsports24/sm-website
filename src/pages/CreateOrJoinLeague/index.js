@@ -17,9 +17,6 @@ const CreateOrJoinLeague = () => {
               Step 1
             </Button>
             <Button type='primary'>Step 2</Button>
-            <Button type='primary' className='inactive'>
-              Step 3
-            </Button>
           </div>
         </div>
       </SelectGameRight>

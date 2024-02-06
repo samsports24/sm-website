@@ -1,17 +1,23 @@
 .select_league_body {
   width: 100%;
+  min-height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .select_league_body .button_box {
   width: 100%;
+  max-width: 400px;
   display: flex;
   flex-direction: row;
   gap: 20px;
   justify-content: space-between;
-  max-width: 800px;
 }
 .select_league_body .button_box button {
   width: 150px;
+  border: none;
 }
 .select_league_body .button_box .inactive {
   background-color: #fff !important;

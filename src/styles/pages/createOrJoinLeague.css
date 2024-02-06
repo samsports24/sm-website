@@ -8,10 +8,11 @@
   flex-direction: row;
   gap: 20px;
   justify-content: space-between;
-  max-width: 800px;
+  max-width: 400px;
 }
 .cjl_body .button_box button {
   width: 150px;
+  border: none;
 }
 .cjl_body .button_box .inactive {
   background-color: #fff !important;

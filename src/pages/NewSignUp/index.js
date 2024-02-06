@@ -16,7 +16,8 @@ import { IoIosArrowRoundBack } from 'react-icons/io'
 const NewSignUp = () => {
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
-  const { state } = useLocation()
+  const selectedGame = localStorage.getItem('selectedGame')
+  const imagePath = localStorage.getItem('imagePath')
   const navigate = useNavigate()
 
   const onFinish = async (values) => {
@@ -25,11 +26,9 @@ const NewSignUp = () => {
       ...values,
       dateOfBirth: dayjs(values?.dateOfBirth).toISOString(),
     }
-    console.log('Selected Game>>>:', state?.selectedGame)
+    console.log('Selected Game>>>:', selectedGame)
     console.log(obj)
-    navigate('/select-league', {
-      state: { ...state },
-    })
+    navigate('/select-league')
     setLoading(false)
   }
 
@@ -40,12 +39,12 @@ const NewSignUp = () => {
 
   return (
     <div className='select_game_container'>
-      <SelectGameLeft logo={state?.imagePath} />
+      <SelectGameLeft logo={imagePath} />
       <SelectGameRight>
         <div className='signup_body'>
           <h1>
             <IoIosArrowRoundBack onClick={() => navigate('/select-game')} className='back_arrow' />
-            Create Your Account <span style={{ fontSize: '16px' }}>({state?.selectedGame})</span>
+            Create Your Account <span style={{ fontSize: '16px' }}>({selectedGame})</span>
           </h1>
 
           <Form form={form} layout='vertical' onFinish={onFinish} autoComplete='off'>
