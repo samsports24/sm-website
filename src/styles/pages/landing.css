@@ -22,11 +22,21 @@
 
 /* Navbar */
 .main-landing .navbar {
+  width: 100%;
   display: flex;
   padding: 15px;
+  height: 70px;
 
   justify-content: space-between;
   align-items: center;
+  background-color: var(--primaryPurple);
+
+  position: fixed;
+  z-index: 999;
+}
+.main-landing .empty-navbar {
+  width: 100%;
+  height: 70px;
 }
 .main-landing .navbar .logo {
   /* width: 30px; */
@@ -70,6 +80,7 @@
 /* Hero Section */
 .main-landing .hero-section {
   position: relative;
+  background-color: var(--primaryPurple);
 }
 .main-landing .hero-section .text {
   position: absolute;

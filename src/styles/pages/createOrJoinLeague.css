@@ -1,0 +1,23 @@
+.cjl_body {
+  width: 100%;
+}
+
+.cjl_body .button_box {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: space-between;
+  max-width: 800px;
+}
+.cjl_body .button_box button {
+  width: 150px;
+}
+.cjl_body .button_box .inactive {
+  background-color: #fff !important;
+  color: var(--primary);
+}
+
+.cjl_body .form_conatiner {
+  margin-top: 50px;
+}

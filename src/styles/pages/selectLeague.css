@@ -1,0 +1,102 @@
+.select_league_body {
+  width: 100%;
+}
+
+.select_league_body .button_box {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: space-between;
+  max-width: 800px;
+}
+.select_league_body .button_box button {
+  width: 150px;
+}
+.select_league_body .button_box .inactive {
+  background-color: #fff !important;
+  color: var(--primary);
+}
+
+.select_league_body .card_conatiner {
+  /* width: 100%; */
+  margin-top: 50px;
+  max-width: 800px;
+}
+
+/* CARD */
+.league_joining_card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  background-color: #59486b;
+}
+.league_joining_card .header {
+  width: 100%;
+  height: 100px;
+  padding: 20px;
+  border-radius: 20px 20px 100% 0;
+  background: rgb(12, 76, 176);
+  background: linear-gradient(90deg, rgba(12, 76, 176, 1) 0%, rgba(191, 106, 227, 1) 100%);
+}
+.league_joining_card .header .text1 {
+  font-size: 30px;
+  font-weight: 500;
+}
+.league_joining_card .header .text2 {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.league_joining_card .headerRight {
+  border-radius: 20px 20px 100% 0;
+  background: rgb(12, 76, 176);
+  background: linear-gradient(90deg, rgba(12, 76, 176, 1) 0%, rgba(191, 106, 227, 1) 100%);
+}
+.league_joining_card .headerRight .text2 {
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.league_joining_card .headerLeft {
+  border-radius: 20px 20px 0 100%;
+  background: rgb(12, 76, 176);
+  background: linear-gradient(90deg, rgba(191, 106, 227, 1) 0%, rgba(12, 76, 176, 1) 100%);
+}
+.league_joining_card .headerLeft p {
+  text-align: right;
+}
+
+.league_joining_card .description {
+  padding: 20px;
+  width: 100%;
+  flex: 1;
+}
+.league_joining_card .description p {
+  line-height: 1.3;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.league_joining_card > button {
+  margin-bottom: 20px;
+  margin-inline: 50px;
+  background: rgb(12, 76, 176) !important;
+  background: linear-gradient(
+    90deg,
+    rgba(12, 76, 176, 1) 0%,
+    rgba(191, 106, 227, 1) 100%
+  ) !important;
+  border: none;
+}
+.league_joining_card > button:hover {
+  border: none;
+  background: rgb(12, 76, 176) !important;
+  background: linear-gradient(
+    90deg,
+    rgba(12, 76, 176, 1) 0%,
+    rgba(191, 106, 227, 1) 100%
+  ) !important;
+}

@@ -27,6 +27,9 @@ const NewSignUp = () => {
     }
     console.log('Selected Game>>>:', state?.selectedGame)
     console.log(obj)
+    navigate('/select-league', {
+      state: { ...state },
+    })
     setLoading(false)
   }
 

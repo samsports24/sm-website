@@ -74,6 +74,8 @@ import LeagueRosters from '../pages/LeagueRosters'
 import LandingPage from '../pages/LandingPage'
 import SelectGame from '../pages/SelectGame'
 import NewSignUp from '../pages/NewSignUp'
+import SelectLeague from '../pages/SelectLeague'
+import CreateOrJoinLeague from '../pages/CreateOrJoinLeague'
 
 const Routers = () => {
   const Component = () => {
@@ -188,6 +190,8 @@ const Routers = () => {
 
         <Route path='/select-game' element={<SelectGame />} />
         <Route path='/signup' element={<NewSignUp />} />
+        <Route path='/select-league' element={<SelectLeague />} />
+        <Route path='/create-join-league' element={<CreateOrJoinLeague />} />
       </Routes>
     </BrowserRouter>
   )

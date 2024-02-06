@@ -12,34 +12,37 @@ import { useNavigate } from 'react-router-dom'
 const Navbar = () => {
   const navigate = useNavigate()
   return (
-    <div className='navbar'>
-      <div className='left'>
-        <img src={Logo} alt='logo' className='logo' />
-        <img src={Title} alt='samsports' className='title' />
-        <div className='links'>
-          <span>Football</span>
-          <span>Baseball</span>
-          <span>Hockey</span>
-          <span>US Football</span>
-          <span>College Football</span>
-          <span>Scouting</span>
+    <>
+      <div className='navbar'>
+        <div className='left'>
+          <img src={Logo} alt='logo' className='logo' />
+          <img src={Title} alt='samsports' className='title' />
+          <div className='links'>
+            <span>Football</span>
+            <span>Baseball</span>
+            <span>Hockey</span>
+            <span>US Football</span>
+            <span>College Football</span>
+            <span>Scouting</span>
+          </div>
+        </div>
+        <div className='right'>
+          <Button
+            shape='round'
+            type='primary'
+            className='auth_btn'
+            onClick={() => navigate('/select-game')}
+          >
+            Signup
+          </Button>
+          <Button shape='round' type='primary' className='auth_btn'>
+            Login
+          </Button>
+          <DrawerMenu />
         </div>
       </div>
-      <div className='right'>
-        <Button
-          shape='round'
-          type='primary'
-          className='auth_btn'
-          onClick={() => navigate('/select-game')}
-        >
-          Signup
-        </Button>
-        <Button shape='round' type='primary' className='auth_btn'>
-          Login
-        </Button>
-        <DrawerMenu />
-      </div>
-    </div>
+      <div className='empty-navbar' />
+    </>
   )
 }
 
