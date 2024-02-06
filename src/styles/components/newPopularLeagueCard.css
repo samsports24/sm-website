@@ -84,3 +84,9 @@
   border-bottom-right-radius: 16px;
   background-color: var(--primaryPurple);
 }
+
+@media (max-width: 600px) {
+  .p_league_card_wrapper {
+    padding-inline: 0px;
+  }
+}

@@ -17,7 +17,7 @@
 .ant-switch-checked .ant-switch-inner {
   margin-left: 3px !important;
 }
-.ant-drawer-content-wrapper {
+.ant-drawer-left .ant-drawer-content-wrapper {
   width: 100% !important;
 }
 .v-layout .company-logo {

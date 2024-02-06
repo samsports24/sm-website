@@ -1,4 +1,5 @@
 @import 'react-multi-carousel/lib/styles.css';
+
 .main-landing {
   width: 100%;
   height: 100%;
@@ -38,6 +39,7 @@
 .main-landing .navbar .left span {
   color: white;
   margin: 0 10px;
+  cursor: pointer;
 }
 .main-landing .navbar .left {
   display: flex;
@@ -86,6 +88,30 @@
   font-size: 60px;
   margin: 0;
   letter-spacing: 1px;
+}
+
+@media (max-width: 900px) {
+  .main-landing .hero-section .text {
+    bottom: 100px;
+  }
+  .main-landing .hero-section h2 {
+    font-size: 30px;
+  }
+  .main-landing .hero-section h1 {
+    font-size: 40px;
+  }
+}
+@media (max-width: 600px) {
+  .main-landing .hero-section .text {
+    bottom: 30px;
+    left: 30px;
+  }
+  .main-landing .hero-section h2 {
+    font-size: 16px;
+  }
+  .main-landing .hero-section h1 {
+    font-size: 18px;
+  }
 }
 
 /* Team Section */
@@ -372,6 +398,12 @@
   padding-right: 10px;
 }
 
+@media (max-width: 600px) {
+  .main-landing .community .community_card_wrapper {
+    padding-inline: 0px;
+  }
+}
+
 /* Popular League */
 .main-landing .popular_league {
   width: 100%;
@@ -383,18 +415,41 @@
 .main-landing .fantasy_sports {
   position: relative;
 }
-.main-landing .fantasy_sports .content {
+
+.main-landing .fantasy_sports .contentDesktop {
   width: 100%;
   height: 100%;
   position: absolute;
   top: 0;
   left: 0;
+}
+.main-landing .fantasy_sports_small_screen {
+  background-color: var(--primaryPurple);
+  display: none;
+}
+
+.main-landing .fantasy_sports .content {
   width: 100%;
+  height: 100%;
   padding: 50px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
+
+.main-landing .main_heading {
+  position: absolute;
+  bottom: 30px;
+  left: 50px;
+}
+.main-landing .main_heading h1 {
+  font-weight: 900;
+  font-size: 40px;
+  margin: 0;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
 .main-landing .fantasy_sports .content .top > h1 {
   font-weight: 900;
   font-size: 60px;
@@ -441,5 +496,99 @@
   opacity: 0.7;
 }
 
+@media (max-width: 1024px) {
+  .main-landing .fantasy_sports .content .top > h1 {
+    font-size: 40px;
+  }
+}
+
 @media (max-width: 900px) {
+  .main-landing .contentDesktop {
+    display: none;
+  }
+  .main-landing .fantasy_sports_small_screen {
+    display: flex;
+  }
+}
+@media (min-width: 900px) {
+  .main-landing .main_heading {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .main-landing .main_heading {
+    left: 20px;
+  }
+  .main-landing .main_heading h1 {
+    font-size: 32px;
+  }
+  .main-landing .fantasy_sports .content {
+    padding: 30px 20px;
+  }
+}
+
+@media (max-width: 400px) {
+  .main-landing .main_heading {
+    bottom: 20px;
+  }
+  .main-landing .main_heading h1 {
+    font-size: 22px;
+  }
+}
+
+/* Drawer */
+
+.ant-drawer-right .ant-drawer-content-wrapper {
+  width: 300px !important;
+}
+
+.menu_drawer {
+  width: 300px !important;
+}
+
+.menu_drawer .ant-drawer-header {
+  display: none !important;
+}
+
+.menu_drawer .menu_drawer_body {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+}
+
+.menu_drawer .menu_drawer_body .close_button {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+
+.menu_drawer .menu_drawer_body .company_logo {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu_drawer .menu_drawer_body .company_logo img {
+  width: 100px;
+  height: auto;
+}
+
+.menu_drawer .menu_drawer_body .menu_item_box {
+  width: 100%;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.menu_drawer .menu_drawer_body .menu_item_box .menu_item {
+  width: 100%;
+  height: 45px;
+  padding-inline: 20px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }
