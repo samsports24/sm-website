@@ -107,6 +107,7 @@
 @import './pages/leagueRosters.css';
 @import './pages/draft.css';
 @import './pages/selectGame.css';
+@import './pages/newSignUp.css';
 
 /* COMPONENT HOCKEY */
 @import './components/leagueStandingsHockey.css';

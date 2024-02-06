@@ -17,8 +17,8 @@ const LeagueSection = () => {
       alt: 'Football',
     },
     {
-      image: require('../../assets/landing/logos/legends.png'),
-      alt: 'Legends',
+      image: require('../../assets/landing/logos/eleven-fc.png'),
+      alt: 'Eleven F.C',
     },
     {
       image: require('../../assets/landing/logos/baseball.png'),

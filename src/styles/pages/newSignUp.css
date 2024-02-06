@@ -1,0 +1,26 @@
+.signup_body {
+  width: 100%;
+}
+.signup_body > h1 {
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+.signup_body > h1 .back_arrow {
+  margin-bottom: -5px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.signup_body .ant-picker {
+  background-color: transparent !important;
+}
+
+.signup_body .ant-select-selector {
+  border: 2px solid #fff !important;
+}
+
+.signup_body
+  .ant-select-status-error:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer)
+  .ant-select-selector {
+  border-color: #ff7875 !important;
+}

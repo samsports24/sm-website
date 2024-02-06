@@ -1,59 +1,73 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import SelectGameLeft from './SelectGameLeft'
+import SelectGameRight from './SelectGameRight'
 
 const SelectGame = () => {
   const [game, setGame] = useState('')
+  const navigate = useNavigate()
+
   const games = [
     {
       name: 'Football',
-      image: require('../../assets/landing/logos/football.png'),
+      imagePath: 'football.png',
     },
     {
       name: 'College Football',
-      image: require('../../assets/landing/logos/college-football.png'),
+      imagePath: 'college-football.png',
     },
     {
       name: 'Basketball',
-      image: require('../../assets/landing/logos/basketball.png'),
+      imagePath: 'basketball.png',
     },
     {
       name: 'Eleven F.C',
-      image: require('../../assets/landing/logos/eleven-fc.png'),
+      imagePath: 'eleven-fc.png',
     },
     {
       name: 'Scouts',
-      image: require('../../assets/landing/logos/scouts.png'),
+      imagePath: 'scouts.png',
     },
     {
       name: 'Baseball',
-      image: require('../../assets/landing/logos/baseball.png'),
+      imagePath: 'baseball.png',
     },
     {
       name: 'Hockey',
-      image: require('../../assets/landing/logos/hockey.png'),
+      imagePath: 'hockey.png',
     },
   ]
 
   return (
     <div className='select_game_container'>
-      <div className='select_game_left'>
-        <img src={require('../../assets/landing/title.png')} />
-      </div>
-      <div className='select_game_right'>
+      <SelectGameLeft />
+      <SelectGameRight>
         <div className='top_section'>
-          <p>No Leagues yet!</p>
-          <p>Choose your Fantasy sport, level and leagues!</p>
+          <p style={{ marginBottom: '5px' }}>Choose your Fantasy sport, level and leagues!</p>
           <p>(please note that the pro leagues are on invitation only)</p>
         </div>
         <div className='bottom_section'>
           {games.map((v) => {
             return (
-              <div key={v} className={`image_box ${game === v.name ? 'activeGame' : ''}`}>
-                <img src={v.image} alt={v.name} onClick={() => setGame(v.name)} />
+              <div key={v?.name} className={`image_box ${game === v.name ? 'activeGame' : ''}`}>
+                <img
+                  src={require(`../../assets/landing/logos/${v.imagePath}`)}
+                  alt={v.name}
+                  onClick={() => {
+                    setGame(v.name)
+                    navigate('/signup', {
+                      state: {
+                        selectedGame: v.name,
+                        imagePath: v.imagePath,
+                      },
+                    })
+                  }}
+                />
               </div>
             )
           })}
         </div>
-      </div>
+      </SelectGameRight>
     </div>
   )
 }

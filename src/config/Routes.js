@@ -73,6 +73,7 @@ import TeamFinancials from '../pages/TeamFinancials'
 import LeagueRosters from '../pages/LeagueRosters'
 import LandingPage from '../pages/LandingPage'
 import SelectGame from '../pages/SelectGame'
+import NewSignUp from '../pages/NewSignUp'
 
 const Routers = () => {
   const Component = () => {
@@ -186,7 +187,7 @@ const Routers = () => {
         <Route path='/' element={<LandingPage />} />
 
         <Route path='/select-game' element={<SelectGame />} />
-        <Route path='/signup' element={<SignUp />} />
+        <Route path='/signup' element={<NewSignUp />} />
       </Routes>
     </BrowserRouter>
   )
