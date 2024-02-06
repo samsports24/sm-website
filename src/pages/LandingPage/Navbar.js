@@ -7,8 +7,10 @@ import SamLogo from '../../assets/sam-football.png'
 
 import { FaBars } from 'react-icons/fa'
 import { IoClose } from 'react-icons/io5'
+import { useNavigate } from 'react-router-dom'
 
 const Navbar = () => {
+  const navigate = useNavigate()
   return (
     <div className='navbar'>
       <div className='left'>
@@ -24,7 +26,12 @@ const Navbar = () => {
         </div>
       </div>
       <div className='right'>
-        <Button shape='round' type='primary' className='auth_btn'>
+        <Button
+          shape='round'
+          type='primary'
+          className='auth_btn'
+          onClick={() => navigate('/select-game')}
+        >
           Signup
         </Button>
         <Button shape='round' type='primary' className='auth_btn'>
@@ -82,7 +89,7 @@ const DrawerMenu = () => {
             <div className='menu_item' onClick={() => handleNavigate('/')}>
               <p>Login</p>
             </div>
-            <div className='menu_item' onClick={() => handleNavigate('/')}>
+            <div className='menu_item' onClick={() => handleNavigate('/select-game')}>
               <p>Signup</p>
             </div>
           </div>
