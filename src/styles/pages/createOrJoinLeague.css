@@ -19,6 +19,14 @@
   color: var(--primary);
 }
 
+.cjl_body .radio_button_box {
+  margin-top: 30px;
+}
+.cjl_body .radio_button_box .ant-radio-wrapper {
+  color: #fff;
+  margin-right: 50px;
+}
+
 .cjl_body .form_conatiner {
   margin-top: 50px;
 }

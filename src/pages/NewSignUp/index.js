@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 
-import { Button, Row, Col, Form, Input, Avatar, DatePicker, Select, Checkbox } from 'antd'
+import { Button, Row, Col, Form, Input, DatePicker, Select, Checkbox } from 'antd'
 
 import SelectGameLeft from '../SelectGame/SelectGameLeft'
 import SelectGameRight from '../SelectGame/SelectGameRight'
 
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { countries } from '../../config/countriesData'
 import moment from 'moment-timezone'
