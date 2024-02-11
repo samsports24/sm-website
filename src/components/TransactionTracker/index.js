@@ -8,10 +8,12 @@ import { BiRightArrowAlt } from 'react-icons/bi'
 import { transactionTrackerData } from '../../pages/mockData'
 import { getTopTransactions } from '../../redux'
 import PlayerDetailsModal from '../modal/PlayerDetailsModal'
+import { useSelector } from 'react-redux'
 
 const TransactionTracker = ({ height = '343px' }) => {
   const navigate = useNavigate()
   const [topTransaction, setTopTransaction] = useState([])
+  const userDetails = useSelector((state) => state.user.userDetails)
 
   const getData = async () => {
     const data = await getTopTransactions()
