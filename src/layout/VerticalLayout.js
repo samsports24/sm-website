@@ -58,7 +58,7 @@ const VerticalLayout = ({ children, active }) => {
             boxShadow: 'box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px',
           }}
         >
-          <div className='company-logo'>
+          <div onClick={() => {navigate("/")}} className='company-logo'>
             <img src={Logo} alt='image' />
           </div>
           <MainMenu active={active} />

@@ -4,6 +4,7 @@ import 'react-multi-carousel/lib/styles.css'
 
 import BannerImage from '../../assets/playerOfTheWeek.png'
 // import PlayoffsBanner from '../../assets/sfl_playoffs_edit.png'
+// import PlayoffsBanner from '../../assets/LandingpageWeek20_old.png'
 import PlayoffsBanner from '../../assets/LandingpageWeek20.png'
 import CfbBanner from '../../assets/CFB_banner_edit.png'
 import BaseballBanner from '../../assets/Baseball_banner_2_edit.png'

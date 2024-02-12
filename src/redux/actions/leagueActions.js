@@ -1,5 +1,5 @@
 import { notification } from 'antd'
-import { attachToken, privateAPI } from '../../config/constants'
+import { attachToken, privateAPI, publicAPI, serverUrls } from '../../config/constants'
 
 export const getProfessionalLeagueRanks = async (week) => {
   try {
@@ -7,6 +7,27 @@ export const getProfessionalLeagueRanks = async (week) => {
     const res = await privateAPI.get(`/ranking/professionalStats/${week}`)
     if (res) {
       return res.data.data
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const createNewLeague = async (payload) => {
+  try {
+    const res = await publicAPI.post(`/league/create` , payload)
+    if (res) {
+      notification.success({
+        description: res.data.data.message,
+        duration: 2,
+      })
+      let game = localStorage.getItem("selectedGame")
+      let link = serverUrls.find(item => item.key === game)
+      window.open(`${link.frontEndUrl}/login`, '_self', 'noreferrer')
     }
   } catch (err) {
     console.log('err', err)

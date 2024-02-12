@@ -9,30 +9,37 @@ const SelectGame = () => {
 
   const games = [
     {
+      key : "football",
       name: 'Football',
       imagePath: 'football.png',
     },
     {
+      key : "college_football",
       name: 'College Football',
       imagePath: 'college-football.png',
     },
     {
+      key : "basketball",
       name: 'Basketball',
       imagePath: 'basketball.png',
     },
     {
+      key : "eleven_fc",
       name: 'Eleven F.C',
       imagePath: 'eleven-fc.png',
     },
     {
+      key : "scouts",
       name: 'Scouts',
       imagePath: 'scouts.png',
     },
     {
+      key : "baseball",
       name: 'Baseball',
       imagePath: 'baseball.png',
     },
     {
+      key : "hockey",
       name: 'Hockey',
       imagePath: 'hockey.png',
     },
@@ -49,13 +56,13 @@ const SelectGame = () => {
         <div className='bottom_section'>
           {games.map((v) => {
             return (
-              <div key={v?.name} className={`image_box ${game === v.name ? 'activeGame' : ''}`}>
+              <div key={v?.name} className={`image_box ${game === v.key ? 'activeGame' : ''}`}>
                 <img
                   src={require(`../../assets/landing/logos/${v.imagePath}`)}
                   alt={v.name}
                   onClick={() => {
-                    setGame(v.name)
-                    localStorage.setItem('selectedGame', v.name)
+                    setGame(v.key)
+                    localStorage.setItem('selectedGame', v.key)
                     localStorage.setItem('imagePath', v.imagePath)
                     navigate('/signup')
                   }}

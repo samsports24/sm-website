@@ -88,7 +88,7 @@ const SignIn = () => {
           <Col xs={24} md={24} lg={10} xl={11}>
             <div className='form-div' style={{ background: '#080611' }}>
               <Form name='login' className='login-form' layout='vertical' onFinish={onFinish}>
-                <div className='title'>
+                <div onClick={() => {navigate("/")}} className='title'>
                   <h1>
                     SAMSPORTS
                     <span>
@@ -151,6 +151,8 @@ const SignIn = () => {
               <div className='create-account'>
                 <p>
                   Don{"'"}t have an account?{' '}
+                  
+                  {/* <span className='highlight' onClick={() => navigate('/select-game')}> */}
                   <span className='highlight' onClick={() => navigate('/sign-up')}>
                     CREATE ACCOUNT
                   </span>

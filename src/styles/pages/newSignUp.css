@@ -11,7 +11,8 @@
   cursor: pointer;
 }
 
-.signup_body .ant-picker {
+.signup_body .ant-picker,
+.cjl_container .ant-picker {
   background-color: transparent !important;
 }
 

@@ -255,3 +255,11 @@ tr.ant-table-expanded-row:hover > td {
   background: rgba(48, 33, 93, 0.4);
   backdrop-filter: blur(20px);
 }
+.ant-radio-wrapper,
+.ant-rate .anticon{
+  color: #fff;
+}
+
+.ant-rate .ant-rate-star-full .anticon{
+  color: #fadb14 !important;
+}

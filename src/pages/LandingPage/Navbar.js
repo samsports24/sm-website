@@ -8,6 +8,7 @@ import SamLogo from '../../assets/sam-football.png'
 import { FaBars } from 'react-icons/fa'
 import { IoClose } from 'react-icons/io5'
 import { useNavigate } from 'react-router-dom'
+import { serverUrls } from '../../config/constants'
 
 const Navbar = () => {
   const navigate = useNavigate()
@@ -18,12 +19,17 @@ const Navbar = () => {
           <img src={Logo} alt='logo' className='logo' />
           <img src={Title} alt='samsports' className='title' />
           <div className='links'>
-            <span>Football</span>
-            <span>Baseball</span>
+            {
+              serverUrls.map(item => (
+                <span key={item.key} onClick={() => {      window.open(`${item.frontEndUrl}`, '_self', 'noreferrer')
+              }}>{item.name}</span>
+              ))
+            }
+            {/* <span>Baseball</span>
             <span>Hockey</span>
             <span>US Football</span>
             <span>College Football</span>
-            <span>Scouting</span>
+            <span>Scouting</span> */}
           </div>
         </div>
         <div className='right'>
@@ -33,11 +39,11 @@ const Navbar = () => {
             className='auth_btn'
             onClick={() => navigate('/select-game')}
           >
-            Signup
+            Join Now
           </Button>
-          <Button shape='round' type='primary' className='auth_btn'>
+          {/* <Button shape='round' type='primary' className='auth_btn'>
             Login
-          </Button>
+          </Button> */}
           <DrawerMenu />
         </div>
       </div>

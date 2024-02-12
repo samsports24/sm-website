@@ -45,3 +45,48 @@ export const includedTeams = [
   '64e5ee7d6e36d01a688fc6e1',
   '64e5ee7d6e36d01a688fc6d2',
 ]
+export const serverUrls = [
+  {
+    key : "football",
+    name : "Football",
+    url : 'http://localhost:8000', 
+    frontEndUrl : "http://localhost:3000"
+    // url : 'https://backend.samsports.io' 
+  },
+  {
+    key : "baseball",
+    name : "Baseball",
+    url : 'https://baseballbackend.samsports.io', 
+    frontEndUrl : "http://localhost:3000"
+  },
+  {
+    key : "hockey",
+    name : "Hockey",
+    url : 'https://hockeybackend.samsports.io', 
+    frontEndUrl : "http://localhost:3000"
+  },
+  {
+    key : "college_football",
+    name : "College Football",
+    url : 'https://collegefootballbackend.samsports.io', 
+    frontEndUrl : "http://localhost:3000"
+  },
+  {
+    key : "basketball",
+    name : "Basketball",
+    url : 'https://basketballbackend.samsports.io', 
+    frontEndUrl : "http://localhost:3000"
+  },
+  {
+    key : "eleven_fc",
+    name : "Eleven F.C",
+    url  : 'https://elevenfcbackend.samsports.io', 
+    frontEndUrl : "http://localhost:3000"
+  },
+  {
+    key : "scouts",
+    name : "Scouting",
+    url : 'https://scoutsbackend.samsports.io', 
+    frontEndUrl : "http://localhost:3000"
+  },
+]

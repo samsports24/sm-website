@@ -2,6 +2,7 @@ import { notification } from 'antd'
 import { publicAPI, attachToken, privateAPI, version } from '../../config/constants'
 import { SET_USER_DETAILS } from '../types/generalTypes'
 import { ethers } from 'ethers'
+import axios from 'axios'
 
 export const authSignup = async (payload, navigate) => {
   try {
@@ -15,6 +16,27 @@ export const authSignup = async (payload, navigate) => {
         duration: 2,
       })
       navigate('/authentication')
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const authSignupAdvanced = async (payload, navigate) => {
+  try {
+    const res = await axios.post(`${payload.url}/auth/register`, payload)
+    if (res) {
+      localStorage.setItem('version', version)
+      localStorage.setItem('email', payload.email)
+      // attachToken()
+      notification.success({
+        description: res.data.data.message,
+        duration: 2,
+      })
+      navigate('/select-league')
     }
   } catch (err) {
     notification.error({

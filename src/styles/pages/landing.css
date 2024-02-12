@@ -51,6 +51,10 @@
   margin: 0 10px;
   cursor: pointer;
 }
+.main-landing .navbar .left span:hover{
+    color: var(--primary);
+}
+
 .main-landing .navbar .left {
   display: flex;
   align-items: center;

@@ -1,5 +1,6 @@
 import { Typography } from 'antd'
-import Hero from '../../assets/landing/hero2.mp4'
+// import Hero from '../../assets/landing/hero2.mp4'
+import Hero from '../../assets/landing/new_hero.mp4'
 
 const HeroSection = () => {
   return (

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { Button, Row, Col, Form, Input, DatePicker, Select, Checkbox } from 'antd'
+import { Button, Row, Col, Form, Input, DatePicker, Select, Checkbox, notification } from 'antd'
 
 import SelectGameLeft from '../SelectGame/SelectGameLeft'
 import SelectGameRight from '../SelectGame/SelectGameRight'
@@ -12,6 +12,8 @@ import moment from 'moment-timezone'
 import dayjs from 'dayjs'
 
 import { IoIosArrowRoundBack } from 'react-icons/io'
+import { authSignupAdvanced } from '../../redux'
+import { serverUrls } from '../../config/constants'
 
 const NewSignUp = () => {
   const [loading, setLoading] = useState(false)
@@ -22,13 +24,21 @@ const NewSignUp = () => {
 
   const onFinish = async (values) => {
     setLoading(true)
-    const obj = {
-      ...values,
-      dateOfBirth: dayjs(values?.dateOfBirth).toISOString(),
+    if(values.termsAndCondtions){
+      let url = serverUrls.find(item => item.key === selectedGame)
+      const obj = {
+        ...values,
+        dateOfBirth: dayjs(values?.dateOfBirth).toISOString(),
+        url : url.url
+      }
+      console.log(obj)
+      await authSignupAdvanced(obj, navigate)
+    }else{
+      notification.warning({
+        message : "Please Accept Terms and Conditions",
+        duration : 4
+      })
     }
-    console.log('Selected Game>>>:', selectedGame)
-    console.log(obj)
-    navigate('/select-league')
     setLoading(false)
   }
 
@@ -44,14 +54,15 @@ const NewSignUp = () => {
         <div className='signup_body'>
           <h1>
             <IoIosArrowRoundBack onClick={() => navigate('/select-game')} className='back_arrow' />
-            Create Your Account <span style={{ fontSize: '16px' }}>({selectedGame})</span>
+            Create Your Account 
+            {/* <span style={{ fontSize: '16px' }}>({selectedGame})</span> */}
           </h1>
 
           <Form form={form} layout='vertical' onFinish={onFinish} autoComplete='off'>
             <Row gutter={[30, 10]}>
               <Col xs={24} md={12} xl={8}>
                 <Form.Item
-                  name={'name'}
+                  name={'userName'}
                   label='User Name'
                   rules={[
                     {
@@ -137,8 +148,8 @@ const NewSignUp = () => {
 
               <Col xs={24} md={12} xl={8}>
                 <Form.Item
-                  name={'province'}
-                  label='Province'
+                  name={'provience'}
+                  label='Provience'
                   rules={[
                     {
                       required: true,
@@ -152,7 +163,7 @@ const NewSignUp = () => {
 
               <Col xs={24} md={12} xl={8}>
                 <Form.Item
-                  name={'timeZone'}
+                  name={'timezone'}
                   label='Time Zone'
                   rules={[
                     {
@@ -178,7 +189,7 @@ const NewSignUp = () => {
 
               <Col xs={24} md={12} xl={8}>
                 <Form.Item
-                  name={'survey'}
+                  name={'howYouHear'}
                   label='How did you hear about us?'
                   rules={[
                     {
@@ -212,8 +223,13 @@ const NewSignUp = () => {
                   ]}
                 >
                   <Checkbox>
-                    I have read the <a href='#'>Terms of Service</a> and{' '}
-                    <a href='#'>Privacy Policy</a> and agree to their terms and conditions.
+                    I have read the   <a
+                  href='https://app.termly.io/document/terms-of-service/372d4c41-9267-4833-8bbb-aba80f6fbbb8'
+                  target='_blank'
+                  rel='noreferrer'
+                >
+                  Terms of Service and Privacy Policy 
+                </a> and agree to their terms and conditions.
                   </Checkbox>
                 </Form.Item>
               </Col>

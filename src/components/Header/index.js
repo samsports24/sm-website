@@ -27,7 +27,7 @@ const Header = () => {
     <header className='gd-header'>
       <div className='left'>
         <div className='image_div'>
-          <Image preview={false} src={user?.team?.logo} />
+          <Image preview={false} src={user?.team?.logo || logo} />
         </div>
         <p style={{ cursor: 'pointer' }} onClick={() => navigate('/league-notification')}>
           <span style={{ color: !!notificationCount ? 'red' : ' var(--lightGrayText)' }}>
