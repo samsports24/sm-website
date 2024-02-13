@@ -18,6 +18,7 @@ import { PiUsersThreeLight, PiNotebookLight } from 'react-icons/pi'
 import { FaQuestion } from 'react-icons/fa6'
 import { TbLivePhoto } from 'react-icons/tb'
 import { AiOutlineSetting, AiOutlineSchedule } from 'react-icons/ai'
+import comissioner from '../assets/comissioner.png' 
 
 const MainMenu = () => {
   const isAuthenticated = localStorage.getItem('token')
@@ -236,6 +237,13 @@ const MainMenu = () => {
           >
             <GiCoins />
             <p>token</p>
+          </div>
+          <div
+            className={`sidebar_menu_item ${active === 'comissioner' ? 'activeRoute' : ''}`}
+            // onClick={() => window.open('https://sam-wallet-10b1f.web.app/')}
+          >
+            <img src={comissioner} width={"30px"} height={"30px"} />
+            <p>Comissioner</p>
           </div>
         </div>
       </div>

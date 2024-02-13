@@ -1,36 +1,36 @@
 import moment from 'moment'
 import { IoStar } from 'react-icons/io5'
+import JoinLeague from '../modal/JoinLeague'
 
-const NewPopularLeagueCard = ({ data }) => {
+const NewPopularLeagueCard = ({ data,yourLeague,active }) => {
   const {
-    leagueName,
-    draftStarts,
-    totalPlayers,
+    name,
+    draftStart,
     leagueType,
     leagueLevel,
     entryFee,
-    prizePollWallet,
-    imageUrl,
+    leagueLogo,
+    totalPlayers
   } = data
   return (
     <div className='p_league_card_wrapper'>
-      <div className='p_league_card'>
+      <div className={active ? 'p_league_card active' : 'p_league_card'}>
         <div className='top'>
           <div className='row_1'>
             <div>
               <p className='text_title'>League Name:</p>
-              <p className='text_value'>{leagueName}</p>
+              <p className='text_value'>{name}</p>
             </div>
-            <div className='image_box' style={{ backgroundImage: `url(${imageUrl})` }} />
+            <div className='image_box' style={{ backgroundImage: `url(${leagueLogo})` }} />
           </div>
           <div className='row_2'>
             <div>
               <p className='text_title'>Draft Starts:</p>
-              <p className='text_value'>{moment(draftStarts).format('DD/MM/YY')}</p>
+              <p className='text_value'>{moment(draftStart).format('DD/MM/YY')}</p>
             </div>
             <div>
               <p className='text_title'>Players:</p>
-              <p className='text_value'>{totalPlayers}</p>
+              <p className='text_value'>{data?.teams?.length || totalPlayers}</p>
             </div>
           </div>
           <div className='row_3'>
@@ -40,9 +40,9 @@ const NewPopularLeagueCard = ({ data }) => {
           <div className='row_4'>
             <p className='text_title'>League Level:</p>
             <div>
-              {Array(leagueLevel)
+              {Array(Number(leagueLevel))
                 .fill()
-                .slice(0, 5)
+                // .slice(0, 5)
                 .map((_, i) => {
                   return <IoStar key={i} color={'#fff'} size={18} />
                 })}
@@ -54,11 +54,11 @@ const NewPopularLeagueCard = ({ data }) => {
           </div>
           <div className='row_5'>
             <p className='text_title'>Prize pool wallet:</p>
-            <p className='text_value'>{prizePollWallet}</p>
+            <p className='text_value'>{data?.prizePool || "-"}</p>
           </div>
         </div>
         <div className='button_row'>
-          <p>Join Now</p>
+          {yourLeague ? <p>Joined</p> : <p className="join-now"><JoinLeague data={data} /></p>}
         </div>
       </div>
     </div>

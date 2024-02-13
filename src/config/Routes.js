@@ -161,7 +161,7 @@ const Routers = () => {
 
         <Route element={<Component />}>
           {/* <Route path='/' element={<LandingPage />} /> */}
-          <Route path='/' element={<Home />} />
+          {/* <Route path='/' element={<Home />} /> */}
 
           {/* <Route path='/player-auction' element={<ComingSoon />} /> */}
           <Route path='/fantasy-league' element={<FantasyLeague />} />
@@ -186,7 +186,7 @@ const Routers = () => {
         <Route path='/sign-up' element={<SignUp />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
         <Route path='/authentication' element={<Authentication />} />
-        {/* <Route path='/' element={<LandingPage />} /> */}
+        <Route path='/' element={<LandingPage />} />
 
         <Route path='/select-game' element={<SelectGame />} />
         <Route path='/signup' element={<NewSignUp />} />

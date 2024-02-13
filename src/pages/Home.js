@@ -2,7 +2,7 @@ import Carousel from 'react-multi-carousel'
 import 'react-multi-carousel/lib/styles.css'
 // import { Col, Row } from 'antd'
 
-import PopularLeagueCard from '../components/cards/popularLeagueCard'
+import PopularLeagueCard from '../components/NewPopularLeagueCard'
 import PopularSportCard from '../components/cards/popularSportCard'
 import AmericalFootballBanner from '../components/banners/americanFootballBanner'
 import LandingBanner from '../components/banners/LandingBanner'
@@ -10,34 +10,21 @@ import LandingBanner from '../components/banners/LandingBanner'
 import FeedbackCard from '../components/cards/feedbackCard'
 // import HomeMainBanner from '../components/banners/homeMainBanner'
 // Mock Data
-import { popularLeaguesData, popularSportsData, clientFeedbacksData } from './mockData'
+import { popularSportsData, clientFeedbacksData } from './mockData'
 // import DashboardBannerOne from '../components/banners/DashboardBannerOne'
 // import UpcomingMatchCard from '../components/cards/upcomingMatchCard'
 // import { Col, Row } from 'antd'
-// import { useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import SportsButtonMenu from '../components/SportsButtonMenu'
+import { useEffect, useState } from 'react'
+import { getUserLeagues } from '../redux'
+import CreateLeague from '../components/modal/CreateLeague'
 
 const Home = () => {
   const isAuthenticated = localStorage.getItem('token')
-  // const user = useSelector((state) => state.user.userDetails)
+  const user = useSelector((state) => state.user.userDetails)
+  const leagues = useSelector((state) => state.league)
 
-  // let upcomingMatches = [
-  //   {
-  //     date: new Date(),
-  //     location: 'Django Stadium',
-  //     opponents: [require('../assets/beast-square-1.png'), require('../assets/blitz-square-1.png')],
-  //   },
-  //   {
-  //     date: new Date(),
-  //     location: 'Django Stadium',
-  //     opponents: [require('../assets/beast-square-2.png'), require('../assets/blitz-square-2.png')],
-  //   },
-  //   {
-  //     date: new Date(),
-  //     location: 'Django Stadium',
-  //     opponents: [require('../assets/beast-square-3.png'), require('../assets/blitz-square-3.png')],
-  //   },
-  // ]
   const responsive = {
     largeDesktop: {
       breakpoint: { max: 4000, min: 1400 },
@@ -83,6 +70,15 @@ const Home = () => {
     },
   }
 
+  const getData = async () => {
+    if (isAuthenticated) {
+      await getUserLeagues()
+    }
+  }
+  useEffect(() => {
+    getData()
+  }, [])
+
   return (
     <div className='home-page'>
       {/* FANTASY LEAGUE */}
@@ -113,6 +109,33 @@ const Home = () => {
       <div style={{ height: '81px' }}></div>
 
       {/* popular leagues */}
+      <h2 style={{ marginBottom: '24px', color: '#fff' }}>Your Leagues</h2>
+      <Carousel
+        swipeable={true}
+        draggable={true}
+        showDots={false}
+        responsive={responsive}
+        arrows={false}
+        infinite={true}
+        autoPlay={true}
+        autoPlaySpeed={3000}
+        keyBoardControl={true}
+      >
+        {leagues
+          ? leagues?.userLeagues?.map((value, index) => (
+              <div className='carousel-card' key={index}>
+                <PopularLeagueCard
+                  data={value} 
+                  active={user?.team?.currentLeague?._id === value?._id ? true : false}
+                  // active={true}
+                  yourLeague={true}
+                />
+              </div>
+            ))
+          : <div></div>}
+      </Carousel>
+      <div style={{ height: '81px' }}></div>
+
       <h2 style={{ marginBottom: '24px', color: '#fff' }}>Popular Leagues</h2>
       <Carousel
         swipeable={true}
@@ -125,11 +148,16 @@ const Home = () => {
         autoPlaySpeed={3000}
         keyBoardControl={true}
       >
-        {popularLeaguesData?.map((value, index) => (
-          <div className='carousel-card' key={index}>
-            <PopularLeagueCard data={value} />
-          </div>
-        ))}
+        <div>
+         <CreateLeague />
+        </div>
+        {leagues
+          ? leagues?.nonUserLeagues?.map((value, index) => (
+              <div className='carousel-card' key={index}>
+                <PopularLeagueCard data={value} active={false} yourLeague={false} />
+              </div>
+            ))
+          : <div></div>}
       </Carousel>
 
       <AmericalFootballBanner />
@@ -139,7 +167,7 @@ const Home = () => {
       <Carousel
         swipeable={true}
         draggable={true}
-        showDots={false}
+        showDots={false}user
         responsive={responsive}
         arrows={false}
         infinite={true}

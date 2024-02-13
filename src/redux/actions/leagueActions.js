@@ -1,5 +1,6 @@
 import { notification } from 'antd'
 import { attachToken, privateAPI, publicAPI, serverUrls } from '../../config/constants'
+import store from '../store'
 
 export const getProfessionalLeagueRanks = async (week) => {
   try {
@@ -26,8 +27,98 @@ export const createNewLeague = async (payload) => {
         duration: 2,
       })
       let game = localStorage.getItem("selectedGame")
+
+      localStorage.removeItem("selectedGame")
+      localStorage.removeItem("email")
+      localStorage.removeItem("imagePath")
+
       let link = serverUrls.find(item => item.key === game)
       window.open(`${link.frontEndUrl}/login`, '_self', 'noreferrer')
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const createNewLeagueFromDashboard = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/league/create-from-platform` , payload)
+    if (res) {
+      getUserLeagues()
+      notification.success({
+        description: res.data.data.message,
+        duration: 2,
+      })
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const joinLeague = async (payload) => {
+  try {
+    const res = await publicAPI.post(`/league/join` , payload)
+    if (res) {
+      notification.success({
+        description: res.data.data.message,
+        duration: 2,
+      })
+      let game = localStorage.getItem("selectedGame")
+
+      localStorage.removeItem("selectedGame")
+      localStorage.removeItem("email")
+      localStorage.removeItem("imagePath")
+
+      let link = serverUrls.find(item => item.key === game)
+      window.open(`${link.frontEndUrl}/login`, '_self', 'noreferrer')
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const joinLeagueFromPlatform = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/league/join-from-platform` , payload)
+    if (res) {
+      getUserLeagues()
+      notification.success({
+        description: res.data.data.message,
+        duration: 2,
+      })
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const getUserLeagues = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.get(`/league/get-by-user-id`)
+    if (res) {
+      store.dispatch({
+        type : "GET_USER_LEAGUES",
+        payload : res.data.data
+      })
     }
   } catch (err) {
     console.log('err', err)

@@ -1,24 +1,26 @@
-import React, { useState } from 'react'
-import SelectGameLeft from '../SelectGame/SelectGameLeft'
-import SelectGameRight from '../SelectGame/SelectGameRight'
-import { Avatar, Button, Col, DatePicker, Form, Input, Radio, Rate, Row } from 'antd'
-import dayjs from 'dayjs'
-import { createNewLeague, joinLeague } from '../../redux'
+import { useState } from 'react'
+import { Modal, Button, Input, Form, Row,Col,DatePicker, Avatar, Radio, Rate } from 'antd'
+import LeagueEmptyCard from '../NewPopularLeagueCard/EmptyCard'
+import {  createNewLeagueFromDashboard } from '../../redux'
 
-const CreateOrJoinLeague = () => {
-  const [form] = Form.useForm()
-  const [formType, setFormType] = useState('create')
+const CreateLeague = () => {
+  const [isModalVisible, setIsModalVisible] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [form] = Form.useForm()
   const [imageSrc, setImageSrc] = useState(null)
   const [file, setFile] = useState(null)
-  let email = localStorage.getItem("email")
+
+
+  const showModal = () => setIsModalVisible(true)
+  const handleCancel = () => {
+    setIsModalVisible(false)
+  }
 
   const onFinish = async (values) => {
     setLoading(true)
     const obj = {
       ...values,
       draftStart: dayjs(values?.draftStart).toISOString(),
-      email
     }
     let formdata = new FormData()
     if(file){
@@ -29,18 +31,9 @@ const CreateOrJoinLeague = () => {
         formdata.append(key, value)
       }
     })
-    await createNewLeague(formdata)
+    await createNewLeagueFromDashboard(formdata)
     setLoading(false)
-  }
-  const joinOnFinish = async (values) => {
-    setLoading(true)
-    const obj = {
-      ...values,
-      email
-    }
-    await joinLeague(obj)
-
-    setLoading(false)
+    handleCancel()
   }
   const handleFile = (file) => {
     setFile(file)
@@ -49,25 +42,29 @@ const CreateOrJoinLeague = () => {
   }
 
   return (
-    <div className='select_game_container cjl_container'>
-      <SelectGameLeft logo={localStorage.getItem('imagePath')} />
-      <SelectGameRight>
-        <div className='cjl_body'>
-          <div className='button_box'>
-            <Button type='primary' className='inactive'>
-              Step 1
-            </Button>
-            <Button type='primary'>Step 2</Button>
-          </div>
-          <div className='radio_button_box'>
-            <Radio.Group onChange={(e) => setFormType(e.target.value)} value={formType}>
-              <Radio value={'create'}>Create a League</Radio>
-              <Radio value={'join'}>Join a League</Radio>
-            </Radio.Group>
-          </div>
-          {formType === 'create' && (
-            <div className='form_conatiner'>
-              <Form form={form} layout='vertical' onFinish={onFinish} autoComplete='off'>
+    <>
+      <div onClick={showModal}>
+      <LeagueEmptyCard />
+      </div>
+      <Modal
+        centered
+        open={isModalVisible}
+        footer={false}
+        onCancel={handleCancel}
+        closeIcon={false}
+        closable={false}
+        className='normal-modal'
+        width={1200}
+      >
+        <div className='close_modal_button' onClick={handleCancel}>
+          x
+        </div>
+        <div className='modal_body'>
+          <h2 className='modal_header_heading main_heading'>
+           Create New League
+          </h2>
+          <div>
+          <Form form={form} layout='vertical' onFinish={onFinish} autoComplete='off'>
                 <Row gutter={[30, 10]}>
                   <Col xs={24} md={12} xl={8}>
                     <Form.Item
@@ -118,15 +115,6 @@ const CreateOrJoinLeague = () => {
                           accept='image/jpg,image/png,image/jpeg'
                         />
                       </>
-                    </Form.Item>
-                  </Col>
-
-                  <Col xs={24} md={12} xl={8}>
-                    <Form.Item
-                      name={'email'}
-                      label='User Email'
-                    >
-                      <Input disabled placeholder={email} />
                     </Form.Item>
                   </Col>
 
@@ -236,74 +224,11 @@ const CreateOrJoinLeague = () => {
                   </Col>
                 </Row>
               </Form>
-            </div>
-          )}
-          {formType === 'join' && (
-            <div className='form_conatiner'>
-              <Form form={form} layout='vertical' onFinish={joinOnFinish} autoComplete='off'>
-                <Row gutter={[30, 10]}>
-                  <Col xs={24} md={12} xl={8}>
-                    <Form.Item
-                      name={'leagueType'}
-                      label='Type'
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Required!',
-                        },
-                      ]}
-                    >
-                      <Radio.Group>
-                        <Radio value={'public'}>Public</Radio>
-                        <Radio value={'private'}>Private</Radio>
-                      </Radio.Group>
-                    </Form.Item>
-                  </Col>
-
-                  <Col xs={24} md={12} xl={8}>
-                    <Form.Item
-                      name={'teamName'}
-                      label='Team Name'
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Required!',
-                        },
-                      ]}
-                    >
-                      <Input placeholder='Team Name' />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} md={12} xl={8}>
-                    <Form.Item
-                      name={'leagueId'}
-                      label='League ID'
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Required!',
-                        },
-                      ]}
-                    >
-                      <Input placeholder='League ID' />
-                    </Form.Item>
-                  </Col>
-
-                  <Col xs={24}>
-                    <Form.Item>
-                      <Button loading={loading} type='primary' htmlType='submit'>
-                        JOIN
-                      </Button>
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </Form>
-            </div>
-          )}
+          </div>
         </div>
-      </SelectGameRight>
-    </div>
+      </Modal>
+    </>
   )
 }
 
-export default CreateOrJoinLeague
+export default CreateLeague
