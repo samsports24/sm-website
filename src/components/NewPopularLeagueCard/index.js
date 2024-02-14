@@ -1,8 +1,10 @@
 import moment from 'moment'
 import { IoStar } from 'react-icons/io5'
 import JoinLeague from '../modal/JoinLeague'
+import { useNavigate } from 'react-router-dom'
 
-const NewPopularLeagueCard = ({ data,yourLeague,active }) => {
+const NewPopularLeagueCard = ({ data,yourLeague,active,fromHome }) => {
+  const navigate = useNavigate()
   const {
     name,
     draftStart,
@@ -58,7 +60,11 @@ const NewPopularLeagueCard = ({ data,yourLeague,active }) => {
           </div>
         </div>
         <div className='button_row'>
-          {yourLeague ? <p>Joined</p> : <p className="join-now"><JoinLeague data={data} /></p>}
+          {yourLeague ? <p>Joined</p> : fromHome ? <p className="join-now"
+          
+          onClick={() => {
+            navigate("/select-game")
+          }}>Join Now</p> : <p className="join-now"><JoinLeague data={data} /></p>}
         </div>
       </div>
     </div>

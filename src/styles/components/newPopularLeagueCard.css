@@ -14,8 +14,7 @@
   justify-content: space-between;
 }
 .p_league_card_wrapper .active{
-  border: 2px solid var(--primary) !important;
-
+  border: 3px solid var(--primary) !important;
 }
 
 .p_league_card .top {

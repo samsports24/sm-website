@@ -1,11 +1,22 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Typography } from 'antd'
 
 import Carousel from 'react-multi-carousel'
 
 import NewPopularLeagueCard from '../../components/NewPopularLeagueCard'
+import { getHomeLeagues } from '../../redux'
 
 const PopularLeagueSection = () => {
+
+  const [leagues, setLeagues] = useState([])
+  const getData = async () => {
+      let data = await getHomeLeagues()
+      setLeagues(data)
+    }
+  useEffect(() => {
+    getData()
+  }, [])
+
   const responsive = {
     largeDesktop: {
       breakpoint: { max: 4000, min: 1200 },
@@ -70,7 +81,7 @@ const PopularLeagueSection = () => {
 
   return (
     <div className='popular_league paddingInline'>
-      <Typography.Title level={3}>Popular League</Typography.Title>
+      <Typography.Title level={3}>Popular Leagues</Typography.Title>
       <Carousel
         swipeable={true}
         draggable={true}
@@ -82,9 +93,9 @@ const PopularLeagueSection = () => {
         autoPlaySpeed={3000}
         keyBoardControl={true}
       >
-        {data?.map((v, i) => {
-          return <NewPopularLeagueCard key={i} data={v} />
-        })}
+        {leagues ? leagues?.map((v, i) => {
+          return <NewPopularLeagueCard key={i} data={v} active={false} yourLeague={false} fromHome={true} />
+        }) : <></>}
       </Carousel>
     </div>
   )

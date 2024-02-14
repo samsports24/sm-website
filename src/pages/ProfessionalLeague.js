@@ -51,7 +51,6 @@ const ProfessionalLeague = () => {
     const res = await getTeamSchedule({ teamFilter: '', week: SETTING?.week })
     setTeamSchedule(res)
   }
-
   return (
     <div className='pro_league_container'>
       <Header />
@@ -62,7 +61,7 @@ const ProfessionalLeague = () => {
         <>
           <HeadingAndWeek />
 
-          <TeamScheduleCustomCarousel data={teamSchedule} />
+        {teamSchedule?.length > 0 &&  <TeamScheduleCustomCarousel data={teamSchedule} />}
           {/* <TeamScheduleCarousel data={teamSchedule} /> */}
 
           <section className='league_details_container'>

@@ -1,0 +1,9 @@
+.league_settings{
+background-color: var(--primaryPurple);
+padding: 20px;
+border-radius: 8px;
+border: 1px solid #ccc;
+}
+.league_settings .ant-input{
+margin: 10px 0;
+}

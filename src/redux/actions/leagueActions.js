@@ -1,6 +1,7 @@
 import { notification } from 'antd'
 import { attachToken, privateAPI, publicAPI, serverUrls } from '../../config/constants'
 import store from '../store'
+import { getUser } from './authActions'
 
 export const getProfessionalLeagueRanks = async (week) => {
   try {
@@ -89,6 +90,58 @@ export const joinLeague = async (payload) => {
     })
   }
 }
+
+export const selectLeague = async (payload,navigate) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/league/select-league` , payload)
+    if (res) {
+      localStorage.setItem('token', res.data.data.token)
+      store.dispatch(getUser())
+      attachToken()
+      navigate('/professional-league')
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const getHomeLeagues = async () => {
+  try {
+    const res = await publicAPI.get(`/league/home-leagues`)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    console.log('err', err)
+    // notification.error({
+    //   message: err?.response?.data?.message || 'Server Error',
+    //   duration: 3,
+    // })
+  }
+}
+
+
+export const getLeagueDetails = async () => {
+  try {
+    attachToken()
+    const res = await privateAPI.get(`/league/get-league`)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    console.log('err', err)
+    // notification.error({
+    //   message: err?.response?.data?.message || 'Server Error',
+    //   duration: 3,
+    // })
+  }
+}
+
 
 export const joinLeagueFromPlatform = async (payload) => {
   try {

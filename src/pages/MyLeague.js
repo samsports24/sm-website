@@ -1,44 +1,56 @@
-import { Col, Row } from 'antd'
+import { Col, Row, notification } from 'antd'
 import { useNavigate } from 'react-router-dom'
-
-// import Arrow from '../assets/arrow-right.svg'
-import { popularLeaguesData } from './mockData'
-import PopularLeagueCard from '../components/cards/popularLeagueCard'
+import PopularLeagueCard from '../components/NewPopularLeagueCard'
+import { getUserLeagues, selectLeague } from '../redux'
+import { useEffect } from 'react'
+import { useSelector } from 'react-redux'
 
 const MyLeague = () => {
   const navigate = useNavigate()
+  const leagues = useSelector((state) => state.league)
+  const user = useSelector((state) => state.user.userDetails)
+
+  const isAuthenticated = localStorage.getItem('token')
+
+  const getData = async () => {
+    if (isAuthenticated) {
+      await getUserLeagues()
+    }
+  }
+  useEffect(() => {
+    getData()
+  }, [])
 
   return (
     <div className='total_payment_container'>
-      {/* BREADCRUMB */}
-      {/* <section className='_breadcrumb'>
-        <Button className='_back_button' type='primary' onClick={() => navigate(-1)}>
-          Back
-        </Button>
-        <Breadcrumb
-          className='customize_breadcrumb'
-          separator={<img src={Arrow} />}
-          items={[
-            {
-              title: <p className='color_text'>Home</p>,
-            },
-            {
-              title: <p>My League</p>,
-            },
-          ]}
-        />
-      </section> */}
-
-      <h1 className='heading'>My League</h1>
+      <h1 className='heading'>My Leagues</h1>
+      <h2>Click on a league to join</h2>
 
       <Row gutter={[20, 20]} style={{ marginTop: '20px' }}>
-        {popularLeaguesData?.map((value, index) => (
-          <Col xs={24} sm={12} xl={8} xxl={6} key={index}>
-            <div style={{ cursor: 'pointer' }} onClick={() => navigate('/league')}>
-              <PopularLeagueCard data={value} />
-            </div>
-          </Col>
-        ))}
+        {leagues
+          ? leagues?.userLeagues?.map((value, index) => (
+              <Col xs={24} sm={12} xl={8} xxl={6} key={index}>
+                <div
+                  style={{ cursor: 'pointer' }}
+                  onClick={async () => {
+                    if(user?.team?.currentLeague?._id === value?._id){
+notification.error({
+  message : "This League is already active",
+  duration : 6
+})
+                    }else{
+                      await selectLeague({ leagueId: value?._id },navigate)
+                    }
+                  }}
+                >
+                  <PopularLeagueCard data={value} 
+                  active={user?.team?.currentLeague?._id === value?._id ? true : false}
+                  
+                  yourLeague={true} />
+                </div>
+              </Col>
+            ))
+          : 'loading'}
       </Row>
     </div>
   )

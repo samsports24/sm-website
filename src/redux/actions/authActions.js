@@ -163,7 +163,7 @@ export const authLogin = (payload, navigate) => {
             description: res.data.data.message,
             duration: 2,
           })
-          navigate('/fantasy-league')
+          navigate('/my-league')
           // }
         } else {
           localStorage.setItem('email', res.data.data.user.email)

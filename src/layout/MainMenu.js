@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-import { Button } from 'antd'
+import { Button, notification } from 'antd'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { HiOutlineHome } from 'react-icons/hi'
 import { MdDashboard } from 'react-icons/md'
 import { FaPlusCircle, FaRegChartBar } from 'react-icons/fa'
 import { RiAuctionLine, RiDraftLine } from 'react-icons/ri'
+import { SiLeagueoflegends } from 'react-icons/si'
 import { BsShop } from 'react-icons/bs'
 import {
   GiStarMedal,
@@ -18,7 +19,8 @@ import { PiUsersThreeLight, PiNotebookLight } from 'react-icons/pi'
 import { FaQuestion } from 'react-icons/fa6'
 import { TbLivePhoto } from 'react-icons/tb'
 import { AiOutlineSetting, AiOutlineSchedule } from 'react-icons/ai'
-import comissioner from '../assets/comissioner.png' 
+import comissioner from '../assets/comissioner.png'
+import { useSelector } from 'react-redux'
 
 const MainMenu = () => {
   const isAuthenticated = localStorage.getItem('token')
@@ -26,6 +28,7 @@ const MainMenu = () => {
   const login = () => navigate('/login')
   const signUp = () => navigate('/sign-up')
   const [active, setActive] = useState('dashboard')
+  const user = useSelector((state) => state.user.userDetails)
 
   const { pathname } = useLocation()
 
@@ -79,6 +82,12 @@ const MainMenu = () => {
       case '/team-setting': {
         return setActive('team-setting')
       }
+      case '/my-league': {
+        return setActive('my-league')
+      }
+      case '/comissioner': {
+        return setActive('comissioner')
+      }
       // case '/team-schedule': {
       //   return setActive('team-schedule')
       // }
@@ -86,6 +95,17 @@ const MainMenu = () => {
         setActive('')
     }
   }, [pathname])
+
+  const navigatePath = (path) => {
+    if (user?.team?.currentLeague?._id) {
+      navigate(path)
+    } else {
+      notification.error({
+        message: 'Please select any league from my leagues section first.',
+        duration: 6,
+      })
+    }
+  }
 
   return (
     <>
@@ -102,35 +122,43 @@ const MainMenu = () => {
             <>
               <div
                 className={`sidebar_menu_item ${active === 'dashboard' ? 'activeRoute' : ''}`}
-                onClick={() => navigate('/professional-league')}
+                onClick={() => navigatePath('/professional-league')}
               >
                 <MdDashboard />
                 <p>DASHBOARD</p>
               </div>
               <div
                 className={`sidebar_menu_item ${active === 'roster' ? 'activeRoute' : ''}`}
-                onClick={() => navigate('/player-roster')}
+                onClick={() => navigatePath('/player-roster')}
               >
                 <PiUsersThreeLight />
                 <p>roster</p>
               </div>
               <div
                 className={`sidebar_menu_item ${active === 'depth-chart' ? 'activeRoute' : ''}`}
-                onClick={() => navigate('/depth-chart')}
+                onClick={() => navigatePath('/depth-chart')}
               >
                 <FaRegChartBar />
                 <p>starters</p>
               </div>
+
+              <div
+                className={`sidebar_menu_item ${active === 'my-league' ? 'activeRoute' : ''}`}
+                onClick={() => navigate('/my-league')}
+              >
+                <SiLeagueoflegends />
+                <p>My Leagues</p>
+              </div>
               <div
                 className={`sidebar_menu_item ${active === 'trade' ? 'activeRoute' : ''}`}
-                onClick={() => navigate('/team-trade')}
+                onClick={() => navigatePath('/team-trade')}
               >
                 <GiTrade />
                 <p>trade</p>
               </div>
               <div
                 className={`sidebar_menu_item ${active === 'auctions' ? 'activeRoute' : ''}`}
-                // onClick={() => navigate('/player-auction')}
+                // onClick={() => navigatePath('/player-auction')}
               >
                 <RiAuctionLine />
                 <p>auctions</p>
@@ -139,14 +167,14 @@ const MainMenu = () => {
                 className={`sidebar_menu_item ${
                   active === 'injuries-reserve' ? 'activeRoute' : ''
                 }`}
-                onClick={() => navigate('/injured-reserve')}
+                onClick={() => navigatePath('/injured-reserve')}
               >
                 <FaPlusCircle />
                 <p>injuries reserve</p>
               </div>
               <div
                 className={`sidebar_menu_item ${active === 'free-agents' ? 'activeRoute' : ''}`}
-                // onClick={() => navigate('/free-agent')}
+                // onClick={() => navigatePath('/free-agent')}
               >
                 <BsShop />
                 <p>
@@ -156,7 +184,7 @@ const MainMenu = () => {
               </div>
               <div
                 className={`sidebar_menu_item ${active === 'league-rosters' ? 'activeRoute' : ''}`}
-                onClick={() => navigate('/league-rosters')}
+                onClick={() => navigatePath('/league-rosters')}
               >
                 <GiAmericanFootballPlayer />
                 <p>
@@ -167,43 +195,54 @@ const MainMenu = () => {
                 className={`sidebar_menu_item ${
                   active === 'league-standings' ? 'activeRoute' : ''
                 }`}
-                onClick={() => navigate('/league-standings')}
+                onClick={() => navigatePath('/league-standings')}
               >
                 <BsShop />
                 <p>STANDINGS</p>
               </div>
               <div
                 className={`sidebar_menu_item ${active === 'player-ranking' ? 'activeRoute' : ''}`}
-                // onClick={() => navigate('/player-standing')}
-                onClick={() => navigate('/player-standing-weekly')}
+                // onClick={() => navigatePath('/player-standing')}
+                onClick={() => navigatePath('/player-standing-weekly')}
               >
                 <GiStarMedal />
                 <p>players ranking</p>
               </div>
               <div
                 className={`sidebar_menu_item ${active === 'leagueScore' ? 'activeRoute' : ''}`}
-                onClick={() => navigate('/leagueScore')}
+                onClick={() => navigatePath('/leagueScore')}
               >
                 <TbLivePhoto />
                 <p>live scoring</p>
               </div>
               <div
                 className={`sidebar_menu_item ${active === 'playoff' ? 'activeRoute' : ''}`}
-                onClick={() => navigate('/playoff')}
+                onClick={() => navigatePath('/playoff')}
               >
                 <GiBabyfootPlayers />
                 <p>playoff</p>
               </div>
               <div
                 className={`sidebar_menu_item ${active === 'team-setting' ? 'activeRoute' : ''}`}
-                onClick={() => navigate('/team-setting')}
+                onClick={() => navigatePath('/team-setting')}
               >
                 <AiOutlineSetting />
                 <p>team setting</p>
               </div>
+              
+              {
+                user?.team?.currentLeague?.createdBy === user?._id
+               && <div
+                className={`sidebar_menu_item ${active === 'comissioner' ? 'activeRoute' : ''}`}
+                onClick={() => navigate('/comissioner')}
+              >
+                <img src={comissioner} width={'30px'} height={'30px'} />
+                <p>Comissioner</p>
+              </div>
+              }
               {/* <div
               className={`sidebar_menu_item ${active === 'team-schedule' ? 'activeRoute' : ''}`}
-              onClick={() => navigate('/team-schedule')}
+              onClick={() => navigatePath('/team-schedule')}
             >
               <AiOutlineSchedule />
               <p>team schedule</p>
@@ -237,13 +276,6 @@ const MainMenu = () => {
           >
             <GiCoins />
             <p>token</p>
-          </div>
-          <div
-            className={`sidebar_menu_item ${active === 'comissioner' ? 'activeRoute' : ''}`}
-            // onClick={() => window.open('https://sam-wallet-10b1f.web.app/')}
-          >
-            <img src={comissioner} width={"30px"} height={"30px"} />
-            <p>Comissioner</p>
           </div>
         </div>
       </div>

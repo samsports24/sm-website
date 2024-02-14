@@ -76,6 +76,7 @@ import SelectGame from '../pages/SelectGame'
 import NewSignUp from '../pages/NewSignUp'
 import SelectLeague from '../pages/SelectLeague'
 import CreateOrJoinLeague from '../pages/CreateOrJoinLeague'
+import Comissioner from '../pages/Comissioner'
 
 const Routers = () => {
   const Component = () => {
@@ -126,6 +127,7 @@ const Routers = () => {
           <Route path='/depth-chart' element={<DepthChart />} />
           <Route path='/team-starters/:teamID' element={<DepthChart />} />
           <Route path='/league-standings' element={<LeagueStandings />} />
+          <Route path='/comissioner' element={<Comissioner />} />
           {/* <Route path='/free-agent' element={<FreeAgent />} /> */}
           {/* <Route path='/player-auction' element={<PlayerAuction />} /> */}
           {/* <Route path='/player-standing' element={<PlayerStandings />} /> */}

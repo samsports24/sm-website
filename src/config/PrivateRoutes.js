@@ -3,10 +3,14 @@ import Layout from '../layout/Layout'
 import { useEffect } from 'react'
 import { version } from './constants'
 import { notification } from 'antd'
+import { useSelector } from 'react-redux'
 
 const PrivateWrapper = () => {
   const { pathname } = useLocation()
   const isAuthenticated = localStorage.getItem('token')
+  const user = useSelector((state) => state.user.userDetails)
+
+
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -34,6 +38,19 @@ const PrivateWrapper = () => {
   } else {
     return <Navigate to='/login' />
   }
+
+  // if (isAuthenticated && user?.team?.currentLeague) {
+  //   return (
+  //     <Layout>
+  //       <Outlet />
+  //     </Layout>
+  //   )
+  // } else if(!user?.team?.currentLeague){
+  //   return <Navigate to='/my-league' />
+
+  // } else {
+  //   return <Navigate to='/login' />
+  // }
 }
 
 export default PrivateWrapper
