@@ -21,20 +21,45 @@ export const getProfessionalLeagueRanks = async (week) => {
 
 export const createNewLeague = async (payload) => {
   try {
-    const res = await publicAPI.post(`/league/create` , payload)
+    const res = await publicAPI.post(`/league/create`, payload)
     if (res) {
       notification.success({
         description: res.data.data.message,
         duration: 2,
       })
-      let game = localStorage.getItem("selectedGame")
+      let game = localStorage.getItem('selectedGame')
 
-      localStorage.removeItem("selectedGame")
-      localStorage.removeItem("email")
-      localStorage.removeItem("imagePath")
+      localStorage.removeItem('selectedGame')
+      localStorage.removeItem('email')
+      localStorage.removeItem('imagePath')
 
-      let link = serverUrls.find(item => item.key === game)
+      let link = serverUrls.find((item) => item.key === game)
       window.open(`${link.frontEndUrl}/login`, '_self', 'noreferrer')
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+export const updateNewLeague = async (payload) => {
+  try {
+    const res = await publicAPI.post(`/league/update`, payload)
+    if (res) {
+      notification.success({
+        description: res.data.data.message,
+        duration: 2,
+      })
+      // let game = localStorage.getItem('selectedGame')
+
+      // localStorage.removeItem('selectedGame')
+      // localStorage.removeItem('email')
+      // localStorage.removeItem('imagePath')
+
+      // let link = serverUrls.find((item) => item.key === game)
+      // window.open(`${link.frontEndUrl}/login`, '_self', 'noreferrer')
     }
   } catch (err) {
     console.log('err', err)
@@ -48,7 +73,7 @@ export const createNewLeague = async (payload) => {
 export const createNewLeagueFromDashboard = async (payload) => {
   try {
     attachToken()
-    const res = await privateAPI.post(`/league/create-from-platform` , payload)
+    const res = await privateAPI.post(`/league/create-from-platform`, payload)
     if (res) {
       getUserLeagues()
       notification.success({
@@ -67,19 +92,19 @@ export const createNewLeagueFromDashboard = async (payload) => {
 
 export const joinLeague = async (payload) => {
   try {
-    const res = await publicAPI.post(`/league/join` , payload)
+    const res = await publicAPI.post(`/league/join`, payload)
     if (res) {
       notification.success({
         description: res.data.data.message,
         duration: 2,
       })
-      let game = localStorage.getItem("selectedGame")
+      let game = localStorage.getItem('selectedGame')
 
-      localStorage.removeItem("selectedGame")
-      localStorage.removeItem("email")
-      localStorage.removeItem("imagePath")
+      localStorage.removeItem('selectedGame')
+      localStorage.removeItem('email')
+      localStorage.removeItem('imagePath')
 
-      let link = serverUrls.find(item => item.key === game)
+      let link = serverUrls.find((item) => item.key === game)
       window.open(`${link.frontEndUrl}/login`, '_self', 'noreferrer')
     }
   } catch (err) {
@@ -91,10 +116,10 @@ export const joinLeague = async (payload) => {
   }
 }
 
-export const selectLeague = async (payload,navigate) => {
+export const selectLeague = async (payload, navigate) => {
   try {
     attachToken()
-    const res = await privateAPI.post(`/league/select-league` , payload)
+    const res = await privateAPI.post(`/league/select-league`, payload)
     if (res) {
       localStorage.setItem('token', res.data.data.token)
       store.dispatch(getUser())
@@ -125,12 +150,15 @@ export const getHomeLeagues = async () => {
   }
 }
 
-
 export const getLeagueDetails = async () => {
   try {
     attachToken()
     const res = await privateAPI.get(`/league/get-league`)
     if (res) {
+      store.dispatch({
+        type: 'SET_LEAGUES',
+        payload: res.data.data,
+      })
       return res.data.data
     }
   } catch (err) {
@@ -142,11 +170,10 @@ export const getLeagueDetails = async () => {
   }
 }
 
-
 export const joinLeagueFromPlatform = async (payload) => {
   try {
     attachToken()
-    const res = await privateAPI.post(`/league/join-from-platform` , payload)
+    const res = await privateAPI.post(`/league/join-from-platform`, payload)
     if (res) {
       getUserLeagues()
       notification.success({
@@ -169,8 +196,8 @@ export const getUserLeagues = async (payload) => {
     const res = await privateAPI.get(`/league/get-by-user-id`)
     if (res) {
       store.dispatch({
-        type : "GET_USER_LEAGUES",
-        payload : res.data.data
+        type: 'GET_USER_LEAGUES',
+        payload: res.data.data,
       })
     }
   } catch (err) {
@@ -278,7 +305,7 @@ export const getTeamFinancials = async () => {
 export const getPlayerForWeeklyScoring = async (payload) => {
   try {
     attachToken()
-    const res = await privateAPI.post(`/player/get-all-players`,payload)
+    const res = await privateAPI.post(`/player/get-all-players`, payload)
     if (res) {
       return res.data.data
     }

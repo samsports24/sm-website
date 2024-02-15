@@ -1,14 +1,12 @@
-import { Col, Row, Tabs, notification } from 'antd'
-import { useNavigate } from 'react-router-dom'
+import { Tabs } from 'antd'
 import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { getLeagueDetails } from '../../redux'
 
-import PopularLeagueCard from '../../components/NewPopularLeagueCard'
-import { getLeagueDetails, getUserLeagues, selectLeague } from '../../redux'
 import LeagueSetting from './LeagueSettings'
+import TeamAndOwnership from './TeamAndOwnership'
+import Trades from './Trades'
 
 const Comissioner = () => {
-  const navigate = useNavigate()
   const isAuthenticated = localStorage.getItem('token')
   const [league, setLeague] = useState(null)
 
@@ -22,20 +20,18 @@ const Comissioner = () => {
     getData()
   }, [])
 
-  console.log('league', league)
-
   return (
-    <div className='total_payment_container'>
+    <div className='total_payment_container comissioner'>
       <h1 className='heading'>Managing Your League</h1>
-      <h1 className='heading'>Hello Comissioner (TL334)</h1>
+      <h1 className='heading'>Hello Comissioner ({league?.leagueId})</h1>
 
       <Tabs
-    defaultActiveKey={1}
-    size='large'
-    type='card'
-    centered
-    items={[
-        {
+        defaultActiveKey={1}
+        size='large'
+        type='card'
+        centered
+        items={[
+          {
             label: `General League Setting`,
             key: 1,
             children: <LeagueSetting data={league} />,
@@ -43,14 +39,15 @@ const Comissioner = () => {
           {
             label: `Teams & Ownerships`,
             key: 2,
-            children: `Content of Tab Pane`,
-          }, {
-            label: `Team Trades`,
+            children: <TeamAndOwnership data={league} />,
+          },
+          {
+            label: `Team Trades (3)`,
             key: 3,
-            children: `Content of Tab Pane`,
-          }
-    ]}
-  />
+            children: <Trades data={league} />,
+          },
+        ]}
+      />
     </div>
   )
 }

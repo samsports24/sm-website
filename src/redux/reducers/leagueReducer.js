@@ -1,22 +1,28 @@
 const initialState = {
-    userLeagues: [],
-    nonUserLeagues : []
-  }
-  
-  const leagueReducer = (state = initialState, action) => {
-    const { type, payload } = action
-    switch (type) {
-      case 'GET_USER_LEAGUES': {
-        return {
-          ...state,
-          userLeagues: payload?.userLeagues,
-          nonUserLeagues : payload?.nonUserLeagues
-        }
+  userLeagues: [],
+  nonUserLeagues: [],
+  currentLeague: [],
+}
+
+const leagueReducer = (state = initialState, action) => {
+  const { type, payload } = action
+  switch (type) {
+    case 'GET_USER_LEAGUES': {
+      return {
+        ...state,
+        userLeagues: payload?.userLeagues,
+        nonUserLeagues: payload?.nonUserLeagues,
       }
-      default:
-        return state
     }
+    case 'SET_LEAGUES': {
+      return {
+        ...state,
+        currentLeague: payload,
+      }
+    }
+    default:
+      return state
   }
-  
-  export default leagueReducer
-  
+}
+
+export default leagueReducer
