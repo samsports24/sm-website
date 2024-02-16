@@ -1,4 +1,4 @@
-import { Button, Dropdown, Select } from 'antd'
+import { Button, Dropdown } from 'antd'
 import React, { useState } from 'react'
 
 const Trades = () => {
@@ -34,11 +34,19 @@ const Trades = () => {
 }
 
 const TradeCard = ({ data }) => {
-  const empty = {
-    type: '',
-    id: '',
-  }
+  const empty = { type: '', id: '' }
   const [loading, setLoading] = useState(empty)
+
+  const handleReject = (id, status) => {
+    setLoading({ type: 'reject', id: id })
+    console.log(id, status)
+    setLoading(empty)
+  }
+  const handleApprove = (id) => {
+    setLoading({ type: 'approve', id: id })
+    console.log(id)
+    setLoading(empty)
+  }
   const items = [
     {
       key: '1',
@@ -57,18 +65,6 @@ const TradeCard = ({ data }) => {
       label: <p onClick={() => handleReject(data?._id, 'illegalRoster')}>Illegal Roster</p>,
     },
   ]
-
-  const handleReject = (id, status) => {
-    setLoading({ type: 'reject', id: id })
-    console.log(id, status)
-    setLoading(empty)
-  }
-
-  const handleApprove = (id) => {
-    setLoading({ type: 'approve', id: id })
-    console.log(id)
-    setLoading(empty)
-  }
 
   return (
     <div className='trade_card'>

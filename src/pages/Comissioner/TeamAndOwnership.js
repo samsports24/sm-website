@@ -1,66 +1,54 @@
 import React, { useEffect, useState } from 'react'
 import { Input, Select, Table } from 'antd'
-import { getDivisions } from '../../redux/actions/confAndDivisionAction'
+import { useSelector } from 'react-redux'
+import { updateTeamConfDivision } from '../../redux/actions/teamActions'
 
-const TeamAndOwnership = ({ data }) => {
-  //   const initialData = Array.from({ length: 32 }, (_, index) => ({
-  //     key: index.toString(),
-  //     teamName: '',
-  //     userName: '',
-  //     email: '',
-  //     selectDivision: '',
-  //     financialCap: '-',
-  //   }))
-
+const TeamAndOwnership = () => {
+  const { currentLeague } = useSelector((state) => state.league)
   const [tableData, setTableData] = useState([])
-  const [divisions, setDivisions] = useState([])
-  console.log('🚀 ~ TeamAndOwnership ~ divisions:', divisions)
 
   useEffect(() => {
-    const teamsLength = data?.teams?.length
+    const teamsLength = currentLeague?.teams?.length
     const remainingEmptyRows = 32 - teamsLength
 
     const emptyData = Array.from({ length: remainingEmptyRows }, (_, index) => ({
-      key: (index + remainingEmptyRows).toString(),
+      key: (index + teamsLength).toString(),
       teamName: '',
       userName: '',
       email: '',
-      selectDivision: '',
+      division: '',
       financialCap: '',
     }))
 
-    const modifyData = data?.teams?.map((v, index) => {
+    const modifyData = currentLeague?.teams?.map((v, index) => {
       return {
         id: v?._id,
         key: index.toString(),
         teamName: v?.name,
         userName: v?.user?.userName,
         email: v?.user?.email,
-        selectDivision: '',
+        division: v?.division?._id ? v?.division?._id : '',
         financialCap: '',
       }
     })
 
     const _initialData = [...modifyData, ...emptyData]
-    // console.log('🚀 ~ useEffect ~ _initialData:', _initialData)
     setTableData(_initialData)
-  }, [data])
+  }, [currentLeague])
 
-  useEffect(() => {
-    // if (data?.conferences?.length > 0) {
-    //   const _divisions = [...data?.conferences[0]?.divisions, ...data?.conferences[1]?.divisions]
-    //   setDivisions(_divisions)
-    // }
-  }, [data])
-
-  const handleInputChange = (value, key, column) => {
+  const handleInputChange = async (value, record, column) => {
     const newData = tableData.map((item) => {
-      if (item.key === key) {
+      if (item.key === record.key) {
         return { ...item, [column]: value }
       }
       return item
     })
     setTableData(newData)
+    await updateTeamConfDivision({
+      teamId: record.id,
+      division: value,
+      conference: currentLeague?.divisions?.find((v) => v?._id === value)?.conference,
+    })
   }
 
   const columns = [
@@ -116,9 +104,10 @@ const TeamAndOwnership = ({ data }) => {
           style={{
             width: '100%',
           }}
-          value={record.selectDivision}
-          onChange={(value) => handleInputChange(value, record.key, 'selectDivision')}
-          options={divisions?.map((v) => {
+          disabled={!record?.id}
+          value={record.division}
+          onChange={(value) => handleInputChange(value, record, 'division')}
+          options={currentLeague?.divisions?.map((v) => {
             return {
               value: v?._id,
               label: v?.name,
@@ -141,21 +130,10 @@ const TeamAndOwnership = ({ data }) => {
     },
   ]
 
-  useEffect(() => {
-    _getDivision()
-  }, [])
-
-  const _getDivision = async () => {
-    const res = await getDivisions()
-    if (res) {
-      setDivisions(res)
-    }
-  }
-
   return (
     <div className='team_ownership_container'>
       <div className='t_o_form_box'>
-        <Table columns={columns} dataSource={tableData} pagination={false} />
+        <Table columns={columns} dataSource={tableData} pagination={false} scroll={{ x: 1000 }} />
       </div>
     </div>
   )

@@ -31,16 +31,3 @@ export const createDivision = async (payload) => {
     })
   }
 }
-
-export const getDivisions = async (payload) => {
-  try {
-    attachToken()
-    const res = await privateAPI.get(`/division/get-division`)
-    return res.data.data
-  } catch (err) {
-    notification.error({
-      message: err?.response?.data?.message || 'Server Error',
-      duration: 3,
-    })
-  }
-}

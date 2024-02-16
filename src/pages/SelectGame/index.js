@@ -9,39 +9,46 @@ const SelectGame = () => {
 
   const games = [
     {
-      key : "football",
+      key: 'football',
       name: 'Football',
       imagePath: 'football.png',
+      disabled: false,
     },
     {
-      key : "college_football",
-      name: 'College Football',
-      imagePath: 'college-football.png',
-    },
-    {
-      key : "basketball",
-      name: 'Basketball',
-      imagePath: 'basketball.png',
-    },
-    {
-      key : "eleven_fc",
-      name: 'Eleven F.C',
-      imagePath: 'eleven-fc.png',
-    },
-    {
-      key : "scouts",
-      name: 'Scouts',
-      imagePath: 'scouts.png',
-    },
-    {
-      key : "baseball",
+      key: 'baseball',
       name: 'Baseball',
       imagePath: 'baseball.png',
+      disabled: false,
     },
     {
-      key : "hockey",
+      key: 'hockey',
       name: 'Hockey',
       imagePath: 'hockey.png',
+      disabled: false,
+    },
+    {
+      key: 'college_football',
+      name: 'College Football',
+      imagePath: 'college-football.png',
+      disabled: true,
+    },
+    {
+      key: 'basketball',
+      name: 'Basketball',
+      imagePath: 'basketball.png',
+      disabled: true,
+    },
+    {
+      key: 'eleven_fc',
+      name: 'Eleven F.C',
+      imagePath: 'eleven-fc.png',
+      disabled: true,
+    },
+    {
+      key: 'scouts',
+      name: 'Scouts',
+      imagePath: 'scouts.png',
+      disabled: true,
     },
   ]
 
@@ -56,17 +63,21 @@ const SelectGame = () => {
         <div className='bottom_section'>
           {games.map((v) => {
             return (
-              <div key={v?.name} className={`image_box ${game === v.key ? 'activeGame' : ''}`}>
-                <img
-                  src={require(`../../assets/landing/logos/${v.imagePath}`)}
-                  alt={v.name}
-                  onClick={() => {
+              <div
+                key={v?.name}
+                className={`image_box ${game === v.key ? 'activeGame' : ''} ${
+                  v?.disabled ? 'noDrop' : 'cursor'
+                }`}
+                onClick={() => {
+                  if (!v?.disabled) {
                     setGame(v.key)
                     localStorage.setItem('selectedGame', v.key)
                     localStorage.setItem('imagePath', v.imagePath)
                     navigate('/signup')
-                  }}
-                />
+                  }
+                }}
+              >
+                <img src={require(`../../assets/landing/logos/${v.imagePath}`)} alt={v.name} />
               </div>
             )
           })}

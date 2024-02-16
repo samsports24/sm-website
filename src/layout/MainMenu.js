@@ -229,17 +229,17 @@ const MainMenu = () => {
                 <AiOutlineSetting />
                 <p>team setting</p>
               </div>
-              
-              {
-                user?.team?.currentLeague?.createdBy === user?._id
-               && <div
-                className={`sidebar_menu_item ${active === 'comissioner' ? 'activeRoute' : ''}`}
-                onClick={() => navigate('/comissioner')}
-              >
-                <img src={comissioner} width={'30px'} height={'30px'} />
-                <p>Comissioner</p>
-              </div>
-              }
+
+              {(user?.team?.currentLeague?.createdBy === user?._id ||
+                user?.team?.currentLeague?.coComissioner === user?._id) && (
+                <div
+                  className={`sidebar_menu_item ${active === 'comissioner' ? 'activeRoute' : ''}`}
+                  onClick={() => navigate('/comissioner')}
+                >
+                  <img src={comissioner} width={'30px'} height={'30px'} />
+                  <p>Comissioner</p>
+                </div>
+              )}
               {/* <div
               className={`sidebar_menu_item ${active === 'team-schedule' ? 'activeRoute' : ''}`}
               onClick={() => navigatePath('/team-schedule')}

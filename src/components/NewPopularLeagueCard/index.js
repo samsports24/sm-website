@@ -3,17 +3,9 @@ import { IoStar } from 'react-icons/io5'
 import JoinLeague from '../modal/JoinLeague'
 import { useNavigate } from 'react-router-dom'
 
-const NewPopularLeagueCard = ({ data,yourLeague,active,fromHome }) => {
+const NewPopularLeagueCard = ({ data, yourLeague, active, fromHome }) => {
   const navigate = useNavigate()
-  const {
-    name,
-    draftStart,
-    leagueType,
-    leagueLevel,
-    entryFee,
-    leagueLogo,
-    totalPlayers
-  } = data
+  const { name, draftStart, leagueType, leagueLevel, entryFee, leagueLogo, totalPlayers } = data
   return (
     <div className='p_league_card_wrapper'>
       <div className={active ? 'p_league_card active' : 'p_league_card'}>
@@ -56,16 +48,28 @@ const NewPopularLeagueCard = ({ data,yourLeague,active,fromHome }) => {
           </div>
           <div className='row_5'>
             <p className='text_title'>Prize pool wallet:</p>
-            <p className='text_value'>{data?.prizePool || "-"}</p>
+            <p className='text_value'>{data?.prizePool || '-'}</p>
           </div>
         </div>
-        <div className='button_row'>
-          {yourLeague ? <p>Joined</p> : fromHome ? <p className="join-now"
-          
-          onClick={() => {
-            navigate("/select-game")
-          }}>Join Now</p> : <p className="join-now"><JoinLeague data={data} /></p>}
-        </div>
+        <>
+          {yourLeague ? (
+            <div className='button_row'>
+              <p>Joined</p>
+            </div>
+          ) : fromHome ? (
+            <div
+              className='button_row'
+              onClick={() => {
+                navigate('/select-game')
+              }}
+              style={{ cursor: 'pointer' }}
+            >
+              <p className='join-now'>Join Now</p>
+            </div>
+          ) : (
+            <JoinLeague data={data} />
+          )}
+        </>
       </div>
     </div>
   )

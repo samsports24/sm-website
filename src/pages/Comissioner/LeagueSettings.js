@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Button, Col, Divider, Form, Input, Row, Select } from 'antd'
 import { MinusCircleOutlined } from '@ant-design/icons'
-import { getLeagueDetails, updateNewLeague } from '../../redux'
+import { getLeagueDetails, updateLeague } from '../../redux'
 import { useSelector } from 'react-redux'
 import useDebounce from '../../hooks/useDebounce'
 import { createConference, createDivision } from '../../redux/actions/confAndDivisionAction'
@@ -37,12 +37,13 @@ const LeagueSetting = () => {
 
   const onFinish = async (values) => {
     let payload = {
+      _id: currentLeague?._id,
       leagueId: values?.leagueId,
-      coComissione: values?.coComissioner,
+      coComissioner: values?.coComissioner,
       prizePool: values?.prizePool,
     }
     setLoading(true)
-    await updateNewLeague(payload)
+    await updateLeague(payload)
     setLoading(false)
   }
 
@@ -55,38 +56,51 @@ const LeagueSetting = () => {
     setConf1(conferences1?.name ?? '')
     setConf2(conferences2?.name ?? '')
 
-    divisions?.forEach((division, index) => {
-      if (division && index < 8) {
-        switch (division.key) {
-          case 1:
-            setDivision1(division.name ?? '')
-            break
-          case 2:
-            setDivision2(division.name ?? '')
-            break
-          case 3:
-            setDivision3(division.name ?? '')
-            break
-          case 4:
-            setDivision4(division.name ?? '')
-            break
-          case 5:
-            setDivision5(division.name ?? '')
-            break
-          case 6:
-            setDivision6(division.name ?? '')
-            break
-          case 7:
-            setDivision7(division.name ?? '')
-            break
-          case 8:
-            setDivision8(division.name ?? '')
-            break
-          default:
-            break
-        }
-      }
-    })
+    const clearState = () => {
+      setDivision1('')
+      setDivision2('')
+      setDivision3('')
+      setDivision4('')
+      setDivision5('')
+      setDivision6('')
+      setDivision7('')
+      setDivision8('')
+    }
+
+    divisions?.length > 0
+      ? divisions?.forEach((division, index) => {
+          if (division) {
+            switch (division.key) {
+              case 1:
+                setDivision1(division.name ?? '')
+                break
+              case 2:
+                setDivision2(division.name ?? '')
+                break
+              case 3:
+                setDivision3(division.name ?? '')
+                break
+              case 4:
+                setDivision4(division.name ?? '')
+                break
+              case 5:
+                setDivision5(division.name ?? '')
+                break
+              case 6:
+                setDivision6(division.name ?? '')
+                break
+              case 7:
+                setDivision7(division.name ?? '')
+                break
+              case 8:
+                setDivision8(division.name ?? '')
+                break
+              default:
+                break
+            }
+          }
+        })
+      : clearState()
   }, [currentLeague])
 
   const _handleConference = useDebounce((conf, key) => {
@@ -95,7 +109,6 @@ const LeagueSetting = () => {
       key,
     })
   }, 1000)
-
   const handleConference = (conf, key) => {
     _handleConference(conf, key)
   }
@@ -103,7 +116,6 @@ const LeagueSetting = () => {
   const _handleDivision = useDebounce((payload) => {
     createDivision(payload)
   }, 1000)
-
   const handleDivision = (div, key) => {
     const conferences1 = currentLeague?.conferences?.find((v) => v?.key == 1)
     const conferences2 = currentLeague?.conferences?.find((v) => v?.key == 2)
@@ -124,15 +136,17 @@ const LeagueSetting = () => {
           fields={[
             { name: 'leagueId', value: currentLeague?.leagueId },
             { name: 'prizePool', value: currentLeague?.prizePool },
+            { name: 'coComissioner', value: currentLeague?.coComissioner },
           ]}
           layout='vertical'
+          autoComplete='off'
         >
           <Form.Item
             label='Change League ID'
             name={'leagueId'}
             rules={[
               {
-                required: true,
+                required: false,
                 message: 'Reqired',
               },
             ]}
@@ -145,24 +159,26 @@ const LeagueSetting = () => {
             requiredMark={false}
             rules={[
               {
-                required: true,
+                required: false,
                 message: 'Reqired',
               },
             ]}
           >
             <Select style={{ width: '100%' }} placeholder={'Select'}>
-              {currentLeague?.users?.map((user) => (
-                <Select.Option key={user?._id}>
-                  {user?.userName} ({user?.email})
-                </Select.Option>
-              ))}
+              {currentLeague?.users
+                ?.filter((v) => v?._id !== currentLeague?.createdBy)
+                ?.map((user) => (
+                  <Select.Option key={user?._id}>
+                    {user?.userName} ({user?.email})
+                  </Select.Option>
+                ))}
             </Select>
           </Form.Item>
           <Form.Item label='Add/Change a Prize Pool Wallet Address' name={'prizePool'}>
             <Input placeholder='0x200000...' />
           </Form.Item>
           <Form.Item>
-            <Button disabled loading={loading} type='primary' htmlType='submit'>
+            <Button loading={loading} type='primary' htmlType='submit'>
               Submit
             </Button>
           </Form.Item>

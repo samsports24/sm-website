@@ -1,5 +1,6 @@
 import { notification } from 'antd'
 import { attachToken, privateAPI } from '../../config/constants'
+import { getLeagueDetails } from './leagueActions'
 
 export const getAllTeam = async () => {
   try {
@@ -55,6 +56,22 @@ export const updateTeam = async (payload) => {
         message: res.data.data,
         duration: 3,
       })
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const updateTeamConfDivision = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/team/update-team-conf-division', payload)
+    if (res) {
+      getLeagueDetails()
       return res.data.data
     }
   } catch (err) {

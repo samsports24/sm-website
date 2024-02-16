@@ -11,37 +11,48 @@ const CreateOrJoinLeague = () => {
   const [loading, setLoading] = useState(false)
   const [imageSrc, setImageSrc] = useState(null)
   const [file, setFile] = useState(null)
-  let email = localStorage.getItem("email")
+  const [isPrivate, setIsPrivate] = useState(false)
+  const [isPrivateFromJoin, setIsPrivateFromJoin] = useState(false)
+  let email = localStorage.getItem('email')
 
   const onFinish = async (values) => {
     setLoading(true)
     const obj = {
       ...values,
       draftStart: dayjs(values?.draftStart).toISOString(),
-      email
+      email,
     }
+
+    if (values?.leagueType === 'public') {
+      delete obj.leaguePassword
+    }
+
     let formdata = new FormData()
-    if(file){
+    if (file) {
       formdata.append('pictures', file)
     }
     Object.entries(obj).map(([key, value]) => {
-      if(value){
+      if (value) {
         formdata.append(key, value)
       }
     })
     await createNewLeague(formdata)
     setLoading(false)
   }
+
   const joinOnFinish = async (values) => {
     setLoading(true)
     const obj = {
       ...values,
-      email
+      email,
+    }
+    if (values?.leagueType === 'public') {
+      delete obj.leaguePassword
     }
     await joinLeague(obj)
-
     setLoading(false)
   }
+
   const handleFile = (file) => {
     setFile(file)
     const src = URL.createObjectURL(file)
@@ -67,7 +78,16 @@ const CreateOrJoinLeague = () => {
           </div>
           {formType === 'create' && (
             <div className='form_conatiner'>
-              <Form form={form} layout='vertical' onFinish={onFinish} autoComplete='off'>
+              <Form
+                form={form}
+                layout='vertical'
+                onFinish={onFinish}
+                autoComplete='off'
+                onValuesChange={(e) => {
+                  e.leagueType === 'private' && setIsPrivate(true)
+                  e.leagueType === 'public' && setIsPrivate(false)
+                }}
+              >
                 <Row gutter={[30, 10]}>
                   <Col xs={24} md={12} xl={8}>
                     <Form.Item
@@ -122,10 +142,7 @@ const CreateOrJoinLeague = () => {
                   </Col>
 
                   <Col xs={24} md={12} xl={8}>
-                    <Form.Item
-                      name={'email'}
-                      label='User Email'
-                    >
+                    <Form.Item name={'email'} label='User Email'>
                       <Input disabled placeholder={email} />
                     </Form.Item>
                   </Col>
@@ -165,8 +182,8 @@ const CreateOrJoinLeague = () => {
 
                   <Col xs={24} md={12} xl={8}>
                     <Form.Item
-                      name={'leagueId'}
-                      label='League ID'
+                      name={'leagueLevel'}
+                      label='League Level'
                       rules={[
                         {
                           required: true,
@@ -174,11 +191,11 @@ const CreateOrJoinLeague = () => {
                         },
                       ]}
                     >
-                      <Input placeholder='League ID...' />
+                      <Rate />
                     </Form.Item>
                   </Col>
 
-                  <Col xs={24} md={12} xl={8}>
+                  <Col xs={24} md={12}>
                     <Form.Item
                       name={'leagueType'}
                       label='League Type'
@@ -196,10 +213,10 @@ const CreateOrJoinLeague = () => {
                     </Form.Item>
                   </Col>
 
-                  <Col xs={24}>
+                  <Col xs={24} md={12} xl={8}>
                     <Form.Item
-                      name={'leagueLevel'}
-                      label='League Level'
+                      name={'leagueId'}
+                      label='League ID'
                       rules={[
                         {
                           required: true,
@@ -207,9 +224,29 @@ const CreateOrJoinLeague = () => {
                         },
                       ]}
                     >
-                      <Rate />
+                      <Input placeholder='League ID...' />
                     </Form.Item>
                   </Col>
+
+                  {isPrivate && (
+                    <>
+                      <Col xs={24} md={12} xl={8}>
+                        <Form.Item
+                          name={'leaguePassword'}
+                          label='League Password'
+                          rules={[
+                            {
+                              required: isPrivate ? true : false,
+                              message: 'Required!',
+                            },
+                          ]}
+                        >
+                          <Input placeholder='Password' />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} md={12} xl={8}></Col>
+                    </>
+                  )}
 
                   <Col xs={24} md={12} xl={8}>
                     <Form.Item name={'entryFee'} label='Entry Fee'>
@@ -240,9 +277,18 @@ const CreateOrJoinLeague = () => {
           )}
           {formType === 'join' && (
             <div className='form_conatiner'>
-              <Form form={form} layout='vertical' onFinish={joinOnFinish} autoComplete='off'>
+              <Form
+                form={form}
+                layout='vertical'
+                onFinish={joinOnFinish}
+                autoComplete='off'
+                onValuesChange={(e) => {
+                  e.leagueType === 'private' && setIsPrivateFromJoin(true)
+                  e.leagueType === 'public' && setIsPrivateFromJoin(false)
+                }}
+              >
                 <Row gutter={[30, 10]}>
-                  <Col xs={24} md={12} xl={8}>
+                  <Col xs={24}>
                     <Form.Item
                       name={'leagueType'}
                       label='Type'
@@ -288,6 +334,26 @@ const CreateOrJoinLeague = () => {
                       <Input placeholder='League ID' />
                     </Form.Item>
                   </Col>
+
+                  {isPrivateFromJoin && (
+                    <>
+                      <Col xs={24} md={12} xl={8}>
+                        <Form.Item
+                          name={'leaguePassword'}
+                          label='League Password'
+                          rules={[
+                            {
+                              required: isPrivateFromJoin ? true : false,
+                              message: 'Required!',
+                            },
+                          ]}
+                        >
+                          <Input placeholder='Password' />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} md={12} xl={8}></Col>
+                    </>
+                  )}
 
                   <Col xs={24}>
                     <Form.Item>

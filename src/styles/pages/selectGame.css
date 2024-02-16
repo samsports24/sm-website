@@ -82,7 +82,6 @@
 .select_game_container .select_game_right .bottom_section .image_box img {
   width: 200px;
   height: auto;
-  cursor: pointer;
 }
 
 @media (max-width: 1023px) {

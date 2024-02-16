@@ -4,7 +4,6 @@ body {
   font-family: 'Poppins', sans-serif;
   /* background-color: #eaeaea; */
   background: var(--secondaryBackground);
-
 }
 
 .swal-text {
@@ -459,3 +458,11 @@ p {
   background-color: var(--primary) !important;
 }
 /* -------------------------------------------------------------- */
+
+.cursor {
+  cursor: pointer !important;
+}
+
+.noDrop {
+  cursor: no-drop !important;
+}

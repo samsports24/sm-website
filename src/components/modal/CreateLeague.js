@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { Modal, Button, Input, Form, Row,Col,DatePicker, Avatar, Radio, Rate } from 'antd'
+import { Modal, Button, Input, Form, Row, Col, DatePicker, Avatar, Radio, Rate } from 'antd'
 import LeagueEmptyCard from '../NewPopularLeagueCard/EmptyCard'
-import {  createNewLeagueFromDashboard } from '../../redux'
+import { createNewLeagueFromDashboard } from '../../redux'
 
 const CreateLeague = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -9,11 +9,15 @@ const CreateLeague = () => {
   const [form] = Form.useForm()
   const [imageSrc, setImageSrc] = useState(null)
   const [file, setFile] = useState(null)
-
+  const [isPrivate, setIsPrivate] = useState(false)
 
   const showModal = () => setIsModalVisible(true)
   const handleCancel = () => {
     setIsModalVisible(false)
+    form.resetFields()
+    setFile(null)
+    setImageSrc(null)
+    setIsPrivate(false)
   }
 
   const onFinish = async (values) => {
@@ -22,12 +26,17 @@ const CreateLeague = () => {
       ...values,
       draftStart: dayjs(values?.draftStart).toISOString(),
     }
+
+    if (values?.leagueType === 'public') {
+      delete obj.leaguePassword
+    }
+
     let formdata = new FormData()
-    if(file){
+    if (file) {
       formdata.append('pictures', file)
     }
     Object.entries(obj).map(([key, value]) => {
-      if(value){
+      if (value) {
         formdata.append(key, value)
       }
     })
@@ -44,7 +53,7 @@ const CreateLeague = () => {
   return (
     <>
       <div onClick={showModal}>
-      <LeagueEmptyCard />
+        <LeagueEmptyCard />
       </div>
       <Modal
         centered
@@ -60,170 +69,196 @@ const CreateLeague = () => {
           x
         </div>
         <div className='modal_body'>
-          <h2 className='modal_header_heading main_heading'>
-           Create New League
-          </h2>
+          <h2 className='modal_header_heading main_heading'>Create New League</h2>
           <div>
-          <Form form={form} layout='vertical' onFinish={onFinish} autoComplete='off'>
-                <Row gutter={[30, 10]}>
-                  <Col xs={24} md={12} xl={8}>
-                    <Form.Item
-                      name={'teamName'}
-                      label='Team Name'
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Required!',
-                        },
-                      ]}
-                    >
-                      <Input placeholder='Team Name Here...' />
-                    </Form.Item>
-                  </Col>
+            <Form
+              form={form}
+              layout='vertical'
+              onFinish={onFinish}
+              autoComplete='off'
+              onValuesChange={(e) => {
+                e.leagueType === 'private' && setIsPrivate(true)
+                e.leagueType === 'public' && setIsPrivate(false)
+              }}
+            >
+              <Row gutter={[30, 10]}>
+                <Col xs={24} md={12} xl={8}>
+                  <Form.Item
+                    name={'teamName'}
+                    label='Team Name'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Required!',
+                      },
+                    ]}
+                  >
+                    <Input placeholder='Team Name Here...' />
+                  </Form.Item>
+                </Col>
 
-                  <Col xs={24} md={12} xl={8}>
-                    <Form.Item
-                      name={'name'}
-                      label='League Name'
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Required!',
-                        },
-                      ]}
-                    >
-                      <Input placeholder='League Name Here...' />
-                    </Form.Item>
-                  </Col>
+                <Col xs={24} md={12} xl={8}>
+                  <Form.Item
+                    name={'name'}
+                    label='League Name'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Required!',
+                      },
+                    ]}
+                  >
+                    <Input placeholder='League Name Here...' />
+                  </Form.Item>
+                </Col>
 
-                  <Col lg={24} xl={4}>
-                    <Form.Item name={'logo'} label='League Logo'>
-                      <>
-                        <label
-                          style={{ color: 'white' }}
-                          className='file_button'
-                          htmlFor='fileInput'
-                        >
-                          Add Image{' '}
-                          {imageSrc && <Avatar style={{ marginLeft: '5px' }} src={imageSrc} />}
-                        </label>
-                        <input
-                          type='file'
-                          hidden
-                          id='fileInput'
-                          onChange={(e) => handleFile(e?.target?.files[0])}
-                          accept='image/jpg,image/png,image/jpeg'
-                        />
-                      </>
-                    </Form.Item>
-                  </Col>
+                <Col lg={24} xl={4}>
+                  <Form.Item name={'logo'} label='League Logo'>
+                    <>
+                      <label style={{ color: 'white' }} className='file_button' htmlFor='fileInput'>
+                        Add Image{' '}
+                        {imageSrc && <Avatar style={{ marginLeft: '5px' }} src={imageSrc} />}
+                      </label>
+                      <input
+                        type='file'
+                        hidden
+                        id='fileInput'
+                        onChange={(e) => handleFile(e?.target?.files[0])}
+                        accept='image/jpg,image/png,image/jpeg'
+                      />
+                    </>
+                  </Form.Item>
+                </Col>
 
-                  <Col xs={24} md={12} xl={8}>
-                    <Form.Item
-                      name={'draftType'}
-                      label='Draft Type'
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Required!',
-                        },
-                      ]}
-                    >
-                      <Radio.Group>
-                        <Radio value={'live'}>Live Online Standard</Radio>
-                        <Radio value={'auto'}>Auto Draft</Radio>
-                      </Radio.Group>
-                    </Form.Item>
-                  </Col>
+                <Col xs={24} md={12} xl={8}>
+                  <Form.Item
+                    name={'draftType'}
+                    label='Draft Type'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Required!',
+                      },
+                    ]}
+                  >
+                    <Radio.Group>
+                      <Radio value={'live'}>Live Online Standard</Radio>
+                      <Radio value={'auto'}>Auto Draft</Radio>
+                    </Radio.Group>
+                  </Form.Item>
+                </Col>
 
-                  <Col xs={24} md={12} xl={8}>
-                    <Form.Item
-                      name={'draftStart'}
-                      label='Select Draft Date'
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Required!',
-                        },
-                      ]}
-                    >
-                      <DatePicker placeholder='Select Draft Date' />
-                    </Form.Item>
-                  </Col>
+                <Col xs={24} md={12} xl={8}>
+                  <Form.Item
+                    name={'draftStart'}
+                    label='Select Draft Date'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Required!',
+                      },
+                    ]}
+                  >
+                    <DatePicker placeholder='Select Draft Date' />
+                  </Form.Item>
+                </Col>
 
-                  <Col xs={24} md={12} xl={8}>
-                    <Form.Item
-                      name={'leagueId'}
-                      label='League ID'
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Required!',
-                        },
-                      ]}
-                    >
-                      <Input placeholder='League ID...' />
-                    </Form.Item>
-                  </Col>
+                <Col xs={24} md={12} xl={8}></Col>
 
-                  <Col xs={24} md={12} xl={8}>
-                    <Form.Item
-                      name={'leagueType'}
-                      label='League Type'
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Required!',
-                        },
-                      ]}
-                    >
-                      <Radio.Group>
-                        <Radio value={'public'}>Public</Radio>
-                        <Radio value={'private'}>Private</Radio>
-                      </Radio.Group>
-                    </Form.Item>
-                  </Col>
+                <Col xs={24} md={12} xl={8}>
+                  <Form.Item
+                    name={'leagueLevel'}
+                    label='League Level'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Required!',
+                      },
+                    ]}
+                  >
+                    <Rate />
+                  </Form.Item>
+                </Col>
 
-                  <Col xs={24}>
-                    <Form.Item
-                      name={'leagueLevel'}
-                      label='League Level'
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Required!',
-                        },
-                      ]}
-                    >
-                      <Rate />
-                    </Form.Item>
-                  </Col>
+                <Col xs={24} md={12} xl={8}>
+                  <Form.Item
+                    name={'leagueType'}
+                    label='League Type'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Required!',
+                      },
+                    ]}
+                  >
+                    <Radio.Group>
+                      <Radio value={'public'}>Public</Radio>
+                      <Radio value={'private'}>Private</Radio>
+                    </Radio.Group>
+                  </Form.Item>
+                </Col>
 
-                  <Col xs={24} md={12} xl={8}>
-                    <Form.Item name={'entryFee'} label='Entry Fee'>
-                      <Input placeholder='Entry Fee (if any)' />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} md={12} xl={8}>
-                    <Form.Item name={'prizePool'} label='Prize Pool'>
-                      <Input placeholder='Prize Pool wallet address' />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24}>
-                    <Form.Item name={'description'} label='League Description'>
-                      <Input.TextArea rows={4} placeholder='' />
-                    </Form.Item>
-                  </Col>
+                <Col xs={24} md={12} xl={8}></Col>
 
-                  <Col xs={24}>
-                    <Form.Item>
-                      <Button loading={loading} type='primary' htmlType='submit'>
-                        JOIN
-                      </Button>
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </Form>
+                <Col xs={24} md={12} xl={8}>
+                  <Form.Item
+                    name={'leagueId'}
+                    label='League ID'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Required!',
+                      },
+                    ]}
+                  >
+                    <Input placeholder='League ID...' />
+                  </Form.Item>
+                </Col>
+
+                {isPrivate && (
+                  <>
+                    <Col xs={24} md={12} xl={8}>
+                      <Form.Item
+                        name={'leaguePassword'}
+                        label='League Password'
+                        rules={[
+                          {
+                            required: isPrivate ? true : false,
+                            message: 'Required!',
+                          },
+                        ]}
+                      >
+                        <Input placeholder='Password' />
+                      </Form.Item>
+                    </Col>
+                  </>
+                )}
+
+                <Col xs={24} md={12} xl={8}>
+                  <Form.Item name={'entryFee'} label='Entry Fee'>
+                    <Input placeholder='Entry Fee (if any)' />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} md={12} xl={8}>
+                  <Form.Item name={'prizePool'} label='Prize Pool'>
+                    <Input placeholder='Prize Pool wallet address' />
+                  </Form.Item>
+                </Col>
+                <Col xs={24}>
+                  <Form.Item name={'description'} label='League Description'>
+                    <Input.TextArea rows={4} placeholder='' />
+                  </Form.Item>
+                </Col>
+
+                <Col xs={24}>
+                  <Form.Item>
+                    <Button loading={loading} type='primary' htmlType='submit'>
+                      JOIN
+                    </Button>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Form>
           </div>
         </div>
       </Modal>

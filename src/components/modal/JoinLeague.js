@@ -1,13 +1,24 @@
 import { useState } from 'react'
-import { Modal, Button, Input, Form, Row,Col,DatePicker, Avatar, Radio, Rate, Divider } from 'antd'
+import {
+  Modal,
+  Button,
+  Input,
+  Form,
+  Row,
+  Col,
+  DatePicker,
+  Avatar,
+  Radio,
+  Rate,
+  Divider,
+} from 'antd'
 import LeagueEmptyCard from '../NewPopularLeagueCard/EmptyCard'
-import {  joinLeagueFromPlatform } from '../../redux'
+import { joinLeagueFromPlatform } from '../../redux'
 
-const JoinLeague = ({data}) => {
+const JoinLeague = ({ data }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
-
 
   const showModal = () => setIsModalVisible(true)
   const handleCancel = () => {
@@ -20,14 +31,21 @@ const JoinLeague = ({data}) => {
       ...values,
       leagueId: data?._id,
     }
-    await joinLeagueFromPlatform(obj)
+
+    if (data?.leagueType === 'public') {
+      delete obj.leaguePassword
+    }
+
+    const res = await joinLeagueFromPlatform(obj)
+    if (res) {
+      handleCancel()
+    }
     setLoading(false)
-    handleCancel()
   }
   return (
     <>
-      <div onClick={showModal}>
-     <p>Join Now</p>
+      <div className='button_row' onClick={showModal} style={{ cursor: 'pointer' }}>
+        <p className='join-now'>Join Now</p>
       </div>
       <Modal
         centered
@@ -43,45 +61,57 @@ const JoinLeague = ({data}) => {
           x
         </div>
         <div className='modal_body'>
-          <h2 className='modal_header_heading main_heading'>
-           Join League
-          </h2>
+          <h2 className='modal_header_heading main_heading'>Join League</h2>
           <Divider />
           <div>
-          <Form form={form} layout='vertical' onFinish={onFinish} autoComplete='off'>
-                <Row gutter={[30, 10]}>
+            <Form form={form} layout='vertical' onFinish={onFinish} autoComplete='off'>
+              <Row gutter={[30, 10]}>
                 <Col xs={24} md={12}>
-                    <Form.Item
-                      name={'id'}
-                      label='League ID'
-                    >
-                      <Input placeholder={data?.leagueId} disabled />
-                    </Form.Item>
-                  </Col>
+                  <Form.Item name={'id'} label='League ID'>
+                    <Input placeholder={data?.leagueId} disabled />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} md={12}>
+                  <Form.Item
+                    name={'teamName'}
+                    label='Team Name'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Required!',
+                      },
+                    ]}
+                  >
+                    <Input placeholder='Team Name Here...' />
+                  </Form.Item>
+                </Col>
+
+                {data?.leagueType === 'private' && (
                   <Col xs={24} md={12}>
                     <Form.Item
-                      name={'teamName'}
-                      label='Team Name'
+                      name={'leaguePassword'}
+                      label='League Password'
                       rules={[
                         {
-                          required: true,
+                          required: data?.leagueType === 'private' ? true : false,
                           message: 'Required!',
                         },
                       ]}
                     >
-                      <Input placeholder='Team Name Here...' />
+                      <Input placeholder='League Password Here...' />
                     </Form.Item>
                   </Col>
+                )}
 
-                  <Col xs={24}>
-                    <Form.Item>
-                      <Button loading={loading} type='primary' htmlType='submit'>
-                        JOIN
-                      </Button>
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </Form>
+                <Col xs={24}>
+                  <Form.Item>
+                    <Button loading={loading} type='primary' htmlType='submit'>
+                      JOIN
+                    </Button>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Form>
           </div>
         </div>
       </Modal>

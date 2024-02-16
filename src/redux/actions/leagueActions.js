@@ -44,22 +44,16 @@ export const createNewLeague = async (payload) => {
     })
   }
 }
-export const updateNewLeague = async (payload) => {
+export const updateLeague = async (payload) => {
   try {
-    const res = await publicAPI.post(`/league/update`, payload)
+    attachToken()
+    const res = await privateAPI.post(`/league/update-league`, payload)
     if (res) {
       notification.success({
         description: res.data.data.message,
         duration: 2,
       })
-      // let game = localStorage.getItem('selectedGame')
-
-      // localStorage.removeItem('selectedGame')
-      // localStorage.removeItem('email')
-      // localStorage.removeItem('imagePath')
-
-      // let link = serverUrls.find((item) => item.key === game)
-      // window.open(`${link.frontEndUrl}/login`, '_self', 'noreferrer')
+      getLeagueDetails()
     }
   } catch (err) {
     console.log('err', err)
@@ -180,6 +174,7 @@ export const joinLeagueFromPlatform = async (payload) => {
         description: res.data.data.message,
         duration: 2,
       })
+      return res
     }
   } catch (err) {
     console.log('err', err)
