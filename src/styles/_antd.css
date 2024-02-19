@@ -256,10 +256,10 @@ tr.ant-table-expanded-row:hover > td {
   backdrop-filter: blur(20px);
 }
 .ant-radio-wrapper,
-.ant-rate .anticon{
-  color: #fff;
+.ant-rate .anticon {
+  color: #fff !important;
 }
 
-.ant-rate .ant-rate-star-full .anticon{
+.ant-rate .ant-rate-star-full .anticon {
   color: #fadb14 !important;
 }

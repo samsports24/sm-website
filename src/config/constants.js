@@ -59,8 +59,9 @@ export const serverUrls = [
   {
     key: 'hockey',
     name: 'Hockey',
-    url: 'https://hockeybackend.samsports.io',
-    frontEndUrl: 'http://localhost:3000',
+    // url: 'https://hockeybackend.samsports.io',
+    url: 'http://localhost:9000',
+    frontEndUrl: 'http://localhost:3002',
   },
   {
     key: 'college_football',

@@ -36,7 +36,6 @@ const LeagueScore = () => {
     const res = await getScheduleByWeek(SETTING?.week)
     setData(res)
     const schedule = await getWeeklyNflSchedule({ week: SETTING?.week })
-    console.log('🚀 ~ file: LeagueScore.js:39 ~ getDataByWeek ~ schedule:', schedule)
     setCarouselData(schedule)
     setLoading(false)
   }
@@ -69,9 +68,11 @@ const LeagueScore = () => {
               <Loader />
             ) : data?.length > 0 ? (
               <>
-                <Col xs={24}>
-                  <CarouselComponent data={carouselData} />
-                </Col>
+                {carouselData?.length > 0 && (
+                  <Col xs={24}>
+                    <CarouselComponent data={carouselData} />
+                  </Col>
+                )}
                 {data?.map((value, index) => (
                   <Col xs={24} xl={12} key={index}>
                     <NewLeagueScoreCard data={{ ...value, index }} />
@@ -79,7 +80,17 @@ const LeagueScore = () => {
                 ))}
               </>
             ) : (
-              <p className='no_schedule_text'>No Schedule..</p>
+              <div
+                style={{
+                  width: '100%',
+                  height: '20vh',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <p className='no_schedule_text'>No Schedule..</p>
+              </div>
             )}
           </Row>
         </section>
