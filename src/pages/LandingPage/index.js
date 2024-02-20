@@ -5,7 +5,7 @@ import LeagueSection from './LeagueSection'
 import ImproveTeamSection from './ImproveTeamSection'
 import DraftTeamSection from './DraftTeamSection'
 import CommunitySection from './CommunitySection'
-import PopularLeagueSection from './PopularLeagueSection'
+// import PopularLeagueSection from './PopularLeagueSection'
 import FantasySportsSection from './FantasySportsSection'
 
 const LandingPage = () => {
@@ -18,7 +18,7 @@ const LandingPage = () => {
       <ImproveTeamSection />
       <DraftTeamSection />
       <CommunitySection />
-      <PopularLeagueSection />
+      {/* <PopularLeagueSection /> */}
       <FantasySportsSection />
     </div>
   )
