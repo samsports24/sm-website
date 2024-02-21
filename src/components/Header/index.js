@@ -14,6 +14,8 @@ import { leagueSalaryCap } from '../../config/constants'
 const Header = () => {
   const record = useSelector((state) => state.user.record)
   const user = useSelector((state) => state.user.userDetails)
+  const leagueType = user?.team?.currentLeague?.leagueType
+
   const teamSalary = useSelector((state) => state.user.teamSalaryCap)
   const { notificationCount } = useSelector((state) => state.user)
   const { auctionCount } = useSelector((state) => state.user)
@@ -99,32 +101,34 @@ const Header = () => {
           </div>
         </div>
       </div>
-      <div className='right'>
-        <div className='content'>
-          <div className='top'>
-            <span style={{ width: '100%', textAlign: 'right' }}>
-              <span>23&apos;</span> &nbsp;
-              <span>SAMS 1,491,526</span>
-            </span>
-          </div>
-          <div className='content2'>
-            <div className='image_div'>
-              <Image preview={false} src={logo} alt='UFAFL' />
+      {leagueType === 'professional' && (
+        <div className='right'>
+          <div className='content'>
+            <div className='top'>
+              <span style={{ width: '100%', textAlign: 'right' }}>
+                <span>23&apos;</span> &nbsp;
+                <span>SAMS 1,491,526</span>
+              </span>
             </div>
-            <div className='content3'>
-              <div className='top' style={{ marginBottom: '12px' }}>
-                <span>24&apos;</span>
-                <p>SFL Prize-Pool</p>
+            <div className='content2'>
+              <div className='image_div'>
+                <Image preview={false} src={logo} alt='UFAFL' />
               </div>
-              <div className='top'>
-                <span>25&apos;</span>
-                <p>SFL Prize-Pool</p>
+              <div className='content3'>
+                <div className='top' style={{ marginBottom: '12px' }}>
+                  <span>24&apos;</span>
+                  <p>SFL Prize-Pool</p>
+                </div>
+                <div className='top'>
+                  <span>25&apos;</span>
+                  <p>SFL Prize-Pool</p>
+                </div>
               </div>
             </div>
           </div>
+          <h1>SFL Prize_Pools</h1>
         </div>
-        <h1>SFL Prize_Pools</h1>
-      </div>
+      )}
     </header>
   ) : user ? (
     <>

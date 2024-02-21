@@ -106,34 +106,36 @@ const Home = () => {
       <LandingBanner />
       {/* <HomeMainBanner /> */}
 
-      <div style={{ height: '81px' }}></div>
-
-      {/* popular leagues */}
-      <h2 style={{ marginBottom: '24px', color: '#fff' }}>Your Leagues</h2>
-      <Carousel
-        swipeable={true}
-        draggable={true}
-        showDots={false}
-        responsive={responsive}
-        arrows={false}
-        infinite={true}
-        autoPlay={true}
-        autoPlaySpeed={3000}
-        keyBoardControl={true}
-      >
-        {leagues
-          ? leagues?.userLeagues?.map((value, index) => (
+      {leagues?.userLeagues?.length > 0 ? (
+        <>
+          <div style={{ height: '81px' }}></div>
+          <h2 style={{ marginBottom: '24px', color: '#fff' }}>Your Leagues</h2>
+          <Carousel
+            swipeable={true}
+            draggable={true}
+            showDots={false}
+            responsive={responsive}
+            arrows={false}
+            infinite={true}
+            autoPlay={true}
+            autoPlaySpeed={3000}
+            keyBoardControl={true}
+          >
+            {leagues?.userLeagues?.map((value, index) => (
               <div className='carousel-card' key={index}>
                 <PopularLeagueCard
-                  data={value} 
+                  data={value}
                   active={user?.team?.currentLeague?._id === value?._id ? true : false}
                   // active={true}
                   yourLeague={true}
                 />
               </div>
-            ))
-          : <div></div>}
-      </Carousel>
+            ))}
+          </Carousel>
+        </>
+      ) : (
+        <div></div>
+      )}
       <div style={{ height: '81px' }}></div>
 
       <h2 style={{ marginBottom: '24px', color: '#fff' }}>Popular Leagues</h2>
@@ -149,15 +151,19 @@ const Home = () => {
         keyBoardControl={true}
       >
         <div>
-         <CreateLeague />
+          <CreateLeague />
         </div>
-        {leagues
-          ? leagues?.nonUserLeagues?.map((value, index) => (
+        {leagues ? (
+          leagues?.nonUserLeagues
+            ?.filter((v) => v?.leagueType !== 'professional')
+            ?.map((value, index) => (
               <div className='carousel-card' key={index}>
                 <PopularLeagueCard data={value} active={false} yourLeague={false} />
               </div>
             ))
-          : <div></div>}
+        ) : (
+          <div></div>
+        )}
       </Carousel>
 
       <AmericalFootballBanner />
@@ -167,7 +173,8 @@ const Home = () => {
       <Carousel
         swipeable={true}
         draggable={true}
-        showDots={false}user
+        showDots={false}
+        user
         responsive={responsive}
         arrows={false}
         infinite={true}

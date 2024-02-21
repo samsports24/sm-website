@@ -11,6 +11,7 @@ import {
   Radio,
   Rate,
   Divider,
+  notification,
 } from 'antd'
 import LeagueEmptyCard from '../NewPopularLeagueCard/EmptyCard'
 import { joinLeagueFromPlatform } from '../../redux'
@@ -20,7 +21,16 @@ const JoinLeague = ({ data }) => {
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
 
-  const showModal = () => setIsModalVisible(true)
+  const showModal = () => {
+    if (data?.teams?.length >= 32) {
+      notification.error({
+        description: 'League full',
+        duration: 3,
+      })
+    } else {
+      setIsModalVisible(true)
+    }
+  }
   const handleCancel = () => {
     setIsModalVisible(false)
   }
