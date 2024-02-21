@@ -14,6 +14,7 @@ import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import { useSelector, useDispatch } from 'react-redux'
 import { getUser } from '../redux'
 import { updateTeam } from '../redux/actions/teamActions'
+import ConnectWallet from '../components/ConnectWallet'
 
 const TeamSetting = () => {
   const user = useSelector((state) => state.user.userDetails)
@@ -142,7 +143,7 @@ const TeamSetting = () => {
             },
           ]}
         >
-          <Row gutter={[30, 30]}>
+          <Row gutter={[30, 30]} align={"middle"}>
             <Col xs={24}>
               <div className='header'>
                 <h2>TEAM SETTINGS</h2>
@@ -217,6 +218,10 @@ const TeamSetting = () => {
                 <Input placeholder='www.twitter.com/teamname' />
               </Form.Item>
             </Col>
+
+            {/* <Col xs={24} lg={12} xl={8}>
+              <ConnectWallet />
+            </Col> */}
 
             <Col xs={24}>
               <Form.Item>
