@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.96747b7b.css",
-    "main.js": "/static/js/main.af3f128d.js",
+    "main.css": "/static/css/main.3434b5c2.css",
+    "main.js": "/static/js/main.f118dae5.js",
     "static/media/fantasy-sports-video.mp4": "/static/media/fantasy-sports-video.c5175e93ee3d160c3055.mp4",
     "static/media/SAMBOWL24.png": "/static/media/SAMBOWL24.1f68633ca81992f0b1d0.png",
     "static/media/Soccer_banner_edit.png": "/static/media/Soccer_banner_edit.892d54c94b5955e95f8e.png",
@@ -95,7 +95,6 @@
     "static/media/kraken.png": "/static/media/kraken.5fcf73ba2a710704d39e.png",
     "static/media/circa_sports_trout.png": "/static/media/circa_sports_trout.69b03c8faccd7a550854.png",
     "static/media/kingsmen.png": "/static/media/kingsmen.074aba69493def47aa78.png",
-    "static/media/trout-square-1.png": "/static/media/trout-square-1.bb9e80ae2ca8a03adb23.png",
     "static/media/storm_breakers.png": "/static/media/storm_breakers.9a53eb091a5b62403f18.png",
     "static/media/rowdys.png": "/static/media/rowdys.dae14b8cfb1ec35a76ac.png",
     "static/media/the_resistance.png": "/static/media/the_resistance.2553d75b9a2946c9cbc5.png",
@@ -113,6 +112,7 @@
     "static/media/the_beast.png": "/static/media/the_beast.c764e52f4a29f5eaf762.png",
     "static/media/community-btn-bg.png": "/static/media/community-btn-bg.6867d09cbcf5b1ae866d.png",
     "static/media/empire.png": "/static/media/empire.baf785a7a3bc4f7e9abf.png",
+    "static/media/comissioner.png": "/static/media/comissioner.40df64de502bc2b367e5.png",
     "static/media/the_flying_foxes.png": "/static/media/the_flying_foxes.5ef4036d2b43115b4eb7.png",
     "static/media/seven_angles.png": "/static/media/seven_angles.0589342f7faab083a0ce.png",
     "static/media/surfdogs.png": "/static/media/surfdogs.fd7a456868d9d29499f3.png",
@@ -151,11 +151,11 @@
     "static/media/arrow-right.svg": "/static/media/arrow-right.f306c848a5e7963bf1d2d5dd16212c01.svg",
     "static/media/youtube.svg": "/static/media/youtube.7af310466ac639302e497d811125f845.svg",
     "static/media/fb.svg": "/static/media/fb.16c5459973b0c91dc2db50341cb0e76e.svg",
-    "main.96747b7b.css.map": "/static/css/main.96747b7b.css.map",
-    "main.af3f128d.js.map": "/static/js/main.af3f128d.js.map"
+    "main.3434b5c2.css.map": "/static/css/main.3434b5c2.css.map",
+    "main.f118dae5.js.map": "/static/js/main.f118dae5.js.map"
   },
   "entrypoints": [
-    "static/css/main.96747b7b.css",
-    "static/js/main.af3f128d.js"
+    "static/css/main.3434b5c2.css",
+    "static/js/main.f118dae5.js"
   ]
 }
