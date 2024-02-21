@@ -14,6 +14,8 @@
   line-height: 30px;
   background: var(--primaryPurple);
   border-radius: 16px;
+  height: 250px;
+  overflow-y: auto;
 }
 .feedback-card p span {
   color: rgba(255, 255, 255, 0.5);

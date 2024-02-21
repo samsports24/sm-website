@@ -15,6 +15,7 @@ import {
 } from 'antd'
 import LeagueEmptyCard from '../NewPopularLeagueCard/EmptyCard'
 import { joinLeagueFromPlatform } from '../../redux'
+import { landingSignup } from '../../config/constants'
 
 const JoinLeague = ({ data }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -22,13 +23,17 @@ const JoinLeague = ({ data }) => {
   const [form] = Form.useForm()
 
   const showModal = () => {
-    if (data?.teams?.length >= 32) {
-      notification.error({
-        description: 'League full',
-        duration: 3,
-      })
+    if (localStorage.getItem('token')) {
+      if (data?.teams?.length >= 32) {
+        notification.error({
+          description: 'League full',
+          duration: 3,
+        })
+      } else {
+        setIsModalVisible(true)
+      }
     } else {
-      setIsModalVisible(true)
+      landingSignup()
     }
   }
   const handleCancel = () => {

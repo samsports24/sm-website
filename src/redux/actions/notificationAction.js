@@ -20,20 +20,22 @@ export const getAllNotification = async (payload) => {
 export const getNotiCount = () => {
   return async (dispatch) => {
     const id = localStorage.getItem('userId')
-    try {
-      attachToken()
-      const res = await publicAPI.get(`/notification/get-count/${id}`)
-      if (res) {
-        dispatch({
-          type: 'SET_NOTIFICATION_COUNT',
-          payload: res?.data?.data,
+    if (id) {
+      try {
+        attachToken()
+        const res = await publicAPI.get(`/notification/get-count/${id}`)
+        if (res) {
+          dispatch({
+            type: 'SET_NOTIFICATION_COUNT',
+            payload: res?.data?.data,
+          })
+        }
+      } catch (err) {
+        notification.error({
+          message: err?.response?.data?.message || 'Server Error',
+          duration: 3,
         })
       }
-    } catch (err) {
-      notification.error({
-        message: err?.response?.data?.message || 'Server Error',
-        duration: 3,
-      })
     }
   }
 }

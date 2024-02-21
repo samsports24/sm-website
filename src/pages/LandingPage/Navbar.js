@@ -19,12 +19,17 @@ const Navbar = () => {
           <img src={Logo} alt='logo' className='logo' />
           <img src={Title} alt='samsports' className='title' />
           <div className='links'>
-            {
-              serverUrls.map(item => (
-                <span key={item.key} onClick={() => {      window.open(`${item.frontEndUrl}`, '_self', 'noreferrer')
-              }}>{item.name}</span>
-              ))
-            }
+            {serverUrls.map((item) => (
+              <span
+                style={{ color: item?.disabled ? 'gray' : '#fff' }}
+                key={item.key}
+                onClick={() => {
+                  if (!item?.disabled) window.open(`${item.frontEndUrl}`, '_self', 'noreferrer')
+                }}
+              >
+                {item.name}
+              </span>
+            ))}
             {/* <span>Baseball</span>
             <span>Hockey</span>
             <span>US Football</span>

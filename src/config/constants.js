@@ -6,6 +6,9 @@ import { getNotiCount } from '../redux/actions/notificationAction'
 export const base_url = 'https://backend.samsports.io'
 // export const base_url = 'http://localhost:8000'
 
+// export const frontEndUrl = 'http://localhost:3000'
+export const frontEndUrl = 'https://samsports.io'
+
 export const publicAPI = Axios.create({ baseURL: base_url })
 
 export const privateAPI = Axios.create({ baseURL: base_url })
@@ -31,7 +34,7 @@ export const isLocked = () => {
   // true is when we have selected current week
 }
 
-export const version = '2.0.2'
+export const version = '2.0.4'
 
 export const activeRosterCount = 53
 export const practiceRosterCount = 53
@@ -41,50 +44,60 @@ export const nonActivePlayers = 7
 
 export const leagueSalaryCap = 199759446
 
+export const landingSignup = () => window.open(frontEndUrl, '_self')
+
 export const includedTeams = ['64e5ee7d6e36d01a688fc6e1', '64e5ee7d6e36d01a688fc6d2']
 export const serverUrls = [
   {
     key: 'football',
     name: 'Football',
-    url: 'http://localhost:8000',
-    frontEndUrl: 'http://localhost:3000',
+    url: base_url,
+    frontEndUrl: `${frontEndUrl}/fantasy-league`,
     // url : 'https://backend.samsports.io'
+    disabled: false,
+  },
+  {
+    key: 'hockey',
+    name: 'Hockey',
+    url: 'https://hockeybackend.samsports.io',
+    frontEndUrl: 'https://hockey.samsports.io',
+    // frontEndUrl: 'http://localhost:3002',
+    // url: 'http://localhost:9000',
+    disabled: false,
   },
   {
     key: 'baseball',
     name: 'Baseball',
     url: 'https://baseballbackend.samsports.io',
     frontEndUrl: 'http://localhost:3000',
-  },
-  {
-    key: 'hockey',
-    name: 'Hockey',
-    // url: 'https://hockeybackend.samsports.io',
-    url: 'http://localhost:9000',
-    frontEndUrl: 'http://localhost:3002',
+    disabled: true,
   },
   {
     key: 'college_football',
     name: 'College Football',
     url: 'https://collegefootballbackend.samsports.io',
     frontEndUrl: 'http://localhost:3000',
+    disabled: true,
   },
   {
     key: 'basketball',
     name: 'Basketball',
     url: 'https://basketballbackend.samsports.io',
     frontEndUrl: 'http://localhost:3000',
+    disabled: true,
   },
   {
     key: 'eleven_fc',
     name: 'Eleven F.C',
     url: 'https://elevenfcbackend.samsports.io',
     frontEndUrl: 'http://localhost:3000',
+    disabled: true,
   },
   {
     key: 'scouts',
     name: 'Scouting',
     url: 'https://scoutsbackend.samsports.io',
     frontEndUrl: 'http://localhost:3000',
+    disabled: true,
   },
 ]

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Modal, Button, Input, Form, Row, Col, DatePicker, Avatar, Radio, Rate } from 'antd'
 import LeagueEmptyCard from '../NewPopularLeagueCard/EmptyCard'
 import { createNewLeagueFromDashboard } from '../../redux'
+import { landingSignup } from '../../config/constants'
 
 const CreateLeague = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -11,7 +12,13 @@ const CreateLeague = () => {
   const [file, setFile] = useState(null)
   const [isPrivate, setIsPrivate] = useState(false)
 
-  const showModal = () => setIsModalVisible(true)
+  const showModal = () => {
+    if (localStorage.getItem('token')) {
+      setIsModalVisible(true)
+    } else {
+      landingSignup()
+    }
+  }
   const handleCancel = () => {
     setIsModalVisible(false)
     form.resetFields()

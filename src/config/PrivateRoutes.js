@@ -3,25 +3,30 @@ import Layout from '../layout/Layout'
 import { useEffect } from 'react'
 import { version } from './constants'
 import { notification } from 'antd'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { removeLeague } from '../redux'
 
 const PrivateWrapper = () => {
   const { pathname } = useLocation()
   const isAuthenticated = localStorage.getItem('token')
   const user = useSelector((state) => state.user.userDetails)
 
-
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    if (localStorage.getItem('version') !== version) {
-      navigate('/login')
+    const _version = localStorage.getItem('version')
+    if (_version && _version !== version) {
       localStorage.clear()
       localStorage.setItem('version', version)
-      notification.error({
-        message: `Try login again!`,
-        duration: 6,
-      })
+      dispatch(removeLeague())
+      setTimeout(() => {
+        navigate('/fantasy-league')
+        notification.error({
+          message: `Try Login Again!`,
+          duration: 6,
+        })
+      }, 2000)
     }
   }, [])
 
@@ -36,7 +41,7 @@ const PrivateWrapper = () => {
       </Layout>
     )
   } else {
-    return <Navigate to='/login' />
+    return <Navigate to='/fantasy-league' />
   }
 
   // if (isAuthenticated && user?.team?.currentLeague) {

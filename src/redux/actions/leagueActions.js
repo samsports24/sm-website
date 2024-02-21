@@ -4,6 +4,13 @@ import store from '../store'
 import { getUser } from './authActions'
 import axios from 'axios'
 
+export const removeLeague = () => {
+  return {
+    type: 'REMOVE_LEAGUES',
+    payload: null,
+  }
+}
+
 export const getProfessionalLeagueRanks = async (week) => {
   try {
     attachToken()
@@ -194,6 +201,24 @@ export const getUserLeagues = async (payload) => {
   try {
     attachToken()
     const res = await privateAPI.get(`/league/get-by-user-id`)
+    if (res) {
+      store.dispatch({
+        type: 'GET_USER_LEAGUES',
+        payload: res.data.data,
+      })
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const getLandingLeagues = async () => {
+  try {
+    const res = await publicAPI.get(`/league/home-leagues`)
     if (res) {
       store.dispatch({
         type: 'GET_USER_LEAGUES',

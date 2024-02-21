@@ -15,16 +15,16 @@ const SelectGame = () => {
       disabled: false,
     },
     {
-      key: 'baseball',
-      name: 'Baseball',
-      imagePath: 'baseball.png',
-      disabled: false,
-    },
-    {
       key: 'hockey',
       name: 'Hockey',
       imagePath: 'hockey.png',
       disabled: false,
+    },
+    {
+      key: 'baseball',
+      name: 'Baseball',
+      imagePath: 'baseball.png',
+      disabled: true,
     },
     {
       key: 'college_football',

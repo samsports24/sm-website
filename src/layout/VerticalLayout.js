@@ -12,15 +12,21 @@ import {
   useNavigate,
   // useLocation
 } from 'react-router-dom'
+import LoginDropdown from './LoginDropdown'
+import { landingSignup } from '../config/constants'
+import { removeLeague } from '../redux'
+import { useDispatch } from 'react-redux'
 // import { isAuthenticated } from '../functions/auth'
 
 const VerticalLayout = ({ children, active }) => {
   const { Sider, Content } = Layout
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   // const { pathname } = useLocation()
 
   const logout = () => {
-    navigate('/login')
+    navigate('/fantasy-league')
+    dispatch(removeLeague())
     localStorage.removeItem('token')
   }
   const login = () => navigate('/login')
@@ -58,7 +64,12 @@ const VerticalLayout = ({ children, active }) => {
             boxShadow: 'box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px',
           }}
         >
-          <div onClick={() => {navigate("/")}} className='company-logo'>
+          <div
+            onClick={() => {
+              navigate('/')
+            }}
+            className='company-logo'
+          >
             <img src={Logo} alt='image' />
           </div>
           <MainMenu active={active} />
@@ -147,10 +158,11 @@ const VerticalLayout = ({ children, active }) => {
               </div>
             ) : (
               <div className='auth-buttons'>
-                <Button type='default' onClick={login}>
+                {/* <Button type='default' onClick={login}>
                   Login
-                </Button>
-                <Button type='primary' onClick={signup}>
+                </Button> */}
+                <LoginDropdown loginFromNavbar />
+                <Button type='primary' onClick={landingSignup}>
                   Sign Up
                 </Button>
               </div>

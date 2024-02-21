@@ -7,6 +7,7 @@ import Routes from './Routes'
 import { light, dark } from './theme'
 import { getUser } from '../redux'
 import { ethers } from 'ethers'
+import { version } from './constants'
 // import { version } from './constants'
 // import { notification } from 'antd'
 
@@ -79,13 +80,13 @@ const App = () => {
 
   useEffect(() => {
     // connectWallet()
-
-    // if (localStorage.getItem('version') !== version) {
-    //   window.location.href = '/login'
+    // const _version = localStorage.getItem('version')
+    // if (_version && _version !== version) {
+    //   window.location.href = '/fantasy-league'
     //   localStorage.clear()
     //   localStorage.setItem('version', version)
     //   notification.error({
-    //     message: `Try login again!`,
+    //     message: `Try Login Again!`,
     //     duration: 6,
     //   })
     // }

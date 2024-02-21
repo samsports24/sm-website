@@ -1,0 +1,35 @@
+.login_dropdown_box {
+  width: 300px;
+}
+.login_dropdown_box .ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item {
+  cursor: initial !important;
+}
+
+.login_dropdown_box .ant-input-affix-wrapper {
+  background-color: transparent !important;
+}
+
+.login_dropdown_box .title span {
+  display: flex;
+}
+
+.login_dropdown_box .title h1 {
+  color: var(--heading) !important;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: normal;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.login_dropdown_box .title h2 {
+  margin-bottom: 10px;
+}
+
+@media (max-width: 370px) {
+  .login_dropdown_box {
+    width: 100%;
+  }
+}

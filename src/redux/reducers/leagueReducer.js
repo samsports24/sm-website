@@ -20,6 +20,14 @@ const leagueReducer = (state = initialState, action) => {
         currentLeague: payload,
       }
     }
+    case 'REMOVE_LEAGUES': {
+      return {
+        ...state,
+        userLeagues: [],
+        nonUserLeagues: [],
+        currentLeague: [],
+      }
+    }
     default:
       return state
   }

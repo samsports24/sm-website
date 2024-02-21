@@ -17,7 +17,7 @@ import { popularSportsData, clientFeedbacksData } from './mockData'
 import { useSelector } from 'react-redux'
 import SportsButtonMenu from '../components/SportsButtonMenu'
 import { useEffect, useState } from 'react'
-import { getUserLeagues } from '../redux'
+import { getLandingLeagues, getUserLeagues } from '../redux'
 import CreateLeague from '../components/modal/CreateLeague'
 
 const Home = () => {
@@ -73,6 +73,8 @@ const Home = () => {
   const getData = async () => {
     if (isAuthenticated) {
       await getUserLeagues()
+    } else {
+      await getLandingLeagues()
     }
   }
   useEffect(() => {

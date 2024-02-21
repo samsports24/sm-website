@@ -28,7 +28,9 @@ const ProfessionalLeague = () => {
   const [isLoading, setIsloading] = useState(true)
 
   useEffect(() => {
-    getTeamAndPlayerRank()
+    if (localStorage.getItem('token')) {
+      getTeamAndPlayerRank()
+    }
   }, [SETTING?.week])
 
   const getTeamAndPlayerRank = async () => {
@@ -61,7 +63,7 @@ const ProfessionalLeague = () => {
         <>
           <HeadingAndWeek />
 
-        {teamSchedule?.length > 0 &&  <TeamScheduleCustomCarousel data={teamSchedule} />}
+          {teamSchedule?.length > 0 && <TeamScheduleCustomCarousel data={teamSchedule} />}
           {/* <TeamScheduleCarousel data={teamSchedule} /> */}
 
           <section className='league_details_container'>

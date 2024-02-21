@@ -184,8 +184,8 @@ const Routers = () => {
         </Route>
 
         {/* <Route path='/login-screen2' element={<Login2 />} /> */}
-        <Route path='/login' element={<Login />} />
-        <Route path='/sign-up' element={<SignUp />} />
+        {/* <Route path='/login' element={<Login />} />
+        <Route path='/sign-up' element={<SignUp />} /> */}
         <Route path='/forgot-password' element={<ForgotPassword />} />
         <Route path='/authentication' element={<Authentication />} />
         <Route path='/' element={<LandingPage />} />

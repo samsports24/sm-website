@@ -21,8 +21,10 @@ import { TbLivePhoto } from 'react-icons/tb'
 import { AiOutlineSetting, AiOutlineSchedule } from 'react-icons/ai'
 import comissioner from '../assets/comissioner.png'
 import { useSelector } from 'react-redux'
+import { landingSignup } from '../config/constants'
+import LoginDropdown from './LoginDropdown'
 
-const MainMenu = () => {
+const MainMenu = ({ visible }) => {
   const isAuthenticated = localStorage.getItem('token')
   const navigate = useNavigate()
   const login = () => navigate('/login')
@@ -280,12 +282,21 @@ const MainMenu = () => {
         </div>
       </div>
 
-      <Button className='login-btn mobile' onClick={login}>
+      {!isAuthenticated && (
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <LoginDropdown loginFromSideMenu drawerVisible={visible} />
+          <Button className='login-btn signup-btn mobile' onClick={landingSignup}>
+            Sign Up
+          </Button>
+        </div>
+      )}
+
+      {/* <Button className='login-btn mobile' onClick={login}>
         Login
       </Button>
       <Button className='login-btn signup-btn mobile' onClick={signUp}>
         Sign Up
-      </Button>
+      </Button> */}
     </>
   )
 }

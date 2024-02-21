@@ -32,7 +32,7 @@
   background-color: var(--primaryPurple);
 
   position: fixed;
-  z-index: 999;
+  z-index: 9999;
 }
 .main-landing .empty-navbar {
   width: 100%;
