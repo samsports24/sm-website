@@ -87,13 +87,15 @@ const LeagueStandingCard = ({ data, index, teams }) => {
         {data?.conference} - {data?._id}
       </h3>
       {data?.standing?.map((v) => {
-        const team = teams.find((x) => v?.teamId === x?._id)
+        // const team = teams.find((x) => v?.teamId === x?._id)
         return (
-          <div key={team?.name} className='table_card'>
+          <div key={v?.team?.name} className='table_card'>
             <div className='table_header'>
-              <h3 onClick={() => handleNavigate(v?.teamId)}>{team?.name}</h3>
+              <h3 onClick={() => handleNavigate(v?.teamId)}>{v?.team?.name}</h3>
               <div>
-                <h4 onClick={() => handleStartersNavigate(v?.teamId, team?.name)}>View Starters</h4>
+                <h4 onClick={() => handleStartersNavigate(v?.teamId, v?.team?.name)}>
+                  View Starters
+                </h4>
               </div>
             </div>
             <div className='table_body'>
@@ -102,7 +104,7 @@ const LeagueStandingCard = ({ data, index, teams }) => {
                 style={{ cursor: 'pointer' }}
                 onClick={() => handleNavigate(v?.teamId)}
               >
-                <img src={team?.logo} alt={v?.team?.name} />
+                <img src={v?.team?.logo} alt={v?.team?.name} />
               </div>
               <div className='main_ls_table'>
                 <Table
@@ -126,7 +128,6 @@ const LeagueStandingCard = ({ data, index, teams }) => {
                   pagination={false}
                   size='small'
                   scroll={{ x: 800 }}
-                  // rowKey={'_id'}
                 />
               </div>
             </div>

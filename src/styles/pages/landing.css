@@ -206,9 +206,25 @@
   padding-bottom: 3rem;
   background-color: var(--primaryPurple);
 }
+.main-landing .leagues .carouselBoxWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.main-landing .leagues .carouselBoxWrapper .carouselBox {
+  width: 1410px !important;
+}
+
 .main-landing .leagues .logo_image {
   width: 200px;
   height: auto;
+}
+
+@media (max-width: 1550px) {
+  .main-landing .leagues .carouselBoxWrapper .carouselBox {
+    width: 100% !important;
+  }
 }
 
 /* Improve Team Section */

@@ -3,11 +3,11 @@ import store from '../redux/store'
 import { getNotiCount } from '../redux/actions/notificationAction'
 
 // export const base_url = 'http://192.168.100.16:8000'
-export const base_url = 'https://backend.samsports.io'
-// export const base_url = 'http://localhost:8000'
+// export const base_url = 'https://backend.samsports.io'
+export const base_url = 'http://localhost:8000'
 
-// export const frontEndUrl = 'http://localhost:3000'
-export const frontEndUrl = 'https://samsports.io'
+export const frontEndUrl = 'http://localhost:3000'
+// export const frontEndUrl = 'https://samsports.io'
 
 export const publicAPI = Axios.create({ baseURL: base_url })
 

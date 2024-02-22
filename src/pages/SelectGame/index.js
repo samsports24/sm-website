@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import SelectGameLeft from './SelectGameLeft'
 import SelectGameRight from './SelectGameRight'
 
+import { IoIosArrowRoundBack } from 'react-icons/io'
+
 const SelectGame = () => {
   const [game, setGame] = useState('')
   const navigate = useNavigate()
@@ -54,8 +56,12 @@ const SelectGame = () => {
 
   return (
     <div className='select_game_container'>
-      <SelectGameLeft />
+      <SelectGameLeft logo={'ultimate-sports.png'} />
       <SelectGameRight>
+        <div className='back_box' onClick={() => navigate(-1)}>
+          <IoIosArrowRoundBack color='#fff' size={30} />
+          <p>Back</p>
+        </div>
         <div className='top_section'>
           <p style={{ marginBottom: '5px' }}>Choose your Fantasy sport, level and leagues!</p>
           <p>(please note that the pro leagues are on invitation only)</p>

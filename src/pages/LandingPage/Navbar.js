@@ -63,8 +63,10 @@ const DrawerMenu = () => {
   const showDrawer = () => setOpen(true)
   const onClose = () => setOpen(false)
 
+  const navigate = useNavigate()
+
   const handleNavigate = (navigateTo) => {
-    console.log(navigateTo)
+    navigate(navigateTo)
     onClose()
   }
 
@@ -82,29 +84,29 @@ const DrawerMenu = () => {
             <img src={SamLogo} alt='Logo' />
           </div>
           <div className='menu_item_box'>
-            <div className='menu_item' onClick={() => handleNavigate('/')}>
+            <div className='menu_item' onClick={() => window.open('https://samsports.io', '_self')}>
               <p>Football</p>
             </div>
-            <div className='menu_item' onClick={() => handleNavigate('/')}>
-              <p>Baseball</p>
-            </div>
-            <div className='menu_item' onClick={() => handleNavigate('/')}>
+            <div
+              className='menu_item'
+              onClick={() => window.open('https://hockey.samsports.io', '_self')}
+            >
               <p>Hockey</p>
             </div>
-            <div className='menu_item' onClick={() => handleNavigate('/')}>
-              <p>US Football</p>
+            <div className='menu_item' onClick={() => {}}>
+              <p className='grayColor'>Baseball</p>
             </div>
-            <div className='menu_item' onClick={() => handleNavigate('/')}>
-              <p>College Football</p>
+            <div className='menu_item' onClick={() => {}}>
+              <p className='grayColor'>US Football</p>
             </div>
-            <div className='menu_item' onClick={() => handleNavigate('/')}>
-              <p>Scouting</p>
+            <div className='menu_item' onClick={() => {}}>
+              <p className='grayColor'>College Football</p>
             </div>
-            <div className='menu_item' onClick={() => handleNavigate('/')}>
-              <p>Login</p>
+            <div className='menu_item' onClick={() => {}}>
+              <p className='grayColor'>Scouting</p>
             </div>
             <div className='menu_item' onClick={() => handleNavigate('/select-game')}>
-              <p>Signup</p>
+              <p>Join Now</p>
             </div>
           </div>
         </div>

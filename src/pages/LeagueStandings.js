@@ -17,9 +17,11 @@ const LeagueStandings = () => {
   useEffect(() => {
     getData()
   }, [setting?.week])
+
   const getData = async () => {
     setLoading(true)
     let data = await getLeagueStandings(setting?.week)
+    console.log('🚀 ~ getData ~ data:', data)
     setStandings(data)
     setLoading(false)
   }

@@ -466,3 +466,7 @@ p {
 .noDrop {
   cursor: no-drop !important;
 }
+
+.grayColor {
+  color: gray !important;
+}

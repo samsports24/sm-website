@@ -40,11 +40,15 @@ const LeagueSection = () => {
         same decision making processes of real life GM
       </p>
       <Divider style={{ borderColor: 'white', borderWidth: '2px' }} />
-      <CustomCarousel>
-        {images.map((v, i) => {
-          return <img className='logo_image' key={i} src={v?.image} alt={v?.alt} />
-        })}
-      </CustomCarousel>
+      <div className='carouselBoxWrapper'>
+        <div className='carouselBox'>
+          <CustomCarousel>
+            {images.map((v, i) => {
+              return <img className='logo_image' key={i} src={v?.image} alt={v?.alt} />
+            })}
+          </CustomCarousel>
+        </div>
+      </div>
     </div>
   )
 }
