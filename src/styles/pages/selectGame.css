@@ -77,25 +77,68 @@
 }
 
 .select_game_container .select_game_right .bottom_section {
-  padding: 30px 0px;
+  padding: 0px 0px;
   display: flex;
   flex-direction: row;
   justify-content: center;
   flex-wrap: wrap;
+  margin-top: 10px;
 }
 .select_game_container .select_game_right .bottom_section .image_box {
   border: 1px solid transparent;
   border-radius: 16px;
 }
 .select_game_container .select_game_right .bottom_section .activeGame {
-  border: 1px solid var(--border);
+  border: 1px solid var(--primary);
 }
 .select_game_container .select_game_right .bottom_section .image_box:hover {
-  border: 1px solid var(--border);
+  border: 1px solid var(--primary);
 }
 .select_game_container .select_game_right .bottom_section .image_box img {
   width: 200px;
   height: auto;
+}
+
+/* Form Section */
+.select_game_container .signup_form_box {
+  width: 100%;
+  margin-top: 30px;
+  border-radius: 16px !important;
+  background: url('../../assets/bubble-overlay2.png') no-repeat center;
+  background-size: contain;
+}
+
+.signup_body {
+  width: 100%;
+  padding: 38px 33px !important;
+  border-radius: 16px !important;
+  border: 1px solid #289fc9 !important;
+  background-color: rgba(48, 33, 93, 0.4) !important;
+  backdrop-filter: blur(12px) !important;
+}
+.signup_body > h1 {
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+.signup_body > h1 .back_arrow {
+  margin-bottom: -5px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.signup_body .ant-picker,
+.cjl_container .ant-picker {
+  background-color: transparent !important;
+}
+
+.signup_body .ant-select-selector {
+  border: 2px solid #fff !important;
+}
+
+.signup_body
+  .ant-select-status-error:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer)
+  .ant-select-selector {
+  border-color: #ff7875 !important;
 }
 
 @media (max-width: 1023px) {

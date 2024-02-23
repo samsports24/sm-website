@@ -31,7 +31,6 @@ export const authSignupAdvanced = async (payload, navigate) => {
     if (res) {
       localStorage.setItem('version', version)
       localStorage.setItem('email', payload.email)
-      // attachToken()
       notification.success({
         description: res.data.data.message,
         duration: 2,
