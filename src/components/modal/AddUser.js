@@ -3,7 +3,7 @@ import { Modal, Button, Input, Form, Select } from 'antd'
 import { createStaff, updateStaff } from '../../redux'
 import { HiPencil } from 'react-icons/hi'
 
-const AddUser = ({ edit, data }) => {
+const AddUser = ({ edit, data, getData }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
@@ -26,9 +26,17 @@ const AddUser = ({ edit, data }) => {
 
     if (edit) {
       delete obj.password
-      await updateStaff({ ...obj, id: data?._id })
+      const res = await updateStaff({ ...obj, id: data?._id })
+      if (res) {
+        handleCancel()
+        getData()
+      }
     } else {
-      await createStaff(obj)
+      const res = await createStaff(obj)
+      if (res) {
+        handleCancel()
+        getData()
+      }
     }
 
     setLoading(false)

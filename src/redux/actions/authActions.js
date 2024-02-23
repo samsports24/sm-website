@@ -241,6 +241,7 @@ export const createStaff = async (payload) => {
         duration: 3,
       })
     }
+    return res
   } catch (err) {
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
@@ -259,6 +260,7 @@ export const updateStaff = async (payload) => {
         duration: 3,
       })
     }
+    return res
   } catch (err) {
     notification.error({
       message: err?.response?.data?.message || 'Server Error',

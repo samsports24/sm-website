@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.3613504e.css",
-    "main.js": "/static/js/main.ce5e8915.js",
+    "main.css": "/static/css/main.5808e2ff.css",
+    "main.js": "/static/js/main.5228c6ad.js",
     "static/media/fantasy-sports-video.mp4": "/static/media/fantasy-sports-video.c5175e93ee3d160c3055.mp4",
     "static/media/SAMBOWL24.png": "/static/media/SAMBOWL24.1f68633ca81992f0b1d0.png",
     "static/media/Soccer_banner_edit.png": "/static/media/Soccer_banner_edit.892d54c94b5955e95f8e.png",
@@ -12,6 +12,7 @@
     "static/media/trans-league-banner.png": "/static/media/trans-league-banner.c6b03968a9f61ec4cad1.png",
     "static/media/rectangle-3.png": "/static/media/rectangle-3.aebbca7e8e6696c5f7c4.png",
     "static/media/login-pic-1.png": "/static/media/login-pic-1.38add10a7452b82cda4b.png",
+    "static/media/bubble-overlay2.png": "/static/media/bubble-overlay2.5ffcad2a3a16b13bac5b.png",
     "static/media/eleven-fc.png": "/static/media/eleven-fc.aa047eebe664f4b6d291.png",
     "static/media/banner-img-tab.png": "/static/media/banner-img-tab.aed4890e8ac288d1846e.png",
     "static/media/baseball_banner.png": "/static/media/baseball_banner.940bcc97f33ebb9ba5e8.png",
@@ -151,11 +152,11 @@
     "static/media/arrow-right.svg": "/static/media/arrow-right.fa8032f7bdce2c4cee175e363666f7ca.svg",
     "static/media/youtube.svg": "/static/media/youtube.ed864766e3b013e4e67a2b38107f1313.svg",
     "static/media/fb.svg": "/static/media/fb.99d8a901875e4a0b67073c0d8b4b57fa.svg",
-    "main.3613504e.css.map": "/static/css/main.3613504e.css.map",
-    "main.ce5e8915.js.map": "/static/js/main.ce5e8915.js.map"
+    "main.5808e2ff.css.map": "/static/css/main.5808e2ff.css.map",
+    "main.5228c6ad.js.map": "/static/js/main.5228c6ad.js.map"
   },
   "entrypoints": [
-    "static/css/main.3613504e.css",
-    "static/js/main.ce5e8915.js"
+    "static/css/main.5808e2ff.css",
+    "static/js/main.5228c6ad.js"
   ]
 }

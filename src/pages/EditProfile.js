@@ -444,10 +444,11 @@ const EditProfile = () => {
         <div className='profile staff'>
           <div className='title'>
             <h2>My Staff</h2>
-            <AddUser />
+            <AddUser getData={getData} />
           </div>
           <div className=''>
             <Table
+              loading={staffLoading}
               columns={[
                 {
                   dataIndex: 'no',
@@ -476,7 +477,7 @@ const EditProfile = () => {
                 name: staff?.name,
                 email: staff?.email,
                 type: staff?.userType?.toUpperCase(),
-                action: <AddUser edit={true} data={staff} />,
+                action: <AddUser edit={true} data={staff} getData={getData} />,
               }))}
               size='small'
               pagination={false}

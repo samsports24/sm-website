@@ -3,10 +3,12 @@ import { Image, Badge, Spin } from 'antd'
 
 // Image
 import bellIcon from '../../assets/bell-icon.svg'
+// import circaImage from '../../assets/teams/circa_sports_trout.png'
 import logo from '../../assets/sam-football.png'
 import { useSelector } from 'react-redux'
 import { BiRightArrowAlt } from 'react-icons/bi'
 import { useNavigate } from 'react-router-dom'
+import RoutesButton from '../RoutesButton'
 import { leagueSalaryCap } from '../../config/constants'
 
 const Header = () => {
@@ -23,7 +25,7 @@ const Header = () => {
     navigate('/team-financials')
   }
 
-  return user && user?.team ? (
+  return user?.team ? (
     <header className='gd-header'>
       <div className='left'>
         <div className='image_div'>
@@ -128,6 +130,44 @@ const Header = () => {
         </div>
       )}
     </header>
+  ) : user ? (
+    <>
+      <header className='gd-header'>
+        <div className='center' style={!user ? { columnGap: '20px', rowGap: '0' } : null}>
+          <div className='title_box' style={!user ? { minHeight: '110px' } : null}>
+            <div>
+              <p style={{ marginBottom: '20px !important' }}>SFL Prize-Pool</p>
+              <h1>{`23' SAMS 1,491,526`}</h1>
+            </div>
+            <p>
+              <img src={bellIcon} alt='Icon' />
+            </p>
+          </div>
+          <div className='button_and_team_box'></div>
+        </div>
+        <div className='right'>
+          <div className='content'>
+            <div className='content2'>
+              <div className='image_div'>
+                <Image preview={false} src={logo} alt='UFAFL' />
+              </div>
+              <div className='content3'>
+                <div className='top' style={{ marginBottom: '12px' }}>
+                  <span>24&apos;</span>
+                  <p>SFL Prize-Pool</p>
+                </div>
+                <div className='top'>
+                  <span>25&apos;</span>
+                  <p>SFL Prize-Pool</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <RoutesButton />
+    </>
   ) : (
     <div className='empty_header'>
       <Spin />
