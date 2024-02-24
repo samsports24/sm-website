@@ -24,19 +24,19 @@ const NewSignUp = () => {
 
   const onFinish = async (values) => {
     setLoading(true)
-    if(values.termsAndCondtions){
-      let url = serverUrls.find(item => item.key === selectedGame)
+    if (values.termsAndCondtions) {
+      let url = serverUrls.find((item) => item.key === selectedGame)
       const obj = {
         ...values,
         dateOfBirth: dayjs(values?.dateOfBirth).toISOString(),
-        url : url.url
+        url: url.url,
       }
       console.log(obj)
       await authSignupAdvanced(obj, navigate)
-    }else{
+    } else {
       notification.warning({
-        message : "Please Accept Terms and Conditions",
-        duration : 4
+        message: 'Please Accept Terms and Conditions',
+        duration: 4,
       })
     }
     setLoading(false)
@@ -54,7 +54,7 @@ const NewSignUp = () => {
         <div className='signup_body'>
           <h1>
             <IoIosArrowRoundBack onClick={() => navigate('/select-game')} className='back_arrow' />
-            Create Your Account 
+            Create Your Account
             {/* <span style={{ fontSize: '16px' }}>({selectedGame})</span> */}
           </h1>
 
@@ -149,10 +149,10 @@ const NewSignUp = () => {
               <Col xs={24} md={12} xl={8}>
                 <Form.Item
                   name={'provience'}
-                  label='Provience'
+                  label='Province'
                   rules={[
                     {
-                      required: true,
+                      required: false,
                       message: 'Required!',
                     },
                   ]}
@@ -223,13 +223,15 @@ const NewSignUp = () => {
                   ]}
                 >
                   <Checkbox>
-                    I have read the   <a
-                  href='https://app.termly.io/document/terms-of-service/372d4c41-9267-4833-8bbb-aba80f6fbbb8'
-                  target='_blank'
-                  rel='noreferrer'
-                >
-                  Terms of Service and Privacy Policy 
-                </a> and agree to their terms and conditions.
+                    I have read the{' '}
+                    <a
+                      href='https://app.termly.io/document/terms-of-service/372d4c41-9267-4833-8bbb-aba80f6fbbb8'
+                      target='_blank'
+                      rel='noreferrer'
+                    >
+                      Terms of Service and Privacy Policy
+                    </a>{' '}
+                    and agree to their terms and conditions.
                   </Checkbox>
                 </Form.Item>
               </Col>

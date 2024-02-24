@@ -185,10 +185,10 @@ const SelectGame = () => {
                   <Col xs={24} md={12} xl={8}>
                     <Form.Item
                       name={'provience'}
-                      label='Provience'
+                      label='Province'
                       rules={[
                         {
-                          required: true,
+                          required: false,
                           message: 'Required!',
                         },
                       ]}
