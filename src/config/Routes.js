@@ -170,8 +170,8 @@ const Routers = () => {
           {/* <Route path='/' element={<Home />} /> */}
 
           {/* <Route path='/player-auction' element={<ComingSoon />} /> */}
-          {/* <Route path='/fantasy-league' element={<FantasyLeague />} /> */}
-          <Route path='/fantasy-league' element={<NewHomePage />} />
+          <Route path='/fantasy-league' element={<FantasyLeague />} />
+          {/* <Route path='/fantasy-league' element={<NewHomePage />} /> */}
           <Route path='/choose-your-game-step1' element={<ChooseYourGame />} />
           <Route path='/choose-your-league-step2' element={<ChooseYourLeague />} />
           <Route path='/choose-your-league-step3' element={<ChooseYourLeagueStep3 />} />

@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.5808e2ff.css",
-    "main.js": "/static/js/main.5228c6ad.js",
+    "main.css": "/static/css/main.d772e173.css",
+    "main.js": "/static/js/main.76e63723.js",
     "static/media/fantasy-sports-video.mp4": "/static/media/fantasy-sports-video.c5175e93ee3d160c3055.mp4",
     "static/media/SAMBOWL24.png": "/static/media/SAMBOWL24.1f68633ca81992f0b1d0.png",
     "static/media/Soccer_banner_edit.png": "/static/media/Soccer_banner_edit.892d54c94b5955e95f8e.png",
@@ -59,6 +59,7 @@
     "static/media/p.png": "/static/media/p.7abf13887a6146f76bfe.png",
     "static/media/lb.png": "/static/media/lb.8c78ca4ea33a1d65ae2a.png",
     "static/media/keith-johnston-basketball.png": "/static/media/keith-johnston-basketball.56806c3047d7eccd953f.png",
+    "static/media/football-lobby-1.jpg": "/static/media/football-lobby-1.f4205aa5aa37450ff8a5.jpg",
     "static/media/news-feed-1.jpg": "/static/media/news-feed-1.fab9de4160634381dbb5.jpg",
     "static/media/football.png": "/static/media/football.e4f0ee78653c1c73c5e9.png",
     "static/media/wjhockey.png": "/static/media/wjhockey.df2121a9e84311aac190.png",
@@ -83,6 +84,7 @@
     "static/media/player-img-8.png": "/static/media/player-img-8.0ebbd2953763551e6f59.png",
     "static/media/ellipse-38.png": "/static/media/ellipse-38.bcba954ab238f9583418.png",
     "static/media/player-img-4.png": "/static/media/player-img-4.e22b571c3b547c433159.png",
+    "static/media/home-box-bg.webp": "/static/media/home-box-bg.9669ca69307baf459887.webp",
     "static/media/sam-college-football.png": "/static/media/sam-college-football.3fed1dd8419a9eb0c7e3.png",
     "static/media/news-feed-3.jpg": "/static/media/news-feed-3.d0e8eef640a0f9e7bc73.jpg",
     "static/media/sam-legent-1.png": "/static/media/sam-legent-1.880dcb0889db06936048.png",
@@ -152,11 +154,11 @@
     "static/media/arrow-right.svg": "/static/media/arrow-right.fa8032f7bdce2c4cee175e363666f7ca.svg",
     "static/media/youtube.svg": "/static/media/youtube.ed864766e3b013e4e67a2b38107f1313.svg",
     "static/media/fb.svg": "/static/media/fb.99d8a901875e4a0b67073c0d8b4b57fa.svg",
-    "main.5808e2ff.css.map": "/static/css/main.5808e2ff.css.map",
-    "main.5228c6ad.js.map": "/static/js/main.5228c6ad.js.map"
+    "main.d772e173.css.map": "/static/css/main.d772e173.css.map",
+    "main.76e63723.js.map": "/static/js/main.76e63723.js.map"
   },
   "entrypoints": [
-    "static/css/main.5808e2ff.css",
-    "static/js/main.5228c6ad.js"
+    "static/css/main.d772e173.css",
+    "static/js/main.76e63723.js"
   ]
 }
