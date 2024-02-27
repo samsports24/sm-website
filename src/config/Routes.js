@@ -44,6 +44,7 @@ import PublicDraft from '../pages/Draft/PublicDraft'
 import NFLQualifiedFreeAgents from '../pages/Draft/NFLQualifiedFreeAgents'
 import AllTransaction from '../pages/AllTransaction/AllTransaction'
 import PlayerStandingWeekly from '../pages/PlayerStandingWeekly'
+import NewHomePage from '../pages/NewHomePage'
 // import Login2 from '../pages/Login2'
 // import Players from '../pages/Players'
 // import Teams from '../pages/Teams'
@@ -77,6 +78,7 @@ import NewSignUp from '../pages/NewSignUp'
 import SelectLeague from '../pages/SelectLeague'
 import CreateOrJoinLeague from '../pages/CreateOrJoinLeague'
 import Comissioner from '../pages/Comissioner'
+import PopularLeague from '../pages/PopularLeague'
 
 const Routers = () => {
   const Component = () => {
@@ -142,6 +144,8 @@ const Routers = () => {
           <Route path='/public-draft' element={<PublicDraft />} />
           <Route path='/drafts' element={<NFLQualifiedFreeAgents />} />
           <Route path='/all-transaction' element={<AllTransaction />} />
+          <Route path='/popular-league' element={<PopularLeague />} />
+
           {/* <Route path='/teams' element={<Teams />} />
           <Route path='/player-details' element={<PlayerDetails />} />
           <Route path='/players' element={<Players />} />
@@ -166,7 +170,8 @@ const Routers = () => {
           {/* <Route path='/' element={<Home />} /> */}
 
           {/* <Route path='/player-auction' element={<ComingSoon />} /> */}
-          <Route path='/fantasy-league' element={<FantasyLeague />} />
+          {/* <Route path='/fantasy-league' element={<FantasyLeague />} /> */}
+          <Route path='/fantasy-league' element={<NewHomePage />} />
           <Route path='/choose-your-game-step1' element={<ChooseYourGame />} />
           <Route path='/choose-your-league-step2' element={<ChooseYourLeague />} />
           <Route path='/choose-your-league-step3' element={<ChooseYourLeagueStep3 />} />

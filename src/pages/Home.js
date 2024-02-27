@@ -20,6 +20,9 @@ import { useEffect, useState } from 'react'
 import { getLandingLeagues, getUserLeagues } from '../redux'
 import CreateLeague from '../components/modal/CreateLeague'
 
+import NewHomePage from './NewHomePage'
+import LeagueEmptyCard from '../components/NewPopularLeagueCard/EmptyCard'
+
 const Home = () => {
   const isAuthenticated = localStorage.getItem('token')
   const user = useSelector((state) => state.user.userDetails)
@@ -83,6 +86,7 @@ const Home = () => {
 
   return (
     <div className='home-page'>
+      <NewHomePage />
       {/* FANTASY LEAGUE */}
       {window.location.pathname == '/fantasy-league' && isAuthenticated && <SportsButtonMenu />}
 
@@ -153,7 +157,7 @@ const Home = () => {
         keyBoardControl={true}
       >
         <div>
-          <CreateLeague />
+          <CreateLeague button={<LeagueEmptyCard />} />
         </div>
         {leagues ? (
           leagues?.nonUserLeagues

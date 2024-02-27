@@ -4,7 +4,7 @@ import LeagueEmptyCard from '../NewPopularLeagueCard/EmptyCard'
 import { createNewLeagueFromDashboard } from '../../redux'
 import { landingSignup } from '../../config/constants'
 
-const CreateLeague = () => {
+const CreateLeague = ({ button }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
@@ -59,8 +59,9 @@ const CreateLeague = () => {
 
   return (
     <>
-      <div onClick={showModal}>
-        <LeagueEmptyCard />
+      <div onClick={showModal} style={{ width: '100%' }}>
+        {button}
+        {/* <LeagueEmptyCard /> */}
       </div>
       <Modal
         centered
