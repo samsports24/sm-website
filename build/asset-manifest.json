@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.d772e173.css",
-    "main.js": "/static/js/main.9ef2065e.js",
+    "main.js": "/static/js/main.d2303831.js",
     "static/media/fantasy-sports-video.mp4": "/static/media/fantasy-sports-video.c5175e93ee3d160c3055.mp4",
     "static/media/SAMBOWL24.png": "/static/media/SAMBOWL24.1f68633ca81992f0b1d0.png",
     "static/media/Soccer_banner_edit.png": "/static/media/Soccer_banner_edit.892d54c94b5955e95f8e.png",
@@ -90,6 +90,7 @@
     "static/media/sam-legent-1.png": "/static/media/sam-legent-1.880dcb0889db06936048.png",
     "static/media/player-img-5.png": "/static/media/player-img-5.ff7c7e6bbc3d1dcb936e.png",
     "static/media/monsters.png": "/static/media/monsters.0d0c9e7f78a698bb2223.png",
+    "static/media/support.png": "/static/media/support.af87828fe6ed370852bf.png",
     "static/media/quote.png": "/static/media/quote.f9244b55e1e74f653836.png",
     "static/media/right-bg-landing-section.jpg": "/static/media/right-bg-landing-section.4e00a9c01c9ed8644ae8.jpg",
     "static/media/unnamed.png": "/static/media/unnamed.de0d08191b2c31d53daa.png",
@@ -105,14 +106,17 @@
     "static/media/rage.png": "/static/media/rage.43048b6b101d51f7467c.png",
     "static/media/canwest_gladiators.png": "/static/media/canwest_gladiators.6985691430d31a945467.png",
     "static/media/nfl.png": "/static/media/nfl.e9aba1e57d4d94b129f9.png",
+    "static/media/job.png": "/static/media/job.e625d1c4c2c083258510.png",
     "static/media/legion.png": "/static/media/legion.9aa33856cb2197a97ce9.png",
     "static/media/doom.png": "/static/media/doom.1c596999c4aa1cd6ab60.png",
     "static/media/silverbacks.png": "/static/media/silverbacks.de7d7ab6a00ef9204768.png",
+    "static/media/community.png": "/static/media/community.edfda2fa96cfa38c8d65.png",
     "static/media/news-feed-2.jpg": "/static/media/news-feed-2.47de515335a8f4a59fce.jpg",
     "static/media/title.png": "/static/media/title.32fab9b03cb178587562.png",
     "static/media/defiance.png": "/static/media/defiance.8427e358605c6d85178d.png",
     "static/media/titleRotate.png": "/static/media/titleRotate.50e89f8b0b029d8717ce.png",
     "static/media/the_beast.png": "/static/media/the_beast.c764e52f4a29f5eaf762.png",
+    "static/media/faq.png": "/static/media/faq.06633a3b484bbd86cc1d.png",
     "static/media/community-btn-bg.png": "/static/media/community-btn-bg.6867d09cbcf5b1ae866d.png",
     "static/media/empire.png": "/static/media/empire.baf785a7a3bc4f7e9abf.png",
     "static/media/comissioner.png": "/static/media/comissioner.40df64de502bc2b367e5.png",
@@ -155,10 +159,10 @@
     "static/media/youtube.svg": "/static/media/youtube.ed864766e3b013e4e67a2b38107f1313.svg",
     "static/media/fb.svg": "/static/media/fb.99d8a901875e4a0b67073c0d8b4b57fa.svg",
     "main.d772e173.css.map": "/static/css/main.d772e173.css.map",
-    "main.9ef2065e.js.map": "/static/js/main.9ef2065e.js.map"
+    "main.d2303831.js.map": "/static/js/main.d2303831.js.map"
   },
   "entrypoints": [
     "static/css/main.d772e173.css",
-    "static/js/main.9ef2065e.js"
+    "static/js/main.d2303831.js"
   ]
 }

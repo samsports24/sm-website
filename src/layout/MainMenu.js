@@ -301,7 +301,7 @@ const MainMenu = ({ visible }) => {
           </div>
           <div
             className={`sidebar_menu_item ${active === 'support' ? 'activeRoute' : ''}`}
-            onClick={() => {}}
+            onClick={() => window.open('https://discord.gg/pAb5B7Npmy')}
           >
             <img src={Support} width={32} />
             <p>Support</p>
