@@ -24,6 +24,11 @@ import { useSelector } from 'react-redux'
 import { landingSignup } from '../config/constants'
 import LoginDropdown from './LoginDropdown'
 
+import Community from '../assets/community.png'
+import Job from '../assets/job.png'
+import Support from '../assets/support.png'
+import FAQ from '../assets/faq.png'
+
 const MainMenu = ({ visible }) => {
   const isAuthenticated = localStorage.getItem('token')
   const navigate = useNavigate()
@@ -266,18 +271,40 @@ const MainMenu = ({ visible }) => {
             <p>draft</p>
           </div>
           <div
-            className={`sidebar_menu_item ${active === 'faq' ? 'activeRoute' : ''}`}
+            className={`sidebar_menu_item ${active === 'job-search' ? 'activeRoute' : ''}`}
             onClick={() => {}}
           >
-            <FaQuestion />
-            <p>faq</p>
+            <img src={Job} width={32} />
+            <p>Job Search</p>
+          </div>
+          <div
+            className={`sidebar_menu_item ${active === 'Community' ? 'activeRoute' : ''}`}
+            onClick={() => {}}
+          >
+            <img src={Community} width={32} />
+            <p>Community</p>
           </div>
           <div
             className={`sidebar_menu_item ${active === 'token' ? 'activeRoute' : ''}`}
             onClick={() => window.open('https://sam-wallet-10b1f.web.app/')}
           >
             <GiCoins />
-            <p>token</p>
+            <p>sams token</p>
+          </div>
+          <div
+            className={`sidebar_menu_item ${active === 'faq' ? 'activeRoute' : ''}`}
+            onClick={() => {}}
+          >
+            <img src={FAQ} width={32} />
+            {/* <FaQuestion /> */}
+            <p>faq</p>
+          </div>
+          <div
+            className={`sidebar_menu_item ${active === 'support' ? 'activeRoute' : ''}`}
+            onClick={() => {}}
+          >
+            <img src={Support} width={32} />
+            <p>Support</p>
           </div>
         </div>
       </div>
