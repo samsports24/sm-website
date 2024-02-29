@@ -36,6 +36,7 @@ const Lobby = () => {
                       text1: 'Create',
                       text2: 'Leagues',
                     }}
+                    paddingBlock={'70px'}
                   />
                 }
               />
@@ -128,11 +129,14 @@ const Card1 = ({ flip }) => {
     </div>
   )
 }
-const Card2 = ({ isImage, text, alignCenter, proScoring, cursor, onClick, flip }) => {
+const Card2 = ({ isImage, text, alignCenter, cursor, onClick, flip, paddingBlock }) => {
   return (
     <div
       className={`card2 ${flip ? 'flip' : ''}`}
-      style={{ cursor: cursor ? 'pointer' : 'initial' }}
+      style={{
+        cursor: cursor ? 'pointer' : 'initial',
+        paddingBlock: paddingBlock ? paddingBlock : '30px',
+      }}
       onClick={onClick}
     >
       <div className='content'>
