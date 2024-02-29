@@ -108,7 +108,7 @@ const CommunitySection = () => {
         })} */}
         <Col xs={24}>
           <div className='community_button_box'>
-            <div className='button'>
+            <div className='button' onClick={() => window.open('https://discord.gg/pAb5B7Npmy')}>
               <div className='icon_box'>
                 <img src={require('../../assets/landing/community-btn-img.webp')} />
               </div>
