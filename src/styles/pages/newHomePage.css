@@ -89,10 +89,13 @@
   /* padding-block: 30px; */
   gap: 20px;
 }
-.card2 .content > div h1,
-.card2 .content > div h2 {
+.card2 .content > div h1 {
   font-size: 30px;
   font-weight: 700;
+}
+.card2 .content > div h2 {
+  font-size: 30px;
+  font-weight: 400;
 }
 .card2 .content > div p {
   font-size: 16px;

@@ -15,7 +15,7 @@ export const games = [
     key: 'baseball',
     name: 'Baseball',
     imagePath: 'baseball.png',
-    disabled: true,
+    disabled: false,
   },
   {
     key: 'college_football',

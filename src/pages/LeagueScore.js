@@ -106,7 +106,7 @@ const CarouselComponent = ({ data }) => {
       breakpoint: { max: 4000, min: 1500 },
       items: 7,
     },
-    desktop2: {
+    desktop1: {
       breakpoint: { max: 1600, min: 1400 },
       items: 5,
     },
@@ -114,7 +114,7 @@ const CarouselComponent = ({ data }) => {
       breakpoint: { max: 1400, min: 1300 },
       items: 4,
     },
-    desktop2: {
+    desktop3: {
       breakpoint: { max: 1300, min: 1024 },
       items: 3,
     },

@@ -3,7 +3,7 @@ import store from '../redux/store'
 import { getNotiCount } from '../redux/actions/notificationAction'
 
 // export const base_url = 'http://localhost:8000'
-// export const frontEndUrl = 'http://localhost:3000'
+// export const frontEndUrl = 'http://localhost:3002'
 
 export const base_url = 'https://backend.samsports.io'
 export const frontEndUrl = 'https://samsports.io'
@@ -67,8 +67,10 @@ export const serverUrls = [
     key: 'baseball',
     name: 'Baseball',
     url: 'https://baseballbackend.samsports.io',
-    frontEndUrl: 'http://localhost:3000',
-    disabled: true,
+    frontEndUrl: 'https://baseball.samsports.io',
+    // url: 'http://localhost:8090',
+    // frontEndUrl: 'http://localhost:3000',
+    disabled: false,
   },
   {
     key: 'college_football',

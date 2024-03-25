@@ -93,8 +93,11 @@ const DrawerMenu = () => {
             >
               <p>Hockey</p>
             </div>
-            <div className='menu_item' onClick={() => {}}>
-              <p className='grayColor'>Baseball</p>
+            <div
+              className='menu_item'
+              onClick={() => window.open('https://baseball.samsports.io', '_self')}
+            >
+              <p>Baseball</p>
             </div>
             <div className='menu_item' onClick={() => {}}>
               <p className='grayColor'>US Football</p>
