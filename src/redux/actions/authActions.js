@@ -1,8 +1,10 @@
 import { notification } from 'antd'
-import { publicAPI, attachToken, privateAPI, version } from '../../config/constants'
+import { publicAPI, attachToken, privateAPI, version, base_url } from '../../config/constants'
 import { SET_USER_DETAILS } from '../types/generalTypes'
 import { ethers } from 'ethers'
 import axios from 'axios'
+import io from 'socket.io-client'
+import { setSocket } from './socketAction'
 
 export const authSignup = async (payload, navigate) => {
   try {
@@ -116,10 +118,12 @@ const connectEthereumWallet = () => {
 }
 
 export const authLogin = (payload, navigate) => {
+
   return async (dispatch) => {
     try {
       const res = await publicAPI.post('/auth/login', payload)
       if (res) {
+        console.log('res', res?.data?.data?.setting);
         if (res.data.data.user.accountVerified) {
           // if (res.data.data.user.userType === 'owner') {
           // await connectEthereumWallet()
@@ -157,14 +161,23 @@ export const authLogin = (payload, navigate) => {
           localStorage.setItem('userName', res.data.data.user.name)
           localStorage.setItem('userId', res.data.data.user._id)
           dispatch(getUser())
-          localStorage.setItem('week', res?.data?.data?.setting?.week)
+           localStorage.setItem('week', res?.data?.data?.setting?.week)
+           // localStorage.setItem('date', res?.data?.data?.setting?.date)
+           
+
+          const socket = io(base_url)
+          socket.emit('join', res.data.data.user._id)
+          dispatch(setSocket(socket))
+
           notification.success({
             description: res.data.data.message,
             duration: 2,
           })
           navigate('/my-league')
+           return res
           // }
         } else {
+         
           localStorage.setItem('email', res.data.data.user.email)
           notification.error({
             message:

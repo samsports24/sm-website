@@ -30,8 +30,11 @@ const DepthChart = () => {
     defense: 'defense',
   })
 
-  const { teamID } = useParams()
+   const { teamID } = useParams()
   const { state } = useLocation()
+  console.log('legalPlayers',legalPlayers);
+
+ 
 
   const handleFilter = (value) => {
     setActiveFilter(value)
@@ -48,9 +51,16 @@ const DepthChart = () => {
     const res = await getActiveRosterCount({
       type: activeFilter,
       week: USER?.setting?.week,
-      teamId: teamID ? teamID : null,
+       teamId: teamID ? teamID : null,
+      // teamId: state?.teamId !== undefined ? state.teamId : null,
+
+      
     })
+
+   
+    
     if (res) {
+      console.log('res',res?.count);
       setActiveCount(res?.count)
       if (res?.data?.length > 0) {
         res?.data.map((item) => {
@@ -98,6 +108,8 @@ const DepthChart = () => {
     }
   }
 
+   console.log('activeCount',activeCount);
+
   return (
     <div className='depth_chart_container'>
       <Header />
@@ -134,7 +146,9 @@ const DepthChart = () => {
           style={{ position: 'relative', marginTop: '20px' }}
         >
           {/* ILLEGAL ROSTER */}
+  
           {!teamID && (
+            
             <div
               className='overlay'
               style={{

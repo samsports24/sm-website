@@ -29,6 +29,8 @@ const LeagueSetting = () => {
   const [division4, setDivision4] = useState('')
   const [division5, setDivision5] = useState('')
   const [division6, setDivision6] = useState('')
+  const [division7, setDivision7] = useState('')
+  const [division8, setDivision8] = useState('')
 
   const [disabledDivisions1, setDisabledDivisions1] = useState(true)
   const [disabledDivisions2, setDisabledDivisions2] = useState(true)
@@ -61,6 +63,8 @@ const LeagueSetting = () => {
       setDivision4('')
       setDivision5('')
       setDivision6('')
+      setDivision7('')
+      setDivision8('')
     }
 
     divisions?.length > 0
@@ -84,6 +88,12 @@ const LeagueSetting = () => {
                 break
               case 6:
                 setDivision6(division.name ?? '')
+                break
+              case 7:
+                setDivision7(division.name ?? '')
+                break
+              case 8:
+                setDivision8(division.name ?? '')
                 break
               default:
                 break
@@ -197,7 +207,7 @@ const LeagueSetting = () => {
               </Col>
             </Row>
           </Form.Item>
-          <Form.Item label='Please Name 6 Divisions'>
+          <Form.Item label='Please Name 8 Divisions'>
             <Row gutter={[20, 20]}>
               <Col xs={24} md={12}>
                 <Input
@@ -227,9 +237,6 @@ const LeagueSetting = () => {
                     handleDivision(e.target.value, 3)
                   }}
                 />
-              </Col>
-
-              <Col xs={24} md={12}>
                 <Input
                   disabled={disabledDivisions1}
                   value={division4}
@@ -239,6 +246,9 @@ const LeagueSetting = () => {
                     handleDivision(e.target.value, 4)
                   }}
                 />
+              </Col>
+
+              <Col xs={24} md={12}>
                 <Input
                   disabled={disabledDivisions2}
                   value={division5}
@@ -255,6 +265,24 @@ const LeagueSetting = () => {
                   onChange={(e) => {
                     setDivision6(e.target.value)
                     handleDivision(e.target.value, 6)
+                  }}
+                />
+                <Input
+                  disabled={disabledDivisions2}
+                  value={division7}
+                  placeholder='Division 7'
+                  onChange={(e) => {
+                    setDivision7(e.target.value)
+                    handleDivision(e.target.value, 7)
+                  }}
+                />
+                <Input
+                  disabled={disabledDivisions2}
+                  value={division8}
+                  placeholder='Division 8'
+                  onChange={(e) => {
+                    setDivision8(e.target.value)
+                    handleDivision(e.target.value, 8)
                   }}
                 />
               </Col>

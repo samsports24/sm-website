@@ -5,7 +5,6 @@ import LeagueSetting from './LeagueSettings'
 import TeamAndOwnership from './TeamAndOwnership'
 import Trades from './Trades'
 import { useSelector } from 'react-redux'
-import DraftOrder from './DraftOrder'
 
 const Comissioner = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -49,15 +48,9 @@ const Comissioner = () => {
                 children: <TeamAndOwnership />,
               },
               {
-                label: `Team Trades`,
+                label: `Team Trades (3)`,
                 key: 3,
                 children: <Trades />,
-                disabled: true,
-              },
-              {
-                label: `Set Draft Order`,
-                key: 4,
-                children: <DraftOrder />,
               },
             ]}
           />

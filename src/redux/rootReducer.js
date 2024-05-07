@@ -8,6 +8,8 @@ import auction from './reducers/auctionReducer'
 import transaction from './reducers/transactionReducer'
 import leagueReducer from './reducers/leagueReducer'
 import contract from './reducers/contractReducer'
+import draft from './reducers/draftReducer'
+import socket from './reducers/socketReducer'
 
 const rootReducer = combineReducers({
   theme,
@@ -15,9 +17,12 @@ const rootReducer = combineReducers({
   depthChart,
   roster,
   auction,
+  draft,
+  socket,
   transaction,
   league : leagueReducer,
   contract
+  
 })
 
 export default rootReducer

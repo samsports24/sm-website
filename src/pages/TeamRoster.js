@@ -73,6 +73,9 @@ const TeamRoster = () => {
     setLoading(false)
   }
 
+
+  // console.log('filterData',filterData?.filterActiveRoster);
+
   return (
     <div className='player_roster_container team_roster_container'>
       <Header />

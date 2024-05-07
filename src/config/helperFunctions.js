@@ -93,6 +93,15 @@ export const getPfScore = (arr) => {
   }
 }
 
+
+export const getRemainingSeconds = (timeString) => {
+  const givenTime = new Date(timeString)
+  const currentTime = new Date()
+  const timeDifference = givenTime - currentTime
+  const remainingSeconds = Math.floor(timeDifference / 1000)
+  return remainingSeconds > 0 ? remainingSeconds : 0
+}
+
 export const getPf = (arr) => {
   if (arr && arr?.length > 0) {
     const setting = store?.getState()?.user?.setting

@@ -9,7 +9,8 @@ const TeamAndOwnership = () => {
 
   useEffect(() => {
     const teamsLength = currentLeague?.teams?.length
-    const remainingEmptyRows = 30 - teamsLength
+    const remainingEmptyRows = 32 - teamsLength
+
     const emptyData = Array.from({ length: remainingEmptyRows }, (_, index) => ({
       key: (index + teamsLength).toString(),
       teamName: '',
@@ -19,20 +20,18 @@ const TeamAndOwnership = () => {
       financialCap: '',
     }))
 
-    const modifyData =
-      currentLeague?.teams?.length > 0
-        ? currentLeague?.teams?.map((v, index) => {
-            return {
-              id: v?._id,
-              key: index.toString(),
-              teamName: v?.name,
-              userName: v?.user?.userName,
-              email: v?.user?.email,
-              division: v?.division?._id ? v?.division?._id : '',
-              financialCap: '',
-            }
-          })
-        : []
+    const modifyData = currentLeague?.teams?.map((v, index) => {
+      return {
+        id: v?._id,
+        key: index.toString(),
+        teamName: v?.name,
+        userName: v?.user?.userName,
+        email: v?.user?.email,
+        division: v?.division?._id ? v?.division?._id : '',
+        financialCap: '',
+      }
+    })
+
     const _initialData = [...modifyData, ...emptyData]
     setTableData(_initialData)
   }, [currentLeague])
@@ -97,27 +96,25 @@ const TeamAndOwnership = () => {
       title: 'Select Division',
       dataIndex: 'selectDivision',
       key: 'selectDivision',
-      render: (_, record) => {
-        return (
-          <Select
-            mode=''
-            size={'middle'}
-            placeholder='Please select'
-            style={{
-              width: '100%',
-            }}
-            disabled={!record?.id}
-            value={record.division}
-            onChange={(value) => handleInputChange(value, record, 'division')}
-            options={currentLeague?.divisions?.map((v) => {
-              return {
-                value: v?._id,
-                label: v?.name,
-              }
-            })}
-          />
-        )
-      },
+      render: (_, record) => (
+        <Select
+          mode=''
+          size={'middle'}
+          placeholder='Please select'
+          style={{
+            width: '100%',
+          }}
+          disabled={!record?.id}
+          value={record.division}
+          onChange={(value) => handleInputChange(value, record, 'division')}
+          options={currentLeague?.divisions?.map((v) => {
+            return {
+              value: v?._id,
+              label: v?.name,
+            }
+          })}
+        />
+      ),
       width: 200,
     },
     {

@@ -45,6 +45,7 @@ import NFLQualifiedFreeAgents from '../pages/Draft/NFLQualifiedFreeAgents'
 import AllTransaction from '../pages/AllTransaction/AllTransaction'
 import PlayerStandingWeekly from '../pages/PlayerStandingWeekly'
 import NewHomePage from '../pages/NewHomePage'
+import Draft from '../pages/Draft'
 // import Login2 from '../pages/Login2'
 // import Players from '../pages/Players'
 // import Teams from '../pages/Teams'
@@ -130,8 +131,8 @@ const Routers = () => {
           <Route path='/team-starters/:teamID' element={<DepthChart />} />
           <Route path='/league-standings' element={<LeagueStandings />} />
           <Route path='/comissioner' element={<Comissioner />} />
-          {/* <Route path='/free-agent' element={<FreeAgent />} /> */}
-          {/* <Route path='/player-auction' element={<PlayerAuction />} /> */}
+          <Route path='/free-agent' element={<FreeAgent />} />
+          <Route path='/player-auction' element={<PlayerAuction />} />
           {/* <Route path='/player-standing' element={<PlayerStandings />} /> */}
           <Route path='/player-standing-weekly' element={<PlayerStandingWeekly />} />
           <Route path='/player-winning-bid/:id' element={<PlayerWinningBid />} />
@@ -142,8 +143,9 @@ const Routers = () => {
           <Route path='/league-rosters' element={<LeagueRosters />} />
           <Route path='/professional-draft' element={<ProfessionalDraft />} />
           <Route path='/public-draft' element={<PublicDraft />} />
-          <Route path='/drafts' element={<NFLQualifiedFreeAgents />} />
+          {/* <Route path='/drafts' element={<NFLQualifiedFreeAgents />} /> */}
           <Route path='/all-transaction' element={<AllTransaction />} />
+          <Route path='/live-draft' element={<Draft />} />
           <Route path='/popular-league' element={<PopularLeague />} />
 
           {/* <Route path='/teams' element={<Teams />} />

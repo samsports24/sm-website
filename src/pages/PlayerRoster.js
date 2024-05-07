@@ -96,6 +96,8 @@ const PlayerRoster = () => {
     await getRoster(SETTING?.week)
   }
 
+console.log('data?.filterActiveRoster',data?.filterActiveRoster);
+
   return (
     <div className='player_roster_container'>
       <Header />

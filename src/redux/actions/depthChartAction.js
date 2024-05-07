@@ -2,10 +2,14 @@ import { notification } from 'antd'
 import { attachToken, privateAPI } from '../../config/constants'
 
 export const getActiveRosterCount = async (payload) => {
+  // console.log('payload',payload);
   try {
     attachToken()
+     console.log('insdie payload',payload);
     if (payload?.teamId) {
       const res = await getDepthChartByType(payload)
+      
+      
       if (res) {
         return { count: 0, data: res }
       }
@@ -29,6 +33,7 @@ export const getDepthChartByType = async (payload) => {
     attachToken()
     const res = await privateAPI.post('/depthChart/get-players-by-type', payload)
     if (res) {
+     // console.log('res',res.data.data);
       return res.data.data
     }
   } catch (err) {

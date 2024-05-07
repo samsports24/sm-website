@@ -2,11 +2,11 @@ import Axios from 'axios'
 import store from '../redux/store'
 import { getNotiCount } from '../redux/actions/notificationAction'
 
-// export const base_url = 'http://localhost:8000'
-// export const frontEndUrl = 'http://localhost:3002'
+export const base_url = 'http://localhost:8000'
+export const frontEndUrl = 'http://localhost:3000'
 
-export const base_url = 'https://backend.samsports.io'
-export const frontEndUrl = 'https://samsports.io'
+// export const base_url = 'https://backend.samsports.io'
+// export const frontEndUrl = 'https://samsports.io'
 
 export const publicAPI = Axios.create({ baseURL: base_url })
 
@@ -37,7 +37,8 @@ export const version = '2.0.4'
 
 export const activeRosterCount = 53
 export const practiceRosterCount = 53
-export const legalPlayers = 46
+ export const legalPlayers = 46
+// export const legalPlayers = 53
 export const proctectedSquadCount = 4
 export const nonActivePlayers = 7
 

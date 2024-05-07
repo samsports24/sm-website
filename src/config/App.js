@@ -7,19 +7,41 @@ import Routes from './Routes'
 import { light, dark } from './theme'
 import { getUser } from '../redux'
 import { ethers } from 'ethers'
-import { version } from './constants'
+import { version,base_url } from './constants'
 // import { version } from './constants'
 // import { notification } from 'antd'
 
-// import io from 'socket.io-client'
-// import { base_url } from './constants'
+ import io from 'socket.io-client'
+ 
+
+import { setSocket } from '../redux/actions/socketAction'
 
 const App = () => {
   const theme = useSelector((state) => state.theme.theme)
   const dispatch = useDispatch()
+  const authenticatedID = localStorage.getItem('token')
+  const socket = io(base_url, { transports: ['websocket'] })
   // const socket = io(base_url, {
   //   transports: ['websocket'],
   // })
+
+
+  // for the use if first connect
+  useEffect(() => {
+    if (authenticatedID) {
+      socket.emit('join', authenticatedID)
+      dispatch(setSocket(socket))
+    }
+  }, [authenticatedID])
+
+  // for the use if reconnect
+  useEffect(() => {
+    socket.on('reconnect', () => {
+      if (authenticatedID) {
+        socket.emit('join', authenticatedID)
+      }
+    })
+  }, [])
 
   useEffect(() => {
     if (theme === 'light') {

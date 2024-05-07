@@ -46,6 +46,27 @@ export const getRoster = async (week) => {
   }
 }
 
+export const getDraftTeamRoster = async (week) => {
+  console.log('in the date',week);
+  try {
+    store.dispatch(setRosterLoading(true))
+    attachToken()
+    const res = await privateAPI.get(`/team/get-roster-draft/${week}`)
+    if (res) {
+       console.log('in res',res);
+      store.dispatch(setRosterData(res.data.data))
+    }
+    return res.data.data
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  } finally {
+    store.dispatch(setRosterLoading(false))
+  }
+}
+
 export const getTeamRoster = async (payload) => {
   try {
     attachToken()
