@@ -6,7 +6,7 @@ import { setSelectedPlayer } from '../../../redux/actions/draftAction'
 import { getDraftTeamRoster } from '../../../redux/actions/rosterAction'
 
 const TeamRosters = ({ tableScroll }) => {
-  const { activeTab } = useSelector((state) => state?.draft)
+  const { activeTab,draftRounds } = useSelector((state) => state?.draft)
   const SETTING = useSelector((state) => state?.user?.setting)
   const { data } = useSelector((state) => state?.roster)
   const [loading, setLoading] = useState('')
@@ -32,11 +32,34 @@ const TeamRosters = ({ tableScroll }) => {
       key: 'Rank',
       render: (t) => <p>{t || '-'}</p>,
     },
+
     {
+      width: 150,
+      title: 'LINE-UP',
+      dataIndex: 'lineup',
+      key: 'lineup',
+      render: (_, obj) => (
+      
+        <div className='table_player_name_box'>
+          <p
+            onClick={() => dispatch(setSelectedPlayer(obj?.player_id))}
+            style={{ cursor: 'pointer' }}
+          >
+            {obj?.Position}{' '}
+          </p>{' '}
+          {/* <p>
+            {obj?.Position} - {obj?.Team}{' '}
+          </p> */}
+        </div>
+      ),
+    },
+    {
+      width: 150,
       title: 'Player',
       dataIndex: 'player',
       key: 'player',
       render: (_, obj) => (
+      
         <div className='table_player_name_box'>
           <p
             onClick={() => dispatch(setSelectedPlayer(obj?.player_id))}
@@ -44,37 +67,108 @@ const TeamRosters = ({ tableScroll }) => {
           >
             {obj?.Name}{' '}
           </p>{' '}
-          <p>
+          {/* <p>
             {obj?.Position} - {obj?.Team}{' '}
-          </p>
+          </p> */}
         </div>
       ),
     },
     {
       width: 150,
-      title: 'SAM ADP',
-      dataIndex: 'adp',
-      key: 'adp',
-      render: (t) => <p>{t || '-'}</p>,
+      title: 'POSITION',
+      dataIndex: 'pos',
+      key: 'pos',
+      render: (_, obj) => {
+        
+        return (
+          <div className='table_player_name_box nrc_container'>
+            <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+              {obj?.Position || '-'}
+            </p>
+          </div>
+        )
+      },
+    },
+    {
+      width: 150,
+      title: 'TEAM',
+      dataIndex: 'team',
+      key: 'team',
+      render: (_, obj) => {
+        return (
+          <div className='table_player_name_box nrc_container'>
+            <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+              {obj?.Team || '-'}
+            </p>
+          </div>
+        )
+      },
+    },
+    {
+      width: 180,
+      title: 'CAP HIT',
+      dataIndex: 'caphit',
+      key: 'caphit',
+      render: (_, obj) => {
+        return (
+          <div className='table_player_name_box nrc_container'>
+            <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+              {obj?.PlayerCap || '-'}
+            </p>
+          </div>
+        )
+      },
     },
 
     {
-      width: 150,
-      title: '2024 Projected',
-      dataIndex: 'projected',
-      key: 'projected',
-      render: (t) => {
-        return <p>{t || '-'}</p>
-      },
+      width: 180,
+      title: 'Round',
+      dataIndex: 'caphit',
+      key: 'caphit',
+
+      render: (_, obj) => {
+      {draftRounds?.map((v, i) => {
+        console.log('draftRounds',draftRounds);
+        return (
+          <div key={i}>  
+            <div className='rb_card_right'>
+              <p>
+                 {v?.round || '-'}
+              </p>
+             
+              
+            </div>
+          
+          </div>
+        )
+      })}
+    }
+      // render: (_, obj) => {
+      //   return (
+      //     <div className='table_player_name_box nrc_container'>
+      //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+      //         {obj?.PlayerCap || '-'}
+      //       </p>
+      //     </div>
+      //   )
+      // },
     },
+
+
     {
-      width: 150,
-      title: '2023 Score',
-      dataIndex: 'pf',
-      key: 'pf',
-      render: (t) => {
-        return <p>{t?.toFixed(2) || '-'}</p>
-      },
+      width: 180,
+      title: 'PICK',
+      dataIndex: 'caphit',
+      key: 'caphit',
+      // render: (_, obj) => {
+      //   return (
+      //     <div className='table_player_name_box nrc_container'>
+      //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+      //         {obj?.PlayerCap || '-'}
+      //       </p>
+      //     </div>
+      //   )
+      // },
     },
   ]
 

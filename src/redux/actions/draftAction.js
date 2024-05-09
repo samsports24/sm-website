@@ -50,7 +50,19 @@ export const setAllPlayers = (payload) => {
     payload: payload,
   }
 }
+
+
+export const setAllPlayersStats = (payload) => {
+  return {
+    type: 'SET_ALL_PLAYERS_stats',
+    payload: payload,
+  }
+}
+
+
+
 export const setSelectedPlayer = (payload) => {
+
   return {
     type: 'SET_SELECTED_PLAYER',
     payload: payload,
@@ -88,12 +100,33 @@ export const setCompleted = (payload) => {
 }
 
 export const getAllPlayers = async (payload) => {
+  console.log('payloadposition',payload.position);
   try {
     store.dispatch(setDraftTableLoading(true))
     attachToken()
     // const res = await privateAPI.post('/player/get-all-players', payload)
-    const res = await privateAPI.post('/draft/get-draft-all-players', payload)
+    // const res = await privateAPI.post('/draft/get-draft-all-players', payload)
+    const res = await privateAPI.post(`/draft/get-draft-all-players?position=${payload.position}`);
     store.dispatch(setAllPlayers(res.data.data))
+    return res.data.data
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  } finally {
+    store.dispatch(setDraftTableLoading(false))
+  }
+}
+
+
+export const getALLplayerStats = async (payload)=>{
+  try {
+    store.dispatch(setDraftTableLoading(true))
+    attachToken()
+    // const res = await privateAPI.post('/player/get-all-players', payload)
+    const res = await privateAPI.post('/draft/get-stats-draft-all-players', payload)
+    store.dispatch(setAllPlayersStats(res.data.data))
     return res.data.data
   } catch (err) {
     notification.error({

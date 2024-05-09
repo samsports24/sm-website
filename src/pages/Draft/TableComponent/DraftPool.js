@@ -15,6 +15,7 @@ import {
   setPosition,
   setSearch,
   setSelectedPlayer,
+  getALLplayerStats,
 } from '../../../redux/actions/draftAction'
 
 const DraftPool = ({ tableScroll }) => {
@@ -22,6 +23,8 @@ const DraftPool = ({ tableScroll }) => {
     useSelector((state) => state.draft)
   const { userDetails } = useSelector((state) => state.user)
   const [loading, setLoading] = useState('')
+
+
 
   const dispatch = useDispatch()
 
@@ -35,9 +38,8 @@ const DraftPool = ({ tableScroll }) => {
       })
   }, [position, limit, page, activeTab])
 
-
   const getData = async (payload) => {
-    await getAllPlayers(payload,position)
+    await getAllPlayers(payload, position)
     // await getDraftQueue()
   }
 
@@ -57,7 +59,7 @@ const DraftPool = ({ tableScroll }) => {
   }
 
   const getColumns = (position) => {
-    console.log("🚀 ~ getColumns ~ position:", position)
+    console.log('🚀 ~ getColumns ~ position:', position)
     const columns = [
       {
         width: 50,
@@ -81,7 +83,7 @@ const DraftPool = ({ tableScroll }) => {
                 <BiSolidPlusCircle
                   size={18}
                   style={{ marginBottom: '-3px', cursor: 'pointer' }}
-                  onClick={() => handleAddQueue(obj?._id)}
+                  onClick={() => handleAddQueue(obj?.player?._id)}
                 />
               )}
             </div>
@@ -101,11 +103,14 @@ const DraftPool = ({ tableScroll }) => {
         dataIndex: 'player',
         key: 'player',
         render: (_, obj) => {
-          const inj = obj?.InjuryStatus
+          //  console.log('obj', obj)
+          // console.log('FieldGoalsMade', obj?.stats?.stats?.FieldGoalsMade)
+         
+          const inj = obj?.player?.InjuryStatus
           return (
             <div className='table_player_name_box nrc_container'>
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.Name}{' '}
+                {obj?.player?.Name}{' '}
               </p>{' '}
               {/* <p>
             {obj?.Position} - {obj?.Team}{' '}
@@ -141,7 +146,7 @@ const DraftPool = ({ tableScroll }) => {
           return (
             <div className='table_player_name_box nrc_container'>
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.Team || '-'}
+                {obj?.player?.Position || '-'}
               </p>
             </div>
           )
@@ -156,7 +161,7 @@ const DraftPool = ({ tableScroll }) => {
           return (
             <div className='table_player_name_box nrc_container'>
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.Position || '-'}
+                {obj?.player?.Team || '-'}
               </p>
             </div>
           )
@@ -167,7 +172,15 @@ const DraftPool = ({ tableScroll }) => {
         title: 'CAP HIT',
         dataIndex: 'caphit',
         key: 'caphit',
-        render: (t) => <p>{t || '-'}</p>,
+        render: (_, obj) => {
+          return (
+            <div className='table_player_name_box nrc_container'>
+              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                {obj?.player?.PlayerCap || '-'}
+              </p>
+            </div>
+          )
+        },
       },
       {
         width: 150,
@@ -185,11 +198,13 @@ const DraftPool = ({ tableScroll }) => {
         dataIndex: 'mlbFantasyPoints',
         key: 'mlbFantasyPoints',
         render: (_, obj) => {
-          return <div className='table_player_name_box nrc_container'>
-          <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            {obj?.pf || '-'}
-          </p>
-        </div>
+          return (
+            <div className='table_player_name_box nrc_container'>
+              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                {obj?.player?.pf || '-'}
+              </p>
+            </div>
+          )
         },
       },
       {
@@ -198,11 +213,13 @@ const DraftPool = ({ tableScroll }) => {
         dataIndex: 'pf',
         key: 'pf',
         render: (_, obj) => {
-          return <div className='table_player_name_box nrc_container'>
-          <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            {obj?.avgPf || '-'}
-          </p>
-        </div>
+          return (
+            <div className='table_player_name_box nrc_container'>
+              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                {obj?.player?.avgPf || '-'}
+              </p>
+            </div>
+          )
         },
       },
 
@@ -213,11 +230,13 @@ const DraftPool = ({ tableScroll }) => {
         key: 'pf',
         // render: (t) => <p>{t?.toFixed(2) || '-'}</p>,
         render: (_, obj) => {
-          return <div className='table_player_name_box nrc_container'>
-          <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            {obj?.FantasyPoints24 || '-'}
-          </p>
-        </div>
+          return (
+            <div className='table_player_name_box nrc_container'>
+              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                {obj?.stats?.stats?.FantasyPoints24 || '-'}
+              </p>
+            </div>
+          )
         },
       },
       {
@@ -227,62 +246,237 @@ const DraftPool = ({ tableScroll }) => {
         key: 'pf',
         // render: (t) => <p>{t?.toFixed(2) || '-'}</p>,
         render: (_, obj) => {
-          return <div className='table_player_name_box nrc_container'>
-          <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            {obj?.AvgFantasyPoints24 || '-'}
-          </p>
-        </div>
+          return (
+            <div className='table_player_name_box nrc_container'>
+              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                {obj?.stats?.stats?.AvgFantasyPoints24.toFixed(2) || '-'}
+              </p>
+            </div>
+          )
         },
       },
     ]
 
     const columns3 = [
-  
       {
-        width: 150,
-        title: 'TPF',
-        dataIndex: 'tpf',
-        key: 'tpf',
-        render: (t) => {
-          return <p>{t || '-'}</p>
-        },
+      //  width: 90,
+        title: 'Projected',
+        dataIndex: 'proj',
+        key: 'proj',
+        children: [
+          {
+            width: 90,
+            title: 'TAF',
+            dataIndex: 'taf',
+            key: 'taf',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.player?.pf || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+          {
+            width: 90,
+            title: 'AVG',
+            dataIndex: 'avg',
+            key: 'avg',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.AvgFantasyPoints24.toFixed(2) || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+         
+        ],
       },
-      {
-        width: 150,
-        title: 'AVG',
-        dataIndex: 'avg',
-        key: 'avg',
-        render: (t) => {
-          return <p>{t?.toFixed(2) || '-'}</p>
-        },
-      },
+     
 
       {
-        width: 150,
-        title: 'RECIVING',
-        dataIndex: 'pf',
-        key: 'pf',
-        render: (t) => <p>{t?.toFixed(2) || '-'}</p>,
+       // width: 150,
+        title: 'PASSING',
+        dataIndex: 'pass',
+        key: 'pass',
+        children: [
+          {
+            width: 70,
+            title: 'ATD',
+            dataIndex: 'taf',
+            key: 'taf',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.PassingAttempts || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+          {
+            width: 70,
+            title: 'YRD',
+            dataIndex: 'yrd',
+            key: 'yrd',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.PassingYards.toFixed(2) || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+          {
+            width: 70,
+            title: 'TD',
+            dataIndex: 'taf',
+            key: 'taf',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.PassingTouchdowns || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+         
+        ],
       },
+      {
+        // width: 150,
+         title: 'RECIVING',
+         dataIndex: 'rec',
+         key: 'rec',
+         children: [
+          {
+            width: 70,
+            title: 'TAR',
+            dataIndex: 'att',
+            key: 'att',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.ReceivingTargets || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+          {
+            width: 70,
+            title: 'YARD',
+            dataIndex: 'yard',
+            key: 'yard',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.ReceivingYards || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+          {
+            width: 70,
+            title: 'TD',
+            dataIndex: 'td',
+            key: 'td',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.ReceivingTouchdowns || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+         
+        ],
+       },
       {
         width: 150,
         title: 'RUSHING',
-        dataIndex: 'pf',
-        key: 'pf',
-        render: (t) => <p>{t?.toFixed(2) || '-'}</p>,
+        dataIndex: 'rush',
+        key: 'rush',
+        children: [
+          {
+            width: 70,
+            title: 'ATT',
+            dataIndex: 'att',
+            key: 'att',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.RushingAttempts || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+          {
+            width: 70,
+            title: 'YARD',
+            dataIndex: 'yard',
+            key: 'yard',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.RushingYards || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+          {
+            width: 70,
+            title: 'TD',
+            dataIndex: 'td',
+            key: 'td',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.RushingTouchdowns || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+         
+        ],
       },
     ]
 
-
     const columns4 = [
-  
       {
         width: 150,
         title: '23 TEAMSCOREAVG',
         dataIndex: 'tsg',
         key: 'tsg',
-        render: (t) => {
-          return <p>{t || '-'}</p>
+        render: (_, obj) => {
+          return (
+            <div className='table_player_name_box nrc_container'>
+              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                {obj?.stats?.OL?.TotalTeamScore || '-'}
+              </p>
+            </div>
+          )
         },
       },
       {
@@ -290,8 +484,14 @@ const DraftPool = ({ tableScroll }) => {
         title: '23 TOTAL POINTS',
         dataIndex: 'tp',
         key: 'tp',
-        render: (t) => {
-          return <p>{t?.toFixed(2) || '-'}</p>
+        render: (_, obj) => {
+          return (
+            <div className='table_player_name_box nrc_container'>
+              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                {obj?.player?.pf || '-'}
+              </p>
+            </div>
+          )
         },
       },
 
@@ -300,185 +500,340 @@ const DraftPool = ({ tableScroll }) => {
         title: '23 SNAP %',
         dataIndex: 'snap',
         key: 'snap',
-        render: (t) => <p>{t?.toFixed(2) || '-'}</p>,
+        render: (_, obj) => {
+          return (
+            <div className='table_player_name_box nrc_container'>
+              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                {obj?.stats?.OL?.totalSnap || '-'}
+              </p>
+            </div>
+          )
+        },
       },
       {
         width: 150,
         title: '23 AVG. POINTS',
         dataIndex: 'avgpoints',
         key: 'avgpoints',
-        render: (t) => <p>{t?.toFixed(2) || '-'}</p>,
+        render: (_, obj) => {
+          return (
+            <div className='table_player_name_box nrc_container'>
+              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                {obj?.player?.avgPf || '-'}
+              </p>
+            </div>
+          )
+        },
       },
     ]
 
-
-
     const columns5 = [
-  
+
+
       {
-        width: 90,
-        title: 'TPF',
-        dataIndex: 'tpf',
-        key: 'tpf',
-        render: (t) => {
-          return <p>{t || '-'}</p>
+        //  width: 90,
+          title: 'PAST YEARS STATS',
+          dataIndex: 'past',
+          key: 'past',
+          children: [
+            
+            {
+              width: 90,
+              title: 'TPF',
+              dataIndex: 'tpf',
+              key: 'tpf',
+              render: (_, obj) => {
+                return (
+                  <div className='table_player_name_box nrc_container'>
+                    <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                      {obj?.player?.pf || '-'}
+                    </p>
+                  </div>
+                )
+              },
+            },
+            {
+              width: 90,
+              title: 'TAPF',
+              dataIndex: 'tapf',
+              key: 'tapf',
+              render: (_, obj) => {
+                return (
+                  <div className='table_player_name_box nrc_container'>
+                    <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                      {obj?.player?.avgPf || '-'}
+                    </p>
+                  </div>
+                )
+              },
+            },
+      
+            {
+              width: 90,
+              title: 'IDP TDS',
+              dataIndex: 'idp',
+              key: 'idp',
+              render: (_, obj) => {
+                return (
+                  <div className='table_player_name_box nrc_container'>
+                    <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                      {obj?.stats?.stats?.IDP || '-'}
+                    </p>
+                  </div>
+                )
+              },
+            },
+            {
+              width: 90,
+              title: 'SCKS ',
+              dataIndex: 'scks',
+              key: 'scks',
+              render: (_, obj) => {
+                return (
+                  <div className='table_player_name_box nrc_container'>
+                    <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                      {obj?.stats?.stats?.SCKS || '-'}
+                    </p>
+                  </div>
+                )
+              },
+            },
+      
+            {
+              width: 90,
+              title: 'QBH',
+              dataIndex: 'qbh',
+              key: 'qbh',
+              render: (_, obj) => {
+                return (
+                  <div className='table_player_name_box nrc_container'>
+                    <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                      {obj?.stats?.stats?.QBH || '-'}
+                    </p>
+                  </div>
+                )
+              },
+            },
+      
+            {
+              width: 90,
+              title: 'TKLS',
+              dataIndex: 'tkls',
+              key: 'idp',
+              render: (_, obj) => {
+                return (
+                  <div className='table_player_name_box nrc_container'>
+                    <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                      {obj?.stats?.stats?.TKLS || '-'}
+                    </p>
+                  </div>
+                )
+              },
+            },
+            {
+              width: 90,
+              title: 'TFL ',
+              dataIndex: 'tfl',
+              key: 'tfl',
+              render: (_, obj) => {
+                return (
+                  <div className='table_player_name_box nrc_container'>
+                    <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                      {obj?.stats?.stats?.TFL || '-'}
+                    </p>
+                  </div>
+                )
+              },
+            },
+      
+            {
+              width: 90,
+              title: 'FF',
+              dataIndex: 'ff',
+              key: 'ff',
+              render: (_, obj) => {
+                return (
+                  <div className='table_player_name_box nrc_container'>
+                    <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                      {obj?.stats?.stats?.FF || '-'}
+                    </p>
+                  </div>
+                )
+              },
+            },
+      
+            {
+              width: 90,
+              title: 'INTS',
+              dataIndex: 'ints',
+              key: 'ints',
+              render: (_, obj) => {
+                return (
+                  <div className='table_player_name_box nrc_container'>
+                    <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                      {obj?.stats?.stats?.INTS || '-'}
+                    </p>
+                  </div>
+                )
+              },
+            },
+      
+            {
+              width: 90,
+              title: 'PD',
+              dataIndex: 'pd',
+              key: 'pd',
+              render: (_, obj) => {
+                return (
+                  <div className='table_player_name_box nrc_container'>
+                    <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                      {obj?.stats?.stats?.PD || '-'}
+                    </p>
+                  </div>
+                )
+              },
+            },
+          ],
         },
-      },
-      {
-        width: 90,
-        title: 'TAPF',
-        dataIndex: 'tapf',
-        key: 'tapf',
-        render: (t) => {
-          return <p>{t?.toFixed(2) || '-'}</p>
-        },
-      },
 
-      {
-        width: 90,
-        title: 'IDP TDS',
-        dataIndex: 'idp',
-        key: 'idp',
-        render: (t) => <p>{t?.toFixed(2) || '-'}</p>,
-      },
-      {
-        width: 90,
-        title: 'SCKS ',
-        dataIndex: 'scks',
-        key: 'scks',
-        render: (t) => <p>{t?.toFixed(2) || '-'}</p>,
-      },
-
-
-      {
-        width: 90,
-        title: 'QBH',
-        dataIndex: 'qbh',
-        key: 'qbh',
-        render: (t) => {
-          return <p>{t?.toFixed(2) || '-'}</p>
-        },
-      },
-
-      {
-        width: 90,
-        title: 'TKLS',
-        dataIndex: 'tkls',
-        key: 'idp',
-        render: (t) => <p>{t?.toFixed(2) || '-'}</p>,
-      },
-      {
-        width: 90,
-        title: 'TFL ',
-        dataIndex: 'tfl',
-        key: 'tfl',
-        render: (t) => <p>{t?.toFixed(2) || '-'}</p>,
-      },
-
-      {
-        width: 90,
-        title: 'FF',
-        dataIndex: 'ff',
-        key: 'ff',
-        render: (t) => <p>{t?.toFixed(2) || '-'}</p>,
-      },
-
-      {
-        width: 90,
-        title: 'INTS',
-        dataIndex: 'ints',
-        key: 'ints',
-        render: (t) => <p>{t?.toFixed(2) || '-'}</p>,
-      },
-
-      {
-        width: 90,
-        title: 'PD',
-        dataIndex: 'pd',
-        key: 'pd',
-        render: (t) => <p>{t?.toFixed(2) || '-'}</p>,
-      },
+     
     ]
 
     const columns6 = [
+
+
+      {
+        //  width: 90,
+          title: 'PAST YEARS STATS',
+          dataIndex: 'past',
+          key: 'past',
+         children:[
+          {
+            width: 90,
+            title: 'TPF',
+            dataIndex: 'tpf',
+            key: 'tpf',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.TPF || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+          {
+            width: 90,
+            title: 'TAPF',
+            dataIndex: 'tapf',
+            key: 'tapf',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.TAPF || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+    
+          {
+            width: 90,
+            title: 'FG MADE',
+            dataIndex: 'fgmade',
+            key: 'fgmade',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.FieldGoalsMade || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+          {
+            width: 90,
+            title: 'FG MISSED',
+            dataIndex: 'fgmissed',
+            key: 'fgmissed',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.FGMissed || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+          {
+            width: 90,
+            title: 'PUNTS',
+            dataIndex: 'punts',
+            key: 'punts',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.Punts || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+          {
+            width: 90,
+            title: 'PUNTS INSIDE 20',
+            dataIndex: 'puntsinside',
+            key: 'puntsinside',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.PuntInside20 || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+
+         ]
+        },
+
   
-      {
-        width: 90,
-        title: 'TPF',
-        dataIndex: 'tpf',
-        key: 'tpf',
-        render: (t) => {
-          return <p>{t || '-'}</p>
-        },
-      },
-      {
-        width: 90,
-        title: 'TAPF',
-        dataIndex: 'tapf',
-        key: 'tapf',
-        render: (t) => {
-          return <p>{t?.toFixed(2) || '-'}</p>
-        },
-      },
-
-      {
-        width: 90,
-        title: 'FG MADE',
-        dataIndex: 'fgmade',
-        key: 'fgmade',
-        render: (t) => <p>{t?.toFixed(2) || '-'}</p>,
-      },
-      {
-        width: 90,
-        title: 'FG MISSED',
-        dataIndex: 'fgmissed',
-        key: 'fgmissed',
-        render: (t) => <p>{t?.toFixed(2) || '-'}</p>,
-      },
-      {
-        width: 90,
-        title: 'PUNTS',
-        dataIndex: 'punts',
-        key: 'punts',
-        render: (t) => <p>{t?.toFixed(2) || '-'}</p>,
-      },
-      {
-        width: 90,
-        title: 'PUNTS INSIDE 20',
-        dataIndex: 'puntsinside',
-        key: 'puntsinside',
-        render: (t) => <p>{t?.toFixed(2) || '-'}</p>,
-      },
     ]
-
-
 
     if (position === 'ALL') {
       return [...columns, ...columns2]
-    } 
-    
-    if (position === 'QB' || position === "RB" || position === "WR" || position === "TE") {
+    }
+
+    if (position === 'QB' || position === 'RB' || position === 'WR' || position === 'TE') {
       return [...columns, ...columns3]
-    } 
+    }
 
     if (position === 'OL') {
       return [...columns, ...columns4]
-    } 
+    }
 
-      if (position === 'DE' || position === "DT" || position === "LB" || position === "CB" || position === "S") {
+    if (
+      position === 'DE' ||
+      position === 'DT' ||
+      position === 'LB' ||
+      position === 'CB' ||
+      position === 'S'
+    ) {
       return [...columns, ...columns5]
-    } 
+    }
 
     if (position === 'K/P') {
       return [...columns, ...columns6]
-    } 
-    else {
+    } else {
       return columns
     }
-
   }
-
-  
 
   return (
     <Table

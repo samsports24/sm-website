@@ -29,18 +29,20 @@ const RosterDetail = ({ playerFinancials }) => {
     setLoading(false)
   }
 
+
+ 
   return (
     <div className='roster_detail_box'>
       <div
         className='rdb_left'
-        style={{ backgroundImage: `url(${player?.HostedHeadshotNoBackgroundUrl})` }}
+        style={{ backgroundImage: `url(${player?.player?.HostedHeadshotNoBackgroundUrl})` }}
       />
       <div className='rdb_right'>
         <div className='rdb_right_row1'>
           <div className='left'>
-            <p>{player?.Name}</p>
+            <p>{player?.player?.Name}</p>
             <p>
-              {/* #12  */}| {player?.Position}, {player?.Team}
+              {/* #12  */}| {player?.player?.Position}, {player?.player?.Team}
             </p>
           </div>
           <div className='right'>
@@ -65,7 +67,7 @@ const RosterDetail = ({ playerFinancials }) => {
           <p className='active'>2023 Stats</p>
           <p>|</p>
           <p>2024 Projected Stats</p>
-          <p>|</p>
+          <p>-</p>
           <p>Career Stats</p>
         </div>
         <div className='rdb_right_row3'>
@@ -75,11 +77,11 @@ const RosterDetail = ({ playerFinancials }) => {
           </div>
           <div>
             <p>23</p>
-            <p>{player?.pf || '-'}</p>
+            <p>{player?.player?.pf || '-'}</p>
           </div>
           <div>
             <p>24 Proj</p>
-            <p>{player?.mlbFantasyPoints || '-'}</p>
+            <p>{player?.stats?.stats?.FantasyPoints24 || '-'}</p>
           </div>
           {/* <div>
             <p>Pass Yds</p>

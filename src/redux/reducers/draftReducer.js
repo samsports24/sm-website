@@ -6,6 +6,10 @@ const initialState = {
       players: [],
       total: 0,
     },
+    allStats:{
+      playersStats:[],
+      total:0,
+    },
     selectedPlayer: null,
     search: '',
     limit: 10,

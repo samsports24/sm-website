@@ -15,6 +15,7 @@ import {
   setPosition,
   setRoundLoading,
   setSearch,
+  getALLplayerStats,
 } from '../../../redux/actions/draftAction'
 
 import DraftPool from './DraftPool'
@@ -56,6 +57,12 @@ const TableComponent = ({ tableScroll }) => {
           limit: limit,
           page: page,
         })
+        await getALLplayerStats({
+          position: position,
+          search: search,
+          limit: limit,
+          page: page,
+        })
         await getDraftRound()
         if (activeTab == 2) await getDraftQueue()
         dispatch(setRoundLoading(false))
@@ -78,6 +85,12 @@ const TableComponent = ({ tableScroll }) => {
       key: '3',
       label: 'Team Rosters',
       children: <TeamRosters tableScroll={tableScroll} />,
+    },
+
+    {
+      key: '4',
+      label: 'Black List',
+      // children: <TeamRosters tableScroll={tableScroll} />,
     },
   ]
 
