@@ -74,6 +74,18 @@ export const setDraftQueue = (payload) => {
     payload: payload,
   }
 }
+
+
+// BLACK LIST
+
+export const setBlackListQueue = (payload) => {
+  return {
+    type: 'SET_BLACKLIST_QUEUE',
+    payload: payload,
+  }
+}
+
+
 export const setDraftTab = (payload) => {
   return {
     type: 'SET_DRAFT_TAB',
@@ -272,6 +284,66 @@ export const deleteDraftQueue = async (id) => {
     })
   }
 }
+
+
+
+// BLACK LIST 
+
+export const createBlackListQueue = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/draft/create-black-list', payload)
+    if (res) {
+      await getBlackListQueue()
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+
+export const getBlackListQueue = async () => {
+  try {
+    attachToken()
+    // store.dispatch(setDraftLoading(true))
+    const res = await privateAPI.get('/draft/get-black-list')
+    if (res) {
+      store.dispatch(setBlackListQueue(res.data.data))
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+    // store.dispatch(setDraftLoading(false))
+  }
+}
+
+
+
+
+export const deleteBlacklistQueue = async (id) => {
+  console.log('inside id here',id);
+  try {
+    attachToken()
+    const res = await privateAPI.delete(`/draft/delete-black-list?id=${id}`)
+    if (res) {
+      await getBlackListQueue()
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
 
 // DRAFT HISTORY
 export const addPlayerToDraft = async (payload) => {

@@ -5,30 +5,34 @@ import { useDispatch, useSelector } from 'react-redux'
 import { FaCircleMinus } from 'react-icons/fa6'
 
 import {
+  deleteBlacklistQueue,
   deleteDraftQueue,
+  getBlackListQueue,
   getDraftQueue,
   setSelectedPlayer,
 } from '../../../redux/actions/draftAction'
 
-const DraftQueue = ({ tableScroll }) => {
-  const { draftQueues, activeTab } = useSelector((state) => state.draft)
+const BlackList = ({ tableScroll }) => {
+  const { blacklistQueues, activeTab } = useSelector((state) => state.draft)
   const [loading, setLoading] = useState('')
 
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (activeTab == 2) getData()
+    if (activeTab == 4) getData()
   }, [activeTab])
 
   const getData = async () => {
     setLoading('data')
-    await getDraftQueue()
+    await getBlackListQueue()
     setLoading('')
   }
 
-  const handleDeleteQueue = async (id) => {
+
+
+  const handleDeleteBlackListQueue = async (id) => {
     setLoading(id)
-    await deleteDraftQueue(id)
+    await deleteBlacklistQueue(id)
     setLoading('')
   }
 
@@ -39,16 +43,18 @@ const DraftQueue = ({ tableScroll }) => {
       dataIndex: 'plus-icon',
       key: 'plus-icon',
       render: (_, obj) => (
+   
        
         <>
         
-          {loading === obj?._id ? (
+          {loading ===obj?.player?._id ? (
+            
             <Spin />
           ) : (
             <FaCircleMinus
               size={18}
               style={{ marginBottom: '-3px', cursor: 'pointer' }}
-              onClick={() => handleDeleteQueue(obj?._id)}
+              onClick={() => handleDeleteBlackListQueue(obj?._id)}
             />
           )}
         </>
@@ -141,7 +147,8 @@ const DraftQueue = ({ tableScroll }) => {
           <div className='table_player_name_box nrc_container'>
             <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
               {obj?.player?.PlayerCap || '-'}
-              {`$${obj?.player?.PlayerCap || '-'}`}
+              {/* {`$${obj?.player?.PlayerCap || '-'}`} */}
+              {`$${(obj?.player?.PlayerCap || '-').toLocaleString()}`}
             </p>
           </div>
         )
@@ -153,7 +160,7 @@ const DraftQueue = ({ tableScroll }) => {
   return (
     <Table
       loading={loading === 'data'}
-      dataSource={draftQueues}
+      dataSource={blacklistQueues}
       columns={columns}
       scroll={tableScroll}
       bordered={false}
@@ -164,4 +171,4 @@ const DraftQueue = ({ tableScroll }) => {
   )
 }
 
-export default DraftQueue
+export default BlackList

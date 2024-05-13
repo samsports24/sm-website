@@ -9,11 +9,29 @@ const setRosterLoading = (payload) => {
   }
 }
 const setRosterData = (payload) => {
+
   return {
     type: 'SET_ROSTERS',
     payload: payload,
   }
 }
+
+
+const setRosterDraftData =(payload) =>{
+  return {
+    type: 'SET_DRAFT_ROSTERS',
+    payload: payload,
+  }
+
+}
+
+const setRosterDataForpick = (payload) => {
+  return {
+    type: 'SET_ROSTERS_PICK_ROUND',
+    payload: payload,
+  }
+}
+
 const setAuctionData = (payload) => {
   return {
     type: 'SET_AUCTIONS',
@@ -53,8 +71,9 @@ export const getDraftTeamRoster = async (week) => {
     attachToken()
     const res = await privateAPI.get(`/team/get-roster-draft/${week}`)
     if (res) {
+      console.log('res.data.data',res.data.data);
        console.log('in res',res);
-      store.dispatch(setRosterData(res.data.data))
+      store.dispatch(setRosterDraftData(res.data.data))
     }
     return res.data.data
   } catch (err) {
@@ -66,6 +85,31 @@ export const getDraftTeamRoster = async (week) => {
     store.dispatch(setRosterLoading(false))
   }
 }
+
+
+
+export const getRosterForDraftPick =async (week) =>{
+  console.log('in the date',week);
+  try {
+    store.dispatch(setRosterLoading(true))
+    attachToken()
+    const res = await privateAPI.get(`/team/get-pick-round-roster-draft/${week}`)
+    if (res) {
+       console.log('in pick res',res);
+      store.dispatch(setRosterDataForpick(res?.data?.data))
+    }
+    return res.data.data
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  } finally {
+    store.dispatch(setRosterLoading(false))
+  }
+}
+
+
 
 export const getTeamRoster = async (payload) => {
   try {

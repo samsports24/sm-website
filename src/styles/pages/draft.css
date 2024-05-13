@@ -836,6 +836,7 @@
 }
 .table_com_box .table_player_name_box p:nth-child(1) {
   color: var(--primary) !important;
+ 
 }
 .table_com_box .table_player_name_box p:nth-child(2) {
   font-size: 14px;
@@ -844,6 +845,8 @@
   line-height: 22px;
   opacity: 0.5;
 }
+
+
 
 .table_com_box .ant-table-wrapper .ant-table-tbody > tr > td {
   font-size: 14px;

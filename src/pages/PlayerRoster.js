@@ -17,6 +17,7 @@ import { sortedArray } from '../config/helperFunctions'
 const PlayerRoster = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
   const { isLoading, data } = useSelector((state) => state?.roster)
+  console.log("🚀 ~ PlayerRoster ~ data:", data)
   const [nonActive, setNonActive] = useState([])
   const [protectedCheck, setProtectedCheck] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
@@ -96,7 +97,8 @@ const PlayerRoster = () => {
     await getRoster(SETTING?.week)
   }
 
-console.log('data?.filterActiveRoster',data?.filterActiveRoster);
+// console.log('data?.filterActiveRoster',data?.filterActiveRoster);
+// console.log('sortedArray',sortedArray);
 
   return (
     <div className='player_roster_container'>

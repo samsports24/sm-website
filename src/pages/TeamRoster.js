@@ -40,6 +40,7 @@ const TeamRoster = () => {
   }, [SETTING?.week, id])
 
   const getData = async () => {
+    
     setLoading(true)
     const res = await getTeamRoster({ week: SETTING?.week, team: id })
     if (res) {

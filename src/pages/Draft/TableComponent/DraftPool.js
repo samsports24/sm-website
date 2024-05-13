@@ -16,16 +16,18 @@ import {
   setSearch,
   setSelectedPlayer,
   getALLplayerStats,
+  createBlackListQueue,
+  deleteBlacklistQueue,
 } from '../../../redux/actions/draftAction'
 
 const DraftPool = ({ tableScroll }) => {
-  const { allPlayers, position, search, page, limit, tableLoading, draftQueues, activeTab } =
+  const { allPlayers, position, search, page, limit, tableLoading, draftQueues, activeTab,blacklistQueues } =
     useSelector((state) => state.draft)
   const { userDetails } = useSelector((state) => state.user)
   const [loading, setLoading] = useState('')
 
 
-
+  const [color, setColor] = useState('');
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -57,6 +59,24 @@ const DraftPool = ({ tableScroll }) => {
     await deleteDraftQueue(queueId)
     setLoading('')
   }
+  const handleDeleteBlackListQueue = async (playerId,blacklistid) => {
+    setLoading(playerId)
+    await deleteBlacklistQueue(blacklistid)
+    setLoading('')
+  }
+
+
+// add black list
+const handleAddBlackList = async (id) => {
+  setLoading(id)
+  await createBlackListQueue({
+    team: userDetails?.team?._id,
+    player: id,
+  })
+  setLoading('')
+}
+
+
 
   const getColumns = (position) => {
     console.log('🚀 ~ getColumns ~ position:', position)
@@ -67,26 +87,61 @@ const DraftPool = ({ tableScroll }) => {
         dataIndex: 'plus-icon',
         key: 'plus-icon',
         render: (_, obj) => {
-          const isQueue = draftQueues?.find((v) => v?.player?._id === obj?._id)
+          const isQueue = draftQueues?.find((v) => v?.player?._id === obj?.player?._id)
+          const isblacklist = blacklistQueues?.find((v) => v?.player?._id === obj?.player?._id)
           return (
-            <div>
-              {loading === obj?._id ? (
-                <Spin />
-              ) : isQueue ? (
-                <BiSolidPlusCircle
-                  size={18}
-                  style={{ marginBottom: '-3px', cursor: 'pointer' }}
-                  color={'var(--primary)'}
-                  onClick={() => handleDeleteQueue(obj?._id, isQueue?._id)}
-                />
-              ) : (
-                <BiSolidPlusCircle
-                  size={18}
-                  style={{ marginBottom: '-3px', cursor: 'pointer' }}
-                  onClick={() => handleAddQueue(obj?.player?._id)}
-                />
-              )}
-            </div>
+            // <div>
+            //   {loading === obj?.player?._id ? (
+            //     <Spin />
+            //   ) : isQueue ? (
+            //     <BiSolidPlusCircle
+            //       size={18}
+            //       style={{ marginBottom: '-3px', cursor: 'pointer' }}
+            //       color={'var(--primary)'}
+            //       onClick={() => handleDeleteQueue(obj?._id, isQueue?._id)}
+            //     />
+            //   ) : (
+            //     <BiSolidPlusCircle
+            //       size={18}isQueue
+            //       style={{ marginBottom: '-3px', cursor: 'pointer' }}
+            //       onClick={() => handleAddQueue(obj?.player?._id)}
+            //     />
+            //   )}
+            // </div>
+<div>
+  {loading === obj?.player?._id ? (
+    <Spin />
+  ) : isQueue || isblacklist ? (
+    <BiSolidPlusCircle
+      size={18}
+      style={{ marginBottom: '-3px', cursor: 'pointer' }}
+      color={color}
+      onClick={() => {
+        if (color === 'var(--primary)') {
+          handleAddBlackList(obj?.player?._id);
+          handleDeleteQueue(obj?._id, isQueue?._id);
+          setColor('black'); 
+        } else if (color === 'black') {
+          handleDeleteBlackListQueue(obj?.player?._id,isblacklist?._id);
+          setColor('none'); 
+        }
+        console.log('Additional functionality executed');
+      }}
+    />
+  ) : (
+    <BiSolidPlusCircle
+      size={18}
+      style={{ marginBottom: '-3px', cursor: 'pointer' }}
+      onClick={() => {
+        handleAddQueue(obj?.player?._id);
+        setColor('var(--primary)'); // Update color to 'var(--primary)'
+        // Additional functionality here
+        console.log('Additional functionality executed');
+      }}
+    />
+  )}
+</div>
+
           )
         },
       },
@@ -176,7 +231,10 @@ const DraftPool = ({ tableScroll }) => {
           return (
             <div className='table_player_name_box nrc_container'>
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.player?.PlayerCap || '-'}
+                {/* {obj?.player?.PlayerCap || '-'} */}
+                {/* {`$${obj?.player?.PlayerCap || '-'}`} */}
+                {`$${(obj?.player?.PlayerCap || '-').toLocaleString()}`}
+
               </p>
             </div>
           )
@@ -216,7 +274,7 @@ const DraftPool = ({ tableScroll }) => {
           return (
             <div className='table_player_name_box nrc_container'>
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.player?.avgPf || '-'}
+                {obj?.player?.avgPf.toFixed(2) || '-'}
               </p>
             </div>
           )
@@ -233,7 +291,7 @@ const DraftPool = ({ tableScroll }) => {
           return (
             <div className='table_player_name_box nrc_container'>
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.stats?.stats?.FantasyPoints24 || '-'}
+                {obj?.stats?.stats?.FantasyPoints24.toFixed(2) || '-'}
               </p>
             </div>
           )
@@ -763,7 +821,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.FGMissed || '-'}
+                    {obj?.stats?.stats?.FGMissed.toFixed(2) || '-'}
                   </p>
                 </div>
               )

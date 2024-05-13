@@ -20,7 +20,7 @@ const RosterDetail = ({ playerFinancials }) => {
   const handleDraftPlayer = async () => {
     setLoading(true)
     await addPlayerToDraft({
-      playerId: player?._id,
+      playerId: player?.player?._id,
       position: draftCounter?.position,
       round: draftCounter?.round,
       remainingTime: getRemainingSeconds(draftCounter?.time),
@@ -28,7 +28,6 @@ const RosterDetail = ({ playerFinancials }) => {
     })
     setLoading(false)
   }
-
 
  
   return (
@@ -81,7 +80,7 @@ const RosterDetail = ({ playerFinancials }) => {
           </div>
           <div>
             <p>24 Proj</p>
-            <p>{player?.stats?.stats?.FantasyPoints24 || '-'}</p>
+            <p>{player?.stats?.stats?.FantasyPoints24.toFixed(2) || '-'}</p>
           </div>
           {/* <div>
             <p>Pass Yds</p>

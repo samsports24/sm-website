@@ -16,6 +16,7 @@ const initialState = {
     position: 'ALL',
     page: 1,
     draftQueues: [],
+    blacklistQueues : [],
     activeTab: 1,
     draftCounter: null,
     onTheClock: null,
@@ -87,6 +88,14 @@ const initialState = {
           draftQueues: payload,
         }
       }
+
+     case 'SET_BLACKLIST_QUEUE':{
+       return {
+         ...state,
+       blacklistQueues: payload,
+  }
+}
+
       case 'SET_DRAFT_TAB': {
         return {
           ...state,

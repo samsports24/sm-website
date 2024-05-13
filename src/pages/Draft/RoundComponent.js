@@ -15,7 +15,7 @@ const RoundComponent = ({ height }) => {
       </div>
       <div className='rb_body'>
         {draftRounds?.map((v, i) => {
-          console.log('draftRounds',draftRounds);
+        
           return (
             <div
               key={i}

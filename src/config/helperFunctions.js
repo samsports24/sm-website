@@ -27,13 +27,39 @@ export const positionOrder = {
   K: 24,
 }
 
+// export const sortedArray = (arr) => {
+ 
+//   return arr?.sort((a, b) => {
+//     console.log('a.players.Position',a.players.Position);
+//     const nameA = a.players.Name !== undefined ? a.players.Name : null;
+//     const nameB = b.players?.Name !== undefined ? b.players.Name : null;
+// const nameComparison = nameA !== null && nameB !== null ? nameA.localeCompare(nameB) : 0;
+//  const positionComparison = positionOrder[a.players.Position] - positionOrder[b.players.Position]
+//   //  const nameComparison = a.players.Name.localeCompare(b.players?.Name)
+//     return positionComparison !== 0 ? positionComparison : nameComparison
+//   })
+// }
+
+
 export const sortedArray = (arr) => {
+  console.log('arr', arr);
   return arr?.sort((a, b) => {
-    const positionComparison = positionOrder[a.players.Position] - positionOrder[b.players.Position]
-    const nameComparison = a.players.Name.localeCompare(b.players.Name)
-    return positionComparison !== 0 ? positionComparison : nameComparison
-  })
-}
+    const positionA = a?.players?.Position || '';
+    const positionB = b?.players?.Position || '';
+    const positionComparison = positionOrder[positionA] - positionOrder[positionB];
+
+    const nameA = a?.players?.Name || '';
+    const nameB = b?.players?.Name || '';
+    const nameComparison = nameA.localeCompare(nameB);
+
+    return positionComparison !== 0 ? positionComparison : nameComparison;
+  });
+};
+
+
+
+
+
 
 export const sortedObject = (data) => {
   const sortedPositions = Object.keys(data)?.sort((a, b) => positionOrder[a] - positionOrder[b])

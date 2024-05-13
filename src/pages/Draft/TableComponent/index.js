@@ -16,6 +16,7 @@ import {
   setRoundLoading,
   setSearch,
   getALLplayerStats,
+  getBlackListQueue,
 } from '../../../redux/actions/draftAction'
 
 import DraftPool from './DraftPool'
@@ -26,6 +27,7 @@ import { io } from 'socket.io-client'
 import { base_url } from '../../../config/constants'
 import { getRemainingSeconds } from '../../../config/helperFunctions'
 import { getLeagueDetails } from '../../../redux'
+import BlackList from './BlackList'
 
 const TableComponent = ({ tableScroll }) => {
   const {
@@ -90,7 +92,7 @@ const TableComponent = ({ tableScroll }) => {
     {
       key: '4',
       label: 'Black List',
-      // children: <TeamRosters tableScroll={tableScroll} />,
+      children: <BlackList tableScroll={tableScroll} />,
     },
   ]
 
@@ -108,21 +110,75 @@ const TableComponent = ({ tableScroll }) => {
     _handleSearch(value)
   }
 
-  const handleAutoDraft = async () => {
-    setLoading(true)
-    const draftQueue = await getDraftQueue()
-    const playerId =
-      draftQueue?.length > 0 ? draftQueue[0]?.player?._id : allPlayers?.players?.[0]?._id
+  useEffect(() => {
+    console.log('allPlayers', allPlayers?.players?.[0]?.player?._id);
 
-    await addPlayerToDraft({
-      playerId: playerId,
-      position: draftCounter?.position,
-      round: draftCounter?.round,
-      remainingTime: getRemainingSeconds(draftCounter?.time),
-      teamId: onTheClock?.team?._id, // will be removed after testing
-    })
-    setLoading(false)
-  }
+  }, [allPlayers]);
+  
+
+  // const handleAutoDraft = async () => {
+  //   setLoading(true)
+  //   const draftQueue = await getDraftQueue()
+   
+
+  //   const playerId =
+  //     draftQueue?.length > 0 ? draftQueue[0]?.player?._id : allPlayers?.players?.[0]?.player?._id
+  //   await addPlayerToDraft({
+  //     playerId: playerId,
+  //     position: draftCounter?.position,
+  //     round: draftCounter?.round,
+  //     remainingTime: getRemainingSeconds(draftCounter?.time),
+  //     teamId: onTheClock?.team?._id, // will be removed after testing
+  //   })
+  //   setLoading(false)
+  // }
+
+  const handleAutoDraft = async () => {
+    console.log('inside this');
+    setLoading(true);
+    const draftQueue = await getDraftQueue();
+    const blacklistQueue = await getBlackListQueue();
+  
+
+
+    let playerId = null;
+  
+
+    if (blacklistQueue.length > 0) {
+      // If the first player ID in blacklistQueue matches the first player ID in allPlayers, use the second player ID
+      if (blacklistQueue[0]?.player?._id === allPlayers?.players?.[0]?.player?._id) {
+        playerId = allPlayers?.players?.[1]?.player?._id;
+      }
+    }
+  
+   
+    if (!playerId && draftQueue?.length > 0) {
+      playerId = draftQueue[0]?.player?._id || allPlayers?.players?.[0]?.player?._id;
+    }
+    
+  console.log('playerId',playerId);
+    // Add player to draft with the selected playerId
+    if (playerId) {
+      await addPlayerToDraft({
+        playerId: playerId,
+        position: draftCounter?.position,
+        round: draftCounter?.round,
+        remainingTime: getRemainingSeconds(draftCounter?.time),
+        teamId: onTheClock?.team?._id, // will be removed after testing
+      });
+    }
+  
+    setLoading(false);
+  };
+  
+  
+
+
+
+
+
+
+
 
   return (
     <div className='table_com_box'>
