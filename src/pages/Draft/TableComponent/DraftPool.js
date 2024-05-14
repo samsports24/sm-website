@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import useDebounce from '../../../hooks/useDebounce'
 import rookieimg from '../../../assets/rookie_indo_sam.png'
 
+
 import {
   createDraftQueue,
   deleteDraftQueue,
@@ -228,20 +229,25 @@ const DraftPool = ({ tableScroll }) => {
         title: 'AGE',
         dataIndex: 'age',
         key: 'age',
+        sorter: handleAgeClick,
         render: (_, obj) => {
           return (
-            <div className='table_player_name_box nrc_container'>
-              {/* <p onClick={() => 
+
+            <div  className='table_player_name_box nrc_container'>
+              
+              
+              <p onClick={() => 
                 dispatch(setSelectedPlayer(obj))
               }
                 
                 style={{ cursor: 'pointer' }}>
                 {obj?.player?.Age || '-'}
-              </p> */}
-                <p onClick={handleAgeClick} style={{ cursor: 'pointer' }}>
+              </p>
+                {/* <p onClick={handleAgeClick} style={{ cursor: 'pointer' }}>
               {obj?.player?.Age || '-'}
-            </p>
+            </p> */}
             </div>
+            
           )
         },
       },

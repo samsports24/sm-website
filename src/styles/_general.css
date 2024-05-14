@@ -409,6 +409,12 @@ p {
 
 }
 
+
+/* sorted table css */
+.ant-table-wrapper td.ant-table-column-sort {
+  background-color: transparent ;
+}
+
 /* --------------------------------- */
 
 /* BREADCRUMB */

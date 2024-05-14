@@ -21,6 +21,7 @@ export const setDraftTableLoading = (payload) => {
   }
 }
 export const setSearch = (payload) => {
+  console.log('search paylaod',payload);
   return {
     type: 'SET_DRAFT_PLAYER_SEARCH',
     payload,
