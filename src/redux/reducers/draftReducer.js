@@ -76,12 +76,16 @@ const initialState = {
           position: payload,
         }
       }
+
+
       case 'SET_DRAFT_PLAYER_PAGE': {
         return {
           ...state,
           page: payload,
         }
       }
+
+     
       case 'SET_DRAFT_QUEUE': {
         return {
           ...state,

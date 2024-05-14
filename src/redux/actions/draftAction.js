@@ -32,6 +32,9 @@ export const setPosition = (payload) => {
     payload,
   }
 }
+
+
+
 export const setLimit = (payload) => {
   return {
     type: 'SET_DRAFT_PLAYER_LIMIT',
@@ -45,6 +48,7 @@ export const setPage = (payload) => {
   }
 }
 export const setAllPlayers = (payload) => {
+  console.log('payload',payload);
   return {
     type: 'SET_ALL_PLAYERS',
     payload: payload,
@@ -118,7 +122,9 @@ export const getAllPlayers = async (payload) => {
     attachToken()
     // const res = await privateAPI.post('/player/get-all-players', payload)
     // const res = await privateAPI.post('/draft/get-draft-all-players', payload)
-    const res = await privateAPI.post(`/draft/get-draft-all-players?position=${payload.position}`);
+    // const res = await privateAPI.post(`/draft/get-draft-all-players?position=${payload.position}`);
+    const res = await privateAPI.post(`/draft/get-draft-all-players?position=${payload.position}`, payload);
+
     store.dispatch(setAllPlayers(res.data.data))
     return res.data.data
   } catch (err) {

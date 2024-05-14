@@ -138,7 +138,7 @@ console.log('roasterdraftdata',roasterdraftdata);
     return 0;
   });
   
-  sortedRoasterdraftdata.forEach(item => {
+  sortedRoasterdraftdata?.forEach(item => {
   if (["DT", "NT", "DE", "DL", "ILB", "OLB", "LB", "CB", "S", "SS", "DB", "LS"].includes(item?.Position)) {
     item.Position = "IDP";
   }
@@ -256,7 +256,10 @@ console.log('roasterdraftdata',roasterdraftdata);
         return (
           <div className='table_player_name_box nrc_container'>
             <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-              {obj?.PlayerCap || '-'}
+              {/* {obj?.PlayerCap || '-'} */}
+           {(obj?.PlayerCap ? `$${obj.PlayerCap.toLocaleString()}` : '-')}
+
+
             </p>
           </div>
         )

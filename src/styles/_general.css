@@ -400,6 +400,15 @@ p {
   margin-left: 5px;
   color: #00c008;
 }
+
+.rookie_image2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 4px;
+
+}
+
 /* --------------------------------- */
 
 /* BREADCRUMB */

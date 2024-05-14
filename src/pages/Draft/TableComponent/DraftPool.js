@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Input, Spin, Table, Tabs } from 'antd'
+import { Button, Image, Input, Spin, Table, Tabs } from 'antd'
 import { CiSearch } from 'react-icons/ci'
 import { BiSolidPlusCircle } from 'react-icons/bi'
 import { useDispatch, useSelector } from 'react-redux'
 
 import useDebounce from '../../../hooks/useDebounce'
+import rookieimg from '../../../assets/rookie_indo_sam.png'
 
 import {
   createDraftQueue,
@@ -21,13 +22,26 @@ import {
 } from '../../../redux/actions/draftAction'
 
 const DraftPool = ({ tableScroll }) => {
-  const { allPlayers, position, search, page, limit, tableLoading, draftQueues, activeTab,blacklistQueues } =
-    useSelector((state) => state.draft)
+  const {
+    allPlayers,
+    position,
+    search,
+    page,
+    limit,
+    tableLoading,
+    draftQueues,
+    activeTab,
+    blacklistQueues,
+  } = useSelector((state) => state.draft)
   const { userDetails } = useSelector((state) => state.user)
   const [loading, setLoading] = useState('')
+  const SETTING = useSelector((state) => state?.user?.setting)
 
+  console.log('SETTING', SETTING?.season)
 
-  const [color, setColor] = useState('');
+  const [color, setColor] = useState('')
+
+  const [age,setAge]= useState('')
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -37,13 +51,24 @@ const DraftPool = ({ tableScroll }) => {
         search,
         limit,
         page,
+        age,
       })
-  }, [position, limit, page, activeTab])
+  }, [position, limit, page,age, activeTab])
 
   const getData = async (payload) => {
     await getAllPlayers(payload, position)
     // await getDraftQueue()
   }
+
+
+  // for age sorting 
+  const handleAgeClick = () => {
+    const newSortingOrder = age === 'asc' ? 'desc' : 'asc';
+    console.log('newSortingOrder',newSortingOrder);
+    setAge(newSortingOrder); 
+  };
+
+  console.log('age',age);
 
   const handleAddQueue = async (id) => {
     setLoading(id)
@@ -59,24 +84,22 @@ const DraftPool = ({ tableScroll }) => {
     await deleteDraftQueue(queueId)
     setLoading('')
   }
-  const handleDeleteBlackListQueue = async (playerId,blacklistid) => {
+  const handleDeleteBlackListQueue = async (playerId, blacklistid) => {
     setLoading(playerId)
     await deleteBlacklistQueue(blacklistid)
     setLoading('')
   }
 
-
-// add black list
-const handleAddBlackList = async (id) => {
-  setLoading(id)
-  await createBlackListQueue({
-    team: userDetails?.team?._id,
-    player: id,
-  })
-  setLoading('')
-}
-
-
+  // add black list
+  const handleAddBlackList = async (id) => {
+    setLoading(id)
+    await createBlackListQueue({
+      team: userDetails?.team?._id,
+      player: id,
+      season: SETTING?.season,
+    })
+    setLoading('')
+  }
 
   const getColumns = (position) => {
     console.log('🚀 ~ getColumns ~ position:', position)
@@ -108,40 +131,39 @@ const handleAddBlackList = async (id) => {
             //     />
             //   )}
             // </div>
-<div>
-  {loading === obj?.player?._id ? (
-    <Spin />
-  ) : isQueue || isblacklist ? (
-    <BiSolidPlusCircle
-      size={18}
-      style={{ marginBottom: '-3px', cursor: 'pointer' }}
-      color={color}
-      onClick={() => {
-        if (color === 'var(--primary)') {
-          handleAddBlackList(obj?.player?._id);
-          handleDeleteQueue(obj?._id, isQueue?._id);
-          setColor('black'); 
-        } else if (color === 'black') {
-          handleDeleteBlackListQueue(obj?.player?._id,isblacklist?._id);
-          setColor('none'); 
-        }
-        console.log('Additional functionality executed');
-      }}
-    />
-  ) : (
-    <BiSolidPlusCircle
-      size={18}
-      style={{ marginBottom: '-3px', cursor: 'pointer' }}
-      onClick={() => {
-        handleAddQueue(obj?.player?._id);
-        setColor('var(--primary)'); // Update color to 'var(--primary)'
-        // Additional functionality here
-        console.log('Additional functionality executed');
-      }}
-    />
-  )}
-</div>
-
+            <div>
+              {loading === obj?.player?._id ? (
+                <Spin />
+              ) : isQueue || isblacklist ? (
+                <BiSolidPlusCircle
+                  size={18}
+                  style={{ marginBottom: '-3px', cursor: 'pointer' }}
+                  color={color}
+                  onClick={() => {
+                    if (color === 'var(--primary)') {
+                      handleAddBlackList(obj?.player?._id)
+                      handleDeleteQueue(obj?._id, isQueue?._id)
+                      setColor('black')
+                    } else if (color === 'black') {
+                      handleDeleteBlackListQueue(obj?.player?._id, isblacklist?._id)
+                      setColor('none')
+                    }
+                    console.log('Additional functionality executed')
+                  }}
+                />
+              ) : (
+                <BiSolidPlusCircle
+                  size={18}
+                  style={{ marginBottom: '-3px', cursor: 'pointer' }}
+                  onClick={() => {
+                    handleAddQueue(obj?.player?._id)
+                    setColor('var(--primary)') // Update color to 'var(--primary)'
+                    // Additional functionality here
+                    console.log('Additional functionality executed')
+                  }}
+                />
+              )}
+            </div>
           )
         },
       },
@@ -160,8 +182,10 @@ const handleAddBlackList = async (id) => {
         render: (_, obj) => {
           //  console.log('obj', obj)
           // console.log('FieldGoalsMade', obj?.stats?.stats?.FieldGoalsMade)
-         
+
           const inj = obj?.player?.InjuryStatus
+          const rookie = obj?.player?.ExperienceString
+          // console.log('rookie', rookie)
           return (
             <div className='table_player_name_box nrc_container'>
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
@@ -170,6 +194,12 @@ const handleAddBlackList = async (id) => {
               {/* <p>
             {obj?.Position} - {obj?.Team}{' '}
           </p> */}
+              {rookie === 'Rookie' ? (
+                 <Image width={20} className='rookie_image2'  src={rookieimg} alt='rookie Image' /> 
+              ) : (
+                ''
+              )}
+                {/* <Image width={20} className='rookie_image2'  src={rookieimg} alt='rookie Image' /> */}
               {inj === 'Out' ? (
                 <>
                   <span className='injury_plus'>
@@ -192,6 +222,30 @@ const handleAddBlackList = async (id) => {
           )
         },
       },
+
+      {
+        width: 180,
+        title: 'AGE',
+        dataIndex: 'age',
+        key: 'age',
+        render: (_, obj) => {
+          return (
+            <div className='table_player_name_box nrc_container'>
+              {/* <p onClick={() => 
+                dispatch(setSelectedPlayer(obj))
+              }
+                
+                style={{ cursor: 'pointer' }}>
+                {obj?.player?.Age || '-'}
+              </p> */}
+                <p onClick={handleAgeClick} style={{ cursor: 'pointer' }}>
+              {obj?.player?.Age || '-'}
+            </p>
+            </div>
+          )
+        },
+      },
+
       {
         width: 180,
         title: 'POSITION',
@@ -234,7 +288,6 @@ const handleAddBlackList = async (id) => {
                 {/* {obj?.player?.PlayerCap || '-'} */}
                 {/* {`$${obj?.player?.PlayerCap || '-'}`} */}
                 {`$${(obj?.player?.PlayerCap || '-').toLocaleString()}`}
-
               </p>
             </div>
           )
@@ -274,7 +327,7 @@ const handleAddBlackList = async (id) => {
           return (
             <div className='table_player_name_box nrc_container'>
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.player?.avgPf.toFixed(2) || '-'}
+                {obj?.player?.avgPf?.toFixed(2) || '-'}
               </p>
             </div>
           )
@@ -291,7 +344,7 @@ const handleAddBlackList = async (id) => {
           return (
             <div className='table_player_name_box nrc_container'>
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.stats?.stats?.FantasyPoints24.toFixed(2) || '-'}
+                {obj?.stats?.stats?.FantasyPoints24?.toFixed(2) || '-'}
               </p>
             </div>
           )
@@ -307,7 +360,7 @@ const handleAddBlackList = async (id) => {
           return (
             <div className='table_player_name_box nrc_container'>
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.stats?.stats?.AvgFantasyPoints24.toFixed(2) || '-'}
+                {obj?.stats?.stats?.AvgFantasyPoints24?.toFixed(2) || '-'}
               </p>
             </div>
           )
@@ -317,7 +370,7 @@ const handleAddBlackList = async (id) => {
 
     const columns3 = [
       {
-      //  width: 90,
+        //  width: 90,
         title: 'Projected',
         dataIndex: 'proj',
         key: 'proj',
@@ -346,19 +399,17 @@ const handleAddBlackList = async (id) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.AvgFantasyPoints24.toFixed(2) || '-'}
+                    {obj?.stats?.stats?.AvgFantasyPoints24?.toFixed(2) || '-'}
                   </p>
                 </div>
               )
             },
           },
-         
         ],
       },
-     
 
       {
-       // width: 150,
+        // width: 150,
         title: 'PASSING',
         dataIndex: 'pass',
         key: 'pass',
@@ -387,7 +438,7 @@ const handleAddBlackList = async (id) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.PassingYards.toFixed(2) || '-'}
+                    {obj?.stats?.stats?.PassingYards?.toFixed(2) || '-'}
                   </p>
                 </div>
               )
@@ -408,15 +459,14 @@ const handleAddBlackList = async (id) => {
               )
             },
           },
-         
         ],
       },
       {
         // width: 150,
-         title: 'RECIVING',
-         dataIndex: 'rec',
-         key: 'rec',
-         children: [
+        title: 'RECIVING',
+        dataIndex: 'rec',
+        key: 'rec',
+        children: [
           {
             width: 70,
             title: 'TAR',
@@ -462,9 +512,8 @@ const handleAddBlackList = async (id) => {
               )
             },
           },
-         
         ],
-       },
+      },
       {
         width: 150,
         title: 'RUSHING',
@@ -516,7 +565,6 @@ const handleAddBlackList = async (id) => {
               )
             },
           },
-         
         ],
       },
     ]
@@ -531,7 +579,7 @@ const handleAddBlackList = async (id) => {
           return (
             <div className='table_player_name_box nrc_container'>
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.stats?.OL?.TotalTeamScore || '-'}
+                {obj?.stats?.OL?.TotalTeamScore?.toFixed(2) || '-'}
               </p>
             </div>
           )
@@ -562,7 +610,7 @@ const handleAddBlackList = async (id) => {
           return (
             <div className='table_player_name_box nrc_container'>
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.stats?.OL?.totalSnap || '-'}
+                {obj?.stats?.OL?.totalSnap?.toFixed(2) || '-'}
               </p>
             </div>
           )
@@ -586,186 +634,179 @@ const handleAddBlackList = async (id) => {
     ]
 
     const columns5 = [
-
-
       {
         //  width: 90,
-          title: 'PAST YEARS STATS',
-          dataIndex: 'past',
-          key: 'past',
-          children: [
-            
-            {
-              width: 90,
-              title: 'TPF',
-              dataIndex: 'tpf',
-              key: 'tpf',
-              render: (_, obj) => {
-                return (
-                  <div className='table_player_name_box nrc_container'>
-                    <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                      {obj?.player?.pf || '-'}
-                    </p>
-                  </div>
-                )
-              },
+        title: 'PAST YEARS STATS',
+        dataIndex: 'past',
+        key: 'past',
+        children: [
+          {
+            width: 90,
+            title: 'TPF',
+            dataIndex: 'tpf',
+            key: 'tpf',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.player?.pf || '-'}
+                  </p>
+                </div>
+              )
             },
-            {
-              width: 90,
-              title: 'TAPF',
-              dataIndex: 'tapf',
-              key: 'tapf',
-              render: (_, obj) => {
-                return (
-                  <div className='table_player_name_box nrc_container'>
-                    <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                      {obj?.player?.avgPf || '-'}
-                    </p>
-                  </div>
-                )
-              },
+          },
+          {
+            width: 90,
+            title: 'TAPF',
+            dataIndex: 'tapf',
+            key: 'tapf',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.player?.avgPf || '-'}
+                  </p>
+                </div>
+              )
             },
-      
-            {
-              width: 90,
-              title: 'IDP TDS',
-              dataIndex: 'idp',
-              key: 'idp',
-              render: (_, obj) => {
-                return (
-                  <div className='table_player_name_box nrc_container'>
-                    <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                      {obj?.stats?.stats?.IDP || '-'}
-                    </p>
-                  </div>
-                )
-              },
-            },
-            {
-              width: 90,
-              title: 'SCKS ',
-              dataIndex: 'scks',
-              key: 'scks',
-              render: (_, obj) => {
-                return (
-                  <div className='table_player_name_box nrc_container'>
-                    <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                      {obj?.stats?.stats?.SCKS || '-'}
-                    </p>
-                  </div>
-                )
-              },
-            },
-      
-            {
-              width: 90,
-              title: 'QBH',
-              dataIndex: 'qbh',
-              key: 'qbh',
-              render: (_, obj) => {
-                return (
-                  <div className='table_player_name_box nrc_container'>
-                    <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                      {obj?.stats?.stats?.QBH || '-'}
-                    </p>
-                  </div>
-                )
-              },
-            },
-      
-            {
-              width: 90,
-              title: 'TKLS',
-              dataIndex: 'tkls',
-              key: 'idp',
-              render: (_, obj) => {
-                return (
-                  <div className='table_player_name_box nrc_container'>
-                    <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                      {obj?.stats?.stats?.TKLS || '-'}
-                    </p>
-                  </div>
-                )
-              },
-            },
-            {
-              width: 90,
-              title: 'TFL ',
-              dataIndex: 'tfl',
-              key: 'tfl',
-              render: (_, obj) => {
-                return (
-                  <div className='table_player_name_box nrc_container'>
-                    <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                      {obj?.stats?.stats?.TFL || '-'}
-                    </p>
-                  </div>
-                )
-              },
-            },
-      
-            {
-              width: 90,
-              title: 'FF',
-              dataIndex: 'ff',
-              key: 'ff',
-              render: (_, obj) => {
-                return (
-                  <div className='table_player_name_box nrc_container'>
-                    <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                      {obj?.stats?.stats?.FF || '-'}
-                    </p>
-                  </div>
-                )
-              },
-            },
-      
-            {
-              width: 90,
-              title: 'INTS',
-              dataIndex: 'ints',
-              key: 'ints',
-              render: (_, obj) => {
-                return (
-                  <div className='table_player_name_box nrc_container'>
-                    <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                      {obj?.stats?.stats?.INTS || '-'}
-                    </p>
-                  </div>
-                )
-              },
-            },
-      
-            {
-              width: 90,
-              title: 'PD',
-              dataIndex: 'pd',
-              key: 'pd',
-              render: (_, obj) => {
-                return (
-                  <div className='table_player_name_box nrc_container'>
-                    <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                      {obj?.stats?.stats?.PD || '-'}
-                    </p>
-                  </div>
-                )
-              },
-            },
-          ],
-        },
+          },
 
-     
+          {
+            width: 90,
+            title: 'IDP TDS',
+            dataIndex: 'idp',
+            key: 'idp',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.IDP || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+          {
+            width: 90,
+            title: 'SCKS ',
+            dataIndex: 'scks',
+            key: 'scks',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.SCKS || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+
+          {
+            width: 90,
+            title: 'QBH',
+            dataIndex: 'qbh',
+            key: 'qbh',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.QBH || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+
+          {
+            width: 90,
+            title: 'TKLS',
+            dataIndex: 'tkls',
+            key: 'idp',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.TKLS || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+          {
+            width: 90,
+            title: 'TFL ',
+            dataIndex: 'tfl',
+            key: 'tfl',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.TFL || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+
+          {
+            width: 90,
+            title: 'FF',
+            dataIndex: 'ff',
+            key: 'ff',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.FF || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+
+          {
+            width: 90,
+            title: 'INTS',
+            dataIndex: 'ints',
+            key: 'ints',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.INTS || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+
+          {
+            width: 90,
+            title: 'PD',
+            dataIndex: 'pd',
+            key: 'pd',
+            render: (_, obj) => {
+              return (
+                <div className='table_player_name_box nrc_container'>
+                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
+                    {obj?.stats?.stats?.PD || '-'}
+                  </p>
+                </div>
+              )
+            },
+          },
+        ],
+      },
     ]
 
     const columns6 = [
-
-
       {
         //  width: 90,
-          title: 'PAST YEARS STATS',
-          dataIndex: 'past',
-          key: 'past',
-         children:[
+        title: 'PAST YEARS STATS',
+        dataIndex: 'past',
+        key: 'past',
+        children: [
           {
             width: 90,
             title: 'TPF',
@@ -796,7 +837,7 @@ const handleAddBlackList = async (id) => {
               )
             },
           },
-    
+
           {
             width: 90,
             title: 'FG MADE',
@@ -821,7 +862,7 @@ const handleAddBlackList = async (id) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.FGMissed.toFixed(2) || '-'}
+                    {obj?.stats?.stats?.FGMissed?.toFixed(2) || '-'}
                   </p>
                 </div>
               )
@@ -857,11 +898,8 @@ const handleAddBlackList = async (id) => {
               )
             },
           },
-
-         ]
-        },
-
-  
+        ],
+      },
     ]
 
     if (position === 'ALL') {
