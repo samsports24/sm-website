@@ -293,7 +293,7 @@ const DraftPool = ({ tableScroll }) => {
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
                 {/* {obj?.player?.PlayerCap || '-'} */}
                 {/* {`$${obj?.player?.PlayerCap || '-'}`} */}
-                {`$${(obj?.player?.PlayerCap || '-').toLocaleString()}`}
+                {`$${(obj?.player?.currentYearSalaryCap || '-').toLocaleString()}`}
               </p>
             </div>
           )

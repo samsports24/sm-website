@@ -257,7 +257,7 @@ console.log('roasterdraftdata',roasterdraftdata);
           <div className='table_player_name_box nrc_container'>
             <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
               {/* {obj?.PlayerCap || '-'} */}
-           {(obj?.PlayerCap ? `$${obj.PlayerCap.toLocaleString()}` : '-')}
+           {(obj?.currentYearSalaryCap ? `$${obj.currentYearSalaryCap.toLocaleString()}` : '-')}
 
 
             </p>

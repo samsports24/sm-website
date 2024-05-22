@@ -41,12 +41,13 @@ const RosterDetail = ({ playerFinancials }) => {
           <div className='left'>
             <p>{player?.player?.Name}</p>
             <p>
-              {/* #12  */}| {player?.player?.Position}, {player?.player?.Team}
+              {/* #12  */}- {player?.player?.Position}, {player?.player?.Team}
             </p>
           </div>
           <div className='right'>
             {activeTab != 3 && (
               <Button
+              className='updatebtn'
                 loading={loading}
                 disabled={
                   // false
@@ -62,25 +63,44 @@ const RosterDetail = ({ playerFinancials }) => {
             )}
           </div>
         </div>
-        <div className='rdb_right_row2'>
+        {/* <div className='rdb_right_row2'>
           <p className='active'>2023 Stats</p>
           <p>|</p>
           <p>2024 Projected Stats</p>
           <p>-</p>
           <p>Career Stats</p>
-        </div>
+        </div> */}
         <div className='rdb_right_row3'>
           <div>
-            <p>Bye</p>
+            <p>SAM ADP</p>
             <p>-</p>
           </div>
           <div>
-            <p>23</p>
+            <p>23 TOTAL POINTS</p>
             <p>{player?.player?.pf || '-'}</p>
           </div>
           <div>
-            <p>24 Proj</p>
+            <p>23 AVG. POINTS</p>
+            <p>{player?.player?.avgPf.toFixed(2) || '-'}</p>
+          </div>
+          <div>
+            <p>24 PROJ. TOTAL POINTS</p>
             <p>{player?.stats?.stats?.FantasyPoints24.toFixed(2) || '-'}</p>
+          </div>
+         
+          <div>
+            <p>24 PROJ. AVG.POINTS</p>
+            <p>{player?.stats?.stats?.AvgFantasyPoints24.toFixed(2) || '-'}</p>
+          </div>
+
+          <div >
+            <p>24 CAP HIT</p>
+            <p>
+            {`$${(player?.player?.currentYearSalaryCap || '-').toLocaleString()}` ||'-'}
+              {/* {player?.player?.currentYearSalaryCap.toFixed(2) || '-'} */}
+              
+              </p>
+           
           </div>
           {/* <div>
             <p>Pass Yds</p>

@@ -478,6 +478,8 @@
   gap: 8px;
   padding-bottom: 8px;
 }
+
+
 .roster_detail_box .rdb_right .rdb_right_row3 > div {
   display: flex;
   flex-direction: column;

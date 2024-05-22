@@ -513,7 +513,8 @@
   gap: 8px;
 }
 .roster_detail_box .rdb_right .rdb_right_row1 .left p:nth-child(1) {
-  font-size: 22px;
+  /* font-size: 22px; */
+  font-size: 25px;
   font-style: normal;
   font-weight: 700;
   line-height: 28px;
