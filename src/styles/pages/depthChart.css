@@ -56,6 +56,12 @@
   height: 400px;
 }
 
+
+.depth_chart_container.depart-chart-filter_select_box{
+  width: 190px;
+}
+
+
 .clear_button_box {
   width: 100%;
   display: flex;

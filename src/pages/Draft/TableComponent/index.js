@@ -133,6 +133,8 @@ const TableComponent = ({ tableScroll }) => {
   //   setLoading(false)
   // }
 
+  
+
   const handleAutoDraft = async () => {
     console.log('inside this');
     setLoading(true);
@@ -144,23 +146,54 @@ const TableComponent = ({ tableScroll }) => {
     let playerId = null;
   
 
-    if (blacklistQueue.length > 0) {
+    // if (!playerId && draftQueue?.length > 0) {
+    //   console.log('inside this draft queue if');
+    //   playerId = draftQueue[0]?.player?._id ;;
+    // }
+
+    // console.log('first',playerId);
+
+    // if (!playerId && blacklistQueue.length > 0) {
+    //   console.log('inside this blaclist if');
+
+    //   // If the first player ID in blacklistQueue matches the first player ID in allPlayers, use the second player ID
+    //   if (blacklistQueue[0]?.player?._id === allPlayers?.players?.[0]?.player?._id) {
+    //     playerId = allPlayers?.players?.[1]?.player?._id;
+    //   }
+    // }
+  
+  
+
+    // else{
+    //   playerId = allPlayers?.players?.[0]?.player?._id
+    // }
+    
+
+    if (!playerId && draftQueue?.length > 0) {
+      console.log('inside this draft queue if');
+      playerId = draftQueue[0]?.player?._id;
+      console.log('first', playerId);
+    } else if (!playerId && blacklistQueue.length > 0) {
+      console.log('inside this blacklist if');
+    
       // If the first player ID in blacklistQueue matches the first player ID in allPlayers, use the second player ID
       if (blacklistQueue[0]?.player?._id === allPlayers?.players?.[0]?.player?._id) {
         playerId = allPlayers?.players?.[1]?.player?._id;
+      } else {
+        playerId = blacklistQueue[0]?.player?._id;
       }
-    }
-  
-   
-    if (!playerId && draftQueue?.length > 0) {
-      playerId = draftQueue[0]?.player?._id || allPlayers?.players?.[0]?.player?._id;
+    } else {
+      playerId = allPlayers?.players?.[0]?.player?._id;
     }
     
-  console.log('playerId',playerId);
+
     // Add player to draft with the selected playerId
     if (playerId) {
+   
+      console.log('inside this if');
       await addPlayerToDraft({
         playerId: playerId,
+     //  playerId:allPlayers?.players?.[0]?.player?._id,
         position: draftCounter?.position,
         round: draftCounter?.round,
         remainingTime: getRemainingSeconds(draftCounter?.time),
@@ -170,15 +203,6 @@ const TableComponent = ({ tableScroll }) => {
   
     setLoading(false);
   };
-  
-  
-
-
-
-
-
-
-
 
   return (
     <div className='table_com_box'>

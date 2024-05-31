@@ -9,7 +9,8 @@ const TeamAndOwnership = () => {
 
   useEffect(() => {
     const teamsLength = currentLeague?.teams?.length
-    const remainingEmptyRows = 32 - teamsLength
+   // const remainingEmptyRows = 32 - teamsLength
+    const remainingEmptyRows = 5 - teamsLength
 
     const emptyData = Array.from({ length: remainingEmptyRows }, (_, index) => ({
       key: (index + teamsLength).toString(),

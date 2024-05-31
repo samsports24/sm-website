@@ -11,8 +11,8 @@ import {
 } from '../../redux/actions/draftAction'
 
 const DraftOrder = () => {
-  const positionLength = 32
-  const roundLength = 40
+  const positionLength = 5 // 32
+  const roundLength = 5 // 40
   const { loading, draftRounds } = useSelector((state) => state.draft)
   const { currentLeague } = useSelector((state) => state.league)
   const [data, setData] = useState([])
@@ -60,11 +60,12 @@ const DraftOrder = () => {
   const getData = () => {
     const mockData = [...getMock()]
     draftRounds?.forEach((v) => {
+      // console.log('round',v?.round);
       const positionIndex = mockData?.findIndex((x) => v?.position === x?.position)
       const roundIndex = mockData[positionIndex].rounds?.findIndex((x) => v?.round === x?.round)
       mockData[positionIndex].rounds[roundIndex].team = v?.team?._id
       mockData[positionIndex].rounds[roundIndex]._id = v?._id
-
+      
       setIds((prevIds) => {
         const updatedRound = [...prevIds[roundIndex + 1]]
         if (!updatedRound.includes(v?.team?._id)) {
@@ -227,7 +228,7 @@ const DraftOrder = () => {
           columns={columns}
           dataSource={data}
           pagination={false}
-          scroll={{ x: 7000 }}
+          // scroll={{ x: 7000 }}
         />
       </div>
     </div>

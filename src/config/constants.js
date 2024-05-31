@@ -8,6 +8,13 @@ export const frontEndUrl = 'http://localhost:3000'
 // export const base_url = 'https://backend.samsports.io'
 // export const frontEndUrl = 'https://samsports.io'
 
+
+
+
+// export const base_url = 'http://192.168.100.3:8000'
+// export const frontEndUrl = 'http://192.168.100.3:3000'
+
+
 export const publicAPI = Axios.create({ baseURL: base_url })
 
 export const privateAPI = Axios.create({ baseURL: base_url })
@@ -67,10 +74,10 @@ export const serverUrls = [
   {
     key: 'baseball',
     name: 'Baseball',
-    url: 'https://baseballbackend.samsports.io',
-    frontEndUrl: 'https://baseball.samsports.io',
-    // url: 'http://localhost:8090',
-    // frontEndUrl: 'http://localhost:3000',
+    // url: 'https://baseballbackend.samsports.io',
+    // frontEndUrl: 'https://baseball.samsports.io',
+    url: 'http://localhost:8000',
+    frontEndUrl: 'http://localhost:3000',
     disabled: false,
   },
   {

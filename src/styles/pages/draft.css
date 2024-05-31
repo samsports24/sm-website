@@ -511,20 +511,24 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
+  
 }
+
+
 .roster_detail_box .rdb_right .rdb_right_row1 .left p:nth-child(1) {
   /* font-size: 22px; */
-  font-size: 25px;
+  font-size: 30px;
   font-style: normal;
   font-weight: 700;
   line-height: 28px;
+  color: #00A7E5 !important;
 }
 .roster_detail_box .rdb_right .rdb_right_row1 .left p:nth-child(2) {
-  font-size: 16px;
+  font-size: 25px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-  opacity: 0.5;
+  opacity: 0.8;
   margin-top: 3px;
 }
 
@@ -532,6 +536,9 @@
   background-color: gray !important;
   color: #fff !important;
   border: 1px solid gray !important;
+  width: 300px;
+  font-size: 25px;
+  height: 50px;
 }
 
 .roster_detail_box .rdb_right .rdb_right_row2 {
@@ -563,6 +570,9 @@
   gap: 30px;
   padding-bottom: 8px;
 }
+
+
+
 .roster_detail_box .rdb_right .rdb_right_row3 > div {
   display: flex;
   flex-direction: column;
@@ -572,13 +582,47 @@
   font-style: normal;
   font-weight: 400;
   line-height: 22px;
-  opacity: 0.5;
+  opacity: 0.8;
+  padding-top: 10px;
+  
 }
-.roster_detail_box .rdb_right .rdb_right_row3 > div p:nth-child(2) {
+
+.label{
   font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  opacity: 0.8;
+  padding-top: 10px;
+
+}
+
+/* 
+.roster_detail_box .rdb_right .rdb_right_row3 .change > div p:nth-child(1) {
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  opacity: 0.8;
+} */
+.roster_detail_box .rdb_right .rdb_right_row3 > div p:nth-child(2) {
+  font-size: 30px;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
+  color: #00A7E5 !important;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.value{
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  color: #00A7E5 !important;
+  margin-top: 10px;
+  text-align: center;
 }
 
 .roster_detail_box .rdb_right .rdb_right_row4 {

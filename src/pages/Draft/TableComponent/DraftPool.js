@@ -20,6 +20,7 @@ import {
   getALLplayerStats,
   createBlackListQueue,
   deleteBlacklistQueue,
+  getBlackListQueue,
 } from '../../../redux/actions/draftAction'
 
 const DraftPool = ({ tableScroll }) => {
@@ -40,6 +41,9 @@ const DraftPool = ({ tableScroll }) => {
 
   console.log('SETTING', SETTING?.season)
 
+
+
+
   const [color, setColor] = useState('')
 
   const [age,setAge]= useState('')
@@ -54,7 +58,32 @@ const DraftPool = ({ tableScroll }) => {
         page,
         age,
       })
+       getBlackListQueue()
+       getDraftQueue()
   }, [position, limit, page,age, activeTab])
+
+  // useEffect(() => {
+  //   setColor(isQueue ? 'var(--primary)' : isblacklist ? 'black' : 'none');
+  // }, [isQueue, isblacklist]);
+
+
+
+
+//   useEffect(() => {
+//     const newColors = {};
+//     allPlayers?.players.forEach((player) => {
+//       console.log('player?._id',player.player?._id);
+//       const checkisQueue = draftQueues?.find((v) => v?.player?._id === player.player?._id);
+//       const checkisblacklist = blacklistQueues?.find((v) => v?.player?._id === player.player?._id);
+//       console.log('checkisQueue',checkisQueue);
+//       newColors[player.player?._id] = checkisQueue ? 'var(--primary)' : checkisblacklist ? 'black' : 'none';
+//     });
+// console.log('newColors',newColors);
+//     console.log('color',color);
+//     setColor(newColors);
+//   }, [allPlayers, draftQueues, blacklistQueues])
+
+
 
   const getData = async (payload) => {
     await getAllPlayers(payload, position)
@@ -93,6 +122,7 @@ const DraftPool = ({ tableScroll }) => {
 
   // add black list
   const handleAddBlackList = async (id) => {
+    console.log('inside the black list')
     setLoading(id)
     await createBlackListQueue({
       team: userDetails?.team?._id,
@@ -111,8 +141,12 @@ const DraftPool = ({ tableScroll }) => {
         dataIndex: 'plus-icon',
         key: 'plus-icon',
         render: (_, obj) => {
-          const isQueue = draftQueues?.find((v) => v?.player?._id === obj?.player?._id)
-          const isblacklist = blacklistQueues?.find((v) => v?.player?._id === obj?.player?._id)
+          const isQueue = draftQueues?.filter((v) => v?.player?._id === obj?.player?._id)?.[0]
+          const isblacklist = blacklistQueues?.filter((v) => v?.player?._id === obj?.player?._id)?.[0]
+          const color = isQueue ? 'var(--primary)' : isblacklist ? 'black' : 'none';
+          // blacklistQueues.filter((item) => item.player?._id == obj?.player?._id) ? 'red' : 'green'
+          // console.log('is blacklist',blacklistQueues);
+          // console.log('obj?.player?._id',obj?.player?._id);
           return (
             // <div>
             //   {loading === obj?.player?._id ? (
@@ -139,17 +173,20 @@ const DraftPool = ({ tableScroll }) => {
                 <BiSolidPlusCircle
                   size={18}
                   style={{ marginBottom: '-3px', cursor: 'pointer' }}
-                  color={color}
+                   color={color}
+               //  color={isQueue ? 'var(--primary)' : isblacklist ? 'black' : 'none' }
                   onClick={() => {
+                    console.log('mycolor',color);
                     if (color === 'var(--primary)') {
                       handleAddBlackList(obj?.player?._id)
                       handleDeleteQueue(obj?._id, isQueue?._id)
                       setColor('black')
+                      
                     } else if (color === 'black') {
                       handleDeleteBlackListQueue(obj?.player?._id, isblacklist?._id)
                       setColor('none')
                     }
-                    console.log('Additional functionality executed')
+                    console.log('fist Additional functionality executed')
                   }}
                 />
               ) : (
@@ -160,7 +197,7 @@ const DraftPool = ({ tableScroll }) => {
                     handleAddQueue(obj?.player?._id)
                     setColor('var(--primary)') // Update color to 'var(--primary)'
                     // Additional functionality here
-                    console.log('Additional functionality executed')
+                    console.log('second Additional functionality executed')
                   }}
                 />
               )}
@@ -318,7 +355,7 @@ const DraftPool = ({ tableScroll }) => {
           return (
             <div className='table_player_name_box nrc_container'>
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.player?.pf || '-'}
+                {obj?.player?.pf?.toFixed(3) || '-'}
               </p>
             </div>
           )
@@ -333,7 +370,7 @@ const DraftPool = ({ tableScroll }) => {
           return (
             <div className='table_player_name_box nrc_container'>
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.player?.avgPf?.toFixed(2) || '-'}
+                {obj?.player?.avgPf?.toFixed(3) || '-'}
               </p>
             </div>
           )
@@ -350,7 +387,7 @@ const DraftPool = ({ tableScroll }) => {
           return (
             <div className='table_player_name_box nrc_container'>
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.stats?.stats?.FantasyPoints24?.toFixed(2) || '-'}
+                {obj?.stats?.stats?.FantasyPoints24?.toFixed(3) || '-'}
               </p>
             </div>
           )
@@ -366,7 +403,7 @@ const DraftPool = ({ tableScroll }) => {
           return (
             <div className='table_player_name_box nrc_container'>
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.stats?.stats?.AvgFantasyPoints24?.toFixed(2) || '-'}
+                {obj?.stats?.stats?.AvgFantasyPoints24?.toFixed(3) || '-'}
               </p>
             </div>
           )
@@ -405,7 +442,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.AvgFantasyPoints24?.toFixed(2) || '-'}
+                    {obj?.stats?.stats?.AvgFantasyPoints24?.toFixed(3) || '-'}
                   </p>
                 </div>
               )
@@ -444,7 +481,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.PassingYards?.toFixed(2) || '-'}
+                    {obj?.stats?.stats?.PassingYards?.toFixed(3) || '-'}
                   </p>
                 </div>
               )
@@ -585,7 +622,7 @@ const DraftPool = ({ tableScroll }) => {
           return (
             <div className='table_player_name_box nrc_container'>
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.stats?.OL?.TotalTeamScore?.toFixed(2) || '-'}
+                {obj?.stats?.OL?.TotalTeamScore?.toFixed(3) || '-'}
               </p>
             </div>
           )
@@ -616,7 +653,7 @@ const DraftPool = ({ tableScroll }) => {
           return (
             <div className='table_player_name_box nrc_container'>
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.stats?.OL?.totalSnap?.toFixed(2) || '-'}
+                {obj?.stats?.OL?.totalSnap?.toFixed(3) || '-'}
               </p>
             </div>
           )
@@ -868,7 +905,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.FGMissed?.toFixed(2) || '-'}
+                    {obj?.stats?.stats?.FGMissed?.toFixed(3) || '-'}
                   </p>
                 </div>
               )

@@ -353,6 +353,7 @@ export const deleteBlacklistQueue = async (id) => {
 // DRAFT HISTORY
 export const addPlayerToDraft = async (payload) => {
   try {
+    console.log('payload',payload);
     attachToken()
     const res = await privateAPI.post('/draft/add-player-to-draft', payload)
     if (res) {

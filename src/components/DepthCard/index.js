@@ -7,7 +7,7 @@ import { isLocked } from '../../config/constants'
 import { MdLock } from 'react-icons/md'
 import { useParams } from 'react-router-dom'
 
-const DepthCard = ({ data, index, getDepthChartData }) => {
+const DepthCard = ({ data, index, getDepthChartData,selectedValue }) => {
   const [modalIndex, setModalIndex] = useState(-1)
   const [openModal, setOpenModal] = useState(false)
 
@@ -31,6 +31,9 @@ const DepthCard = ({ data, index, getDepthChartData }) => {
   }
 
   const { imageUrl, Name, Position, classKey, Opponent, Team, InjuryStatus, isPlayerLocked } = data
+  console.log('data',data);
+  console.log('classKey',classKey);
+  console.log('Name',Name);
 
   return (
     <>
@@ -79,6 +82,7 @@ const DepthCard = ({ data, index, getDepthChartData }) => {
       {/* MODAL */}
       {modalIndex === index && (
         <DepthChartModal
+        selectedValue={selectedValue}
           openModal={openModal}
           setOpenModal={setOpenModal}
           data={data}

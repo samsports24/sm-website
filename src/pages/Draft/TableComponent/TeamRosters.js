@@ -11,10 +11,12 @@ const TeamRosters = ({ tableScroll }) => {
   const SETTING = useSelector((state) => state?.user?.setting)
   const { roasterdraftdata,roasterroundandpick } = useSelector((state) => state?.roster)
 
+
+  console.log('roasterdraftdata',roasterdraftdata);
 // console.log('roasterdraftdata',roasterdraftdata);
   const [loading, setLoading] = useState('')
  
-// console.log('roasterroundandpick',roasterroundandpick);
+ console.log('inside here roasterroundandpick',roasterroundandpick);
 
   const dispatch = useDispatch()
 
@@ -108,19 +110,38 @@ console.log('roasterdraftdata',roasterdraftdata);
   //   return  item;
   // });
 
+  console.log('roasterdraftdata',roasterdraftdata);
+
+  // const updatedRoasterdraftdata = roasterdraftdata?.map((item) => {
+  //  // console.log('roasterroundandpick?.playerPick?._id',roasterroundandpick?.playerPick?._id);
+  //   console.log('roasterroundandpick',roasterroundandpick);
+  // //  console.log('item?._id?._id',item?._id?._id);
+  //   if (item?._id?._id === roasterroundandpick?.playerPick?._id) {
+  //     const updatedItem = {
+  //       ...item,
+  //       round: roasterroundandpick?.round || '-',
+  //       pick: roasterroundandpick?.position || '-'
+  //     };
+  //     return updatedItem;
+  //   }
+  //   return item;
+  // });
+  
 
   const updatedRoasterdraftdata = roasterdraftdata?.map((item) => {
-    console.log('roasterroundandpick?.playerPick?._id',roasterroundandpick);
-    console.log('item?._id?._id',item?._id?._id);
-    if (item?._id?._id === roasterroundandpick?.playerPick?._id) {
-      const updatedItem = {
-        ...item,
-        round: roasterroundandpick?.round || '-',
-        pick: roasterroundandpick?.position || '-'
-      };
-      return updatedItem;
-    }
-    return item;
+    let updatedItem = { ...item }; // Create a copy of the current item
+  
+    roasterroundandpick?.forEach((pick) => {
+      if (item?._id?._id === pick?.playerPick?._id) {
+        updatedItem = {
+          ...updatedItem,
+          round: pick?.round || '-',
+          pick: pick?.position || '-'
+        };
+      }
+    });
+  
+    return updatedItem;
   });
   
   
@@ -185,7 +206,7 @@ console.log('roasterdraftdata',roasterdraftdata);
             onClick={() => dispatch(setSelectedPlayer(obj?.player_id))}
           //  style={{ cursor: 'pointer',width:'30%',background:'#00BFFF',borderRadius:'20px',textAlign:'center' }}
           >
-            {obj?.Position}{' '}
+            {obj?.Position || obj?._id?.Position || '-'}{' '}
           </p>{' '}
           {/* <p>
             {obj?.Position} - {obj?.Team}{' '}
@@ -199,6 +220,7 @@ console.log('roasterdraftdata',roasterdraftdata);
       dataIndex: 'player',
       key: 'player',
       render: (_, obj) => (
+
       
       
         <div className='table_player_name_box'>
@@ -206,7 +228,7 @@ console.log('roasterdraftdata',roasterdraftdata);
             onClick={() => dispatch(setSelectedPlayer(obj?.player_id))}
             style={{ cursor: 'pointer' }}
           >
-            {obj?.Name}{' '}
+            {obj?.Name || obj?._id?.Name || '-'}{' '}
           </p>{' '}
           {/* <p>
             {obj?.Position} - {obj?.Team}{' '}
@@ -221,11 +243,12 @@ console.log('roasterdraftdata',roasterdraftdata);
       key: 'pos',
       render: (_, obj) => {
       
-        
+        console.log('obj',obj);
+        console.log('obj?.Position',obj?._id?.Position);
         return (
           <div className='table_player_name_box nrc_container'>
             <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-              {obj?.Position || '-'}
+              {obj?.Position || obj?._id?.Position || '-'}
             </p>
           </div>
         )
@@ -240,7 +263,7 @@ console.log('roasterdraftdata',roasterdraftdata);
         return (
           <div className='table_player_name_box nrc_container'>
             <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-              {obj?.Team || '-'}
+              {obj?.Team || obj?._id?.Team || '-'}
             </p>
           </div>
         )

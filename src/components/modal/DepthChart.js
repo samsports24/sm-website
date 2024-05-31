@@ -10,7 +10,7 @@ import {
 } from '../../redux/actions/depthChartAction'
 import { useSelector } from 'react-redux'
 
-const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartData }) => {
+const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartData,selectedValue }) => {
   const SETTING = useSelector((state) => state?.user?.setting)
   const [loading, setLoading] = useState(true)
   const [deleteLoading, setDeleteLoading] = useState(false)
@@ -25,6 +25,7 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
     setStarter(null)
   }
 
+  console.log('inside the selected',selectedValue);
   const getData = async () => {
     setLoading(true)
     const res = await getPlayersByPosition({
@@ -34,6 +35,7 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
           : propsData.Position?.toUpperCase(),
       classKey: propsData?.classKey && propsData?.classKey,
       week: SETTING?.week,
+      formation:selectedValue,
     })
     if (res) {
       setStarter(res?.starterPlayer)

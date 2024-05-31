@@ -128,6 +128,7 @@ const PlayerRoster = () => {
                   <section className='stats_container'>
                     {data?.filterActiveRoster?.length > 0 ? (
                       sortedArray(data?.filterActiveRoster)?.map((v, i) => {
+                        console.log('data?.filterActiveRoster',data?.filterActiveRoster);
                         return (
                           <NewRosterCard
                             key={i}

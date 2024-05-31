@@ -26,6 +26,7 @@ const setRosterDraftData =(payload) =>{
 }
 
 const setRosterDataForpick = (payload) => {
+  console.log('inside paylaod',payload);
   return {
     type: 'SET_ROSTERS_PICK_ROUND',
     payload: payload,

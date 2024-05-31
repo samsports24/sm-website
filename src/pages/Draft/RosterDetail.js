@@ -63,6 +63,10 @@ const RosterDetail = ({ playerFinancials }) => {
             )}
           </div>
         </div>
+
+
+        
+
         {/* <div className='rdb_right_row2'>
           <p className='active'>2023 Stats</p>
           <p>|</p>
@@ -70,38 +74,36 @@ const RosterDetail = ({ playerFinancials }) => {
           <p>-</p>
           <p>Career Stats</p>
         </div> */}
+
+        <div style={{display:'flex',justifyContent:'space-between',flexWrap:'wrap'}}>
         <div className='rdb_right_row3'>
-          <div>
-            <p>SAM ADP</p>
+          <div style={{paddingBottom:'20px'}}>
+            <p style={{fontSize:'20px'}}>SAM ADP</p>
             <p>-</p>
           </div>
           <div>
-            <p>23 TOTAL POINTS</p>
-            <p>{player?.player?.pf || '-'}</p>
+          <p>{`23' TOTAL POINTS`}</p>
+            {/* <p>{player?.player?.pf.toFixed(3)  || '-'}</p> */}
+            <p>{player?.player?.pf ? `${player.player.pf.toFixed(3)}*` : '-'}</p>
           </div>
           <div>
-            <p>23 AVG. POINTS</p>
-            <p>{player?.player?.avgPf.toFixed(2) || '-'}</p>
+            <p>{`23' AVG. POINTS`}</p>
+            {/* <p>{player?.player?.avgPf?.toFixed(3) || '-'}</p> */}
+            <p>{player?.player?.avgPf ? `${player.player.avgPf.toFixed(3)}*` : '-'}</p>
           </div>
           <div>
-            <p>24 PROJ. TOTAL POINTS</p>
-            <p>{player?.stats?.stats?.FantasyPoints24.toFixed(2) || '-'}</p>
+          <p>{`24' PROJ.`}<br /> TOTAL POINTS</p>
+            {/* <p>{player?.stats?.stats?.FantasyPoints24?.toFixed(3) || '-'}</p> */}
+            <p>{player?.stats?.stats.FantasyPoints24 ? `${player?.stats?.stats?.FantasyPoints24.toFixed(3)}*` : '-'}</p>
           </div>
          
           <div>
-            <p>24 PROJ. AVG.POINTS</p>
-            <p>{player?.stats?.stats?.AvgFantasyPoints24.toFixed(2) || '-'}</p>
+            <p>{`24' PROJ.`}<br /> AVG.POINTS</p>
+            {/* <p>{player?.stats?.stats?.AvgFantasyPoints24?.toFixed(3) || '-'}</p> */}
+            <p>{player?.stats?.stats.AvgFantasyPoints24 ? `${player?.stats?.stats?.AvgFantasyPoints24.toFixed(3)}*` : '-'}</p>
           </div>
 
-          <div >
-            <p>24 CAP HIT</p>
-            <p>
-            {`$${(player?.player?.currentYearSalaryCap || '-').toLocaleString()}` ||'-'}
-              {/* {player?.player?.currentYearSalaryCap.toFixed(2) || '-'} */}
-              
-              </p>
-           
-          </div>
+         
           {/* <div>
             <p>Pass Yds</p>
             <p>-</p>
@@ -115,6 +117,16 @@ const RosterDetail = ({ playerFinancials }) => {
             <p>-</p>
           </div> */}
         </div>
+        <div>
+            <p className='label'>{`24' CAP HIT`}</p>
+            <p className='value'>
+            {`$${(player?.player?.currentYearSalaryCap || '-').toLocaleString()}` ||'-'}
+              {/* {player?.player?.currentYearSalaryCap.toFixed(2) || '-'} */}
+              
+              </p>
+           
+          </div>
+          </div>
         <div className='rdb_right_row4'>
           {/* <div className='draft_by'>
             <p>Draft By</p>

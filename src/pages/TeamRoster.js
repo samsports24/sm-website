@@ -39,6 +39,9 @@ const TeamRoster = () => {
     SETTING?.week !== 0 && getData()
   }, [SETTING?.week, id])
 
+
+  console.log('res?.active',res?.active);
+  console.log('activePlayerData',activePlayerData);
   const getData = async () => {
     
     setLoading(true)

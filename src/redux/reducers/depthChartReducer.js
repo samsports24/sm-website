@@ -6,6 +6,14 @@ const STATIC_DATA = [
     classKey: 'offense_te',
     type: 'offense',
   },
+
+  {
+    imageUrl: require('../../assets/player-img-2.png'),
+    Name: '',
+    Position: 'te',
+    classKey: 'offense_te-2',
+    type: 'offense',
+  },
   {
     imageUrl: require('../../assets/player-img-1.png'),
     Name: '',
@@ -49,6 +57,21 @@ const STATIC_DATA = [
     type: 'offense',
   },
   {
+    imageUrl: require('../../assets/player-img-3.png'),
+    Name: '',
+    Position: 'wr',
+    classKey: 'offense_wr-2',
+    type: 'offense',
+  },
+
+  {
+    imageUrl: require('../../assets/player-img-3.png'),
+    Name: '',
+    Position: 'wr',
+    classKey: 'offense_wr-3',
+    type: 'offense',
+  },
+  {
     imageUrl: require('../../assets/player-img-4.png'),
     Name: '',
     Position: 'rb/wr/te',
@@ -69,13 +92,16 @@ const STATIC_DATA = [
     classKey: 'offense_rb',
     type: 'offense',
   },
+
   {
-    imageUrl: require('../../assets/player-img-3.png'),
+    imageUrl: require('../../assets/player-img-5.png'),
     Name: '',
-    Position: 'wr',
-    classKey: 'offense_wr-2',
+    Position: 'rb',
+    classKey: 'offense_rb-2',
     type: 'offense',
   },
+
+
   {
     imageUrl: require('../../assets/player-img-2.png'),
     Name: '',
@@ -104,6 +130,32 @@ const STATIC_DATA = [
     classKey: 'defense_lb-2',
     type: 'defense',
   },
+
+
+  {
+    imageUrl: require('../../assets/player-img-6.png'),
+    Name: '',
+    Position: 'lb',
+    classKey: 'defense_lb-3',
+    type: 'defense',
+  },
+
+
+  // "defense_OLB",
+  // "defense_DE",
+  // "defense_DL",
+
+
+ 
+
+
+  {
+    imageUrl: require('../../assets/player-img-6.png'),
+    Name: '',
+    Position: 'lb',
+    classKey: 'defense_lb-4',
+    type: 'defense',
+  },
   {
     imageUrl: require('../../assets/player-img-5.png'),
     Name: '',
@@ -126,6 +178,13 @@ const STATIC_DATA = [
     type: 'defense',
   },
   {
+    imageUrl: require('../../assets/player-img-1.png'),
+    Name: '',
+    Position: 's',
+    classKey: 'defense_s-2',
+    type: 'defense',
+  },
+  {
     imageUrl: require('../../assets/player-img-2.png'),
     Name: '',
     Position: 'de',
@@ -133,10 +192,44 @@ const STATIC_DATA = [
     type: 'defense',
   },
   {
+    imageUrl: require('../../assets/player-img-2.png'),
+    Name: '',
+    Position: 'de',
+    classKey: 'defense_de-2',
+    type: 'defense',
+  },
+
+  {
+    imageUrl: require('../../assets/player-img-2.png'),
+    Name: '',
+    Position: 'dt',
+    classKey: 'defense43_dt',
+    type: 'defense',
+  },
+
+  {
+    imageUrl: require('../../assets/player-img-2.png'),
+    Name: '',
+    Position: 'de',
+    classKey: 'defense43_dl',
+    type: 'defense',
+  },
+
+
+
+
+  {
     imageUrl: require('../../assets/player-img-4.png'),
     Name: '',
     Position: 'dt',
     classKey: 'defense_dt',
+    type: 'defense',
+  },
+  {
+    imageUrl: require('../../assets/player-img-4.png'),
+    Name: '',
+    Position: 'dt',
+    classKey: 'defense_dt-2',
     type: 'defense',
   },
   {
@@ -158,6 +251,20 @@ const STATIC_DATA = [
     Name: '',
     Position: 'cb',
     classKey: 'defense_cb-2',
+    type: 'defense',
+  },
+  {
+    imageUrl: require('../../assets/player-img-3.png'),
+    Name: '',
+    Position: 'cb',
+    classKey: 'defense_cb-3',
+    type: 'defense',
+  },
+  {
+    imageUrl: require('../../assets/player-img-3.png'),
+    Name: '',
+    Position: 'cb',
+    classKey: 'defense_cb-4',
     type: 'defense',
   },
   {
