@@ -95,19 +95,19 @@ p {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: var(--border);
+  /* background: var(--border); */
   border-radius: 16px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: var(--primaryPurple);
+  /* background: var(--primaryPurple); */
   border-radius: 16px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
+  /* background: var(--primary) ; */
 }
 
 /* HINT TEXT */

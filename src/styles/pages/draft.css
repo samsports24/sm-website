@@ -1007,3 +1007,404 @@
   /* border: 1px solid yellowgreen; */
   /* border: 1px solid #fff; */
 }
+
+
+
+
+/* ------------------ DRAFT AUCTION CSS STARTS HERE ------------------ */
+
+
+
+.main_draft_Spot_Auction {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.main_draft_Spot_Auction .main{
+  display: flex;
+  flex-direction: row;
+  gap: 290px;
+ 
+}
+
+.main_draft_Spot_Auction .firstdiv {
+  color: var(--text);
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    margin-top: 20px;
+    display:flex;
+    width: 60%;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+.main_draft_Spot_Auction .seconddiv {
+  color: var(--text);
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    margin-top: 20px;
+    display:flex;
+    width: 40%;
+    flex-direction: row;
+    justify-content: flex-start;
+    
+}
+
+
+.main_draft_Spot_Auction .firstdiv .w1 {
+  width: 15%;
+}
+.main_draft_Spot_Auction .firstdiv .w2 {
+  width: 45%;
+}
+.main_draft_Spot_Auction .firstdiv .w3 {
+  position: relative;
+  left: 10%;
+}
+.main_draft_Spot_Auction .mainauctionround {
+  display: flex;
+  margin-top: 10px;
+  height: max-content;
+  /* width: 60%; */
+  width: 100%;
+}
+
+
+.main_draft_Spot_Auction .mainauctionround .auctionpick {
+  width: 7%;
+  margin-top: 20px;
+  padding: 5px 22px;
+  border-radius:35px 0px 0 35px;
+  text-align: center;
+  background-color:#00A7E5;
+  color: var(--text);
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  /* width: 30%; */
+}
+
+.main_draft_Spot_Auction .mainauctionround .userbidimg {
+  background-color:rgb(56, 53, 53);
+  width: 57%;
+  margin-top: 20px;
+  padding: 5px 22px;
+  border-radius:30px;
+  display: flex;
+  flex-direction: row;
+gap: 100px;
+position: relative;
+margin-left: -21px;
+}
+
+.main_draft_Spot_Auction .mainauctionround .userbidimg .teamimg {
+  width: 50px;
+ }
+
+.main_draft_Spot_Auction .mainauctionround .userbidimg .username {
+    color: var(--text);
+     text-align: center;
+  font-size:10px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+
+.main_draft_Spot_Auction .mainauctionround .userbidimg .user {
+  color:rgb(41, 157, 199);
+   text-align: center;
+   margin-top: 5px;
+font-size:20px;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+width: 20px;
+/* position: relative; */
+/* // left: 17%; */
+}
+.main_draft_Spot_Auction .mainauctionround .confernceanddivision {
+  background-color:rgb(34, 23, 60);
+  width: 32%;
+  margin-top: 20px;
+  padding: 5px 22px;
+  border-radius:30px;
+  color: var(--text);
+  text-align: center;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin-left: -50px;
+
+}
+.main_draft_Spot_Auction .mainauctionround .confernceanddivision .divisionimg {
+  width: 100px;
+  
+}
+
+
+.main_draft_Spot_Auction .mainauctionround .confernceanddivision .divisionname {
+  margin-top: 14px;
+}
+
+.main_draft_Spot_Auction .mainauctionround .confernceanddivision .conference_image{
+  width: 200px; 
+  height: auto;
+}
+
+
+.main_draft_Spot_Auction .mainauctionround .userbidimg .bidtext {
+  color: var(--text);
+  text-align: left;
+font-size:10px;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+margin-left: 30px;
+}
+
+
+.main_draft_Spot_Auction .mainauctionround .userbidimg  .sampointsimg {
+  width: 8%;
+  position: relative;
+  left: 8%;
+  margin-top: 5px;
+}
+
+.main_draft_Spot_Auction .mainauctionround .userbidimg .bid {
+  color: rgb(160, 30, 244);
+  font-size:30px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+margin-top: -4px;
+}
+
+
+.main_draft_Spot_Auction .timeremains .timemaindiv {
+  width: 100%;
+  border-radius:63px;
+  background-color:rgb(56, 53, 53);
+  padding: 10px 30px;
+  border:5px solid gray;
+  display: flex;
+gap: 10px;
+  margin-top: 20px;
+}
+
+.main_draft_Spot_Auction .timeremains .timemaindiv .timeheading {
+
+  color: var(--text);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  text-align: center;
+
+}
+
+.main_draft_Spot_Auction .timeremains .timemaindiv .timeheading .timepara {
+  color: rgb(255, 222, 89);
+  font-size: 100px;
+  font-style: italic;
+  font-weight: 600;
+  line-height: normal;
+}
+
+
+.main_draft_Spot_Auction .timeremains .bidheading .head {
+  color: var(--text);
+  font-size: 7px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin-top: 10px;
+  margin-left: 36px;
+}
+
+
+.main_draft_Spot_Auction .timeremains .bidheading .bidpara {
+  color: rgb(160, 30, 244);
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.main_draft_Spot_Auction .timeremains .bidheading  .inputtag {
+  background-color:rgb(56, 53, 53);
+  width: 100%;
+  border-radius:63px;
+  padding: 10px 20px;
+  color:rgb(160, 30, 244);
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  border:5px solid gray;
+  height: 7vh;
+}
+
+.main_draft_Spot_Auction .timeremains .bidheading  .submitbtn {
+
+ width: 30%;
+ background-color:#00A7E5;
+ padding: 10px 20px;
+ color: var(--text);
+ font-size: 30px;
+ font-style: normal;
+ font-weight: 600;
+ line-height: normal;
+ border-radius:30px;
+ text-align: center;
+ position: relative;
+ bottom: 67px;
+ left: 70%;
+ height: max-content;
+ cursor: pointer;
+
+}
+
+.main_draft_Spot_Auction .timeremains .auctionpick {
+  width: 15%;
+  margin-top: 20px;
+  padding: 5px 22px;
+  border-radius:35px 0px 0 35px;
+  text-align: left;
+  background-color:#00A7E5;
+  color: var(--text);
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  /* width: 30%; */
+}
+
+
+.main_draft_Spot_Auction .timeremains .userbidimg {
+  background-color:rgb(56, 53, 53);
+  width: 90%;
+  margin-top: 20px;
+  padding: 5px 22px;
+  border-radius:20px;
+  display: flex;
+  flex-direction: row;
+gap: 100px;
+position: relative;
+margin-left: -29px;
+}
+
+
+.main_draft_Spot_Auction .timeremains .userbidimg .teamimg {
+  width: 50px;
+ }
+
+.main_draft_Spot_Auction .timeremains .userbidimg .username {
+    color: var(--text);
+     text-align: center;
+  font-size:10px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+
+.main_draft_Spot_Auction .timeremains .userbidimg .user {
+  color:rgb(41, 157, 199);
+   text-align: center;
+   margin-top: 5px;
+font-size:20px;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+position: relative;
+/* left: 17%; */
+}
+
+
+.main_draft_Spot_Auction .timeremains .userbidimg .bidtext {
+  color: var(--text);
+  text-align: left;
+font-size:10px;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+margin-left: 5px;
+}
+
+.main_draft_Spot_Auction .timeremains .userbidimg .sampointsimg {
+  width: 9%;
+}
+
+.main_draft_Spot_Auction .timeremains .userbidimg .bid {
+  color: rgb(160, 30, 244);
+  font-size:30px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+margin-top: -5px;
+}
+
+
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+  color: rgb(160, 30, 244);
+}
+
+
+::-webkit-scrollbar {
+  width: 14px;
+  height: 7px;
+}
+
+.main_draft_Spot_Auction .mygap ::-webkit-scrollbar-thumb {
+  border-radius:20px !;
+  background-color: rgb(41, 157, 199);
+}
+
+.main_draft_Spot_Auction .mygap ::-webkit-scrollbar-track {
+
+  background-color: rgb(56, 53, 53) ;
+}
+
+@media (max-width: 1750px) {
+  .main_draft_Spot_Auction .mainauctionround {
+    overflow-x: scroll;
+    width: max-content;
+  }
+
+  .main_draft_Spot_Auction .mainauctionround .auctionpick {
+    
+    width: max-content;
+  text-align: left !important;
+  }
+
+
+  .main_draft_Spot_Auction .mainauctionround .userbidimg {
+    
+    width: max-content;
+    margin-left: -19px;
+  }
+
+  .main_draft_Spot_Auction .mainauctionround .confernceanddivision {
+    
+    width: max-content;
+  }
+  
+}
+
+
+/* @media (max-width: 1500px) {
+  .main_draft_Spot_Auction .mygap {
+    flex-direction: column-reverse !important;
+  }
+
+  
+} */
+
+
+/* ------------------ DRAFT AUCTION CSS ENDS HERE ------------------ */

@@ -341,3 +341,28 @@ export const getPlayerForWeeklyScoring = async (payload) => {
     })
   }
 }
+
+
+export const TransferPointsToLeague =async (payload) =>{
+
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/league/transfer-points-to-league-wallet`, payload)
+    if (res) {
+      notification.success({
+        description: res.data.data.message,
+        duration: 2,
+      })
+      store.dispatch(getUser())
+     // getLeagueDetails()
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+
+
+}

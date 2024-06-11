@@ -45,3 +45,12 @@
 .sidebar_menu .activeRoute {
   border: 1px solid var(--primary);
 }
+
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

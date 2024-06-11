@@ -85,6 +85,347 @@
   background: transparent !important;
 }
 
+
+
+
+/* BUY SAM POINTS CSS STARTS HERE  */
+
+.buyingsampointsmaincontainer{
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+}
+
+.buyingsampointsmaincontainer .buyimg{
+  
+  right: 10%;
+  opacity: 0.6;
+  width: 700px;
+  height: 700px;
+  position: relative;
+  bottom: 73px;
+}
+
+.buyingsampointsmaincontainer  .discount{
+  
+ position: absolute;
+ width: 20%;
+}
+
+
+/* .buyingsampointsmaincontainer  .buypoints {
+  position: absolute;
+left: 32%;
+} */
+
+
+
+
+.buyingsampointsmaincontainer  .buypoints p  {
+  font-size: 51px;
+  color: var(--text);
+  font-weight: 400;
+  font-style: normal;
+  margin-top: 30px;
+  margin-bottom: 40px;
+/* margin-top: 31px; */
+/* position: relative;
+right: 11%; */
+}
+
+.buyingsampointsmaincontainer .buypoints .mainbox {
+  display: flex;
+ gap:47px;
+  align-items:center;
+}
+
+
+
+.buyingsampointsmaincontainer  .buypoints .mainbox  .firstbox {
+  border:4px solid gray;
+  background-color:  rgb(0, 0, 0,0.2);
+  width:22%;
+  /* margin-top: 50px; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items:center;
+  padding: 20px 10px;
+}
+
+
+.buyingsampointsmaincontainer  .buypoints .mainbox  .firstbox .cost {
+  text-align: center;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 22px;
+  color:rgb(255, 255, 255);
+  margin-top: 20px;
+}
+
+.buyingsampointsmaincontainer  .buypoints .mainbox  .firstbox .cost .ant-btn-primary{
+  width: 60%;
+  margin: auto;
+  justify-content: center;
+  margin-top: 20px;
+}
+.buyingsampointsmaincontainer  .buypoints .mainbox  .firstbox  .flexdiv {
+  display: flex;
+  gap:5px;
+  margin-top: 20px;
+}
+
+.buyingsampointsmaincontainer  .buypoints .mainbox  .firstbox .flexdiv .myimgdiv {
+
+  width: 20%;
+}
+
+.buyingsampointsmaincontainer  .buypoints .mainbox  .firstbox .flexdiv .myleaguemoney {
+  color:rgb(152, 76, 230);
+  text-align: left;
+  font-size: 31px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 22px;
+  margin-top: 12px;
+
+}
+
+
+/* .buyingsampointsmaincontainer  .buypoints .secondbox {
+  border:1px solid gray; 
+  background-color:  rgb(0, 0, 0);
+  width: 30%;
+  margin: auto;
+} */
+
+
+
+
+
+.buyingsampointsmaincontainer  .buypoints  .buypoints {
+  border: 4px solid white;
+  border-radius: 4px;
+  /* padding: 5px; */
+  width:100%;
+}
+
+@media (max-width: 1600px) {
+  .buyingsampointsmaincontainer {
+    display: flex;
+    flex-direction: column;
+  align-items:center
+  }
+  .noposition{
+    position: relative !important;
+    left: 0% !important;
+  }
+
+  .buypoints .mainbox{
+    justify-content: center !important;
+  }
+  .buyingsampointsmaincontainer .buypoints p {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 1280px) {
+
+  .buyingsampointsmaincontainer .buypoints .mainbox .firstbox .flexdiv .myleaguemoney{
+    font-size: 18px;
+  }
+  .buyingsampointsmaincontainer .buypoints .mainbox .firstbox .cost {
+    font-size: 17px;
+  }
+}
+
+
+/* BUY SAM POINTS CSS ENDS HERE  */
+
+
+
+/* PAYMENT OPTIONS START HERE  */
+
+
+.payoptions-main-div {
+  width: 80%;
+  height: auto;
+  margin: auto;
+}
+
+
+.payoptions-main-div .pickfirstdiv {
+  border:1px solid white;
+  width: 100%;
+  background:rgb(173, 159, 203);
+  display: flex;
+  flex-direction: row;
+justify-content: space-between;
+  margin-top: 30px;
+}
+
+.payoptions-main-div .pickfirstdiv .ant-btn-primary {
+  width: 252px;
+  height: 67px;
+  font-size: 35px;
+  border-radius: 30px;
+  margin-top: 94px;
+  margin-right: 47px;
+}
+
+
+.payoptions-main-div .pickfirstdiv .paywithsam .ant-btn-primary  {
+
+  width: 252px;
+  height: 67px;
+  font-size: 35px;
+  border-radius: 30px;
+  margin-right: 47px;
+  margin-top: 33px;
+}
+
+
+
+
+
+
+.payoptions-main-div .pickfirstdiv .flexdiv{
+  display: flex;
+  gap:55px;
+  flex-direction:row
+}
+
+
+
+.payoptions-main-div .pickfirstdiv .flexdiv .buyimg{
+ 
+  border:5px solid #ddd;
+  border-radius: 4px;
+  margin-left: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 20%;
+
+}
+
+.payoptions-main-div .pickfirstdiv .flexdiv .paytext {
+
+  font-size: 78px;
+  color:rgb(255, 255, 255);
+  font-weight: 500;
+  font-style: normal;
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+
+
+.payoptions-main-div .pickfirstdiv .flexdiv .paytext {
+  /* margin-top: 20px; */
+}
+
+.payoptions-main-div .pickfirstdiv .flexdiv .paytext .discoutgap {
+  display: flex;
+  gap: 60px;
+}
+
+.payoptions-main-div .pickfirstdiv .flexdiv .paytext .discoutgap .redline {
+  /* transform: scaleX(-1); */
+  transform: rotate(66deg);
+    position: absolute;
+    width: 7%;
+    height: 7vh;
+
+}
+
+
+
+.payoptions-main-div .pickfirstdiv .flexdiv .paytext .discoutgap .discount {
+  
+  font-size: 78px;
+  color:rgb(255, 222, 89);
+  font-weight: 500;
+  font-style: normal;
+
+
+}
+
+
+
+
+.payoptions-main-div .pickoption {
+
+  font-size: 70px;
+  color:rgb(255, 255, 255);
+  font-weight: 500;
+  font-style: normal;
+  margin-top: 30px;
+  margin-bottom: 40px;
+
+}
+
+@media (max-width: 1580px) {
+  .payoptions-main-div .pickfirstdiv .flexdiv .paytext {
+    font-size: 45px;
+  }
+
+  .payoptions-main-div .pickfirstdiv .flexdiv .paytext .discoutgap .discount{
+
+    font-size: 45px;
+  }
+
+    .payoptions-main-div .pickfirstdiv .ant-btn-primary {
+      width: 94%;
+      font-size: 30px;
+    }
+
+    .payoptions-main-div .pickfirstdiv .paywithsam .ant-btn-primary{
+      width: 94%;
+      font-size: 30px;
+
+    }
+
+
+
+}
+
+@media (max-width: 1350px) {
+  .payoptions-main-div .pickfirstdiv {
+    flex-direction: column;
+  }
+  .payoptions-main-div .pickfirstdiv .ant-btn-primary {
+    width: 50%;
+    margin: auto;
+    font-size: 30px;
+    margin-bottom: 20px;
+  }
+
+  .payoptions-main-div .pickfirstdiv .paywithsam .ant-btn-primary{
+    width: 50%;
+   margin: auto;
+   margin-top: 20px;
+   margin-bottom: 20px;
+    font-size: 30px;
+
+  }
+}
+
+@media (max-width: 1050px) {
+
+  .payoptions-main-div .pickfirstdiv .flexdiv .paytext .discoutgap {
+    display: block;
+  }
+}
+
+
+
+
+/* PAYMENT OPTIONS END HERE  */
+
+
+
 @media (max-width: 768px) {
   .transaction_tracker_box header {
     flex-wrap: wrap;
@@ -97,3 +438,7 @@
     font-size: 12px;
   }
 }
+
+
+
+

@@ -60,6 +60,32 @@
   font-size: 28px;
 }
 
+.auctionforpicklefttime {
+  background-color: aqua;
+font-size: 20px;
+justify-content: left;
+width: max-content;
+}
+
+.auctionforpicklefttime .timeleft {
+
+font-size: 18px;
+justify-content: left;
+font-weight: 400;
+font-style: italic;
+width: max-content;
+}
+
+.auctionforpicklefttime .timelefttext {
+ 
+font-size: 18px;
+font-weight: 700;
+justify-content: left;
+width: max-content;
+color:rgb(255, 222, 89);
+}
+
+
 /* You are viewing previous week data in view only mode */
 .locked_box {
   display: flex;

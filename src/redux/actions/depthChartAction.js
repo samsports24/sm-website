@@ -44,6 +44,43 @@ export const getDepthChartByType = async (payload) => {
   }
 }
 
+
+export const assignLineupFormation = async (payload) => {
+  console.log('in the payload',payload);
+  try {
+    attachToken()
+    const res = await privateAPI.post('/depthChart/assignlineupformation', payload)
+    if (res) {
+     // console.log('res',res.data.data);
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const getteamFormation = async (payload) => {
+  console.log('getpaylaod',payload);
+  try {
+    attachToken()
+    const res = await privateAPI.get('/depthChart/get-lineup-formation', payload)
+    if (res) {
+     //  console.log('res',res);
+      return res.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+
+
 export const getPlayersByPosition = async (payload) => {
   try {
     attachToken()

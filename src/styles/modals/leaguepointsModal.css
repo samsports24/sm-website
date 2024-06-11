@@ -1,0 +1,97 @@
+.CustomInpurModal .customBTN {
+    padding: .5rem 3rem;
+    border-radius: 20px;
+}
+
+.CustomInpurModal .customBTN:hover {
+    padding: .5rem 3rem;
+    opacity: .8;
+    border-radius: 20px;
+}
+
+.CustomInpurModal .ant-modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background: linear-gradient(180deg, #291c4a, #080611);
+    border-radius: 20px !important;
+}
+
+.CustomInpurModal .customInput {
+    /* border: 5px solid var(--borderDark) !important; */
+    border-radius: 30px !important;
+    padding: 1rem;
+    width: 100%;
+}
+
+.CustomInpurModal .ant-modal-body {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+
+
+.CustomInpurModal p {
+    text-align: center;
+}
+
+.CustomInpurModal .ant-modal-close-x {
+    display: none;
+}
+
+
+.ant-popover .ant-popover-inner {
+    background-color: var(--primaryPurple) !important;
+    width: 70%;
+    margin: auto;
+   justify-content: center;
+}
+
+.ant-popconfirm-description {
+    color: var(--tagsText) !important;
+    font-size: 24px !important;
+}
+
+.ant-popconfirm-message-title-only {
+    color: var(--tagsText) !important;
+    font-size: 24px !important;
+}
+
+.players_popconfirm_text {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    margin: auto;
+}
+
+.players_popconfirm {
+    text-align: center;
+
+}
+
+.ant-popconfirm-inner-content {
+    color: rgba(0, 0, 0, 0.88);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+}
+
+.Popconfirm_btn {
+    padding: 0 3rem !important;
+    height: 40px !important;
+    border-radius: 20px !important;
+}
+
+.ant-popconfirm-buttons {
+    display: flex;
+    flex-direction: row-reverse;
+    margin-bottom: 20px;
+   
+}
+

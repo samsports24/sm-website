@@ -242,7 +242,12 @@ import HeadingAndWeek from '../components/Pagination/HeadingAndWeek'
 // Mock Data
 import { depthCardData } from './mockData'
 
-import { clearDepthChart, getActiveRosterCount } from '../redux/actions/depthChartAction'
+import {
+  assignLineupFormation,
+  clearDepthChart,
+  getActiveRosterCount,
+  getteamFormation,
+} from '../redux/actions/depthChartAction'
 import { activeRosterCount, legalPlayers, nonActivePlayers } from '../config/constants'
 
 import { useSelector } from 'react-redux'
@@ -250,6 +255,8 @@ import { useLocation, useParams } from 'react-router-dom'
 
 const DepthChart = () => {
   const USER = useSelector((state) => state?.user)
+  const teamId = useSelector((state) => state?.user.userDetails)
+  const SETTING = useSelector((state) => state?.user?.setting)
   const [activeFilter, setActiveFilter] = useState('offense')
   const [data, setData] = useState([])
   const [activeCount, setActiveCount] = useState(null)
@@ -263,10 +270,6 @@ const DepthChart = () => {
 
   const { teamID } = useParams()
   const { state } = useLocation()
-  console.log('legalPlayers', legalPlayers)
-
-  console.log('selcectedvalue', selectedValue)
-
   const handleFilter = (value) => {
     setActiveFilter(value)
   }
@@ -275,9 +278,33 @@ const DepthChart = () => {
     getDepthChartData()
   }, [activeFilter, USER?.setting?.week])
 
+  const getFn = async () => {
+    const payload = {
+      week: USER?.setting?.week,
+      teamId: teamId?.team?._id,
+      season: USER?.setting?.season,
+    }
+    const result = await getteamFormation(payload)
+
+    if (activeFilter === 'offense') {
+      setSelectedValue(result?.offense_Formation || 'shortgunnormal')
+    } else if (activeFilter === 'defense') {
+      setSelectedValue(result?.defense_Formation || 'formation_43')
+    }
+    // console.log('result', result)
+  }
+
+  useEffect(() => {
+    if (teamId?.team?._id) {
+      getFn()
+    }
+  }, [USER?.setting?.week, teamId?.team?._id, USER?.setting?.season, activeFilter])
+
   const getDepthChartData = async () => {
     const filtered = depthCardData.filter((obj) => obj.type === activeFilter)
     setLoading(true)
+
+    console.log('filtered', filtered)
 
     const res = await getActiveRosterCount({
       type: activeFilter,
@@ -292,10 +319,10 @@ const DepthChart = () => {
       setActiveCount(res?.count)
       if (res?.data?.length > 0) {
         res?.data.map((item) => {
-          if(item?.classKey === 'offense_wr-1'){
+          if (item?.classKey === 'offense_wr-1') {
             console.log('item wr 1 name', item?.player?.Name)
           }
-          if(item?.classKey === 'offense_wr-2'){
+          if (item?.classKey === 'offense_wr-2') {
             console.log('item wr 2 name', item?.player?.Name)
           }
           let index = filtered.findIndex((item2) => {
@@ -360,13 +387,57 @@ const DepthChart = () => {
 
   const options = activeFilter === 'offense' ? offenseOptions : defenseOptions
 
-  useEffect(() => {
-    if (activeFilter === 'offense') {
-      setSelectedValue('shortgunnormal');
-    } else if (activeFilter === 'defense') {
-      setSelectedValue('formation_43');
+  const handleChange = async (selectedOption) => {
+    // clearDepthChartRoster()
+
+
+
+    setClearBtnLoading(true)
+    let playerIds = []
+    data?.forEach((v) => {
+      if (!v?.isPlayerLocked && v?._id) {
+        playerIds.push(v?._id)
+      }
+    })
+    const res = await clearDepthChart({
+      type: activeFilter,
+      ids: playerIds,
+    })
+    setClearBtnLoading(false)
+    if (res) {
+      await getDepthChartData()
     }
-  }, [activeFilter])
+
+
+
+
+
+    setSelectedValue(selectedOption)
+    const checkpayload = {
+      week: SETTING?.week,
+      teamId: teamId?.team?._id,
+      season: SETTING?.season,
+      formation: selectedOption,
+      activeFilter: activeFilter,
+    }
+
+    try {
+      const response = await assignLineupFormation({ payload: checkpayload })
+      console.log('Function Response:', response.data)
+    } catch (error) {
+      console.error('Function Error:', error)
+    }
+  }
+
+
+
+  // useEffect(() => {
+  //   if (activeFilter === 'offense') {
+  //     setSelectedValue('shortgunnormal');
+  //   } else if (activeFilter === 'defense') {
+  //     setSelectedValue('formation_43');
+  //   }
+  // }, [activeFilter])
 
   // console.log('filterKey',filterKey);
   // console.log('activeFilter',activeFilter);
@@ -399,16 +470,17 @@ const DepthChart = () => {
         </Button>
       </div>
 
-<div style={{marginTop:'40px'}}>
-      <Select
-        placeholder='Formation'
-        // onChange={(v) => setFilterBy(v)}
-        // allowClear={{ clearIcon: <GrFormClose size={25} onClick={() => {}} /> }}
-        options={options}
-        className='depart-chart-filter_select_box'
-        value={selectedValue}
-        onChange={(selectedOption) => setSelectedValue(selectedOption)}
-      />
+      <div style={{ marginTop: '40px' }}>
+        <Select
+          placeholder='Formation'
+          // onChange={(v) => setFilterBy(v)}
+          // allowClear={{ clearIcon: <GrFormClose size={25} onClick={() => {}} /> }}
+          options={options}
+          className='depart-chart-filter_select_box'
+          value={selectedValue}
+          onChange={handleChange}
+          //  onChange={(selectedOption) => setSelectedValue(selectedOption)}
+        />
       </div>
 
       {loading ? (
@@ -463,7 +535,6 @@ const DepthChart = () => {
               // //   } ${"pistol"}`}
               // } "${selectedValue?.value || ''}"`}
 
-
               // className={`depth_chart_cards ${
               //   selectedValue
               //     ? selectedValue
@@ -483,7 +554,14 @@ const DepthChart = () => {
               <img src={require('../assets/depth-chart-bg.png')} />
               {data?.map((v, i) => {
                 return (
-                  <DepthCard selectedValue={selectedValue} setSelectedValue={setSelectedValue} key={i} data={v} index={i} getDepthChartData={getDepthChartData} />
+                  <DepthCard
+                    selectedValue={selectedValue}
+                    setSelectedValue={setSelectedValue}
+                    key={i}
+                    data={v}
+                    index={i}
+                    getDepthChartData={getDepthChartData}
+                  />
                 )
               })}
             </div>

@@ -8,8 +8,13 @@ const ConnectWallet = () => {
   const dispatch = useDispatch()
   const {address , balance} = useSelector(state => state.contract)
 
+
+  
   const connectEthereumWallet = async () => {
-    setLoading(true)
+   
+
+
+      setLoading(true)
 
     if (!window?.ethereum) {
       message.error('Ethereum provider not detected')
@@ -17,7 +22,8 @@ const ConnectWallet = () => {
       return
     }
 
-    const provider = new ethers.BrowserProvider(window?.ethereum)
+    const provider =   new ethers.BrowserProvider(window?.ethereum)
+    // new ethers.BrowserProvider(window.ethereum)
 
     try {
       // This will request the user to grant permission to access their Ethereum wallet
@@ -55,6 +61,9 @@ const ConnectWallet = () => {
     }
 
     setLoading(false)
+
+    
+    
   }
 
   return (
@@ -67,8 +76,11 @@ const ConnectWallet = () => {
         className='custom_tooltip_button'
         style={{color : "white"}}
       >
-        Wallet Connected {`${address?.slice(0,7)}...${address?.slice(-5,address?.length)}`}
-      </Button> : <Button
+        {/* Wallet Connected {`${address?.slice(0,7)}...${address?.slice(-5,address?.length)}`} */}
+      {`${address?.slice(0,7)}...${address?.slice(-5,address?.length)}`}
+      </Button> : 
+      
+      <Button
         type='primary'
         id='walletStatus'
         className='custom_tooltip_button'
@@ -85,6 +97,11 @@ const ConnectWallet = () => {
       </div> */}
     </div>
   )
+
+
+
+
+  
 }
 
 export default ConnectWallet

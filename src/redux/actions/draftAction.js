@@ -1,6 +1,8 @@
 import { notification } from 'antd'
 import { attachToken, privateAPI } from '../../config/constants'
 import store from '../store'
+import { getUser } from './authActions'
+
 
 export const setDraftRound = (payload) => {
   return {
@@ -392,5 +394,30 @@ export const getDraftCounter = async () => {
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
     })
+  }
+}
+
+
+
+// DRAFT BIDDING
+export const makeBid = async (payload) => {
+  setDraftLoading(true)
+  try {
+    console.log('payload in bid ',payload);
+    attachToken()
+    const res = await privateAPI.post('/draft/make-bidding', payload)
+    if (res) {
+      getDraftRound()
+      store.dispatch(getUser())
+      return res.data.data
+    }
+   
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+      
+    })
+    setDraftLoading(false)
   }
 }

@@ -185,8 +185,8 @@
 
 
 .formation_34 .defense_s {
-  top: 100px !important;
-  left: 1300px !important;
+  top: 150px !important;
+  left: 1150px !important;
 }
 .formation_34 .defense_cbs {
   /* top: 100px !important;
@@ -194,17 +194,17 @@
   display: none !important;
 }
 .formation_34 .defense_s-2 {
-  top: 100px !important;
-  left: 550px !important;
+  top: 150px !important;
+  left: 600px !important;
 
 }
 .formation_34 .defense_lb-1 {
-  top: 200px !important;
-  left: 730px !important;
+  top: 330px !important;
+  left: 780px !important;
 }
 .formation_34 .defense_lb-2 {
-  top: 200px !important;
-  left: 1000px !important;
+  top: 330px !important;
+  left: 1010px !important;
 
 
 }
@@ -216,24 +216,35 @@
 
 
 .formation_34 .defense_lb-3 {
-  top: 350px !important;
-  left: 470px !important;
- 
+  /* top: 430px !important;
+  left: 500px !important; */
+  display: none;
+}
+
+
+.formation_34 .defense34_old-1 {
+  top: 430px !important;
+  left: 500px !important;
 }
 
 .formation_34 .defense_lb-4 {
-  top: 350px !important;
-  left: 1370px !important;
- 
+  /* top: 430px !important;
+  left: 1280px !important; */
+  display: none;
+}
+
+.formation_34 .defense34_old-2 {
+  top: 430px !important;
+  left: 1280px !important;
 }
 
 .formation_34 .defense_cb-1 {
   top: 580px !important;
-  left: 300px !important;
+  left: 230px !important;
 }
 .formation_34 .defense_cb-2 {
   top: 580px !important;
-  left: 1480px !important;
+  left: 1580px !important;
 }
 
 .formation_34 .defense_cb-3 {
@@ -241,13 +252,27 @@
   left: 1320px !important; */
   display: none !important;
 }
-.formation_34 .defense_de {
-  top: 440px !important;
-  left: 640px !important;
+
+.formation_34 .defense_cb-4 {
+  /* top: 380px !important;
+  left: 1320px !important; */
+  display: none !important;
 }
+.formation_34 .defense_de {
+  /* top: 580px !important;
+  left: 690px !important; */
+  display: none;
+}
+
+.formation_34 .defense34_dl {
+  top: 580px !important;
+  left: 690px !important;
+ 
+}
+
 .formation_34 .defense_dt {
-  top: 440px !important;
-  left: 915px !important;
+  top: 580px !important;
+  left: 900px !important;
 }
 .formation_34 .defense_dtde {
   /* top: 440px !important;
@@ -268,8 +293,15 @@
   display: none !important;
 }
 .formation_34 .defense_de-2 {
-  top: 440px !important;
-  left: 1165px !important;
+  /* top: 580px !important;
+  left: 1105px !important; */
+  display: none;
+}
+
+.formation_34 .defense34_dt {
+  top: 580px !important;
+  left: 1105px !important;
+
 }
 
 
@@ -279,7 +311,7 @@
 
 .formation_43 .defense_s {
   top: 100px !important;
-  left: 1300px !important;
+  left: 1150px !important;
 }
 .formation_43 .defense_cbs {
   /* top: 100px !important;
@@ -288,15 +320,15 @@
 }
 .formation_43 .defense_s-2 {
   top: 100px !important;
-  left: 550px !important;
+  left: 600px !important;
 
 }
 .formation_43 .defense_lb-1 {
-  top: 200px !important;
+  top: 280px !important;
   left: 730px !important;
 }
-.formation_43.defense_lb-2 {
-  top: 200px !important;
+.formation_43 .defense_lb-2 {
+  top: 280px !important;
   left: 900px !important;
 }
 .formation_43 .defense_lbcbs {
@@ -306,25 +338,25 @@
 }
 
 .formation_43 .defense_lb-3 {
-  top: 200px !important;
+  top: 280px !important;
   left: 1070px !important;
  
 }
 
 .formation_43 .defense_cb-1 {
-  top: 380px !important;
-  left: 400px !important;
+  top: 480px !important;
+  left: 310px !important;
 }
 .formation_43 .defense_cb-2 {
-  top: 380px !important;
-  left: 1440px !important;
+  top: 480px !important;
+  left: 1540px !important;
 }
 .formation_43 .defense_de {
-  top: 440px !important;
-  left: 640px !important;
+  top: 480px !important;
+  left: 600px !important;
 }
 .formation_43 .defense_dt {
-  top: 440px !important;
+  top: 480px !important;
   left: 815px !important;
 }
 .formation_43 .defense_dtde {
@@ -334,7 +366,7 @@
 }
 
 .formation_43 .defense_dt-2 {
-  top: 440px !important;
+  top: 480px !important;
   left: 990px !important;
  
 }
@@ -345,8 +377,14 @@
   display: none !important;
 }
 .formation_43 .defense_de-2 {
-  top: 440px !important;
+  top: 480px !important;
   left: 1165px !important;
+}
+
+.formation_34 .defense_cb-4 {
+  /* top: 380px !important;
+  left: 1320px !important; */
+  display: none !important;
 }
 
 
@@ -360,7 +398,7 @@
 
 .formation_425 .defense_s {
   top: 100px !important;
-  left: 1300px !important;
+  left: 1150px !important;
 }
 .formation_425 .defense_cbs {
   /* top: 100px !important;
@@ -369,15 +407,15 @@
 }
 .formation_425 .defense_s-2 {
   top: 100px !important;
-  left: 550px !important;
+  left: 650px !important;
 
 }
 .formation_425 .defense_lb-1 {
-  top: 200px !important;
-  left: 730px !important;
+  top: 265px !important;
+  left: 830px !important;
 }
 .formation_425 .defense_lb-2 {
-  top: 200px !important;
+  top: 265px !important;
   left: 1000px !important;
 
 
@@ -395,25 +433,25 @@
 }
 
 .formation_425 .defense_cb-1 {
-  top: 380px !important;
-  left: 400px !important;
+  top: 480px !important;
+  left: 310px !important;
 }
 .formation_425 .defense_cb-2 {
-  top: 440px !important;
-  left: 1480px !important;
+  top: 480px !important;
+  left: 1540px !important;
 }
 
 .formation_425 .defense_cb-3 {
   top: 380px !important;
-  left: 1320px !important;
+  left: 1350px !important;
 }
 .formation_425 .defense_de {
-  top: 440px !important;
+  top: 480px !important;
   left: 640px !important;
 }
 .formation_425 .defense_dt {
-  top: 440px !important;
-  left: 815px !important;
+  top: 480px !important;
+  left: 805px !important;
 }
 .formation_425 .defense_dtde {
   /* top: 440px !important;
@@ -422,7 +460,7 @@
 }
 
 .formation_425 .defense_dt-2 {
-  top: 440px !important;
+  top: 480px !important;
   left: 990px !important;
  
 }
@@ -433,11 +471,15 @@
   display: none !important;
 }
 .formation_425 .defense_de-2 {
-  top: 440px !important;
+  top: 480px !important;
   left: 1165px !important;
 }
 
-
+.formation_425 .defense_cb-4 {
+  /* top: 380px !important;
+  left: 1320px !important; */
+  display: none !important;
+}
 
 /* DEFENSE DIME  FORMATION */
 
@@ -445,7 +487,7 @@
 
 .dime .defense_s {
   top: 100px !important;
-  left: 1300px !important;
+  left: 1160px !important;
 }
 .dime .defense_cbs {
   /* top: 100px !important;
@@ -454,11 +496,11 @@
 }
 .dime .defense_s-2 {
   top: 100px !important;
-  left: 550px !important;
+  left: 640px !important;
 
 }
 .dime .defense_lb-1 {
-  top: 200px !important;
+  top: 300px !important;
   left: 930px !important;
 }
 .dime .defense_lb-2 {
@@ -481,28 +523,28 @@
 }
 
 .dime .defense_cb-1 {
-  top: 440px !important;
-  left: 350px !important;
+  top: 500px !important;
+  left: 310px !important;
 }
 .dime .defense_cb-2 {
-  top: 440px !important;
-  left: 1480px !important;
+  top: 500px !important;
+  left: 1540px !important;
 }
 
 .dime .defense_cb-3 {
-  top: 380px !important;
-  left: 1320px !important;
+  top: 410px !important;
+  left: 1350px !important;
 }
 .dime .defense_cb-4 {
-  top: 380px !important;
-  right: 1260px !important;
+  top: 410px !important;
+  right: 1290px !important;
 }
 .dime .defense_de {
-  top: 440px !important;
+  top: 500px !important;
   left: 640px !important;
 }
 .dime .defense_dt {
-  top: 440px !important;
+  top: 500px !important;
   left: 815px !important;
 }
 .dime .defense_dtde {
@@ -512,7 +554,7 @@
 }
 
 .dime .defense_dt-2 {
-  top: 440px !important;
+  top: 500px !important;
   left: 990px !important;
  
 }
@@ -523,7 +565,7 @@
   display: none !important;
 }
 .dime .defense_de-2 {
-  top: 440px !important;
+  top: 500px !important;
   left: 1165px !important;
 }
 
@@ -631,11 +673,11 @@
  
 }
 .shortgunnormal .offense_qb-1 {
-  top: 430px !important;
+  top: 480px !important;
   left: 880px !important;
 }
 .shortgunnormal .offense_rb {
-  top: 435px !important;
+  top: 480px !important;
   left: 680px !important;
 }
 
@@ -656,7 +698,7 @@
 /* OFFENSE PISTOL FORMATION */
 
 .pistol .offense_te {
-  top: 280px !important;
+  top: 300px !important;
   left: 1300px !important;
 }
 .pistol .offense_ol-1 {
@@ -690,21 +732,21 @@
   display: none !important;
 }
 .pistol .offense_qb-1 {
-  top: 430px !important;
+  top: 470px !important;
   left: 880px !important;
 }
 
 .pistol .offense_rb-2 {
   display: block !important;
-  top: 600px !important;
+  top: 690px !important;
   left: 880px !important;
 }
 .pistol .offense_rb {
-  top: 435px !important;
+  top: 470px !important;
   left: 680px !important;
 }
 .pistol .offense_wr-2 {
-  top: 320px !important;
+  top: 270px !important;
   left: 1470px !important;
 }
 .pistol .offense_qb-2 {
@@ -769,11 +811,11 @@
   left: 1050px !important;
 } */
 .singleback .offense_rb {
-  top: 630px !important;
+  top: 650px !important;
   left: 880px !important;
 }
 .singleback .offense_wr-2 {
-  top: 320px !important;
+  top: 270px !important;
   left: 1470px !important;
   
 }
@@ -825,18 +867,18 @@
   display: none !important;
 }
 .shotgunbunch .offense_qb-1 {
-  top: 430px !important;
+  top: 490px !important;
   left: 880px !important;
 }
 
 .shotgunbunch .offense_rb-2 {
   display: block !important;
-  top: 430px !important;
+  top: 490px !important;
   left: 1050px !important;
 }
 .shotgunbunch .offense_rb {
-  top: 435px !important;
-  left: 680px !important;
+  top: 490px !important;
+  left: 720px !important;
 }
 .shotgunbunch .offense_wr-2 {
   /* top: 320px !important;
@@ -845,7 +887,7 @@
 }
 
 .shotgunbunch .offense_te-2{
-    top: 320px !important;
+    top: 330px !important;
   left: 1470px !important;
 }
 .shotgunbunch .offense_qb-2 {

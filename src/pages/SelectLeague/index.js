@@ -56,6 +56,8 @@ const SelectLeague = () => {
 
 const LeagueJoiningCard = ({ data }) => {
   const { title, subTitle, description, align, isDisabled, navigateTo } = data
+
+  console.log('data',data);
   const navigate = useNavigate()
 
   return (

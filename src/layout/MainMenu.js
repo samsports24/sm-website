@@ -116,7 +116,7 @@ const MainMenu = ({ visible }) => {
 
   return (
     <>
-      <div className='sidebar_menu'>
+      <div className='sidebar_menu no-scrollbar'>
         <div className='wrapper'>
           <div
             className={`sidebar_menu_item ${active === 'home' ? 'activeRoute' : ''}`}

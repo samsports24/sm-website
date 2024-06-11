@@ -16,7 +16,10 @@ const Header = () => {
   const teamSalary = useSelector((state) => state.user.teamSalaryCap)
   const [notificationCount] = useState(null)
   const [auctionCount] = useState(null)
+
   const navigate = useNavigate()
+
+
 
   const teamFinancials = () => {}
 

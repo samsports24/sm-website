@@ -6690,6 +6690,51 @@ export const depthCardData = [
     classKey: 'defense_s-2',
     type: 'defense',
   },
+
+
+
+  {
+    imageUrl: require('../assets/player-img-2.png'),
+    Name: '',
+    Position: 'de',
+    classKey: 'defense34_dl',
+    type: 'defense',
+  },
+
+  {
+    imageUrl: require('../assets/player-img-2.png'),
+    Name: '',
+    Position: 'lb',
+    classKey: 'defense34_old-1',
+    type: 'defense',
+  },
+
+  {
+    imageUrl: require('../assets/player-img-2.png'),
+    Name: '',
+    Position: 'lb',
+    classKey: 'defense34_old-2',
+    type: 'defense',
+  },
+
+ 
+
+
+  {
+    classKey: "defense34_old-2",
+    position: "LB",
+  },
+
+
+  {
+    imageUrl: require('../assets/player-img-2.png'),
+    Name: '',
+    Position: 'de',
+    classKey: 'defense34_dt',
+    type: 'defense',
+  },
+
+
   {
     imageUrl: require('../assets/player-img-2.png'),
     Name: '',
@@ -6697,6 +6742,17 @@ export const depthCardData = [
     classKey: 'defense_de',
     type: 'defense',
   },
+
+
+
+  // {
+  //   imageUrl: require('../assets/player-img-4.png'),
+  //   Name: '',
+  //   Position: 'dt',
+  //   classKey: 'defense_dt',
+  //   type: 'defense',
+  // },
+
   {
     imageUrl: require('../assets/player-img-2.png'),
     Name: '',

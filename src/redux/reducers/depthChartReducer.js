@@ -184,6 +184,45 @@ const STATIC_DATA = [
     classKey: 'defense_s-2',
     type: 'defense',
   },
+
+
+
+  {
+    imageUrl: require('../../assets/player-img-2.png'),
+    Name: '',
+    Position: 'de',
+    classKey: 'defense34_dl',
+    type: 'defense',
+  },
+
+
+  {
+    imageUrl: require('../../assets/player-img-2.png'),
+    Name: '',
+    Position: 'de',
+    classKey: 'defense34_dt',
+    type: 'defense',
+  },
+
+
+  {
+    imageUrl: require('../../assets/player-img-2.png'),
+    Name: '',
+    Position: 'lb',
+    classKey: 'defense34_old-1',
+    type: 'defense',
+  },
+
+  {
+    imageUrl: require('../../assets/player-img-2.png'),
+    Name: '',
+    Position: 'lb',
+    classKey: 'defense34_old-2',
+    type: 'defense',
+  },
+
+  
+
   {
     imageUrl: require('../../assets/player-img-2.png'),
     Name: '',
@@ -199,21 +238,7 @@ const STATIC_DATA = [
     type: 'defense',
   },
 
-  {
-    imageUrl: require('../../assets/player-img-2.png'),
-    Name: '',
-    Position: 'dt',
-    classKey: 'defense43_dt',
-    type: 'defense',
-  },
 
-  {
-    imageUrl: require('../../assets/player-img-2.png'),
-    Name: '',
-    Position: 'de',
-    classKey: 'defense43_dl',
-    type: 'defense',
-  },
 
 
 

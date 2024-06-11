@@ -15,11 +15,15 @@ const ClockComponent = () => {
 
   const dispatch = useDispatch()
 
+
+  // console.log('currentLeague?.draftStart',currentLeague?.draftStart);
+
   const beforeRenderer = ({ days, hours, minutes, seconds, completed }) => {
     const d = String(days)
     const h = String(hours)
     const m = String(minutes).padStart(2, '0')
     const s = String(seconds).padStart(2, '0')
+
 
     const draftLiveMessage = currentLeague?.isDraftLive && (
       <>

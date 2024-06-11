@@ -80,6 +80,9 @@ import SelectLeague from '../pages/SelectLeague'
 import CreateOrJoinLeague from '../pages/CreateOrJoinLeague'
 import Comissioner from '../pages/Comissioner'
 import PopularLeague from '../pages/PopularLeague'
+import DraftSpotAuction from '../pages/Draft/DraftSpotAuction'
+import BuySampoints from '../pages/AllTransaction/BuySampoints'
+import Payoptions from '../pages/AllTransaction/Payoptions'
 
 const Routers = () => {
   const Component = () => {
@@ -148,6 +151,12 @@ const Routers = () => {
           <Route path='/live-draft' element={<Draft />} />
           <Route path='/popular-league' element={<PopularLeague />} />
 
+          <Route path='/draft-spot-auction' element={<DraftSpotAuction />} />
+          
+
+          <Route path='/buy-sam-points' element={<BuySampoints />} />
+          
+          <Route path='/select-buy-options' element={<Payoptions/>} />
           {/* <Route path='/teams' element={<Teams />} />
           <Route path='/player-details' element={<PlayerDetails />} />
           <Route path='/players' element={<Players />} />

@@ -26,6 +26,7 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
   }
 
   console.log('inside the selected',selectedValue);
+  console.log('propsData',propsData);
   const getData = async () => {
     setLoading(true)
     const res = await getPlayersByPosition({
