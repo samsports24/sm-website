@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import sammdglogo from '../../assets/samlogomessage.png'
 
 const MessageModal = ({ visible, onClose }) => {
+  console.log("🚀 ~ MessageModal ~ visible:", visible)
   //  console.log('user',user?.team?.currentLeague?.name);
 
   // const cancel = () => {

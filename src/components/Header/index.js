@@ -29,8 +29,7 @@ const Header = () => {
     navigate('/team-financials')
   }
 
-//    console.log('sampounts',sampoints);
-
+   
 //  season:user?.team?.currentLeague?.season
   
   const confirm = () => {

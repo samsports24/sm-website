@@ -203,7 +203,7 @@
   margin-top: 5px;
 }
 .gd-header .center .button_and_team_box .leaguepointswallet .leaguediff .addmore {
-  width: 35% !important;
+  width: 114px !important;
 font-size: 14px !important;
 padding: 5px 22px 5px 22px !important;
 background-color: blueviolet !important;
@@ -215,7 +215,7 @@ border-color: blueviolet !important;
 
 
 .gd-header .center .button_and_team_box .leaguepointswallet .leaguediff .leaguedifflex .imgdiv {
-  width: 15%;
+  width: 30px;
 }
 
 .gd-header .center .button_and_team_box .leaguepointswallet  h4 span {

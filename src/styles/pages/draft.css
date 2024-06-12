@@ -1186,7 +1186,7 @@ margin-top: -4px;
 }
 
 
-.main_draft_Spot_Auction .timeremains .timemaindiv {
+/* .main_draft_Spot_Auction .timeremains .timemaindiv {
   width: 100%;
   border-radius:63px;
   background-color:rgb(56, 53, 53);
@@ -1214,7 +1214,7 @@ gap: 10px;
   font-style: italic;
   font-weight: 600;
   line-height: normal;
-}
+} */
 
 
 .main_draft_Spot_Auction .timeremains .bidheading .head {
@@ -1374,7 +1374,7 @@ margin-top: -5px;
 @media (max-width: 1750px) {
   .main_draft_Spot_Auction .mainauctionround {
     overflow-x: scroll;
-    width: max-content;
+    /* width: max-content; */
   }
 
   .main_draft_Spot_Auction .mainauctionround .auctionpick {
