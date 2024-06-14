@@ -369,8 +369,11 @@ export const addPlayerToDraft = async (payload) => {
       // // })
       // // getDraftQueue()
       // // getDraftRound()
+      store.dispatch(getUser())
       console.log('add draft',res.data.data);
       return res.data.data
+    
+
     }
   } catch (err) {
     notification.error({

@@ -94,7 +94,7 @@ const TeamRosters = ({ tableScroll }) => {
 
 
 
-console.log('roasterdraftdata',roasterdraftdata);
+// console.log('roasterdraftdata',roasterdraftdata);
 
   // const updatedRoasterdraftdata = roasterdraftdata?.map((item) => {
   //   console.log('item._id?._id',item._id?._id);
@@ -110,7 +110,7 @@ console.log('roasterdraftdata',roasterdraftdata);
   //   return  item;
   // });
 
-  console.log('roasterdraftdata',roasterdraftdata);
+  // console.log('roasterdraftdata',roasterdraftdata);
 
   // const updatedRoasterdraftdata = roasterdraftdata?.map((item) => {
   //  // console.log('roasterroundandpick?.playerPick?._id',roasterroundandpick?.playerPick?._id);

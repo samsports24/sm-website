@@ -110,9 +110,9 @@ const DraftPool = ({ tableScroll }) => {
   }
 
   const handleDeleteQueue = async (playerId, queueId) => {
-    setLoading(playerId)
+    // setLoading(playerId)
     await deleteDraftQueue(queueId)
-    setLoading('')
+    // setLoading('')
   }
   const handleDeleteBlackListQueue = async (playerId, blacklistid) => {
     setLoading(playerId)
@@ -122,7 +122,7 @@ const DraftPool = ({ tableScroll }) => {
 
   // add black list
   const handleAddBlackList = async (id) => {
-    console.log('inside the black list')
+    console.log('inside the black list',id)
     setLoading(id)
     await createBlackListQueue({
       team: userDetails?.team?._id,

@@ -3,10 +3,12 @@ import WeekPagination from '../WeekPagination'
 import { isLocked } from '../../config/constants'
 import { Button } from 'antd'
 import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const HeadingAndWeek = ({ heading, week = true, goLive = true }) => {
   const user = useSelector((state) => state.user.userDetails)
+  const location = useLocation();
+  const isProfessionalLeague = location.pathname === '/professional-league'
   const leagueType = user?.team?.currentLeague?.leagueType
   const draftstarttime = user?.team?.currentLeague?.draftStart
   const [timeRemaining, setTimeRemaining] = useState({
@@ -58,7 +60,7 @@ const HeadingAndWeek = ({ heading, week = true, goLive = true }) => {
 
   return (
     <>
-      {leagueType === 'public' && !isTimeComplete && (
+      {leagueType === 'public' && !isTimeComplete && isProfessionalLeague && (
         <div style={{ position: 'relative', top: '40px' }}>
           <Button
             className='auctionforpicklefttime'

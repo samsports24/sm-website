@@ -164,7 +164,7 @@
 .gd-header .center .button_and_team_box .leaguepointswallet {
 
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   border: 1px solid #6e6980;
   border-radius: 8px;
   flex: 1;
@@ -175,28 +175,30 @@
 
 .gd-header .center .button_and_team_box .leaguepointswallet  h4 {
   color: var(--text);
-  font-size: 25px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 700 !important;
   line-height: normal;
+  /* width: max-content; */
 }
 
 .gd-header .center .button_and_team_box .leaguepointswallet .leaguediff {
   display: flex;
   justify-content: space-between;
+  margin: auto;
 }
  
-.gd-header .center .button_and_team_box .leaguepointswallet .leaguediff .leaguedifflex{
+.gd-header .center .button_and_team_box .leaguepointswallet  .leaguedifflex{
   display: flex;
   gap:5px
 }
 
 
-.gd-header .center .button_and_team_box .leaguepointswallet .leaguediff .leaguedifflex  .leaguemoney {
+.gd-header .center .button_and_team_box .leaguepointswallet  .leaguedifflex  .leaguemoney {
   color: var(--primary) !important;
   color:rgb(140, 82, 255);
   text-align: left;
-  font-size: 27px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 700;
   line-height: 22px;
@@ -214,13 +216,13 @@ border-color: blueviolet !important;
 
 
 
-.gd-header .center .button_and_team_box .leaguepointswallet .leaguediff .leaguedifflex .imgdiv {
+.gd-header .center .button_and_team_box .leaguepointswallet  .leaguedifflex .imgdiv {
   width: 30px;
 }
 
 .gd-header .center .button_and_team_box .leaguepointswallet  h4 span {
   color: var(--text);
-  font-size: 25px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 400 !important;
   line-height: normal;
@@ -256,7 +258,7 @@ border-color: blueviolet !important;
   align-items: center;
   gap: 8px;
   margin-top: 10px;
-  margin-left: 42px;
+  /* margin-left: 42px; */
 }
 .gd-header .right .content span {
   color: var(--text) !important;

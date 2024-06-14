@@ -113,6 +113,7 @@
 @import './pages/selectLeague.css';
 @import './pages/createOrJoinLeague.css';
 @import './pages/newHomePage.css';
+@import './pages/stadium.css';
 
 /* COMPONENT HOCKEY */
 @import './components/leagueStandingsHockey.css';

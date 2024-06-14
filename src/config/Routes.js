@@ -83,6 +83,7 @@ import PopularLeague from '../pages/PopularLeague'
 import DraftSpotAuction from '../pages/Draft/DraftSpotAuction'
 import BuySampoints from '../pages/AllTransaction/BuySampoints'
 import Payoptions from '../pages/AllTransaction/Payoptions'
+import Stadium from '../pages/Stadium'
 
 const Routers = () => {
   const Component = () => {
@@ -152,7 +153,7 @@ const Routers = () => {
           <Route path='/popular-league' element={<PopularLeague />} />
 
           <Route path='/draft-spot-auction' element={<DraftSpotAuction />} />
-          
+          <Route path='/stadium' element={<Stadium />} />
 
           <Route path='/buy-sam-points' element={<BuySampoints />} />
           

@@ -21,10 +21,14 @@ const Header = () => {
   const { notificationCount } = useSelector((state) => state.user)
   const { auctionCount } = useSelector((state) => state.user)
   const sampoints = useSelector((state) => state.user?.SamPoints?.SamPoints)
+  const myleagueSalaryCap = useSelector((state) => state.user?.leagueSalaryCap?.leagueSalaryCap)
   const [modalVisible, setModalVisible] = useState(false)
   const [leaguepoints, setLeaguepoints] = useState('')
   const navigate = useNavigate()
 
+  console.log('user?.team?.currentLeague?.season',user?.team?.currentLeague?.season);
+
+// console.log('myleagueSalaryCap',myleagueSalaryCap);
   const teamFinancials = () => {
     navigate('/team-financials')
   }
@@ -44,7 +48,7 @@ const Header = () => {
         leagueid: user?.team?.currentLeague._id,
         teamid: user?.team?._id,
         leaguepoints: parseFloat(leaguepoints),
-        season:user?.team?.currentLeague?.season
+        
       }  
 
       console.log('payload',payload);
@@ -120,7 +124,9 @@ const Header = () => {
               <div>
                 <p>League Salary Cap</p>
                 {/* <span>$199,759,446</span> */}
-                <span>{`$${leagueSalaryCap?.toLocaleString()}`}</span>
+                {/* <span>{`$${leagueSalaryCap?.toLocaleString()}`}</span> */}
+                <span>{`$${myleagueSalaryCap?.toLocaleString() || 0 }` }</span>
+            
               </div>
               <div>
                 <p>Team Salary Cap</p>
@@ -128,21 +134,38 @@ const Header = () => {
               </div>
               <div>
                 <p>Team Cap Left</p>
-                <span>{`$${(leagueSalaryCap - teamSalary)?.toLocaleString()}`}</span>
+                <span>{`$${(myleagueSalaryCap - teamSalary)?.toLocaleString()}`}</span>
               </div>
             </div>
 
             <div className='leaguepointswallet'>
+              <div>
               <h4>
-                LEAGUE SAM
+              YOUR LEAGUE SAM
                 <span> POINTS</span>
               </h4>
-
-              <div className='leaguediff'>
-                <div className='leaguedifflex'>
+              <div className='leaguedifflex'>
                   <img className='imgdiv' src={sampointslogo} alt='SAMPOINTS' />
-                  <div className='leaguemoney'>{sampoints?.toLocaleString() || '0'}</div>
+                  <div className='leaguemoney'>{sampoints?.toLocaleString() || '0'}
+                
+                  </div>
+             
                 </div>
+
+              <h4>
+             LEAGUE SAM
+                <span> POINTS PRIZE POOL</span>
+              </h4>
+
+              <div className='leaguedifflex'>
+                  <img className='imgdiv' src={sampointslogo} alt='SAMPOINTS' />
+                  <div className='leaguemoney'>100,000
+                
+                  </div>
+             
+                </div>
+                </div>
+              <div className='leaguediff'>            
                 <Button
                   className='addmore'
                   // loading={loading}

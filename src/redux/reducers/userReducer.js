@@ -26,6 +26,7 @@ const initialState = {
   record: null,
   notificationCount: null,
   SamPoints:0,
+  leagueSalaryCap:0,
 }
 
 const userReducer = (state = initialState, action) => {
@@ -46,7 +47,8 @@ const userReducer = (state = initialState, action) => {
         },
         teamSalaryCap: payload?.teamSalaryCap,
         auctionCount: payload?.liveAuctionCount,
-        SamPoints :payload?.sampoints
+        SamPoints :payload?.sampoints,
+        leagueSalaryCap:payload?.leagueSalaryCap,
       }
     }
     case 'UPDATE_WEEK': {

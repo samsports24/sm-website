@@ -9,6 +9,7 @@ import sampointslogo from '../../assets/samcoinlogo.png'
 
 import { getLeagueDetails, makeiswallettrue } from '../../redux'
 import SpotAuctionTimer from '../../components/spotAuctiontimer'
+import Loader from '../Loader'
 
 const DraftAuction = () => {
   const { socket } = useSelector((state) => state.socket)
@@ -30,11 +31,10 @@ const DraftAuction = () => {
   const round1Data = draftRounds.filter((round) => round.round === 1)
 
   const [loading, setLoading] = useState(true)
-  const [modalshow, setModalShow] = useState(false)
   const [isTimerFinished, setIsTimerFinished] = useState(false)
 
  
-
+console.log('isTimerFinished',isTimerFinished);
   const myleague = async () => {
     await getLeagueDetails()
   }
@@ -445,6 +445,9 @@ const DraftAuction = () => {
     <div>
       <Header />
 
+      {loading ? (
+        <Loader />
+      ) : (
       <div className='main_draft_Spot_Auction'>
         <div className='main'>
           <div className='firstdiv'>
@@ -508,12 +511,15 @@ const DraftAuction = () => {
                 onTimerFinish={setIsTimerFinished}
               />
             </div>
-
+           
             <div className='bidheading'>
+            {!isTimerFinished && (
+              <>
               <div className='head'>
                 YOUR
                 <div className='bidpara'>BID</div>
               </div>
+              
 
               <input
                 // type='number'
@@ -537,13 +543,16 @@ const DraftAuction = () => {
               >
                 Submit
               </Button>
-
+             
               <div style={{ marginTop: '-42px' }} className='bidheading'>
                 <div className='head'>
                   YOUR
                   <div className='bidpara'>DRAFTSPOT</div>
                 </div>
               </div>
+              </>
+)}
+
             </div>
 
             <div>
@@ -583,6 +592,7 @@ const DraftAuction = () => {
           </div>
         </div>
       </div>
+      )}
     </div>
   )
 }

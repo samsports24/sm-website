@@ -3,7 +3,7 @@ import { Button, notification } from 'antd'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { HiOutlineHome } from 'react-icons/hi'
-import { MdDashboard } from 'react-icons/md'
+import { MdDashboard,MdOutlineStadium } from 'react-icons/md'
 import { FaPlusCircle, FaRegChartBar } from 'react-icons/fa'
 import { RiAuctionLine, RiDraftLine } from 'react-icons/ri'
 import { SiLeagueoflegends } from 'react-icons/si'
@@ -15,6 +15,7 @@ import {
   GiBabyfootPlayers,
   GiAmericanFootballPlayer,
 } from 'react-icons/gi'
+
 import { PiUsersThreeLight, PiNotebookLight } from 'react-icons/pi'
 import { FaQuestion } from 'react-icons/fa6'
 import { TbLivePhoto } from 'react-icons/tb'
@@ -91,6 +92,9 @@ const MainMenu = ({ visible }) => {
       }
       case '/team-setting': {
         return setActive('team-setting')
+      }
+      case '/stadium': {
+        return setActive('stadium')
       }
       case '/my-league': {
         return setActive('my-league')
@@ -244,6 +248,16 @@ const MainMenu = ({ visible }) => {
               <AiOutlineSetting />
               <p>team setting</p>
             </div>
+
+            <div
+              className={`sidebar_menu_item ${active === 'stadium' ? 'activeRoute' : ''}`}
+              onClick={() => navigatePath('/stadium')}
+            >
+              <MdOutlineStadium />
+              <p>Stadium</p>
+            </div>
+
+
             {(user?.team?.currentLeague?.createdBy === user?._id ||
               user?.team?.currentLeague?.coComissioner === user?._id) && (
               <div

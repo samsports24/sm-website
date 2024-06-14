@@ -63,7 +63,7 @@ const ConnectWallet = () => {
     setLoading(false)
 
     
-    
+    console.log('balance',balance);
   }
 
   return (
@@ -77,7 +77,10 @@ const ConnectWallet = () => {
         style={{color : "white"}}
       >
         {/* Wallet Connected {`${address?.slice(0,7)}...${address?.slice(-5,address?.length)}`} */}
-      {`${address?.slice(0,7)}...${address?.slice(-5,address?.length)}`}
+      {/* {`${address?.slice(0,7)}...${address?.slice(-5,address?.length)}`} */}
+      {balance !== null ? `${balance} SAMS` : '0 SAMS'}
+   
+      {/* {`${walletBalance}`} */}
       </Button> : 
       
       <Button
