@@ -43,7 +43,7 @@ export const createNewLeague = async (payload) => {
       localStorage.removeItem('email')
       localStorage.removeItem('imagePath')
 
-      window.open(`${link.frontEndUrl}/login`, '_self', 'noreferrer')
+       window.open(`${link.frontEndUrl}/login`, '_self', 'noreferrer')
     }
   } catch (err) {
     console.log('err', err)

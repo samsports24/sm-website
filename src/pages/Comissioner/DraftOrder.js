@@ -12,7 +12,7 @@ import {
 
 const DraftOrder = () => {
   const positionLength = 3 // 32  // 5
-  const roundLength = 3 // 40  // 5
+  const roundLength = 10 // 40  // 5
   const { loading, draftRounds } = useSelector((state) => state.draft)
   const { currentLeague } = useSelector((state) => state.league)
   const [data, setData] = useState([])

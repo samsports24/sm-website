@@ -205,11 +205,13 @@
   margin-top: 5px;
 }
 .gd-header .center .button_and_team_box .leaguepointswallet .leaguediff .addmore {
-  width: 114px !important;
-font-size: 14px !important;
+  width: 82px !important;
+font-size: 12px !important;
 padding: 5px 22px 5px 22px !important;
 background-color: blueviolet !important;
 border-color: blueviolet !important;
+position: relative;
+    bottom: 25px
 
 
 }
@@ -217,7 +219,7 @@ border-color: blueviolet !important;
 
 
 .gd-header .center .button_and_team_box .leaguepointswallet  .leaguedifflex .imgdiv {
-  width: 30px;
+  width: 20px;
 }
 
 .gd-header .center .button_and_team_box .leaguepointswallet  h4 span {
@@ -245,7 +247,7 @@ border-color: blueviolet !important;
 .gd-header .right .content {
   width: 100%;
   margin-bottom: 10px;
-  padding: 20px 30px;
+  padding: 5px 30px;
   border: 1px solid #6e6980;
   border-radius: 8px;
   display: flex;
@@ -284,12 +286,12 @@ border-color: blueviolet !important;
 .gd-header .right .content .money {
   color: var(--text);
   text-align: left;
-  font-size: 36px;
+  font-size: 30px;
   font-style: normal;
   font-weight: 600;
   line-height: 22px;
   opacity: 0.5;
-  margin-top: 10px;
+  margin-top: 7px;
 }
 
 
@@ -304,7 +306,7 @@ border-color: blueviolet !important;
 }
 
 .gd-header .right .content .content2 .image_div .ant-image .ant-image-img {
- margin-top: 53px !important;
+ margin-top: 39px !important;
 }
 
 
@@ -314,7 +316,7 @@ border-color: blueviolet !important;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 10px;
+  gap: 2px;
 }
 
 .gd-header .right .content .content2 .content3 .updatebtn {
@@ -331,6 +333,7 @@ border-color: blueviolet !important;
   border-color: blueviolet !important;
   margin-top: 10px !important;
   height: auto !important;
+  margin-bottom: 13px;
   /* position: relative;
   left: 52%; */
 }

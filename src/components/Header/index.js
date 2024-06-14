@@ -222,7 +222,7 @@ const Header = () => {
                   </div>
 
                   <div className='content3'>
-                    <div className='top' style={{ marginBottom: '12px' }}>
+                    <div className='top' style={{ marginBottom: '5px' }}>
                       <span>SAM&apos;</span>
                       <p>TOKENS</p>
                     </div>
@@ -244,7 +244,7 @@ const Header = () => {
                   </div>
                 </div>
               </div>
-              <h1>SFL Prize_Pools</h1>
+              {/* <h1>SFL Prize_Pools</h1> */}
             </div>
           ))}
       </header>

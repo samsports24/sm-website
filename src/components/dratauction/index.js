@@ -486,7 +486,7 @@ console.log('isTimerFinished',isTimerFinished);
                         {/* <Image  preview={false} src={sampointslogo} alt='teamlogo' /> */}
                         <img className='sampointsimg' src={sampointslogo} alt='teamlogo' />
 
-                        <div className='bid'>{item?.bidamount.toLocaleString()}</div>
+                        <div className='bid'>{item?.bidamount?.toLocaleString()}</div>
                       </div>
                     </div>
                   </div>
