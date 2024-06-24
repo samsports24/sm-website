@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import './spotauction.css';
+import { useSelector } from 'react-redux';
 
-const SpotAuctionTimer = ({ draftStart, onTimerFinish }) => {
+const SpotAuctionTimer = ({ spotAuctionEnd, onTimerFinish }) => {
+  const { socket } = useSelector((state) => state.socket)
   const [timeRemaining, setTimeRemaining] = useState({
     days: '00',
     hours: '00',
@@ -9,12 +11,18 @@ const SpotAuctionTimer = ({ draftStart, onTimerFinish }) => {
     seconds: '00',
   });
 
+
+
+
+
+
+
   useEffect(() => {
     const calculateTimeRemaining = () => {
-      if (!draftStart) return;
+      if (!spotAuctionEnd) return;
 
       const now = new Date().getTime();
-      const draftStartTime = new Date(draftStart).getTime() - 3600000; // Subtract 1 hour (3600000 ms)
+      const draftStartTime = new Date(spotAuctionEnd).getTime()  
       const distance = draftStartTime - now;
 
       if (distance < 0) {
@@ -47,7 +55,7 @@ const SpotAuctionTimer = ({ draftStart, onTimerFinish }) => {
 
     const timer = setInterval(calculateTimeRemaining, 1000);
     return () => clearInterval(timer);
-  }, [draftStart, onTimerFinish]);
+  }, [spotAuctionEnd, onTimerFinish]);
 
   return (
     <div className='timemaindiv'>

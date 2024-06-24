@@ -20,6 +20,7 @@ const DraftAuction = () => {
 
   const { currentLeague } = useSelector((state) => state.league)
   // console.log('🚀 ~ ClockComponent ~ currentLeague:', currentLeague)
+  // console.log('currentLeague?.spotAuctionEnd',currentLeague?.spotAuctionEnd);
 
   const handleInputChange = (e) => {
     setBidAmount(e.target.value)
@@ -300,9 +301,14 @@ console.log('isTimerFinished',isTimerFinished);
 
   useEffect(() => {
     if (socket) {
-      socket.on('draftSpot', fetchData)
+      const handleDraftSpot = () => {
+        fetchData();
+        myleague();
+      };
+
+      socket.on('draftSpot', handleDraftSpot)
       return () => {
-        socket.off('draftSpot', fetchData)
+        socket.off('draftSpot', handleDraftSpot)
       }
     }
   }, [socket])
@@ -329,6 +335,7 @@ console.log('isTimerFinished',isTimerFinished);
         leagueid: user?.team?.currentLeague._id,
         bidamount: parseFloat(bidAmount),
         teamid: user?.team?._id,
+        spotAuctionEnd:currentLeague?.spotAuctionEnd
       }
 
       const data = await makeBid(payload)
@@ -507,7 +514,7 @@ console.log('isTimerFinished',isTimerFinished);
           <div className='timeremains'>
             <div>
               <SpotAuctionTimer
-                draftStart={currentLeague?.draftStart}
+                spotAuctionEnd={currentLeague?.spotAuctionEnd}
                 onTimerFinish={setIsTimerFinished}
               />
             </div>

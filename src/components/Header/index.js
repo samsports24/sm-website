@@ -26,7 +26,7 @@ const Header = () => {
   const [leaguepoints, setLeaguepoints] = useState('')
   const navigate = useNavigate()
 
-  console.log('user?.team?.currentLeague?.season',user?.team?.currentLeague?.season);
+  console.log('user?.team?.currentLeague?.season',user?.team?.currentLeague?.prizePool);
 
 // console.log('myleagueSalaryCap',myleagueSalaryCap);
   const teamFinancials = () => {
@@ -159,7 +159,7 @@ const Header = () => {
 
               <div className='leaguedifflex'>
                   <img className='imgdiv' src={sampointslogo} alt='SAMPOINTS' />
-                  <div className='leaguemoney'>100,000
+                  <div className='leaguemoney'>{user?.team?.currentLeague?.prizePool}
                 
                   </div>
              

@@ -341,7 +341,7 @@ const DraftPool = ({ tableScroll }) => {
         title: 'SAM ADP',
         dataIndex: 'adp',
         key: 'adp',
-        render: (t) => <p>{t || '-'}</p>,
+        render: (t) => <p>{obj?.player?.samAdp24?.toFixed(3) || '-'}</p>,
       },
     ]
 
