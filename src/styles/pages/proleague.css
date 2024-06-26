@@ -1,0 +1,313 @@
+.pro_league_body {
+    width: 100%;
+    min-height: calc(100vh - 100px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 20px;
+  }
+  
+  
+  .pro_league_body h1 {
+    font-size: 40px;
+    font-weight: bold;
+    line-height: normal;
+    font-style: italic;
+    position: relative;
+    right: 21%;
+  }
+
+
+
+  .pro_league_body  .new-league_joining_card {
+    margin-top: 50px;
+    /* max-width: 800px; */
+    width: 70%;
+    /* height: 256px; */
+    background: rgb(88, 77, 116);
+    border-radius:90px;
+    padding: 10px;
+   
+  }
+  
+  
+  
+  .pro_league_body  .new-league_joining_card .ant-row {
+    /* width: 100%;
+    height: 100%;
+    /* display: flex;
+    flex-direction: column; */
+    /* border-radius: 20px;
+    background-color: #59486b; */ 
+    display: block;
+  }
+  
+  
+  
+  
+  .pro_league_body  .new-league_joining_card .firstbox {
+  
+    width: 100%;
+    border-radius:90px;
+    display: flex;
+    flex-direction: row;
+    padding: 20px;
+  
+  }
+  
+  
+  .pro_league_body  .new-league_joining_card .firstbox .circle {
+    background: rgb(38, 27, 70);
+    width: 200px; 
+    height: 200px;
+    border-radius: 50%;
+    z-index: 999;
+  
+  }
+  
+  .pro_league_body  .new-league_joining_card .firstbox .circle .myimg {
+  width: 64%;
+  position: relative;
+  top: 44px;
+  left: 23%;
+  }
+  
+  
+  .pro_league_body  .new-league_joining_card .description {
+    padding: 20px;
+    width: 100%;
+    flex: 1;
+    border-radius:0px 130px 130px 0px;
+    background-color:rgb(12, 192, 223);
+    margin-left: -100px;
+    padding-left: 100px;
+    padding-top: 14px;
+    padding-right: 22px;
+    height: 200px;
+    overflow-x: scroll;
+  
+  }
+  .pro_league_body  .new-league_joining_card .description p {
+    line-height: 1.3;
+    font-size: 22px;
+    font-weight: 400;
+    margin-left: 23px;
+    height: fit-content;
+    width: 92%;
+  }
+  
+  .pro_league_body  .new-league_joining_card .description p span {
+    
+    font-weight: 700;
+   
+  }
+  
+  .pro_league_body  .new-league_joining_card .header .description p .text1 {
+    font-size: 30px;
+    font-weight: 700;
+   
+  }
+
+  .pro_league_body  .new-league_joining_card .annualfee{
+    width: 95%;
+    background: rgb(38, 27, 70);
+    border-radius:90px;
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    justify-content: space-between;
+    padding: 20px;
+    margin: auto;
+    font-size: 30px;
+    font-weight: 700;
+    text-transform: uppercase;
+  } 
+
+  .pro_league_body  .new-league_joining_card .league-package{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 28px;
+    padding: 20px;
+  }
+
+
+  .pro_league_body  .new-league_joining_card .league-package .pro-league-package{
+    background: rgb(38, 27, 70);
+    border-radius:50px;
+    width: 100%;
+    margin-top: 20px;
+    padding: 27px;
+  }
+
+  .pro_league_body  .new-league_joining_card .league-package .pro-league-package .moreinfo{
+    font-size: 17.3335px;
+    color: rgb(12, 192, 223);
+    font-style: italic;
+    margin-top: 20px;
+    text-decoration: underline;
+    cursor: pointer;
+
+  }
+  .pro_league_body  .new-league_joining_card .league-package .pro-league-package h2{ 
+    font-size: 35px;
+    font-weight: 700;
+    line-height: 24px;
+    font-style: italic;
+    margin-bottom: 38px;
+    /* width: max-content; */
+
+   
+  }
+
+  .pro_league_body  .new-league_joining_card .league-package .pro-league-package p{ 
+    font-size: 26px;
+    font-weight: 400;
+    line-height: 28px;
+    margin-bottom: 13px;
+
+   
+  }
+
+
+  .pro_league_body  .new-league_joining_card .league-package .pro-league-package h3{ 
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 28px;
+  }
+
+
+  .pro_league_body .sam-pro-anaual-fee {
+    /* background: rgb(88, 77, 116) !important;
+    border-radius:90px;
+    width: 80%; */
+
+/* 
+    width: 78.5%; */
+    /* height: 256px; */
+    background: rgb(88, 77, 116);
+    border-radius:90px;
+    padding: 15px;
+    width: 30%;
+  }
+
+
+  .pro_league_body .sam-pro-anaual-fee p{
+    background: rgb(38, 27, 70);
+    border-radius:76px;
+    font-size: 30px;
+    font-style: italic;
+    font-weight: 400;
+    text-align: left;
+    padding: 33px;
+  }
+
+  .pro_league_body .sam-pro-anaual-fee p .price {
+    text-align: right;
+    font-size: 50px;
+    font-weight: 900;
+    margin-top: 20px;
+  }
+
+  .pro_league_body .sam-pro-anaual-fee span{
+    
+    font-weight: 700;
+  }
+
+
+  .pro_league_body .sam-pro-anaual-fee .stripebtn{
+    display: flex;
+  }
+  .pro_league_body .sam-pro-anaual-fee .stripebtn .ant-btn-primary {
+    background:rgb(12, 192, 223); 
+    font-size: 32px;
+    font-weight: 600;
+    height: 138px;
+    /* letter-spacing: 2px; */
+    /* height: 40px; */
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    padding: 10px 20px !important;
+    border-radius: 100px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text);
+    width: 100%;
+    margin-top: 20px;
+    
+  }
+
+
+
+  .pro_league_body .sam-pro-anaual-fee .stripebtn  > span{
+
+    width: 80px; 
+    height: 80px;
+  /* position: absolute;
+  right: 6%; */
+  /* top: 5px; */
+    /* z-index: 999; */
+    /* margin-top: 50px; */
+    background:#4682B4	;
+    border-radius:50%;
+
+   
+    cursor: pointer;
+
+
+  }
+
+  .pro_league_body .sam-pro-anaual-fee .stripecicle {
+    
+    width: 80px; 
+    height: 80px;
+  position: absolute;
+  right: 6%;
+  /* top: 5px; */
+    /* z-index: 999; */
+    margin-top: 50px;
+    background:#4682B4	;
+    border-radius:50%;
+
+   
+    cursor: pointer;
+  }
+
+  .pro_league_body .sam-pro-anaual-fee .stripecicle p {
+    font-size:20px;
+    font-weight: 700;
+    margin-left: -22px;
+    background:transparent;
+  position: relative;
+  bottom:5px;
+  }
+
+  @media (max-width: 1684px) {
+    .pro_league_body{
+        flex-direction: column;
+    }
+    .pro_league_body .sam-pro-anaual-fee {
+        width: 71%;
+    }
+}
+
+
+@media (max-width: 1351px) {
+    .pro_league_body .new-league_joining_card .league-package{
+        flex-direction: column;
+
+    }
+
+    .pro_league_body .new-league_joining_card .annualfee{
+        font-size: 25px;
+    }
+
+
+}
+
+
+
+

@@ -79,7 +79,7 @@ const RosterDetail = ({ playerFinancials }) => {
         <div className='rdb_right_row3'>
           <div style={{paddingBottom:'20px'}}>
             <p style={{fontSize:'20px'}}>SAM ADP</p>
-            <p>{player?.player?.samAdp24 ? `${player.player.samAdp24.toFixed(3)}` : '-'}
+            <p>{player?.player?.samAdp24 ? `${player?.player?.samAdp24?.toFixed(3)}` : '-'}
             </p>
           </div>
           <div>

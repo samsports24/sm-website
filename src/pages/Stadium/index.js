@@ -115,7 +115,7 @@ const Stadium = () => {
           </div>
 
           <div className='stadiumupgrade'>
-            STADIUM <span>UPGARDE</span>
+            STADIUM <span>UPGARDES</span>
             <div style={{ marginTop: '10px' }} className='main-stadium-section'>
               <img className='mystadium' src={mystadium} alt='stadium' />
               <p>

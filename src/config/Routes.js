@@ -84,6 +84,8 @@ import DraftSpotAuction from '../pages/Draft/DraftSpotAuction'
 import BuySampoints from '../pages/AllTransaction/BuySampoints'
 import Payoptions from '../pages/AllTransaction/Payoptions'
 import Stadium from '../pages/Stadium'
+import Clubhouse from '../pages/Clubhouse'
+import Proleague from '../pages/Proleague'
 
 const Routers = () => {
   const Component = () => {
@@ -154,6 +156,8 @@ const Routers = () => {
 
           <Route path='/draft-spot-auction' element={<DraftSpotAuction />} />
           <Route path='/stadium' element={<Stadium />} />
+          <Route path='/clubhouse' element={<Clubhouse />} />
+         
 
           <Route path='/buy-sam-points' element={<BuySampoints />} />
           
@@ -210,6 +214,7 @@ const Routers = () => {
         <Route path='/select-game' element={<SelectGame />} />
         <Route path='/signup' element={<NewSignUp />} />
         <Route path='/select-league' element={<SelectLeague />} />
+        <Route path='/proleague' element={<Proleague />} />
         <Route path='/create-join-league' element={<CreateOrJoinLeague />} />
       </Routes>
     </BrowserRouter>

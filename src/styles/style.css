@@ -114,6 +114,8 @@
 @import './pages/createOrJoinLeague.css';
 @import './pages/newHomePage.css';
 @import './pages/stadium.css';
+@import './pages/clubhouse.css';
+@import './pages/proleague.css';
 
 /* COMPONENT HOCKEY */
 @import './components/leagueStandingsHockey.css';

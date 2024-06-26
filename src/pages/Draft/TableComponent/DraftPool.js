@@ -341,7 +341,12 @@ const DraftPool = ({ tableScroll }) => {
         title: 'SAM ADP',
         dataIndex: 'adp',
         key: 'adp',
-        render: (t) => <p>{obj?.player?.samAdp24?.toFixed(3) || '-'}</p>,
+        render: (_, obj) => {
+          return (
+            <p>{obj?.player?.samAdp24?.toFixed(3) || '-'}</p>
+          )
+        },
+
       },
     ]
 
@@ -653,7 +658,13 @@ const DraftPool = ({ tableScroll }) => {
           return (
             <div className='table_player_name_box nrc_container'>
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.stats?.OL?.totalSnap?.toFixed(3) || '-'}
+                {/* {obj?.stats?.OL?.totalSnap?.toFixed(3) || '-'} */}
+                {obj?.stats?.OL?.totalSnap 
+  ? (Number.isInteger(obj?.stats?.OL?.totalSnap)
+    ? obj.stats.OL.totalSnap.toFixed(0)
+    : obj.stats.OL.totalSnap.toFixed(2)) + '%' 
+  : '-'}
+
               </p>
             </div>
           )

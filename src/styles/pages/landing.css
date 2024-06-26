@@ -29,7 +29,8 @@
 
   justify-content: space-between;
   align-items: center;
-  background-color: var(--primaryPurple);
+  /* background-color: var(--primaryPurple); */
+  background-color:black;
 
   position: fixed;
   z-index: 9999;
@@ -137,7 +138,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: var(--primaryPurple);
+  /* background-color: var(--primaryPurple); */
+  background-color:black
 }
 .main-landing .team-section .content {
   margin-top: 150px;
@@ -204,7 +206,8 @@
 /* League Section */
 .main-landing .leagues {
   padding-bottom: 3rem;
-  background-color: var(--primaryPurple);
+  /* background-color: var(--primaryPurple); */
+  background-color:black
 }
 .main-landing .leagues .carouselBoxWrapper {
   display: flex;
@@ -362,7 +365,8 @@
   width: 100%;
   padding-top: 80px;
   padding-bottom: 50px;
-  background-color: var(--primaryPurple);
+  /* background-color: var(--primaryPurple); */
+  background-color:black
 }
 .main-landing .community .community_card_wrapper {
   padding-inline: 30px;

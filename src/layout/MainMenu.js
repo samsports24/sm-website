@@ -15,6 +15,7 @@ import {
   GiBabyfootPlayers,
   GiAmericanFootballPlayer,
 } from 'react-icons/gi'
+import { RxEnvelopeClosed } from "react-icons/rx";
 
 import { PiUsersThreeLight, PiNotebookLight } from 'react-icons/pi'
 import { FaQuestion } from 'react-icons/fa6'
@@ -96,6 +97,10 @@ const MainMenu = ({ visible }) => {
       case '/stadium': {
         return setActive('stadium')
       }
+      case '/clubhouse': {
+        return setActive('clubhouse')
+      }
+      
       case '/my-league': {
         return setActive('my-league')
       }
@@ -257,6 +262,13 @@ const MainMenu = ({ visible }) => {
               <p>Stadium</p>
             </div>
 
+            <div
+              className={`sidebar_menu_item ${active === 'clubhouse' ? 'activeRoute' : ''}`}
+              onClick={() => navigatePath('/clubhouse')}
+            >
+              <RxEnvelopeClosed />
+              <p>Club House</p>
+            </div>
 
             {(user?.team?.currentLeague?.createdBy === user?._id ||
               user?.team?.currentLeague?.coComissioner === user?._id) && (

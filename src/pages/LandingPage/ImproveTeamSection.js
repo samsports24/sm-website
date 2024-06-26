@@ -5,7 +5,8 @@ const ImproveTeamSection = () => {
     {
       title: 'DRAFT',
       description:
-        'Share your product or service offerings here. Give your prospective clients an overview of why they should use it. Differentiate it from the others listed on this page.',
+        // 'Share your product or service offerings here. Give your prospective clients an overview of why they should use it. Differentiate it from the others listed on this page.',
+        'Drafting your team lies in its long-term focus, depth, strategic complexity, and continuous engagement. Managers must think beyond the current season, balancing immediate needs with future potential, making the draft process a critical and intricate game aspect.',
     },
     {
       title: 'AUCTION',

@@ -323,6 +323,8 @@ const TeamRosters = ({ tableScroll }) => {
         )
       },
     },
+
+  
   ]
 
 

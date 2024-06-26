@@ -7,6 +7,17 @@
   justify-content: center;
 }
 
+
+.select_league_body h1 {
+  font-size: 40px;
+  font-weight: bold;
+  line-height: normal;
+  font-style: italic;
+  position: relative;
+  right: 21%;
+
+}
+
 .select_league_body .button_box {
   width: 100%;
   max-width: 400px;
@@ -25,9 +36,18 @@
 }
 
 .select_league_body .card_conatiner {
-  /* width: 100%; */
-  margin-top: 50px;
-  max-width: 800px;
+  width: 100%;
+  margin-left: 390px;
+    /* max-width: 800px; */
+}
+
+
+.card_conatiner .ant-row {
+  display: block;
+}
+
+.card_conatiner .ant-col-lg-12 {
+  max-width: 100%;
 }
 
 /* CARD */
@@ -106,3 +126,142 @@
     rgba(191, 106, 227, 1) 100%
   ) !important;
 }
+
+
+
+/* NEW CARD */
+
+
+.new-league_joining_card {
+  margin-top: 50px;
+  /* max-width: 800px; */
+  width: 78.5%;
+  /* height: 256px; */
+  background: rgb(88, 77, 116);
+  border-radius:90px;
+  padding-left: 11px;
+}
+
+
+
+.new-league_joining_card .ant-row {
+  /* width: 100%;
+  height: 100%;
+  /* display: flex;
+  flex-direction: column; */
+  /* border-radius: 20px;
+  background-color: #59486b; */ 
+  display: block;
+}
+
+
+
+
+.new-league_joining_card .firstbox {
+
+  width: 100%;
+  border-radius:90px;
+  display: flex;
+  flex-direction: row;
+
+}
+
+
+.new-league_joining_card .firstbox .circle {
+  background: rgb(38, 27, 70);
+  width: 200px; 
+  height: 200px;
+  border-radius: 50%;
+  z-index: 999;
+
+}
+
+.new-league_joining_card .firstbox .circle .myimg {
+width: 64%;
+position: relative;
+top: 44px;
+left: 23%;
+}
+
+
+.new-league_joining_card .description {
+  padding: 20px;
+  width: 100%;
+  flex: 1;
+  border-radius:0px 130px 130px 0px;
+  background-color:rgb(12, 192, 223);
+  margin-left: -100px;
+  padding-left: 100px;
+  padding-top: 14px;
+  padding-right: 22px;
+  height: 200px;
+  overflow-x: scroll;
+
+}
+.new-league_joining_card .description p {
+  line-height: 1.3;
+  font-size: 22px;
+  font-weight: 400;
+  margin-left: 23px;
+  height: fit-content;
+  width: 92%;
+}
+
+.new-league_joining_card .description p span {
+  
+  font-weight: 700;
+ 
+}
+
+.new-league_joining_card .header .description p .text1 {
+  font-size: 30px;
+  font-weight: 700;
+ 
+}
+
+
+.new-league_joining_card .firstbox > button {
+  /* margin-bottom: 20px; */
+  margin-top: 93px;
+  margin-inline: 50px;
+  background-color:rgb(12, 192, 223) !important;
+ color:#FFFFFF !important;
+ font-size: 17px !important;
+ font-weight: 700 !important;
+  /* background: linear-gradient(
+    90deg,
+    rgba(12, 76, 176, 1) 0%,
+    rgba(191, 106, 227, 1) 100%
+  ) !important; */
+  border: none;
+}
+
+
+
+.new-league_joining_card .firstbox > button:hover {
+  border: none;
+  background-color:rgb(12, 192, 223) !important;
+  color:#FFFFFF !important 
+  /* background: linear-gradient(
+    90deg,
+    rgba(12, 76, 176, 1) 0%,
+    rgba(191, 106, 227, 1) 100%
+  ) !important; */
+}
+
+
+
+.new-league_joining_card .firstbox .ant-btn-primary:disabled {
+  opacity: 0.6 !important;
+}
+
+
+/* .new-league_joining_card  ::-webkit-scrollbar{
+
+  
+  border-radius:0px !important;
+  background:none !important 
+    width: auto !important;
+  height: auto !important;
+ 
+} */

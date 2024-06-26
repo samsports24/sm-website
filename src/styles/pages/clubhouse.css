@@ -1,0 +1,159 @@
+.clubhouse-main{
+    width: 100%;
+    height: auto;
+    margin: auto;
+}
+
+
+.clubhouse-main .clubhouse h1 {
+    color: var(--text);
+    font-size: 34px;
+    font-style: normal;
+    font-weight: bold;
+    line-height: normal;
+    margin-bottom: 20px;
+  }
+
+
+  .clubhouse-main .clubhouse .clubhouse_first_div {
+    display:flex;
+    flex-direction: row;
+    gap:240px;
+  }
+
+  .clubhouse-main .clubhouse .clubhouse_first_div .clubhouseinput {
+    background:rgb(88, 77, 116);
+    width: 64%;
+border-radius:30px;
+position: relative;
+left: 3%;
+display:flex;
+flex-direction: row;
+justify-content: space-between;
+height: fit-content;
+    
+  }
+
+  .clubhouse-main .clubhouse .clubhouse_first_div  h2 {
+    color: var(--text);
+    font-size: 24px;
+    font-style: italic;
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 20px;
+
+  }
+
+  .clubhouse-main .clubhouse .clubhouse_first_div  h2 p {
+    color: var(--text);
+    font-size: 24px;
+    font-style: italic;
+    font-weight: 400;
+    line-height: normal;
+    margin-bottom: 20px;
+    text-align: right;
+
+  }
+
+
+  .clubhouse-main .clubhouse .clubhouse_first_div  .clubhouseinput .ant-input {
+  
+        background-color: #080611 !important;
+        border: 2px solid rgb(88, 77, 116) !important;
+        border-radius: 34px;
+        color: var(--text) !important;
+    width: 70%;
+    height: 37px;
+    margin-top: 7px;
+    margin-bottom: 4px;
+    margin-left: 4px;
+    font-size: 18px;
+    font-weight: 400;
+    font-style: italic;
+  }
+
+
+  .clubhouse-main .clubhouse .clubhouse_first_div .clubhouseinput .ant-btn-primary { 
+        width: 21%;
+        font-size: 27px;
+        margin-top: 7px;
+        margin-bottom: 7px;
+        margin-right: 0px
+  }
+
+
+
+ .clubhouse-main .clubhouse .email-registration{
+    display: flex;
+    margin: auto;
+    /* justify-content: space-between; */
+    gap: 20px;
+   
+ }
+  .clubhouse-main .clubhouse .email-registration p{
+    color: var(--text);
+    font-size: 17px;
+    font-style: normal;
+    font-weight: bold;
+    line-height: normal;
+    margin-right: 40px;
+    width: 46%;
+    position: relative;
+    left: 4%
+  }
+
+.clubhouse-main .clubhouse .email-registration .email-box{
+    border: 8px solid rgb(88, 77, 116) !important;
+    border-radius: 34px;
+    height: 80vh;
+    padding-top: 30px;
+    padding-left: 30px;
+    position: relative;
+    left: -9%
+}
+.clubhouse-main .clubhouse .email-registration  p .total-earnings {
+    display: flex;
+    flex-direction: row;
+    gap:20px;
+    margin-top: 20px;
+}
+
+.clubhouse-main .clubhouse .email-registration  p .total-earnings h3 {
+    color: var(--text);
+    font-size: 27px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.clubhouse-main .clubhouse .email-registration  p .total-earnings h4 {
+    color: var(--text);
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.clubhouse-main .clubhouse .email-registration .email-box p {
+    color: var(--text);
+    font-size: 27px;
+    margin-bottom: 20px;
+    font-style: italic;
+    font-weight: 400;
+    line-height: normal;
+
+}
+
+
+.clubhouse-main .clubhouse .email-registration .email-box h2 {
+    color: rgb(12, 192, 223) !important;
+    font-size: 27px;
+    margin-bottom: 20px;
+    font-style: italic;
+    font-weight: 400;
+    line-height: normal;
+}
+
+
+
+
