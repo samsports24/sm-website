@@ -393,5 +393,35 @@ export const makeiswallettrue =async (payload) =>{
 
 }
 
+ export  const createClubhouse = async(payload) =>{
+
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/league/clubhouse`, payload)
+    if (res) {
+      notification.success({
+        description: res.data.data.message,
+        duration: 2,
+      })
+      // store.dispatch(getUser())
+     // getLeagueDetails()
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+
+ }
 
 
+
+
+
+export const getClubhouse = async (payload)=>{
+
+  
+
+}

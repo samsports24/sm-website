@@ -3,9 +3,52 @@ import { Button, Image, Input, Select } from 'antd'
 import Header from '../../components/Header'
 import HeadingAndWeek from '../../components/Pagination/HeadingAndWeek'
 import sampointslogo from '../../assets/stadiumsampoints.webp'
+import { useSelector } from 'react-redux'
+import { createClubhouse, getLeagueDetails } from '../../redux'
 
 const Clubhouse = () => {
+
+
+
+  const user = useSelector((state) => state.user.userDetails)
+  console.log('user',user);
+ 
+  const [referralemail, setReferralemail] = useState('')
+  const [loading, setLoading] = useState(true)
+
   const emails = ['James@gmail.com', 'Maddog@gmail.com', 'Fakeemail@gmail.com', '0900-786-01']
+
+
+
+  const handleInputChange = (e) => {
+    setReferralemail(e.target.value)
+  }
+
+  const handlecreatereferral = async () => {
+    setLoading(true)
+    try {
+      const payload = {
+        league: user?.team?.currentLeague._id,
+        user:user?._id,
+        emailsent:referralemail,
+        season:user?.team?.currentLeague?.season       
+      }
+
+      console.log('payload',payload);
+      const data = await createClubhouse(payload)
+
+      console.log('refereaal successfull successfully:', data)
+      setReferralemail('')
+      // const res = await getData()
+      // if (res) {
+      // }
+      setLoading(false)
+    } catch (error) {
+      console.error('Error making bid:', error)
+    }
+  }
+
+
   return (
     <>
       <div className='clubhouse-main'>
@@ -19,15 +62,17 @@ const Clubhouse = () => {
               <Input
                 disabled={false}
                 placeholder='TYPE EMAIL OR MOBILE NUMBER'
-                onChange={(e) => handleInputChange()}
+                value={referralemail}
+                onChange={handleInputChange}
               />
 
               <Button
                 // loading={loading}
-                // onClick={handleMakeBid}
+                onClick={handlecreatereferral}
                 className='submitbtn'
                 key='save'
                 type='primary'
+                
                 // disabled={isTimerFinished}
               >
                 Submit
@@ -35,7 +80,7 @@ const Clubhouse = () => {
             </div>
             <h2>
               My Referral Level
-              <p>Ultimate</p>
+              <p>{user?.referralLevel}</p>
             </h2>
           </div>
           <div className='email-registration'>

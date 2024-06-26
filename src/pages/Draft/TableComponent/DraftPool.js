@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import useDebounce from '../../../hooks/useDebounce'
 import rookieimg from '../../../assets/rookie_indo_sam.png'
 
-
 import {
   createDraftQueue,
   deleteDraftQueue,
@@ -41,12 +40,9 @@ const DraftPool = ({ tableScroll }) => {
 
   console.log('SETTING', SETTING?.season)
 
-
-
-
   const [color, setColor] = useState('')
 
-  const [age,setAge]= useState('')
+  const [age, setAge] = useState('')
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -58,47 +54,41 @@ const DraftPool = ({ tableScroll }) => {
         page,
         age,
       })
-       getBlackListQueue()
-       getDraftQueue()
-  }, [position, limit, page,age, activeTab])
+    getBlackListQueue()
+    getDraftQueue()
+  }, [position, limit, page, age, activeTab])
 
   // useEffect(() => {
   //   setColor(isQueue ? 'var(--primary)' : isblacklist ? 'black' : 'none');
   // }, [isQueue, isblacklist]);
 
-
-
-
-//   useEffect(() => {
-//     const newColors = {};
-//     allPlayers?.players.forEach((player) => {
-//       console.log('player?._id',player.player?._id);
-//       const checkisQueue = draftQueues?.find((v) => v?.player?._id === player.player?._id);
-//       const checkisblacklist = blacklistQueues?.find((v) => v?.player?._id === player.player?._id);
-//       console.log('checkisQueue',checkisQueue);
-//       newColors[player.player?._id] = checkisQueue ? 'var(--primary)' : checkisblacklist ? 'black' : 'none';
-//     });
-// console.log('newColors',newColors);
-//     console.log('color',color);
-//     setColor(newColors);
-//   }, [allPlayers, draftQueues, blacklistQueues])
-
-
+  //   useEffect(() => {
+  //     const newColors = {};
+  //     allPlayers?.players.forEach((player) => {
+  //       console.log('player?._id',player.player?._id);
+  //       const checkisQueue = draftQueues?.find((v) => v?.player?._id === player.player?._id);
+  //       const checkisblacklist = blacklistQueues?.find((v) => v?.player?._id === player.player?._id);
+  //       console.log('checkisQueue',checkisQueue);
+  //       newColors[player.player?._id] = checkisQueue ? 'var(--primary)' : checkisblacklist ? 'black' : 'none';
+  //     });
+  // console.log('newColors',newColors);
+  //     console.log('color',color);
+  //     setColor(newColors);
+  //   }, [allPlayers, draftQueues, blacklistQueues])
 
   const getData = async (payload) => {
     await getAllPlayers(payload, position)
     // await getDraftQueue()
   }
 
-
-  // for age sorting 
+  // for age sorting
   const handleAgeClick = () => {
-    const newSortingOrder = age === 'asc' ? 'desc' : 'asc';
-    console.log('newSortingOrder',newSortingOrder);
-    setAge(newSortingOrder); 
-  };
+    const newSortingOrder = age === 'asc' ? 'desc' : 'asc'
+    console.log('newSortingOrder', newSortingOrder)
+    setAge(newSortingOrder)
+  }
 
-  console.log('age',age);
+  console.log('age', age)
 
   const handleAddQueue = async (id) => {
     setLoading(id)
@@ -122,7 +112,7 @@ const DraftPool = ({ tableScroll }) => {
 
   // add black list
   const handleAddBlackList = async (id) => {
-    console.log('inside the black list',id)
+    console.log('inside the black list', id)
     setLoading(id)
     await createBlackListQueue({
       team: userDetails?.team?._id,
@@ -142,8 +132,10 @@ const DraftPool = ({ tableScroll }) => {
         key: 'plus-icon',
         render: (_, obj) => {
           const isQueue = draftQueues?.filter((v) => v?.player?._id === obj?.player?._id)?.[0]
-          const isblacklist = blacklistQueues?.filter((v) => v?.player?._id === obj?.player?._id)?.[0]
-          const color = isQueue ? 'var(--primary)' : isblacklist ? 'black' : 'none';
+          const isblacklist = blacklistQueues?.filter(
+            (v) => v?.player?._id === obj?.player?._id,
+          )?.[0]
+          const color = isQueue ? 'var(--primary)' : isblacklist ? 'black' : 'none'
           // blacklistQueues.filter((item) => item.player?._id == obj?.player?._id) ? 'red' : 'green'
           // console.log('is blacklist',blacklistQueues);
           // console.log('obj?.player?._id',obj?.player?._id);
@@ -173,15 +165,14 @@ const DraftPool = ({ tableScroll }) => {
                 <BiSolidPlusCircle
                   size={18}
                   style={{ marginBottom: '-3px', cursor: 'pointer' }}
-                   color={color}
-               //  color={isQueue ? 'var(--primary)' : isblacklist ? 'black' : 'none' }
+                  color={color}
+                  //  color={isQueue ? 'var(--primary)' : isblacklist ? 'black' : 'none' }
                   onClick={() => {
-                    console.log('mycolor',color);
+                    console.log('mycolor', color)
                     if (color === 'var(--primary)') {
                       handleAddBlackList(obj?.player?._id)
                       handleDeleteQueue(obj?._id, isQueue?._id)
                       setColor('black')
-                      
                     } else if (color === 'black') {
                       handleDeleteBlackListQueue(obj?.player?._id, isblacklist?._id)
                       setColor('none')
@@ -233,11 +224,11 @@ const DraftPool = ({ tableScroll }) => {
             {obj?.Position} - {obj?.Team}{' '}
           </p> */}
               {rookie === 'Rookie' ? (
-                 <Image width={20} className='rookie_image2'  src={rookieimg} alt='rookie Image' /> 
+                <Image width={20} className='rookie_image2' src={rookieimg} alt='rookie Image' />
               ) : (
                 ''
               )}
-                {/* <Image width={20} className='rookie_image2'  src={rookieimg} alt='rookie Image' /> */}
+              {/* <Image width={20} className='rookie_image2'  src={rookieimg} alt='rookie Image' /> */}
               {inj === 'Out' ? (
                 <>
                   <span className='injury_plus'>
@@ -269,22 +260,14 @@ const DraftPool = ({ tableScroll }) => {
         sorter: handleAgeClick,
         render: (_, obj) => {
           return (
-
-            <div  className='table_player_name_box nrc_container'>
-              
-              
-              <p onClick={() => 
-                dispatch(setSelectedPlayer(obj))
-              }
-                
-                style={{ cursor: 'pointer' }}>
+            <div className='table_player_name_box nrc_container'>
+              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
                 {obj?.player?.Age || '-'}
               </p>
-                {/* <p onClick={handleAgeClick} style={{ cursor: 'pointer' }}>
+              {/* <p onClick={handleAgeClick} style={{ cursor: 'pointer' }}>
               {obj?.player?.Age || '-'}
             </p> */}
             </div>
-            
           )
         },
       },
@@ -342,11 +325,8 @@ const DraftPool = ({ tableScroll }) => {
         dataIndex: 'adp',
         key: 'adp',
         render: (_, obj) => {
-          return (
-            <p>{obj?.player?.samAdp24?.toFixed(3) || '-'}</p>
-          )
+          return <p>{obj?.player?.samAdp24?.toFixed(3) || '-'}</p>
         },
-
       },
     ]
 
@@ -659,12 +639,11 @@ const DraftPool = ({ tableScroll }) => {
             <div className='table_player_name_box nrc_container'>
               <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
                 {/* {obj?.stats?.OL?.totalSnap?.toFixed(3) || '-'} */}
-                {obj?.stats?.OL?.totalSnap 
-  ? (Number.isInteger(obj?.stats?.OL?.totalSnap)
-    ? obj.stats.OL.totalSnap.toFixed(0)
-    : obj.stats.OL.totalSnap.toFixed(2)) + '%' 
-  : '-'}
-
+                {obj?.stats?.OL?.totalSnap
+                  ? (Number.isInteger(obj?.stats?.OL?.totalSnap)
+                      ? obj.stats.OL.totalSnap.toFixed(0)
+                      : obj.stats.OL.totalSnap.toFixed(2)) + '%'
+                  : '-'}
               </p>
             </div>
           )
