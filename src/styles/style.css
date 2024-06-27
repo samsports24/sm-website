@@ -19,6 +19,7 @@
 @import './modals/playerInerfaceModals.css';
 @import './modals/couponModal.css';
 @import './modals/viewBreakdown.css';
+@import './modals/verficationcodeModal.css';
 
 /* Component CSS */
 @import './components/header.css';

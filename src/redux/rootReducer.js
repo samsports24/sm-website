@@ -10,6 +10,7 @@ import leagueReducer from './reducers/leagueReducer'
 import contract from './reducers/contractReducer'
 import draft from './reducers/draftReducer'
 import socket from './reducers/socketReducer'
+import clubhouse from './reducers/clubhouseReducer'
 
 const rootReducer = combineReducers({
   theme,
@@ -21,7 +22,8 @@ const rootReducer = combineReducers({
   socket,
   transaction,
   league : leagueReducer,
-  contract
+  contract,
+  clubhouse,
   
 })
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Row, Col, Form, Input, DatePicker, Select, Checkbox, notification } from 'antd'
 import { useNavigate } from 'react-router-dom'
 
@@ -17,12 +17,41 @@ import moment from 'moment-timezone'
 import dayjs from 'dayjs'
 
 import { IoIosArrowRoundBack } from 'react-icons/io'
+import {jwtDecode} from 'jwt-decode';
+import VerificationcodeModal from '../../components/modal/Verificationcode'
+import { GenerateVerificationCode } from '../../redux/actions/clubhouse'
 
 const SelectGame = () => {
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
   const [selectedGame, setSelectedGame] = useState('')
   const navigate = useNavigate()
+  const [deocdeemail, setDecodeEmail] = useState(null);
+  const [modalshow, setModalShow] = useState(false)
+  const [verficationcode, setVerficationcode] = useState('')
+
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    const queryParameters = new URLSearchParams(window.location.search)
+    const token = queryParameters.get('token')
+    console.log('token',token);
+    if(token){
+      const decodedToken = jwtDecode(token);
+      console.log(decodedToken);
+      setDecodeEmail(decodedToken.emailsent);
+      setUser(decodedToken.user)
+      form.setFieldValue('email',decodedToken.emailsent)
+      let football = games?.find(obj => obj.key === "football")
+      handleSetGame(football)
+    }
+  },[])
+
+  console.log('verficationcode',verficationcode);
+  console.log('modalshow',modalshow);
+
+  const handleConfirm = async () => {
+    setModalShow(false)
+  }
 
   const handleSetGame = (v) => {
     setSelectedGame(v.key)
@@ -30,32 +59,102 @@ const SelectGame = () => {
     localStorage.setItem('imagePath', v.imagePath)
   }
 
+  // const onFinish = async (values) => {
+  //    console.log('values',values);
+
+
+  //   if (values.termsAndCondtions) {
+  //     let server = serverUrls.find((item) => item.key === selectedGame)
+  //     await GenerateVerificationCode({
+  //       emailsent:values.email,
+  //       user,
+  //     })
+  //       setModalShow(true)
+  //       setLoading(true)
+  //       if (verficationcode)
+  //         {
+  //    handleConfirm()
+  //         }
+    
+  //     const obj = {
+  //       ...values,
+  //       dateOfBirth: dayjs(values?.dateOfBirth).toISOString(),
+  //       url: server.url,
+  //   verficationcode,
+  //     }
+  //     // console.log(obj)
+  //     if (setModalShow == false) {
+  //       await authSignupAdvanced(obj, navigate)
+  //     }
+    
+     
+  //   } else {
+  //     notification.warning({
+  //       message: 'Please Accept Terms and Conditions',
+  //       duration: 4,
+  //     })
+  //   }
+    
+  //   setLoading(false)
+  // }
+
+
+  const handleModalClose = async (confirmed) => {
+    if (confirmed) {
+      await proceedWithSignup();
+    } else {
+      setLoading(false);
+    }
+    setModalShow(false);
+  };
+
   const onFinish = async (values) => {
-    setLoading(true)
+    console.log('values', values);
+
     if (values.termsAndCondtions) {
-      let server = serverUrls.find((item) => item.key === selectedGame)
-      const obj = {
+      let server = serverUrls.find((item) => item.key === selectedGame);
+
+      await GenerateVerificationCode({
+        emailsent: values.email,
+        user,
+      });
+
+      setFormValues({
         ...values,
         dateOfBirth: dayjs(values?.dateOfBirth).toISOString(),
         url: server.url,
-      }
-      // console.log(obj)
-      await authSignupAdvanced(obj, navigate)
+      });
+
+      setModalShow(true);
+      setLoading(true);
     } else {
       notification.warning({
         message: 'Please Accept Terms and Conditions',
         duration: 4,
-      })
+      });
     }
-    setLoading(false)
-  }
+  };
+
+  const proceedWithSignup = async () => {
+    const obj = {
+      ...formValues,
+      verficationcode,
+    };
+
+    await authSignupAdvanced(obj, navigate);
+    setLoading(false);
+  };
+
 
   const filterOption = (input, option) =>
     (option.label ?? '').toLowerCase().includes(input.toLowerCase())
 
   const survey = ['Social Media', 'Google/Search Engine', 'Third-Party Review', 'Other']
 
+  console.log('my decodemail',deocdeemail);
+
   return (
+    <>
     <div className='select_game_container'>
       <SelectGameLeft logo={'ultimate-sports.png'} />
       <SelectGameRight>
@@ -122,7 +221,13 @@ const SelectGame = () => {
                         },
                       ]}
                     >
-                      <Input type='email' placeholder='Email Address Here...' />
+                      <Input type='email'
+                      // value={deocdeemail || ''}
+                      placeholder='Email Address Here...' 
+                      
+                       disabled={deocdeemail ? true : false} 
+                      
+                      />
                     </Form.Item>
                   </Col>
 
@@ -286,6 +391,9 @@ const SelectGame = () => {
         )}
       </SelectGameRight>
     </div>
+
+<VerificationcodeModal key={'modal'} onClose={(confirmed) => handleModalClose(confirmed)} visible={modalshow}  verficationcode={verficationcode} setVerficationcode={setVerficationcode} />
+</>
   )
 }
 

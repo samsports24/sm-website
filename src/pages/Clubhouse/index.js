@@ -3,22 +3,44 @@ import { Button, Image, Input, Select } from 'antd'
 import Header from '../../components/Header'
 import HeadingAndWeek from '../../components/Pagination/HeadingAndWeek'
 import sampointslogo from '../../assets/stadiumsampoints.webp'
-import { useSelector } from 'react-redux'
-import { createClubhouse, getLeagueDetails } from '../../redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { createClubhouse, getClubhouse } from '../../redux/actions/clubhouse'
+
 
 const Clubhouse = () => {
+
+  const dispatch = useDispatch();
+
 
 
 
   const user = useSelector((state) => state.user.userDetails)
+
+  const clubhouse = useSelector((state)=> state.clubhouse.clubhouse.Clubhouse)
   console.log('user',user);
+  console.log('clubhouse',clubhouse);
+
+
  
   const [referralemail, setReferralemail] = useState('')
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
 
   const emails = ['James@gmail.com', 'Maddog@gmail.com', 'Fakeemail@gmail.com', '0900-786-01']
 
+// useEffect(()=>{
+//   getClubhouse()
+// },[clubhouse])
 
+useEffect(() => {
+  const fetchData = async () => {
+    const data = await getClubhouse({ season: user?.team?.currentLeague?.season , userId: user?._id, leagueId: user?.team?.currentLeague._id });
+    if (data) {
+      dispatch(setAllclubhouse(data));
+    }
+  };
+
+  fetchData();
+}, [dispatch,user]);
 
   const handleInputChange = (e) => {
     setReferralemail(e.target.value)
@@ -67,7 +89,7 @@ const Clubhouse = () => {
               />
 
               <Button
-                // loading={loading}
+                 loading={loading}
                 onClick={handlecreatereferral}
                 className='submitbtn'
                 key='save'
@@ -87,11 +109,21 @@ const Clubhouse = () => {
             <p>
               EMAILS SENTS
               <div className='email-box'>
-                {emails.map((email, index) => (
-                  <p style={{marginLeft:'-29px'}} key={index}>
-                    {index + 1}. {email}
-                  </p>
-                ))}
+              {/* {emails?.map((email, index) => (
+        <p style={{ marginLeft: '-29px' }} key={index}>
+          {index + 1}. {email}
+        </p>
+      ))} */}
+
+{Array.isArray(clubhouse) ? (
+      clubhouse?.map((item, index) => (
+        <p style={{ marginLeft: "-29px" }} key={index}>
+          {index + 1}. {item.emailsent}
+        </p>
+      ))
+    ) : (
+      <p>No emails found</p>
+    )}
               </div>
             </p>
 

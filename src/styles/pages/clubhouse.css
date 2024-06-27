@@ -109,7 +109,8 @@ height: fit-content;
     padding-top: 30px;
     padding-left: 30px;
     position: relative;
-    left: -9%
+    left: -9%;
+    overflow-x: scroll;
 }
 .clubhouse-main .clubhouse .email-registration  p .total-earnings {
     display: flex;
@@ -141,6 +142,7 @@ height: fit-content;
     font-style: italic;
     font-weight: 400;
     line-height: normal;
+    width: max-content;
 
 }
 
@@ -152,6 +154,7 @@ height: fit-content;
     font-style: italic;
     font-weight: 400;
     line-height: normal;
+    width: max-content;
 }
 
 
