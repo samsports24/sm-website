@@ -33,20 +33,21 @@ const MyLeague = () => {
                 <div
                   style={{ cursor: 'pointer' }}
                   onClick={async () => {
-                    if(user?.team?.currentLeague?._id === value?._id){
-notification.error({
-  message : "This League is already active",
-  duration : 6
-})
-                    }else{
-                      await selectLeague({ leagueId: value?._id },navigate)
+                    if (user?.team?.currentLeague?._id === value?._id) {
+                      notification.error({
+                        message: 'This League is already active',
+                        duration: 6,
+                      })
+                    } else {
+                      await selectLeague({ leagueId: value?._id }, navigate)
                     }
                   }}
                 >
-                  <PopularLeagueCard data={value} 
-                  active={user?.team?.currentLeague?._id === value?._id ? true : false}
-                  
-                  yourLeague={true} />
+                  <PopularLeagueCard
+                    data={value}
+                    active={user?.team?.currentLeague?._id === value?._id ? true : false}
+                    yourLeague={true}
+                  />
                 </div>
               </Col>
             ))

@@ -9,7 +9,7 @@ import sampointslogo from '../../assets/samcoinlogo.png'
 import GmRatingModal from '../../components/modal/GmRating'
 
 const Proleague = () => {
-  const [modalshow, setModalShow] = useState(true)
+  const [modalshow, setModalShow] = useState(false)
   const handleCancel= ()=>{
     setModalShow(false);
   }
@@ -55,7 +55,7 @@ const Proleague = () => {
                         <Image  width={33}  preview={false} src={sampointslogo} alt='league' />
                         
                         <p>1,000,000
-                        <div className='moreinfo'>MoreInfo</div>
+                        <div onClick={() => setModalShow(true)} className='moreinfo'>MoreInfo</div>
                         </p>
                         </div>
                         </div>

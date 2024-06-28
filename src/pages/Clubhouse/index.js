@@ -6,41 +6,38 @@ import sampointslogo from '../../assets/stadiumsampoints.webp'
 import { useDispatch, useSelector } from 'react-redux'
 import { createClubhouse, getClubhouse } from '../../redux/actions/clubhouse'
 
-
 const Clubhouse = () => {
-
-  const dispatch = useDispatch();
-
-
-
+  const dispatch = useDispatch()
 
   const user = useSelector((state) => state.user.userDetails)
 
-  const clubhouse = useSelector((state)=> state.clubhouse.clubhouse.Clubhouse)
-  console.log('user',user);
-  console.log('clubhouse',clubhouse);
+  const clubhouse = useSelector((state) => state.clubhouse.clubhouse.Clubhouse)
+  console.log('user', user)
+  console.log('clubhouse', clubhouse)
 
-
- 
   const [referralemail, setReferralemail] = useState('')
   const [loading, setLoading] = useState(false)
 
   const emails = ['James@gmail.com', 'Maddog@gmail.com', 'Fakeemail@gmail.com', '0900-786-01']
 
-// useEffect(()=>{
-//   getClubhouse()
-// },[clubhouse])
+  // useEffect(()=>{
+  //   getClubhouse()
+  // },[clubhouse])
 
-useEffect(() => {
-  const fetchData = async () => {
-    const data = await getClubhouse({ season: user?.team?.currentLeague?.season , userId: user?._id, leagueId: user?.team?.currentLeague._id });
-    if (data) {
-      dispatch(setAllclubhouse(data));
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getClubhouse({
+        season: user?.team?.currentLeague?.season,
+        userId: user?._id,
+        leagueId: user?.team?.currentLeague._id,
+      })
+      if (data) {
+        dispatch(setAllclubhouse(data))
+      }
     }
-  };
 
-  fetchData();
-}, [dispatch,user]);
+    fetchData()
+  }, [dispatch, user])
 
   const handleInputChange = (e) => {
     setReferralemail(e.target.value)
@@ -51,12 +48,12 @@ useEffect(() => {
     try {
       const payload = {
         league: user?.team?.currentLeague._id,
-        user:user?._id,
-        emailsent:referralemail,
-        season:user?.team?.currentLeague?.season       
+        user: user?._id,
+        emailsent: referralemail,
+        season: user?.team?.currentLeague?.season,
       }
 
-      console.log('payload',payload);
+      console.log('payload', payload)
       const data = await createClubhouse(payload)
 
       console.log('refereaal successfull successfully:', data)
@@ -69,7 +66,6 @@ useEffect(() => {
       console.error('Error making bid:', error)
     }
   }
-
 
   return (
     <>
@@ -89,12 +85,12 @@ useEffect(() => {
               />
 
               <Button
-                 loading={loading}
+                loading={loading}
                 onClick={handlecreatereferral}
                 className='submitbtn'
                 key='save'
                 type='primary'
-                
+
                 // disabled={isTimerFinished}
               >
                 Submit
@@ -109,21 +105,17 @@ useEffect(() => {
             <p>
               EMAILS SENTS
               <div className='email-box'>
-              {/* {emails?.map((email, index) => (
-        <p style={{ marginLeft: '-29px' }} key={index}>
-          {index + 1}. {email}
-        </p>
-      ))} */}
-
-{Array.isArray(clubhouse) ? (
-      clubhouse?.map((item, index) => (
-        <p style={{ marginLeft: "-29px" }} key={index}>
-          {index + 1}. {item.emailsent}
-        </p>
-      ))
-    ) : (
-      <p>No emails found</p>
-    )}
+                {Array.isArray(clubhouse) ? (
+                  clubhouse
+                    ?.filter((item) => !item.isRegistered)
+                    .map((item, index) => (
+                      <p style={{ marginLeft: '-29px' }} key={index}>
+                        {index + 1}. {item.emailsent}
+                      </p>
+                    ))
+                ) : (
+                  <p>No emails found</p>
+                )}
               </div>
             </p>
 
@@ -134,22 +126,26 @@ useEffect(() => {
                   style={{ display: 'flex', justifyContent: 'space-between', paddingRight: '60px' }}
                 >
                   <div>
-                    {emails.map((email, index) => (
-                      <h2 key={index}>
-                        {index + 1}. {email}
-                      </h2>
-                    ))}
+                    {Array.isArray(clubhouse) ? (
+                      clubhouse
+                        ?.filter((item) => item.isRegistered)
+                        .map((item, index) => (
+                          <p style={{ marginLeft: '-29px' }} key={index}>
+                            {index + 1}. {item.emailsent}
+                          </p>
+                        ))
+                    ) : (
+                      <p>No emails found</p>
+                    )}
                   </div>
                   <div style={{ display: 'flex' }}>
-                    <Image width={35} src={sampointslogo} alt='samlogo' />
+                    <Image preview={false} width={35} src={sampointslogo} alt='samlogo' />
                     <p>12,500,000</p>
                   </div>
                 </div>
               </div>
               <div className='total-earnings'>
-                <h3>
-                    TOTAL EARNINGS
-                </h3>
+                <h3>TOTAL EARNINGS</h3>
                 <Image width={35} src={sampointslogo} alt='samlogo' />
                 <h4>12,500,000</h4>
               </div>
