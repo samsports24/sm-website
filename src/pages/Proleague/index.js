@@ -6,8 +6,15 @@ import { useNavigate } from 'react-router-dom'
 import pro from '../../assets/proleague.png'
 import stripe from '../../assets/stripe.png'
 import sampointslogo from '../../assets/samcoinlogo.png'
+import GmRatingModal from '../../components/modal/GmRating'
 
 const Proleague = () => {
+  const [modalshow, setModalShow] = useState(true)
+  const handleCancel= ()=>{
+    setModalShow(false);
+  }
+
+  const navigate=useNavigate()
   return (
     <>
       <div className='select_game_container select_league_container'>
@@ -84,12 +91,11 @@ const Proleague = () => {
                 the <span>Clubhouse</span>tab. Based on your Referral Level, you can earn Sam Points
                 for each successful user registration.
               </p>
-
               <p style={{ marginTop: '20px', fontWeight: 700 }}>
                 SamSports PRO LEAGUE ANUAL FEE
                 <div className='price'>$49.99</div>
                 <div className='stripebtn'>
-                  <Button type='primary'>PAY WITH Stripe</Button>
+                  <Button onClick={() => navigate('fantasy-league')} type='primary'>PAY WITH Stripe</Button>
                   {/* <img className='stripecicle' src={stripe} alt='stripe'/> */}
                   {/* <div className='stripecicle'>
             <p>Stripe</p>
@@ -100,6 +106,12 @@ const Proleague = () => {
           </div>
         </SelectGameRight>
       </div>
+
+      <GmRatingModal
+        key={'modal'}
+        visible={modalshow}
+        onCancel={handleCancel}
+      />
     </>
   )
 }

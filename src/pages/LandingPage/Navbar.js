@@ -5,6 +5,7 @@ import Logo from '../../assets/Logo.svg'
 import Title from '../../assets/landing/title.png'
 import SamLogo from '../../assets/sam-football.png'
 
+
 import { FaBars } from 'react-icons/fa'
 import { IoClose } from 'react-icons/io5'
 import { useNavigate } from 'react-router-dom'
@@ -20,16 +21,36 @@ const Navbar = () => {
           <img src={Title} alt='samsports' className='title' />
           <div className='links'>
             {serverUrls.map((item) => (
+              // <span
+              //   style={{ color: item?.disabled ? 'gray' : '#fff' }}
+              //   key={item.key}
+              //   onClick={() => {
+              //     if (!item?.disabled) window.open(`${item.frontEndUrl}`, '_self', 'noreferrer')
+              //   }}
+              // >
+              //   {item.name}
+                 
+              // </span>
               <span
-                style={{ color: item?.disabled ? 'gray' : '#fff' }}
-                key={item.key}
-                onClick={() => {
-                  if (!item?.disabled) window.open(`${item.frontEndUrl}`, '_self', 'noreferrer')
-                }}
-              >
-                {item.name}
-              </span>
+              style={{ color: item?.disabled ? 'gray' : '#fff' }}
+              key={item.key}
+              onClick={() => {
+                if (!item?.disabled) window.open(`${item.frontEndUrl}`, '_self', 'noreferrer')
+              }}
+            >
+              {item.image ? (
+                <img src={item?.image} alt='logo' className='logo' />
+              ) : (
+                null
+              )}
+            </span>
             ))}
+
+
+
+
+
+
             {/* <span>Baseball</span>
             <span>Hockey</span>
             <span>US Football</span>
@@ -86,6 +107,7 @@ const DrawerMenu = () => {
           <div className='menu_item_box'>
             <div className='menu_item' onClick={() => window.open('https://samsports.io', '_self')}>
               <p>Football</p>
+              {/* <img src={football} alt='logo' className='football-logo' /> */}
             </div>
             <div
               className='menu_item'

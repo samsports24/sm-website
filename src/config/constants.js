@@ -1,6 +1,10 @@
 import Axios from 'axios'
 import store from '../redux/store'
 import { getNotiCount } from '../redux/actions/notificationAction'
+import football from "../assets/new_Football.png"
+import hockey from "../assets/new_Hockey.png"
+import scocer from "../assets/new_Soccerball.png"
+import baseball from "../assets/new_Baseball.png"
 
 export const base_url = 'http://localhost:8000'
 export const frontEndUrl = 'http://localhost:3000'
@@ -61,6 +65,7 @@ export const serverUrls = [
     url: base_url,
     frontEndUrl: `${frontEndUrl}/fantasy-league`,
     disabled: false,
+    image:football,
   },
   {
     key: 'hockey',
@@ -70,6 +75,7 @@ export const serverUrls = [
     // frontEndUrl: 'http://localhost:3002',
     // url: 'http://localhost:9000',
     disabled: false,
+    image:hockey,
   },
   {
     key: 'baseball',
@@ -79,6 +85,15 @@ export const serverUrls = [
     url: 'http://localhost:8000',
     frontEndUrl: 'http://localhost:3000',
     disabled: false,
+    image:baseball,
+  },
+  {
+    key: 'eleven_fc',
+    name: 'Eleven F.C',
+    url: 'https://elevenfcbackend.samsports.io',
+    frontEndUrl: 'http://localhost:3000',
+    disabled: true,
+    image:scocer,
   },
   {
     key: 'college_football',
@@ -94,13 +109,7 @@ export const serverUrls = [
     frontEndUrl: 'http://localhost:3000',
     disabled: true,
   },
-  {
-    key: 'eleven_fc',
-    name: 'Eleven F.C',
-    url: 'https://elevenfcbackend.samsports.io',
-    frontEndUrl: 'http://localhost:3000',
-    disabled: true,
-  },
+
   {
     key: 'scouts',
     name: 'Scouting',

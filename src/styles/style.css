@@ -20,6 +20,7 @@
 @import './modals/couponModal.css';
 @import './modals/viewBreakdown.css';
 @import './modals/verficationcodeModal.css';
+@import './modals/gmratingmodal.css';
 
 /* Component CSS */
 @import './components/header.css';

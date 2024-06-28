@@ -1,0 +1,83 @@
+.gmrating .customBTN {
+    padding: .5rem 3rem;
+    border-radius: 20px;
+}
+
+.gmrating .customBTN:hover {
+    padding: .5rem 3rem;
+    opacity: .8;
+    border-radius: 20px;
+}
+
+.gmrating .ant-modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    /* background: linear-gradient(180deg, #291c4a, #080611); */
+    background:
+      #302060 !important;
+      opacity: 0.9 !important;
+  
+    border:5px solid  rgb(12, 192, 223) !important;
+}
+
+
+
+.gmrating .ant-modal-body {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.gmrating .msgimg{
+    width: 113px;
+    margin: auto;
+}
+
+
+.gmrating .cross{
+    width: 42px;
+    height: 42px;
+   
+    cursor: pointer;
+    align-self: flex-end;
+}
+
+.gmrating .msgtext p {
+    text-align: center;
+    font-weight: 700;
+    font-style: normal;
+    color: rgb(255, 255, 255);
+    font-size: 30px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    line-height: normal;
+
+}
+
+.gmrating .msgtext span  {
+    text-align: center;
+    font-weight: 400;
+    font-style: italic;
+    color: rgb(255, 255, 255);
+    font-size: 22px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    line-height: normal;
+    
+}
+
+
+
+
+
+
+.gmrating .ant-modal-close-x {
+    display: none;
+}
+
+
+
