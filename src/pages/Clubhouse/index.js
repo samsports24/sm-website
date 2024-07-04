@@ -4,7 +4,9 @@ import Header from '../../components/Header'
 import HeadingAndWeek from '../../components/Pagination/HeadingAndWeek'
 import sampointslogo from '../../assets/stadiumsampoints.webp'
 import { useDispatch, useSelector } from 'react-redux'
-import { createClubhouse, getClubhouse } from '../../redux/actions/clubhouse'
+import { createClubhouse, getClubhouse, resendInvitation, setAllclubhouse } from '../../redux/actions/clubhouse'
+import refresh from '../../assets/refresh-icon.jpg'
+import { IoMdRefresh } from 'react-icons/io'
 
 const Clubhouse = () => {
   const dispatch = useDispatch()
@@ -56,7 +58,7 @@ const Clubhouse = () => {
       console.log('payload', payload)
       const data = await createClubhouse(payload)
 
-      console.log('refereaal successfull successfully:', data)
+      console.log('refereaal successfully sent:', data)
       setReferralemail('')
       // const res = await getData()
       // if (res) {
@@ -66,6 +68,57 @@ const Clubhouse = () => {
       console.error('Error making bid:', error)
     }
   }
+
+  const getEarningValue = (referralLevel) => {
+    switch (referralLevel) {
+      case 'Ultimate':
+        return 12500000
+      case 'Referral Level 1':
+        return 225
+      case 'Referral Level 2':
+        return 150
+      case 'Referral Level 3':
+        return 75
+      default:
+        return 0
+    }
+  }
+
+
+  const handleRefreshClick = (email) => async () => {
+    setLoading(true);
+    try {
+      if (!user?._id || !email) {
+        console.warn('User or email is undefined');
+        return;
+      }
+  
+      console.log('email', email);
+  
+      // Call resendInvitation with email directly
+      await resendInvitation(email);
+  
+      const payload = {
+        user: user?._id,
+        emailsent: email,
+      };
+  
+      console.log('payload', payload);
+  
+      // Assuming resendInvitation also returns data upon success
+      const data = await resendInvitation(payload);
+      console.log('Invitation sent successfully:', data);
+  
+      setLoading(false);
+    } catch (error) {
+      console.error('Error resending invitation:', error);
+      // Handle error
+    }
+  };
+  
+  const totalEarnings = Array.isArray(clubhouse)
+    ? clubhouse.length * getEarningValue(user?.referralLevel)
+    : 0
 
   return (
     <>
@@ -106,13 +159,16 @@ const Clubhouse = () => {
               EMAILS SENTS
               <div className='email-box'>
                 {Array.isArray(clubhouse) ? (
-                  clubhouse
-                    ?.filter((item) => !item.isRegistered)
-                    .map((item, index) => (
-                      <p style={{ marginLeft: '-29px' }} key={index}>
+                  clubhouse.map((item, index) => (
+                    <div style={{ display: 'flex', gap: '20px' }} key={index}>
+                      <p style={{ marginLeft: '-29px' }}>
                         {index + 1}. {item.emailsent}
                       </p>
-                    ))
+                      {!item.isRegistered && (
+                        <IoMdRefresh onClick={handleRefreshClick(item.emailsent)} className='icon' size={35} color='#ffffff' />
+                      )}
+                    </div>
+                  ))
                 ) : (
                   <p>No emails found</p>
                 )}
@@ -125,7 +181,7 @@ const Clubhouse = () => {
                 <div
                   style={{ display: 'flex', justifyContent: 'space-between', paddingRight: '60px' }}
                 >
-                  <div>
+                  {/* <div>
                     {Array.isArray(clubhouse) ? (
                       clubhouse
                         ?.filter((item) => item.isRegistered)
@@ -137,17 +193,51 @@ const Clubhouse = () => {
                     ) : (
                       <p>No emails found</p>
                     )}
-                  </div>
-                  <div style={{ display: 'flex' }}>
+                  </div> */}
+                  {/* <div style={{ display: 'flex' }}>
                     <Image preview={false} width={35} src={sampointslogo} alt='samlogo' />
                     <p>12,500,000</p>
+                  </div> */}
+
+                  <div>
+                    {Array.isArray(clubhouse) ? (
+                      clubhouse
+                        ?.filter((item) => item?.isRegistered)
+                        .map((item, index) => (
+                          <div
+                            style={{ display: 'flex', justifyContent: 'space-between' }}
+                            key={index}
+                          >
+                            <p style={{ marginLeft: '-29px' }}>
+                              {index + 1}. {item.emailsent}
+                            </p>
+                            <div style={{ display: 'flex' }}>
+                              <Image preview={false} width={35} src={sampointslogo} alt='samlogo' />
+                              <p>
+                                {user?.referralLevel === 'Ultimate'
+                                  ? '12,500,000'
+                                  : user?.referralLevel === 'Referral Level 1'
+                                  ? '225'
+                                  : user?.referralLevel === 'Referral Level 2'
+                                  ? '150'
+                                  : user?.referralLevel === 'Referral Level 3'
+                                  ? '75'
+                                  : ''}
+                              </p>
+                            </div>
+                          </div>
+                        ))
+                    ) : (
+                      <p>No emails found</p>
+                    )}
                   </div>
                 </div>
               </div>
               <div className='total-earnings'>
                 <h3>TOTAL EARNINGS</h3>
                 <Image width={35} src={sampointslogo} alt='samlogo' />
-                <h4>12,500,000</h4>
+                {/* <h4>12,500,000</h4> */}
+                <h4>{totalEarnings?.toLocaleString() || 0}</h4>
               </div>
             </p>
           </div>

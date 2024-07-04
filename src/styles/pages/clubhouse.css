@@ -147,6 +147,15 @@ height: fit-content;
 }
 
 
+.clubhouse-main .clubhouse .email-registration .email-box .icon {
+  /* color: white !important;
+width: 35px !important;
+height: 35px !important; */
+cursor: pointer;
+}
+
+
+
 .clubhouse-main .clubhouse .email-registration .email-box h2 {
     color: rgb(12, 192, 223) !important;
     font-size: 27px;

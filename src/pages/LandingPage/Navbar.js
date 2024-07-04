@@ -59,14 +59,14 @@ const Navbar = () => {
           </div>
         </div>
         <div className='right'>
-          <Button
+          {/* <Button
             shape='round'
             type='primary'
             className='auth_btn'
             onClick={() => navigate('/select-game')}
           >
             Join Now
-          </Button>
+          </Button> */}
           {/* <Button shape='round' type='primary' className='auth_btn'>
             Login
           </Button> */}

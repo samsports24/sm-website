@@ -75,6 +75,7 @@ export const createNewLeagueFromDashboard = async (payload) => {
 }
 
 export const joinLeague = async (payload) => {
+  console.log('redux payload',payload);
   try {
     let game = localStorage.getItem('selectedGame')
     let link = serverUrls.find((item) => item.key === game)
@@ -92,6 +93,7 @@ export const joinLeague = async (payload) => {
       localStorage.removeItem('imagePath')
 
       window.open(`${link.frontEndUrl}/login`, '_self', 'noreferrer')
+      navigate('/professional-league')
     }
   } catch (err) {
     console.log('err', err)
@@ -370,7 +372,6 @@ export const TransferPointsToLeague =async (payload) =>{
 
 
 export const makeiswallettrue =async (payload) =>{
-
   try {
     attachToken()
     const res = await privateAPI.put(`/league/is-wallet-true`, payload)

@@ -11,6 +11,7 @@ import contract from './reducers/contractReducer'
 import draft from './reducers/draftReducer'
 import socket from './reducers/socketReducer'
 import clubhouse from './reducers/clubhouseReducer'
+// import stripepayment from './reducers/'
 
 const rootReducer = combineReducers({
   theme,

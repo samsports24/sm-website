@@ -40,6 +40,7 @@ const SelectGame = () => {
       const decodedToken = jwtDecode(token)
       console.log(decodedToken)
       setDecodeEmail(decodedToken.emailsent)
+      localStorage.setItem('email',decodedToken.emailsent)
       setUser(decodedToken.user)
       form.setFieldValue('email', decodedToken.emailsent)
       let football = games?.find((obj) => obj.key === 'football')

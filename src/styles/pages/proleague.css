@@ -23,7 +23,7 @@
   .pro_league_body  .new-league_joining_card {
     margin-top: 50px;
     /* max-width: 800px; */
-    width: 70%;
+    width: 100%;
     /* height: 256px; */
     background: rgb(88, 77, 116);
     border-radius:90px;
@@ -69,7 +69,7 @@
   .pro_league_body  .new-league_joining_card .firstbox .circle .myimg {
   width: 64%;
   position: relative;
-  top: 44px;
+  top: 39px;
   left: 23%;
   }
   
@@ -89,7 +89,7 @@
   
   }
   .pro_league_body  .new-league_joining_card .description p {
-    line-height: 1.3;
+    line-height: normal;
     font-size: 22px;
     font-weight: 400;
     margin-left: 23px;
@@ -120,7 +120,7 @@
     justify-content: space-between;
     padding: 20px;
     margin: auto;
-    font-size: 30px;
+    font-size: 22px;
     font-weight: 700;
     text-transform: uppercase;
   } 
@@ -152,7 +152,7 @@
 
   }
   .pro_league_body  .new-league_joining_card .league-package .pro-league-package h2{ 
-    font-size: 35px;
+    font-size: 25px;
     font-weight: 700;
     line-height: 24px;
     font-style: italic;
@@ -163,9 +163,9 @@
   }
 
   .pro_league_body  .new-league_joining_card .league-package .pro-league-package p{ 
-    font-size: 26px;
+    font-size: 20px;
     font-weight: 400;
-    line-height: 28px;
+    line-height: 25px;
     margin-bottom: 13px;
 
    
@@ -173,9 +173,9 @@
 
 
   .pro_league_body  .new-league_joining_card .league-package .pro-league-package h3{ 
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 400;
-    line-height: 28px;
+    line-height: 18px;
   }
 
 
@@ -191,22 +191,24 @@
     border-radius:90px;
     padding: 15px;
     width: 30%;
+    margin-top: 54px;
   }
 
 
   .pro_league_body .sam-pro-anaual-fee p{
     background: rgb(38, 27, 70);
     border-radius:76px;
-    font-size: 30px;
+    font-size: 24px;
     font-style: italic;
     font-weight: 400;
     text-align: left;
     padding: 33px;
+    margin-top: 20px;
   }
 
   .pro_league_body .sam-pro-anaual-fee p .price {
     text-align: right;
-    font-size: 50px;
+    font-size: 30px;
     font-weight: 900;
     margin-top: 20px;
   }
@@ -222,9 +224,9 @@
   }
   .pro_league_body .sam-pro-anaual-fee .stripebtn .ant-btn-primary {
     background:rgb(12, 192, 223); 
-    font-size: 32px;
+    font-size: 29px;
     font-weight: 600;
-    height: 138px;
+    height: 92px;
     /* letter-spacing: 2px; */
     /* height: 40px; */
     background-color: var(--primary) !important;
@@ -283,6 +285,11 @@
     background:transparent;
   position: relative;
   bottom:5px;
+  }
+
+
+  .pro_league_body ::-webkit-scrollbar {
+    height: 1px !important;
   }
 
   @media (max-width: 1684px) {

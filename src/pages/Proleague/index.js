@@ -8,13 +8,55 @@ import stripe from '../../assets/stripe.png'
 import sampointslogo from '../../assets/samcoinlogo.png'
 import GmRatingModal from '../../components/modal/GmRating'
 
+import { createPaymentIntent } from '../../redux/actions/paymentAction'
+import { useSelector } from 'react-redux'
+
 const Proleague = () => {
   const [modalshow, setModalShow] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const user = useSelector((state) => state.user.userDetails)
+  console.log('user',user);
   const handleCancel= ()=>{
     setModalShow(false);
   }
 
+  
+
   const navigate=useNavigate()
+
+
+  const payment = async () => {
+    setLoading(true)
+    const email = localStorage.getItem('email');
+
+    if (!email) {
+      console.error('Email not found in localStorage');
+      setLoading(false);
+      return;
+    }
+  
+    const payload = {
+      email: email
+    }
+     console.log('payload', payload);
+  
+    try {
+      const response = await createPaymentIntent(payload);
+       console.log('response',response?.session);
+      const { url } = response?.session; 
+  console.log('url',url);
+    
+       window.open(url, '_blank');
+       setLoading(false)
+     
+    } catch (error) {
+      console.error('Error creating payment intent:', error);
+      // Handle error as needed
+    }
+  };
+  
+
+
   return (
     <>
       <div className='select_game_container select_league_container'>
@@ -33,14 +75,14 @@ const Proleague = () => {
                     <span className='text1'>samSports Pro Leagues</span> offer an exclusive fantasy
                     football experience for serious players, combining realistic GM simulation,
                     advanced drafting tools, and cash prize pools. Members pay an annual fee for
-                    access to GM ratings, a trade calculator, and competitive gameplay against top
+                    access to GM ratings, and competitive gameplay against top
                     enthusiasts. Join to compete, strategize, and immerse yourself in the ultimate
                     fantasy football challenge!
                   </p>
                 </div>
               </div>
               <div className='annualfee'>
-                <p>SamSports PRO LEAGUE ANUAL FEE</p>
+                <p>  SamSports PRO ANNUAL MEMBERSHIP FEE</p>
 
                 <p>$49.99</p>
               </div>
@@ -61,7 +103,7 @@ const Proleague = () => {
                         </div>
                    
                     <p style={{marginTop:'-44px'}}>GM Rating</p>
-                    <p>Trade calculator</p>
+                    {/* <p>Trade calculator</p> */}
                     <p>In-Game Prize Pool</p>
                     <p>Beta Tester Badge</p>
                   </div>
@@ -69,16 +111,16 @@ const Proleague = () => {
                   <div className='pro-league-package'>
                     <h2>League Prize-Pool</h2>
                     <h3>1st place $500 + $500 dollars worth of SamPoints </h3>
-                    <h3>2nd place $250 & $300 in SamPoints</h3>
-                    <h3>3 & 4 $300 in SamPoints</h3>
-                    <h3>5-8 $250 in SamPoints</h3>
-                    <h3>9- 14 $2240 in SamPoints</h3>
+                    <h3>2nd place $250 & $300 worth of SamPoints</h3>
+                    <h3>3 & 4 $300 worth of SamPoints</h3>
+                    <h3>5-8 $250 worth of SamPoints</h3>
+                    <h3>9- 14 $2240 worth of SamPoints</h3>
 
-                    <h3>15-20 200$ in SamPoints</h3>
-                    <h3>21-25 $175 in SamPoints</h3>
-                    <h3>26-32 $150 in SamPoints</h3>
-                    <h3>Regular Season winner $150 in SamPoints</h3>
-                    <h3>Each Conference winner $75 in SamPoints</h3>
+                    <h3>15-20 200$ worth of SamPoints</h3>
+                    <h3>21-25 $175 worth of SamPoints</h3>
+                    <h3>26-32 $150 worth of SamPoints</h3>
+                    <h3>Regular Season winner $150 worth of SamPoints</h3>
+                    <h3>Each Conference winner $75 worth of SamPoints</h3>
                   </div>
                 </div>
               </div>
@@ -87,15 +129,15 @@ const Proleague = () => {
 
             <div style={{ marginBottom: '20px' }} className='sam-pro-anaual-fee'>
               <p>
-                You will have the ability to invite as many users as you &apos;d like by clicking on
-                the <span>Clubhouse</span>tab. Based on your Referral Level, you can earn Sam Points
+                You will have the ability to invite as many users as you woul&apos;d like by clicking on
+                the <span>Clubhouse</span> tab. Based on your Referral Level, you can earn Sam Points
                 for each successful user registration.
               </p>
               <p style={{ marginTop: '20px', fontWeight: 700 }}>
-                SamSports PRO LEAGUE ANUAL FEE
+                SamSports PRO ANNUAL MEMBERSHIP FEE
                 <div className='price'>$49.99</div>
                 <div className='stripebtn'>
-                  <Button onClick={() => navigate('fantasy-league')} type='primary'>PAY WITH Stripe</Button>
+                  <Button  loading={loading} onClick={payment} type='primary'>PAY WITH Stripe</Button>
                   {/* <img className='stripecicle' src={stripe} alt='stripe'/> */}
                   {/* <div className='stripecicle'>
             <p>Stripe</p>

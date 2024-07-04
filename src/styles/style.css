@@ -71,6 +71,7 @@
 @import './components/newPopularLeagueCard.css';
 @import './components/leagueSettings.css';
 @import './components/loginDropdown.css';
+@import './components/updateleaguecard.css';
 
 /* Page CSS */
 @import './pages/landing.css';

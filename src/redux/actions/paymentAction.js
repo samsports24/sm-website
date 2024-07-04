@@ -1,0 +1,55 @@
+import { notification } from 'antd'
+import { attachToken, privateAPI, publicAPI, serverUrls } from '../../config/constants'
+import store from '../store'
+import { getUser } from './authActions'
+import axios from 'axios'
+
+
+
+export const createPaymentIntent = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/payment/payment-intent',payload)
+    if (res) {
+      // console.log('res',res);
+      return res.data.data
+
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+
+
+
+
+
+export const sendpayment = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/payment/makepayment',payload)
+    if (res) {
+      // console.log('res',res);
+      if (res && res.data.success) {
+        // If payment is successful and res.data.success is true
+        // You can navigate to 'fantasy-league' here
+        window.location.href = '/fantasy-league'; 
+      }
+  
+      return res.data.data
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+

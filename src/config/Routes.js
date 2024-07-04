@@ -86,6 +86,8 @@ import Payoptions from '../pages/AllTransaction/Payoptions'
 import Stadium from '../pages/Stadium'
 import Clubhouse from '../pages/Clubhouse'
 import Proleague from '../pages/Proleague'
+import Success from '../pages/Successpayment'
+import Error from '../pages/errorpayment'
 
 const Routers = () => {
   const Component = () => {
@@ -157,6 +159,9 @@ const Routers = () => {
           <Route path='/draft-spot-auction' element={<DraftSpotAuction />} />
           <Route path='/stadium' element={<Stadium />} />
           <Route path='/clubhouse' element={<Clubhouse />} />
+          <Route path='/success' element={<Success />} />
+          <Route path='/error' element={<Error />} />
+          
          
 
           <Route path='/buy-sam-points' element={<BuySampoints />} />
