@@ -17,7 +17,7 @@ export const createClubhouse = async (payload) => {
     const res = await privateAPI.post(`/league/clubhouse`, payload)
     if (res) {
       // store.dispatch(getClubhouse(payload))
-      await getClubhouse(payload)
+      // await getClubhouse(payload)
       notification.success({
         description: res.data.data.message,
         duration: 2,

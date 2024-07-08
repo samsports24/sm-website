@@ -1,13 +1,62 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import SelectGameLeft from '../SelectGame/SelectGameLeft'
 import SelectGameRight from '../SelectGame/SelectGameRight'
 import { Button, Col, Image, Row } from 'antd'
-import { useNavigate } from 'react-router-dom'
 import Ultimate from '../../assets/myultimate.png'
 import pro from '../../assets/proleague.png'
 import premium from '../../assets/premiumleague.png'
+import { joinleaguePaymenttrue } from '../../redux'
+import { useNavigate } from 'react-router-dom'
 
 const SelectLeague = () => {
+  const [localStorageKey, setLocalStorageKey] = useState(null);
+  const [ispaid, seTIspaid] = useState(null);
+
+  const navigate=useNavigate()
+
+  console.log('ispaid',ispaid);
+
+  useEffect(() => {
+    const storedKey = localStorage.getItem('AssignLeague');
+    const paid=localStorage.getItem('paid');
+    if (storedKey) {
+      setLocalStorageKey(storedKey);
+    }
+    if (paid) {
+      seTIspaid(paid);
+    }
+
+  }, []);
+
+
+  const leaguejoinwithpayment =async()=>{
+
+
+
+    // console.log('in the fucntion');
+    let email = localStorage.getItem('email');
+    let AssignLeague=localStorage.getItem('AssignLeague')
+
+    try {
+      const payload = {
+        email,
+        AssignLeague,
+      }  
+  
+      console.log('payload',payload);
+      localStorage.setItem('selectedGame', 'football');
+  
+     const data = await joinleaguePaymenttrue(payload)
+     console.log('League Join successfully:', data)
+      navigate('/fantasy-league')
+      // cancel()
+    } catch (error) {
+      console.error('Error in Joining League:', error)
+    }
+  }
+
+
+
   const data = [
     {
       title: 'Professional',
@@ -15,11 +64,16 @@ const SelectLeague = () => {
       keywords: 'The SamSports Ultimate League',
       // description:
       //   "The SAM Pro League, an exclusive dynasty with 30 teams, features intense competition as teams, owners, and GMs vie for success throughout the season and playoffs. Notably, scouting plays a crucial role in player recruitment. The league uniquely ties its prize pool to each sport's profits, with teams actively contributing to potential earnings. This innovative approach enhances competitiveness and aligns the league's prosperity with the financial success of individual sports within the SAM Pro framework.",
-      isDisabled: true,
+      // isDisabled: true,
+      isDisabled: localStorageKey ? false : true,
+      // navigateTo: '/proleague',
+      // navigateTo:  ispaid ? leaguejoinwithpayment() : '/proleague',
+      navigateTo: () => (ispaid ? leaguejoinwithpayment() : navigate('/proleague')),
+  
       description:
         'aspires to be the NFL of fantasy football, providing an elite experience for users to manage their own NFL-like team. It is tailored for those with a deep understanding of fantasy football who want to elevate their skills.',
       align: 'left',
-      navigateTo: '/create-join-league',
+     // navigateTo: '/create-join-league',
       imageurl: Ultimate,
     },
     {
@@ -30,10 +84,12 @@ const SelectLeague = () => {
         'offer an exclusive fantasy football experience for serious players, combining realistic GM simulation, advanced drafting tools, and cash prize pools. Members pay an annual fee for access to GM ratings, a trade calculator, and competitive gameplay against top enthusiasts. Join to compete, strategize, and immerse yourself in the ultimate fantasy football challenge!',
       // description:
       //   'Similar to the Pro league, each leagues are made of 30 teams and 6 divisions. These leagues allow you to play like the pro without the financial risks. Our token allows you to pay to improve your teams and give you more chances to win at the end of season.',
-      isDisabled: false,
+      // isDisabled: false,
+      isDisabled: localStorageKey ? true : false,
       align: 'right',
       // navigateTo: '/create-join-league',
-       navigateTo: '/proleague',
+      navigateTo: () => (navigate('/proleague')),
+      //  navigateTo: '/proleague',
     
       imageurl: pro,
     },
@@ -47,7 +103,8 @@ const SelectLeague = () => {
       //   'Similar to the Pro league, each leagues are made of 30 teams and 6 divisions. These leagues allow you to play like the pro without the financial risks. Our token allows you to pay to improve your teams and give you more chances to win at the end of season.',
       isDisabled: true,
       align: 'right',
-      navigateTo: '/create-join-league',
+     // navigateTo: '/create-join-league',
+     navigateTo: '/proleague',
       imageurl:premium
     },
   ]
@@ -100,7 +157,7 @@ const LeagueJoiningCard = ({ data }) => {
           </p>
         </div>
 
-        <Button disabled={isDisabled} type='primary' onClick={() => navigate(navigateTo)}>
+        <Button disabled={isDisabled} type='primary' onClick={navigateTo}>
           JOIN
         </Button>
       </div>

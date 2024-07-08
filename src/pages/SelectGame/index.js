@@ -8,7 +8,7 @@ import SelectGameRight from './SelectGameRight'
 import CustomCarousel from '../../components/Carousel/CustomCarousel'
 
 import { games } from './data'
-import { countries } from '../../config/countriesData'
+import { countries,UsaStates } from '../../config/countriesData'
 
 import { serverUrls } from '../../config/constants'
 import { authSignupAdvanced } from '../../redux'
@@ -29,7 +29,8 @@ const SelectGame = () => {
   const [deocdeemail, setDecodeEmail] = useState(null)
   const [modalshow, setModalShow] = useState(false)
   const [verficationcode, setVerficationcode] = useState(null)
-  const [isTokenPresent, setIsTokenPresent] = useState(false);
+  const [isTokenPresent, setIsTokenPresent] = useState(false)
+  const [showStateDropdown, setShowStateDropdown] = useState(false)
 
   const [user, setUser] = useState(null)
   useEffect(() => {
@@ -38,14 +39,23 @@ const SelectGame = () => {
     console.log('token', token)
     if (token) {
       const decodedToken = jwtDecode(token)
-      console.log(decodedToken)
+      console.log('decodedToken', decodedToken)
+      console.log('decodedToken.league',decodedToken.league);
       setDecodeEmail(decodedToken.emailsent)
-      localStorage.setItem('email',decodedToken.emailsent)
+      localStorage.setItem('email', decodedToken.emailsent)
       setUser(decodedToken.user)
       form.setFieldValue('email', decodedToken.emailsent)
+      if (decodedToken.league) {
+        localStorage.setItem('AssignLeague', decodedToken.league)
+      }
+
+      if (decodedToken.paid) {
+        localStorage.setItem('paid', decodedToken.paid)
+      }
+
       let football = games?.find((obj) => obj.key === 'football')
       handleSetGame(football)
-      setIsTokenPresent(true);
+      setIsTokenPresent(true)
     }
   }, [])
 
@@ -84,25 +94,21 @@ const SelectGame = () => {
   //   setLoading(false)
   // }
 
-
-
-
-
   const handleConfirm = async () => {
-    setModalShow(false);
-    const values = form.getFieldsValue();
+    setModalShow(false)
+    const values = form.getFieldsValue()
 
-    let server = serverUrls.find((item) => item.key === selectedGame);
+    let server = serverUrls.find((item) => item.key === selectedGame)
     const obj = {
       ...values,
       dateOfBirth: dayjs(values?.dateOfBirth).toISOString(),
       url: server.url,
       verficationcode,
-    };
+    }
 
-    await authSignupAdvanced(obj, navigate);
+    await authSignupAdvanced(obj, navigate)
     setVerficationcode('')
-  };
+  }
 
   // const onFinish = async (values) => {
   //   console.log('values', values);
@@ -126,39 +132,89 @@ const SelectGame = () => {
   //   setLoading(false);
   // };
 
-
   const onFinish = async (values) => {
     console.log('values', values);
     setLoading(true);
-
+  
     if (values.termsAndCondtions) {
       let server = serverUrls.find((item) => item.key === selectedGame);
-
+  
+      if (
+        values.state === 'Iowa' ||
+        values.state === 'Idaho' ||
+        values.state === 'Washington' ||
+        values.state === 'Nevada'
+      ) {
+        notification.warning({
+          message: 'This Platform is not available in this state',
+          duration: 4,
+        });
+        setLoading(false);
+        return;
+      }
+  
+      const dateOfBirth = dayjs(values.dateOfBirth);
+      const today = dayjs();
+      const age = today.diff(dateOfBirth, 'year');
+      console.log('age', age);
+  
+      if (age < 18) {
+        notification.warning({
+          message: 'Legal age for this platform is 18',
+          duration: 4,
+        });
+        setLoading(false);
+        return; // Exit function early if underage
+      }
+  
+      if ((values.state === 'Alabama' || values.state === 'Nebraska') && age < 19) {
+        notification.warning({
+          message: `Legal age in ${values.state} is 19. You are underage for this platform.`,
+          duration: 4,
+        });
+        setLoading(false);
+        return;
+      }
+  
+      if (
+        (values.state === 'Arizona' ||
+          values.state === 'Massachusetts' ||
+          values.state === 'Louisiana') &&
+        age < 21
+      ) {
+        notification.warning({
+          message: `Legal age in ${values.state} is 21. You are underage for this platform.`,
+          duration: 4,
+        });
+        setLoading(false);
+        return;
+      }
+  
       if (isTokenPresent) {
         await GenerateVerificationCode({
           emailsent: values.email,
           user,
         });
         setModalShow(true);
-      } else {
-        const obj = {
-          ...values,
-          dateOfBirth: dayjs(values?.dateOfBirth).toISOString(),
-          url: server.url,
-        };
-        await authSignupAdvanced(obj, navigate);
-      }
+      } 
+      // else {
+      //   const obj = {
+      //     ...values,
+      //     dateOfBirth: dayjs(values.dateOfBirth).toISOString(),
+      //     url: server.url,
+      //   };
+      //   // await authSignupAdvanced(obj, navigate);
+      // }
     } else {
       notification.warning({
         message: 'Please Accept Terms and Conditions',
         duration: 4,
       });
     }
-
+  
     setLoading(false);
-  }
-
-
+  };
+  
 
   const filterOption = (input, option) =>
     (option.label ?? '').toLowerCase().includes(input.toLowerCase())
@@ -207,7 +263,19 @@ const SelectGame = () => {
               <div className='signup_body'>
                 <h1>Create Your Account</h1>
 
-                <Form form={form} layout='vertical' onFinish={onFinish} autoComplete='off'>
+                <Form
+                  form={form}
+                  layout='vertical'
+                  onFinish={onFinish}
+                  autoComplete='off'
+                  onValuesChange={(obj) => {
+                    if (obj?.country) {
+                      //   console.log('Yolooo', obj.country)
+
+                      setShowStateDropdown(obj.country)
+                    }
+                  }}
+                >
                   <Row gutter={[30, 10]}>
                     <Col xs={24} md={12} xl={8}>
                       <Form.Item
@@ -300,7 +368,36 @@ const SelectGame = () => {
                       </Form.Item>
                     </Col>
 
-                    <Col xs={24} md={12} xl={8}>
+                    {showStateDropdown === 'United States' && (
+                      <Col xs={24} md={12} xl={8}>
+                        <Form.Item
+                          name={'state'}
+                          label='State'
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Required!',
+                            },
+                          ]}
+                        >
+                          <Select
+                            showSearch
+                            placeholder='Select State'
+                            optionFilterProp='children'
+                            filterOption={filterOption}
+                            options={UsaStates?.map((v) => {
+                              return {
+                                value: v?.name,
+                                label: v?.name,
+                              }
+                            })}
+                            // options={statesForUnitedStates}
+                          />
+                        </Form.Item>
+                      </Col>
+                    )}
+
+                    {/* <Col xs={24} md={12} xl={8}>
                       <Form.Item
                         name={'provience'}
                         label='Province'
@@ -313,7 +410,7 @@ const SelectGame = () => {
                       >
                         <Input placeholder='Province Here...' />
                       </Form.Item>
-                    </Col>
+                    </Col> */}
 
                     <Col xs={24} md={12} xl={8}>
                       <Form.Item

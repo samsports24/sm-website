@@ -17,6 +17,7 @@ import {
   setSearch,
   getALLplayerStats,
   getBlackListQueue,
+  setRookieplayers,
 } from '../../../redux/actions/draftAction'
 
 import DraftPool from './DraftPool'
@@ -40,6 +41,7 @@ const TableComponent = ({ tableScroll }) => {
     allPlayers,
     activeTab,
     completed,
+    Rookieplayers,
   } = useSelector((state) => state.draft)
   const USER = useSelector((state) => state.user)
   const [loading, setLoading] = useState(false)
@@ -58,12 +60,14 @@ const TableComponent = ({ tableScroll }) => {
           search: search,
           limit: limit,
           page: page,
+          // Rookieplayers:Rookieplayers,
         })
         await getALLplayerStats({
           position: position,
           search: search,
           limit: limit,
           page: page,
+          // Rookieplayers:Rookieplayers,
         })
         await getDraftRound()
         if (activeTab == 2) await getDraftQueue()
@@ -110,16 +114,16 @@ const TableComponent = ({ tableScroll }) => {
     _handleSearch(value)
   }
 
-  useEffect(() => {
-    console.log('allPlayers', allPlayers?.players?.[0]?.player?._id);
+  // useEffect(() => {
+  //   console.log('allPlayers', allPlayers?.players?.[0]?.player?._id);
 
-  }, [allPlayers]);
-  
+  // }, [allPlayers]);
+
+  // console.log('Rookieplayers',Rookieplayers);
 
   // const handleAutoDraft = async () => {
   //   setLoading(true)
   //   const draftQueue = await getDraftQueue()
-   
 
   //   const playerId =
   //     draftQueue?.length > 0 ? draftQueue[0]?.player?._id : allPlayers?.players?.[0]?.player?._id
@@ -133,18 +137,13 @@ const TableComponent = ({ tableScroll }) => {
   //   setLoading(false)
   // }
 
-  
-
   const handleAutoDraft = async () => {
-    console.log('inside this');
-    setLoading(true);
-    const draftQueue = await getDraftQueue();
-    const blacklistQueue = await getBlackListQueue();
-  
+    console.log('inside this')
+    setLoading(true)
+    const draftQueue = await getDraftQueue()
+    const blacklistQueue = await getBlackListQueue()
 
-
-    let playerId = null;
-  
+    let playerId = null
 
     // if (!playerId && draftQueue?.length > 0) {
     //   console.log('inside this draft queue if');
@@ -161,83 +160,118 @@ const TableComponent = ({ tableScroll }) => {
     //     playerId = allPlayers?.players?.[1]?.player?._id;
     //   }
     // }
-  
-  
 
     // else{
     //   playerId = allPlayers?.players?.[0]?.player?._id
     // }
-    
 
     if (!playerId && draftQueue?.length > 0) {
-      console.log('inside this draft queue if');
-      playerId = draftQueue[0]?.player?._id;
-      console.log('first', playerId);
+      console.log('inside this draft queue if')
+      playerId = draftQueue[0]?.player?._id
+      console.log('first', playerId)
     } else if (!playerId && blacklistQueue.length > 0) {
-      console.log('inside this blacklist if');
-    
+      console.log('inside this blacklist if')
+
       // If the first player ID in blacklistQueue matches the first player ID in allPlayers, use the second player ID
       if (blacklistQueue[0]?.player?._id === allPlayers?.players?.[0]?.player?._id) {
-        playerId = allPlayers?.players?.[1]?.player?._id;
+        playerId = allPlayers?.players?.[1]?.player?._id
       } else {
-        playerId = blacklistQueue[0]?.player?._id;
+        playerId = blacklistQueue[0]?.player?._id
       }
     } else {
-      playerId = allPlayers?.players?.[0]?.player?._id;
+      playerId = allPlayers?.players?.[0]?.player?._id
     }
-    
 
     // Add player to draft with the selected playerId
     if (playerId) {
-   
-      console.log('inside this if');
+      console.log('inside this if')
       await addPlayerToDraft({
         playerId: playerId,
-     //  playerId:allPlayers?.players?.[0]?.player?._id,
+        //  playerId:allPlayers?.players?.[0]?.player?._id,
         position: draftCounter?.position,
         round: draftCounter?.round,
         remainingTime: getRemainingSeconds(draftCounter?.time),
         teamId: onTheClock?.team?._id, // will be removed after testing
-      });
+      })
     }
-  
-    setLoading(false);
-  };
+
+    setLoading(false)
+  }
 
   return (
     <div className='table_com_box'>
       {
         <div className='pro_table_header'>
           <div className='pro_button_box'>
-            {[
-              'ALL',
-              'QB',
-              'RB',
-              'WR',
-              'TE',
-              'OL',
-              'DE',
-              'DT',
-              'LB',
-              'CB',
-              'S',
-              'K/P',
-            ]?.map((v, i) => {
+            {['ALL', 'QB', 'RB', 'WR', 'TE', 'OL', 'DE', 'DT', 'LB', 'CB', 'S', 'K/P']?.map(
+              (v, i) => {
+                if (i < 11) {
+                  return (
+                    <Button
+                      key={i}
+                      type='primary'
+                      className={`${position === v ? 'active' : ''}`}
+                      onClick={() => {
+                        dispatch(setPosition(v))
+                        dispatch(setRookieplayers(''))
+                        dispatch(setPage(1))
+                      }}
+                    >
+                      {v}
+                    </Button>
+                  )
+                } else {
+                  return (
+                    <div key={i} style={{display: 'flex', flexDirection: 'column' ,alignItems: "start", rowGap: "5px"}}>
+                      <Button
+                        key={i}
+                        type='primary'
+                        className={`${position === v ? 'active' : ''}`}
+                        onClick={() => {
+                          dispatch(setPosition(v))
+                          dispatch(setRookieplayers(''))
+                          dispatch(setPage(1))
+                        }}
+                      >
+                        {v}
+                      </Button>
+
+                      <Button
+                  key={i}
+                  type='primary'
+                  className={`${Rookieplayers === 'Rookie' ? 'active' : ''}`}
+                  onClick={() => {
+                    dispatch(setPosition('ALL'))
+                    dispatch(setRookieplayers('Rookie'))
+                    dispatch(setPage(1))
+                  }}
+                >
+                  Rookie
+                </Button>
+                    </div>
+                  )
+                }
+              },
+            )}
+
+            {/* {['Rookie']?.map((v, i) => {
               return (
                 <Button
                   key={i}
                   type='primary'
-                  className={`${position === v ? 'active' : ''}`}
+                  className={`${Rookieplayers === v ? 'active' : ''}`}
                   onClick={() => {
-                    dispatch(setPosition(v))
+                    dispatch(setPosition('ALL'))
+                    dispatch(setRookieplayers(v))
                     dispatch(setPage(1))
                   }}
                 >
                   {v}
                 </Button>
               )
-            })}
+            })} */}
           </div>
+
           <div className='pro_search_input_box'>
             <Button
               loading={loading}

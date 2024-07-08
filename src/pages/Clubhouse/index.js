@@ -14,7 +14,7 @@ const Clubhouse = () => {
   const user = useSelector((state) => state.user.userDetails)
 
   const clubhouse = useSelector((state) => state.clubhouse.clubhouse.Clubhouse)
-  console.log('user', user)
+   console.log('user', user)
   console.log('clubhouse', clubhouse)
 
   const [referralemail, setReferralemail] = useState('')
@@ -202,7 +202,7 @@ const Clubhouse = () => {
                   <div>
                     {Array.isArray(clubhouse) ? (
                       clubhouse
-                        ?.filter((item) => item?.isRegistered)
+                        ?.filter((item) => item?.isRegistered )
                         .map((item, index) => (
                           <div
                             style={{ display: 'flex', justifyContent: 'space-between' }}

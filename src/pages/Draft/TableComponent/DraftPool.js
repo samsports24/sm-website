@@ -33,6 +33,7 @@ const DraftPool = ({ tableScroll }) => {
     draftQueues,
     activeTab,
     blacklistQueues,
+    Rookieplayers,
   } = useSelector((state) => state.draft)
   const { userDetails } = useSelector((state) => state.user)
   const [loading, setLoading] = useState('')
@@ -53,10 +54,11 @@ const DraftPool = ({ tableScroll }) => {
         limit,
         page,
         age,
+        Rookieplayers,
       })
     getBlackListQueue()
     getDraftQueue()
-  }, [position, limit, page, age, activeTab])
+  }, [position, limit, page, age, activeTab,Rookieplayers])
 
   // useEffect(() => {
   //   setColor(isQueue ? 'var(--primary)' : isblacklist ? 'black' : 'none');

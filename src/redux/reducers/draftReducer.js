@@ -15,6 +15,7 @@ const initialState = {
     limit: 10,
     position: 'ALL',
     page: 1,
+    Rookieplayers:'',
     draftQueues: [],
     blacklistQueues : [],
     activeTab: 1,
@@ -64,6 +65,10 @@ const initialState = {
           search: payload,
         }
       }
+
+
+
+
       case 'SET_DRAFT_PLAYER_LIMIT': {
         return {
           ...state,
@@ -78,12 +83,22 @@ const initialState = {
       }
 
 
+      case 'SET_DRAFT_PLAYER_ROOKIE_SEARCH': {
+        return {
+          ...state,
+          Rookieplayers:payload,
+        }
+      }
+
+
       case 'SET_DRAFT_PLAYER_PAGE': {
         return {
           ...state,
           page: payload,
         }
       }
+
+
 
      
       case 'SET_DRAFT_QUEUE': {

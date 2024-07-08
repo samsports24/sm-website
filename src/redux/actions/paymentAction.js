@@ -7,6 +7,7 @@ import axios from 'axios'
 
 
 export const createPaymentIntent = async (payload) => {
+  console.log('in the payload');
   try {
     attachToken()
     const res = await privateAPI.post('/payment/payment-intent',payload)
@@ -29,19 +30,23 @@ export const createPaymentIntent = async (payload) => {
 
 
 
-export const sendpayment = async (payload) => {
+export const sendpayment = async (payload,navigate) => {
+  // console.log('in the action payment');
   try {
-    attachToken()
+    // attachToken()
     const res = await privateAPI.post('/payment/makepayment',payload)
     if (res) {
       // console.log('res',res);
       if (res && res.data.success) {
+        localStorage.removeItem('email');
+        localStorage.removeItem('AssignLeague');
+        navigate('/fantasy-league')
         // If payment is successful and res.data.success is true
         // You can navigate to 'fantasy-league' here
-        window.location.href = '/fantasy-league'; 
+        //  window.location.href = '/fantasy-league'; 
       }
   
-      return res.data.data
+      // return res.data.data
     }
   } catch (err) {
     console.log('err', err)

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { getSession } from '../redux'
-import { Spin } from 'antd'
+import { Button, Spin } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 
 import { useNavigate } from 'react-router-dom'
@@ -10,23 +10,44 @@ import { sendpayment } from '../redux/actions/paymentAction'
 const Error = () => {
   const navigate = useNavigate()
 
+  const token = localStorage.getItem('token')
+  console.log('token',token);
+
   const handleNavigate = () => {
-    navigate('/proleague'); // Navigate to '/proleague' route on click
+     navigate('/'); // Navigate to '/' route on click
   };
-//   useEffect(() => {
-//     const queryParameters = new URLSearchParams(window.location.search)
-//     const sessionId = queryParameters.get('session_id')
-//     console.log('queryParameters',queryParameters);
-//     console.log('sessionId',sessionId);
-//    // getSession({ sessionId }, navigate)
-//     sendpayment({ sessionId }, navigate)
-    
-//   }, [])
+  useEffect(() => {
+    // Remove email and AssignLeague from local storage
+    localStorage.removeItem('email');
+    localStorage.removeItem('AssignLeague');
+
+    // const queryParameters = new URLSearchParams(window.location.search)
+    // const sessionId = queryParameters.get('session_id')
+    // console.log('queryParameters',queryParameters);
+    // console.log('sessionId',sessionId);
+    // getSession({ sessionId }, navigate)
+    // sendpayment({ sessionId }, navigate)
+
+  }, []);
+
+
+
+
   return (
     <>
     <div style={{ flexDirection:'column-reverse' }} className='signin signup'>
-    <h2 style={{ cursor: 'pointer', marginBottom: '20px' }} onClick={handleNavigate}>Back to payment page</h2>
-      <h2 style={{ marginBottom: '20px', color: '#FF0000' }}>Processing Payment Failed</h2>
+    <Button style={{ cursor: 'pointer', marginBottom: '20px',width:'15%',borderRadius:'20px',height:'71px',
+
+border: '2px solid #00a7e5',
+    background: '#00a7e5',
+   fontSize: '27px',
+    fontWeight: 600,
+    color: 'var(--text)'
+
+     }} onClick={handleNavigate}>Back to Home</Button>
+       <h2 style={{ marginBottom: '20px', color: '#FF0000' }}> Kindly Click On The Invitation Link From Your Email</h2>
+      <h2 style={{ marginBottom: '20px', color: '#FF0000' }}> Payment Failed/cancelled</h2>
+    
  
       {/* Replace Spin component with the imported image */}
       <img

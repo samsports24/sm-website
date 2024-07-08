@@ -38,7 +38,7 @@ const leaguejoin =async()=>{
 
    const data = await joinLeague(payload)
    console.log('League Join successfully:', data)
-  //  navigate('/professional-league')
+    navigate('/professional-league')
     // cancel()
   } catch (error) {
     console.error('Error in Joining League:', error)
@@ -63,7 +63,7 @@ const leaguejoin =async()=>{
               <p className='text_value'>{name}</p>
 
               <p style={{marginTop:'30px'}} className='text_title'>Users:</p>
-              <p  className='color_text_value'>{data?.teams?.length || totalPlayers}/32</p>
+              <p  className='color_text_value'>{data?.teams?.length || totalPlayers || 0}  /32</p>
             </div>
             
           </div>

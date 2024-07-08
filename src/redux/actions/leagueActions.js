@@ -75,7 +75,7 @@ export const createNewLeagueFromDashboard = async (payload) => {
 }
 
 export const joinLeague = async (payload) => {
-  console.log('redux payload',payload);
+  // console.log('redux payload',payload);
   try {
     let game = localStorage.getItem('selectedGame')
     let link = serverUrls.find((item) => item.key === game)
@@ -92,8 +92,8 @@ export const joinLeague = async (payload) => {
       localStorage.removeItem('email')
       localStorage.removeItem('imagePath')
 
-      window.open(`${link.frontEndUrl}/login`, '_self', 'noreferrer')
-      navigate('/professional-league')
+      // window.open(`${link.frontEndUrl}/login`, '_self', 'noreferrer')
+      // navigate('/professional-league')
     }
   } catch (err) {
     console.log('err', err)
@@ -103,6 +103,42 @@ export const joinLeague = async (payload) => {
     })
   }
 }
+
+
+export const joinleaguePaymenttrue = async (payload) => {
+
+  console.log('redux payload',payload);
+  try {
+    let game = localStorage.getItem('selectedGame')
+    let link = serverUrls.find((item) => item.key === game)
+    const res = await axios.post(`${link.url}/league/join-from-admin`, payload)
+
+    // const res = await publicAPI.post(`/league/join`, payload)
+    if (res) {
+      notification.success({
+        description: res.data.data.message,
+        duration: 2,
+      })
+
+      localStorage.removeItem('selectedGame')
+      localStorage.removeItem('email')
+      localStorage.removeItem('imagePath')
+      localStorage.removeItem('paid')
+
+      // window.open(`${link.frontEndUrl}/login`, '_self', 'noreferrer')
+      // navigate('/fantasy-league')
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+
+
 
 export const updateLeague = async (payload) => {
   try {

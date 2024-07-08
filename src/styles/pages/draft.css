@@ -815,6 +815,7 @@
 
 .table_com_box .ant-input-affix-wrapper {
   border-radius: 12px !important;
+  height: 38px;
 }
 .table_com_box .ant-input-affix-wrapper input {
   color: #000 !important;

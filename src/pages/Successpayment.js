@@ -9,12 +9,15 @@ import { sendpayment } from '../redux/actions/paymentAction'
 const Success = () => {
   const navigate = useNavigate()
   useEffect(() => {
+    console.log('in the payment effect');
+    const email = localStorage.getItem('email');
+    const leagueid = localStorage.getItem('AssignLeague');
     const queryParameters = new URLSearchParams(window.location.search)
     const sessionId = queryParameters.get('session_id')
     console.log('queryParameters',queryParameters);
     console.log('sessionId',sessionId);
    // getSession({ sessionId }, navigate)
-    sendpayment({ sessionId }, navigate)
+    sendpayment({ sessionId,email,leagueid}, navigate)
     
   }, [])
 

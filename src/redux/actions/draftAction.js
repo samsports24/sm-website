@@ -36,6 +36,15 @@ export const setPosition = (payload) => {
   }
 }
 
+export const setRookieplayers = (payload) => {
+  console.log('in the rooke action',payload);
+  return {
+    type: 'SET_DRAFT_PLAYER_ROOKIE_SEARCH',
+    payload,
+  }
+}
+
+
 
 
 export const setLimit = (payload) => {
@@ -118,6 +127,7 @@ export const setCompleted = (payload) => {
 }
 
 export const getAllPlayers = async (payload) => {
+  console.log('payload',payload);
   console.log('payloadposition',payload.position);
   try {
     store.dispatch(setDraftTableLoading(true))

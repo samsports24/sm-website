@@ -14,48 +14,53 @@ import { useSelector } from 'react-redux'
 const Proleague = () => {
   const [modalshow, setModalShow] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [paymentamount, setPaymentAmount] = useState(null)
   const user = useSelector((state) => state.user.userDetails)
-  console.log('user',user);
-  const handleCancel= ()=>{
-    setModalShow(false);
+  console.log('user', user)
+  const handleCancel = () => {
+    setModalShow(false)
   }
 
-  
+  console.log('paymentamount', paymentamount)
 
-  const navigate=useNavigate()
+  useEffect(() => {
+    const storedKey = localStorage.getItem('AssignLeague')
+    if (storedKey) {
+      setPaymentAmount(storedKey)
+    }
+  }, [])
 
+  const navigate = useNavigate()
 
   const payment = async () => {
     setLoading(true)
-    const email = localStorage.getItem('email');
+    const email = localStorage.getItem('email')
 
     if (!email) {
-      console.error('Email not found in localStorage');
-      setLoading(false);
-      return;
+      console.error('Email not found in localStorage')
+      setLoading(false)
+      return
     }
-  
+
     const payload = {
-      email: email
+      email: email,
     }
-     console.log('payload', payload);
-  
+    console.log('payload', payload)
+
     try {
-      const response = await createPaymentIntent(payload);
-       console.log('response',response?.session);
-      const { url } = response?.session; 
-  console.log('url',url);
-    
-       window.open(url, '_blank');
-       setLoading(false)
-     
+      const response = await createPaymentIntent(payload)
+      //  console.log('response',response?.session);
+      const { url } = response?.session
+      // console.log('url',url);
+
+      //  window.open(url);
+      window.location.href = url
+      setLoading(false)
     } catch (error) {
-      console.error('Error creating payment intent:', error);
+      console.error('Error creating payment intent:', error)
       // Handle error as needed
     }
-  };
-  
-
+  }
 
   return (
     <>
@@ -71,38 +76,63 @@ const Proleague = () => {
                   <Image className='myimg' src={pro} alt='league' />
                 </div>
                 <div className='description'>
-                  <p>
-                    <span className='text1'>samSports Pro Leagues</span> offer an exclusive fantasy
+                  {/* <p>
+                    <span className='text1'>SamSports Pro Leagues</span> offer an exclusive fantasy
                     football experience for serious players, combining realistic GM simulation,
                     advanced drafting tools, and cash prize pools. Members pay an annual fee for
                     access to GM ratings, and competitive gameplay against top
                     enthusiasts. Join to compete, strategize, and immerse yourself in the ultimate
                     fantasy football challenge!
+                  </p> */}
+                  <p>
+                    <span className='text1'>
+                      {paymentamount !== null
+                        ? 'SamSports Ultimate Leagues'
+                        : 'SamSports Pro Leagues'}
+                    </span>
+                    {paymentamount !== null ? (
+                      <>
+                        aspires to be the NFL of fantasy football, providing an elite experience for
+                        users to manage their own NFL-like team. It is tailored for those with a
+                        deep understanding of fantasy football who want to elevate their skills
+                      </>
+                    ) : (
+                      <>
+                        offer an exclusive fantasy football experience for serious players,
+                        combining realistic GM simulation, advanced drafting tools, and cash prize
+                        pools. Members pay an annual fee for access to GM ratings, and competitive
+                        gameplay against top enthusiasts. Join to compete, strategize, and immerse
+                        yourself in the ultimate fantasy football challenge!
+                      </>
+                    )}
                   </p>
                 </div>
               </div>
               <div className='annualfee'>
-                <p>  SamSports PRO ANNUAL MEMBERSHIP FEE</p>
+                <p> SamSports PRO ANNUAL MEMBERSHIP FEE</p>
 
-                <p>$49.99</p>
+                <p>{paymentamount !== null ? '$650' : '$49.99'}</p>
               </div>
               <div>
                 <div className='league-package'>
                   <div className='pro-league-package'>
                     <h2>Pro League Package:</h2>
-                    <div style={{display:'flex',justifyContent:'space-between'}}>
-                    <p>SamPoints</p>
-                    
-                        <div style={{display:'flex',gap:'20px'}}>
-                        <Image  width={33}  preview={false} src={sampointslogo} alt='league' />
-                        
-                        <p>1,000,000
-                        <div onClick={() => setModalShow(true)} className='moreinfo'>MoreInfo</div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <p>SamPoints</p>
+
+                      <div style={{ display: 'flex', gap: '20px' }}>
+                        <Image width={33} preview={false} src={sampointslogo} alt='league' />
+
+                        <p>
+                          1,000,000
+                          <div onClick={() => setModalShow(true)} className='moreinfo'>
+                            MoreInfo
+                          </div>
                         </p>
-                        </div>
-                        </div>
-                   
-                    <p style={{marginTop:'-44px'}}>GM Rating</p>
+                      </div>
+                    </div>
+
+                    <p style={{ marginTop: '-44px' }}>GM Rating</p>
                     {/* <p>Trade calculator</p> */}
                     <p>In-Game Prize Pool</p>
                     <p>Beta Tester Badge</p>
@@ -114,7 +144,7 @@ const Proleague = () => {
                     <h3>2nd place $250 & $300 worth of SamPoints</h3>
                     <h3>3 & 4 $300 worth of SamPoints</h3>
                     <h3>5-8 $250 worth of SamPoints</h3>
-                    <h3>9- 14 $2240 worth of SamPoints</h3>
+                    <h3>9- 14 $225 worth of SamPoints</h3>
 
                     <h3>15-20 200$ worth of SamPoints</h3>
                     <h3>21-25 $175 worth of SamPoints</h3>
@@ -129,15 +159,17 @@ const Proleague = () => {
 
             <div style={{ marginBottom: '20px' }} className='sam-pro-anaual-fee'>
               <p>
-                You will have the ability to invite as many users as you woul&apos;d like by clicking on
-                the <span>Clubhouse</span> tab. Based on your Referral Level, you can earn Sam Points
-                for each successful user registration.
+                You will have the ability to invite as many users as you woul&apos;d like by
+                clicking on the <span>Clubhouse</span> tab. Based on your Referral Level, you can
+                earn Sam Points for each successful user registration.
               </p>
               <p style={{ marginTop: '20px', fontWeight: 700 }}>
                 SamSports PRO ANNUAL MEMBERSHIP FEE
-                <div className='price'>$49.99</div>
+                <div className='price'>{paymentamount !== null ? '$650' : '$49.99'}</div>
                 <div className='stripebtn'>
-                  <Button  loading={loading} onClick={payment} type='primary'>PAY WITH Stripe</Button>
+                  <Button loading={loading} onClick={payment} type='primary'>
+                    PAY WITH Stripe
+                  </Button>
                   {/* <img className='stripecicle' src={stripe} alt='stripe'/> */}
                   {/* <div className='stripecicle'>
             <p>Stripe</p>
@@ -149,11 +181,7 @@ const Proleague = () => {
         </SelectGameRight>
       </div>
 
-      <GmRatingModal
-        key={'modal'}
-        visible={modalshow}
-        onCancel={handleCancel}
-      />
+      <GmRatingModal key={'modal'} visible={modalshow} onCancel={handleCancel} />
     </>
   )
 }

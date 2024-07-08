@@ -159,8 +159,7 @@ const Routers = () => {
           <Route path='/draft-spot-auction' element={<DraftSpotAuction />} />
           <Route path='/stadium' element={<Stadium />} />
           <Route path='/clubhouse' element={<Clubhouse />} />
-          <Route path='/success' element={<Success />} />
-          <Route path='/error' element={<Error />} />
+   
           
          
 
@@ -221,6 +220,8 @@ const Routers = () => {
         <Route path='/select-league' element={<SelectLeague />} />
         <Route path='/proleague' element={<Proleague />} />
         <Route path='/create-join-league' element={<CreateOrJoinLeague />} />
+        <Route path='/success' element={<Success />} />
+        <Route path='/error' element={<Error />} />
       </Routes>
     </BrowserRouter>
   )

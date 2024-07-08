@@ -60,7 +60,7 @@ const HeadingAndWeek = ({ heading, week = true, goLive = true }) => {
 
   return (
     <>
-      {leagueType === 'public' && !isTimeComplete && isProfessionalLeague && (
+      {leagueType === 'Ultimate' && !isTimeComplete && isProfessionalLeague && (
         <div style={{ position: 'relative', top: '40px' }}>
           <Button
             className='auctionforpicklefttime'
