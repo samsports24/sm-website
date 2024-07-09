@@ -241,7 +241,7 @@ const TableComponent = ({ tableScroll }) => {
                   type='primary'
                   className={`${Rookieplayers === 'Rookie' ? 'active' : ''}`}
                   onClick={() => {
-                    dispatch(setPosition('ALL'))
+                    // dispatch(setPosition('ALL'))
                     dispatch(setRookieplayers('Rookie'))
                     dispatch(setPage(1))
                   }}
