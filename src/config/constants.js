@@ -15,8 +15,8 @@ export const frontEndUrl = 'https://samsports.io'
 
 
 
-// export const base_url = 'http://192.168.100.3:8000'
-// export const frontEndUrl = 'http://192.168.100.3:3000'
+//  export const base_url = 'http://192.168.100.11:8000'
+//  export const frontEndUrl = 'http://192.168.100.11:3000'
 
 
 export const publicAPI = Axios.create({ baseURL: base_url })

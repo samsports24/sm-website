@@ -19,6 +19,7 @@ const HeadingAndWeek = ({ heading, week = true, goLive = true }) => {
   })
   const [isTimeComplete, setIsTimeComplete] = useState(false)
   const navigate = useNavigate()
+ 
 
   useEffect(() => {
     const calculateTimeRemaining = () => {
@@ -58,23 +59,32 @@ const HeadingAndWeek = ({ heading, week = true, goLive = true }) => {
     return () => clearInterval(timer)
   }, [draftstarttime])
 
+  // ?.filter(value => value.leagueType === 'professional' && value._id !== '64fc5edaf8f2513bd263845a')
+  console.log('isTimeComplete',isTimeComplete);
+  console.log('leagueType',leagueType);
+
+  useEffect(() => {
+    console.log('isTimeComplete', isTimeComplete)
+  },[isTimeComplete])
+
   return (
     <>
-      {leagueType === 'Ultimate' && !isTimeComplete && isProfessionalLeague && (
-        <div style={{ position: 'relative', top: '40px' }}>
-          <Button
-            className='auctionforpicklefttime'
-            type='primary'
-            onClick={() => navigate('/draft-spot-auction')}
-          >
-            DRAFT PICK AUCTION!! <span className='timeleft'>Time Left:</span>{' '}
-            <span className='timelefttext'>
-              {timeRemaining?.days} {timeRemaining?.hours}:{timeRemaining?.minutes}:
-              {timeRemaining?.seconds}
-            </span>
-          </Button>
-        </div>
-      )}
+   {(leagueType === 'professional' || leagueType === 'Ultimate') && !isTimeComplete && (
+  <div style={{ position: 'relative', top: '40px' }}>
+    <Button
+      className='auctionforpicklefttime'
+      type='primary'
+      onClick={() => navigate('/draft-spot-auction')}
+    >
+      DRAFT PICK AUCTION!! <span className='timeleft'>Time Left:</span>{' '}
+      <span className='timelefttext'>
+        {timeRemaining?.days} {timeRemaining?.hours}:{timeRemaining?.minutes}:
+        {timeRemaining?.seconds}
+      </span>
+    </Button>
+  </div>
+)}
+
 
       <div className='heading_and_week'>
         {heading ? <h2>{heading}</h2> : <div />}

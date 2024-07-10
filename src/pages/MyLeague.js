@@ -62,7 +62,8 @@ const MyLeague = () => {
               </Col>
             ))
           : leagues?.nonUserLeagues
-              ?.filter((value) => value.leagueType === 'Ultimate')
+              // ?.filter((value) => value.leagueType === 'Ultimate')
+              ?.filter(value => value.leagueType === 'professional' && value._id !== '64fc5edaf8f2513bd263845a')
               ?.map((value, index) => (
                 <Col xs={24} sm={12} xl={8} xxl={6} key={index}>
                   <div

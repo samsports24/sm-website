@@ -564,7 +564,7 @@ console.log('isTimerFinished',isTimerFinished);
 
             <div>
               {round1Data.map((draftRound, index) => {
-                if (user?._id === draftRound?.team?.user._id) {
+                if (user?._id === draftRound?.team?.user?._id) {
                   return (
                     <div key={index} style={{ display: 'flex' }}>
                       <div className='auctionpick'>{draftRound?.position}</div>

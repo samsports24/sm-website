@@ -77,12 +77,23 @@ export const createNewLeagueFromDashboard = async (payload) => {
 export const joinLeague = async (payload) => {
   // console.log('redux payload',payload);
   try {
+    attachToken()
     let game = localStorage.getItem('selectedGame')
     let link = serverUrls.find((item) => item.key === game)
     const res = await axios.post(`${link.url}/league/join`, payload)
 
     // const res = await publicAPI.post(`/league/join`, payload)
     if (res) {
+      console.log('res',res);
+      console.log('res.data.data.token',res.data.data.token);
+
+      // store.dispatch(getUser())
+      localStorage.setItem('token', res.data.data.token)
+      store.dispatch(getUser())
+      attachToken()
+      navigate('/professional-league')
+
+      
       notification.success({
         description: res.data.data.message,
         duration: 2,
