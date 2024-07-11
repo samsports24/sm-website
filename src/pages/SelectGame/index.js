@@ -508,6 +508,8 @@ const SelectGame = () => {
         onClose={handleConfirm}
         verficationcode={verficationcode}
         setVerficationcode={setVerficationcode}
+        user={user}
+        deocdeemail={deocdeemail}
       />
     </>
   )

@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import { Modal, Button,Input } from 'antd'
 import '../../styles/modals/verficationcodeModal.css'
 import samverifylogo from '../../assets/samverficationlogo.png'
+import { GenerateVerificationCode } from '../../redux/actions/clubhouse'
 
-const VerificationcodeModal = ({ visible, onClose,verficationcode,setVerficationcode }) => {
+const VerificationcodeModal = ({ visible, onClose,verficationcode,setVerficationcode,user,deocdeemail }) => {
   console.log("🚀 ~ MessageModal ~ visible:", visible)
 
   //  console.log('user',user?.team?.currentLeague?.name);
@@ -16,6 +17,13 @@ const VerificationcodeModal = ({ visible, onClose,verficationcode,setVerfication
   const handleInputChange = (e) => {
     setVerficationcode(e.target.value)
   }
+
+const resendcode =async()=>{
+  await GenerateVerificationCode({
+    emailsent: deocdeemail,
+    user,
+  });
+}
 
 
   return (
@@ -41,7 +49,7 @@ const VerificationcodeModal = ({ visible, onClose,verficationcode,setVerfication
         <Input type='number' placeholder='TYPE CODE'    value={verficationcode}
                 onChange={handleInputChange} />
         
-<p>Re-Send Code</p>
+<p  onClick={resendcode}>Re-Send Code</p>
       </div>
     </Modal>
   )

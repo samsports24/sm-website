@@ -140,8 +140,9 @@ const DraftQueue = ({ tableScroll }) => {
         return (
           <div className='table_player_name_box nrc_container'>
             <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-              {obj?.player?.PlayerCap || '-'}
-              {`$${obj?.player?.PlayerCap || '-'}`}
+              {/* {obj?.player?.PlayerCap || '-'} */}
+              {/* {`$${(obj?.player?.currentYearSalaryCap || '-').toLocaleString()}`} */}
+              {`$${obj?.player?.currentYearSalaryCap || '-'}`}
             </p>
           </div>
         )

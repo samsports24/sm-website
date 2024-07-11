@@ -146,9 +146,9 @@ const BlackList = ({ tableScroll }) => {
         return (
           <div className='table_player_name_box nrc_container'>
             <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-              {obj?.player?.PlayerCap || '-'}
+              {/* {obj?.player?.currentYearSalaryCap || '-'} */}
               {/* {`$${obj?.player?.PlayerCap || '-'}`} */}
-              {`$${(obj?.player?.PlayerCap || '-').toLocaleString()}`}
+              {`$${(obj?.player?.currentYearSalaryCap || '-').toLocaleString()}`}
             </p>
           </div>
         )
