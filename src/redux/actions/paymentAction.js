@@ -45,6 +45,14 @@ export const sendpayment = async (payload,navigate) => {
         // You can navigate to 'fantasy-league' here
         //  window.location.href = '/fantasy-league'; 
       }
+
+else{
+  localStorage.removeItem('email');
+  localStorage.removeItem('AssignLeague');
+  navigate('/')
+
+}
+
   
       // return res.data.data
     }

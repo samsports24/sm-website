@@ -166,6 +166,21 @@ cursor: pointer;
     width: max-content;
 }
 
+@media (max-width: 1500px) {
+  .clubhouse-main .clubhouse .email-registration{
+    flex-direction: column;
+  }
+
+  .clubhouse-main .clubhouse .email-registration .email-box{
+    height: 20vh;
+    left: auto;
+  }
+
+  .clubhouse-main .clubhouse .email-registration p {
+    width: auto;
+  }
+
+}
 
 
 

@@ -4,9 +4,15 @@ import Header from '../../components/Header'
 import HeadingAndWeek from '../../components/Pagination/HeadingAndWeek'
 import sampointslogo from '../../assets/stadiumsampoints.webp'
 import { useDispatch, useSelector } from 'react-redux'
-import { createClubhouse, getClubhouse, resendInvitation, setAllclubhouse } from '../../redux/actions/clubhouse'
+import {
+  createClubhouse,
+  getClubhouse,
+  resendInvitation,
+  setAllclubhouse,
+} from '../../redux/actions/clubhouse'
 import refresh from '../../assets/refresh-icon.jpg'
 import { IoMdRefresh } from 'react-icons/io'
+import Loader from '../../components/Loader'
 
 const Clubhouse = () => {
   const dispatch = useDispatch()
@@ -14,11 +20,12 @@ const Clubhouse = () => {
   const user = useSelector((state) => state.user.userDetails)
 
   const clubhouse = useSelector((state) => state.clubhouse.clubhouse.Clubhouse)
-   console.log('user', user)
+  console.log('user', user)
   console.log('clubhouse', clubhouse)
 
   const [referralemail, setReferralemail] = useState('')
   const [loading, setLoading] = useState(false)
+  const [btnloading, setBtnLoading] = useState(false)
 
   const emails = ['James@gmail.com', 'Maddog@gmail.com', 'Fakeemail@gmail.com', '0900-786-01']
 
@@ -28,6 +35,7 @@ const Clubhouse = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true)
       const data = await getClubhouse({
         season: user?.team?.currentLeague?.season,
         userId: user?._id,
@@ -36,17 +44,48 @@ const Clubhouse = () => {
       if (data) {
         dispatch(setAllclubhouse(data))
       }
+      setLoading(false)
     }
 
-    fetchData()
-  }, [dispatch, user])
+    if (user) {
+      fetchData()
+    }
+  }, [user])
 
   const handleInputChange = (e) => {
     setReferralemail(e.target.value)
   }
 
+  // const handlecreatereferral = async () => {
+  //   setBtnLoading(true)
+  //   setLoading(true)
+  //   try {
+  //     const payload = {
+  //       league: user?.team?.currentLeague._id,
+  //       user: user?._id,
+  //       emailsent: referralemail,
+  //       season: user?.team?.currentLeague?.season,
+  //     }
+
+  //     console.log('payload', payload)
+  //     const data = await createClubhouse(payload)
+
+  //     console.log('refereaal successfully sent:', data)
+  //     setReferralemail('')
+  //     // const res = await getData()
+  //     // if (res) {
+  //     // }
+  //     setBtnLoading(false)
+  //     setLoading(false)
+  //   } catch (error) {
+  //     console.error('Error making bid:', error)
+  //   }
+  // }
+
   const handlecreatereferral = async () => {
-    setLoading(true)
+    setBtnLoading(true) // Set button loading state
+    // setLoading(true) // Set main loading state
+
     try {
       const payload = {
         league: user?.team?.currentLeague._id,
@@ -56,16 +95,17 @@ const Clubhouse = () => {
       }
 
       console.log('payload', payload)
-      const data = await createClubhouse(payload)
+      const data = await createClubhouse(payload) // Call API
 
-      console.log('refereaal successfully sent:', data)
-      setReferralemail('')
-      // const res = await getData()
-      // if (res) {
-      // }
-      setLoading(false)
+      console.log('Referral successfully sent:', data)
+      setReferralemail('') // Clear input after successful API call
+      // Additional logic can be added here if needed
     } catch (error) {
-      console.error('Error making bid:', error)
+      console.error('Error making referral:', error)
+      // Handle error cases as needed
+    } finally {
+      setBtnLoading(false) // Reset button loading state
+      // setLoading(false) // Reset main loading state
     }
   }
 
@@ -84,38 +124,37 @@ const Clubhouse = () => {
     }
   }
 
-
   const handleRefreshClick = (email) => async () => {
-    setLoading(true);
+    setLoading(true)
     try {
       if (!user?._id || !email) {
-        console.warn('User or email is undefined');
-        return;
+        console.warn('User or email is undefined')
+        return
       }
-  
-      console.log('email', email);
-  
+
+      console.log('email', email)
+
       // Call resendInvitation with email directly
-      await resendInvitation(email);
-  
+      await resendInvitation(email)
+
       const payload = {
         user: user?._id,
         emailsent: email,
-      };
-  
-      console.log('payload', payload);
-  
+      }
+
+      console.log('payload', payload)
+
       // Assuming resendInvitation also returns data upon success
-      const data = await resendInvitation(payload);
-      console.log('Invitation sent successfully:', data);
-  
-      setLoading(false);
+      const data = await resendInvitation(payload)
+      console.log('Invitation sent successfully:', data)
+
+      setLoading(false)
     } catch (error) {
-      console.error('Error resending invitation:', error);
+      console.error('Error resending invitation:', error)
       // Handle error
     }
-  };
-  
+  }
+
   const totalEarnings = Array.isArray(clubhouse)
     ? clubhouse.length * getEarningValue(user?.referralLevel)
     : 0
@@ -138,7 +177,7 @@ const Clubhouse = () => {
               />
 
               <Button
-                loading={loading}
+                loading={btnloading}
                 onClick={handlecreatereferral}
                 className='submitbtn'
                 key='save'
@@ -155,33 +194,46 @@ const Clubhouse = () => {
             </h2>
           </div>
           <div className='email-registration'>
-            <p>
-              EMAILS SENTS
-              <div className='email-box'>
-                {Array.isArray(clubhouse) ? (
-                  clubhouse.map((item, index) => (
-                    <div style={{ display: 'flex', gap: '20px' }} key={index}>
-                      <p style={{ marginLeft: '-29px' }}>
-                        {index + 1}. {item.emailsent}
-                      </p>
-                      {!item.isRegistered && (
-                        <IoMdRefresh onClick={handleRefreshClick(item.emailsent)} className='icon' size={35} color='#ffffff' />
-                      )}
-                    </div>
-                  ))
-                ) : (
-                  <p>No emails found</p>
-                )}
-              </div>
-            </p>
+            {loading || btnloading ? (
+              <Loader />
+            ) : (
+              <>
+                <p>
+                  EMAILS SENTS
+                  <div className='email-box'>
+                    {Array.isArray(clubhouse) ? (
+                      clubhouse.map((item, index) => (
+                        <div style={{ display: 'flex', gap: '20px' }} key={index}>
+                          <p style={{ marginLeft: '-29px' }}>
+                            {index + 1}. {item.emailsent}
+                          </p>
+                          {!item.isRegistered && (
+                            <IoMdRefresh
+                              onClick={handleRefreshClick(item.emailsent)}
+                              className='icon'
+                              size={35}
+                              color='#ffffff'
+                            />
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <p>No emails found</p>
+                    )}
+                  </div>
+                </p>
 
-            <p>
-              SUCCESSFULL REGISTRATION
-              <div className='email-box'>
-                <div
-                  style={{ display: 'flex', justifyContent: 'space-between', paddingRight: '60px' }}
-                >
-                  {/* <div>
+                <p>
+                  SUCCESSFULL REGISTRATION
+                  <div className='email-box'>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        paddingRight: '60px',
+                      }}
+                    >
+                      {/* <div>
                     {Array.isArray(clubhouse) ? (
                       clubhouse
                         ?.filter((item) => item.isRegistered)
@@ -194,52 +246,59 @@ const Clubhouse = () => {
                       <p>No emails found</p>
                     )}
                   </div> */}
-                  {/* <div style={{ display: 'flex' }}>
+                      {/* <div style={{ display: 'flex' }}>
                     <Image preview={false} width={35} src={sampointslogo} alt='samlogo' />
                     <p>12,500,000</p>
                   </div> */}
 
-                  <div>
-                    {Array.isArray(clubhouse) ? (
-                      clubhouse
-                        ?.filter((item) => item?.isRegistered )
-                        .map((item, index) => (
-                          <div
-                            style={{ display: 'flex', justifyContent: 'space-between' }}
-                            key={index}
-                          >
-                            <p style={{ marginLeft: '-29px' }}>
-                              {index + 1}. {item.emailsent}
-                            </p>
-                            <div style={{ display: 'flex' }}>
-                              <Image preview={false} width={35} src={sampointslogo} alt='samlogo' />
-                              <p>
-                                {user?.referralLevel === 'Ultimate'
-                                  ? '12,500,000'
-                                  : user?.referralLevel === 'Referral Level 1'
-                                  ? '225'
-                                  : user?.referralLevel === 'Referral Level 2'
-                                  ? '150'
-                                  : user?.referralLevel === 'Referral Level 3'
-                                  ? '75'
-                                  : ''}
-                              </p>
-                            </div>
-                          </div>
-                        ))
-                    ) : (
-                      <p>No emails found</p>
-                    )}
+                      <div>
+                        {Array.isArray(clubhouse) ? (
+                          clubhouse
+                            ?.filter((item) => item?.isRegistered)
+                            .map((item, index) => (
+                              <div
+                                style={{ display: 'flex', justifyContent: 'space-between' }}
+                                key={index}
+                              >
+                                <p style={{ marginLeft: '-29px' }}>
+                                  {index + 1}. {item.emailsent}
+                                </p>
+                                <div style={{ display: 'flex' }}>
+                                  <Image
+                                    preview={false}
+                                    width={35}
+                                    src={sampointslogo}
+                                    alt='samlogo'
+                                  />
+                                  <p>
+                                    {user?.referralLevel === 'Ultimate'
+                                      ? '12,500,000'
+                                      : user?.referralLevel === 'Referral Level 1'
+                                      ? '225'
+                                      : user?.referralLevel === 'Referral Level 2'
+                                      ? '150'
+                                      : user?.referralLevel === 'Referral Level 3'
+                                      ? '75'
+                                      : ''}
+                                  </p>
+                                </div>
+                              </div>
+                            ))
+                        ) : (
+                          <p>No emails found</p>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div className='total-earnings'>
-                <h3>TOTAL EARNINGS</h3>
-                <Image width={35} src={sampointslogo} alt='samlogo' />
-                {/* <h4>12,500,000</h4> */}
-                <h4>{totalEarnings?.toLocaleString() || 0}</h4>
-              </div>
-            </p>
+                  <div className='total-earnings'>
+                    <h3>TOTAL EARNINGS</h3>
+                    <Image width={35} src={sampointslogo} alt='samlogo' />
+                    {/* <h4>12,500,000</h4> */}
+                    <h4>{totalEarnings?.toLocaleString() || 0}</h4>
+                  </div>
+                </p>
+              </>
+            )}
           </div>
         </div>
       </div>

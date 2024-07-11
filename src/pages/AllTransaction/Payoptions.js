@@ -19,7 +19,7 @@ const Payoptions = () => {
           <div className='flexdiv'>
             <img className='buyimg' src={featmoney} alt='sampointslogo' />
             <div className='paytext'>
-              PAY WITH FIAT
+              PAY WITH STRIPE
               <p>$1,99</p>
             </div>
           </div>

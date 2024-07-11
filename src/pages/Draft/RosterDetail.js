@@ -77,7 +77,8 @@ const RosterDetail = ({ playerFinancials }) => {
 
         <div style={{display:'flex',justifyContent:'space-between',flexWrap:'wrap'}}>
         <div className='rdb_right_row3'>
-          <div style={{paddingBottom:'20px'}}>
+          {/* <div style={{paddingBottom:'20px'}}> */}
+          <div>
             <p style={{fontSize:'20px'}}>SAM ADP</p>
             <p>{player?.player?.samAdp24 ? `${player?.player?.samAdp24?.toFixed(3)}` : '-'}
             </p>
@@ -93,13 +94,15 @@ const RosterDetail = ({ playerFinancials }) => {
             <p>{player?.player?.avgPf ? `${player.player.avgPf.toFixed(3)}` : '-'}</p>
           </div>
           <div>
-          <p>{`24' PROJ.`}<br /> TOTAL POINTS</p>
+          {/* <p>{`24' PROJ.`}<br /> TOTAL POINTS</p> */}
+          <p>{`24' PROJ.`}TOTAL POINTS</p>
             {/* <p>{player?.stats?.stats?.FantasyPoints24?.toFixed(3) || '-'}</p> */}
             <p>{player?.stats?.stats.FantasyPoints24 ? `${player?.stats?.stats?.FantasyPoints24.toFixed(3)}` : '-'}</p>
           </div>
          
           <div>
-            <p>{`24' PROJ.`}<br /> AVG.POINTS</p>
+            {/* <p>{`24' PROJ.`}<br /> AVG.POINTS</p> */}
+            <p>{`24' PROJ.`} AVG.POINTS</p>
             {/* <p>{player?.stats?.stats?.AvgFantasyPoints24?.toFixed(3) || '-'}</p> */}
             <p>{player?.stats?.stats.AvgFantasyPoints24 ? `${player?.stats?.stats?.AvgFantasyPoints24.toFixed(3)}` : '-'}</p>
           </div>

@@ -50,7 +50,8 @@ const BuySampoints = () => {
 
               <div className='flexdiv'>
               <img className='myimgdiv' src={sampointslogo} alt='SAMPOINTS' />
-                <div className='myleaguemoney'>5,000,000</div>
+                {/* <div className='myleaguemoney'>5,000,000</div> */}
+                <div className='myleaguemoney'>7,500,000</div>
               </div>
               <div className='cost'>
                 COST: $9.99
@@ -73,7 +74,8 @@ const BuySampoints = () => {
 
               <div className='flexdiv'>
               <img className='myimgdiv' src={sampointslogo} alt='SAMPOINTS' />
-                <div className='myleaguemoney'>10,000,000</div>
+                {/* <div className='myleaguemoney'>10,000,000</div> */}
+                <div className='myleaguemoney'>12,500,000</div>
               </div>
               <div className='cost'>
                 COST: $19.99

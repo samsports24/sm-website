@@ -47,6 +47,8 @@ const TableComponent = ({ tableScroll }) => {
   const [loading, setLoading] = useState(false)
   const socket = io(base_url)
 
+  const [checkrockie,setRockie]=useState(true)
+
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -213,7 +215,7 @@ const TableComponent = ({ tableScroll }) => {
                       className={`${position === v ? 'active' : ''}`}
                       onClick={() => {
                         dispatch(setPosition(v))
-                        dispatch(setRookieplayers(''))
+                        // dispatch(setRookieplayers(''))
                         dispatch(setPage(1))
                       }}
                     >
@@ -229,7 +231,8 @@ const TableComponent = ({ tableScroll }) => {
                         className={`${position === v ? 'active' : ''}`}
                         onClick={() => {
                           dispatch(setPosition(v))
-                          dispatch(setRookieplayers(''))
+                          // dispatch(setRookieplayers(''))
+                          // dispatch(setRookieplayers('Rookie'))
                           dispatch(setPage(1))
                         }}
                       >
@@ -242,7 +245,8 @@ const TableComponent = ({ tableScroll }) => {
                   className={`${Rookieplayers === 'Rookie' ? 'active' : ''}`}
                   onClick={() => {
                     // dispatch(setPosition('ALL'))
-                    dispatch(setRookieplayers('Rookie'))
+                    setRockie(false)
+                    dispatch(setRookieplayers(''))
                     dispatch(setPage(1))
                   }}
                 >

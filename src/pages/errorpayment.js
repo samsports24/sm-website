@@ -18,15 +18,29 @@ const Error = () => {
   };
   useEffect(() => {
     // Remove email and AssignLeague from local storage
-    localStorage.removeItem('email');
-    localStorage.removeItem('AssignLeague');
-
+  
     // const queryParameters = new URLSearchParams(window.location.search)
     // const sessionId = queryParameters.get('session_id')
     // console.log('queryParameters',queryParameters);
     // console.log('sessionId',sessionId);
     // getSession({ sessionId }, navigate)
     // sendpayment({ sessionId }, navigate)
+
+
+    console.log('in the error payment effect');
+    const email = localStorage.getItem('email');
+    const leagueid = localStorage.getItem('AssignLeague');
+    const queryParameters = new URLSearchParams(window.location.search)
+    const sessionId = queryParameters.get('session_id')
+    console.log('queryParameters',queryParameters);
+    console.log('sessionId',sessionId);
+   // getSession({ sessionId }, navigate)
+    sendpayment({ sessionId,email,leagueid}, navigate)
+
+    // localStorage.removeItem('email');
+    // localStorage.removeItem('AssignLeague');
+
+
 
   }, []);
 
