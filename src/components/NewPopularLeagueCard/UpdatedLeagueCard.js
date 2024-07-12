@@ -70,7 +70,7 @@ const leaguejoin =async()=>{
           <div className='row_2'>
             <div>
               <p className='text_title'>Draft Starts:</p>
-              <p className='text_value'>{moment(draftStart).format('DD/MM/YY')}</p>
+              <p className='text_value'>{moment(draftStart).format('MM/DD/YY')}</p>
               <p style={{marginTop:'5px'}} className='text_value'>{moment(draftStart).format('h A')}   CST</p>
 
             </div>
