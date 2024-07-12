@@ -8,21 +8,64 @@ import stripe from "../../assets/stripe-product-image.webp"
 import Header from '../../components/Header'
 import { Button, Image } from 'antd'
 import { useLocation } from 'react-router-dom';
+import { createPaymentIntentforsampoints } from '../../redux/actions/paymentAction';
 
 const Payoptions = () => {
   const location = useLocation();
-  const { amount } = location.state;
+  const { myamount,mysampoints } = location.state;
+  const [loading,setLoading]=useState(false)
+  console.log('myamount',myamount);
 
+  console.log('mysampoints',mysampoints);
 
-  let discountAmount = 1.69; // Default discount amount
+  let discountAmount = 1.69; // Default discount myamount
 
-  if (amount === 9.99) {
+  if (myamount === 9.99) {
     discountAmount = 8.49;
-  } else if (amount === 19.99) {
+  } else if (myamount === 19.99) {
     discountAmount = 16.99;
   }
 
-  // console.log('amount',amount);
+
+  const sampointspayment = async () => {
+    // console.log('in the onlcick');
+    setLoading(true)
+    const userId = localStorage.getItem('userId')
+
+    if (!userId) {
+      console.error('userId not found in localStorage')
+      setLoading(false)
+      return
+    }
+
+  
+
+    const payload = {
+      userId,
+      // amount:myamount * 100,
+      amount: Math.round(myamount * 100),
+      mysampoints,
+
+    }
+    console.log('payload', payload)
+
+    try {
+      const response = await createPaymentIntentforsampoints(payload)
+      //  console.log('response',response?.session);
+      const { url } = response?.session
+      // console.log('url',url);
+
+        window.open(url);
+      window.location.href = url
+      setLoading(false)
+    } catch (error) {
+      console.error('Error creating payment intent:', error)
+      // Handle error as needed
+    }
+  }
+
+
+  // console.log('myamount',myamount);
   return (
     <>
       <Header />
@@ -35,13 +78,13 @@ const Payoptions = () => {
             <img className='buyimg' src={stripe} alt='sampointslogo' />
             <div className='paytext'>
               PAY WITH STRIPE
-              <p>${amount}</p>
+              <p>${myamount}</p>
             </div>
           </div>
 
           <div>
             <Button
-             
+             onClick={sampointspayment}
               //
               type='primary'
             >
@@ -63,7 +106,7 @@ const Payoptions = () => {
               <img className='redline' src={redline} alt='discount'/>
               <div>
            
-              <p>${amount}</p>
+              <p>${myamount}</p>
               </div>
               <div className='discount'>
                 {/* $1.69 */}

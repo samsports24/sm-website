@@ -9,14 +9,25 @@ import { useNavigate } from 'react-router-dom'
 
 const BuySampoints = () => {
 
-  const [selectedAmount, setSelectedAmount] = useState(null);
+  // const [selectedAmount, setSelectedAmount] = useState(null);
 
   const navigate = useNavigate()
 
-  const handleBuyClick = (amount) => {
-    setSelectedAmount(amount);
-    navigate('/select-buy-options', { state: { amount } });
-  }
+  // const handleBuyClick = (amount) => {
+  //   setSelectedAmount(amount);
+  //   navigate('/select-buy-options', { state: { amount } });
+  // }
+
+  const handleBuyClick = (myamount,mysampoints) => {
+    // const amount = 1.99;
+    // const sampoints = '1,000,000';
+    
+    // Set selected amount state if needed
+    // setSelectedAmount(amount);
+
+    // Navigate to '/select-buy-options' with amount and myLeagueMoney in state
+    navigate('/select-buy-options', { state: { myamount, mysampoints } });
+  };
 
  
   return (
@@ -45,9 +56,8 @@ const BuySampoints = () => {
                 <Button
                    className='buycoins'
                   //  onClick={() => navigate('/select-buy-options')}
-                  onClick={() => handleBuyClick(1.99)}
+                  onClick={() => handleBuyClick(1.99,'1,000,000')}
                     type='primary'
-                   
                   >
                     BUY
                   </Button>
@@ -68,7 +78,7 @@ const BuySampoints = () => {
                 <Button
                    className='buycoins'
                   //  onClick={() => navigate('/select-buy-options')}
-                  onClick={() => handleBuyClick(9.99)}
+                  onClick={() => handleBuyClick(9.99,'7,500,000')}
                   
                     type='primary'
                    
@@ -93,7 +103,7 @@ const BuySampoints = () => {
                 <Button
                    className='buycoins'
                   //  onClick={() => navigate('/select-buy-options')}
-                  onClick={() => handleBuyClick(19.99)}
+                  onClick={() => handleBuyClick(19.99,'12,500,000')}
                     type='primary'
                   >
                     BUY

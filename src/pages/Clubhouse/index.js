@@ -114,11 +114,11 @@ const Clubhouse = () => {
       case 'Ultimate':
         return 12500000
       case 'Referral Level 1':
-        return 225
+        return 22500000
       case 'Referral Level 2':
-        return 150
+        return 1500000
       case 'Referral Level 3':
-        return 75
+        return 7500000
       default:
         return 0
     }
@@ -155,9 +155,24 @@ const Clubhouse = () => {
     }
   }
 
-  const totalEarnings = Array.isArray(clubhouse)
-    ? clubhouse.length * getEarningValue(user?.referralLevel)
-    : 0
+  // const totalEarnings = Array.isArray(clubhouse)
+  //   ? clubhouse.length * getEarningValue(user?.referralLevel)
+  //   : 0
+
+  const totalEarnings = clubhouse
+  ?.filter(obj => obj.isRegistered) // Filter objects where isRegistered is true
+  ?.length * getEarningValue(user?.referralLevel);
+
+console.log('totalEarnings:', totalEarnings);
+
+  // const totalEarnings = Array.isArray(clubhouse) && clubhouse?.isRegistered 
+  // ? clubhouse.length * getEarningValue(user?.referralLevel)
+  // : 0;
+
+// console.log('totalEarnings', totalEarnings);
+
+
+// console.log('totalEarnings',totalEarnings);
 
   return (
     <>
@@ -274,11 +289,11 @@ const Clubhouse = () => {
                                     {user?.referralLevel === 'Ultimate'
                                       ? '12,500,000'
                                       : user?.referralLevel === 'Referral Level 1'
-                                      ? '225'
+                                      ? '225,000,000'
                                       : user?.referralLevel === 'Referral Level 2'
-                                      ? '150'
+                                      ? '150,00,00'
                                       : user?.referralLevel === 'Referral Level 3'
-                                      ? '75'
+                                      ? '75,000,00'
                                       : ''}
                                   </p>
                                 </div>

@@ -1,20 +1,30 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { getSession } from '../redux'
 import { Button, Spin } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 
 import { useNavigate } from 'react-router-dom'
 import failed from '../assets/failed.png'
-import { sendpayment } from '../redux/actions/paymentAction'
+import { sendpayment, sendpaymentforsampoints } from '../redux/actions/paymentAction'
 
 const Error = () => {
   const navigate = useNavigate()
+const [newamount,setNewamount]=useState(null)
 
   const token = localStorage.getItem('token')
   console.log('token',token);
 
   const handleNavigate = () => {
-     navigate('/'); // Navigate to '/' route on click
+
+    if(newamount){
+      navigate('/professional-league');
+      setNewamount('')
+      // Navigate to '/' route on click
+    }
+    else {
+      navigate('/'); // Navigate to '/' route on click
+    }
+    
   };
   useEffect(() => {
     // Remove email and AssignLeague from local storage
@@ -32,10 +42,22 @@ const Error = () => {
     const leagueid = localStorage.getItem('AssignLeague');
     const queryParameters = new URLSearchParams(window.location.search)
     const sessionId = queryParameters.get('session_id')
-    console.log('queryParameters',queryParameters);
-    console.log('sessionId',sessionId);
+
+    const amount = queryParameters.get('amount');
+    setNewamount(amount)
+    if (amount) {
+     
+      sendpaymentforsampoints({ sessionId }, navigate);
+    } else {
+    
+      sendpayment({ sessionId, email, leagueid }, navigate);
+    }
+
+
+    // console.log('queryParameters',queryParameters);
+    // console.log('sessionId',sessionId);
    // getSession({ sessionId }, navigate)
-    sendpayment({ sessionId,email,leagueid}, navigate)
+    // sendpayment({ sessionId,email,leagueid}, navigate)
 
     // localStorage.removeItem('email');
     // localStorage.removeItem('AssignLeague');
@@ -59,7 +81,14 @@ border: '2px solid #00a7e5',
     color: 'var(--text)'
 
      }} onClick={handleNavigate}>Back to Home</Button>
-       <h2 style={{ marginBottom: '20px', color: '#FF0000' }}> Kindly Click On The Invitation Link From Your Email</h2>
+
+{/* const amount = queryParameters.get('amount'); */}
+{newamount ? null : (
+        <h2 style={{ marginBottom: '20px', color: '#FF0000' }}>
+          Kindly Click On The Invitation Link From Your Email
+        </h2>
+      )}
+       {/* <h2 style={{ marginBottom: '20px', color: '#FF0000' }}> Kindly Click On The Invitation Link From Your Email</h2> */}
       <h2 style={{ marginBottom: '20px', color: '#FF0000' }}> Payment Failed/cancelled</h2>
     
  

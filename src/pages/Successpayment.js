@@ -4,7 +4,7 @@ import { Spin } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 
 import { useNavigate } from 'react-router-dom'
-import { sendpayment } from '../redux/actions/paymentAction'
+import { sendpayment, sendpaymentforsampoints } from '../redux/actions/paymentAction'
 
 const Success = () => {
   const navigate = useNavigate()
@@ -14,11 +14,21 @@ const Success = () => {
     const leagueid = localStorage.getItem('AssignLeague');
     const queryParameters = new URLSearchParams(window.location.search)
     const sessionId = queryParameters.get('session_id')
-    console.log('queryParameters',queryParameters);
-    console.log('sessionId',sessionId);
-   // getSession({ sessionId }, navigate)
-    sendpayment({ sessionId,email,leagueid}, navigate)
+    const amount = queryParameters.get('amount');
+
+    console.log('amount',amount);
+    if (amount) {
+      sendpaymentforsampoints({ sessionId }, navigate);
+    } else {
     
+      sendpayment({ sessionId, email, leagueid }, navigate);
+    }
+    // console.log('queryParameters',queryParameters);
+    // console.log('sessionId',sessionId);
+
+   // getSession({ sessionId }, navigate)
+    // sendpayment({ sessionId,email,leagueid}, navigate)
+    // sendpaymentforsampoints({ sessionId}, navigate)
   }, [])
 
   
