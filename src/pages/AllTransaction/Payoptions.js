@@ -3,11 +3,26 @@ import sampoints from "../../assets/samtoken_image.png";
 import featmoney from '../../assets/fiarmoneylogo.png';
 import redline from "../../assets/redline.webp"
 import discount from "../../assets/discount.png"
+import stripe from "../../assets/stripe-product-image.webp"
 
 import Header from '../../components/Header'
 import { Button, Image } from 'antd'
+import { useLocation } from 'react-router-dom';
 
 const Payoptions = () => {
+  const location = useLocation();
+  const { amount } = location.state;
+
+
+  let discountAmount = 1.69; // Default discount amount
+
+  if (amount === 9.99) {
+    discountAmount = 8.49;
+  } else if (amount === 19.99) {
+    discountAmount = 16.99;
+  }
+
+  // console.log('amount',amount);
   return (
     <>
       <Header />
@@ -17,10 +32,10 @@ const Payoptions = () => {
 
         <div className='pickfirstdiv'>
           <div className='flexdiv'>
-            <img className='buyimg' src={featmoney} alt='sampointslogo' />
+            <img className='buyimg' src={stripe} alt='sampointslogo' />
             <div className='paytext'>
               PAY WITH STRIPE
-              <p>$1,99</p>
+              <p>${amount}</p>
             </div>
           </div>
 
@@ -48,11 +63,11 @@ const Payoptions = () => {
               <img className='redline' src={redline} alt='discount'/>
               <div>
            
-              <p>$1.99</p>
+              <p>${amount}</p>
               </div>
               <div className='discount'>
-              
-                $1.69
+                {/* $1.69 */}
+                ${discountAmount.toFixed(2)}
               </div>
               </div>
             </div>

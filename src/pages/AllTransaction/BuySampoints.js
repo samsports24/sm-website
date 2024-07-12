@@ -9,7 +9,16 @@ import { useNavigate } from 'react-router-dom'
 
 const BuySampoints = () => {
 
-    const navigate = useNavigate()
+  const [selectedAmount, setSelectedAmount] = useState(null);
+
+  const navigate = useNavigate()
+
+  const handleBuyClick = (amount) => {
+    setSelectedAmount(amount);
+    navigate('/select-buy-options', { state: { amount } });
+  }
+
+ 
   return (
     <>
       <Header />
@@ -35,7 +44,8 @@ const BuySampoints = () => {
                 COST: $1.99
                 <Button
                    className='buycoins'
-                   onClick={() => navigate('/select-buy-options')}
+                  //  onClick={() => navigate('/select-buy-options')}
+                  onClick={() => handleBuyClick(1.99)}
                     type='primary'
                    
                   >
@@ -57,7 +67,8 @@ const BuySampoints = () => {
                 COST: $9.99
                 <Button
                    className='buycoins'
-                   onClick={() => navigate('/select-buy-options')}
+                  //  onClick={() => navigate('/select-buy-options')}
+                  onClick={() => handleBuyClick(9.99)}
                   
                     type='primary'
                    
@@ -81,9 +92,9 @@ const BuySampoints = () => {
                 COST: $19.99
                 <Button
                    className='buycoins'
-                   onClick={() => navigate('/select-buy-options')}
+                  //  onClick={() => navigate('/select-buy-options')}
+                  onClick={() => handleBuyClick(19.99)}
                     type='primary'
-                   
                   >
                     BUY
                   </Button>
