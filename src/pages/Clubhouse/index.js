@@ -114,9 +114,9 @@ const Clubhouse = () => {
       case 'Ultimate':
         return 12500000
       case 'Referral Level 1':
-        return 22500000
+        return 7500000
       case 'Referral Level 2':
-        return 1500000
+        return 7500000
       case 'Referral Level 3':
         return 7500000
       default:
@@ -159,20 +159,18 @@ const Clubhouse = () => {
   //   ? clubhouse.length * getEarningValue(user?.referralLevel)
   //   : 0
 
-  const totalEarnings = clubhouse
-  ?.filter(obj => obj.isRegistered) // Filter objects where isRegistered is true
-  ?.length * getEarningValue(user?.referralLevel);
+  const totalEarnings =
+    clubhouse?.filter((obj) => obj.isRegistered)?.length * getEarningValue(user?.referralLevel) // Filter objects where isRegistered is true
 
-console.log('totalEarnings:', totalEarnings);
+  console.log('totalEarnings:', totalEarnings)
 
-  // const totalEarnings = Array.isArray(clubhouse) && clubhouse?.isRegistered 
+  // const totalEarnings = Array.isArray(clubhouse) && clubhouse?.isRegistered
   // ? clubhouse.length * getEarningValue(user?.referralLevel)
   // : 0;
 
-// console.log('totalEarnings', totalEarnings);
+  // console.log('totalEarnings', totalEarnings);
 
-
-// console.log('totalEarnings',totalEarnings);
+  // console.log('totalEarnings',totalEarnings);
 
   return (
     <>
@@ -286,15 +284,16 @@ console.log('totalEarnings:', totalEarnings);
                                     alt='samlogo'
                                   />
                                   <p>
-                                    {user?.referralLevel === 'Ultimate'
-                                      ? '12,500,000'
-                                      : user?.referralLevel === 'Referral Level 1'
-                                      ? '225,000,000'
-                                      : user?.referralLevel === 'Referral Level 2'
-                                      ? '150,00,00'
-                                      : user?.referralLevel === 'Referral Level 3'
-                                      ? '75,000,00'
-                                      : ''}
+                                    {item?.sampoints ||
+                                      (user?.referralLevel === 'Ultimate'
+                                        ? '12,500,000'
+                                        : user?.referralLevel === 'Referral Level 1'
+                                        ? '7,500,000'
+                                        : user?.referralLevel === 'Referral Level 2'
+                                        ? '7,500,000'
+                                        : user?.referralLevel === 'Referral Level 3'
+                                        ? '7,500,000'
+                                        : '')}
                                   </p>
                                 </div>
                               </div>
