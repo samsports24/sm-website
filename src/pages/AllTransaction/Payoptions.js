@@ -55,8 +55,8 @@ const Payoptions = () => {
       const { url } = response?.session
       // console.log('url',url);
 
-        window.open(url);
-      window.location.href = url
+     //   window.open(url);
+       window.location.href = url
       setLoading(false)
     } catch (error) {
       console.error('Error creating payment intent:', error)
@@ -85,7 +85,8 @@ const Payoptions = () => {
           <div>
             <Button
              onClick={sampointspayment}
-              //
+             loading={loading}
+  
               type='primary'
             >
               PAY NOW
