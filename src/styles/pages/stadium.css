@@ -1,5 +1,5 @@
 .stadium-main {
-    width: 92%;
+    /* width: 92%; */
     height: auto;
     margin: auto;
 
@@ -27,7 +27,7 @@
     font-weight: 700;
     font-style: normal;
     color: rgb(255, 255, 255);
-    font-size:45px;
+    font-size:28px;
     line-height: 35px;
     margin-top: 8px;
 }
@@ -37,7 +37,7 @@
     font-weight: 700;
     font-style: normal;
     color: rgb(255, 255, 255);
-    font-size: 34px;
+    font-size: 29px;
 }
 
 .stadium-main .year_selector_container p:nth-of-type(3) {
@@ -85,7 +85,7 @@
     font-weight: 700;
     font-style: normal;
     color: rgb(140, 82, 255) !important;
-    font-size:41px;
+    font-size:42px;
     line-height: 34px;
 }
 
@@ -103,7 +103,7 @@
     border: 1px solid #ddd;
   border-radius: 4px;
   padding: 5px;
-  width: 75%;
+  width: 66%;
   margin-top: 20px;
 }
 
@@ -138,6 +138,7 @@ font-weight: 700;
     font-size: 25px;
     line-height: 35px;
     padding: 7px 4px;
+    cursor: pointer;
 }
 
 .stadium-main .daily-login-section .dailylogin span{
@@ -164,7 +165,7 @@ margin-top: 20px;
 font-style: normal;
 color: rgb(56, 182, 255) !important;
 text-decoration: none;
-font-size: 59px;
+font-size: 29px;
 margin-top: 10px;
 }
 
@@ -190,7 +191,7 @@ margin-top: 20px;
 font-style: normal;
 color: rgb(56, 182, 255) !important;
 text-decoration: none;
-font-size: 59px;
+font-size: 29px;
 margin-top: 10px;
 }
 
@@ -250,7 +251,7 @@ margin-top: 10px;
     font-style: normal;
     color: rgb(56, 182, 255) !important;
     text-decoration: none;
-    font-size: 59px;
+    font-size: 29px;
     margin-bottom: 20px;
 
 }

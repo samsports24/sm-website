@@ -303,6 +303,25 @@ export const deleteDraftQueue = async (id) => {
 }
 
 
+export const changeDraftQueueOrder = async (id,direction) => {
+  try {
+    attachToken()
+    // const res = await privateAPI.delete(`/draft/change-order-draft-queue?id=${id}`)
+    const res = await privateAPI.put(`/draft/change-order-draft-queue?id=${id}&direction=${direction}`);
+    if (res) {
+      await getDraftQueue()
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+
+
 
 // BLACK LIST 
 

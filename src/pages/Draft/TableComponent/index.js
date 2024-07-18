@@ -47,7 +47,7 @@ const TableComponent = ({ tableScroll }) => {
   const [loading, setLoading] = useState(false)
   const socket = io(base_url)
 
-  const [checkrockie,setRockie]=useState(true)
+  const [isRookieActive, setIsRookieActive] = useState(true);
 
   const dispatch = useDispatch()
 
@@ -77,6 +77,19 @@ const TableComponent = ({ tableScroll }) => {
       })
     }
   }, [localStorage.getItem('token')])
+
+
+  const handleRookieButtonClick = () => {
+    if (isRookieActive) {
+      dispatch(setRookieplayers(''));
+      // dispatch(setPage(1));
+    } else {
+      dispatch(setRookieplayers('Rookie'));
+    }
+    setIsRookieActive(!isRookieActive); // Toggle the state
+    dispatch(setPage(1)); // Reset page to 1 (assuming you need to do this on button click)
+  };
+
 
   const items = [
     {
@@ -243,12 +256,13 @@ const TableComponent = ({ tableScroll }) => {
                   key={i}
                   type='primary'
                   className={`${Rookieplayers === 'Rookie' ? 'active' : ''}`}
-                  onClick={() => {
-                    // dispatch(setPosition('ALL'))
-                    setRockie(false)
-                    dispatch(setRookieplayers(''))
-                    dispatch(setPage(1))
-                  }}
+                  // onClick={() => {
+                  //   // dispatch(setPosition('ALL'))
+                  //   dispatch(setRookieplayers(''))
+                  //   dispatch(setPage(1))
+                  // }}
+
+                  onClick={handleRookieButtonClick}
                 >
                   Rookie
                 </Button>

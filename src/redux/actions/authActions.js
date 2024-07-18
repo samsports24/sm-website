@@ -5,6 +5,27 @@ import { ethers } from 'ethers'
 import axios from 'axios'
 import io from 'socket.io-client'
 import { setSocket } from './socketAction'
+import { createPaymentIntent } from './paymentAction'
+import { useState } from 'react'
+import store from '../store'
+
+
+
+
+
+export const handlePaymentIntent = async (payload) => {
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  try {
+    setShowPaymentModal(true); 
+  } catch (error) {
+    console.error('Error initiating payment intent:', error);
+    notification.error({
+      message: 'Failed to initiate payment intent',
+      duration: 5,
+    });
+  }
+};
+
 
 export const authSignup = async (payload, navigate) => {
   try {
@@ -117,7 +138,11 @@ const connectEthereumWallet = () => {
   })
 }
 
-export const authLogin = (payload, navigate) => {
+export const authLogin = (payload, navigate, setShowPaymentModal) => {
+ 
+  // console.log('payload',payload);
+const {userName}=payload
+let username=userName
 
   return async (dispatch) => {
     try {
@@ -177,7 +202,6 @@ export const authLogin = (payload, navigate) => {
            return res
           // }
         } else {
-         
           localStorage.setItem('email', res.data.data.user.email)
           notification.error({
             message:
@@ -188,6 +212,30 @@ export const authLogin = (payload, navigate) => {
         }
       }
     } catch (err) {
+      console.error('Error during login:', err); 
+      
+
+      if (err?.response?.data?.message === 'payment not completed') {
+        localStorage.setItem('userName',username);
+        store.dispatch({
+          type: 'SET_SHOW_PAYMENT_MODAL',
+           payload: true,
+          // userName
+          // payload: {
+          //   showPaymentModal: true,
+          //  userName
+          // },
+        })
+        // console.log('Payment not completed. Initiating payment intent...');
+      //   console.log('res', res?.data?.data?.setting);
+        // const userName= localStorage.setItem('userName',UserName);
+      //   let email =getemail;
+      //  console.log('userName',userName);
+        // await createPaymentIntent(payload);
+
+        // await handlePaymentIntent(payload);
+      }
+
       notification.error({
         message: err?.response?.data?.message || 'Server Error',
         duration: 3,

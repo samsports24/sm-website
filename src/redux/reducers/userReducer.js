@@ -27,6 +27,7 @@ const initialState = {
   notificationCount: null,
   SamPoints:0,
   leagueSalaryCap:0,
+  showPaymentModal: false,
 }
 
 const userReducer = (state = initialState, action) => {
@@ -71,6 +72,12 @@ const userReducer = (state = initialState, action) => {
       return {
         ...state,
         notificationCount: payload,
+      }
+    }
+    case 'SET_SHOW_PAYMENT_MODAL': {
+      return {
+        ...state,
+        showPaymentModal: payload,
       }
     }
     default:

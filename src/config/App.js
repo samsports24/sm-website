@@ -102,16 +102,16 @@ const App = () => {
 
   useEffect(() => {
     // connectWallet()
-    // const _version = localStorage.getItem('version')
-    // if (_version && _version !== version) {
-    //   window.location.href = '/fantasy-league'
-    //   localStorage.clear()
-    //   localStorage.setItem('version', version)
-    //   notification.error({
-    //     message: `Try Login Again!`,
-    //     duration: 6,
-    //   })
-    // }
+    const _version = localStorage.getItem('version')
+    if (_version && _version !== version) {
+      window.location.href = '/fantasy-league'
+      localStorage.clear()
+      localStorage.setItem('version', version)
+      notification.error({
+        message: `Try Login Again!`,
+        duration: 6,
+      })
+    }
     if (localStorage.getItem('token')) {
       dispatch(getUser())
     }

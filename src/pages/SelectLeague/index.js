@@ -81,7 +81,7 @@ const SelectLeague = () => {
       subTitle: 'Weekly H2H',
       keywords: 'samSports Pro Leagues',
       description:
-        'offer an exclusive fantasy football experience for serious players, combining realistic GM simulation, advanced drafting tools, and cash prize pools. Members pay an annual fee for access to GM ratings, a trade calculator, and competitive gameplay against top enthusiasts. Join to compete, strategize, and immerse yourself in the ultimate fantasy football challenge!',
+        'offer an exclusive fantasy football experience for serious players, combining realistic GM simulation, advanced drafting tools, and cash prize pools. Members pay an annual fee for access to GM ratings, a trade calculator, and competitive gameplay against top enthusiasts. Join to compete, strategize, and immerse yourself in this ultimate fantasy football challenge!',
       // description:
       //   'Similar to the Pro league, each leagues are made of 30 teams and 6 divisions. These leagues allow you to play like the pro without the financial risks. Our token allows you to pay to improve your teams and give you more chances to win at the end of season.',
       // isDisabled: false,

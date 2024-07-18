@@ -26,7 +26,7 @@ const Header = () => {
   const [leaguepoints, setLeaguepoints] = useState('')
   const navigate = useNavigate()
 
-  console.log('user?.team?.currentLeague?.season',user?.team?.currentLeague?.prizePool);
+  // console.log('user?.team?.currentLeague?.season',user?.team?.currentLeague?.prizePool);
 
 // console.log('myleagueSalaryCap',myleagueSalaryCap);
   const teamFinancials = () => {

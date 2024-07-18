@@ -2,14 +2,19 @@ import React, { useEffect, useState } from 'react'
 import { Button, Dropdown, Input, Form, notification } from 'antd'
 import { authLogin } from '../redux'
 import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import R from '../assets/r.svg'
 import UserIcon from '../assets/user-icon.svg'
 import PasswordIcon from '../assets/password-icon.svg'
+import PaymentModal from '../components/modal/PaymentModal'
 
 const LoginDropdown = ({ loginFromSideMenu, loginFromNavbar, drawerVisible }) => {
   const [open, setOpen] = useState(false)
+//  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  // const  {showPaymentModal}  = useSelector((state) => state?.user)
+  const showPaymentModal = useSelector((state) => state?.user)
+  // console.log('showPaymentModal', showPaymentModal?.showPaymentModal?.modal)
 
   useEffect(() => {
     if (loginFromSideMenu && !drawerVisible) {
@@ -55,6 +60,7 @@ const LoginForm = ({ setOpen }) => {
   const dispatch = useDispatch()
 
   const onFinish = async (values) => {
+    console.log('values',values);
     if (values.userName && values.password) {
       setLoading(true)
       const res = await dispatch(authLogin(values, navigate))
@@ -62,6 +68,7 @@ const LoginForm = ({ setOpen }) => {
       setLoading(false)
     } else {
       notification.error({ message: 'username or password is missing.', duration: 7 })
+      // setOpen(false)
     }
   }
 
@@ -113,6 +120,8 @@ const LoginForm = ({ setOpen }) => {
           </Button>
         </Form.Item>
       </Form>
+      {/* <PaymentModal visible={showPaymentModal} onClose={() => setShowPaymentModal(false)} /> */}
+      <PaymentModal />
     </div>
   )
 }

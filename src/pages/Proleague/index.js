@@ -126,7 +126,7 @@ const Proleague = () => {
                         <p>
                           1,000,000
                           <div onClick={() => setModalShow(true)} className='moreinfo'>
-                            MoreInfo
+                            More Info
                           </div>
                         </p>
                       </div>
@@ -144,9 +144,8 @@ const Proleague = () => {
                     <h3>2nd place $250 & $300 worth of SamPoints</h3>
                     <h3>3 & 4 $300 worth of SamPoints</h3>
                     <h3>5-8 $250 worth of SamPoints</h3>
-                    <h3>9- 14 $225 worth of SamPoints</h3>
-
-                    <h3>15-20 200$ worth of SamPoints</h3>
+                    <h3>9-14 $225 worth of SamPoints</h3>
+                    <h3>15-20 $200 worth of SamPoints</h3>
                     <h3>21-25 $175 worth of SamPoints</h3>
                     <h3>26-32 $150 worth of SamPoints</h3>
                     <h3>Regular Season winner $150 worth of SamPoints</h3>

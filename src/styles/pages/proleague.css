@@ -92,9 +92,10 @@
     line-height: normal;
     font-size: 22px;
     font-weight: 400;
-    margin-left: 23px;
+    /* //margin-left: 23px; */
     height: fit-content;
     width: 92%;
+  /* color:red */
   }
   
   .pro_league_body  .new-league_joining_card .description p span {

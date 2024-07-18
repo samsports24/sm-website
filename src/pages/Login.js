@@ -10,12 +10,15 @@ import Twitter from '../assets/twitter.svg'
 import YouTube from '../assets/youtube.svg'
 import Banner from '../assets/login-pic-1.png'
 import { authLogin } from '../redux'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import PaymentModal from '../components/modal/PaymentModal'
+
 
 const SignIn = () => {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  // const [showPaymentModal, setShowPaymentModal] = useState(false)
 
   // const connectEthereumWallet = async (values) => {
   //   setLoading(true)
@@ -65,10 +68,12 @@ const SignIn = () => {
   // }
 
   const onFinish = async (values) => {
+    console.log('values',values);
     if (values.userName && values.password) {
       setLoading(true)
+      // console.log('values',values);
       // await connectEthereumWallet(values)
-      await dispatch(authLogin(values, navigate))
+      await dispatch(authLogin(values, navigate, setShowPaymentModal))
       setLoading(false)
     } else {
       notification.error({ message: 'username or password is missing.', duration: 7 })
@@ -82,6 +87,7 @@ const SignIn = () => {
   //   // return <Navigate replace to="/home" />;
   // } else {
   return (
+    <>
     <div className='signin'>
       <div className='width90'>
         <Row>
@@ -174,6 +180,9 @@ const SignIn = () => {
         </Row>
       </div>
     </div>
+
+
+    </>
   )
   // }
 }

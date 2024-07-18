@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux'
 
 
 export const createPaymentIntent = async (payload) => {
-  console.log('in the payload');
+  console.log('in the payload',payload);
   try {
     attachToken()
     const res = await privateAPI.post('/payment/payment-intent',payload)

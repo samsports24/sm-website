@@ -314,7 +314,7 @@ console.log('isTimerFinished',isTimerFinished);
   }, [socket])
 
   const fetchData = async () => {
-    // setLoading(true)
+     setLoading(true)
     try {
       const res = await getData()
       if (res) {

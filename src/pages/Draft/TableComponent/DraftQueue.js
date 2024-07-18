@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Spin, Table } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
-
+import { TiArrowSortedUp,TiArrowSortedDown } from "react-icons/ti";
 import { FaCircleMinus } from 'react-icons/fa6'
+import { BsFillArrowUpCircleFill,BsFillArrowDownCircleFill } from "react-icons/bs";
+
 
 import {
+  changeDraftQueueOrder,
   deleteDraftQueue,
   getDraftQueue,
   setSelectedPlayer,
@@ -13,6 +16,7 @@ import {
 const DraftQueue = ({ tableScroll }) => {
   const { draftQueues, activeTab } = useSelector((state) => state.draft)
   const [loading, setLoading] = useState('')
+  const [orderloading, setOrderLoading] = useState('')
 
   const dispatch = useDispatch()
 
@@ -32,6 +36,18 @@ const DraftQueue = ({ tableScroll }) => {
     setLoading('')
   }
 
+
+
+
+  const handleQueueorder = async (id,direction) => {
+
+    // console.log('id',id);
+    // console.log('direction',direction);
+    setOrderLoading(id)
+    //  setLoading(id)
+     await changeDraftQueueOrder(id,direction)
+     setOrderLoading('')
+  }
   const columns = [
     {
       width: 50,
@@ -54,6 +70,33 @@ const DraftQueue = ({ tableScroll }) => {
         </>
       ),
     },
+
+
+    // {
+    //   width: 50,
+    //   title: ' ',
+    //   dataIndex: 'plus-icon',
+    //   key: 'plus-icon',
+    //   render: (_, obj) => (
+    //     <>
+    //       <TiArrowSortedUp
+    //         size={18}
+    //         style={{ color: '#00A7E5', cursor: 'pointer' }}
+    //         onClick={() => handleQueueorder(obj?._id,'up')}
+    //       />
+    //       <TiArrowSortedDown 
+    //         size={18}
+    //         style={{ color: '#00A7E5', cursor: 'pointer' }}
+    //         onClick={() => handleQueueorder(obj?._id,'down')}
+    //       />
+    //     </>
+    //   ),
+    // },
+
+
+  
+
+
     // {
     //   width: 70,
     //   title: 'Rank',
@@ -61,12 +104,18 @@ const DraftQueue = ({ tableScroll }) => {
     //   key: 'Rank',
     //   render: (t) => <p>{t || '-'}</p>,
     // },
+
+
+
     {
       title: 'Player',
       dataIndex: 'player',
       key: 'player',
+      
       render: (_, obj) => {
-    
+
+
+
         const inj = obj?.player?.InjuryStatus
         return (
           <div className='table_player_name_box nrc_container'>
@@ -101,6 +150,42 @@ const DraftQueue = ({ tableScroll }) => {
         )
       },
     },
+
+
+
+
+    {
+      width: 150,
+      title: ' ',
+      dataIndex: 'order-icon',
+      key: 'order-icon',
+      render: (_, obj) => (
+        <>
+          {orderloading === obj?._id ? (
+            <Spin />
+          ) : (
+            <>
+            <div style={{display:'flex',flexDirection:'column',gap:'10px'}}>
+               {obj?.Queue_order > 1 && (
+            <BsFillArrowUpCircleFill
+              size={18}
+              style={{ color: '#00A7E5', cursor: 'pointer' }}
+              onClick={() => handleQueueorder(obj?._id, 'up')}
+            />
+          )}
+              <BsFillArrowDownCircleFill 
+                size={18}
+                style={{ color: '#00A7E5', cursor: 'pointer' }}
+            onClick={() => handleQueueorder(obj?._id,'down')}
+              />
+              </div>
+            </>
+          )}
+        </>
+      ),
+    },
+
+
     {
       width: 150,
       title: 'POSITION',
