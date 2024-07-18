@@ -30,8 +30,11 @@ const PaymentModal = ({ visible, onClose }) => {
     }
     // console.log('userName',userName);
     const res = await createPaymentIntent(payload);
+    const { url } = res?.session
+    // console.log('url',url);
 
-   
+    //  window.open(url);
+    window.location.href = url   
      if (res) {
         localStorage.removeItem('userName')
         dispatch({
