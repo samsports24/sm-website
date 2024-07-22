@@ -119,6 +119,7 @@
 @import './pages/stadium.css';
 @import './pages/clubhouse.css';
 @import './pages/proleague.css';
+@import './pages//rulebook.css';
 
 /* COMPONENT HOCKEY */
 @import './components/leagueStandingsHockey.css';

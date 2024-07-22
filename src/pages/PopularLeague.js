@@ -34,7 +34,7 @@ const PopularLeague = () => {
         </Col> */}
         {leagues ? (
           leagues?.nonUserLeagues
-            ?.filter((v) => v?.leagueType !== 'professional')
+             ?.filter((v) => v?.leagueType !== 'public' && v?.leagueType !== 'private' && v?.id!=='64fc5edaf8f2513bd263845a' )
             ?.map((value, index) => (
               <Col xs={24} sm={12} xl={8} xxl={6} key={index}>
                 <PopularLeagueCard data={value} active={false} yourLeague={false} />

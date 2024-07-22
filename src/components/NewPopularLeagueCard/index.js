@@ -10,7 +10,14 @@ const NewPopularLeagueCard = ({ data, yourLeague, active, fromHome }) => {
     <div className='p_league_card_wrapper'>
       <div
         className={`p_league_card ${
-          active ? 'active' : leagueType === 'professional' ? 'pro_league_border' : ''
+          // active ? 'active' : leagueType === 'professional' ? 'pro_league_border' : ''
+          active
+          ? 'active'
+          : leagueType === 'professional'
+          ? 'pro_league_border'
+          : leagueType === 'Ultimate'
+          ? 'ultimate_league_border'
+          : ''
         }`}
       >
         <div className='top'>

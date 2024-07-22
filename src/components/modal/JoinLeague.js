@@ -59,9 +59,9 @@ const JoinLeague = ({ data }) => {
   }
   return (
     <>
-      <div className='button_row' onClick={showModal} style={{ cursor: 'pointer' }}>
+      {/* <div className='button_row' onClick={showModal} style={{ cursor: 'pointer' }}>
         <p className='join-now'>Join Now</p>
-      </div>
+      </div> */}
       <Modal
         centered
         open={isModalVisible}

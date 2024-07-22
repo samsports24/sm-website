@@ -88,6 +88,14 @@ import Clubhouse from '../pages/Clubhouse'
 import Proleague from '../pages/Proleague'
 import Success from '../pages/Successpayment'
 import Error from '../pages/errorpayment'
+import RuleBook from '../pages/Rulebook'
+import RoasterInfo from '../pages/Rulebook/RoasterInfo'
+import GmRating from '../pages/Rulebook/Gmrating'
+import SampointsBreakdown from '../pages/Rulebook/sampointsbreakdown'
+import RewardInfo from '../pages/Rulebook/rewardinfo'
+import RegularSeasonandPlayoff from '../pages/Rulebook/RegularSeasonandPlayoff'
+import SammetricBreakdown from '../pages/Rulebook/Sammetric'
+import SamPositiontab from '../pages/Rulebook/samPositiontab'
 
 const Routers = () => {
   const Component = () => {
@@ -192,6 +200,25 @@ const Routers = () => {
           {/* <Route path='/player-auction' element={<ComingSoon />} /> */}
           {/* <Route path='/fantasy-league' element={<FantasyLeague />} /> */}
           <Route path='/fantasy-league' element={<NewHomePage />} />
+                {/* RULESBOOK ROUTES  START HERE*/}
+
+          <Route path='/rule-book' element={<RuleBook />} />
+          <Route path='/rule-book/roasterinfo' element={<RoasterInfo />} />
+          <Route path='/rule-book/gm-rating' element={<GmRating />} />
+          <Route path='/rule-book/sampoints-breakdown' element={<SampointsBreakdown/>} />
+          <Route path='/rule-book/reward-info' element={<RewardInfo/>} />
+          <Route path='/rule-book/regularseason-and-playoff' element={<RegularSeasonandPlayoff/>} />
+          <Route path='/rule-book/sammetric' element={<SammetricBreakdown/>} />
+          <Route path='/rule-book/samposition' element={<SamPositiontab/>} />
+
+      
+
+
+          
+  
+
+              {/* RULESBOOK ROUTES  END HERE*/}
+         
           <Route path='/choose-your-game-step1' element={<ChooseYourGame />} />
           <Route path='/choose-your-league-step2' element={<ChooseYourLeague />} />
           <Route path='/choose-your-league-step3' element={<ChooseYourLeagueStep3 />} />

@@ -107,6 +107,10 @@ const MainMenu = ({ visible }) => {
       case '/comissioner': {
         return setActive('comissioner')
       }
+
+      case '/rule-book': {
+        return setActive('rule-book')
+      }
       // case '/team-schedule': {
       //   return setActive('team-schedule')
       // }
@@ -285,7 +289,7 @@ const MainMenu = ({ visible }) => {
       ) : null}
       <div
         className={`sidebar_menu_item ${active === 'rules-book' ? 'activeRoute' : ''}`}
-        onClick={() => {}}
+        onClick={() => {navigate('/rule-book')}}
       >
         <PiNotebookLight />
         <p>RULESBOOK</p>

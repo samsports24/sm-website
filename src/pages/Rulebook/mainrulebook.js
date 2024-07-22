@@ -3,15 +3,17 @@ import { Col, Row, notification } from 'antd'
 import logo from '../../assets/sam-football.png'
 import { useNavigate } from 'react-router-dom'
 import CreateLeague from '../../components/modal/CreateLeague'
+import gmrating from "../../assets/gm ratings.webp"
+import sfleague from "../../assets/sflogo.webp"
 
-const Lobby = () => {
+const MainRuleBook = () => {
   const isAuthenticated = localStorage.getItem('token')
   const navigate = useNavigate()
 
   return (
-    <div className='lobby_container'>
-      <h1>LOBBY</h1>
-      <div className='lobby_content'>
+    <div className='rulebook_container'>
+      <h1>RULEBOOK</h1>
+      <div className='rulebook_content'>
         {!isAuthenticated && (
           <div
             className='overlay'
@@ -32,9 +34,12 @@ const Lobby = () => {
                   <Card2
                     cursor
                     isImage
+                    onClick={() => navigate('/rule-book/gm-rating')}
+                    
                     text={{
-                      text1: 'Create',
-                      text2: 'Leagues',
+                      text1: 'GM',
+                      text2: 'RATINGS',
+                      text4: 'INFO',
                     }}
                     paddingBlock={'70px'}
                   />
@@ -44,7 +49,7 @@ const Lobby = () => {
           </Col>
           <Col xs={24} lg={12} xl={8}>
             <Row gutter={[10, 10]}>
-              <Card2
+              {/* <Card2
                 cursor
                 flip
                 onClick={() => navigate('/popular-league')}
@@ -52,36 +57,40 @@ const Lobby = () => {
                   text1: 'Popular',
                   text2: 'Leagues',
                 }}
-              />
+              /> */}
               <Card3 />
             </Row>
           </Col>
           <Col xs={24} lg={24} xl={8}>
-            <div className='left_column'>
+            <div className='rulebook_left_column'>
               <Card2
                 cursor
                 flip
-                onClick={() => navigate('/my-league')}
+                onClick={() => navigate('/rule-book/reward-info')}
+                
                 text={{
-                  text1: 'My Leagues',
+                  text1: 'REWARDS',
+                  text3:'INFO & BREAKDOWN'
                 }}
               />
               <Card2
                 alignCenter
+                onClick={() => navigate('/rule-book/sampoints-breakdown')}
+               
                 text={{
-                  text1: 'GM Challenge',
-                  text3:
-                    'Rank yourself against your peers and be the ultimate best GM, rise the ranks and get your chance to GM a pro team!',
+                  text1: 'SAM POINTS',
+                  text3:'INFO & BREAKDOWN'
                 }}
               />
               <Card2
                 alignCenter
                 proScoring
                 flip
+                onClick={() => navigate('/rule-book/regularseason-and-playoff')}
                 text={{
-                  text1: 'PRO SCORING',
-                  text3: 'FOLLOW YOUR FAVORITE',
-                  text4: 'PRO TEAM PERFORMANCE',
+                  text1: 'REGULAR SEASON &',
+                  text2: 'PLAYOFFS',
+                  text4: 'INFO & BREAKDOWN',
                 }}
               />
             </div>
@@ -121,10 +130,19 @@ const Lobby = () => {
 }
 
 const Card1 = ({ flip }) => {
+  const navigate=useNavigate()
   return (
-    <div className={`card1 ${flip ? 'flip' : ''}`}>
-      <div>
-        <h1>SAM Legends</h1>
+    <div onClick={() => navigate('/rule-book/sammetric')} className={`rulebook_card1 ${flip ? 'rulebook_flip' : ''}`}>
+      <div >
+
+        {/* <img src={}></img> */}
+        <h1>The
+            <br></br>
+            SAMMETRIC
+            <p>SCORING BREAKDOWN</p>
+        </h1>
+      
+    
       </div>
     </div>
   )
@@ -132,7 +150,7 @@ const Card1 = ({ flip }) => {
 const Card2 = ({ isImage, text, alignCenter, cursor, onClick, flip, paddingBlock }) => {
   return (
     <div
-      className={`card2 ${flip ? 'flip' : ''}`}
+      className={`rulebook_card2 ${flip ? 'rulebook_flip' : ''}`}
       style={{
         cursor: cursor ? 'pointer' : 'initial',
         paddingBlock: paddingBlock ? paddingBlock : '30px',
@@ -140,7 +158,7 @@ const Card2 = ({ isImage, text, alignCenter, cursor, onClick, flip, paddingBlock
       onClick={onClick}
     >
       <div className='content'>
-        {isImage && <img src={logo} />}
+        {isImage && <img style={{width:'20%'}} src={gmrating} />}
         <div>
           {text?.text1 && (
             <h1 style={{ textAlign: alignCenter ? 'center' : 'initial' }}>{text?.text1}</h1>
@@ -160,17 +178,19 @@ const Card2 = ({ isImage, text, alignCenter, cursor, onClick, flip, paddingBlock
   )
 }
 const Card3 = ({ flip }) => {
+    const navigate=useNavigate()
   return (
-    <div className={`card3 ${flip ? 'flip' : ''}`}>
+    <div onClick={() => navigate('/rule-book/roasterinfo')} className={`rulebook_card3 ${flip ? 'rulebook_flip' : ''}`}>
       <div className='content'>
-        <div>
-          <img src={logo} />
-          <h1>SFL</h1>
+        <div >
+          <img src={sfleague} />
+          <h1>ROASTER</h1>
         </div>
-        <h1>PRO</h1>
+        <p>INFO</p>
       </div>
     </div>
   )
+
 }
 
-export default Lobby
+export default MainRuleBook

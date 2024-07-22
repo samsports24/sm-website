@@ -112,6 +112,9 @@
   .pro_league_border {
     border: 1px solid #fff;
   }
+  .ultimate_league_border {
+    border: 1px solid gold;
+  }
   
   @media (max-width: 600px) {
     .u_league_card_wrapper {
