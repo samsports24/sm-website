@@ -96,6 +96,7 @@ import RewardInfo from '../pages/Rulebook/rewardinfo'
 import RegularSeasonandPlayoff from '../pages/Rulebook/RegularSeasonandPlayoff'
 import SammetricBreakdown from '../pages/Rulebook/Sammetric'
 import SamPositiontab from '../pages/Rulebook/samPositiontab'
+import FranchiseTag from '../pages/Rulebook/FranchiseTag'
 
 const Routers = () => {
   const Component = () => {
@@ -210,6 +211,8 @@ const Routers = () => {
           <Route path='/rule-book/regularseason-and-playoff' element={<RegularSeasonandPlayoff/>} />
           <Route path='/rule-book/sammetric' element={<SammetricBreakdown/>} />
           <Route path='/rule-book/samposition' element={<SamPositiontab/>} />
+          <Route path='/rule-book/franchisetag' element={<FranchiseTag/>} />
+
 
       
 

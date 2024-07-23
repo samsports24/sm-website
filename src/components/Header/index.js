@@ -17,6 +17,7 @@ const Header = () => {
   const record = useSelector((state) => state.user.record)
   const user = useSelector((state) => state.user.userDetails)
   const leagueType = user?.team?.currentLeague?.leagueType
+  const safepaylink = user?.team?.currentLeague?.safePayLink
   const teamSalary = useSelector((state) => state.user.teamSalaryCap)
   const { notificationCount } = useSelector((state) => state.user)
   const { auctionCount } = useSelector((state) => state.user)
@@ -26,34 +27,38 @@ const Header = () => {
   const [leaguepoints, setLeaguepoints] = useState('')
   const navigate = useNavigate()
 
+  console.log('safepaylink', safepaylink)
+
   // console.log('user?.team?.currentLeague?.season',user?.team?.currentLeague?.prizePool);
 
-// console.log('myleagueSalaryCap',myleagueSalaryCap);
+  // console.log('myleagueSalaryCap',myleagueSalaryCap);
   const teamFinancials = () => {
     navigate('/team-financials')
   }
+  const paysafe = () => {
+    if (safepaylink) {
+      window.location.href = safepaylink
+    }
+  }
 
-   
-//  season:user?.team?.currentLeague?.season
-  
+  //  season:user?.team?.currentLeague?.season
+
   const confirm = () => {
-    
     setModalVisible(true)
   }
 
   const handletransferleaguepoints = async () => {
     try {
       const payload = {
-        userid:user?._id,
+        userid: user?._id,
         leagueid: user?.team?.currentLeague._id,
         teamid: user?.team?._id,
         leaguepoints: parseFloat(leaguepoints),
-        
-      }  
+      }
 
-      console.log('payload',payload);
-    const data = await TransferPointsToLeague(payload)
-     console.log('poinst transfer to league wallet successfully:', data)
+      console.log('payload', payload)
+      const data = await TransferPointsToLeague(payload)
+      console.log('poinst transfer to league wallet successfully:', data)
       // cancel()
     } catch (error) {
       console.error('Error in transfering the league wallet :', error)
@@ -125,8 +130,7 @@ const Header = () => {
                 <p>League Salary Cap</p>
                 {/* <span>$199,759,446</span> */}
                 {/* <span>{`$${leagueSalaryCap?.toLocaleString()}`}</span> */}
-                <span>{`$${myleagueSalaryCap?.toLocaleString() || 0 }` }</span>
-            
+                <span>{`$${myleagueSalaryCap?.toLocaleString() || 0}`}</span>
               </div>
               <div>
                 <p>Team Salary Cap</p>
@@ -140,40 +144,39 @@ const Header = () => {
 
             <div className='leaguepointswallet'>
               <div>
-              <h4>
-              YOUR LEAGUE SAM
-                <span> POINTS</span>
-              </h4>
-              <div className='leaguedifflex'>
+                <h4>
+                  YOUR LEAGUE SAM
+                  <span> POINTS</span>
+                </h4>
+                <div className='leaguedifflex'>
                   <img className='imgdiv' src={sampointslogo} alt='SAMPOINTS' />
-                  <div className='leaguemoney'>{sampoints?.toLocaleString() || '0'}
-                
-                  </div>
-             
+                  <div className='leaguemoney'>{sampoints?.toLocaleString() || '0'}</div>
                 </div>
 
-              <h4>
-             LEAGUE SAM
-                <span> POINTS PRIZE POOL</span>
-              </h4>
+                <h4>
+                  LEAGUE SAM
+                  <span> POINTS PRIZE POOL</span>
+                </h4>
 
-              <div className='leaguedifflex'>
+                <div className='leaguedifflex'>
                   <img className='imgdiv' src={sampointslogo} alt='SAMPOINTS' />
-                  <div className='leaguemoney'>{user?.team?.currentLeague?.prizePool}
-                
-                  </div>
-             
+                  <div className='leaguemoney'>{user?.team?.currentLeague?.prizePool}</div>
                 </div>
-                </div>
-              <div className='leaguediff'>            
+              </div>
+              <div className='leaguediff'>
                 <Button
                   className='addmore'
                   // loading={loading}
                   type='primary'
-                   onClick={confirm}
+                  onClick={confirm}
                 >
                   ADD MORE
                 </Button>
+                {safepaylink && (
+                  <Button  className='paysafe' type='primary' onClick={paysafe}>
+                    PAY SAFE
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -256,11 +259,11 @@ const Header = () => {
         leaguepoints={leaguepoints}
         setLeaguepoints={setLeaguepoints}
         onSave={() => {
-              setModalVisible(false)
+          setModalVisible(false)
         }}
-        
+
         // onConfirm={newconfirm}
-     
+
         // Confirmcheck={Confirmcheck}
         // setConfirmcheck={setConfirmcheck}
         // playerInfo={playerInfo}

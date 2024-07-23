@@ -59,13 +59,22 @@
   justify-content: center;
   align-items: center;
   padding: 30px;
+  flex-direction: column;
   /* background: rgb(176, 141, 25);
     background: linear-gradient(
       263deg,
       rgba(176, 141, 25, 1) 0%,
       rgba(255, 255, 255, 0.12368697478991597) 100%
     ); */
+
 }
+
+.rulebook_card1 > div > img {
+  width: 75%;
+position: relative;
+top: 80px;
+}
+
 .rulebook_card1 > div h1 {
   font-size: 30px;
   font-weight: 700;
@@ -127,6 +136,9 @@
   width: 100%;
   height: 535px;
   background: url('../../assets/roasterinfo.webp') no-repeat center;
+/* opacity: 0.6; */
+  background-blend-mode: multiply;
+  /* fill-opacity: 0.2; */
   background-size: cover;
   display: flex;
   align-items: flex-end;
@@ -140,17 +152,25 @@
   flex-direction: row;
   gap: 5px;
   align-items: center;
+  margin-bottom: 80px;
 }
 .rulebook_card3 .content > div img {
-  width: 40px;
+  width: 40%;
 }
 .rulebook_card3 .content > div h1 {
   font-size: 30px;
   font-weight: 700;
+
 }
-.rulebook_card3 .content > h1 {
+.rulebook_card3 .content > div > h1 {
   font-size: 50px;
   font-weight: 700;
+  line-height: 1;
+}
+
+.rulebook_card3 .content > div > h1 > p {
+  font-size: 20px;
+  font-weight: 400;
   line-height: 1;
 }
 
@@ -976,6 +996,7 @@
   font-weight: 700;
   line-height: normal;
   justify-content: center; */
+  cursor: pointer;
 }
 
 .SammetricBreakdown .sammetricinfo .sambox > h2 {
@@ -1029,6 +1050,7 @@
   flex-direction: row;
   justify-content: space-between;
   padding: 3px 20px 3px 20px;
+  border:4px solid grey
 }
 
 .SammetricBreakdown .mainsambox .sampositions > p {
@@ -1236,8 +1258,10 @@
 
 .Sammetricposition .sambgback .scoringcolumn p:nth-child(4n) {
 
-  width: 10%;
+  width: 14%;
 }
+
+
 
 .Sammetricposition .sambgback .scoringcolumn p:nth-child(5n) {
 
@@ -1279,19 +1303,24 @@
   line-height: normal;
   color: rgb(255, 255, 255);
   /* margin-top: 10px; */
+
   
 }
 
 .Sammetricposition .sambgback .positiondetails .positiondetailsinfo p:nth-child(2n) {
   width: 10%;
   text-align: center;
+ 
 }
 
-.Sammetricposition .sambgback .positiondetails .positiondetailsinfo p:nth-child(3n) {
+.Sammetricposition .sambgback .positiondetails .positiondetailsinfo span {
 
   width: 10%;
   color:#FFE871;
   text-align: center;
+  font-size: 18px;
+
+  
 }
 
 
@@ -1305,6 +1334,8 @@
 
   width: 10%;
   text-align: center;
+
+  
  
 }
 
@@ -1317,3 +1348,220 @@ text-align: center;
 
 
 /* SAM METRIC POSITION CSS END HERE */
+
+
+/* FRANCHISE TAG COST CSS STARTS HERE */
+
+
+
+.franchisetagcost .headersection {
+  background-color: rgba(41, 28, 74, 0.9);
+  /* background-blend-mode: multiply; */
+  position: relative;
+  z-index: 999;
+  background-color: #331d7b;
+}
+.franchisetagcost .headersectionBg {
+  filter: opacity(0.2);
+  background: url('../../assets/rosterbg.webp') no-repeat center;
+  background-size: cover;
+  /* display: flex; */
+  background-color: rgba(41, 28, 74, 0.9);
+  background-blend-mode: multiply;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: -1;
+}
+
+.franchisetagcost .headersection .headersectiontext {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  padding: 20px;
+  /* border-radius:16px; */
+  overflow: auto;
+  /* background-color:var(--secondaryPurple); */
+  border: 6px solid rgba(119, 49, 216, 0.4);
+
+  /* opacity: 0.6; */
+  justify-content: space-between;
+
+  /* opacity: none; */
+}
+
+.franchisetagcost .headersection .headersectiontext > p {
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1;
+  color: rgb(255, 255, 255);
+  opacity: 0.7;
+}
+
+.franchisetagcost .headersection .headersectiontext > p > span {
+  font-weight: 400;
+  font-size: 23px;
+display: flex;
+justify-content: flex-end;
+opacity: none;
+  
+}
+
+.franchisetagcost .headersection .headersectiontext > h2 {
+  font-size: 50px;
+  font-weight: 700;
+  line-height: normal;
+  color: rgb(255, 255, 255);
+  opacity: 0.7;
+  
+}
+
+.franchisetagcost .headersection .headersectiontext > img {
+  position: relative;
+  /* bottom: 70%; */
+  /* left: 30%; */
+  /* height: 30%;
+  width: 30%; */
+  display: flex;
+  justify-content: flex-start;
+  right: 45%;
+  bottom: 27px;
+
+} 
+
+.franchisetagcost .headersection .headersectiontext .ant-btn {
+  background: #612dae;
+  font-size: 25px;
+  font-weight: 700;
+  color: rgb(255, 255, 255);
+  border: none;
+  padding: 4px;
+  width: 141px;
+  height: 48px;
+  border-radius: 16px;
+}
+
+
+.franchisetagcost .horizontal-line {
+  border: none;
+  border-top: 5px solid white;
+  margin-top: 20px;
+}
+
+
+.franchisetagcost .tagcostmain > p {
+  font-size: 25px;
+  font-weight: 400;
+  line-height: normal;
+  font-style: normal;
+  color: rgb(255, 255, 255);
+  margin-top: 20px;
+  width: 70%;
+  
+}
+
+
+
+.franchisetagcost .tagcostmain  > h2 {
+  font-size: 23px;
+  font-weight: 700;
+  line-height: normal;
+  font-style: normal;
+  color: rgb(255, 255, 255);
+  margin-top: 50px;
+
+
+}
+
+
+.franchisetagcost .tagcostmain  > h2 > span  {
+
+
+  font-size: 23px;
+  font-weight: 700;
+  line-height: normal;
+  font-style: normal;
+  color: rgb(39, 172, 213);
+  margin-left: 10px;
+}
+
+
+
+
+.franchisetagcost .tagcostmain .sambgback {
+  /* background: url('../../assets/bgplayer.webp') no-repeat; */
+  /* background-color: rgba(41, 28, 74, 0.9);
+  background-blend-mode: multiply;
+  background-position: right;
+  background-size: cover; */
+}
+
+
+.franchisetagcost .tagcostmain .sambgback  .samposmain {
+  width: 50%;
+
+  /* transform: translate(242.17px, 78.5839px); */
+
+  /* opacity: 0.12; */
+  /* filter: opacity(0.2); */
+  background: url('../../assets/rosterbg.webp') no-repeat center;
+  background-size: cover;
+  /* display: flex; */
+  background-color: rgba(41, 28, 74, 0.9);
+  border:2px solid grey;
+  background-blend-mode: multiply;
+  margin-top: 20px;
+
+  /* height: 13vh; */
+}
+
+
+.franchisetagcost .tagcostmain .sambgback  .samposmain .samposdesp {
+  display: flex;
+  flex-direction: row;
+  /* justify-content: space-between; */
+  padding: 20px;
+  overflow-y: scroll;
+  gap: 50px
+}
+
+.franchisetagcost .tagcostmain .sambgback  .samposmain .samposdesp > p {
+
+  font-size: 27px;
+  font-weight: 400;
+  line-height: normal;
+  color: rgb(255, 255, 255);
+  width: 40%;
+
+}
+
+.franchisetagcost .tagcostmain .sambgback  .samposmain .samposdesp > p >span {
+  
+  font-size: 27px;
+  font-weight: 700;
+  line-height: normal;
+  color: gold;
+
+}
+
+.franchisetagcost .tagcostmain .sambgback  .samposmain .samposdesp > p .franchise {
+  /* width: 40%;
+  background: rgb(31, 4, 50);
+  border:1px solid white; */
+  color: gold;
+  /* padding: 5px;
+  margin-top: 5px;
+  position: relative;
+  top: 17px; */
+}
+
+@media (max-width: 1500px) {
+  .gmratinginfo {
+    flex-direction: column;
+  }
+}
+
+
+/* FRANCHISE TAG COST CSS END HERE */

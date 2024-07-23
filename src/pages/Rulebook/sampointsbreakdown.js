@@ -25,7 +25,7 @@ const SampointsBreakdown = () => {
         <p>
           SamPoints
           <span>
-           are the cornerstone of our in-game economy, facilitating player acquisitions, upgrades,
+            are the cornerstone of our in-game economy, facilitating player acquisitions, upgrades,
             and rewarding activities. Each week, users can earn SamPoints through our stadium tab,
             detailed in our reward section. Moreover, SamPoints play a crucial role in funding
             incoming rookies annually. The cost of each rookie is calculated as a percentage of the
@@ -35,22 +35,20 @@ const SampointsBreakdown = () => {
           </span>
         </p>
         <div className='payscaleclass'>
-<div>
-    <a className='rookiescale' href='https://www.flipsnack.com/ACCDDD99E8C/rookie-pay-scale-breakdown/full-view.html'>ROOKIE PAY SCALE BREAKDOWN</a>
-<div>
-<img style={{width:'50%',marginTop:'20px'}} src={payscalebrekadown}></img>
-</div>
- 
-</div>
+          <div>
+            <a
+              className='rookiescale'
+              href='https://www.flipsnack.com/ACCDDD99E8C/rookie-pay-scale-breakdown/full-view.html'
+            >
+              ROOKIE PAY SCALE BREAKDOWN
+            </a>
+            <div>
+              <img style={{ width: '50%', marginTop: '20px' }} src={payscalebrekadown}></img>
+            </div>
+          </div>
 
-
-
-<img className='paysacalelogo' src={payscalelogo}></img>
-
-
-
+          <img className='paysacalelogo' src={payscalelogo}></img>
         </div>
-        
       </div>
     </div>
   )

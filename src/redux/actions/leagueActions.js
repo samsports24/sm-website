@@ -11,6 +11,14 @@ export const removeLeague = () => {
   }
 }
 
+export const setAllSamMetric = (payload) => {
+  return {
+    type: 'SET_ALL_SAM_Metric',
+    payload: payload,
+  }
+}
+
+
 export const getProfessionalLeagueRanks = async (week) => {
   try {
     attachToken()
@@ -440,4 +448,34 @@ export const makeiswallettrue =async (payload) =>{
 
 
 }
+
+
+
+
+
+export const getSamMetric =async (payload) =>{
+  try {
+    // attachToken()
+    const res = await privateAPI.get(`/admin/league/getsammetric`, payload)
+    if (res) {
+      
+      store.dispatch(setAllSamMetric(res.data.data))
+      return res.data.data
+
+    
+    
+      // store.dispatch(getUser())
+     // getLeagueDetails()
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+
+
+}
+
 

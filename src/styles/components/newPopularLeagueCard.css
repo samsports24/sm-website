@@ -33,19 +33,30 @@
 .p_league_card .text_value {
   font-size: 16px;
   font-weight: 700;
-  margin-left: 7px;
+  /* margin-left: 7px; */
   line-height: 1.3;
+}
+
+
+.p_league_card .color_text_value {
+  font-size: 16px;
+  font-weight: 700;
+  /* margin-left: 7px; */
+  line-height: 1.3;
+  color:  rgb(41, 157, 199) !important;
 }
 
 .p_league_card .row_1 {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  /* justify-content: space-between; */
+  gap: 30px;
+
 }
 .p_league_card .row_1 .image_box {
   border-radius: 40%;
-  width: 70px;
-  height: 70px;
+  width: 150px;
+  height: 150px;
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;

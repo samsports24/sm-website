@@ -34,33 +34,33 @@ const SammetricBreakdown = () => {
       color: '#EE919E',
     },
     {
-      name: 'OFFENSIVE TACKLE',
-      position: 'OT',
+      name: 'OFFENSIVE LINEMAN',
+      position: 'OL',
       breakdown: 'SCORING BREAKDOWN.',
       color: '#FE73FF',
     },
     {
       name: 'PUNTER',
-      position: 'P',
+      position: 'ST',
       breakdown: 'SCORING BREAKDOWN.',
       color: '#98CBE6',
     },
 
     {
       name: 'KICKER',
-      position: 'K',
+      position: 'ST',
       breakdown: 'SCORING BREAKDOWN.',
       color: '#98CBE6',
     },
     {
       name: 'INTERIOR D-LINEMAN',
-      position: 'IDL',
+      position: 'DT',
       breakdown: 'SCORING BREAKDOWN.',
       color: '#93FF94',
     },
     {
       name: 'EDGE RUSHER',
-      position: 'EDG',
+      position: 'DE',
       breakdown: 'SCORING BREAKDOWN.',
       color: '#93FF94',
     },
@@ -73,8 +73,8 @@ const SammetricBreakdown = () => {
       color: '#98CBE6',
     },
     {
-      name: 'MIDDLE LINEBACKER',
-      position: 'MLB',
+      name: 'INSIDE LINEBACKER',
+      position: 'LB',
       breakdown: 'SCORING BREAKDOWN.',
       color: '#98CBE6',
     },
@@ -96,9 +96,9 @@ const SammetricBreakdown = () => {
   const newplayers = baseballPlayers.sort((a, b) => a.index - b.index)
 
 
-  const handlePlayerClick = (playerName,playerPosition) => {
+  const handlePlayerClick = (playerName,playerPosition,playerColor) => {
     // navigate(`/rule-book/samposition/${(playerName)}`);
-    navigate('/rule-book/samposition', { state: { playerName,playerPosition } });
+    navigate('/rule-book/samposition', { state: { playerName,playerPosition,playerColor } });
   }
 
   return (
@@ -134,8 +134,8 @@ const SammetricBreakdown = () => {
               </span>
             </p>
           </div>
-
-          <div className='sambox'>
+        
+          <div onClick={() => navigate('/rule-book/franchisetag')} className='sambox'>
             <h2>
               2024 FRANCHISE TAG <br />
               <span>BREAKDOWN</span>
@@ -154,7 +154,7 @@ const SammetricBreakdown = () => {
             {newplayers?.map((player, index) => {
     
               return (
-                <div key={index} onClick={() => handlePlayerClick(player.name,player.position)} className='sampositions'>
+                <div key={index} onClick={() => handlePlayerClick(player.name,player.position,player?.color)} className='sampositions'>
                   <p>
                     {player.name} <br />
                     <h1>{player.breakdown}</h1>

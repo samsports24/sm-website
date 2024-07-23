@@ -162,9 +162,9 @@ const VerticalLayout = ({ children, active }) => {
                   Login
                 </Button> */}
                 <LoginDropdown loginFromNavbar />
-                <Button type='primary' onClick={landingSignup}>
+                {/* <Button type='primary' onClick={landingSignup}>
                   Sign Up
-                </Button>
+                </Button> */}
               </div>
             )}
           </div>

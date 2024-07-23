@@ -37,7 +37,7 @@ const GmCard = ({ playerData, news }) => {
           </div>
         </Col>
         <Col xs={24} xl={14}>
-          <Button type='primary' style={{ marginTop: '25px', marginLeft: 'auto', display: 'flex' }}>
+          <Button  type='primary' style={{ marginTop: '25px', marginLeft: 'auto', display: 'flex' }}>
             AUCTION PLAYER
           </Button>
           <div className='player-news'>

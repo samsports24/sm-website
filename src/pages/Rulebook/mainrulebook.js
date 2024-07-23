@@ -3,17 +3,19 @@ import { Col, Row, notification } from 'antd'
 import logo from '../../assets/sam-football.png'
 import { useNavigate } from 'react-router-dom'
 import CreateLeague from '../../components/modal/CreateLeague'
-import gmrating from "../../assets/gm ratings.webp"
-import sfleague from "../../assets/sflogo.webp"
+import gmrating from '../../assets/gm ratings.webp'
+import sfleague from '../../assets/sflogo.webp'
+import sammetricbreakdown from '../../assets/thesammetric.webp'
+import payscalelogo from '../../assets/payscalesamlogo.png'
 
 const MainRuleBook = () => {
-  const isAuthenticated = localStorage.getItem('token')
+  // const isAuthenticated = localStorage.getItem('token')
   const navigate = useNavigate()
 
   return (
     <div className='rulebook_container'>
       <h1>RULEBOOK</h1>
-      <div className='rulebook_content'>
+      {/* <div className='rulebook_content'>
         {!isAuthenticated && (
           <div
             className='overlay'
@@ -33,15 +35,15 @@ const MainRuleBook = () => {
                 button={
                   <Card2
                     cursor
-                    isImage
+                    isImage={gmrating}
                     onClick={() => navigate('/rule-book/gm-rating')}
-                    
                     text={{
                       text1: 'GM',
                       text2: 'RATINGS',
                       text4: 'INFO',
                     }}
                     paddingBlock={'70px'}
+                    width={'30%'}
                   />
                 }
               />
@@ -49,15 +51,7 @@ const MainRuleBook = () => {
           </Col>
           <Col xs={24} lg={12} xl={8}>
             <Row gutter={[10, 10]}>
-              {/* <Card2
-                cursor
-                flip
-                onClick={() => navigate('/popular-league')}
-                text={{
-                  text1: 'Popular',
-                  text2: 'Leagues',
-                }}
-              /> */}
+             
               <Card3 />
             </Row>
           </Col>
@@ -67,19 +61,18 @@ const MainRuleBook = () => {
                 cursor
                 flip
                 onClick={() => navigate('/rule-book/reward-info')}
-                
                 text={{
                   text1: 'REWARDS',
-                  text3:'INFO & BREAKDOWN'
+                  text3: 'INFO & BREAKDOWN',
                 }}
               />
               <Card2
                 alignCenter
                 onClick={() => navigate('/rule-book/sampoints-breakdown')}
-               
+                isImage={payscalelogo}
                 text={{
                   text1: 'SAM POINTS',
-                  text3:'INFO & BREAKDOWN'
+                  text3: 'INFO & BREAKDOWN',
                 }}
               />
               <Card2
@@ -94,60 +87,99 @@ const MainRuleBook = () => {
                 }}
               />
             </div>
-            {/* <Row gutter={[10, 10]}>
-              <Card2
-                cursor
-                flip
-                onClick={() => navigate('/my-league')}
-                text={{
-                  text1: 'My Leagues',
-                }}
-              />
-              <Card2
-                alignCenter
-                text={{
-                  text1: 'GM Challenge',
-                  text3:
-                    'Rank yourself against your peers and be the ultimate best GM, rise the ranks and get your chance to GM a pro team!',
-                }}
-              />
-              <Card2
-                alignCenter
-                proScoring
-                flip
-                text={{
-                  text1: 'PRO SCORING',
-                  text3: 'FOLLOW YOUR FAVORITE',
-                  text4: 'PRO TEAM PERFORMANCE',
-                }}
-              />
-            </Row> */}
+            
           </Col>
         </Row>
+      </div> */}
+<div className='rulebook_content'>
+  <Row gutter={[20, 20]}>
+    <Col xs={24} lg={12} xl={8}>
+      <Row gutter={[10, 10]}>
+        <Card1 />
+        <CreateLeague
+          button={
+            <Card2
+              cursor
+              isImage={gmrating}
+              onClick={() => navigate('/rule-book/gm-rating')}
+              text={{
+                text1: 'GM',
+                text2: 'RATINGS',
+                text4: 'INFO',
+              }}
+              paddingBlock={'70px'}
+              width={'30%'}
+            />
+          }
+        />
+      </Row>
+    </Col>
+    <Col xs={24} lg={12} xl={8}>
+      <Row gutter={[10, 10]}>
+        <Card3 />
+      </Row>
+    </Col>
+    <Col xs={24} lg={24} xl={8}>
+      <div className='rulebook_left_column'>
+        <Card2
+          cursor
+          flip
+          onClick={() => navigate('/rule-book/reward-info')}
+          text={{
+            text1: 'REWARDS',
+            text3: 'INFO & BREAKDOWN',
+          }}
+        />
+        <Card2
+          alignCenter
+          onClick={() => navigate('/rule-book/sampoints-breakdown')}
+          isImage={payscalelogo}
+          text={{
+            text1: 'SAM POINTS',
+            text3: 'INFO & BREAKDOWN',
+          }}
+        />
+        <Card2
+          alignCenter
+          proScoring
+          flip
+          onClick={() => navigate('/rule-book/regularseason-and-playoff')}
+          text={{
+            text1: 'REGULAR SEASON &',
+            text2: 'PLAYOFFS',
+            text4: 'INFO & BREAKDOWN',
+          }}
+        />
       </div>
+    </Col>
+  </Row>
+</div>
+
+
     </div>
   )
 }
 
 const Card1 = ({ flip }) => {
-  const navigate=useNavigate()
+  const navigate = useNavigate()
   return (
-    <div onClick={() => navigate('/rule-book/sammetric')} className={`rulebook_card1 ${flip ? 'rulebook_flip' : ''}`}>
-      <div >
-
-        {/* <img src={}></img> */}
-        <h1>The
-            <br></br>
-            SAMMETRIC
-            <p>SCORING BREAKDOWN</p>
+    <div
+      onClick={() => navigate('/rule-book/sammetric')}
+      className={`rulebook_card1 ${flip ? 'rulebook_flip' : ''}`}
+    >
+      <div>
+        <img src={sammetricbreakdown}></img>
+        <h1>
+          The
+          <br></br>
+          SAMMETRIC
+          <p>SCORING BREAKDOWN</p>
         </h1>
-      
-    
       </div>
     </div>
   )
 }
-const Card2 = ({ isImage, text, alignCenter, cursor, onClick, flip, paddingBlock }) => {
+const Card2 = ({ isImage, text, alignCenter, cursor, onClick, flip, paddingBlock, width }) => {
   return (
     <div
       className={`rulebook_card2 ${flip ? 'rulebook_flip' : ''}`}
@@ -158,7 +190,8 @@ const Card2 = ({ isImage, text, alignCenter, cursor, onClick, flip, paddingBlock
       onClick={onClick}
     >
       <div className='content'>
-        {isImage && <img style={{width:'20%'}} src={gmrating} />}
+        {/* {isImage && <img style={{  width: '30%' }} src={isImage} />} */}
+        {isImage && <img style={{ width: width || '20%' }} src={isImage} alt='Card Image' />}
         <div>
           {text?.text1 && (
             <h1 style={{ textAlign: alignCenter ? 'center' : 'initial' }}>{text?.text1}</h1>
@@ -178,19 +211,24 @@ const Card2 = ({ isImage, text, alignCenter, cursor, onClick, flip, paddingBlock
   )
 }
 const Card3 = ({ flip }) => {
-    const navigate=useNavigate()
+  const navigate = useNavigate()
   return (
-    <div onClick={() => navigate('/rule-book/roasterinfo')} className={`rulebook_card3 ${flip ? 'rulebook_flip' : ''}`}>
+    <div
+      onClick={() => navigate('/rule-book/roasterinfo')}
+      className={`rulebook_card3 ${flip ? 'rulebook_flip' : ''}`}
+    >
       <div className='content'>
-        <div >
+        <div>
           <img src={sfleague} />
-          <h1>ROASTER</h1>
+          <h1>
+            ROASTER
+            <br />
+            <p>INFO</p>
+          </h1>
         </div>
-        <p>INFO</p>
       </div>
     </div>
   )
-
 }
 
 export default MainRuleBook

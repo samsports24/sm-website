@@ -186,6 +186,8 @@
   display: flex;
   justify-content: space-between;
   margin: auto;
+  flex-direction: column;
+ gap: 10px;
 }
  
 .gd-header .center .button_and_team_box .leaguepointswallet  .leaguedifflex{
@@ -210,12 +212,20 @@ font-size: 12px !important;
 padding: 5px 22px 5px 22px !important;
 background-color: blueviolet !important;
 border-color: blueviolet !important;
-position: relative;
-    bottom: 25px
+/* position: relative;
+    bottom: 25px */
 
 
 }
+.gd-header .center .button_and_team_box .leaguepointswallet .leaguediff .paysafe {
 
+
+  width: 82px !important;
+  font-size: 12px !important;
+  padding: 5px 22px 5px 22px !important;
+  background-color: #00A7E5 !important;
+  border-color: #00A7E5 !important;
+}
 
 
 .gd-header .center .button_and_team_box .leaguepointswallet  .leaguedifflex .imgdiv {

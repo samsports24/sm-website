@@ -2,6 +2,7 @@ const initialState = {
   userLeagues: [],
   nonUserLeagues: [],
   currentLeague: [],
+  allSamMetric:[],
 }
 
 const leagueReducer = (state = initialState, action) => {
@@ -20,6 +21,7 @@ const leagueReducer = (state = initialState, action) => {
         currentLeague: payload,
       }
     }
+  
     case 'REMOVE_LEAGUES': {
       return {
         ...state,
@@ -28,6 +30,15 @@ const leagueReducer = (state = initialState, action) => {
         currentLeague: [],
       }
     }
+
+    case 'SET_ALL_SAM_Metric': {
+      return {
+        ...state,
+         allSamMetric: payload,
+   
+      }
+    }
+
     default:
       return state
   }
