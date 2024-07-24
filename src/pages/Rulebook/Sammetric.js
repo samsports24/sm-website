@@ -72,12 +72,12 @@ const SammetricBreakdown = () => {
 
       color: '#98CBE6',
     },
-    {
-      name: 'INSIDE LINEBACKER',
-      position: 'LB',
-      breakdown: 'SCORING BREAKDOWN.',
-      color: '#98CBE6',
-    },
+    // {
+    //   name: 'INSIDE LINEBACKER',
+    //   position: 'LB',
+    //   breakdown: 'SCORING BREAKDOWN.',
+    //   color: '#98CBE6',
+    // },
     {
       name: 'CORNER BACK',
       position: 'CB',

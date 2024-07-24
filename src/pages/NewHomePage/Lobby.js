@@ -12,9 +12,10 @@ const Lobby = () => {
     <div className='lobby_container'>
       <h1>LOBBY</h1>
       <div className='lobby_content'>
-        {!isAuthenticated && (
+        {/* {!isAuthenticated && (
           <div
             className='overlay'
+            // style={{background: 'red'}}
             onClick={() => {
               notification.error({
                 message: 'Please log in first',
@@ -22,24 +23,38 @@ const Lobby = () => {
               })
             }}
           />
-        )}
+        )} */}
         <Row gutter={[20, 20]}>
           <Col xs={24} lg={12} xl={8}>
             <Row gutter={[10, 10]}>
-              <Card1 />
-              <CreateLeague
-                button={
-                  <Card2
-                    cursor
-                    isImage
-                    text={{
-                      text1: 'Create',
-                      text2: 'Leagues',
+              <div style={{ position: 'relative', width: '100%' }}>
+                {!isAuthenticated && (
+                  <div
+                    className='overlay'
+                    // style={{background: 'red'}}
+                    onClick={() => {
+                      notification.error({
+                        message: 'Please log in first',
+                        duration: 3,
+                      })
                     }}
-                    paddingBlock={'70px'}
                   />
-                }
-              />
+                )}
+                <Card1 />
+                <CreateLeague
+                  button={
+                    <Card2
+                      cursor
+                      isImage
+                      text={{
+                        text1: 'Create',
+                        text2: 'Leagues',
+                      }}
+                      paddingBlock={'70px'}
+                    />
+                  }
+                />
+              </div>
             </Row>
           </Col>
           <Col xs={24} lg={12} xl={8}>
@@ -53,11 +68,37 @@ const Lobby = () => {
                   text2: 'Leagues',
                 }}
               />
-              <Card3 />
+              <div style={{ position: 'relative', width: '100%' }}>
+                {!isAuthenticated && (
+                  <div
+                    className='overlay'
+                    // style={{background: 'red'}}
+                    onClick={() => {
+                      notification.error({
+                        message: 'Please log in first',
+                        duration: 3,
+                      })
+                    }}
+                  />
+                )}
+                <Card3 />
+              </div>
             </Row>
           </Col>
           <Col xs={24} lg={24} xl={8}>
-            <div className='left_column'>
+            <div className='left_column' style={{ position: 'relative', width: '100%' }}>
+              {!isAuthenticated && (
+                <div
+                  className='overlay'
+                  // style={{background: 'red'}}
+                  onClick={() => {
+                    notification.error({
+                      message: 'Please log in first',
+                      duration: 3,
+                    })
+                  }}
+                />
+              )}
               <Card2
                 cursor
                 flip

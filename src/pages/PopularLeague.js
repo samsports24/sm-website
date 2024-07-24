@@ -1,7 +1,7 @@
 import { Col, Row, notification } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import PopularLeagueCard from '../components/NewPopularLeagueCard'
-import { getUserLeagues, selectLeague } from '../redux'
+import { getALLeagues, getUserLeagues, selectLeague } from '../redux'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import CreateLeague from '../components/modal/CreateLeague'
@@ -17,6 +17,9 @@ const PopularLeague = () => {
   const getData = async () => {
     if (isAuthenticated) {
       await getUserLeagues({allleagues:true})
+    }
+    else {
+      await getALLeagues()
     }
   }
   useEffect(() => {

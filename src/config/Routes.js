@@ -163,7 +163,7 @@ const Routers = () => {
           {/* <Route path='/drafts' element={<NFLQualifiedFreeAgents />} /> */}
           <Route path='/all-transaction' element={<AllTransaction />} />
           <Route path='/live-draft' element={<Draft />} />
-          <Route path='/popular-league' element={<PopularLeague />} />
+          
 
           <Route path='/draft-spot-auction' element={<DraftSpotAuction />} />
           <Route path='/stadium' element={<Stadium />} />
@@ -201,6 +201,7 @@ const Routers = () => {
           {/* <Route path='/player-auction' element={<ComingSoon />} /> */}
           {/* <Route path='/fantasy-league' element={<FantasyLeague />} /> */}
           <Route path='/fantasy-league' element={<NewHomePage />} />
+          <Route path='/popular-league' element={<PopularLeague />} />
                 {/* RULESBOOK ROUTES  START HERE*/}
 
           <Route path='/rule-book' element={<RuleBook />} />
@@ -252,6 +253,7 @@ const Routers = () => {
         <Route path='/create-join-league' element={<CreateOrJoinLeague />} />
         <Route path='/success' element={<Success />} />
         <Route path='/error' element={<Error />} />
+      
       </Routes>
     </BrowserRouter>
   )

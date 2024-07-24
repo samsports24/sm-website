@@ -273,6 +273,27 @@ export const getUserLeagues = async (params) => {
   }
 }
 
+
+export const getALLeagues = async () => {
+  try {
+    attachToken()
+    const res = await privateAPI.get(`/league/get`)
+    if (res) {
+      store.dispatch({
+        type: 'GET_USER_LEAGUES',
+        payload: res.data.data,
+      })
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+
 export const getLandingLeagues = async () => {
   try {
     const res = await publicAPI.get(`/league/home-leagues`)

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Checkbox, Image, Input, Select } from 'antd'
+import { Button, Checkbox, Image, Input, Select,notification } from 'antd'
 import Header from '../../components/Header'
 import HeadingAndWeek from '../../components/Pagination/HeadingAndWeek'
 import sampointslogo from '../../assets/stadiumsampoints.webp'
@@ -92,6 +92,17 @@ const Clubhouse = () => {
   // }
 
   const handlecreatereferral = async () => {
+
+
+    if (!invitationType) {
+      notification.warning({
+        message: `Please select a league type.`,
+        duration: 4,
+      });
+      return;
+    }
+
+
     setBtnLoading(true) // Set button loading state
     // setLoading(true) // Set main loading state
 
