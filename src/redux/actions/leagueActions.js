@@ -254,10 +254,10 @@ export const joinLeagueFromPlatform = async (payload) => {
   }
 }
 
-export const getUserLeagues = async (payload) => {
+export const getUserLeagues = async (params) => {
   try {
     attachToken()
-    const res = await privateAPI.get(`/league/get-by-user-id`)
+    const res = await privateAPI.get(`/league/get-by-user-id`, { params })
     if (res) {
       store.dispatch({
         type: 'GET_USER_LEAGUES',

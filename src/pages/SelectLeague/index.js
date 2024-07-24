@@ -11,6 +11,8 @@ import { useNavigate } from 'react-router-dom'
 const SelectLeague = () => {
   const [localStorageKey, setLocalStorageKey] = useState(null);
   const [ispaid, seTIspaid] = useState(null);
+  const [Invitationtype,setInvitationtype]=useState(null)
+  
 
   const navigate=useNavigate()
 
@@ -19,11 +21,17 @@ const SelectLeague = () => {
   useEffect(() => {
     const storedKey = localStorage.getItem('AssignLeague');
     const paid=localStorage.getItem('paid');
+    const invitationtype=localStorage.getItem('myinvitationtype');
     if (storedKey) {
       setLocalStorageKey(storedKey);
     }
     if (paid) {
       seTIspaid(paid);
+    }
+
+    if(invitationtype){
+      setInvitationtype(invitationtype.toLowerCase());
+
     }
 
   }, []);
@@ -36,6 +44,7 @@ const SelectLeague = () => {
     // console.log('in the fucntion');
     let email = localStorage.getItem('email');
     let AssignLeague=localStorage.getItem('AssignLeague')
+    
 
     try {
       const payload = {
@@ -54,7 +63,7 @@ const SelectLeague = () => {
       console.error('Error in Joining League:', error)
     }
   }
-
+console.log('Invitationtype',Invitationtype);
 
 
   const data = [
@@ -85,7 +94,9 @@ const SelectLeague = () => {
       // description:
       //   'Similar to the Pro league, each leagues are made of 30 teams and 6 divisions. These leagues allow you to play like the pro without the financial risks. Our token allows you to pay to improve your teams and give you more chances to win at the end of season.',
       // isDisabled: false,
-      isDisabled: localStorageKey ? true : false,
+      // isDisabled: localStorageKey ? true : false,
+       isDisabled: localStorageKey || Invitationtype === 'freemium' ? true : false,
+     
       align: 'right',
       // navigateTo: '/create-join-league',
       navigateTo: () => (navigate('/proleague')),
@@ -101,10 +112,12 @@ const SelectLeague = () => {
       description:"provide free basic fantasy football play. Join, customize, and compete",
       // description:
       //   'Similar to the Pro league, each leagues are made of 30 teams and 6 divisions. These leagues allow you to play like the pro without the financial risks. Our token allows you to pay to improve your teams and give you more chances to win at the end of season.',
-      isDisabled: true,
+      // isDisabled: true,
+      isDisabled: localStorageKey || Invitationtype === 'professional' ? true : false,
       align: 'right',
      // navigateTo: '/create-join-league',
-     navigateTo: '/proleague',
+    //  navigateTo: '/fantasy-league',
+    navigateTo: () => (navigate('/fantasy-league')),
       imageurl:premium
     },
   ]

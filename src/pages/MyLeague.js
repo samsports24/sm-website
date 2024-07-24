@@ -11,6 +11,7 @@ const MyLeague = () => {
   const leagues = useSelector((state) => state.league)
   console.log('leagues', leagues)
   const user = useSelector((state) => state.user.userDetails)
+  console.log('user',user);
 
   const isAuthenticated = localStorage.getItem('token')
 
@@ -63,7 +64,8 @@ const MyLeague = () => {
             ))
           : leagues?.nonUserLeagues
               // ?.filter((value) => value.leagueType === 'Ultimate')
-              ?.filter(value => value.leagueType === 'professional' && value._id !== '64fc5edaf8f2513bd263845a')
+              // ?.filter(value => value.leagueType === 'professional' && value.leagueType === 'freemium' && value._id !== '64fc5edaf8f2513bd263845a')
+              ?.filter(value =>   value._id !== '64fc5edaf8f2513bd263845a')
               ?.map((value, index) => (
                 <Col xs={24} sm={12} xl={8} xxl={6} key={index}>
                   <div

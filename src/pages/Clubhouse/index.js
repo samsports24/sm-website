@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Image, Input, Select } from 'antd'
+import { Button, Checkbox, Image, Input, Select } from 'antd'
 import Header from '../../components/Header'
 import HeadingAndWeek from '../../components/Pagination/HeadingAndWeek'
 import sampointslogo from '../../assets/stadiumsampoints.webp'
@@ -26,6 +26,7 @@ const Clubhouse = () => {
   const [referralemail, setReferralemail] = useState('')
   const [loading, setLoading] = useState(false)
   const [btnloading, setBtnLoading] = useState(false)
+  const [invitationType, setInvitationType] = useState('')
 
   const emails = ['James@gmail.com', 'Maddog@gmail.com', 'Fakeemail@gmail.com', '0900-786-01']
 
@@ -56,6 +57,14 @@ const Clubhouse = () => {
     setReferralemail(e.target.value)
   }
 
+  const handleCheckboxChange = (type) => {
+    // Toggle the checkbox
+    if (invitationType === type) {
+      setInvitationType(null); // Uncheck the checkbox if it's already checked
+    } else {
+      setInvitationType(type); // Check the checkbox if it's unchecked
+    }
+  };
   // const handlecreatereferral = async () => {
   //   setBtnLoading(true)
   //   setLoading(true)
@@ -92,13 +101,15 @@ const Clubhouse = () => {
         user: user?._id,
         emailsent: referralemail,
         season: user?.team?.currentLeague?.season,
+        invitation_Type: invitationType,
       }
 
       console.log('payload', payload)
       const data = await createClubhouse(payload) // Call API
 
-      console.log('Referral successfully sent:', data)
+      // console.log('Referral successfully sent:', data)
       setReferralemail('') // Clear input after successful API call
+      setInvitationType('')
       // Additional logic can be added here if needed
     } catch (error) {
       console.error('Error making referral:', error)
@@ -189,6 +200,23 @@ const Clubhouse = () => {
                 onChange={handleInputChange}
               />
 
+              <div>
+                <Checkbox
+                  style={{ color: 'white', fontSize: '18px' }}
+                  checked={invitationType === 'Professional'}
+                  onChange={() => handleCheckboxChange('Professional')}
+                >
+                  Professional
+                </Checkbox>
+                <Checkbox
+                  style={{ color: 'white', fontSize: '18px' }}
+                  checked={invitationType === 'Freemium'}
+                  onChange={() => handleCheckboxChange('Freemium')}
+                >
+                  Freemium
+                </Checkbox>
+              </div>
+
               <Button
                 loading={btnloading}
                 onClick={handlecreatereferral}
@@ -206,6 +234,7 @@ const Clubhouse = () => {
               <p>{user?.referralLevel}</p>
             </h2>
           </div>
+
           <div className='email-registration'>
             {loading || btnloading ? (
               <Loader />
@@ -218,7 +247,8 @@ const Clubhouse = () => {
                       clubhouse.map((item, index) => (
                         <div style={{ display: 'flex', gap: '20px' }} key={index}>
                           <p style={{ marginLeft: '-29px' }}>
-                            {index + 1}. {item.emailsent}
+                            {/* {index + 1}. {item.emailsent} - {item?.invitation_Type} */}
+                            {index + 1}. {item.emailsent} - ({item?.invitation_Type?.charAt(0)?.toUpperCase()})
                           </p>
                           {!item.isRegistered && (
                             <IoMdRefresh

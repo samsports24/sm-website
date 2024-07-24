@@ -386,7 +386,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
               {isFreeAgent && (
                 <>
                   <Button disabled={true} loading={auctionLoading} onClick={handleCreateAuction} type='primary'>
-                    AUCTION PLAYERRR
+                    AUCTION PLAYER
                   </Button>
                 </>
               )}

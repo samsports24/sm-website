@@ -16,7 +16,7 @@ const PopularLeague = () => {
 
   const getData = async () => {
     if (isAuthenticated) {
-      await getUserLeagues()
+      await getUserLeagues({allleagues:true})
     }
   }
   useEffect(() => {

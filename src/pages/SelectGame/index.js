@@ -32,6 +32,7 @@ const SelectGame = () => {
   const [isTokenPresent, setIsTokenPresent] = useState(false)
   const [showStateDropdown, setShowStateDropdown] = useState(false)
 
+  
   const [user, setUser] = useState(null)
   useEffect(() => {
     const queryParameters = new URLSearchParams(window.location.search)
@@ -52,6 +53,11 @@ const SelectGame = () => {
       if (decodedToken.paid) {
         localStorage.setItem('paid', decodedToken.paid)
       }
+
+      if (decodedToken.invitation_Type) {
+        localStorage.setItem('myinvitationtype', decodedToken.invitation_Type)
+      }
+
 
       let football = games?.find((obj) => obj.key === 'football')
       handleSetGame(football)
