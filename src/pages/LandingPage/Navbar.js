@@ -104,8 +104,9 @@ const DrawerMenu = () => {
           <div className='company_logo'>
             <img src={SamLogo} alt='Logo' />
           </div>
+        
           <div className='menu_item_box'>
-            <div className='menu_item' onClick={() => window.open('https://samsports.io', '_self')}>
+            <div className='menu_item' onClick={() => window.open('https://samsports.io/fantasy-league', '_self')}>
               <p>Football</p>
               {/* <img src={football} alt='logo' className='football-logo' /> */}
             </div>
