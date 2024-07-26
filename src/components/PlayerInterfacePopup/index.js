@@ -36,6 +36,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
   const SETTING = useSelector((state) => state?.user?.setting)
   const [isLoading, setIsLoading] = useState(true)
   const [auctionLoading, setAuctionLoading] = useState(false)
+  const sampoints = useSelector((state) => state.user?.SamPoints?.SamPoints)
   const [data, setData] = useState({
     player: {},
     news: '',
@@ -49,16 +50,16 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
   const playerIdSmall = data?.player?.PlayerID
   const isPlayerLocked = data?.player?.isPlayerLocked
   const inPracticeSquad = data?.player?.inPracticeSquad
-  const capHit = data?.currentYearSalaryCap
+  const CapHit = data?.player?.currentYearSalaryCap
 
   const isOwnRoster = state?.isOwnRoster?.status
   const isTeamRoster = state?.isTeamRoster?.status
   const isFreeAgent = state?.isFreeAgent?.status
   const isAuction = state?.isAuction
 
+// console.log('data?.player',data?.player);
 
-
-console.log('data?.player',data?.player);
+console.log('mysampoints',sampoints);
 
   useEffect(() => {
     if (isModalOpen) {
@@ -229,7 +230,7 @@ console.log('data?.player',data?.player);
       PlayerID: playerIdSmall,
       player_id: playerIdBig,
       auctionFrom: 'nonowner',
-      capHit:capHit,
+      CapHit:CapHit,
     })
     if (res) {
       closeModal()
@@ -237,6 +238,8 @@ console.log('data?.player',data?.player);
     }
     setAuctionLoading(false)
   }
+
+  console.log('playerContract',data?.playerContract);
 
   return (
     <div className='player_interface_popup'>
@@ -503,9 +506,11 @@ console.log('data?.player',data?.player);
                     CAP<b>HIT</b>
                   </p>
                   <p>
+                  {/* {obj ? `$${obj.currentYearSalaryCap.toLocaleString()}` : '-'} */}
                     <b>23&apos;</b>{' '}
                     {data?.playerContract?.PlayerCap
-                      ? `$${data?.playerContract?.PlayerCap?.toLocaleString()}`
+                      // ? `$${data?.playerContract?.PlayerCap?.toLocaleString()}`
+                         ? `$${data?.player?.currentYearSalaryCap?.toLocaleString()}`
                       : '-'}
                   </p>
                 </div>
@@ -626,6 +631,11 @@ const LiveAuctionBid = ({ data, getData }) => {
       return
     }
 
+    if(sampoints > manualBid){
+      noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
+    
+    }
+
     setIsLoading({
       type: 'submit',
       status: true,
@@ -651,6 +661,8 @@ const LiveAuctionBid = ({ data, getData }) => {
       type: 'quick',
       status: true,
     })
+
+    // samWallet?.SamPoints < bidamount
     const res = await addBid(
       {
         auctionId: data?._id,
@@ -659,6 +671,11 @@ const LiveAuctionBid = ({ data, getData }) => {
       },
       noti,
     )
+if(sampoints > bidamount){
+  noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
+
+}
+
     if (res) {
       getData()
     }
@@ -685,11 +702,15 @@ const LiveAuctionBid = ({ data, getData }) => {
               />
             </div>
             <div className='amount'>
+              
               <p>
                 TOP<b>BID</b>
               </p>
+
+              <div style={{display:'flex',justifyContent:'space-between',gap:'5px'}}>
             <img width={10} src={sampointslogo}></img>
               <p>{data?.highestCurrentBid && `${data?.highestCurrentBid?.toLocaleString()}`}</p>
+              </div>
             </div>
           </div>
           <div className='bid_button' onClick={handleQuickBid}>
@@ -699,8 +720,10 @@ const LiveAuctionBid = ({ data, getData }) => {
               <>
 
                 <p>QUICK BID</p>
+                <div style={{display:'flex',justifyContent:'space-between',gap:'5px'}}>
                 <img width={10} src={sampointslogo}></img>
                 <p>50,000</p>
+                </div>
               </>
             )}
           </div>

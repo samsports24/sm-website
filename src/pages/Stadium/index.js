@@ -82,29 +82,28 @@ const Stadium = () => {
   // )
 
   // Find the maximum level in the mystadiumlevel array
-const maxMyStadiumLevel = Math.max(
-  ...mystadiumlevel
-    .filter(item => item.stadiumlevel) // Ensure stadiumlevel is defined
-    .map(item => parseInt(item.stadiumlevel?.level.replace(/\D/g, ''), 10))
-    .filter(level => !isNaN(level)) // Filter out NaN values
-);
+  const maxMyStadiumLevel = Math.max(
+    ...mystadiumlevel
+      .filter((item) => item.stadiumlevel) // Ensure stadiumlevel is defined
+      .map((item) => parseInt(item.stadiumlevel?.level.replace(/\D/g, ''), 10))
+      .filter((level) => !isNaN(level)), // Filter out NaN values
+  )
 
-// Filter stadiums based on the highest level found
-const filteredStadiums = allstadiumlevel?.filter((stadium) => {
-  // Check if stadium.level is not 'level0'
-  if (stadium.level === 'level0') {
-    return false; // Filter out stadiums with level 'level0'
-  }
+  // Filter stadiums based on the highest level found
+  const filteredStadiums = allstadiumlevel?.filter((stadium) => {
+    // Check if stadium.level is not 'level0'
+    if (stadium.level === 'level0') {
+      return false // Filter out stadiums with level 'level0'
+    }
 
-  // Convert stadium.level to a number for comparison
-  const stadiumLevel = parseInt(stadium.level.replace(/\D/g, ''), 10);
+    // Convert stadium.level to a number for comparison
+    const stadiumLevel = parseInt(stadium.level.replace(/\D/g, ''), 10)
 
-  // Check if stadiumLevel is greater than maxMyStadiumLevel
-  return !isNaN(stadiumLevel) && stadiumLevel > maxMyStadiumLevel;
-});
+    // Check if stadiumLevel is greater than maxMyStadiumLevel
+    return !isNaN(stadiumLevel) && stadiumLevel > maxMyStadiumLevel
+  })
 
-console.log(filteredStadiums);
-
+  console.log(filteredStadiums)
 
   //  const filteredStadiums = allstadiumlevel?.filter((stadium) => stadium.level !== 'level0' && mystadiumlevel?.stadiumlevel?.map(item => item._id !== stadium._id))
 
@@ -157,6 +156,13 @@ console.log(filteredStadiums);
   // const defaultDays = ['DAY 1', 'DAY 2', 'DAY 3', 'DAY 4']
   const defaultDays = ['SUN', 'MON', 'TUE', 'WED']
 
+  const dayMapping = {
+    day1: 'SUN',
+    day2: 'MON',
+    day3: 'TUE',
+    day4: 'WED',
+  }
+
   // Use filteredEntries if not empty, otherwise use defaultDays
   const daysToDisplay =
     filteredEntries.length > 0
@@ -166,7 +172,6 @@ console.log(filteredStadiums);
   return (
     <>
       <Header />
-
       {loading ? (
         <Loader />
       ) : (
@@ -219,20 +224,21 @@ console.log(filteredStadiums);
                 {daysToDisplay?.map(([key, value], index) => (
                   <div
                     className='day'
-                    key={key || index} // Use index as key for defaultDays
+                    key={key || index} // Use index as a fallback key if key is missing
                     style={{
                       color: value === true ? '#FFDE59' : '#FFF',
                     }}
                   >
-                    {key.toUpperCase()} 
+                    {dayMapping[key] || key.toUpperCase()}
                   </div>
                 ))}
-        {/* <div className='day'>SUN</div>
+
+                {/* <div className='day'>SUN</div>
                 <div className='day'>MON</div>
                 <div className='day'>TUE</div>
                 <div className='day'>WED</div>
                 */}
-              </div> 
+              </div>
               <p>
                 Seating
                 <span>Capacity</span>
