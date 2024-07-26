@@ -395,7 +395,7 @@ console.log('mysampoints',sampoints);
               {/* --------- FREE AGENT --------- */}
               {isFreeAgent && (
                 <>
-                  <Button disabled={false} loading={auctionLoading} onClick={handleCreateAuction} type='primary'>
+                  <Button disabled={true} loading={auctionLoading} onClick={handleCreateAuction} type='primary'>
                     AUCTION PLAYER
                   </Button>
                 </>

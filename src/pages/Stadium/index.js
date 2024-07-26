@@ -28,6 +28,7 @@ const Stadium = () => {
   const dispatch = useDispatch()
 
   const [loading, setLoading] = useState(false)
+  const [team, setTeam] = useState(null)
   const teamNames = [
     'Atlanta Legion',
     'Boston Blazers',
@@ -110,7 +111,7 @@ const Stadium = () => {
   //  console.log('sampoints', sampoints)
   console.log(' user?.team?._id', user?.team?._id)
 
-  const [team, setTeam] = useState(null)
+
 
   const handlecreatestadium = async (stadiumlevelId) => {
     setLoading(true) // Set main loading state
