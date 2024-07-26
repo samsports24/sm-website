@@ -79,12 +79,14 @@ const FreeAgent = () => {
     setLoading(false)
   }
 
-  const handleCreateAuction = async (playerID, player_id) => {
+  const handleCreateAuction = async (playerID, player_id,CapHit) => {
     setPlayerID(playerID)
+
     const res = await createAuction({
       PlayerID: playerID,
       player_id: player_id,
       auctionFrom: 'nonowner',
+      CapHit:CapHit,
     })
     if (res) {
       navigate('/player-auction')
@@ -186,8 +188,16 @@ const FreeAgent = () => {
       title: 'PLAYER CAP #',
       dataIndex: 'PlayerCap',
       key: 'PlayerCap',
-      render: (t) => <p> {t ? `$${t?.toLocaleString()}` : '-'}</p>,
+      render: (_, obj) => (
+        <p>
+          {obj ? `$${obj.currentYearSalaryCap.toLocaleString()}` : '-'}
+        </p>
+      )
+      
+      // render: (_, obj) => <p>{getRankAndPosition(obj?.weeklyScoring)?.playerOverallRank}</p>,
     },
+
+    
 
     {
       title: ' ',
@@ -196,12 +206,12 @@ const FreeAgent = () => {
       render: (_, obj) => {
         return (
           <Button
-            disabled={true}
+            disabled={false}
             loading={playerID == obj?.PlayerID}
             type='primary'
             className='_button'
             onClick={() => {
-              handleCreateAuction(obj?.PlayerID, obj?._id)
+              handleCreateAuction(obj?.PlayerID, obj?._id,obj?.currentYearSalaryCap)
             }}
           >
             Auction

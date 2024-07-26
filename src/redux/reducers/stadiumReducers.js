@@ -1,6 +1,6 @@
 const initialState = {
     allstadium: [],
-    mystadium:{},
+    mystadium:[],
 
   }
   

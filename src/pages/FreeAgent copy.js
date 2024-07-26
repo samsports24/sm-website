@@ -81,6 +81,7 @@ const FreeAgent = () => {
       PlayerID: playerID,
       player_id: player_id,
       auctionFrom: 'nonowner',
+      
     })
     if (res) {
       navigate('/player-auction')

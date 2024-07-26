@@ -25,6 +25,7 @@ import { getPf, getPfScore, getRankAndPosition } from '../../config/helperFuncti
 import { isLocked } from '../../config/constants'
 
 import Image from '../../assets/logo2.png'
+import sampointslogo from "../../assets/samcoinlogo.png"
 
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 
@@ -48,11 +49,16 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
   const playerIdSmall = data?.player?.PlayerID
   const isPlayerLocked = data?.player?.isPlayerLocked
   const inPracticeSquad = data?.player?.inPracticeSquad
+  const capHit = data?.currentYearSalaryCap
 
   const isOwnRoster = state?.isOwnRoster?.status
   const isTeamRoster = state?.isTeamRoster?.status
   const isFreeAgent = state?.isFreeAgent?.status
   const isAuction = state?.isAuction
+
+
+
+console.log('data?.player',data?.player);
 
   useEffect(() => {
     if (isModalOpen) {
@@ -223,6 +229,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
       PlayerID: playerIdSmall,
       player_id: playerIdBig,
       auctionFrom: 'nonowner',
+      capHit:capHit,
     })
     if (res) {
       closeModal()
@@ -385,7 +392,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
               {/* --------- FREE AGENT --------- */}
               {isFreeAgent && (
                 <>
-                  <Button disabled={true} loading={auctionLoading} onClick={handleCreateAuction} type='primary'>
+                  <Button disabled={false} loading={auctionLoading} onClick={handleCreateAuction} type='primary'>
                     AUCTION PLAYER
                   </Button>
                 </>
@@ -647,7 +654,8 @@ const LiveAuctionBid = ({ data, getData }) => {
     const res = await addBid(
       {
         auctionId: data?._id,
-        bidAmount: Number(data?.highestCurrentBid) + 5,
+        // bidAmount: Number(data?.highestCurrentBid) + 5,
+        bidAmount: Number(data?.highestCurrentBid) + 50000,
       },
       noti,
     )
@@ -680,7 +688,8 @@ const LiveAuctionBid = ({ data, getData }) => {
               <p>
                 TOP<b>BID</b>
               </p>
-              <p>{data?.highestCurrentBid && `$${data?.highestCurrentBid?.toLocaleString()}`}</p>
+            <img width={10} src={sampointslogo}></img>
+              <p>{data?.highestCurrentBid && `${data?.highestCurrentBid?.toLocaleString()}`}</p>
             </div>
           </div>
           <div className='bid_button' onClick={handleQuickBid}>
@@ -688,8 +697,10 @@ const LiveAuctionBid = ({ data, getData }) => {
               <Spin />
             ) : (
               <>
+
                 <p>QUICK BID</p>
-                <p>$ 5</p>
+                <img width={10} src={sampointslogo}></img>
+                <p>50,000</p>
               </>
             )}
           </div>

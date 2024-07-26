@@ -174,7 +174,7 @@ const Header = () => {
                 </Button>
                 {safepaylink && (
                   <Button  className='paysafe' type='primary' onClick={paysafe}>
-                    PAY SAFE
+                    LEAGUE SAFE
                   </Button>
                 )}
               </div>

@@ -45,7 +45,7 @@ const Stadium = () => {
     await getLeagueDetails()
   }
 
-  // console.log('mystadiumlevel',mystadiumlevel);
+  console.log('mystadiumlevel', mystadiumlevel)
 
   useEffect(() => {
     setLoading(true)
@@ -75,11 +75,41 @@ const Stadium = () => {
     }
   }, [user])
 
-  // console.log('mystadiumlevel?.stadiumlevel',mystadiumlevel?.[0]?.stadiumlevel?.newticketCost);
+  // const filteredStadiums = allstadiumlevel?.filter(
+  //   (stadium) =>
+  //     stadium.level !== 'level0' &&
+  //     !mystadiumlevel.some((item) => item.stadiumlevel?._id == stadium._id),
+  // )
 
-  const filteredStadiums = allstadiumlevel?.filter((stadium) => stadium.level !== 'level0')
+  // Find the maximum level in the mystadiumlevel array
+const maxMyStadiumLevel = Math.max(
+  ...mystadiumlevel
+    .filter(item => item.stadiumlevel) // Ensure stadiumlevel is defined
+    .map(item => parseInt(item.stadiumlevel?.level.replace(/\D/g, ''), 10))
+    .filter(level => !isNaN(level)) // Filter out NaN values
+);
+
+// Filter stadiums based on the highest level found
+const filteredStadiums = allstadiumlevel?.filter((stadium) => {
+  // Check if stadium.level is not 'level0'
+  if (stadium.level === 'level0') {
+    return false; // Filter out stadiums with level 'level0'
+  }
+
+  // Convert stadium.level to a number for comparison
+  const stadiumLevel = parseInt(stadium.level.replace(/\D/g, ''), 10);
+
+  // Check if stadiumLevel is greater than maxMyStadiumLevel
+  return !isNaN(stadiumLevel) && stadiumLevel > maxMyStadiumLevel;
+});
+
+console.log(filteredStadiums);
+
+
+  //  const filteredStadiums = allstadiumlevel?.filter((stadium) => stadium.level !== 'level0' && mystadiumlevel?.stadiumlevel?.map(item => item._id !== stadium._id))
 
   //  console.log('sampoints', sampoints)
+  console.log(' user?.team?._id', user?.team?._id)
 
   const [team, setTeam] = useState(null)
 
@@ -90,7 +120,7 @@ const Stadium = () => {
       const payload = {
         league: user?.team?.currentLeague._id,
         user: user?._id,
-        teamId: user?.team?.name,
+        teamId: user?.team?._id,
         season: user?.team?.currentLeague?.season,
         stadiumlevel: stadiumlevelId,
       }
@@ -108,6 +138,31 @@ const Stadium = () => {
     }
   }
 
+  let weeklyticketsale =
+    mystadiumlevel?.[0]?.homeAttendance *
+    mystadiumlevel?.[0]?.stadiumlevel?.newseatingCapacity *
+    mystadiumlevel?.[0]?.stadiumlevel?.newticketCost
+  let weeklymatchpotup = weeklyticketsale * 0.7
+  let weeklyprizepool = weeklyticketsale * 0.3
+
+  const loginObject = mystadiumlevel?.[0]?.login
+  if (!loginObject || typeof loginObject !== 'object') {
+    return null // Or some fallback UI
+  }
+
+  // Filter out the '_id' key
+  const filteredEntries = Object.entries(loginObject).filter(([key]) => key !== '_id')
+
+  // Default days to display if filteredEntries is empty
+  // const defaultDays = ['DAY 1', 'DAY 2', 'DAY 3', 'DAY 4']
+  const defaultDays = ['SUN', 'MON', 'TUE', 'WED']
+
+  // Use filteredEntries if not empty, otherwise use defaultDays
+  const daysToDisplay =
+    filteredEntries.length > 0
+      ? filteredEntries
+      : defaultDays.map((day, index) => [day.toLowerCase().replace(' ', ''), false])
+
   return (
     <>
       <Header />
@@ -115,164 +170,168 @@ const Stadium = () => {
       {loading ? (
         <Loader />
       ) : (
-      <div className='stadium-main'>
-        <div className='firstdiv'>
-          <div className='year_selector_container'>
-            {/* <Select
-              shape='circle'
-              className='year_selector'
-              allowClear
-              // placeholder={currentLeague?.teams[0]}
-              onChange={(value) => setTeam(value)}
-              style={{ width: '56%', marginBottom: '13px' }}
-              suffixIcon={<IoMdArrowDropdown size={20} color='var(--link)' />}
-            >
-              {currentLeague?.teams?.map((name, index) => (
-                <Select.Option shape='circle' key={index} value={name}>
-                  {name}
-                </Select.Option>
-              ))}
-            </Select> */}
-            {currentLeague && currentLeague?.teams && (
-              <Select
-                shape='circle'
-                className='year_selector'
-                allowClear
-                placeholder={user?.team?.name}
-                onChange={(value) => setTeam(value)}
-                style={{ width: '56%', marginBottom: '13px' }}
-                suffixIcon={<IoMdArrowDropdown size={20} color='var(--link)' />}
-              >
-                {currentLeague.teams.map((team, index) => (
-                  <Select.Option key={team._id} value={team.name}>
-                    {team.name}
-                  </Select.Option>
-                ))}
-              </Select>
-            )}
+        <div className='stadium-main'>
+          <div className='firstdiv'>
+            <div className='year_selector_container'>
+              {currentLeague && currentLeague?.teams && (
+                <Select
+                  shape='circle'
+                  className='year_selector'
+                  allowClear
+                  placeholder={user?.team?.name}
+                  onChange={(value) => setTeam(value)}
+                  style={{ width: '56%', marginBottom: '13px' }}
+                  suffixIcon={<IoMdArrowDropdown size={20} color='var(--link)' />}
+                >
+                  {currentLeague.teams.map((team, index) => (
+                    <Select.Option key={team._id} value={team.name}>
+                      {team.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              )}
 
-            <p>Your Stadium</p>
-            <img
-              className='stadiumimg'
-              src={mystadiumlevel?.[0]?.stadiumlevel?.stadiumimg || stadium}
-              alt='stadium'
-            />
-            <p>Stadium Name</p>
-            <p>{team || user?.team?.name}</p>
-            <div className='ticketcost'>
-              <p>
-                Average Ticket <span>Cost</span>
-              </p>
-
-              <div className='per-ticket-price'>
-                <img className='samlogo' src={sampointslogo} alt='samlogo' />
-                <p>{mystadiumlevel?.[0]?.stadiumlevel?.newticketCost || 85}</p>
-                <p>Per.Ticket</p>
-              </div>
-            </div>
-          </div>
-          <div className='daily-login-section'>
-            <div className='dailylogin'>
-              DAILY <span>LOGIN</span>
-            </div>
-            <div className='daydiv'>
-              <div className='day'>DAY 1</div>
-              <div className='day'>DAY 2</div>
-              <div className='day'>DAY 3</div>
-              <div className='day'>DAY 4</div>
-            </div>
-            <p>
-              Seating
-              <span>Capacity</span>
-            </p>
-            <p>{mystadiumlevel?.[0]?.stadiumlevel?.newseatingCapacity || '60,000'}</p>
-            <p>
-              Upcoming
-              <span>Home Attendance</span>
-            </p>
-            <p>100%</p>
-            <div className='weeklyticketslaes'>
-              <p>
-                Total Weekly <span>Ticket Sales</span>
-              </p>
-
-              <p>
-                <img width={50} src={sampointslogo} alt='sampointslogo' />
-                5,100,000
-              </p>
-
-              <p>
-                Total Weekly <span>Match-Up Pot</span>
-              </p>
-
-              <p>
-                <img width={50} src={sampointslogo} alt='sampointslogo' />
-                3,570,000
-              </p>
-
-              <p>
-                Total Weekly <span>To Prize Pool</span>
-              </p>
-
-              <p>
-                <img width={50} src={sampointslogo} alt='sampointslogo' />
-                1,530,000
-              </p>
-            </div>
-          </div>
-
-          <div className='stadiumupgrade'>
-            STADIUM <span>UPGRADES</span>
-            {filteredStadiums?.map((stadium) => (
-              <div key={stadium._id} style={{ marginTop: '10px' }} className='main-stadium-section'>
-                {/* Replace 'mystadium' with the actual image for each stadium */}
-                <img className='mystadium' src={stadium?.stadiumimg || mystadium} alt='stadium' />
+              <p>Your Stadium</p>
+              <img
+                className='stadiumimg'
+                src={mystadiumlevel?.[0]?.stadiumlevel?.stadiumimg || stadium}
+                alt='stadium'
+              />
+              <p>Stadium Name</p>
+              <p>{team || user?.team?.name}</p>
+              <div className='ticketcost'>
                 <p>
-                  Seating
-                  <span>Capacity</span>
-                  <div className='pricecost'>
-                    <p>{stadium?.previousseatingCapacity}</p>
-                    <ImArrowRight />
-                    <p>{stadium?.newseatingCapacity}</p>
-                  </div>
-                  <p>
-                    Average Ticket
-                    <span>Cost</span>
-                    <div className='pricecost'>
-                      <p className='updatecolr'>
-                        <img width={20} src={sampointslogo} alt='sampointslogo' />
-                        {stadium?.previousticketCost}
-                      </p>
-                      <ImArrowRight />
-                      <p className='updatecolr'>
-                        <img width={20} src={sampointslogo} alt='sampointslogo' />
-                        {stadium?.newticketCost}
-                      </p>
-                    </div>
-                  </p>
+                  Average Ticket <span>Cost</span>
                 </p>
 
-                <p>
-                  Upgrade
-                  <span>Cost</span>
-                  <div className='upgradepart'>
-                    <img width={50} src={sampointslogo} alt='sampointslogo' />
-                    <p>{stadium?.upgradedCost?.toLocaleString()}</p>
-                  </div>
-                  <Button
-                    loading={loading}
-                    className='upgradebtn'
-                    onClick={() => handlecreatestadium(stadium._id)}
+                <div className='per-ticket-price'>
+                  <img className='samlogo' src={sampointslogo} alt='samlogo' />
+                  <p>{mystadiumlevel?.[0]?.stadiumlevel?.newticketCost || 85}</p>
+                  <p>Per.Ticket</p>
+                </div>
+              </div>
+            </div>
+            <div className='daily-login-section'>
+              <div className='dailylogin'>
+                DAILY <span>LOGIN</span>
+              </div>
+              <div className='daydiv'>
+                {daysToDisplay?.map(([key, value], index) => (
+                  <div
+                    className='day'
+                    key={key || index} // Use index as key for defaultDays
+                    style={{
+                      color: value === true ? '#FFDE59' : '#FFF',
+                    }}
                   >
-                    UPGRADE
-                  </Button>
+                    {key.toUpperCase()} 
+                  </div>
+                ))}
+        {/* <div className='day'>SUN</div>
+                <div className='day'>MON</div>
+                <div className='day'>TUE</div>
+                <div className='day'>WED</div>
+                */}
+              </div> 
+              <p>
+                Seating
+                <span>Capacity</span>
+              </p>
+              <p>{mystadiumlevel?.[0]?.stadiumlevel?.newseatingCapacity || '60,000'}</p>
+              <p>
+                Upcoming
+                <span>Home Attendance</span>
+              </p>
+              <p> {mystadiumlevel?.[0]?.homeAttendance || 100}%</p>
+              <div className='weeklyticketslaes'>
+                <p>
+                  Total Weekly <span>Ticket Sales</span>
+                </p>
+
+                <p>
+                  <img width={50} src={sampointslogo} alt='sampointslogo' />
+                  {new Intl.NumberFormat('en-US')?.format(weeklyticketsale) || '5,100,000'}
+                </p>
+
+                <p>
+                  Total Weekly <span>Match-Up Pot</span>
+                </p>
+
+                <p>
+                  <img width={50} src={sampointslogo} alt='sampointslogo' />
+
+                  {new Intl.NumberFormat('en-US')?.format(weeklymatchpotup) || '3,570,000'}
+                </p>
+
+                <p>
+                  Total Weekly <span>To Prize Pool</span>
+                </p>
+
+                <p>
+                  <img width={50} src={sampointslogo} alt='sampointslogo' />
+
+                  {new Intl.NumberFormat('en-US')?.format(weeklyprizepool) || '1,530,000'}
                 </p>
               </div>
-            ))}
+            </div>
+
+            <div className='stadiumupgrade'>
+              STADIUM <span>UPGRADES</span>
+              {filteredStadiums?.map((stadium, index) => (
+                <div
+                  key={stadium._id}
+                  style={{ marginTop: '10px' }}
+                  className='main-stadium-section'
+                >
+                  {/* Replace 'mystadium' with the actual image for each stadium */}
+                  <img className='mystadium' src={stadium?.stadiumimg || mystadium} alt='stadium' />
+                  <p>
+                    Seating
+                    <span>Capacity</span>
+                    <div className='pricecost'>
+                      <p>{stadium?.previousseatingCapacity}</p>
+                      <ImArrowRight />
+                      <p>{stadium?.newseatingCapacity}</p>
+                    </div>
+                    <p>
+                      Average Ticket
+                      <span>Cost</span>
+                      <div className='pricecost'>
+                        <p className='updatecolr'>
+                          <img width={20} src={sampointslogo} alt='sampointslogo' />
+                          {stadium?.previousticketCost}
+                        </p>
+                        <ImArrowRight />
+                        <p className='updatecolr'>
+                          <img width={20} src={sampointslogo} alt='sampointslogo' />
+                          {stadium?.newticketCost}
+                        </p>
+                      </div>
+                    </p>
+                  </p>
+
+                  <p>
+                    Upgrade
+                    <span>Cost</span>
+                    <div className='upgradepart'>
+                      <img width={50} src={sampointslogo} alt='sampointslogo' />
+                      <p>{stadium?.upgradedCost?.toLocaleString()}</p>
+                    </div>
+                    <Button
+                      loading={loading}
+                      className='upgradebtn'
+                      onClick={() => handlecreatestadium(stadium._id)}
+                      disabled={index !== 0}
+                    >
+                      UPGRADE
+                    </Button>
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-       )}
+      )}
     </>
   )
 }
