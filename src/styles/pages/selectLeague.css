@@ -266,8 +266,8 @@ left: 23%;
     padding-right: 0px;
   }
   .new-league_joining_card .firstbox > button {
-    margin-top: 39px;
     margin-top: 20px;
+    margin-bottom: 20px;
   }
 
   .select_league_body h1 {
@@ -278,6 +278,40 @@ left: 23%;
     margin-left: 0px;
   }
 }
+
+
+@media (max-width: 600px) {
+  .new-league_joining_card .description p {
+    margin-left: 0px;
+    padding-left: 10px;
+    font-size: 15px;
+  }
+
+  .new-league_joining_card .description {
+    border-radius:0
+  }
+
+  .new-league_joining_card .firstbox .circle {
+    margin: auto;
+    width: 150px;
+    height: 150px;
+  }
+
+  .new-league_joining_card .firstbox .circle .myimg{
+    width: 46%;
+    left: 26%;
+  }
+
+}
+
+
+@media (max-width: 290px) {
+  .new-league_joining_card .firstbox > button {
+    margin-inline: 27px;
+  }
+
+}
+
 
 
 

@@ -119,6 +119,7 @@ const leaguejoin =async()=>{
           ) : fromHome ? (
             <div
               className='button_row'
+              
               // onClick={() => {
               //   navigate('/select-game')
               // }}

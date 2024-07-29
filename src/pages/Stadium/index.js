@@ -34,8 +34,12 @@ const Stadium = () => {
     await getLeagueDetails()
   }
 
-  console.log('mystadiumlevel', mystadiumlevel)
-  console.log('allstadiumlevel', allstadiumlevel)
+  const dayMapping = {
+    day1: 'SUN',
+    day2: 'MON',
+    day3: 'TUE',
+    day4: 'WED',
+  }
 
   useEffect(() => {
     setLoading(true)
@@ -125,13 +129,19 @@ const Stadium = () => {
   const loginObject = mystadiumlevel?.[0]?.login
   const defaultDays = ['SUN', 'MON', 'TUE', 'WED']
 
+  // const daysToDisplay =
+  //   loginObject && typeof loginObject === 'object'
+  //     ? Object.entries(loginObject)
+  //         ?.filter(([key]) => key !== '_id')
+  //         ?.map(([key, value]) => [key.toUpperCase(), value])
+  //     : defaultDays.map((day) => [day.toUpperCase(), false])
 
   const daysToDisplay =
     loginObject && typeof loginObject === 'object'
       ? Object.entries(loginObject)
-          ?.filter(([key]) => key !== '_id')
-          ?.map(([key, value]) => [key.toUpperCase(), value])
-      : defaultDays.map((day) => [day.toUpperCase(), false])
+          .filter(([key]) => key !== '_id')
+          .map(([key, value]) => [dayMapping[key] || key.toUpperCase(), value])
+      : defaultDays.map((day) => [day, false])
 
   return (
     <>

@@ -97,6 +97,7 @@ import RegularSeasonandPlayoff from '../pages/Rulebook/RegularSeasonandPlayoff'
 import SammetricBreakdown from '../pages/Rulebook/Sammetric'
 import SamPositiontab from '../pages/Rulebook/samPositiontab'
 import FranchiseTag from '../pages/Rulebook/FranchiseTag'
+import AllNews from '../components/RollingNewsFeed/AllNews'
 
 const Routers = () => {
   const Component = () => {
@@ -142,6 +143,7 @@ const Routers = () => {
           <Route path='/player-live-auction/:id' element={<PlayerLiveAuction />} />
           <Route path='/player-interface/:id' element={<PlayerInterface />} />
           <Route path='/professional-league' element={<ProfessionalLeague />} />
+          <Route path='/all-news' element={<AllNews/>} />
           <Route path='/player-roster' element={<PlayerRoster />} />
           <Route path='/team-roster/:id' element={<TeamRoster />} />
           <Route path='/depth-chart' element={<DepthChart />} />

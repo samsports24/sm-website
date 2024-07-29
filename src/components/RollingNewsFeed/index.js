@@ -5,6 +5,7 @@ import { BiRightArrowAlt } from 'react-icons/bi'
 // import twitterIcon from '../../assets/Ellipse 35.svg'
 // import fbIcon from '../../assets/Ellipse 37.svg'
 import { getNewsFeed } from '../../redux'
+import { useNavigate } from 'react-router-dom'
 
 const RollingNewsFeed = ({ height = '463px' }) => {
   const [news, setNews] = useState([])
@@ -15,6 +16,8 @@ const RollingNewsFeed = ({ height = '463px' }) => {
       setNews(data)
     })()
   }, [])
+
+  const navigate = useNavigate()
 
   return (
     <>
@@ -28,7 +31,11 @@ const RollingNewsFeed = ({ height = '463px' }) => {
       <div className='rolling_news_feed'>
         <header>
           <h3>NFL Rolling News Feed</h3>
-          <p>
+          <p
+            onClick={() => {
+              navigate('/all-news')
+            }}
+          >
             View All <BiRightArrowAlt size={18} />
           </p>
         </header>

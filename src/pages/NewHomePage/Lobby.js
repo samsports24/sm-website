@@ -59,6 +59,18 @@ const Lobby = () => {
           </Col>
           <Col xs={24} lg={12} xl={8}>
             <Row gutter={[10, 10]}>
+            {!isAuthenticated && (
+                <div
+                  className='overlay'
+                  // style={{background: 'red'}}
+                  onClick={() => {
+                    notification.error({
+                      message: 'Please log in first',
+                      duration: 3,
+                    })
+                  }}
+                />
+              )}
               <Card2
                 cursor
                 flip
