@@ -29,24 +29,13 @@ const Stadium = () => {
 
   const [loading, setLoading] = useState(false)
   const [team, setTeam] = useState(null)
-  const teamNames = [
-    'Atlanta Legion',
-    'Boston Blazers',
-    'Chicago Warriors',
-    'Dallas Titans',
-    'Houston Stars',
-    'Los Angeles Vipers',
-    'Miami Storm',
-    'New York Guardians',
-    'San Francisco Miners',
-    'Seattle Thunder',
-  ]
 
   const myleague = async () => {
     await getLeagueDetails()
   }
 
   console.log('mystadiumlevel', mystadiumlevel)
+  console.log('allstadiumlevel', allstadiumlevel)
 
   useEffect(() => {
     setLoading(true)
@@ -54,7 +43,7 @@ const Stadium = () => {
     getallstadiumlevel()
     setLoading(false)
     // getstadium()
-  }, [])
+  }, [user])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,12 +64,6 @@ const Stadium = () => {
       fetchData()
     }
   }, [user])
-
-  // const filteredStadiums = allstadiumlevel?.filter(
-  //   (stadium) =>
-  //     stadium.level !== 'level0' &&
-  //     !mystadiumlevel.some((item) => item.stadiumlevel?._id == stadium._id),
-  // )
 
   // Find the maximum level in the mystadiumlevel array
   const maxMyStadiumLevel = Math.max(
@@ -104,14 +87,7 @@ const Stadium = () => {
     return !isNaN(stadiumLevel) && stadiumLevel > maxMyStadiumLevel
   })
 
-  console.log(filteredStadiums)
-
-  //  const filteredStadiums = allstadiumlevel?.filter((stadium) => stadium.level !== 'level0' && mystadiumlevel?.stadiumlevel?.map(item => item._id !== stadium._id))
-
-  //  console.log('sampoints', sampoints)
   console.log(' user?.team?._id', user?.team?._id)
-
-
 
   const handlecreatestadium = async (stadiumlevelId) => {
     setLoading(true) // Set main loading state
@@ -137,6 +113,7 @@ const Stadium = () => {
       setLoading(false) // Reset main loading state
     }
   }
+  let filteredEntries
 
   let weeklyticketsale =
     mystadiumlevel?.[0]?.homeAttendance *
@@ -146,29 +123,15 @@ const Stadium = () => {
   let weeklyprizepool = weeklyticketsale * 0.3
 
   const loginObject = mystadiumlevel?.[0]?.login
-  if (!loginObject || typeof loginObject !== 'object') {
-    return null // Or some fallback UI
-  }
-
-  // Filter out the '_id' key
-  const filteredEntries = Object.entries(loginObject).filter(([key]) => key !== '_id')
-
-  // Default days to display if filteredEntries is empty
-  // const defaultDays = ['DAY 1', 'DAY 2', 'DAY 3', 'DAY 4']
   const defaultDays = ['SUN', 'MON', 'TUE', 'WED']
 
-  const dayMapping = {
-    day1: 'SUN',
-    day2: 'MON',
-    day3: 'TUE',
-    day4: 'WED',
-  }
 
-  // Use filteredEntries if not empty, otherwise use defaultDays
   const daysToDisplay =
-    filteredEntries.length > 0
-      ? filteredEntries
-      : defaultDays.map((day, index) => [day.toLowerCase().replace(' ', ''), false])
+    loginObject && typeof loginObject === 'object'
+      ? Object.entries(loginObject)
+          ?.filter(([key]) => key !== '_id')
+          ?.map(([key, value]) => [key.toUpperCase(), value])
+      : defaultDays.map((day) => [day.toUpperCase(), false])
 
   return (
     <>
@@ -222,23 +185,22 @@ const Stadium = () => {
                 DAILY <span>LOGIN</span>
               </div>
               <div className='daydiv'>
-                {daysToDisplay?.map(([key, value], index) => (
+                {daysToDisplay.map(([day, active], index) => (
                   <div
                     className='day'
-                    key={key || index} // Use index as a fallback key if key is missing
+                    key={index} // Use index as a fallback key
                     style={{
-                      color: value === true ? '#FFDE59' : '#FFF',
+                      color: active ? '#FFDE59' : '#FFF',
                     }}
                   >
-                    {dayMapping[key] || key.toUpperCase()}
+                    {day}
                   </div>
                 ))}
 
                 {/* <div className='day'>SUN</div>
                 <div className='day'>MON</div>
                 <div className='day'>TUE</div>
-                <div className='day'>WED</div>
-                */}
+                <div className='day'>WED</div> */}
               </div>
               <p>
                 Seating
@@ -257,7 +219,10 @@ const Stadium = () => {
 
                 <p>
                   <img width={50} src={sampointslogo} alt='sampointslogo' />
-                  {new Intl.NumberFormat('en-US')?.format(weeklyticketsale) || '5,100,000'}
+                  {/* {new Intl.NumberFormat('en-US')?.format(weeklyticketsale) || '5,100,000'} */}
+                  {!isNaN(weeklyticketsale) && typeof weeklyticketsale === 'number'
+                    ? new Intl.NumberFormat('en-US').format(weeklyticketsale)
+                    : '5,100,000'}
                 </p>
 
                 <p>
@@ -266,8 +231,11 @@ const Stadium = () => {
 
                 <p>
                   <img width={50} src={sampointslogo} alt='sampointslogo' />
+                  {!isNaN(weeklymatchpotup) && typeof weeklymatchpotup === 'number'
+                    ? new Intl.NumberFormat('en-US').format(weeklymatchpotup)
+                    : '3,570,000'}
 
-                  {new Intl.NumberFormat('en-US')?.format(weeklymatchpotup) || '3,570,000'}
+                  {/* {new Intl.NumberFormat('en-US')?.format(weeklymatchpotup) || '3,570,000'} */}
                 </p>
 
                 <p>
@@ -277,7 +245,11 @@ const Stadium = () => {
                 <p>
                   <img width={50} src={sampointslogo} alt='sampointslogo' />
 
-                  {new Intl.NumberFormat('en-US')?.format(weeklyprizepool) || '1,530,000'}
+                  {!isNaN(weeklyprizepool) && typeof weeklyprizepool === 'number'
+                    ? new Intl.NumberFormat('en-US').format(weeklyprizepool)
+                    : '1,530,000'}
+
+                  {/* {new Intl.NumberFormat('en-US')?.format(weeklyprizepool) || '1,530,000'} */}
                 </p>
               </div>
             </div>

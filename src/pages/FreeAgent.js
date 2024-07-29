@@ -206,7 +206,7 @@ const FreeAgent = () => {
       render: (_, obj) => {
         return (
           <Button
-            disabled={false}
+            disabled={true}
             loading={playerID == obj?.PlayerID}
             type='primary'
             className='_button'

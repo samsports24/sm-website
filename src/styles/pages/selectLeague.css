@@ -256,6 +256,34 @@ left: 23%;
 }
 
 
+@media (max-width: 900px) {
+  .new-league_joining_card .firstbox {
+    flex-direction: column;
+  }
+  .new-league_joining_card .description {
+    margin-left: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+  .new-league_joining_card .firstbox > button {
+    margin-top: 39px;
+    margin-top: 20px;
+  }
+
+  .select_league_body h1 {
+    right: 0px;
+  }
+
+  .select_league_body .card_conatiner {
+    margin-left: 0px;
+  }
+}
+
+
+
+
+
+
 /* .new-league_joining_card  ::-webkit-scrollbar{
 
   
