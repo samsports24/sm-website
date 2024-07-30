@@ -124,7 +124,9 @@ const PlayerAuction = () => {
       render: (_, obj) => (
         <p>
           {' '}
-          {obj?.player_id?.PlayerCap ? `$${obj?.player_id?.PlayerCap?.toLocaleString()}` : '-'}
+          {/* {obj?.player_id?.PlayerCap ? `$${obj?.player_id?.PlayerCap?.toLocaleString()}` : '-'} */}
+          {obj?.player_id?.PlayerCap ? `SP ${obj?.player_id?.currentYearSalaryCap?.toLocaleString()}` : '-'}
+          
         </p>
       ),
     },
@@ -132,7 +134,7 @@ const PlayerAuction = () => {
       title: 'CURRENT BID',
       dataIndex: 'highestCurrentBid',
       key: 'highestCurrentBid',
-      render: (t) => <p>{t ? `$${t?.toLocaleString()}` : '-'}</p>,
+      render: (t) => <p>{t ? `SP ${t?.toLocaleString()}` : '-'}</p>,
     },
     {
       title: 'TIME LEFT',

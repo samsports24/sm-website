@@ -16,9 +16,12 @@ import { getAllTeam } from '../../redux/actions/teamActions'
 import { getRoster } from '../../redux/actions/rosterAction'
 
 import { leagueSalaryCap } from '../../config/constants'
+import { getLeagueDetails } from '../../redux'
 
 const NewTrade = () => {
   const SETTING = useSelector((state) => state?.user)
+  const { currentLeague } = useSelector((state) => state?.league)
+  
   const [loading, setLoading] = useState(true)
   const [loading2, setLoading2] = useState(false)
   const [btnLoading, setBtnLoading] = useState(false)
@@ -38,19 +41,40 @@ const NewTrade = () => {
   const [myTeamSelectedDraft, setMyTeamSelectedDraft] = useState([])
   const [otherTeamSelectedDraft, setOtherTeamSelectedDraft] = useState([])
 
+
+  
   useEffect(() => {
     getTeams()
     getMyTeam()
+    getLeagueDetails()
   }, [])
+
+  const getTeams = async () => {
+    if (currentLeague?._id) {
+      try {
+        const res = await getAllTeam({ currentLeague: currentLeague?._id });
+        setTeams(res);
+      } catch (error) {
+        console.error('Failed to fetch teams', error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    getTeams();
+  }, [currentLeague]);
 
   useEffect(() => {
     selectTeam && getOtherTeam()
   }, [selectTeam])
 
-  const getTeams = async () => {
-    const res = await getAllTeam()
-    setTeams(res)
-  }
+  // const getTeams = async () => {
+  //   const res = await getAllTeam({currentLeague:currentLeague?._id})
+  //   setTeams(res)
+  // }
+
+
+
   const getMyTeam = async () => {
     !loading && setLoading(true)
     const res = await getRoster(SETTING?.setting?.week)
@@ -80,6 +104,8 @@ const NewTrade = () => {
     setOtherTeamDraft([])
     setSelectTeam(null)
   }
+
+
 
   const createTrade = async () => {
     const isMyTeam = myTeamSelected?.length > 0 || myTeamSelectedDraft?.length > 0
@@ -136,6 +162,8 @@ const NewTrade = () => {
     setOtherTeamSelectedDraft(temp)
     setOtherTeamDraft((pre) => [...pre, obj])
   }
+
+
 
   return (
     <>

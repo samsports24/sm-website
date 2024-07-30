@@ -213,7 +213,7 @@ const FreeAgent = () => {
                         </div>
 
                         <Button
-                          disabled={true}
+                          disabled={false}
                           loading={playerID == v?.PlayerID}
                           type='primary'
                           onClick={() => {

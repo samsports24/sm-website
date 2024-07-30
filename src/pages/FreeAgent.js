@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Button, Input, Pagination as AntPagination, Table, Select } from 'antd'
+import { Button, Input, Pagination as AntPagination, Table, Select, notification } from 'antd'
 
 import { SearchOutlined } from '@ant-design/icons'
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
@@ -27,6 +27,8 @@ const FreeAgent = () => {
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
   const [filterBy, setFilterBy] = useState('')
+  const [noti, contextHolder] = notification.useNotification()
+  const sampoints = useSelector((state) => state.user?.SamPoints?.SamPoints)
 
   const navigate = useNavigate()
 
@@ -80,19 +82,31 @@ const FreeAgent = () => {
   }
 
   const handleCreateAuction = async (playerID, player_id,CapHit) => {
+    // console.log('CapHit',CapHit);
+
+    if (sampoints < CapHit) {
+ 
+      // noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
+      notification.error({
+        message: `Bid amount ${CapHit} exceeds your available points of ${sampoints}.`,
+        duration: 4,
+      });
+      return
+    }
+
     setPlayerID(playerID)
 
     const res = await createAuction({
       PlayerID: playerID,
       player_id: player_id,
       auctionFrom: 'nonowner',
-      CapHit:CapHit,
+      CapHit:CapHit === 0 ? 50000 : CapHit
     })
     if (res) {
       navigate('/player-auction')
     }
     setPlayerID('')
-  }
+   }
 
   const columns = [
     {
@@ -190,7 +204,7 @@ const FreeAgent = () => {
       key: 'PlayerCap',
       render: (_, obj) => (
         <p>
-          {obj ? `$${obj.currentYearSalaryCap.toLocaleString()}` : '-'}
+          {obj ? `SP ${obj.currentYearSalaryCap.toLocaleString()}` : '-'}
         </p>
       )
       

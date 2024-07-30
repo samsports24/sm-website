@@ -162,6 +162,18 @@
   color: var(--primary);
 }
 
+.rolling_news_feed ::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+  background-color: #5f547b;
+  border-radius: 8px;
+}
+
+.rolling_news_feed ::-webkit-scrollbar-thumb {
+  background-color: #231840;
+  border-radius: 8px;
+}
+
 @media (max-width: 768px) {
   .rolling_news_feed header {
     flex-wrap: wrap;

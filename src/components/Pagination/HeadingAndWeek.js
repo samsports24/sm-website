@@ -60,12 +60,12 @@ const HeadingAndWeek = ({ heading, week = true, goLive = true }) => {
   }, [draftstarttime])
 
   // ?.filter(value => value.leagueType === 'professional' && value._id !== '64fc5edaf8f2513bd263845a')
-  console.log('isTimeComplete',isTimeComplete);
-  console.log('leagueType',leagueType);
+  // console.log('isTimeComplete',isTimeComplete);
+  // console.log('leagueType',leagueType);
 
-  useEffect(() => {
-    console.log('isTimeComplete', isTimeComplete)
-  },[isTimeComplete])
+  // useEffect(() => {
+  //   console.log('isTimeComplete', isTimeComplete)
+  // },[isTimeComplete])
 
   return (
     <>

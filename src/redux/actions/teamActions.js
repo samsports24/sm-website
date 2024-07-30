@@ -2,10 +2,14 @@ import { notification } from 'antd'
 import { attachToken, privateAPI } from '../../config/constants'
 import { getLeagueDetails } from './leagueActions'
 
-export const getAllTeam = async () => {
+export const getAllTeam = async (payload) => {
+
   try {
     attachToken()
-    const res = await privateAPI.get(`/team/get-all`)
+    // const res = await privateAPI.get(`/team/get-all`,payload)
+    const res = await privateAPI.get('/team/get-all', {
+      params: payload
+    });
     if (res) {
       return res.data.data
     }

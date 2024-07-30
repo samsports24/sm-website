@@ -37,6 +37,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [auctionLoading, setAuctionLoading] = useState(false)
   const sampoints = useSelector((state) => state.user?.SamPoints?.SamPoints)
+ 
   const [data, setData] = useState({
     player: {},
     news: '',
@@ -59,7 +60,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
 
 // console.log('data?.player',data?.player);
 
-console.log('mysampoints',sampoints);
+// console.log('mysampoints',sampoints);
 
   useEffect(() => {
     if (isModalOpen) {
@@ -225,7 +226,20 @@ console.log('mysampoints',sampoints);
   }
 
   const handleCreateAuction = async () => {
+
+    if (sampoints < CapHit) {
+ 
+      // noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
+      notification.error({
+        message: `Bid amount ${CapHit} exceeds your available points of ${sampoints}.`,
+        duration: 4,
+      });
+      return
+    }
+
     setAuctionLoading(true)
+
+
     const res = await createAuction({
       PlayerID: playerIdSmall,
       player_id: playerIdBig,
@@ -570,6 +584,7 @@ const WinningBid = ({ data }) => {
 }
 const LiveAuctionBid = ({ data, getData }) => {
   const [noti, contextHolder] = notification.useNotification()
+  const sampoints = useSelector((state) => state.user?.SamPoints?.SamPoints)
   const [remainingTime, setRemainingTime] = useState('')
   const [isLoading, setIsLoading] = useState({
     type: 'data',
@@ -577,6 +592,7 @@ const LiveAuctionBid = ({ data, getData }) => {
   })
   const [manualBid, setManualBid] = useState('')
   const [bidError, setBidError] = useState('')
+
 
   useEffect(() => {
     bidError && setBidError(false)
@@ -631,59 +647,116 @@ const LiveAuctionBid = ({ data, getData }) => {
       return
     }
 
-    if(sampoints > manualBid){
-      noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
     
+
+    // if  (sampoints > manualBid) {
+    //    setBidError(`Bid amount ${manualBid} exceeds your available points of ${sampoints}.`)
+    //   return
+    // }
+
+    if (Number(manualBid) > sampoints) {
+      setBidError(`Bid amount ${manualBid} exceeds your available points of ${sampoints}.`);
+      return;
     }
+
+    setBidError('')
 
     setIsLoading({
       type: 'submit',
       status: true,
     })
-    const res = await addBid(
-      {
-        auctionId: data?._id,
-        bidAmount: Number(manualBid),
-      },
-      noti,
-    )
-    if (res) {
-      getData()
-    }
+    // const res = await addBid(
+    //   {
+    //     auctionId: data?._id,
+    //     bidAmount: Number(manualBid),
+    //   },
+    //   noti,
+    // )
+    // if (res) {
+    //   getData()
+    // }
     setIsLoading({
       type: 'submit',
       status: false,
     })
   }
 
-  const handleQuickBid = async () => {
-    setIsLoading({
-      type: 'quick',
-      status: true,
-    })
+//   const handleQuickBid = async () => {
+//     setIsLoading({
+//       type: 'quick',
+//       status: true,
+//     })
 
-    // samWallet?.SamPoints < bidamount
-    const res = await addBid(
-      {
-        auctionId: data?._id,
-        // bidAmount: Number(data?.highestCurrentBid) + 5,
-        bidAmount: Number(data?.highestCurrentBid) + 50000,
-      },
-      noti,
-    )
-if(sampoints > bidamount){
-  noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
+    
+//     // samWallet?.SamPoints < bidamount
+//     const res = await addBid(
+//       {
+//         auctionId: data?._id,
+//         // bidAmount: Number(data?.highestCurrentBid) + 5,
+//         bidAmount: Number(data?.highestCurrentBid) + 50000,
+//       },
+//       noti,
+//     )
+// if(sampoints > bidamount){
+//   noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
 
-}
+// }
 
-    if (res) {
-      getData()
-    }
+//     if (res) {
+//       getData()
+//     }
+//     setIsLoading({
+//       type: 'quick',
+//       status: false,
+//     })
+//   }
+
+const handleQuickBid = async () => {
+  setIsLoading({
+    type: 'quick',
+    status: true,
+  });
+
+  const bidAmount = Number(data?.highestCurrentBid) + 50000;
+
+  // Check if the user has enough points
+  if (sampoints < bidAmount) {
     setIsLoading({
       type: 'quick',
       status: false,
-    })
+    });
+    // noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
+    notification.error({
+      message: `Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`,
+      duration: 4,
+    });
+    return
   }
+
+  try {
+    const res = await addBid(
+      {
+        auctionId: data?._id,
+        bidAmount,
+      },
+      noti,
+    );
+
+    if (res) {
+      await getData();
+    }
+  } catch (error) {
+    // Handle potential errors from addBid or getData
+    noti.error('An error occurred while placing your bid. Please try again.');
+  } finally {
+    setIsLoading({
+      type: 'quick',
+      status: false,
+    });
+  }
+};
+
+
   return (
     <>
       {contextHolder}

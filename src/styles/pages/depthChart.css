@@ -2,6 +2,40 @@
   width: 100%;
 }
 
+
+
+
+.depth_chart_container .image-row {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  padding: 10px;
+  width: 50%;
+}
+
+.depth_chart_container .image-row .image-item {
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.depth_chart_container .image-row .image-item:hover {
+  transform: scale(1.1);
+}
+
+.depth_chart_container  .image-row .image-item.selected {
+  border: 5px solid #007bff; 
+ 
+}
+
+.depth_chart_container  .image-row .image-item img {
+  width: 150px; 
+  height: auto;
+}
+
+
+
+
+
 .depth_chart_container .depth_chart_wrapper {
   overflow: auto;
   display: flex;

@@ -59,8 +59,10 @@ const EditProfile = () => {
       ? values?.dateOfBirth?.toISOString()
       : user?.dateOfBirth || ''
     const joinDate = values?.joinDate ? values?.joinDate?.toISOString() : user?.joinDate || ''
-    const city = values?.city ? values?.city : user?.city || ''
+    const state = values?.state ? values?.state : user?.state || ''
     const country = values?.country ? values?.country : user?.country || ''
+    const timezone = values?.timezone ? values?.timezone : user?.timezone || ''
+    
 
     if (values?.newPassword) {
       if (values?.newPassword === values?.confirmPassword) {
@@ -75,8 +77,10 @@ const EditProfile = () => {
           formdata.append('phone', phone)
           formdata.append('dateOfBirth', dateOfBirth)
           formdata.append('joinDate', joinDate)
-          formdata.append('city', city)
+          formdata.append('state', state)
           formdata.append('country', country)
+          formdata.append('timezone', timezone)
+          
 
           await updateUser(formdata)
         } else {
@@ -89,8 +93,9 @@ const EditProfile = () => {
             phone,
             dateOfBirth,
             joinDate,
-            city,
+            state,
             country,
+            timezone,
           }
 
           await updateUser(obj)
@@ -111,8 +116,9 @@ const EditProfile = () => {
         formdata.append('phone', phone)
         formdata.append('dateOfBirth', dateOfBirth)
         formdata.append('joinDate', joinDate)
-        formdata.append('city', city)
+        formdata.append('state', state)
         formdata.append('country', country)
+        formdata.append('timezone', timezone)
 
         await updateUser(formdata)
       } else {
@@ -123,8 +129,9 @@ const EditProfile = () => {
           phone,
           dateOfBirth,
           joinDate,
-          city,
+          state,
           country,
+          timezone,
         }
         await updateUser(obj)
       }
@@ -184,8 +191,8 @@ const EditProfile = () => {
                 value: dayjs(user?.joinDate),
               },
               {
-                name: 'city',
-                value: user?.city,
+                name: 'state',
+                value: user?.state,
               },
               {
                 name: 'country',
@@ -395,8 +402,8 @@ const EditProfile = () => {
 
               <Col xs={24} md={12} lg={12}>
                 <Form.Item
-                  name='city'
-                  label='City'
+                  name='state'
+                  label='state'
                   rules={[
                     {
                       required: false,
@@ -405,7 +412,7 @@ const EditProfile = () => {
                   ]}
                   requiredMark='optional'
                 >
-                  <Input autoComplete='off' type='text' placeholder='city' />
+                  <Input autoComplete='off' type='text' placeholder='state' />
                 </Form.Item>
               </Col>
 
@@ -422,6 +429,22 @@ const EditProfile = () => {
                   requiredMark='optional'
                 >
                   <Input autoComplete='off' type='text' placeholder='Country' />
+                </Form.Item>
+              </Col>
+
+              <Col xs={24} md={12} lg={12}>
+                <Form.Item
+                  name='timezone'
+                  label='Timezone'
+                  rules={[
+                    {
+                      required: false,
+                      message: 'The entered password is not valid!',
+                    },
+                  ]}
+                  requiredMark='optional'
+                >
+                  <Input autoComplete='off' type='text' placeholder='Timezone' />
                 </Form.Item>
               </Col>
 

@@ -3,7 +3,7 @@ import { Button, notification } from 'antd'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { HiOutlineHome } from 'react-icons/hi'
-import { MdDashboard,MdOutlineStadium } from 'react-icons/md'
+import { MdDashboard, MdOutlineStadium } from 'react-icons/md'
 import { FaPlusCircle, FaRegChartBar } from 'react-icons/fa'
 import { RiAuctionLine, RiDraftLine } from 'react-icons/ri'
 import { SiLeagueoflegends } from 'react-icons/si'
@@ -15,7 +15,7 @@ import {
   GiBabyfootPlayers,
   GiAmericanFootballPlayer,
 } from 'react-icons/gi'
-import { RxEnvelopeClosed } from "react-icons/rx";
+import { RxEnvelopeClosed } from 'react-icons/rx'
 
 import { PiUsersThreeLight, PiNotebookLight } from 'react-icons/pi'
 import { FaQuestion } from 'react-icons/fa6'
@@ -38,11 +38,11 @@ const MainMenu = ({ visible }) => {
   const signUp = () => navigate('/sign-up')
   const [active, setActive] = useState('dashboard')
   const user = useSelector((state) => state.user.userDetails)
-  const isdraftlive=user?.team?.currentLeague?.isDraftLive
+  const isdraftlive = user?.team?.currentLeague?.isDraftLive
 
   const { pathname } = useLocation()
 
-  console.log('check',isdraftlive);
+  console.log('check', isdraftlive)
 
   useEffect(() => {
     switch (pathname) {
@@ -100,7 +100,7 @@ const MainMenu = ({ visible }) => {
       case '/clubhouse': {
         return setActive('clubhouse')
       }
-      
+
       case '/my-league': {
         return setActive('my-league')
       }
@@ -133,210 +133,223 @@ const MainMenu = ({ visible }) => {
   return (
     <>
       <div className='sidebar_menu no-scrollbar'>
-      <div className='wrapper'>
-      <div
-        className={`sidebar_menu_item ${active === 'home' ? 'activeRoute' : ''}`}
-        onClick={() => navigate('/fantasy-league')}
-      >
-        <HiOutlineHome />
-        <p>HOME</p>
-      </div>
-      {isAuthenticated ? (
-        isdraftlive  ? (
-          <>
-            <div
-              className={`sidebar_menu_item ${active === 'team-setting' ? 'activeRoute' : ''}`}
-              onClick={() => navigate('/team-setting')}
-            >
-              <AiOutlineSetting />
-              <p>team setting</p>
-            </div>
-          </>
-        ) : (
-          <>
-            <div
-              className={`sidebar_menu_item ${active === 'dashboard' ? 'activeRoute' : ''}`}
-              onClick={() => navigatePath('/professional-league')}
-            >
-              <MdDashboard />
-              <p>DASHBOARD</p>
-            </div>
-            <div
-              className={`sidebar_menu_item ${active === 'roster' ? 'activeRoute' : ''}`}
-              onClick={() => navigatePath('/player-roster')}
-            >
-              <PiUsersThreeLight />
-              <p>roster</p>
-            </div>
-            <div
-              className={`sidebar_menu_item ${active === 'depth-chart' ? 'activeRoute' : ''}`}
-              onClick={() => navigatePath('/depth-chart')}
-            >
-              <FaRegChartBar />
-              <p>starters</p>
-            </div>
-            <div
-              className={`sidebar_menu_item ${active === 'my-league' ? 'activeRoute' : ''}`}
-              onClick={() => navigate('/my-league')}
-            >
-              <SiLeagueoflegends />
-              <p>My Leagues</p>
-            </div>
-            <div
-              className={`sidebar_menu_item ${active === 'trade' ? 'activeRoute' : ''}`}
-              onClick={() => navigatePath('/team-trade')}
-            >
-              <GiTrade />
-              <p>trade</p>
-            </div>
-            <div
-              className={`sidebar_menu_item ${active === 'auctions' ? 'activeRoute' : ''}`}
-              onClick={() => navigatePath('/player-auction')}
-            >
-              <RiAuctionLine />
-              <p>auctions</p>
-            </div>
-            <div
-              className={`sidebar_menu_item ${active === 'injuries-reserve' ? 'activeRoute' : ''}`}
-              onClick={() => navigatePath('/injured-reserve')}
-            >
-              <FaPlusCircle />
-              <p>injuries reserve</p>
-            </div>
-            <div
-              className={`sidebar_menu_item ${active === 'free-agents' ? 'activeRoute' : ''}`}
-              onClick={() => navigatePath('/free-agent')}
-            >
-              <BsShop />
-              <p>
-                free
-                <br /> agents
-              </p>
-            </div>
-            <div
-              className={`sidebar_menu_item ${active === 'league-rosters' ? 'activeRoute' : ''}`}
-              onClick={() => navigatePath('/league-rosters')}
-            >
-              <GiAmericanFootballPlayer />
-              <p>
-                league <br /> rosters
-              </p>
-            </div>
-            <div
-              className={`sidebar_menu_item ${active === 'league-standings' ? 'activeRoute' : ''}`}
-              onClick={() => navigatePath('/league-standings')}
-            >
-              <BsShop />
-              <p>STANDINGS</p>
-            </div>
-            <div
-              className={`sidebar_menu_item ${active === 'player-ranking' ? 'activeRoute' : ''}`}
-              onClick={() => navigatePath('/player-standing-weekly')}
-            >
-              <GiStarMedal />
-              <p>players ranking</p>
-            </div>
-            <div
-              className={`sidebar_menu_item ${active === 'leagueScore' ? 'activeRoute' : ''}`}
-              onClick={() => navigatePath('/leagueScore')}
-            >
-              <TbLivePhoto />
-              <p>live scoring</p>
-            </div>
-            <div
-              className={`sidebar_menu_item ${active === 'playoff' ? 'activeRoute' : ''}`}
-              onClick={() => navigatePath('/playoff')}
-            >
-              <GiBabyfootPlayers />
-              <p>playoff</p>
-            </div>
-            <div
-              className={`sidebar_menu_item ${active === 'team-setting' ? 'activeRoute' : ''}`}
-              onClick={() => navigatePath('/team-setting')}
-            >
-              <AiOutlineSetting />
-              <p>team setting</p>
-            </div>
+        <div className='wrapper'>
+          <div
+            className={`sidebar_menu_item ${active === 'home' ? 'activeRoute' : ''}`}
+            onClick={() => navigate('/fantasy-league')}
+          >
+            <HiOutlineHome />
+            <p>HOME</p>
+          </div>
+          {isAuthenticated ? (
+            isdraftlive ? (
+              <>
+                <div
+                  className={`sidebar_menu_item ${active === 'team-setting' ? 'activeRoute' : ''}`}
+                  onClick={() => navigate('/team-setting')}
+                >
+                  <AiOutlineSetting />
+                  <p>team setting</p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div
+                  className={`sidebar_menu_item ${active === 'dashboard' ? 'activeRoute' : ''}`}
+                  onClick={() => navigatePath('/professional-league')}
+                >
+                  <MdDashboard />
+                  <p>DASHBOARD</p>
+                </div>
 
-            <div
-              className={`sidebar_menu_item ${active === 'stadium' ? 'activeRoute' : ''}`}
-              onClick={() => navigatePath('/stadium')}
-            >
-              <MdOutlineStadium />
-              <p>Stadium</p>
-            </div>
+                <div
+                  className={`sidebar_menu_item ${active === 'draft' ? 'activeRoute' : ''}`}
+                  onClick={() => navigate('/live-draft')}
+                >
+                  <RiDraftLine />
+                  <p>draft</p>
+                </div>
 
-            <div
-              className={`sidebar_menu_item ${active === 'clubhouse' ? 'activeRoute' : ''}`}
-              onClick={() => navigatePath('/clubhouse')}
-            >
-              <RxEnvelopeClosed />
-              <p>Club House</p>
-            </div>
+                <div
+                  className={`sidebar_menu_item ${active === 'roster' ? 'activeRoute' : ''}`}
+                  onClick={() => navigatePath('/player-roster')}
+                >
+                  <PiUsersThreeLight />
+                  <p>roster</p>
+                </div>
+                <div
+                  className={`sidebar_menu_item ${active === 'depth-chart' ? 'activeRoute' : ''}`}
+                  onClick={() => navigatePath('/depth-chart')}
+                >
+                  <FaRegChartBar />
+                  <p>starters</p>
+                </div>
+                <div
+                  className={`sidebar_menu_item ${active === 'my-league' ? 'activeRoute' : ''}`}
+                  onClick={() => navigate('/my-league')}
+                >
+                  <SiLeagueoflegends />
+                  <p>My Leagues</p>
+                </div>
+                <div
+                  className={`sidebar_menu_item ${active === 'trade' ? 'activeRoute' : ''}`}
+                  onClick={() => navigatePath('/team-trade')}
+                >
+                  <GiTrade />
+                  <p>trade</p>
+                </div>
+                <div
+                  className={`sidebar_menu_item ${active === 'auctions' ? 'activeRoute' : ''}`}
+                  onClick={() => navigatePath('/player-auction')}
+                >
+                  <RiAuctionLine />
+                  <p>auctions</p>
+                </div>
+                <div
+                  className={`sidebar_menu_item ${
+                    active === 'injuries-reserve' ? 'activeRoute' : ''
+                  }`}
+                  onClick={() => navigatePath('/injured-reserve')}
+                >
+                  <FaPlusCircle />
+                  <p>injuries reserve</p>
+                </div>
+                <div
+                  className={`sidebar_menu_item ${active === 'free-agents' ? 'activeRoute' : ''}`}
+                  onClick={() => navigatePath('/free-agent')}
+                >
+                  <BsShop />
+                  <p>
+                    free
+                    <br /> agents
+                  </p>
+                </div>
+                <div
+                  className={`sidebar_menu_item ${
+                    active === 'league-rosters' ? 'activeRoute' : ''
+                  }`}
+                  onClick={() => navigatePath('/league-rosters')}
+                >
+                  <GiAmericanFootballPlayer />
+                  <p>
+                    league <br /> rosters
+                  </p>
+                </div>
+                <div
+                  className={`sidebar_menu_item ${
+                    active === 'league-standings' ? 'activeRoute' : ''
+                  }`}
+                  onClick={() => navigatePath('/league-standings')}
+                >
+                  <BsShop />
+                  <p>STANDINGS</p>
+                </div>
+                <div
+                  className={`sidebar_menu_item ${
+                    active === 'player-ranking' ? 'activeRoute' : ''
+                  }`}
+                  onClick={() => navigatePath('/player-standing-weekly')}
+                >
+                  <GiStarMedal />
+                  <p>players ranking</p>
+                </div>
+                <div
+                  className={`sidebar_menu_item ${active === 'leagueScore' ? 'activeRoute' : ''}`}
+                  onClick={() => navigatePath('/leagueScore')}
+                >
+                  <TbLivePhoto />
+                  <p>live scoring</p>
+                </div>
+                <div
+                  className={`sidebar_menu_item ${active === 'playoff' ? 'activeRoute' : ''}`}
+                  onClick={() => navigatePath('/playoff')}
+                >
+                  <GiBabyfootPlayers />
+                  <p>playoff</p>
+                </div>
+                <div
+                  className={`sidebar_menu_item ${active === 'team-setting' ? 'activeRoute' : ''}`}
+                  onClick={() => navigatePath('/team-setting')}
+                >
+                  <AiOutlineSetting />
+                  <p>team setting</p>
+                </div>
 
-            {(user?.team?.currentLeague?.createdBy === user?._id ||
-              user?.team?.currentLeague?.coComissioner === user?._id) && (
-              <div
-                className={`sidebar_menu_item ${active === 'comissioner' ? 'activeRoute' : ''}`}
-                onClick={() => navigate('/comissioner')}
-              >
-                <img src={comissioner} width={'30px'} height={'30px'} />
-                <p>Comissioner</p>
-              </div>
-            )}
-          </>
-        )
-      ) : null}
-      <div
-        className={`sidebar_menu_item ${active === 'rules-book' ? 'activeRoute' : ''}`}
-        onClick={() => {navigate('/rule-book')}}
-      >
-        <PiNotebookLight />
-        <p>RULESBOOK</p>
-      </div>
-      <div
-        className={`sidebar_menu_item ${active === 'draft' ? 'activeRoute' : ''}`}
-        onClick={() => navigate('/live-draft')}
-      >
-        <RiDraftLine />
-        <p>draft</p>
-      </div>
-      <div
-        className={`sidebar_menu_item ${active === 'job-search' ? 'activeRoute' : ''}`}
-        onClick={() => {}}
-      >
-        <img src={Job} width={32} />
-        <p>Job Search</p>
-      </div>
-      <div
-        className={`sidebar_menu_item ${active === 'Community' ? 'activeRoute' : ''}`}
-        onClick={() => {}}
-      >
-        <img src={Community} width={32} />
-        <p>Community</p>
-      </div>
-      <div
-        className={`sidebar_menu_item ${active === 'token' ? 'activeRoute' : ''}`}
-        onClick={() => window.open('https://sam-wallet-10b1f.web.app/')}
-      >
-        <GiCoins />
-        <p>sams token</p>
-      </div>
-      <div
-        className={`sidebar_menu_item ${active === 'faq' ? 'activeRoute' : ''}`}
-        onClick={() => {}}
-      >
-        <img src={FAQ} width={32} />
-        <p>faq</p>
-      </div>
-      <div
-        className={`sidebar_menu_item ${active === 'support' ? 'activeRoute' : ''}`}
-        onClick={() => window.open('https://discord.gg/pAb5B7Npmy')}
-      >
-        <img src={Support} width={32} />
-        <p>Support</p>
-      </div>
-    </div>
+                <div
+                  className={`sidebar_menu_item ${active === 'stadium' ? 'activeRoute' : ''}`}
+                  onClick={() => navigatePath('/stadium')}
+                >
+                  <MdOutlineStadium />
+                  <p>Stadium</p>
+                </div>
+
+                <div
+                  className={`sidebar_menu_item ${active === 'clubhouse' ? 'activeRoute' : ''}`}
+                  onClick={() => navigatePath('/clubhouse')}
+                >
+                  <RxEnvelopeClosed />
+                  <p>Club House</p>
+                </div>
+
+                {(user?.team?.currentLeague?.createdBy === user?._id ||
+                  user?.team?.currentLeague?.coComissioner === user?._id) && (
+                  <div
+                    className={`sidebar_menu_item ${active === 'comissioner' ? 'activeRoute' : ''}`}
+                    onClick={() => navigate('/comissioner')}
+                  >
+                    <img src={comissioner} width={'30px'} height={'30px'} />
+                    <p>Comissioner</p>
+                  </div>
+                )}
+              </>
+            )
+          ) : null}
+          <div
+            className={`sidebar_menu_item ${active === 'rules-book' ? 'activeRoute' : ''}`}
+            onClick={() => {
+              navigate('/rule-book')
+            }}
+          >
+            <PiNotebookLight />
+            <p>RULESBOOK</p>
+          </div>
+
+          <div
+            className={`sidebar_menu_item ${active === 'job-search' ? 'activeRoute' : ''}`}
+            onClick={() => {}}
+          >
+            <img src={Job} width={32} />
+            <p>Job Search</p>
+          </div>
+          <div
+            className={`sidebar_menu_item ${active === 'Community' ? 'activeRoute' : ''}`}
+            onClick={() => {}}
+          >
+            <img src={Community} width={32} />
+            <p>Community</p>
+          </div>
+          <div
+            className={`sidebar_menu_item ${active === 'token' ? 'activeRoute' : ''}`}
+            onClick={() => window.open('https://sam-wallet-10b1f.web.app/')}
+          >
+            <GiCoins />
+            <p>sams token</p>
+          </div>
+          <div
+            className={`sidebar_menu_item ${active === 'faq' ? 'activeRoute' : ''}`}
+            onClick={() => {}}
+          >
+            <img src={FAQ} width={32} />
+            <p>faq</p>
+          </div>
+          <div
+            className={`sidebar_menu_item ${active === 'support' ? 'activeRoute' : ''}`}
+            onClick={() => window.open('https://discord.gg/pAb5B7Npmy')}
+          >
+            <img src={Support} width={32} />
+            <p>Support</p>
+          </div>
+        </div>
       </div>
 
       {!isAuthenticated && (
@@ -360,9 +373,8 @@ const MainMenu = ({ visible }) => {
 
 export default MainMenu
 
-
-
-{/* <div className='wrapper'>
+{
+  /* <div className='wrapper'>
 <div
   className={`sidebar_menu_item ${active === 'home' ? 'activeRoute' : ''}`}
   onClick={() => navigate('/fantasy-league')}
@@ -545,4 +557,5 @@ export default MainMenu
  <img src={Support} width={32} />
  <p>Support</p>
 </div>
-</div> */}
+</div> */
+}

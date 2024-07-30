@@ -252,6 +252,18 @@ import { activeRosterCount, legalPlayers, nonActivePlayers } from '../config/con
 
 import { useSelector } from 'react-redux'
 import { useLocation, useParams } from 'react-router-dom'
+import shotgunbunch from "../assets/Shotgun Bunch.png"
+import shotgunnormal from "../assets/Shotgun Normal.png"
+import singleback from "../assets/SingleBack.png"
+import pistol from "../assets/Pistol.png"
+
+import threefour from "../assets/3-4.png"
+import dime from "../assets/DIME.png"
+import fourthree from "../assets/4-3_.png"
+import fourtofive from "../assets/4-2-5.png"
+
+
+
 
 const DepthChart = () => {
   const USER = useSelector((state) => state?.user)
@@ -371,18 +383,32 @@ const DepthChart = () => {
 
   console.log('activeCount', activeCount)
 
+  // const offenseOptions = [
+  //   { value: 'pistol', label: 'Pistol Formation' },
+  //   { value: 'singleback', label: 'Single Back Formation' },
+  //   { value: 'shotgunbunch', label: 'Shotgun Bunch Formation' },
+  //   { value: 'shortgunnormal', label: 'Shotgun Normal Formation' },
+  // ]
+
   const offenseOptions = [
-    { value: 'pistol', label: 'Pistol Formation' },
-    { value: 'singleback', label: 'Single Back Formation' },
-    { value: 'shotgunbunch', label: 'Shotgun Bunch Formation' },
-    { value: 'shortgunnormal', label: 'Shotgun Normal Formation' },
-  ]
+    { value: 'pistol', imageSrc: pistol },
+    { value: 'singleback', imageSrc: singleback },
+    { value: 'shotgunbunch', imageSrc: shotgunbunch },
+    { value: 'shortgunnormal', imageSrc: shotgunnormal },
+  ];
+
+  // const defenseOptions = [
+  //   { value: 'formation_34', label: '3-4 Formation' },
+  //   { value: 'formation_425', label: '4-2-5 Formation' },
+  //   { value: 'formation_43', label: '4-3 Formation' },
+  //   { value: 'dime', label: 'Dime Formation' },
+  // ]
 
   const defenseOptions = [
-    { value: 'formation_34', label: '3-4 Formation' },
-    { value: 'formation_425', label: '4-2-5 Formation' },
-    { value: 'formation_43', label: '4-3 Formation' },
-    { value: 'dime', label: 'Dime Formation' },
+    { value: 'formation_34', imageSrc: threefour },
+    { value: 'formation_425', imageSrc: fourtofive },
+    { value: 'formation_43', imageSrc: fourthree },
+    { value: 'dime', imageSrc: dime },
   ]
 
   const options = activeFilter === 'offense' ? offenseOptions : defenseOptions
@@ -470,8 +496,8 @@ const DepthChart = () => {
         </Button>
       </div>
 
-      <div style={{ marginTop: '40px' }}>
-        <Select
+      <div className="image-row" style={{ marginTop: '40px' }}>
+        {/* <Select
           placeholder='Formation'
           // onChange={(v) => setFilterBy(v)}
           // allowClear={{ clearIcon: <GrFormClose size={25} onClick={() => {}} /> }}
@@ -480,7 +506,20 @@ const DepthChart = () => {
           value={selectedValue}
           onChange={handleChange}
           //  onChange={(selectedOption) => setSelectedValue(selectedOption)}
-        />
+        /> */}
+
+
+        {options.map((option) => (
+          <div
+            key={option.value}
+            className={`image-item ${selectedValue === option.value ? 'selected' : ''}`}
+            onClick={() => handleChange(option.value)}
+          >
+            <img src={option.imageSrc} alt={option.value} />
+          </div>
+        ))}
+   
+
       </div>
 
       {loading ? (

@@ -117,14 +117,18 @@ const Stadium = () => {
       setLoading(false) // Reset main loading state
     }
   }
-  let filteredEntries
+
 
   let weeklyticketsale =
     mystadiumlevel?.[0]?.homeAttendance *
     mystadiumlevel?.[0]?.stadiumlevel?.newseatingCapacity *
     mystadiumlevel?.[0]?.stadiumlevel?.newticketCost
+    weeklyticketsale /= 100;
+
   let weeklymatchpotup = weeklyticketsale * 0.7
   let weeklyprizepool = weeklyticketsale * 0.3
+
+console.log('weeklyticketsale',weeklyticketsale);
 
   const loginObject = mystadiumlevel?.[0]?.login
   const defaultDays = ['SUN', 'MON', 'TUE', 'WED']
