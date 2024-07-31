@@ -221,7 +221,7 @@ const Card3 = ({ flip }) => {
         <div>
           <img src={sfleague} />
           <h1>
-            ROASTER
+            ROSTER
             <br />
             <p>INFO</p>
           </h1>

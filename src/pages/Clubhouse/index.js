@@ -206,7 +206,7 @@ const Clubhouse = () => {
             <div className='clubhouseinput'>
               <Input
                 disabled={false}
-                placeholder='TYPE EMAIL OR MOBILE NUMBER'
+                placeholder='TYPE EMAIL ADDRESS'
                 value={referralemail}
                 onChange={handleInputChange}
               />
@@ -278,7 +278,7 @@ const Clubhouse = () => {
                 </p>
 
                 <p>
-                  SUCCESSFULL REGISTRATION
+                  SUCCESSFUL REGISTRATION
                   <div className='email-box'>
                     <div
                       style={{

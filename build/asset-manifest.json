@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.df04feb9.css",
-    "main.js": "/static/js/main.29ce88d7.js",
+    "main.css": "/static/css/main.831b4cff.css",
+    "main.js": "/static/js/main.c75b0b94.js",
     "static/media/fantasy-sports-video.mp4": "/static/media/fantasy-sports-video.c5175e93ee3d160c3055.mp4",
     "static/media/SAMBOWL24.png": "/static/media/SAMBOWL24.1f68633ca81992f0b1d0.png",
     "static/media/Soccer_banner_edit.png": "/static/media/Soccer_banner_edit.892d54c94b5955e95f8e.png",
@@ -118,14 +118,21 @@
     "static/media/quote.png": "/static/media/quote.f9244b55e1e74f653836.png",
     "static/media/right-bg-landing-section.jpg": "/static/media/right-bg-landing-section.4e00a9c01c9ed8644ae8.jpg",
     "static/media/unnamed.png": "/static/media/unnamed.de0d08191b2c31d53daa.png",
+    "static/media/Shotgun Normal.png": "/static/media/Shotgun Normal.b8d27468cc0ff74697f8.png",
+    "static/media/4-2-5.png": "/static/media/4-2-5.baca073ca4eb641a89ae.png",
     "static/media/tiger_sharks.png": "/static/media/tiger_sharks.30160f16ac8c95f75b67.png",
     "static/media/outcasts.png": "/static/media/outcasts.f374de8c5dcd8cd77e54.png",
     "static/media/kraken.png": "/static/media/kraken.5fcf73ba2a710704d39e.png",
+    "static/media/3-4.png": "/static/media/3-4.2336f6e46c208f00b865.png",
+    "static/media/DIME.png": "/static/media/DIME.f89775782575842b74d2.png",
     "static/media/circa_sports_trout.png": "/static/media/circa_sports_trout.69b03c8faccd7a550854.png",
     "static/media/kingsmen.png": "/static/media/kingsmen.074aba69493def47aa78.png",
+    "static/media/Shotgun Bunch.png": "/static/media/Shotgun Bunch.1b5be5efbedef6e62480.png",
     "static/media/storm_breakers.png": "/static/media/storm_breakers.9a53eb091a5b62403f18.png",
+    "static/media/4-3_.png": "/static/media/4-3_.946d99ada92bfbf2b907.png",
     "static/media/rowdys.png": "/static/media/rowdys.dae14b8cfb1ec35a76ac.png",
     "static/media/the_resistance.png": "/static/media/the_resistance.2553d75b9a2946c9cbc5.png",
+    "static/media/SingleBack.png": "/static/media/SingleBack.13cba268cfb0d5bf71e0.png",
     "static/media/roasterinfo.webp": "/static/media/roasterinfo.9487d5a8827f13dcd391.webp",
     "static/media/gridiron_seals.png": "/static/media/gridiron_seals.927aa7df6f9d50d50bc4.png",
     "static/media/rage.png": "/static/media/rage.43048b6b101d51f7467c.png",
@@ -133,6 +140,7 @@
     "static/media/nfl.png": "/static/media/nfl.e9aba1e57d4d94b129f9.png",
     "static/media/job.png": "/static/media/job.e625d1c4c2c083258510.png",
     "static/media/legion.png": "/static/media/legion.9aa33856cb2197a97ce9.png",
+    "static/media/Pistol.png": "/static/media/Pistol.544a1734a882c2946ae7.png",
     "static/media/doom.png": "/static/media/doom.1c596999c4aa1cd6ab60.png",
     "static/media/silverbacks.png": "/static/media/silverbacks.de7d7ab6a00ef9204768.png",
     "static/media/community.png": "/static/media/community.edfda2fa96cfa38c8d65.png",
@@ -206,11 +214,11 @@
     "static/media/arrow-right.svg": "/static/media/arrow-right.fa8032f7bdce2c4cee175e363666f7ca.svg",
     "static/media/youtube.svg": "/static/media/youtube.ed864766e3b013e4e67a2b38107f1313.svg",
     "static/media/fb.svg": "/static/media/fb.99d8a901875e4a0b67073c0d8b4b57fa.svg",
-    "main.df04feb9.css.map": "/static/css/main.df04feb9.css.map",
-    "main.29ce88d7.js.map": "/static/js/main.29ce88d7.js.map"
+    "main.831b4cff.css.map": "/static/css/main.831b4cff.css.map",
+    "main.c75b0b94.js.map": "/static/js/main.c75b0b94.js.map"
   },
   "entrypoints": [
-    "static/css/main.df04feb9.css",
-    "static/js/main.29ce88d7.js"
+    "static/css/main.831b4cff.css",
+    "static/js/main.c75b0b94.js"
   ]
 }

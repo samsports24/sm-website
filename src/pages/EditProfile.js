@@ -198,6 +198,12 @@ const EditProfile = () => {
                 name: 'country',
                 value: user?.country,
               },
+
+                 {
+                name: 'timezone',
+                value: user?.timezone,
+              },
+              
             ]}
           >
             <Row gutter={[24, 0]} justify='space-between'>
