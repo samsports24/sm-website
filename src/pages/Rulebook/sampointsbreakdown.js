@@ -1,7 +1,7 @@
 import { Button, Tabs } from 'antd'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import payscalebrekadown from '../../assets/payscalebrekadown.png'
+import payscalebrekadown from '../../assets/updtaed.png'
 import payscalelogo from '../../assets/payscalesamlogo.png'
 
 const SampointsBreakdown = () => {
@@ -13,7 +13,7 @@ const SampointsBreakdown = () => {
         <div className='headersectionBg' />
         <div className='headersectiontext'>
           <p>
-            samPoints <span>Breakdown</span>
+            SamPoints <span>Breakdown</span>
           </p>
 
           <Button onClick={() => navigate('/rule-book')}>Back</Button>
@@ -38,12 +38,14 @@ const SampointsBreakdown = () => {
           <div>
             <a
               className='rookiescale'
-              href='https://www.flipsnack.com/ACCDDD99E8C/rookie-pay-scale-breakdown/full-view.html'
+              href='https://samsports.s3.amazonaws.com/17225116568163855.2177434368896.pdf'
+              // target='_blank'
+              // rel='noopener noreferrer'
             >
               ROOKIE PAY SCALE BREAKDOWN
             </a>
             <div>
-              <img style={{ width: '50%', marginTop: '20px' }} src={payscalebrekadown}></img>
+              <img style={{ width: '20%', marginTop: '20px' }} src={payscalebrekadown}></img>
             </div>
           </div>
 

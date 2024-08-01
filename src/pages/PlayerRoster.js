@@ -17,7 +17,7 @@ import { sortedArray } from '../config/helperFunctions'
 const PlayerRoster = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
   const { isLoading, data } = useSelector((state) => state?.roster)
-  console.log("🚀 ~ PlayerRoster ~ data:", data)
+  console.log('🚀 ~ PlayerRoster ~ data:', data)
   const [nonActive, setNonActive] = useState([])
   const [protectedCheck, setProtectedCheck] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
@@ -97,8 +97,8 @@ const PlayerRoster = () => {
     await getRoster(SETTING?.week)
   }
 
-// console.log('data?.filterActiveRoster',data?.filterActiveRoster);
-// console.log('sortedArray',sortedArray);
+  // console.log('data?.filterActiveRoster',data?.filterActiveRoster);
+  // console.log('sortedArray',sortedArray);
 
   return (
     <div className='player_roster_container'>
@@ -128,7 +128,7 @@ const PlayerRoster = () => {
                   <section className='stats_container'>
                     {data?.filterActiveRoster?.length > 0 ? (
                       sortedArray(data?.filterActiveRoster)?.map((v, i) => {
-                        console.log('data?.filterActiveRoster',data?.filterActiveRoster);
+                        console.log('data?.filterActiveRoster', data?.filterActiveRoster)
                         return (
                           <NewRosterCard
                             key={i}
@@ -263,9 +263,19 @@ const PlayerRoster = () => {
                     {data?.drafts?.length > 0 ? (
                       data?.drafts?.map((v, i) => {
                         return (
+                          // <div key={i} className='draft_pick_row'>
+                          //   <p>{`${v?.season}' ${v?.team?.name} ${v?.round} Round Pick`}</p>
+                          // </div>
                           <div key={i} className='draft_pick_row'>
-                            <p>{`${v?.season}' ${v?.team?.name} ${v?.round} Round Pick`}</p>
-                          </div>
+                          <p>
+                            {`${v?.season}' ${v?.team?.name} ${v?.round} Round Pick`}
+                            {/* Show mainTeam name within brackets if team and mainTeam IDs are different */}
+                            {v?.team?._id !== v?.mainTeam?._id && (
+                              <span> via ({v?.mainTeam?.name})</span>
+                            )}
+                          </p>
+                        </div>
+                        
                         )
                       })
                     ) : (

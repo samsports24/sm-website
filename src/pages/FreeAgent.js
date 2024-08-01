@@ -81,8 +81,12 @@ const FreeAgent = () => {
     setLoading(false)
   }
 
-  const handleCreateAuction = async (playerID, player_id,CapHit) => {
+
+
+
+  const handleCreateAuction = async (playerID, player_id) => {
     // console.log('CapHit',CapHit);
+let CapHit=5;
 
     if (sampoints < CapHit) {
  
@@ -100,7 +104,8 @@ const FreeAgent = () => {
       PlayerID: playerID,
       player_id: player_id,
       auctionFrom: 'nonowner',
-      CapHit:CapHit === 0 ? 50000 : CapHit
+      // CapHit:CapHit === 0 ? 50000 : CapHit
+      CapHit,
     })
     if (res) {
       navigate('/player-auction')
@@ -225,6 +230,7 @@ const FreeAgent = () => {
             type='primary'
             className='_button'
             onClick={() => {
+              // handleCreateAuction(obj?.PlayerID, obj?._id,obj?.currentYearSalaryCap)
               handleCreateAuction(obj?.PlayerID, obj?._id,obj?.currentYearSalaryCap)
             }}
           >

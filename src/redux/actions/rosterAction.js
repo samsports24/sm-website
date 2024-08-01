@@ -452,6 +452,7 @@ export const addBid = async (payload, customnotification) => {
         message: res?.data?.data?.message,
         duration: 3,
       })
+      getAuctionPlayer()
     }
     return res
   } catch (err) {
@@ -482,6 +483,51 @@ export const markAsPaid = async (payload) => {
     })
   }
 }
+
+
+
+
+export const approveAndRejectAuction = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/auction/approve-auction', payload)
+    if (res) {
+      notification.success({
+        message: res.data.data.message,
+        duration: 3,
+      })
+    }
+    return true
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+// export const approveAndRejectAuction = (payload) => {
+//   console.log('inide teh ',payload);
+//   return async () => {
+//     try {
+//       attachToken()
+//       const res = await privateAPI.post(`/auction/approve-auction`, payload)
+//       if (res) {
+//         console.log('res:', res)
+//         notification.success({
+//           description: res?.data?.data?.message,
+//           duration: 3,
+//         })
+//         return true
+//       }
+//     } catch (err) {
+//       notification.error({
+//         message: err?.response?.data?.message || 'Server Error',
+//         duration: 3,
+//       })
+//     }
+//   }
+// }
 
 export const auctionEnded = async (payload) => {
   try {

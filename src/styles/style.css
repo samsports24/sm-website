@@ -120,6 +120,7 @@
 @import './pages/clubhouse.css';
 @import './pages/proleague.css';
 @import './pages//rulebook.css';
+@import './pages//playersearch.css';
 
 /* COMPONENT HOCKEY */
 @import './components/leagueStandingsHockey.css';

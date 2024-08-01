@@ -8,7 +8,7 @@ import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import { useNavigate } from 'react-router-dom'
-import { auctionEnded, getAuctionPlayer, markAsPaid } from '../redux/actions/rosterAction'
+import { approveAndRejectAuction, auctionEnded, getAuctionPlayer, markAsPaid } from '../redux/actions/rosterAction'
 import { useSelector } from 'react-redux'
 import moment from 'moment'
 import PlayerDetailsModal from '../components/modal/PlayerDetailsModal'
@@ -288,18 +288,55 @@ const AuctionTimer = ({ data: v, getData }) => {
   )
 }
 
+// const PayButton = ({ data: v, getData }) => {
+//   const USER = useSelector((state) => state?.user?.userDetails)
+//   const [loadingId, setLoadingId] = useState('')
+
+//   const pay = async (id) => {
+//     setLoadingId(id)
+//     const res = await markAsPaid({ auctionId: id })
+//     if (res) {
+//       setLoadingId('')
+//       getData()
+//     }
+//   }
+
+
 const PayButton = ({ data: v, getData }) => {
   const USER = useSelector((state) => state?.user?.userDetails)
   const [loadingId, setLoadingId] = useState('')
+  const sampoints = useSelector((state) => state.user?.SamPoints?.SamPoints)
 
-  const pay = async (id) => {
+  const pay = async (id,CapHit) => {
+    let wallet_deduct=false;
+    let status='Rejected'
     setLoadingId(id)
-    const res = await markAsPaid({ auctionId: id })
+
+    if (sampoints < CapHit) {
+ 
+      // noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
+      notification.error({
+        message: `Bid amount ${CapHit} exceeds your available points of ${sampoints}.`,
+        duration: 4,
+      });
+      return
+    }
+
+    else {
+      wallet_deduct=true
+      status='approved'
+    }
+
+    const res = await approveAndRejectAuction({ auctionId: id, wallet_deduct,status})
     if (res) {
       setLoadingId('')
       getData()
     }
   }
+
+
+  // console.log('v',v);
+ 
 
   return (
     <>
@@ -332,7 +369,7 @@ const PayButton = ({ data: v, getData }) => {
           <Button
             disabled={v?.isPaid}
             loading={loadingId === v?._id}
-            onClick={() => pay(v?._id)}
+            onClick={() => pay(v?._id,v?.highestCurrentBid)}
             type='primary'
           >
             {v?.isPaid ? 'PAID' : 'PAY'}

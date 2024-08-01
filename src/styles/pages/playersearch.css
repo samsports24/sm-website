@@ -1,0 +1,145 @@
+._searchPlayerContainer {
+    width: 100%;
+  }
+  
+  ._searchPlayerContainer header {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  ._searchPlayerContainer header ._searchBox {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+  ._searchPlayerContainer header ._searchBox ._searchInput {
+    border-radius: 10px;
+    padding-inline: 15px;
+    background-color: transparent;
+    border: 1px solid gray;
+  }
+  ._searchPlayerContainer header ._searchBox ._searchInput input::placeholder {
+    color: gray !important;
+  }
+  
+  ._searchPlayerContainer section {
+    margin-top: 20px;
+  }
+  
+  ._searchPlayerContainer section .pagination_box {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  ._searchPlayerContainer section ._tableContainer td:last-child {
+    text-align: left !important;
+  }
+  
+  ._searchPlayerContainer section ._filterBox {
+    display: flex;
+    gap: 10px;
+  }
+  
+  ._searchPlayerContainer section ._filterBox .ant-select-selector {
+    height: 27px !important;
+    border: 1px solid gray;
+  }
+  ._searchPlayerContainer section ._filterBox .ant-select-selector .ant-select-selection-item {
+    line-height: 1.8;
+    color: rgb(196, 196, 196);
+  }
+  
+  ._searchPlayerContainer section .ant-table-cell {
+    font-size: 12px !important;
+  }
+  ._searchPlayerContainer section thead .ant-table-cell {
+    font-weight: 400;
+  }
+  ._searchPlayerContainer section th:last-child,
+  ._searchPlayerContainer section td:last-child {
+    width: initial;
+  }
+  
+  ._searchPlayerContainer ._positionColumn {
+    border: 1px solid gray;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 35px;
+    height: 25px;
+  }
+  ._searchPlayerContainer ._positionColumn p {
+    color: #00b0ed !important;
+  }
+  
+  /* POSITION BOX */
+  ._positionBox {
+    display: flex;
+  }
+  ._positionBox > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  ._positionBox > div > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 35px;
+    height: 25px;
+    border-right: 1px solid rgb(88, 88, 88);
+    border-top: 1px solid rgb(88, 88, 88);
+    border-bottom: 1px solid rgb(88, 88, 88);
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  ._positionBox > div > div > p {
+    font-weight: 700;
+  }
+  
+  ._positionBox ._borderLeft {
+    border-left: 1px solid rgb(88, 88, 88);
+  }
+  ._positionBox ._hideBorderBottom {
+    border-bottom: none;
+  }
+  
+  ._positionBox ._qb {
+    color: #ff0020 !important;
+  }
+  ._positionBox ._fwd {
+    color: #00b900 !important;
+  }
+  ._positionBox ._rb {
+    color: #a5a1a1 !important;
+  }
+  ._positionBox ._wr {
+    color: #2151ee !important;
+  }
+  ._positionBox ._te {
+    color: #009b00 !important;
+  }
+  ._positionBox ._ol {
+    color: #fce800 !important;
+  }
+  ._positionBox ._dl {
+    color: #e69700 !important;
+  }
+  ._positionBox ._db {
+    color: #00b0ed !important;
+  }
+  ._positionBox ._st {
+    color: #8c5c00 !important;
+  }
+  
+  ._positionBox ._activePosition {
+    background-color: #6e19ff;
+  }
+  ._positionBox ._activePosition p {
+    color: #1f1138 !important;
+  }

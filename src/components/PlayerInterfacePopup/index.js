@@ -665,16 +665,16 @@ const LiveAuctionBid = ({ data, getData }) => {
       type: 'submit',
       status: true,
     })
-    // const res = await addBid(
-    //   {
-    //     auctionId: data?._id,
-    //     bidAmount: Number(manualBid),
-    //   },
-    //   noti,
-    // )
-    // if (res) {
-    //   getData()
-    // }
+    const res = await addBid(
+      {
+        auctionId: data?._id,
+        bidAmount: Number(manualBid),
+      },
+      noti,
+    )
+    if (res) {
+      getData()
+    }
     setIsLoading({
       type: 'submit',
       status: false,

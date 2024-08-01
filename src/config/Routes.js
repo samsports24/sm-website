@@ -98,6 +98,7 @@ import SammetricBreakdown from '../pages/Rulebook/Sammetric'
 import SamPositiontab from '../pages/Rulebook/samPositiontab'
 import FranchiseTag from '../pages/Rulebook/FranchiseTag'
 import AllNews from '../components/RollingNewsFeed/AllNews'
+import SearchPlayer from '../pages/SearchPlayer'
 
 const Routers = () => {
   const Component = () => {
@@ -165,6 +166,7 @@ const Routers = () => {
           {/* <Route path='/drafts' element={<NFLQualifiedFreeAgents />} /> */}
           <Route path='/all-transaction' element={<AllTransaction />} />
           <Route path='/live-draft' element={<Draft />} />
+          <Route path='/player-search' element={<SearchPlayer/>} />
           
 
           <Route path='/draft-spot-auction' element={<DraftSpotAuction />} />

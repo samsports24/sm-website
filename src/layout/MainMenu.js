@@ -111,6 +111,13 @@ const MainMenu = ({ visible }) => {
       case '/rule-book': {
         return setActive('rule-book')
       }
+
+      
+      case '/player-search': {
+        return setActive('/player-search')
+      }
+
+      
       // case '/team-schedule': {
       //   return setActive('team-schedule')
       // }
@@ -282,6 +289,17 @@ const MainMenu = ({ visible }) => {
                   <MdOutlineStadium />
                   <p>Stadium</p>
                 </div>
+
+
+                <div
+                  className={`sidebar_menu_item ${active === 'player-search' ? 'activeRoute' : ''}`}
+                  onClick={() => navigatePath('/player-search')}
+                >
+                  <MdOutlineStadium />
+                  <p>Player Search</p>
+                </div>
+
+             
 
                 <div
                   className={`sidebar_menu_item ${active === 'clubhouse' ? 'activeRoute' : ''}`}
