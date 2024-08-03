@@ -1,6 +1,7 @@
 import { notification } from 'antd'
 import { attachToken, privateAPI } from '../../config/constants'
 import store from '../store'
+import { getUser } from './authActions'
 
 const setRosterLoading = (payload) => {
   return {
@@ -9,24 +10,21 @@ const setRosterLoading = (payload) => {
   }
 }
 const setRosterData = (payload) => {
-
   return {
     type: 'SET_ROSTERS',
     payload: payload,
   }
 }
 
-
-const setRosterDraftData =(payload) =>{
+const setRosterDraftData = (payload) => {
   return {
     type: 'SET_DRAFT_ROSTERS',
     payload: payload,
   }
-
 }
 
 const setRosterDataForpick = (payload) => {
-  console.log('inside paylaod',payload);
+  console.log('inside paylaod', payload)
   return {
     type: 'SET_ROSTERS_PICK_ROUND',
     payload: payload,
@@ -66,14 +64,14 @@ export const getRoster = async (week) => {
 }
 
 export const getDraftTeamRoster = async (week) => {
-  console.log('in the date',week);
+  console.log('in the date', week)
   try {
     store.dispatch(setRosterLoading(true))
     attachToken()
     const res = await privateAPI.get(`/team/get-roster-draft/${week}`)
     if (res) {
-      console.log('res.data.data',res.data.data);
-       console.log('in res',res);
+      console.log('res.data.data', res.data.data)
+      console.log('in res', res)
       store.dispatch(setRosterDraftData(res.data.data))
     }
     return res.data.data
@@ -87,16 +85,14 @@ export const getDraftTeamRoster = async (week) => {
   }
 }
 
-
-
-export const getRosterForDraftPick =async (week) =>{
-  console.log('in the date',week);
+export const getRosterForDraftPick = async (week) => {
+  console.log('in the date', week)
   try {
     store.dispatch(setRosterLoading(true))
     attachToken()
     const res = await privateAPI.get(`/team/get-pick-round-roster-draft/${week}`)
     if (res) {
-       console.log('in pick res',res);
+      console.log('in pick res', res)
       store.dispatch(setRosterDataForpick(res?.data?.data))
     }
     return res.data.data
@@ -109,8 +105,6 @@ export const getRosterForDraftPick =async (week) =>{
     store.dispatch(setRosterLoading(false))
   }
 }
-
-
 
 export const getTeamRoster = async (payload) => {
   try {
@@ -396,7 +390,7 @@ export const requestIsPicked = async (paylaod) => {
     attachToken()
     const res = await privateAPI.post('/player/request-pick', paylaod)
     if (res) {
-      console.log('res',res)
+      console.log('res', res)
       notification.success({
         message: res?.data?.data?.message,
         duration: 3,
@@ -446,15 +440,22 @@ export const addBid = async (payload, customnotification) => {
   try {
     attachToken()
     const res = await privateAPI.post('/auction/add-bid', payload)
-    store?.dispatch(setAuctionPlayer(res?.data?.data?.auction))
+
+    console.log('response off add bid', res)
+
     if (res) {
+      console.log('inside if clause of add bid')
+      // store?.dispatch(setAuctionPlayer(res?.data?.data?.auction))
       customnotification.success({
         message: res?.data?.data?.message,
         duration: 3,
       })
-      getAuctionPlayer()
+      // getAuctionPlayer()
+      console.log('after get auction player')
+      // dispatch(getUser())
+      console.log('after get user')
+      return res?.data?.data?.auction
     }
-    return res
   } catch (err) {
     console.log('err', err)
     customnotification.error({
@@ -483,9 +484,6 @@ export const markAsPaid = async (payload) => {
     })
   }
 }
-
-
-
 
 export const approveAndRejectAuction = async (payload) => {
   try {

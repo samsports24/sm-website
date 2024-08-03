@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.831b4cff.css",
-    "main.js": "/static/js/main.665141d2.js",
+    "main.css": "/static/css/main.639ddc9c.css",
+    "main.js": "/static/js/main.f6f9b57b.js",
     "static/media/fantasy-sports-video.mp4": "/static/media/fantasy-sports-video.c5175e93ee3d160c3055.mp4",
     "static/media/SAMBOWL24.png": "/static/media/SAMBOWL24.1f68633ca81992f0b1d0.png",
     "static/media/Soccer_banner_edit.png": "/static/media/Soccer_banner_edit.892d54c94b5955e95f8e.png",
@@ -20,6 +20,7 @@
     "static/media/baseball_banner.png": "/static/media/baseball_banner.940bcc97f33ebb9ba5e8.png",
     "static/media/bgplayer.webp": "/static/media/bgplayer.35db4d015a80864f734c.webp",
     "static/media/hockey_banner.png": "/static/media/hockey_banner.1aa55924c9d5de4f967c.png",
+    "static/media/updtaed.png": "/static/media/updtaed.fbcdb7d6e58477277707.png",
     "static/media/depth-chart-bg.png": "/static/media/depth-chart-bg.513174acdcdf448cab4c.png",
     "static/media/rectangle-9.png": "/static/media/rectangle-9.199c777792f6b75576d2.png",
     "static/media/fiarmoneylogo.png": "/static/media/fiarmoneylogo.e1ef06879a3cb829bfac.png",
@@ -214,11 +215,11 @@
     "static/media/arrow-right.svg": "/static/media/arrow-right.fa8032f7bdce2c4cee175e363666f7ca.svg",
     "static/media/youtube.svg": "/static/media/youtube.ed864766e3b013e4e67a2b38107f1313.svg",
     "static/media/fb.svg": "/static/media/fb.99d8a901875e4a0b67073c0d8b4b57fa.svg",
-    "main.831b4cff.css.map": "/static/css/main.831b4cff.css.map",
-    "main.665141d2.js.map": "/static/js/main.665141d2.js.map"
+    "main.639ddc9c.css.map": "/static/css/main.639ddc9c.css.map",
+    "main.f6f9b57b.js.map": "/static/js/main.f6f9b57b.js.map"
   },
   "entrypoints": [
-    "static/css/main.831b4cff.css",
-    "static/js/main.665141d2.js"
+    "static/css/main.639ddc9c.css",
+    "static/js/main.f6f9b57b.js"
   ]
 }

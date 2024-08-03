@@ -84,19 +84,19 @@ const FreeAgent = () => {
 
 
 
-  const handleCreateAuction = async (playerID, player_id) => {
+  const handleCreateAuction = async (playerID, player_id,CapHit) => {
     // console.log('CapHit',CapHit);
-let CapHit=5;
+// let CapHit=5;
 
-    if (sampoints < CapHit) {
+    // if (sampoints < CapHit) {
  
-      // noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
-      notification.error({
-        message: `Bid amount ${CapHit} exceeds your available points of ${sampoints}.`,
-        duration: 4,
-      });
-      return
-    }
+    //   // noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
+    //   notification.error({
+    //     message: `Bid amount ${CapHit} exceeds your available points of ${sampoints}.`,
+    //     duration: 4,
+    //   });
+    //   return
+    // }
 
     setPlayerID(playerID)
 
@@ -104,8 +104,8 @@ let CapHit=5;
       PlayerID: playerID,
       player_id: player_id,
       auctionFrom: 'nonowner',
-      // CapHit:CapHit === 0 ? 50000 : CapHit
-      CapHit,
+      CapHit:CapHit === 0 ? 50000 : CapHit
+   //   CapHit,
     })
     if (res) {
       navigate('/player-auction')

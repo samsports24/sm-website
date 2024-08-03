@@ -18,7 +18,7 @@ import {
   getSingleAuctionPlayer,
 } from '../../redux/actions/rosterAction'
 
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 import { getPf, getPfScore, getRankAndPosition } from '../../config/helperFunctions'
@@ -31,6 +31,7 @@ import { AiOutlineCloseCircle } from 'react-icons/ai'
 
 import Loader from '../Loader'
 import moment from 'moment'
+import { getUser } from '../../redux'
 
 const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
   const SETTING = useSelector((state) => state?.user?.setting)
@@ -369,6 +370,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
                     playerIds={{
                       PlayerID: playerIdSmall,
                       player_id: playerIdBig,
+                      playercaphit:CapHit,
                     }}
                     pInterfaceModalClose={closeModal}
                   />
@@ -435,7 +437,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
 
               {/* --------- AUCTION --------- */}
               {isAuction?.status && !isAuction?.hasAuctionEnded && (
-                <LiveAuctionBid data={data} getData={getData} />
+                <LiveAuctionBid data={data} getData={getData} closeModal={closeModal} />
               )}
               {isAuction?.status && isAuction?.hasAuctionEnded && <WinningBid data={data} />}
               {/* --------- AUCTION --------- */}
@@ -582,7 +584,7 @@ const WinningBid = ({ data }) => {
     </section>
   )
 }
-const LiveAuctionBid = ({ data, getData }) => {
+const LiveAuctionBid = ({ data, getData,closeModal }) => {
   const [noti, contextHolder] = notification.useNotification()
   const sampoints = useSelector((state) => state.user?.SamPoints?.SamPoints)
   const [remainingTime, setRemainingTime] = useState('')
@@ -592,6 +594,8 @@ const LiveAuctionBid = ({ data, getData }) => {
   })
   const [manualBid, setManualBid] = useState('')
   const [bidError, setBidError] = useState('')
+
+const dispatch = useDispatch()
 
 
   useEffect(() => {
@@ -642,10 +646,10 @@ const LiveAuctionBid = ({ data, getData }) => {
       setBidError('ENTER BID BEFORE SUBMIT')
       return
     }
-    if (data?.highestCurrentBid >= manualBid) {
-      setBidError('PLACE BID HIGHER THEN CURRENT BID')
-      return
-    }
+    // if (data?.highestCurrentBid >= manualBid) {
+    //   setBidError('PLACE BID HIGHER THEN CURRENT BID')
+    //   return
+    // }
 
     
 
@@ -654,12 +658,12 @@ const LiveAuctionBid = ({ data, getData }) => {
     //   return
     // }
 
-    if (Number(manualBid) > sampoints) {
-      setBidError(`Bid amount ${manualBid} exceeds your available points of ${sampoints}.`);
-      return;
-    }
+    // if (Number(manualBid) > sampoints) {
+    //   setBidError(`Bid amount ${manualBid} exceeds your available points of ${sampoints}.`);
+    //   return;
+    // }
 
-    setBidError('')
+    // setBidError('')
 
     setIsLoading({
       type: 'submit',
@@ -670,10 +674,14 @@ const LiveAuctionBid = ({ data, getData }) => {
         auctionId: data?._id,
         bidAmount: Number(manualBid),
       },
-      noti,
+        noti,
     )
     if (res) {
-      getData()
+
+   
+     await  getData()
+     closeModal
+   //  await getUser()
     }
     setIsLoading({
       type: 'submit',
@@ -704,6 +712,7 @@ const LiveAuctionBid = ({ data, getData }) => {
 
 //     if (res) {
 //       getData()
+// closeModal()
 //     }
 //     setIsLoading({
 //       type: 'quick',
@@ -720,18 +729,18 @@ const handleQuickBid = async () => {
   const bidAmount = Number(data?.highestCurrentBid) + 50000;
 
   // Check if the user has enough points
-  if (sampoints < bidAmount) {
-    setIsLoading({
-      type: 'quick',
-      status: false,
-    });
-    // noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
-    notification.error({
-      message: `Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`,
-      duration: 4,
-    });
-    return
-  }
+  // if (sampoints < bidAmount) {
+  //   setIsLoading({
+  //     type: 'quick',
+  //     status: false,
+  //   });
+  //   // noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
+  //   notification.error({
+  //     message: `Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`,
+  //     duration: 4,
+  //   });
+  //   return
+  // }
 
   try {
     const res = await addBid(
@@ -744,6 +753,7 @@ const handleQuickBid = async () => {
 
     if (res) {
       await getData();
+      // await getUser()
     }
   } catch (error) {
     // Handle potential errors from addBid or getData
@@ -848,7 +858,7 @@ const BidHistoryBox = ({ data, height }) => {
               <div key={i} className='bid_card'>
                 <img src={v?.team?.logo} />
                 <p>{v?.user?.userName}</p>
-                <h3>{v?.bid && `$${v?.bid?.toLocaleString()}`}</h3>
+                <h3>{v?.bid && `SP${v?.bid?.toLocaleString()}`}</h3>
               </div>
             )
           })}

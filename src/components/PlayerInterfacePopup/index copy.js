@@ -60,7 +60,8 @@ const PlayerInterfacePopup = ({ state, closeModal, showModal }) => {
     {
       name: 'Player Caps:',
       value: data?.playerContract?.PlayerCap
-        ? `$${data?.playerContract?.PlayerCap?.toLocaleString()}`
+        // ? `$${data?.playerContract?.PlayerCap?.toLocaleString()}`
+          ? `$${data?.player?.currentYearSalaryCap?.toLocaleString()}`
         : '-',
     },
     { name: 'Player College:', value: data?.player?.College || '-' },

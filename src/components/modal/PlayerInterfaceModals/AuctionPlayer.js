@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { Button, DatePicker, Form, Input, Modal } from 'antd'
+import { Button, DatePicker, Form, Input, Modal, notification } from 'antd'
 
 import dayjs from 'dayjs'
 import { createAuction } from '../../../redux/actions/rosterAction'
 import { useNavigate } from 'react-router-dom'
 
 const AuctionPlayer = ({ playerIds, disabled, pInterfaceModalClose }) => {
+console.log('playerIds',playerIds.playercaphit);
+
   const [form] = Form.useForm()
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -20,20 +22,45 @@ const AuctionPlayer = ({ playerIds, disabled, pInterfaceModalClose }) => {
     pInterfaceModalClose()
   }
 
+
+  useEffect(() => {
+    if (playerIds && playerIds.playercaphit) {
+      form.setFieldsValue({ openingBidPrice: playerIds?.playercaphit });
+    }
+  }, [playerIds, form])
+
+
   const onFinish = async (values) => {
     const start = dayjs(values.auctionStartDate).format('YYYY-MM-DD HH:mm:ss')
     const end = dayjs(values.auctionEndDate).format('YYYY-MM-DD HH:mm:ss')
     const auctionStartDate = dayjs(start).toISOString()
     const auctionEndDate = dayjs(end).toISOString()
-    const openingBidPrice = Number(values.openingBidPrice)
+     const openingBidPrice = Number(values.openingBidPrice)
+    // const openingBidPrice =25
     const reserveBidPrice = Number(values.reserveBidPrice)
 
     setLoading(true)
+
+
+
+
+if (reserveBidPrice < openingBidPrice) {
+ 
+
+  notification.error({
+    message: `reserve bid price {reserveBidPrice} must be greater than  ${openingBidPrice}.`,
+    duration: 4,
+  });
+  return
+}
+
     const res = await createAuction({
       start: auctionStartDate,
       end: auctionEndDate,
-      startingBid: openingBidPrice,
-      reserveBid: reserveBidPrice,
+       startingBid: openingBidPrice,
+       reserveBid: reserveBidPrice,
+     // startingBid: 25,
+  
       auctionFrom: 'owner',
       ...playerIds,
     })
@@ -111,6 +138,7 @@ const AuctionPlayer = ({ playerIds, disabled, pInterfaceModalClose }) => {
             <div className='wrapper'>
               <Form.Item
                 name='openingBidPrice'
+                // label='openingBidPrice'
                 rules={[
                   {
                     required: true,
@@ -119,7 +147,7 @@ const AuctionPlayer = ({ playerIds, disabled, pInterfaceModalClose }) => {
                 ]}
                 requiredMark='optional'
               >
-                <Input type='number' placeholder='Opening Bid Price' />
+                <Input type='number' placeholder='Opening Bid Price' disabled />
               </Form.Item>
             </div>
             <div className='wrapper'>

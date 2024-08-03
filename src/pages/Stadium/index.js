@@ -91,6 +91,14 @@ const Stadium = () => {
     return !isNaN(stadiumLevel) && stadiumLevel > maxMyStadiumLevel
   })
 
+
+  const sortedStadiums = filteredStadiums?.sort((a, b) => {
+    const levelA = parseInt(a.level.replace(/\D/g, ''), 10);
+    const levelB = parseInt(b.level.replace(/\D/g, ''), 10);
+    return levelA - levelB; // Ascending order
+  });
+
+
   console.log(' user?.team?._id', user?.team?._id)
 
   const handlecreatestadium = async (stadiumlevelId) => {
@@ -270,7 +278,7 @@ console.log('weeklyticketsale',weeklyticketsale);
 
             <div className='stadiumupgrade'>
               STADIUM <span>UPGRADES</span>
-              {filteredStadiums?.map((stadium, index) => (
+              {sortedStadiums?.map((stadium, index) => (
                 <div
                   key={stadium._id}
                   style={{ marginTop: '10px' }}

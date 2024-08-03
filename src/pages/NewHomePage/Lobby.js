@@ -177,7 +177,7 @@ const Card1 = ({ flip }) => {
   return (
     <div className={`card1 ${flip ? 'flip' : ''}`}>
       <div>
-        <h1>SAM Legends</h1>
+        <h1>SAM Ultimate</h1>
       </div>
     </div>
   )

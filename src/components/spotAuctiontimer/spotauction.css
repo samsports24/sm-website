@@ -40,6 +40,7 @@
     font-weight: 600;
     line-height: normal;
     text-align: center;
+    width: max-content;
   
   }
   
@@ -49,4 +50,23 @@
     font-style: italic;
     font-weight: 600;
     line-height: normal;
+    width: max-content;
   }
+
+
+  /* media */
+
+
+  @media (max-width: 1500px) {
+
+    .timemaindiv .timeheading .timepara { 
+      font-size: 70px;
+    }
+
+    .timemaindiv{
+      gap:40px;
+
+    }
+   
+  }
+  

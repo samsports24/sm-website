@@ -19,6 +19,7 @@ const auctionReducer = (state = initialState, action) => {
       }
     }
     case 'SET_AUCTION_PLAYER': {
+      console.log('state inside reducer', state)
       let TempAllAuction = [...state?.data?.allAuctions]
       let TempMyAuction = [...state?.data?.myAuctions]
       const isExistInAllAuc = TempAllAuction.findIndex((v) => v?._id === payload?._id)

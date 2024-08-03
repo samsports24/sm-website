@@ -331,6 +331,7 @@ const PayButton = ({ data: v, getData }) => {
     if (res) {
       setLoadingId('')
       getData()
+      getAuctionPlayer()
     }
   }
 

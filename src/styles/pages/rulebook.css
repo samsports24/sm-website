@@ -1561,6 +1561,10 @@ opacity: none;
   .gmratinginfo {
     flex-direction: column;
   }
+
+  .rulebook_card1 > div > img {
+    top: 0px;
+  }
 }
 
 
