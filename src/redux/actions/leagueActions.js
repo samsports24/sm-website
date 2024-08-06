@@ -409,6 +409,8 @@ export const getPlayerForWeeklyScoring = async (payload) => {
   try {
     attachToken()
     const res = await privateAPI.post(`/player/get-all-players`, payload)
+
+    
     if (res) {
       return res.data.data
     }

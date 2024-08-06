@@ -468,7 +468,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.PassingYards?.toFixed(3) || '-'}
+                    {obj?.stats?.stats?.PassingYards?.toFixed(2) || '-'}
                   </p>
                 </div>
               )
@@ -493,7 +493,7 @@ const DraftPool = ({ tableScroll }) => {
       },
       {
         // width: 150,
-        title: 'RECIVING',
+        title: 'RECEIVING',
         dataIndex: 'rec',
         key: 'rec',
         children: [

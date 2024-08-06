@@ -3,10 +3,11 @@ import { Button, notification } from 'antd'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { HiOutlineHome } from 'react-icons/hi'
-import { MdDashboard, MdOutlineStadium } from 'react-icons/md'
+import { MdDashboard, MdOutlineStadium, MdOutlineSportsRugby } from 'react-icons/md'
 import { FaPlusCircle, FaRegChartBar } from 'react-icons/fa'
 import { RiAuctionLine, RiDraftLine } from 'react-icons/ri'
 import { SiLeagueoflegends } from 'react-icons/si'
+
 import { BsShop } from 'react-icons/bs'
 import {
   GiStarMedal,
@@ -112,12 +113,10 @@ const MainMenu = ({ visible }) => {
         return setActive('rule-book')
       }
 
-      
       case '/player-search': {
         return setActive('/player-search')
       }
 
-      
       // case '/team-schedule': {
       //   return setActive('team-schedule')
       // }
@@ -290,16 +289,13 @@ const MainMenu = ({ visible }) => {
                   <p>Stadium</p>
                 </div>
 
-
                 <div
                   className={`sidebar_menu_item ${active === 'player-search' ? 'activeRoute' : ''}`}
                   onClick={() => navigatePath('/player-search')}
                 >
-                  <MdOutlineStadium />
+                  <MdOutlineSportsRugby />
                   <p>Player Search</p>
                 </div>
-
-             
 
                 <div
                   className={`sidebar_menu_item ${active === 'clubhouse' ? 'activeRoute' : ''}`}
