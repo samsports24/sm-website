@@ -132,12 +132,26 @@ const Clubhouse = () => {
     switch (referralLevel) {
       case 'Ultimate':
         return 12500000
+      case 'Freemium':
+        return 3250000
       case 'Referral Level 1':
         return 7500000
       case 'Referral Level 2':
         return 7500000
       case 'Referral Level 3':
         return 7500000
+      default:
+        return 0
+    }
+  }
+
+  const getEarningValueFromInvitationType = (invitationType) => {
+    switch (invitationType) {
+      case 'Professional':
+        return 7500000
+      case 'Freemium':
+        return 3250000
+
       default:
         return 0
     }
@@ -174,9 +188,22 @@ const Clubhouse = () => {
     }
   }
 
+  // const determineEarningValue = (obj) => {
+  //   return getEarningValue(user?.referralLevel) || getEarningValueFromInvitationType(user?.invitation_Type);
+  // };
+
+  // Calculate the total earnings
+  // const totalEarnings = clubhouse?.filter((obj) => obj.isRegistered)
+  //   .reduce((accumulator, obj) => accumulator + determineEarningValue(obj), 0)
+
   // const totalEarnings = Array.isArray(clubhouse)
   //   ? clubhouse.length * getEarningValue(user?.referralLevel)
   //   : 0
+
+  // const totalEarnings = clubhouse?.filter((obj) => obj.isRegistered)
+  // .reduce((accumulator, obj) => accumulator + getEarningValue(user?.referralLevel), 0);
+
+  // console.log('totalEarnings:', totalEarnings)
 
   // const totalEarnings =
   //   clubhouse?.filter((obj) => obj.isRegistered)?.length * getEarningValue(user?.referralLevel) // Filter objects where isRegistered is true
@@ -185,9 +212,18 @@ const Clubhouse = () => {
 
   const totalEarnings = clubhouse
     ?.filter((obj) => obj.isRegistered)
-    .reduce((accumulator, obj) => accumulator + obj.sampoints, 0)
+    .reduce((accumulator, obj) => {
+      // Use sampoints if it exists; otherwise, use the fallback value
+      const points =
+        obj.sampoints !== undefined ? obj.sampoints : getEarningValue(user?.referralLevel)
+      return accumulator + points
+    }, 0)
 
-  console.log('totalEarnings:', totalEarnings)
+  // const totalEarnings = clubhouse
+  //   ?.filter((obj) => obj.isRegistered)
+  //   .reduce((accumulator, obj) => accumulator + obj.sampoints, 0)
+
+  // console.log('totalEarnings:', totalEarnings)
 
   // const totalEarnings = Array.isArray(clubhouse) && clubhouse?.isRegistered
   // ? clubhouse.length * getEarningValue(user?.referralLevel)
@@ -332,6 +368,8 @@ const Clubhouse = () => {
                                     {item?.sampoints ||
                                       (user?.referralLevel === 'Ultimate'
                                         ? '12,500,000'
+                                        : user?.referralLevel === 'Freemium'
+                                        ? '32,500,00'
                                         : user?.referralLevel === 'Referral Level 1'
                                         ? '7,500,000'
                                         : user?.referralLevel === 'Referral Level 2'

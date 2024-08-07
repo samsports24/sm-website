@@ -55,8 +55,8 @@ const NewPopularLeagueCard = ({ data, yourLeague, active, fromHome }) => {
           <div className='row_2'>
             <div>
               <p className='text_title'>Draft Starts:</p>
-              <p className='text_value'>{moment(draftStart).format('MM/DD/YY')}</p>
-              <p style={{marginTop:'5px'}} className='text_value'>{moment(draftStart).format('h A')}   CST</p>
+              <p className='text_value'>{moment.tz(draftStart , moment.tz.guess()).tz("CST6CDT").format('MM/DD/YY')}</p>
+              <p style={{marginTop:'5px'}} className='text_value'>{moment.tz(draftStart , moment.tz.guess()).tz("CST6CDT").format('h A')}   CST</p>
 
             </div>
             <div>
