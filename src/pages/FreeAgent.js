@@ -88,15 +88,15 @@ const FreeAgent = () => {
     // console.log('CapHit',CapHit);
 // let CapHit=5;
 
-    // if (sampoints < CapHit) {
+    if (sampoints < CapHit) {
  
-    //   // noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
-    //   notification.error({
-    //     message: `Bid amount ${CapHit} exceeds your available points of ${sampoints}.`,
-    //     duration: 4,
-    //   });
-    //   return
-    // }
+      // noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
+      notification.error({
+        message: `Bid amount ${CapHit} exceeds your available points of ${sampoints}.`,
+        duration: 4,
+      });
+      return
+    }
 
     setPlayerID(playerID)
 

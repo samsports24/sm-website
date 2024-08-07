@@ -166,7 +166,7 @@ const Routers = () => {
           {/* <Route path='/drafts' element={<NFLQualifiedFreeAgents />} /> */}
           <Route path='/all-transaction' element={<AllTransaction />} />
           <Route path='/live-draft' element={<Draft />} />
-          <Route path='/player-search' element={<SearchPlayer/>} />
+          <Route path='/search-player' element={<SearchPlayer/>} />
           
 
           <Route path='/draft-spot-auction' element={<DraftSpotAuction />} />
@@ -218,12 +218,6 @@ const Routers = () => {
           <Route path='/rule-book/samposition' element={<SamPositiontab/>} />
           <Route path='/rule-book/franchisetag' element={<FranchiseTag/>} />
 
-
-      
-
-
-          
-  
 
               {/* RULESBOOK ROUTES  END HERE*/}
          

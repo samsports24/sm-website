@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Checkbox, Image, Input, Select,notification } from 'antd'
+import { Button, Checkbox, Image, Input, Select, notification } from 'antd'
 import Header from '../../components/Header'
 import HeadingAndWeek from '../../components/Pagination/HeadingAndWeek'
 import sampointslogo from '../../assets/stadiumsampoints.webp'
@@ -60,11 +60,11 @@ const Clubhouse = () => {
   const handleCheckboxChange = (type) => {
     // Toggle the checkbox
     if (invitationType === type) {
-      setInvitationType(null); // Uncheck the checkbox if it's already checked
+      setInvitationType(null) // Uncheck the checkbox if it's already checked
     } else {
-      setInvitationType(type); // Check the checkbox if it's unchecked
+      setInvitationType(type) // Check the checkbox if it's unchecked
     }
-  };
+  }
   // const handlecreatereferral = async () => {
   //   setBtnLoading(true)
   //   setLoading(true)
@@ -92,16 +92,13 @@ const Clubhouse = () => {
   // }
 
   const handlecreatereferral = async () => {
-
-
     if (!invitationType) {
       notification.warning({
         message: `Please select a league type.`,
         duration: 4,
-      });
-      return;
+      })
+      return
     }
-
 
     setBtnLoading(true) // Set button loading state
     // setLoading(true) // Set main loading state
@@ -181,8 +178,14 @@ const Clubhouse = () => {
   //   ? clubhouse.length * getEarningValue(user?.referralLevel)
   //   : 0
 
-  const totalEarnings =
-    clubhouse?.filter((obj) => obj.isRegistered)?.length * getEarningValue(user?.referralLevel) // Filter objects where isRegistered is true
+  // const totalEarnings =
+  //   clubhouse?.filter((obj) => obj.isRegistered)?.length * getEarningValue(user?.referralLevel) // Filter objects where isRegistered is true
+
+  // console.log('totalEarnings:', totalEarnings)
+
+  const totalEarnings = clubhouse
+    ?.filter((obj) => obj.isRegistered)
+    .reduce((accumulator, obj) => accumulator + obj.sampoints, 0)
 
   console.log('totalEarnings:', totalEarnings)
 
@@ -259,7 +262,8 @@ const Clubhouse = () => {
                         <div style={{ display: 'flex', gap: '20px' }} key={index}>
                           <p style={{ marginLeft: '-29px' }}>
                             {/* {index + 1}. {item.emailsent} - {item?.invitation_Type} */}
-                            {index + 1}. {item.emailsent} - ({item?.invitation_Type?.charAt(0)?.toUpperCase()})
+                            {index + 1}. {item.emailsent} - (
+                            {item?.invitation_Type?.charAt(0)?.toUpperCase()})
                           </p>
                           {!item.isRegistered && (
                             <IoMdRefresh

@@ -76,6 +76,21 @@
   ._searchPlayerContainer ._positionColumn p {
     color: #00b0ed !important;
   }
+
+  ._searchPlayerContainer ._button {
+    width: 20%;
+    height: 20%;
+    font-size: 10px;
+    background:#00b0ed !important;
+  }
+
+
+  ._searchPlayerContainer ._button:disabled {
+    background:rgba(0, 0, 0, 0.04) !important;
+    box-shadow: none;
+
+  }
+
   
   /* POSITION BOX */
   ._positionBox {

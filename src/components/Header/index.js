@@ -27,7 +27,7 @@ const Header = () => {
   const [leaguepoints, setLeaguepoints] = useState('')
   const navigate = useNavigate()
 
-  console.log('safepaylink', safepaylink)
+  // console.log('safepaylink', safepaylink)
 
   // console.log('user?.team?.currentLeague?.season',user?.team?.currentLeague?.prizePool);
 

@@ -3,7 +3,7 @@ import { Button, notification } from 'antd'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { HiOutlineHome } from 'react-icons/hi'
-import { MdDashboard, MdOutlineStadium, MdOutlineSportsRugby } from 'react-icons/md'
+import { MdDashboard, MdOutlineStadium } from 'react-icons/md'
 import { FaPlusCircle, FaRegChartBar } from 'react-icons/fa'
 import { RiAuctionLine, RiDraftLine } from 'react-icons/ri'
 import { SiLeagueoflegends } from 'react-icons/si'
@@ -18,10 +18,11 @@ import {
 } from 'react-icons/gi'
 import { RxEnvelopeClosed } from 'react-icons/rx'
 
-import { PiUsersThreeLight, PiNotebookLight } from 'react-icons/pi'
-import { FaQuestion } from 'react-icons/fa6'
+import { PiUsersThreeLight, PiNotebookLight,PiMagnifyingGlassLight } from 'react-icons/pi'
+
+
 import { TbLivePhoto } from 'react-icons/tb'
-import { AiOutlineSetting, AiOutlineSchedule } from 'react-icons/ai'
+import { AiOutlineSetting } from 'react-icons/ai'
 import comissioner from '../assets/comissioner.png'
 import { useSelector } from 'react-redux'
 import { landingSignup } from '../config/constants'
@@ -113,8 +114,8 @@ const MainMenu = ({ visible }) => {
         return setActive('rule-book')
       }
 
-      case '/player-search': {
-        return setActive('/player-search')
+      case '/search-player': {
+        return setActive('/search-player')
       }
 
       // case '/team-schedule': {
@@ -290,10 +291,10 @@ const MainMenu = ({ visible }) => {
                 </div>
 
                 <div
-                  className={`sidebar_menu_item ${active === 'player-search' ? 'activeRoute' : ''}`}
-                  onClick={() => navigatePath('/player-search')}
+                  className={`sidebar_menu_item ${active === 'search-player' ? 'activeRoute' : ''}`}
+                  onClick={() => navigatePath('/search-player')}
                 >
-                  <MdOutlineSportsRugby />
+                  <PiMagnifyingGlassLight />
                   <p>Player Search</p>
                 </div>
 
