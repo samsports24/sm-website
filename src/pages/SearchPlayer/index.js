@@ -323,8 +323,8 @@ const SearchPlayer = () => {
         id: item?.player?._id,
         currentYearSalaryCap: item?.player?.currentYearSalaryCap,
         age: item?.player?.Age,
-        post_season_pts:item?.stats.post_season_pts,
-        regular_season_pts:item?.stats.regular_season_pts,
+        post_season_pts:item?.stats?.post_season_pts,
+        regular_season_pts:item?.stats?.regular_season_pts,
         
 
 
@@ -531,7 +531,7 @@ const SearchPlayer = () => {
       
           // Calculate PPG
           let ppg = 0;
-          if (nflGamesPlayed > 0) {
+          if (nflGamesPlayed > 0  &&   regular_season_pts > 0) {
             ppg = (regularSeasonPts / nflGamesPlayed).toFixed(2);
           }
       
@@ -735,13 +735,13 @@ const SearchPlayer = () => {
             // render: (_, obj) => <p>{obj?.postavgpts.toFixed(2) || '-'}</p>,
             render: (_, obj) => {
               // Extract values
-              const post_season_pts= obj?.post_season_pts || 0;
+              const postseasonpts= obj?.post_season_pts || 0;
               const nflGamesPlayed = obj?.nflGamesPlayed || 0;
           
               // Calculate PPG
               let ppg = 0;
-              if (nflGamesPlayed > 0) {
-                ppg = (post_season_pts / nflGamesPlayed).toFixed(2);
+              if (nflGamesPlayed > 0  && postseasonpts > 0 ) {
+                ppg = (postseasonpts / nflGamesPlayed).toFixed(2);
               }
           
               // Return formatted result
