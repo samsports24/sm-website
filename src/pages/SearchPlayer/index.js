@@ -130,9 +130,13 @@ const SearchPlayer = () => {
 
         const filterWeek = item?.stats?.weeklyStats?.[week]
 
+        // console.log('filterWeek',filterWeek);
+
         const filterolweek = item?.stats?.olWeeklyStats?.[week]
 
-        console.log('filterolweek', filterolweek)
+        // console.log('filterolweek', filterolweek)
+
+        // console.log('filterWeek?.RushingYards',filterWeek?.RushingYards);
 
         const DefensiveRatio = filtersnaps?.DefensiveRatio || 0
         const OffensiveRatio = filtersnaps?.OffensiveRatio || 0
@@ -141,9 +145,9 @@ const SearchPlayer = () => {
         // const RushingAttempts = filterweek?.RushingAttempts.toFixed(2) || 0
 
         // const RushingAttempts = filterWeek?.RushingAttempts?.toFixed(2) || '0';
-        const RushingAttempts = filterWeek?.RushingAttempts?.toFixed(2) || '0'
-        const RushingYards = filterWeek?.RushingYards?.toFixed(2) || '0'
-        const RushingTouchdowns = filterWeek?.RushingTouchdowns?.toFixed(2) || '0'
+        // const RushingAttempts = filterWeek?.RushingAttempts?.toFixed(2) || '0'
+        // const RushingYards = filterWeek?.RushingYards?.toFixed(2) || '0'
+        // const RushingTouchdowns = filterWeek?.RushingTouchdowns?.toFixed(2) || '0'
 
         // RECEIVING
         const ReceivingTargets = filterWeek?.ReceivingTargets?.toFixed(2) || '0'
@@ -227,16 +231,17 @@ const SearchPlayer = () => {
           postpts += score
         }
 
+        console.log(' ----- filterWeek?.RushingTouchdowns', filterWeek?.RushingTouchdowns)
+
         tempObj = {
           ...tempObj,
           [`week_${week}_score`]: score,
           [`week_${week}_DefensiveRatio`]: DefensiveRatio,
           [`week_${week}_OffensiveRatio`]: OffensiveRatio,
           [`week_${week}_SpecialTeamsRatio`]: SpecialTeamsRatio,
-          [`week_${week}_RushingAttempts`]: filterWeek?.RushingAttempts?.toFixed(2),
-
-          [`week_${week}_RushingYards`]: filterWeek?.RushingYards?.toFixed(2),
-          [`week_${week}_RushingTouchdowns`]: filterWeek?.RushingTouchdowns?.toFixed(2),
+          [`week_${week}_RushingAttempts`]: filterWeek?.RushingAttempts.toFixed(2),
+          [`week_${week}_RushingYards`]: filterWeek?.RushingYards.toFixed(2),
+          [`week_${week}_RushingTouchdowns`]: filterWeek?.RushingTouchdowns.toFixed(2),
 
           // RECEIVING
           [`week_${week}_ReceivingTargets`]: filterWeek?.ReceivingTargets?.toFixed(2),
@@ -275,14 +280,14 @@ const SearchPlayer = () => {
           [`week_${week}_PassesDefended`]: filterWeek?.PassesDefended?.toFixed(2),
           [`week_${week}_FumblesRecovered`]: filterWeek?.FumblesRecovered?.toFixed(2),
           [`week_${week}_SpecialTeamsTouchdowns`]: filterWeek?.SpecialTeamsTouchdowns?.toFixed(2),
-          [`week_${week}_FieldGoalsMade`]: filterWeek?.FieldGoalsMade?.toFixed(2) ,
+          [`week_${week}_FieldGoalsMade`]: filterWeek?.FieldGoalsMade?.toFixed(2),
           [`week_${week}_Punts`]: filterWeek?.Punts?.toFixed(2),
           [`week_${week}_PuntInside20`]: filterWeek?.PuntInside20?.toFixed(2),
           [`week_${week}_FieldGoalsAttempted`]: filterWeek?.FieldGoalsAttempted?.toFixed(2),
           [`week_${week}_FieldGoalsMade0to19`]: filterWeek?.FieldGoalsMade0to19?.toFixed(2),
           [`week_${week}_FieldGoalsMade20to29`]: filterWeek?.FieldGoalsMade20to29?.toFixed(2),
           [`week_${week}_FieldGoalsMade30to39`]: filterWeek?.FieldGoalsMade30to39?.toFixed(2),
-          [`week_${week}_FieldGoalsMade40to49 `]: filterWeek?.FieldGoalsMade40to49?.toFixed(2),
+          [`week_${week}_FieldGoalsMade40to49`]: filterWeek?.FieldGoalsMade40to49?.toFixed(2),
           [`week_${week}_FieldGoalsMade50Plus`]: filterWeek?.FieldGoalsMade50Plus?.toFixed(2),
           [`week_${week}_ExtraPointsMade`]: filterWeek?.ExtraPointsMade?.toFixed(2),
           [`week_${week}_ExtraPointsAttempted`]: filterWeek?.ExtraPointsAttempted?.toFixed(2),
@@ -290,6 +295,14 @@ const SearchPlayer = () => {
           [`week_${week}_PuntsHadBlocked`]: filterWeek?.PuntsHadBlocked?.toFixed(2),
 
           week,
+        }
+        if (position !== 'OL') {
+          tempObj = {
+            ...tempObj,
+            [`week_${week}_RushingAttempts`]: filterWeek?.RushingAttempts?.toFixed(2),
+            [`week_${week}_RushingYards`]: filterWeek?.RushingYards?.toFixed(2),
+            [`week_${week}_RushingTouchdowns`]: filterWeek?.RushingTouchdowns?.toFixed(2),
+          }
         }
       })
 
@@ -306,8 +319,6 @@ const SearchPlayer = () => {
         postavgpts,
       }
 
-      console.log('tempObj', tempObj)
-
       // console.log('regularavgpts',regularavgpts.toFixed(2));
 
       // console.log('regularpts',regularpts.toFixed(2));
@@ -323,11 +334,8 @@ const SearchPlayer = () => {
         id: item?.player?._id,
         currentYearSalaryCap: item?.player?.currentYearSalaryCap,
         age: item?.player?.Age,
-        post_season_pts:item?.stats?.post_season_pts,
-        regular_season_pts:item?.stats?.regular_season_pts,
-        
-
-
+        post_season_pts: item?.stats?.post_season_pts,
+        regular_season_pts: item?.stats?.regular_season_pts,
 
         // RUSHING
 
@@ -419,10 +427,10 @@ const SearchPlayer = () => {
     })
 
     tempResultArr.sort((a, b) => {
-      const aPoints = a.regular_season_pts || 0;
-      const bPoints = b.regular_season_pts || 0;
-      return bPoints - aPoints; // Descending order
-    });
+      const aPoints = a.regular_season_pts || 0
+      const bPoints = b.regular_season_pts || 0
+      return bPoints - aPoints // Descending order
+    })
 
     setData(tempResultArr)
 
@@ -526,20 +534,19 @@ const SearchPlayer = () => {
         key: 'playerScore',
         render: (_, obj) => {
           // Extract values
-          const regularSeasonPts = obj?.regular_season_pts || 0;
-          const nflGamesPlayed = obj?.nflGamesPlayed || 0;
-      
+          const regularSeasonPts = obj?.regular_season_pts || 0
+          const nflGamesPlayed = obj?.nflGamesPlayed || 0
+
           // Calculate PPG
-          let ppg = 0;
-          if (nflGamesPlayed > 0  &&   regularSeasonPts > 0) {
-            ppg = (regularSeasonPts / nflGamesPlayed)?.toFixed(2);
+          let ppg = 0
+          if (nflGamesPlayed > 0 && regularSeasonPts > 0) {
+            ppg = (regularSeasonPts / nflGamesPlayed)?.toFixed(2)
           }
-      
+
           // Return formatted result
-          return <p>{ppg || '0'}</p>;
+          return <p>{ppg || '0'}</p>
         },
-      }
-      
+      },
     ]
 
     const columns2 = [
@@ -735,17 +742,17 @@ const SearchPlayer = () => {
             // render: (_, obj) => <p>{obj?.postavgpts.toFixed(2) || '-'}</p>,
             render: (_, obj) => {
               // Extract values
-              const postseasonpts= obj?.post_season_pts || 0;
-              const nflGamesPlayed = obj?.nflGamesPlayed || 0;
-          
+              const postseasonpts = obj?.post_season_pts || 0
+              const nflGamesPlayed = obj?.nflGamesPlayed || 0
+
               // Calculate PPG
-              let ppg = 0;
-              if (nflGamesPlayed > 0  && postseasonpts > 0 ) {
-                ppg = (postseasonpts / nflGamesPlayed)?.toFixed(2);
+              let ppg = 0
+              if (nflGamesPlayed > 0 && postseasonpts > 0) {
+                ppg = (postseasonpts / nflGamesPlayed)?.toFixed(2)
               }
-          
+
               // Return formatted result
-              return <p>{ppg || '0'}</p>;
+              return <p>{ppg || '0'}</p>
             },
           },
         ],
@@ -842,13 +849,7 @@ const SearchPlayer = () => {
             title: 'ATT',
             dataIndex: 'att',
             key: 'att',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p>{obj?.RushingAttempts || '-'}</p>
-            //     </div>
-            //   )
-            // },
+
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
@@ -856,6 +857,8 @@ const SearchPlayer = () => {
 
               // Construct the key dynamically based on the week
               const RushingAttempts = `week_${weekNumber}_RushingAttempts`
+              console.log('RushingAttempts', RushingAttempts)
+
               return (
                 <div>
                   <p>{obj?.[RushingAttempts] ?? '-'}</p>
@@ -868,20 +871,17 @@ const SearchPlayer = () => {
             title: 'YARD',
             dataIndex: 'yard',
             key: 'yard',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p>{obj?.RushingYards || '-'}</p>
-            //     </div>
-            //   )
-            // },
+
             render: (_, obj) => {
+              console.log('my obj', obj)
               // Ensure week is a number
               const weekNumber = Number(checkweek)
               // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const RushingYards = `week_${weekNumber}_RushingYards`
+              //  console.log('insdoe RushingYards',RushingYards);
+              //  console.log('obj?.[RushingYards]',obj?.[RushingYards]);
               return (
                 <div>
                   <p>{obj?.[RushingYards] ?? '-'}</p>
@@ -1159,10 +1159,10 @@ const SearchPlayer = () => {
               // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
-              const PassingTouchdowns = `week_${weekNumber}_PassingTouchdowns`
+              const newPassingTouchdowns = `week_${weekNumber}_PassingTouchdowns`
               return (
                 <div>
-                  <p>{obj?.[PassingTouchdowns] ?? '-'}</p>
+                  <p>{obj?.[newPassingTouchdowns] ?? '-'}</p>
                 </div>
               )
             },
@@ -1977,12 +1977,13 @@ const SearchPlayer = () => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
               console.log('weekNumber', weekNumber)
+              console.log('my obj', obj)
 
               // Construct the key dynamically based on the week
-              const FieldGoalsMade40to49 = `week_${weekNumber}_FieldGoalsMade40to49`
+              const FGM40TO49 = `week_${weekNumber}_FieldGoalsMade40to49`
               return (
                 <div>
-                  <p>{obj?.[FieldGoalsMade40to49] ?? '-'}</p>
+                  <p>{obj?.[FGM40TO49] ?? '-'}</p>
                 </div>
               )
             },
