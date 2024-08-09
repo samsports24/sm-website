@@ -47,6 +47,126 @@
     line-height: 35px;
 }
 
+
+.pointstransfermsg .clubhousetext {
+    text-align:left;
+    font-weight: 500;
+    font-style: normal;
+    color: rgb(255, 255, 255);
+    font-size: 20px;
+    /* margin-top: 20px;
+    margin-bottom: 20px; */
+    line-height: normal;
+
+}
+
+/* .pointstransfermsg .clubhousetext > ul {
+        margin-top: 20px;
+    margin-bottom: 20px;
+
+} */
+
+.pointstransfermsg .clubhousetext >span >h2 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+font-size: 25px;
+
+}
+
+
 .pointstransfermsg .ant-modal-close-x {
+    display: none;
+}
+
+
+/* // stadium work */
+
+.stadiummodal .customBTN {
+    padding: .5rem 3rem;
+    border-radius: 20px;
+}
+
+.stadiummodal .customBTN:hover {
+    padding: .5rem 3rem;
+    /* opacity: .8; */
+    border-radius: 20px;
+}
+
+.stadiummodal  .ant-modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    /* background: linear-gradient(180deg, #291c4a, #080611); */
+    background: rgb(50, 32, 97);
+    border:2px solid rgb(255, 255, 255);
+    height: 50vh;
+    overflow: scroll;
+    justify-content: start;
+}
+
+
+
+.stadiummodal .ant-modal-body {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.stadiummodal .msgimg{
+    width: 113px;
+    margin: auto;
+}
+
+
+
+.stadiummodal .msgtext  {
+    text-align: center;
+    font-weight: 500;
+    font-style: normal;
+    color: rgb(255, 255, 255);
+    font-size: 25px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    line-height: 35px;
+}
+
+
+.stadiummodal .clubhousetext {
+    text-align:left;
+    font-weight: 500;
+    font-style: normal;
+    color: rgb(255, 255, 255);
+    font-size: 20px;
+    /* margin-top: 20px;
+    margin-bottom: 20px; */
+    line-height: normal;
+
+}
+
+/* .stadiummodal .clubhousetext > ul {
+        margin-top: 20px;
+    margin-bottom: 20px;
+
+} */
+
+
+
+.stadiummodal .clubhousetext > span > h2 {
+    margin-top: 19px;
+    /* margin-bottom: 10px; */
+font-size: 25px;
+
+}
+
+.stadiummodal .clubhousetext >span > p {
+    margin-top: 10px;
+    margin-bottom: 1px;
+}
+
+
+.stadiummodal .ant-modal-close-x {
     display: none;
 }

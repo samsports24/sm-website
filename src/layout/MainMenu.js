@@ -72,18 +72,18 @@ const MainMenu = ({ visible }) => {
       case '/injured-reserve': {
         return setActive('injuries-reserve')
       }
-      case '/free-agent': {
-        return setActive('free-agents')
-      }
+      // case '/free-agent': {
+      //   return setActive('free-agents')
+      // }
       case '/league-rosters': {
         return setActive('league-rosters')
       }
       case '/league-standings': {
         return setActive('league-standings')
       }
-      case '/player-standing-weekly': {
-        return setActive('player-ranking')
-      }
+      // case '/player-standing-weekly': {
+      //   return setActive('player-ranking')
+      // }
       // case '/player-standing': {
       //   return setActive('player-ranking')
       // }
@@ -221,7 +221,7 @@ const MainMenu = ({ visible }) => {
                   <FaPlusCircle />
                   <p>injuries reserve</p>
                 </div>
-                <div
+                {/* <div
                   className={`sidebar_menu_item ${active === 'free-agents' ? 'activeRoute' : ''}`}
                   onClick={() => navigatePath('/free-agent')}
                 >
@@ -230,7 +230,7 @@ const MainMenu = ({ visible }) => {
                     free
                     <br /> agents
                   </p>
-                </div>
+                </div> */}
                 <div
                   className={`sidebar_menu_item ${
                     active === 'league-rosters' ? 'activeRoute' : ''
@@ -251,7 +251,7 @@ const MainMenu = ({ visible }) => {
                   <BsShop />
                   <p>STANDINGS</p>
                 </div>
-                <div
+                {/* <div
                   className={`sidebar_menu_item ${
                     active === 'player-ranking' ? 'activeRoute' : ''
                   }`}
@@ -259,7 +259,7 @@ const MainMenu = ({ visible }) => {
                 >
                   <GiStarMedal />
                   <p>players ranking</p>
-                </div>
+                </div> */}
                 <div
                   className={`sidebar_menu_item ${active === 'leagueScore' ? 'activeRoute' : ''}`}
                   onClick={() => navigatePath('/leagueScore')}

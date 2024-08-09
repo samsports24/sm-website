@@ -117,7 +117,7 @@ const PositionComponent = ({ position, setPosition }) => {
       <div>
         <div className='_borderLeft _hideBorderBottom' style={{ backgroundColor: '#010001' }}>
           <p style={{ fontSize: '10px' }} className='_fwd'>
-            FWD
+            OFF
           </p>
         </div>
         <div
@@ -161,7 +161,7 @@ const PositionComponent = ({ position, setPosition }) => {
       </div>
       <div>
         <div className='_borderLeft _hideBorderBottom' style={{ backgroundColor: '#FF001B' }}>
-          <p style={{ fontSize: '10px' }}>MID</p>
+          <p style={{ fontSize: '10px' }}>DEF</p>
         </div>
         <div
           onClick={() => handlePosition('DL')}

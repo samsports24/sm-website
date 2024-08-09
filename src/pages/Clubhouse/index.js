@@ -13,11 +13,12 @@ import {
 import refresh from '../../assets/refresh-icon.jpg'
 import { IoMdRefresh } from 'react-icons/io'
 import Loader from '../../components/Loader'
+import ClubhouseModal from '../../components/modal/ClubhouseModal'
 
 const Clubhouse = () => {
   const dispatch = useDispatch()
 
-  const user = useSelector((state) => state.user.userDetails)
+  const user = useSelector((state) => state?.user?.userDetails)
 
   const clubhouse = useSelector((state) => state.clubhouse.clubhouse.Clubhouse)
   console.log('user', user)
@@ -27,12 +28,48 @@ const Clubhouse = () => {
   const [loading, setLoading] = useState(false)
   const [btnloading, setBtnLoading] = useState(false)
   const [invitationType, setInvitationType] = useState('')
+  const [modalshow, setModalshow] = useState(false)
 
   const emails = ['James@gmail.com', 'Maddog@gmail.com', 'Fakeemail@gmail.com', '0900-786-01']
 
   // useEffect(()=>{
   //   getClubhouse()
   // },[clubhouse])
+
+  // useEffect(() => {
+    
+  //     setModalshow(true)
+    
+  // }, [])
+
+  useEffect(() => {
+    // Check if the modal has already been shown
+    const hasModalBeenShown = localStorage.getItem('modalShown');
+
+    if (!hasModalBeenShown) {
+      // If not, show the modal and set the flag in local storage
+      setModalshow(true);
+      localStorage.setItem('modalShown', 'true');
+    }
+  }, []);
+
+
+
+  
+  const handleConfirm = async () => {
+    setModalshow(false)
+    localStorage.removeItem('modalShown');
+  }
+
+
+
+  // useEffect(() => {
+  //   console.log('useEffect triggered');
+  //     setModalshow(true)
+  // }, [])
+
+
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,6 +93,12 @@ const Clubhouse = () => {
   const handleInputChange = (e) => {
     setReferralemail(e.target.value)
   }
+
+  
+  // const handleConfirm = async () => {
+  //   setModalShow(false)
+  // }
+
 
   const handleCheckboxChange = (type) => {
     // Toggle the checkbox
@@ -238,6 +281,7 @@ const Clubhouse = () => {
       <div className='clubhouse-main'>
         <Header />
         <HeadingAndWeek />
+      <ClubhouseModal key={'modal'} visible={modalshow} onClose={handleConfirm} />
 
         <div className='clubhouse'>
           <h1>CLUBHOUSE</h1>

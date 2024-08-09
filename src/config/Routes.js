@@ -151,10 +151,10 @@ const Routers = () => {
           <Route path='/team-starters/:teamID' element={<DepthChart />} />
           <Route path='/league-standings' element={<LeagueStandings />} />
           <Route path='/comissioner' element={<Comissioner />} />
-          <Route path='/free-agent' element={<FreeAgent />} />
+          {/* <Route path='/free-agent' element={<FreeAgent />} /> */}
           <Route path='/player-auction' element={<PlayerAuction />} />
           {/* <Route path='/player-standing' element={<PlayerStandings />} /> */}
-          <Route path='/player-standing-weekly' element={<PlayerStandingWeekly />} />
+          {/* <Route path='/player-standing-weekly' element={<PlayerStandingWeekly />} /> */}
           <Route path='/player-winning-bid/:id' element={<PlayerWinningBid />} />
           <Route path='/agent-player-interface/:id' element={<AgentPlayerInterface />} />
           <Route path='/team-trade' element={<TeamTrade />} />

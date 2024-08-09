@@ -18,6 +18,7 @@ import {
   setMystadium,
 } from '../../redux/actions/stadium'
 import Loader from '../../components/Loader'
+import StadiumModal from '../../components/modal/StadiumModal'
 
 const Stadium = () => {
   const { currentLeague } = useSelector((state) => state?.league)
@@ -25,14 +26,37 @@ const Stadium = () => {
   const allstadiumlevel = useSelector((state) => state?.stadium?.allstadium?.allstadiumlevel)
   const mystadiumlevel = useSelector((state) => state?.stadium?.mystadium)
 
+
   const dispatch = useDispatch()
 
   const [loading, setLoading] = useState(false)
   const [team, setTeam] = useState(null)
-
+  const [modalshow, setModalshow] = useState(false)
   const myleague = async () => {
     await getLeagueDetails()
   }
+  const handleConfirm = async () => {
+    setModalshow(false)
+    localStorage.removeItem('modalShown');
+  }
+
+
+
+  // useEffect(() => {
+  //   console.log('useEffect triggered');
+  //     setModalshow(true)
+  // }, [])
+
+  useEffect(() => {
+    // Check if the modal has already been shown
+    const hasModalBeenShown = localStorage.getItem('modalShown');
+
+    if (!hasModalBeenShown) {
+      // If not, show the modal and set the flag in local storage
+      setModalshow(true);
+      localStorage.setItem('modalShown', 'true');
+    }
+  }, []);
 
   const dayMapping = {
     day1: 'SUN',
@@ -158,6 +182,8 @@ console.log('weeklyticketsale',weeklyticketsale);
   return (
     <>
       <Header />
+      {/* <StadiumModal key={'modal'} visible={modalshow} onClose={handleConfirm} /> */}
+      {modalshow && <StadiumModal visible={modalshow} onClose={handleConfirm} />}
       {loading ? (
         <Loader />
       ) : (
