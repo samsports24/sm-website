@@ -233,7 +233,7 @@ const SearchPlayer = () => {
           [`week_${week}_DefensiveRatio`]: DefensiveRatio,
           [`week_${week}_OffensiveRatio`]: OffensiveRatio,
           [`week_${week}_SpecialTeamsRatio`]: SpecialTeamsRatio,
-          [`week_${week}_RushingAttempts`]: RushingAttempts,
+          [`week_${week}_RushingAttempts`]: filterWeek?.RushingAttempts?.toFixed(2),
 
           [`week_${week}_RushingYards`]: filterWeek?.RushingYards?.toFixed(2),
           [`week_${week}_RushingTouchdowns`]: filterWeek?.RushingTouchdowns?.toFixed(2),
@@ -517,7 +517,7 @@ const SearchPlayer = () => {
         title: <p style={{ lineHeight: 1 }}>TOTAL PTS</p>,
         dataIndex: 'totalPts',
         key: 'totalPts',
-        render: (_, obj) => <p>{obj?.regular_season_pts.toFixed(2) || '-'}</p>,
+        render: (_, obj) => <p>{obj?.regular_season_pts?.toFixed(2) || '-'}</p>,
       },
       {
         width: 30,
@@ -531,8 +531,8 @@ const SearchPlayer = () => {
       
           // Calculate PPG
           let ppg = 0;
-          if (nflGamesPlayed > 0  &&   regular_season_pts > 0) {
-            ppg = (regularSeasonPts / nflGamesPlayed).toFixed(2);
+          if (nflGamesPlayed > 0  &&   regularSeasonPts > 0) {
+            ppg = (regularSeasonPts / nflGamesPlayed)?.toFixed(2);
           }
       
           // Return formatted result
@@ -725,7 +725,7 @@ const SearchPlayer = () => {
             title: <p style={{ lineHeight: 1 }}>TOTAL PTS</p>,
             dataIndex: 'totalPts',
             key: 'totalPts',
-            render: (_, obj) => <p>{obj?.post_season_pts.toFixed(2) || '-'}</p>,
+            render: (_, obj) => <p>{obj?.post_season_pts?.toFixed(2) || '-'}</p>,
           },
           {
             width: 30,
@@ -741,7 +741,7 @@ const SearchPlayer = () => {
               // Calculate PPG
               let ppg = 0;
               if (nflGamesPlayed > 0  && postseasonpts > 0 ) {
-                ppg = (postseasonpts / nflGamesPlayed).toFixed(2);
+                ppg = (postseasonpts / nflGamesPlayed)?.toFixed(2);
               }
           
               // Return formatted result
@@ -1979,10 +1979,10 @@ const SearchPlayer = () => {
               console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
-              const FGM40TO49 = `week_${weekNumber}_FieldGoalsMade40to49`
+              const FieldGoalsMade40to49 = `week_${weekNumber}_FieldGoalsMade40to49`
               return (
                 <div>
-                  <p>{obj?.[FGM40TO49] ?? '-'}</p>
+                  <p>{obj?.[FieldGoalsMade40to49] ?? '-'}</p>
                 </div>
               )
             },
