@@ -252,7 +252,7 @@ const SearchPlayer = () => {
           // PASSING
           [`week_${week}_PassingAttempts`]: filterWeek?.PassingAttempts?.toFixed(2),
           [`week_${week}_PassingYards`]: filterWeek?.PassingYards?.toFixed(2),
-          [`week_${week}_PassingTouchdowns`]: filterWeek?.PassingTouchdowns?.toFixed(2),
+          // [`week_${week}_PassingTouchdowns`]: filterWeek?.PassingTouchdowns?.toFixed(2),
           [`week_${week}_PassingSacks`]: filterWeek?.PassingSacks?.toFixed(2),
           [`week_${week}_PassingCompletions`]: filterWeek?.PassingCompletions?.toFixed(2),
 
@@ -302,6 +302,7 @@ const SearchPlayer = () => {
             [`week_${week}_RushingAttempts`]: filterWeek?.RushingAttempts?.toFixed(2),
             [`week_${week}_RushingYards`]: filterWeek?.RushingYards?.toFixed(2),
             [`week_${week}_RushingTouchdowns`]: filterWeek?.RushingTouchdowns?.toFixed(2),
+            [`week_${week}_PassingTouchdowns`]: filterWeek?.PassingTouchdowns?.toFixed(2),
           }
         }
       })
