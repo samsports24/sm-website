@@ -111,7 +111,7 @@ const Proleague = () => {
               <div className='annualfee'>
                 <p> SamSports PRO ANNUAL MEMBERSHIP FEE</p>
 
-                <p>{paymentamount !== null ? '$650' : '$49.99'}</p>
+                <p>{paymentamount !== null ? '$650' : '$25.00'}</p>
               </div>
               <div>
                 <div className='league-package'>
@@ -164,7 +164,7 @@ const Proleague = () => {
               </p>
               <p style={{ marginTop: '20px', fontWeight: 700 }}>
                 SamSports PRO ANNUAL MEMBERSHIP FEE
-                <div className='price'>{paymentamount !== null ? '$650' : '$49.99'}</div>
+                <div className='price'>{paymentamount !== null ? '$650' : '$25.00'}</div>
                 <div className='stripebtn'>
                   <Button loading={loading} onClick={payment} type='primary'>
                     PAY WITH Stripe

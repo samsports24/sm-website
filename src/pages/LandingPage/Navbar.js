@@ -59,18 +59,23 @@ const Navbar = () => {
           </div>
         </div>
         <div className='right'>
-          {/* <Button
+          <Button
             shape='round'
             type='primary'
             className='auth_btn'
-            onClick={() => navigate('/select-game')}
+            onClick={() => {
+              localStorage.setItem('myinvitationtype', 'Freemium');
+              navigate('/select-game');
+            }}
+           // onClick={() => navigate('/select-game')}
           >
             Join Now
-          </Button> */}
-          {/* <Button shape='round' type='primary' className='auth_btn'>
+          </Button>
+      
+          <DrawerMenu />
+              {/* <Button shape='round' type='primary' className='auth_btn'>
             Login
           </Button> */}
-          <DrawerMenu />
         </div>
       </div>
       <div className='empty-navbar' />

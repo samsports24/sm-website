@@ -15,7 +15,7 @@ const Playoff = () => {
 
   const getTeams = async () => {
     const res = await getQualifiedTeams()
-    setTeams(res)
+    // setTeams(res)
   }
 
   useEffect(() => {

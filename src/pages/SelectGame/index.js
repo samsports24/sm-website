@@ -58,12 +58,21 @@ const SelectGame = () => {
         localStorage.setItem('myinvitationtype', decodedToken.invitation_Type)
       }
 
-
-      let football = games?.find((obj) => obj.key === 'football')
-      handleSetGame(football)
-      setIsTokenPresent(true)
+      // let football = games?.find((obj) => obj.key === 'football')
+      // handleSetGame(football)
+      // setIsTokenPresent(true)
     }
   }, [])
+
+  useEffect(()=>{
+  let football = games?.find((obj) => obj.key === 'football')
+  handleSetGame(football)
+  setIsTokenPresent(true)
+  },[])
+
+  // let football = games?.find((obj) => obj.key === 'football')
+  // handleSetGame(football)
+  // setIsTokenPresent(true)
 
   console.log('verficationcode', verficationcode)
   console.log('modalshow', modalshow)
@@ -247,6 +256,8 @@ const SelectGame = () => {
           <div className='bottom_section'>
             <CustomCarousel>
               {games.map((v) => {
+                 console.log('v',v);
+                
                 return (
                   <div
                     key={v?.name}

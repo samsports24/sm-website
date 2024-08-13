@@ -5,7 +5,10 @@ import { useNavigate } from 'react-router-dom'
 import Logo from '../../assets/sam-football.png'
 import { joinLeague } from '../../redux'
 import { useSelector } from 'react-redux'
+import { useState } from 'react'
+import Loader from '../Loader'
 const UpdatedLeagueCard = ({ data, yourLeague, active, fromHome }) => {
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   // console.log('yourLeague',yourLeague);
   const user = useSelector((state) => state.user.userDetails)
@@ -22,6 +25,7 @@ console.log('yourLeague',yourLeague);
 console.log('home',fromHome);
 
 const leaguejoin =async()=>{
+  setLoading(true)
 
   try {
     const payload = {
@@ -38,6 +42,7 @@ const leaguejoin =async()=>{
 
    const data = await joinLeague(payload)
    console.log('League Join successfully:', data)
+   setLoading(false)
     navigate('/professional-league')
     // cancel()
   } catch (error) {
@@ -47,7 +52,12 @@ const leaguejoin =async()=>{
 
 
   return (
+
+
     <div className='u_league_card_wrapper'>
+          {loading ? (
+      <Loader />
+    ) : (
       <div
         className={`u_league_card ${
           // active ? 'active' : leagueType === 'professional' ? 'pro_league_border' : ''
@@ -135,6 +145,7 @@ const leaguejoin =async()=>{
           )}
         </>
       </div>
+    )}
     </div>
   )
 }

@@ -9,13 +9,13 @@ export const games = [
     key: 'hockey',
     name: 'Hockey',
     imagePath: 'hockey.png',
-    disabled: false,
+    disabled: true,
   },
   {
     key: 'baseball',
     name: 'Baseball',
     imagePath: 'baseball.png',
-    disabled: false,
+    disabled: true,
   },
   {
     key: 'college_football',
