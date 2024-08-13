@@ -121,6 +121,7 @@
 @import './pages/proleague.css';
 @import './pages//rulebook.css';
 @import './pages//playersearch.css';
+@import './pages/chat.css';
 
 /* COMPONENT HOCKEY */
 @import './components/leagueStandingsHockey.css';

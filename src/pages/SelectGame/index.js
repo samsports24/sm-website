@@ -155,7 +155,7 @@ const SelectGame = () => {
       let server = serverUrls.find((item) => item.key === selectedGame);
   
       if (
-        values.state === 'Iowa' ||
+        // values.state === 'Iowa' ||
         values.state === 'Idaho' ||
         values.state === 'Washington' ||
         values.state === 'Nevada'

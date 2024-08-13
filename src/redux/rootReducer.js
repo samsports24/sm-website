@@ -12,6 +12,7 @@ import draft from './reducers/draftReducer'
 import socket from './reducers/socketReducer'
 import clubhouse from './reducers/clubhouseReducer'
 import stadium  from './reducers/stadiumReducers'
+import chat from "./reducers/chatReducer"
 // import stripepayment from './reducers/'
 
 const rootReducer = combineReducers({
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
   contract,
   clubhouse,
   stadium,
+  chat,
   
 })
 

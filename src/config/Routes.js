@@ -99,6 +99,7 @@ import SamPositiontab from '../pages/Rulebook/samPositiontab'
 import FranchiseTag from '../pages/Rulebook/FranchiseTag'
 import AllNews from '../components/RollingNewsFeed/AllNews'
 import SearchPlayer from '../pages/SearchPlayer'
+import Chat from '../pages/Chat'
 
 const Routers = () => {
   const Component = () => {
@@ -172,6 +173,8 @@ const Routers = () => {
           <Route path='/draft-spot-auction' element={<DraftSpotAuction />} />
           <Route path='/stadium' element={<Stadium />} />
           <Route path='/clubhouse' element={<Clubhouse />} />
+
+          <Route path='/chat' element={<Chat/>} />
    
           
          
