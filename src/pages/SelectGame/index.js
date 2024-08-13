@@ -156,7 +156,7 @@ const SelectGame = () => {
   
       if (
         // values.state === 'Iowa' ||
-        values.state === 'Idaho' ||
+        // values.state === 'Idaho' ||
         values.state === 'Washington' ||
         values.state === 'Nevada'
       ) {
@@ -194,6 +194,8 @@ const SelectGame = () => {
       if (
         (values.state === 'Arizona' ||
           values.state === 'Massachusetts' ||
+           values.state === 'Nevada' ||
+           values.state === 'Iowa' ||
           values.state === 'Louisiana') &&
         age < 21
       ) {
