@@ -46,7 +46,7 @@ const ClubhouseModal = ({ visible, onClose }) => {
           <h2>Freemium Invitation:</h2>
           <ul>
             <l1>Invite a friend to join a freemium league</l1>
-            <li>Earn 3,500,000 SamPoints as a reward.</li>
+            <li>Earn 3,250,000 SamPoints as a reward.</li>
           </ul>
           Use the Clubhouse to expand your network, challenge others, and boost your SamPoints
           earnings by inviting more friends to join SamSports.

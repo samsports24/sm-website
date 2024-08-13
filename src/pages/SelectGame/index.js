@@ -156,9 +156,9 @@ const SelectGame = () => {
   
       if (
         // values.state === 'Iowa' ||
-        // values.state === 'Idaho' ||
-        values.state === 'Washington' ||
-        values.state === 'Nevada'
+         values.state === 'Idaho' ||
+        values.state === 'Washington' 
+  
       ) {
         notification.warning({
           message: 'This Platform is not available in this state',
