@@ -6,7 +6,7 @@ import { HiOutlineHome } from 'react-icons/hi'
 import { MdDashboard, MdOutlineStadium } from 'react-icons/md'
 import { FaPlusCircle, FaRegChartBar } from 'react-icons/fa'
 import { RiAuctionLine, RiDraftLine } from 'react-icons/ri'
-import { SiLeagueoflegends } from 'react-icons/si'
+import { SiLeagueoflegends,SiWechat } from 'react-icons/si'
 
 import { BsShop } from 'react-icons/bs'
 import {
@@ -116,6 +116,10 @@ const MainMenu = ({ visible }) => {
 
       case '/search-player': {
         return setActive('/search-player')
+      }
+
+      case '/chat': {
+        return setActive('/chat')
       }
 
       // case '/team-schedule': {
@@ -296,6 +300,14 @@ const MainMenu = ({ visible }) => {
                 >
                   <PiMagnifyingGlassLight />
                   <p>Player Search</p>
+                </div>
+
+                <div
+                  className={`sidebar_menu_item ${active === 'search-player' ? 'activeRoute' : ''}`}
+                  onClick={() => navigatePath('/chat')}
+                >
+                  <SiWechat />
+                  <p>Chat</p>
                 </div>
 
                 <div

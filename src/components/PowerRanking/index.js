@@ -1,10 +1,12 @@
 import React from 'react'
 // import { BiRightArrowAlt } from 'react-icons/bi'
 import { BsChat } from "react-icons/bs";
-import sendMessage from "../../redux/actions/chatAction"
+import {sendMessage} from "../../redux/actions/chatAction";
+import { useSelector } from 'react-redux';
 
 
 const PowerRanking = ({ data, maxHeight = '500px' }) => {
+  const user = useSelector((state) => state.user.userDetails)
   const getBoldName = (name) => {
     const splitted = name?.split(' ')
     let newText = ''
@@ -21,34 +23,33 @@ const PowerRanking = ({ data, maxHeight = '500px' }) => {
     }
     return newText
   }
+// console.log('user?.team',user?.team);
 
-  // const handleChatClick = (teamId) => {
  
-  //   sendMessage({ teamId });
-  // };
 
   const handleChatClick = async (teamId) => {
     console.log('teamId',teamId);
     
    // setLoading(true)
     try {
-      // const payload = {
-      //   leagueid: user?.team?.currentLeague._id,
-      //   bidamount: parseFloat(bidAmount),
-      //   teamid: user?.team?._id,
-      //   spotAuctionEnd:currentLeague?.spotAuctionEnd
-      // }
+      const payload = {
+        to: teamId,
+      message: 'Hello',
+        from: user?.team?._id,
+        league:user?.team?.currentLeague?._id,
+        
+        
+        
+      }
 
-      // const data = await sendMessage(payload)
+      // console.log('payload',payload);
 
-      // console.log('Bid placed successfully:', data)
-      // setBidAmount('')
-      // const res = await getData()
-      // if (res) {
-      // }
-     // setLoading(false)
+       const data = await sendMessage(payload)
+
+       console.log('message sent successfully:', data)
+  
     } catch (error) {
-      console.error('Error making bid:', error)
+      console.error('Error sending message :', error)
     }
   }
 
@@ -78,9 +79,7 @@ const PowerRanking = ({ data, maxHeight = '500px' }) => {
                 <div className='score_box'>
                   <p>{v?.teamScore?.score}</p>
                 </div>
-             {/* <div>
-             <BsChat  onClick={() => handleChatClick(team?._id)} size="40px"  color="white"/>
-             </div> */}
+        
               </div>
             )
           })}

@@ -21,6 +21,7 @@
 @import './modals/viewBreakdown.css';
 @import './modals/verficationcodeModal.css';
 @import './modals/gmratingmodal.css';
+@import './modals/dmchatmodal.css';
 
 /* Component CSS */
 @import './components/header.css';

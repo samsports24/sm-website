@@ -1,8 +1,6 @@
 import { notification } from 'antd'
 import { attachToken, privateAPI, publicAPI, serverUrls } from '../../config/constants'
 import store from '../store'
-import { getUser } from './authActions'
-import axios from 'axios'
 
 // export const getPreviousMessages = async (roomId) => {
 //   try {
@@ -37,25 +35,51 @@ import axios from 'axios'
   export const appendMessage = (payload) => {
     return {
       type: 'APPEND_MESSAGE',
-      payload,
+      payload:payload
     }
   }
+
+  
+  export const leagueMessage = (payload) => {
+    return {
+      type: 'LEAGUE_MESSAGE',
+      payload:payload
+    }
+  }
+
+
 
   export const searchChat = (payload) => {
     return {
       type: 'SEARCH_CHAT',
-      payload,
+      payload:payload
     }
   }
 
 
 
 export const getPreviousMessages = async (roomId) => {
-    console.log('roomId', roomId)
+  console.log('going there');
+  
+    //  console.log('roomId', roomId)
     try {
       attachToken()
       const res = await privateAPI.get(`/chat/user/get/${roomId}?page=1&perPage=10000`)
-      store.dispatch(appendMessage(res.data.data))
+      // store.dispatch(appendMessage(res.data.data))
+      const messages = res.data.data.messages;
+      console.log('res',res.data.data.messages)
+       store.dispatch(appendMessage(messages))
+       console.log('messages',messages);
+       
+       const filteredMessages = messages.filter(message => message.sender && typeof message.sender === 'object');
+
+       console.log('filteredMessages',filteredMessages);
+       
+       // If there are any filtered messages, dispatch leagueMessage
+       if (filteredMessages.length > 0) {
+         store.dispatch(leagueMessage(filteredMessages));
+       }
+       await getChatRooms()
       return res.data.data
     } catch (err) {
       notification.error({
@@ -73,14 +97,19 @@ export const sendMessage = async (payload) => {
     console.log('in the action', payload)
     try {
       attachToken()
-      const res = await privateAPI.post(`/chat/user/send`, payload)
+      const res = await privateAPI.post('/chat/user/send', payload)
       if (res) {
+        console.log('res',res);
+        await getChatRooms()
+        await getPreviousMessages(payload.room_id)
+        
         // store.dispatch(getClubhouse(payload))
         // await getClubhouse(payload)
         notification.success({
           description: res.data.data.message,
           duration: 2,
         })
+    
         // store.dispatch(getUser())
         // getLeagueDetails()
       }
@@ -95,11 +124,12 @@ export const sendMessage = async (payload) => {
 
 
   export const getChatRooms = async () => {
-
     try {
       attachToken()
       const res = await privateAPI.get('/chat/user/chat-rooms')
-      store.dispatch(searchChat(res.data.data))
+      console.log('res.data.data',res.data.data.chat_rooms);
+      
+      store.dispatch(searchChat(res.data.data.chat_rooms))
       return res.data.data
     } catch (err) {
       notification.error({

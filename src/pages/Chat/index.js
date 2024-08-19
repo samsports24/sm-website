@@ -1,301 +1,722 @@
-import { useState, useEffect, useRef } from "react";
-import { Input, Badge, Typography, Button, Spin } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { AiOutlineCloudUpload } from "react-icons/ai";
-import { IoMdSend } from "react-icons/io";
-import { FaSearch, FaCaretDown, FaPaperclip } from "react-icons/fa";
-import openSocket from "socket.io-client";
+import { useState, useEffect, useRef } from 'react'
+import { Input, Badge, Typography, Button, Spin, Image, message } from 'antd'
+import { useDispatch, useSelector } from 'react-redux'
+import { AiOutlineCloudUpload } from 'react-icons/ai'
+import { IoMdSend } from 'react-icons/io'
+import { FaSearch, FaCaretDown, FaPaperclip } from 'react-icons/fa'
+import Header from '../../components/Header'
+import { LoadingOutlined } from '@ant-design/icons'
+import { getChatRooms, getPreviousMessages, sendMessage } from '../../redux/actions/chatAction'
+import Message from '../../components/Chat/Message'
+import openSocket from 'socket.io-client'
+import { base_url } from '../../config/constants'
+import PersonalChatModal from '../../components/modal/PersonalChatModal'
+import { getLeagueDetails } from '../../redux'
+import Leaguechat from '../../components/Chat/Leaguechat'
+import Loader from '../../components/Loader'
 
-// import bubble from "../assets/bubble.png";
-// import Message from "../components//Chat/Message";
+const antIcon = <LoadingOutlined style={{ fontSize: 40, color: 'white' }} spin />
 
-import { LoadingOutlined } from "@ant-design/icons";
-// import Layout from "./../layout/Layout";
-// import { base_url } from "../API/fetch";
-import { getChatRooms, getPreviousMessages, sendMessage } from "../../redux/actions/chatAction";
-import { base_url } from "../../config/constants";
-import Message from "../../components/Chat/Message";
+const Chat = () => {
+  const user = useSelector((state) => state.user.userDetails)
+  const teamid = user?.team?._id
+  const { Title } = Typography
+  const [chat, setChat] = useState(null)
+  const [myMessage, setMyMessage] = useState('')
+  const [leagueMessage, setLeagueMessage] = useState([])
+  const [sentleagueMessage, setSentLeagueMessage] = useState([])
+  const [loader, setLoader] = useState(false)
+  const roomId = localStorage.getItem('roomId')
+  const leagueroomId = localStorage.getItem('leagueroom')
 
-const antIcon = (
-  <LoadingOutlined style={{ fontSize: 40, color: "white" }} spin />
-);
+  // console.log('roomId',roomId);
+  
 
-const Chat = ({}) => {
-  const { Title } = Typography;
-  const [chat, setChat] = useState(null);
-  const [myMessage, setMyMessage] = useState("");
-  const [loader, setLoader] = useState(false);
-  const roomId = localStorage.getItem("roomId");
-  const userId = localStorage.getItem("userId");
- 
+  const { socket } = useSelector((state) => state.socket)
+  const searchChat = useSelector((state) => state?.chat?.chatRooms)
+  const appendMessage = useSelector((state) => state?.chat?.appendmessages)
+  const myleagueMessage = useSelector((state) => state?.chat?.leaguemessages)
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const { currentLeague } = useSelector((state) => state.league)
+  const [imagePreview, setImagePreview] = useState(null)
+  const [isChatExpanded, setIsChatExpanded] = useState(true);
 
-  const [messages, setMessages] = useState(null);
+  const [messages, setMessages] = useState([])
+  const [scrollToggle, setscrollToggle] = useState(true)
+  const [rooms, setRooms] = useState([])
+  const [vendorId, setVendorId] = useState('')
+  const [matchedroom, setMatchedRoom] = useState(null)
+  const [messageToggle, setMessageToggle] = useState('')
+  const chatRef = useRef()
+  const [image,setImage]=useState(null)
 
-  const [messageToggle, setMessageToggle] = useState("");
-  const [scrollToggle, setscrollToggle] = useState(true);
+  console.log('searchChat', searchChat)
+  console.log('appendMessage', appendMessage)
+  console.log('myleagueMessage', myleagueMessage)
 
-  const [rooms, setRooms] = useState(null);
-  const [vendorId, setVendorId] = useState("");
+  console.log('currentLeague',currentLeague);
+  
+  const toggleChatWidth = () => {
+    setIsChatExpanded(!isChatExpanded);
+  };
+  
 
-  const chatRef = useRef();
+  const openModal = () => {
+    setIsModalVisible(true)
+    toggleChatWidth();
+  }
 
-  const dispatch = useDispatch();
+  const closeModal = () => {
+    setIsModalVisible(false)
+    toggleChatWidth();
+  }
+
+  const myleague = async () => {
+    await getLeagueDetails()
+  }
 
   useEffect(() => {
-    if (messageToggle !== "") {
-      let tempMessages = JSON.parse(JSON.stringify(messages));
-      tempMessages.docs.push(messageToggle);
-      setMessages(tempMessages);
-      setscrollToggle(!scrollToggle);
-    }
-  }, [messageToggle]);
+    myleague()
+  }, [])
 
   useEffect(() => {
-    scrollBottom();
-  }, [scrollToggle]);
+    setLoader(true)
+    // Ensure currentLeague and currentLeague.roomId are valid
+    if (currentLeague && currentLeague.roomId) {
+      // Set the roomId in localStorage
+      localStorage.setItem('leagueroom', currentLeague.roomId)
 
-  useEffect(async () => {
-    const rooms = await getChatRooms();
-    setRooms(rooms.chat_rooms);
+      // Get the roomId from localStorage
+      const leagueroom = localStorage.getItem('leagueroom')
 
-    const socket = openSocket(base_url, {
-      transports: ["polling"],
-    });
-    if (roomId) {
-      socket.emit("joinRoom", roomId);
-      socket.on("Message", async (data) => {
-        const rooms = await getChatRooms();
-        setRooms(rooms.chat_rooms);
-        if (data.to === userId) setMessageToggle(data);
-        // console.log("from socket", data);
-        setscrollToggle(!scrollToggle);
-      });
+      // Call getPreviousMessages with the retrieved roomId
+      // Assuming getPreviousMessages is an async function
+      const fetchPreviousMessages = async () => {
+        try {
+          const res = await getPreviousMessages(leagueroom)
+
+          // console.log('hamza res',res);
+
+          //    setLeagueMessage(res?.messages)
+        } catch (error) {
+          console.error('Error fetching previous messages:', error)
+        }
+      }
+
+      fetchPreviousMessages()
+      setLoader(false)
     }
-    return () => {
-      socket.emit("end");
-    };
-  }, [roomId]);
+  }, [currentLeague])
+
+
+
+  // console.log('myy', leagueMessage)
+
+  useEffect(() => {
+    // if (chatRef.current) {
+    //   chatRef.current.scrollTop = chatRef.current.scrollHeight
+    // }
+    chatRef?.current?.scrollIntoView({ behaviour: "smooth" });
+    console.log("🚀 ~ useEffect ~ chatRef:", chatRef)
+    
+  }, [messages])
+
+  // const scrollBottom = () => {
+  //    console.log("run....");
+  //    console.log('chatRef',chatRef);
+
+  //   if (chatRef?.current?.scrollTop)
+  //     console.log('in this cosnoel');
+
+  //     chatRef.current.scrollTop = chatRef?.current?.scrollHeight
+  // }
 
   const scrollBottom = () => {
-    // console.log("run....");
-    if (chatRef?.current?.scrollTop)
-      chatRef.current.scrollTop = chatRef?.current?.scrollHeight;
-  };
+    console.log('run....')
+    // if (chatRef.current) {
+    //   console.log('chatRef', chatRef)
 
-  const sendImage = async (e) => {
-    let obj = URL.createObjectURL(e.target.files[0]);
-    const roomId = localStorage.getItem("roomId");
+    //   chatRef.current.scrollTop = chatRef.current.scrollHeight
+    // if (chatRef?.current?.scrollTop)
+    //   chatRef.current.scrollTop = chatRef?.current?.scrollHeight;
+    
+    chatRef?.current?.scrollIntoView({ behaviour: "smooth" });
+  //   let lastItem = chatRef.current.lastChild;
 
-    await setMessageToggle({
-      createdAt: Date.now(),
-      from: userId,
-      is_read: false,
+  //  // then run this:
+    
+  //   lastItem?.scrollIntoView({
+  //   behavior: "smooth",
+  //   block: "end",
+  //   inline: "nearest",
+  //   });
+
+  }
+
+  // useEffect(() => {
+  //   scrollBottom();
+  // }, [scrollToggle]);
+  useEffect(() => {
+    scrollBottom()
+  }, [leagueMessage])
+
+  useEffect(() => {
+    console.log('Setting up socket connection')
+
+    // Initialize the socket connection
+    const socket = openSocket(base_url, { transports: ['polling'] })
+
+    // Function to handle joining rooms
+    // const joinRoom = async (roomId) => {
+    //   console.log('Joining room:', roomId)
+    //   socket.emit('joinRoom', roomId)
+    //   socket.on('Message', (data) => {
+    //     console.log('Received message:', data)
+    //     await getPreviousMessages(roomId)
+    //     setscrollToggle(!scrollToggle)
+    //     if (data.to === teamid) {
+    //       setMessageToggle(data)
+    //       setscrollToggle((prev) => !prev)
+    //     }
+    //   })
+    // }
+    const joinRoom =  (roomId) => {
+      console.log('Joining room:', roomId)
+      socket.emit('joinRoom', roomId)
+      socket.on('Message',async (data) => {
+        console.log('Received message:', data)
+        const res = await getPreviousMessages(roomId)
+        console.log('hamza check', res)
+        setMessages(res?.messages)
+        setscrollToggle(!scrollToggle)
+        if (data.to === teamid) {
+          setMessageToggle(data)
+          setscrollToggle((prev) => !prev)
+        }
+      })
+    }
+    
+    const joinLeagueRoom = async (leagueroomId) => {
+      console.log('Joining league room:', leagueroomId)
+
+   
+      // Ensure the socket is properly initialized and connected
+      if (socket) {
+        socket.emit('joinleagueRoom', leagueroomId)
+
+        socket.on('Message', async (data) => {
+          console.log('Received league message:', data)
+          await getPreviousMessages(leagueroomId)
+          // if (!isUserScrolling) {
+          //   scrollBottom(); // Only scroll to bottom if the user is not manually scrolling
+          // }
+          //  scrollBottom()
+          setscrollToggle(!scrollToggle)
+          if (data.sender === teamid) {
+            console.log('in the ifff')
+
+            // Ensure getPreviousMessages is awaited
+            //  await getPreviousMessages(leagueroomId);
+
+            // Update state accordingly
+            setSentLeagueMessage((prevMessages) => [...prevMessages, data])
+            setMessageToggle(data)
+            setscrollToggle((prev) => !prev)
+
+          }
+        })
+
+      } else {
+        console.error('Socket is not initialized.')
+      }
+    }
+
+    // Join rooms if roomId or leagueroomId is available
+    if (roomId) {
+      joinRoom(roomId)
+    }
+
+    if (leagueroomId) {
+      joinLeagueRoom(leagueroomId)
+    }
+
+    // Cleanup on component unmount
+    return () => {
+      console.log('Cleaning up socket')
+      socket.emit('end')
+      socket.disconnect()
+    }
+  }, [roomId, leagueroomId])
+
+  const handleChatClick = async (teamId) => {
+    console.log('teamId', teamId)
+
+    setLoader(true)
+    try {
+      const payload = {
+        to: teamId,
+        message: 'Hello',
+        from: user?.team?._id,
+        league: user?.team?.currentLeague?._id,
+      }
+
+      const data = await sendMessage(payload)
+      // console.log('data',data);
+
+      await getChatRooms()
+
+      // const matchedRoom = searchChat?.find(room =>
+      //   room.applicants.some(applicant =>
+      //     applicant._id === user?.team?._id && applicant._id === teamId
+      //   )
+      // );
+
+      const matchedRoom = searchChat?.find((room) => {
+        // Ensure the room has at least two applicants
+        if (room.applicants.length >= 2) {
+          const [applicant1, applicant2] = room.applicants
+          return (
+            (applicant1._id === user?.team?._id && applicant2._id === teamId) ||
+            (applicant1._id === teamId && applicant2._id === user?.team?._id)
+          )
+        }
+        return false
+      })
+
+      console.log('matchedRoom', matchedRoom)
+      setMatchedRoom(matchedRoom?.applicants[1]?.name)
+
+      if (matchedRoom) {
+        // Perform the series of actions after finding the room
+        openModal()
+        setChat(matchedRoom._id)
+        setVendorId(
+          matchedRoom.applicants.find((applicant) => applicant._id !== payload.from)?._id || '',
+        )
+
+        localStorage.setItem('roomId', matchedRoom._id)
+
+        const res = await getPreviousMessages(matchedRoom._id)
+        console.log('check', res)
+        setMessages(res?.messages)
+
+        await getChatRooms() // Optionally update chat rooms if necessary
+        setLoader(false)
+      } else {
+        console.error('No matching room found')
+      }
+    } catch (error) {
+      console.error('Error sending message:', error)
+    } finally {
+      setLoader(false) // Ensure loader is turned off after completion
+    }
+  }
+
+  const handleopenmodal = async (room) => {
+    console.log('room',room);
+    
+    await getChatRooms()
+    if (room) {
+      // Perform the series of actions after finding the room
+
+      setChat(room._id)
+      setVendorId(room.applicants.find((applicant) => applicant._id !== user?.team?._id)?._id || '')
+
+      localStorage.setItem('roomId', room._id)
+
+      const res = await getPreviousMessages(room._id)
+      console.log('check', res)
+      setMessages(res?.messages)
+
+      await getChatRooms()
+      openModal()
+    }
+  }
+
+  const handleSendMessage = async () => {
+    setLoader(true)
+    if (myMessage.trim() === '') return
+
+    const payload = {
+      to: vendorId,
       message: myMessage,
       room_id: roomId,
-      to: vendorId,
-      updatedAt: Date.now(),
-      media_url: obj || null,
-      __v: 0,
-      // _id: "6243a3c0560bb5bbf4df61bc",
-    });
-    scrollBottom();
-    let formData = new FormData();
-    formData.append("pictures", e.target.files[0]);
-    formData.append("to", vendorId);
-    formData.append("room_id", chat);
-    await sendMessage(formData);
-  };
+      from: teamid,
+    }
+
+console.log('payload',payload);
+
+
+    try {
+      await sendMessage(payload)
+      socket.emit('Message', payload)
+
+      // setMessages((prevMessages) => [
+      //   ...prevMessages,
+      //   {
+      //     createdAt: Date.now(),
+      //     from: teamid,
+      //     is_read: false,
+      //     message: myMessage,
+      //     room_id: roomId,
+      //     to: vendorId,
+      //     updatedAt: Date.now(),
+      //     __v: 0,
+      //     _id: Date.now().toString(), // Replace with your unique ID logic
+      //   },
+      // ])
+
+      scrollBottom()
+      console.log('messages chekc here ', message)
+
+       setMyMessage('');
+       setLoader(false)
+      chatRef.current.scrollTop = chatRef.current.scrollHeight // Ensure scrolling to bottom
+    } catch (error) {
+      console.error('Error sending message:', error)
+    }
+  }
+
+  const handleleagueSendMessage = async () => {
+    setLoader(true)
+    if (leagueMessage.trim() === '') return
+
+    const payload = {
+      sender: teamid,
+      message: leagueMessage,
+      room_id: currentLeague?.roomId,
+    }
+
+    console.log(payload)
+
+    try {
+      await sendMessage(payload) // Call the API to send the message
+      socket.emit('joinleagueRoom', payload) // Emit the message via socket
+      chatRef?.current?.scrollIntoView({ behaviour: "smooth" });
+
+      //  leagueMessage((prevMessages) => [
+      //      ...prevMessages,
+      //     {
+      //       createdAt: Date.now(),
+      //       from: teamid,
+      //       is_read: false,
+      //       message: leagueMessage,
+      //       room_id: currentLeague?.roomId,
+      //       // to: vendorId,
+      //       updatedAt: Date.now(),
+      //       __v: 0,
+      //       _id: Date.now().toString(), // Replace with your unique ID logic
+      //     },
+      //   ]);
+
+      console.log('messages chekc here ', message)
+     
+    //  chatRef.current.scrollTop = chatRef.current.scrollHeight // Ensure scrolling to bottom
+      scrollBottom()
+      setLeagueMessage('')
+      setLoader(false)
+
+      // setMyMessage('');
+
+    } catch (error) {
+      console.error('Error sending message:', error)
+    }
+  }
+
+  const sendImage = async (e) => {
+    const file = e.target.files[0]
+    console.log('file',file);
+    
+    if (!file) return
+
+    const obj = URL.createObjectURL(file)
+    const formData = new FormData()
+    formData.append('pictures', file)
+    // formData.append('sender', teamid)
+    // formData.append('room_id', roomId)
+    formData.append('sender', String(teamid)); // Ensure teamid is a string
+    formData.append('room_id', String(leagueroomId)); // Ensure roomId is a strin
+
+
+    await sendMessage(formData); // Make sure this function is defined and handles the FormData correctly
+       socket.emit('joinleagueRoom', formData)
+
+    // Emit the message to the server via socket (ensure payload is correctly defined)
+    // socket.emit('sendImage', {
+    //   roomId,
+    //   sender,
+    //   media_url: obj, // Provide the URL created for the image
+    // });
+
+   // await sendMessage(formData) // Call the API to send the message
+   // socket.emit('joinleagueRoom', payload) // Emit the message via socket
+
+   // socket.emit('sendImage', formData) // Emit image data to the server
+
+    // setMessages((prevMessages) => [
+    //   ...prevMessages,
+    //   {
+    //     createdAt: Date.now(),
+    //     from: teamid,
+    //     is_read: false,
+    //     message: '', // Empty message since it's an image
+    //     room_id: roomId,
+    //     to: vendorId,
+    //     updatedAt: Date.now(),
+    //     media_url: obj,
+    //     __v: 0,
+    //     _id: Date.now().toString(), // Replace with your unique ID logic
+    //   },
+    // ])
+  }
+
+
+  const sendDMImage = async (e) => {
+
+    console.log('in the oncoe');
+    // console.log('image',image);
+    
+    
+    const file = e.target.files[0]
+    console.log('file',file);
+    
+    if (!file) return
+
+     const obj = URL.createObjectURL(file)
+    const formData = new FormData()
+    formData.append('pictures', file)
+    // formData.append('sender', teamid)
+    // formData.append('room_id', roomId)
+    // from: teamid,
+    // to: vendorId,
+    formData.append('from', String(teamid)); // Ensure teamid is a string
+    formData.append('room_id', String(roomId)); // Ensure roomId is a strin
+    formData.append('to', String(vendorId)); // Ensure roomId is a strin
+
+
+    await sendMessage(formData); // Make sure this function is defined and handles the FormData correctly
+    socket.emit('Message', payload)
+
+    // formData.delete('pictures');
+    // formData.delete('from');
+    // formData.delete('room_id');
+    // formData.delete('to');
+
+    // Emit the message to the server via socket (ensure payload is correctly defined)
+    // socket.emit('sendImage', {
+    //   roomId,
+    //   sender,
+    //   media_url: obj, // Provide the URL created for the image
+    // });
+
+   // await sendMessage(formData) // Call the API to send the message
+   // socket.emit('joinleagueRoom', payload) // Emit the message via socket
+
+   // socket.emit('sendImage', formData) // Emit image data to the server
+
+    // setMessages((prevMessages) => [
+    //   ...prevMessages,
+    //   {
+    //     createdAt: Date.now(),
+    //     from: teamid,
+    //     is_read: false,
+    //     message: '', // Empty message since it's an image
+    //     room_id: roomId,
+    //     to: vendorId,
+    //     updatedAt: Date.now(),
+    //     media_url: obj,
+    //     __v: 0,
+    //     _id: Date.now().toString(), // Replace with your unique ID logic
+    //   },
+    // ])
+  }
+
 
   const searchUserChat = async (name) => {
-    if (name !== "") {
-      const newRooms = rooms.filter((room) => {
-        return room?.vendor[0]?.name.toLowerCase().includes(name.toLowerCase());
-        //  ||
-        // room?.admin[0]?.name.toLowerCase().includes(name.toLowerCase())
-      });
-      setRooms(newRooms);
-      //   dispatch(searchChat(newRooms));
+    if (name !== '') {
+      const filteredRooms = rooms.filter((room) =>
+        room?.vendor[0]?.name.toLowerCase().includes(name.toLowerCase()),
+      )
+      setRooms(filteredRooms)
     } else {
-      const rooms = await getChatRooms();
-      setRooms(rooms.chat_rooms);
+      const rooms = await getChatRooms()
+      setRooms(rooms.chat_rooms)
     }
-  };
+  }
 
   return (
-    // <Layout text={["chat"]}>
-      <div className="main-chat">
-        <div className="users">
-          <Input
-            className="search-users-inp"
-            placeholder="search users chats"
-            allowClear
-            onChange={(e) => searchUserChat(e.target.value)}
-            prefix={<FaSearch style={{ marginRight: " 5px" }} />}
-          />
-
-          {rooms &&
-            rooms.length > 0 &&
-            rooms.map((room) => (
-              <div
-                className={chat === room._id ? "user user-active" : "user"}
-                key={room._id}
-                onClick={async () => {
-                  setLoader(true);
-                  setChat(room._id);
-                  setVendorId(
-                    room.vendor.length > 0
-                      ? room.vendor[0]?._id
-                      : room.user[0]?._id
-                  );
-                  localStorage.setItem("roomId", room._id);
-                  const message = await getPreviousMessages(room._id);
-                  setMessages(message.messages);
-                  const rooms = await getChatRooms();
-                  setRooms(rooms.chat_rooms);
-                  setLoader(false);
-                  chatRef.current.scrollTop = chatRef?.current?.scrollHeight;
-                }}
-              >
-                <div className="user-container">
-                  <div className="user-name-msg">
-                    <div>
-                      {/* console.log("166", room) */}
-                      <Title level={5}>{room.vendor[0]?.name}</Title>
-                      {/* <p level={5}>
-                        {room.last_message ? (
-                          room.last_message
-                        ) : (
-                          <>
-                            <FaPaperclip /> Attachment
-                          </>
-                        )}
-                      </p> */}
-                      <p>
-  {room.last_message ? (
-    room.last_message
-  ) : (
     <>
-      <FaPaperclip /> Attachment
-    </>
-  )}
-</p>
+      <Header />
+    
 
+
+      <div className={`main-chat ${isChatExpanded ? 'expanded' : 'collapsed'}`}>
+  <div className={loader ? 'messages shade' : 'messages'}>
+    {/* <Spin spinning={loader} size='large' indicator={antIcon} className='spinner' /> */}
+    <div className='chat-container'>
+      <p>{currentLeague.name} League Chat</p>
+    </div>
+
+ 
+    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+      <div style={{ width: '90%' }} className='league chat'>
+      {loader ? (
+        <Loader />
+      ) : (
+        <Leaguechat chatRef={chatRef} chat={myleagueMessage} teamid={teamid} />
+      )}
+      </div>
+
+      <div className='allteams'>
+        {searchChat && searchChat.length > 0 && currentLeague?.teams
+          ?.filter((item) => item._id !== user?.team?._id)
+          .map((item) => {
+            const room = searchChat.find((room) =>
+              room.applicants.length === 2 &&
+              room.applicants.some((applicant) => 
+                applicant._id === user?.team?._id && applicant._id === item._id || item._id && applicant._id === user?.team?._id
+              )
+            );
+
+            return (
+              <div key={item._id} className='team-item'>
+                <div
+                  onClick={async() => {
+                    // await getChatRooms(item._id)
+                    if (room) {
+                      console.log('in the if');
+                      
+                      handleopenmodal(room);
+                    } else {
+                      console.log('in the else');
+                      handleChatClick(item._id);
+                     
+                    }
+                  }}
+                  className='team-name-container'
+                >
+                  {room && String(roomId) !== String(room._id) && (
+                    <Badge className='team-badge' count={room?.unread_count} />
+                  )}
+                  <div className='team-name'>
+                    <div className='image-wrapper'>
+                      <Image
+                        width={50}
+                        preview={false}
+                        src={item?.logo}
+                        alt='logo'
+                        className='team-logo'
+                      />
+                      <div className='tooltip'>{item?.name}</div>
                     </div>
-                    {roomId !== room._id && <Badge count={room.unread_count} />}
                   </div>
                 </div>
               </div>
-            ))}
-        </div>
-        <div className={loader ? "messages shade" : "messages"}>
-          <Spin
-            spinning={loader}
-            size="large"
-            indicator={antIcon}
-            className="spinner"
-          />
-          <div ref={chatRef} id="chatBottom" className="chat-container">
-            <Message chat={messages && messages?.docs} />
-          </div>
-          {messages !== null && (
-            <div className="bottom-button">
-              <Button
-                icon={<FaCaretDown />}
-                shape="circle"
-                onClick={scrollBottom}
-                style={{
-                  // color: colors["primary-color"],
-                  color: "#fff",
-                  background: "#323739",
-                  marginLeft: "5px",
-                }}
-              />
-            </div>
-          )}
-          {messages === null ? (
-            <div className="no-room">
-              {/* <img src={bubble} /> */}
-              <Title level={4}>Select room to start chat</Title>
-            </div>
-          ) : (
-            <div className="send-message">
-              <div className="send-message-container">
-                <Input
-                  placeholder="send message..."
-                  value={myMessage}
-                  onChange={(e) => setMyMessage(e.target.value)}
-                  onPressEnter={async (e) => {
-                    if (myMessage !== "") {
-                      setChat(roomId);
-                      let payload = {
-                        to: vendorId,
-                        message: e.target.value,
-                        room_id: chat,
-                      };
-                      myMessage !== "" && (await sendMessage(payload));
-                      setMessageToggle({
-                        createdAt: Date.now(),
-                        from: userId,
-                        is_read: false,
-                        message: e.target.value,
-                        room_id: roomId,
-                        to: vendorId,
-                        updatedAt: Date.now(),
-                        __v: 0,
-                        _id: "6243a3c0560bb5bbf4df61bc",
-                      });
-                      setMyMessage("");
-                    }
-                    scrollBottom();
-                  }}
-                />
-                <div className="action-icons">
-                  <input
-                    type="file"
-                    id="fileInp"
-                    className="upload-img"
-                    onChange={(e) => sendImage(e)}
-                  />
-
-                  <label htmlFor="fileInp">
-                    <AiOutlineCloudUpload
-                      style={{ marginRight: "10px", display: "flex" }}
-                    />
-                  </label>
-                  <IoMdSend
-                    onClick={async () => {
-                      if (myMessage !== "") {
-                        setChat(roomId);
-                        let payload = {
-                          to: vendorId,
-                          message: myMessage,
-                          room_id: chat,
-                        };
-                        myMessage !== "" && (await sendMessage(payload));
-                        setMessageToggle({
-                          createdAt: Date.now(),
-                          from: userId,
-                          is_read: false,
-                          message: myMessage,
-                          room_id: roomId,
-                          to: vendorId,
-                          updatedAt: Date.now(),
-                          __v: 0,
-                          _id: "6243a3c0560bb5bbf4df61bc",
-                        });
-                        setMyMessage("");
-                      }
-                      scrollBottom();
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+            );
+          })}
       </div>
-    // </Layout>
-  );
-};
+    </div>
 
-export default Chat;
+    <div className='bottom-button'>
+      <Button
+        icon={<FaCaretDown />}
+        shape='circle'
+        onClick={scrollBottom}
+        style={{ color: '#fff', background: '#323739', marginLeft: '5px' }}
+      />
+    </div>
+
+    <div className='send-message'>
+      <div className='send-message-container'>
+        <Input
+          placeholder='send message...'
+          value={leagueMessage}
+          onChange={(e) => setLeagueMessage(e.target.value)}
+          onPressEnter={handleleagueSendMessage}
+        />
+        {/* <div className='action-icons'>
+          <input type='file' id='fileInp' className='upload-img' onChange={sendImage} />
+          <label htmlFor='fileInp'>
+            <AiOutlineCloudUpload style={{ marginRight: '10px' }} />
+          </label>
+          <IoMdSend onLoad={loader} onClick={handleleagueSendMessage} />
+        </div> */}
+        <div className='action-icons'>
+      <input
+        type='file'
+        id='fileInp'
+        className='upload-img'
+        onChange={sendImage}
+        style={{ display: 'none' }} // Hide the default file input
+      />
+      <label htmlFor='fileInp'>
+        <AiOutlineCloudUpload style={{ marginRight: '10px' }} />
+      </label>
+      <IoMdSend onClick={handleleagueSendMessage} />
+
+      {imagePreview && (
+        <div style={{ marginLeft: '10px' }}>
+          <img
+            src={imagePreview}
+            alt='Preview'
+            style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+          />
+        </div>
+      )}
+    </div>
+      </div>
+    </div>
+  </div>
+  
+  
+</div>
+
+  
+
+
+
+<PersonalChatModal
+  visible={isModalVisible}
+  onClose={closeModal}
+  chat={messages}
+  teamid={teamid}
+  // teamname={matchedroom}
+  teamname={user?.team?.name}
+  loader={loader}
+  // teamname={teamname}
+  setLoader={setLoader}
+  messages={messages}
+  setMessages={setMessages}
+  myMessage={myMessage}
+  setMyMessage={setMyMessage}
+  onSendMessage={handleSendMessage}
+  onimagesend={sendDMImage}
+  image={image}
+  setimage={setImage}
+
+  // const [image,setimage]=useState(null)
+  // className='personal-chat-modal' // Ensure this class is styled for right-side placement
+/>
+
+
+{/* 
+      <PersonalChatModal
+        visible={isModalVisible}
+        onClose={closeModal}
+        chat={messages}
+        teamid={teamid}
+        teamname={matchedroom}
+        loader={loader}
+        setLoader={setLoader}
+        messages={messages}
+        setMessages={setMessages}
+        myMessage={myMessage}
+        setMyMessage={setMyMessage}
+        onSendMessage={handleSendMessage}
+      /> */}
+    </>
+    
+  )
+}
+
+export default Chat

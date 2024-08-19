@@ -335,6 +335,7 @@ const SearchPlayer = () => {
         id: item?.player?._id,
         currentYearSalaryCap: item?.player?.currentYearSalaryCap,
         age: item?.player?.Age,
+        caphit: item?.player?.currentYearSalaryCap,
         post_season_pts: item?.stats?.post_season_pts,
         regular_season_pts: item?.stats?.regular_season_pts,
 
@@ -488,6 +489,15 @@ const SearchPlayer = () => {
         key: 'age',
         render: (_, obj) => <p>{obj?.age || '-'}</p>,
       },
+
+      {
+        width: 30,
+        title: <p style={{ lineHeight: 1 }}>CAPHIT</p>,
+        dataIndex: 'caphit',
+        key: 'caphit',
+        render: (_, obj) => <p>{`$${(obj?.caphit || '-').toLocaleString()}`}</p>,
+      },
+
 
       {
         width: 30,

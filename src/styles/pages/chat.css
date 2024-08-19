@@ -9,16 +9,28 @@
   }
   
   .main-chat {
-    display: flex;
+    /* display: flex; */
     background-color: var(--co-primary-color);
     min-height: 100vh;
     padding: 20px;
     color: rgba(255, 255, 255, 0.65);
     position: relative;
+    transition: width 0.3s ease;
   }
+
+
+  
+  .main-chat.expanded {
+    width: 100%;
+  }
+  
+  .main-chat.collapsed {
+    width: 50%;
+  }
+
   .main-chat .users {
     width: 35%;
-    border-right: 0.5px solid #323739;
+    /* border-right: 0.5px solid #323739; */
     height: 90vh;
     overflow-y: auto;
     /* position: absolute;
@@ -97,16 +109,22 @@
     top: 20px;
   }
   .main-chat .messages {
-    width: 65%;
-    position: relative;
+    /* width: 65%; */
+    width: 100%;
+    /* position: relative; */
     /* height: 80vh;
-      overflow-y: scroll; */
-    /* height: 100vh; */
+   
+    /* border:2px solid blue */
+    border: 2px solid #289fc9;
+    overflow-y: scroll; 
+    height: 100vh;
+    border-radius: 20px;
+padding: 5px 22px;
   }
   .main-chat .messages .bottom-button {
     position: absolute;
     right: 35px;
-    bottom: 60px;
+    bottom: 150px;
   }
   .main-chat .messages .bottom-button button {
     display: flex;
@@ -116,8 +134,8 @@
   
   .main-chat .messages .send-message {
     position: absolute;
-    bottom: 0;
-    width: 100%;
+    bottom: 36px;
+    width: 89%;
   }
   .main-chat .messages .send-message input {
     width: 90%;
@@ -125,6 +143,7 @@
     border: none;
     margin: 0 10px;
     color: #fff;
+    border:2px solid
   }
   .main-chat .messages .send-message svg {
     font-size: 2.3em;
@@ -135,13 +154,284 @@
     align-items: center;
   }
   .main-chat .messages .chat-container {
-    display: flex;
+
+  
     /* align-items: flex-end; */
-    overflow-y: scroll;
-    height: 85vh;
-    overflow-x: hidden;
-    padding: 0 10px;
+    /* padding: 0 10px; */
     /* margin-bottom: 40px; */
+    padding: 20px;
+    font-size: 30px;
+    font-weight: 800;
+    border-bottom: 5px solid #323739;
+  }
+
+
+  /* // dm chat */
+
+
+.dmchatmodal{
+  position: fixed;
+  right: 7%;
+  top: 10;
+  width: 50%; /* or any desired width */
+  height: 100%;
+  margin: auto;
+
+}
+  
+
+
+  .dm-main-chat {
+    /* display: flex; */
+    background-color: var(--co-primary-color);
+    min-height: 100vh;
+    padding: 20px;
+    color: rgba(255, 255, 255, 0.65);
+    position: relative;
+  }
+  .dm-main-chat .users {
+    width: 35%;
+    /* border-right: 0.5px solid #323739; */
+    height: 90vh;
+    overflow-y: auto;
+    /* position: absolute;
+      left: 0; */
+  }
+  .dm-main-chat .users .search-users-inp {
+    /* background: #323739; */
+    border: none;
+    border-radius: 20px;
+    background-color: #323739;
+    padding: 0px 30px;
+    color: #fff;
+    width: 90%;
+    display: flex;
+    margin: 0 auto;
+  }
+  .dm-main-chat .users .ant-input-affix-wrapper > input.ant-input {
+    border: none;
+    border-radius: 20px;
+    background-color: #323739;
+    /* padding: 0px 30px; */
+    color: #fff;
+    /* margin: 0 5px; */
+  }
+  
+  .dm-main-chat .users .user {
+    padding: 10px 10px;
+    display: flex;
+    margin: 10px 0;
+    border-bottom: 0.4px solid #323739;
+  }
+  .dm-main-chat .users .user .user-container {
+    display: flex;
+    /* justify-content: space-between; */
+    align-items: center;
+    width: 100%;
+  }
+  .dm-main-chat .users .user-active {
+    background-color: #323739;
+    cursor: pointer;
+  }
+  .dm-main-chat .users .user:hover {
+    background-color: #323739;
+    cursor: pointer;
+  }
+  .dm-main-chat .users .user .user-img {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .dm-main-chat .users .user .user-name-msg {
+    display: flex;
+    /* flex-direction: column; */
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    margin-left: 14px;
+    margin-top: 5px;
+  }
+  .dm-main-chat .users .user .user-name-msg h5,
+  .dm-main-chat .users .user .user-name-msg p {
+    margin-bottom: 0;
+  }
+  
+  .dm-main-chat .users .user .user-name-msg h5 {
+    color: #fff;
+  }
+  .dm-main-chat .shade {
+    opacity: 0.5;
+  }
+  .dm-main-chat .messages .spinner {
+    position: absolute;
+    left: 50%;
+    margin-left: -50px;
+    top: 20px;
+  }
+  .dm-main-chat .messages {
+    /* width: 65%; */
+    width: 100%;
+    /* position: relative; */
+    /* height: 80vh;
+   
+    /* border:2px solid blue */
+    /* border: 2px solid #289fc9; */
+    overflow-y: scroll; 
+    /* height: 100px; */
+    border-radius: 20px;
+padding: 5px 22px;
+  }
+  .dm-main-chat .messages .bottom-button {
+    position: absolute;
+    right: 35px;
+    bottom: 150px;
+  }
+  .dm-main-chat .messages .bottom-button button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .dm-main-chat .messages .send-message {
+    position: absolute;
+    /* bottom: 36px; */
+    width: 89%;
+  }
+  .dm-main-chat .messages .send-message input {
+    width: 90%;
+    background-color: #323739;
+    border: none;
+    margin: 0 10px;
+    color: #fff;
+    border:2px solid
+  }
+  .dm-main-chat .messages .send-message svg {
+    font-size: 2.3em;
+    cursor: pointer;
+  }
+  .dm-main-chat .messages .send-message .send-message-container {
+    display: flex;
+    align-items: center;
+  }
+  .dm-main-chat .messages .chat-container {
+
+  
+    /* align-items: flex-end; */
+    /* padding: 0 10px; */
+    /* margin-bottom: 40px; */
+    padding: 20px;
+    font-size: 30px;
+    font-weight: 800;
+
+  }
+
+
+  .dm-main-chat .action-icons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .dm-main-chat .upload-img {
+    display: none;
+  }
+
+
+
+
+
+
+  .dm-main-chat .no-room {
+    position: absolute;
+    top: 10%;
+    left: 20%;
+  }
+  .dm-main-chat .no-room img {
+    height: 350px;
+  }
+  .dm-main-chat .no-room h4 {
+    color: #fff;
+    text-align: center;
+  }
+  
+
+
+  .main-chat .messages   .allteams {
+    width: 8%;
+    height: 368px;
+    overflow: scroll;
+    border: 2px solid #289fc9;
+    border-radius: 46px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin: auto;
+    align-items: center;
+    cursor: pointer;
+    padding: 5px; /* Optional: Adjust padding if needed */
+  }
+  
+
+
+  .main-chat .messages  .allteams .team-logo {
+    width: 50px; /* Set the width of the circle */
+    height: 50px; /* Set the height of the circle */
+    border-radius: 50%; /* Makes the image circular */
+    object-fit: cover; /* Ensures the image covers the circle */
+    border: 2px solid #289fc9; /* Optional: Border color for the circle */
+  }
+  
+ 
+
+  .team-name {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .image-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .team-logo {
+    display: block;
+  }
+  
+  .tooltip {
+    visibility: hidden;
+
+    /* background-color: black; */
+    color: darkgray;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    /* right: 20%; */
+    left: 50px;
+    top: 20%; /* Center vertically */
+    transform: translateY(-50%); /* Center vertically */
+    /* opacity: 0;
+    transition: opacity 0.3s, 
+    visibility 0.3s; */
+    font-weight: 400;
+    font-size: 13px;
+  }
+  
+  .image-wrapper:hover .tooltip {
+    visibility: visible;
+    /* opacity: 6; */
+  }
+  
+
+
+
+
+  .main-chat .messages  .allteams > img {
+    width: 20%;
+    height: 20%;
+    cursor: pointer;
   }
   .chats-my {
     width: 100%;
@@ -155,23 +445,30 @@
   .my-messages {
     color: #fff;
     border-radius: 10px;
-    background-color: var(--primary-color);
-    padding: 10px;
+    background-color: #a59bba !important;
+    /* padding: 10px; */
+    padding: 5px 22px;
     margin: 10px;
+    border-radius:20px;
     font-size: 0.9em;
-    width: max-content;
+    /* width: max-content; */
+    width: 34%;
     float: right;
-    max-width: 70%;
+    /* max-width: 70%; */
   }
   .sender-messages {
+    /* color: #fff; */
     color: #fff;
     border-radius: 10px;
-    background-color: #323739;
+    background-color: #aa67dd !important;
     margin: 10px;
-    padding: 10px;
+    /* padding: 10px; */
+    padding: 5px 22px;
+    border-radius:20px;
     font-size: 0.9em;
-    max-width: 70%;
-    width: max-content;
+    /* max-width: 70%; */
+    /* width: max-content; */
+    width: 34%;
     float: left;
     /* width: 100%; */
   }
@@ -238,4 +535,49 @@
       width: 100%;
     }
   }
+
+
+   /* league chat css */
+
+   .leaguemainchat {
+    width: 80%;
+    display: flex;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    gap: 30px;
+   }
+  
+   .leaguemainchat .teaminfo > h2 {
+  color:rgb(0, 191, 99) !important;
+  font-size:22px;
+  font-weight:400;
+  margin-bottom: 10px;
+   }
+
+
+
+   .leaguemainchat .otherteaminfo > h2 {
+    color:rgb(255, 49, 49) !important;
+    font-size:22px;
+    font-weight:400;
+    margin-bottom: 10px;
+     }
+
+   .leaguemainchat .teaminfo .mymessages {
+    color: rgb(40, 159, 201) !important;
+    font-size:21px;
+    font-weight:400;
+    margin-top: 10px;
+    margin-bottom: 10px;
+   }
+
+   .leaguemainchat .teaminfo .othermessage {
+    color: #fff;
+    font-size:18px;
+    font-weight:400;
+    margin-top: 10px;
+    margin-bottom: 10px;
+   }
+
+
   

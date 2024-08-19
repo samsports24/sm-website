@@ -19,7 +19,7 @@ import { setSocket } from '../redux/actions/socketAction'
 const App = () => {
   const theme = useSelector((state) => state.theme.theme)
   const dispatch = useDispatch()
-  const authenticatedID = localStorage.getItem('token')
+  const authenticatedID = localStorage.getItem('userId')
   const socket = io(base_url, { transports: ['websocket'] })
   // const socket = io(base_url, {
   //   transports: ['websocket'],

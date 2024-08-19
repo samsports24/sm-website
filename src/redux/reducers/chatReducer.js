@@ -18,9 +18,14 @@
 
   const initialState = {
     // appendmessage: [],
-    messages: [], 
+    appendmessages: [], 
     chatRooms: [],
+    leaguemessages:[],
   }
+
+
+
+
   
   const chatReducer = (state = initialState, action) => {
     const { type, payload } = action
@@ -28,13 +33,20 @@
         case 'APPEND_MESSAGE': {
           return {
             ...state,
-            messages: [...state.messages, ...payload],
+            appendmessages: payload,
           }
         }
         case 'SEARCH_CHAT': {
             return {
               ...state,
               chatRooms: payload,
+            }
+          }
+
+          case 'LEAGUE_MESSAGE': {
+            return {
+              ...state,
+              leaguemessages: payload,
             }
           }
 
