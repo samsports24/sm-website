@@ -49,6 +49,7 @@ const Chat = () => {
   const [messageToggle, setMessageToggle] = useState('')
   const chatRef = useRef()
   const [image,setImage]=useState(null)
+  const [dmloading,setDmLoading]=useState(false)
 
   console.log('searchChat', searchChat)
   console.log('appendMessage', appendMessage)
@@ -334,7 +335,7 @@ const Chat = () => {
   }
 
   const handleSendMessage = async () => {
-    setLoader(true)
+    setDmLoading(true)
     if (myMessage.trim() === '') return
 
     const payload = {
@@ -370,7 +371,7 @@ console.log('payload',payload);
       console.log('messages chekc here ', message)
 
        setMyMessage('');
-       setLoader(false)
+       setDmLoading(false)
       chatRef.current.scrollTop = chatRef.current.scrollHeight // Ensure scrolling to bottom
     } catch (error) {
       console.error('Error sending message:', error)
@@ -424,6 +425,7 @@ console.log('payload',payload);
   }
 
   const sendImage = async (e) => {
+    setLoader(true)
     const file = e.target.files[0]
     console.log('file',file);
     
@@ -440,6 +442,7 @@ console.log('payload',payload);
 
     await sendMessage(formData); // Make sure this function is defined and handles the FormData correctly
        socket.emit('joinleagueRoom', formData)
+       setLoader(false)
 
     // Emit the message to the server via socket (ensure payload is correctly defined)
     // socket.emit('sendImage', {
@@ -472,8 +475,8 @@ console.log('payload',payload);
 
 
   const sendDMImage = async (e) => {
-
-    console.log('in the oncoe');
+    setLoader(true)
+    // console.log('in the oncoe');
     // console.log('image',image);
     
     
@@ -496,6 +499,7 @@ console.log('payload',payload);
 
     await sendMessage(formData); // Make sure this function is defined and handles the FormData correctly
     socket.emit('Message', payload)
+    setLoader(false)
 
     // formData.delete('pictures');
     // formData.delete('from');
@@ -544,6 +548,22 @@ console.log('payload',payload);
     }
   }
 
+
+  const findRoom = (searchChat, user, item) => {
+    // console.log('check searchChat', searchChat);
+    // console.log('check user', user?.team?._id);
+    // console.log('check item', item?._id);
+  
+    return searchChat.find(room => {
+      if (room.applicants.length !== 2) return false;
+  
+      const ids = room.applicants.map(applicant => applicant._id);
+      return ids.includes(user?.team?._id) && ids.includes(item?._id);
+    });
+  };
+  
+  
+
   return (
     <>
       <Header />
@@ -567,7 +587,7 @@ console.log('payload',payload);
       )}
       </div>
 
-      <div className='allteams'>
+      {/* <div className='allteams'>
         {searchChat && searchChat.length > 0 && currentLeague?.teams
           ?.filter((item) => item._id !== user?.team?._id)
           .map((item) => {
@@ -614,7 +634,58 @@ console.log('payload',payload);
               </div>
             );
           })}
-      </div>
+      </div> */}
+
+
+<div className='allteams'>
+  {currentLeague?.teams
+    ?.filter(item => item._id !== user?.team?._id) // Filter out the user's team
+    .map(item => {
+      // Use a variable to store the result of `findRoom`
+      const room = findRoom(searchChat, user, item);
+
+      return (
+        <div key={item._id} className='team-item'>
+          <div
+            onClick={async () => {
+              // Find the room for the clicked item
+              const currentRoom = findRoom(searchChat, user, item);
+              console.log('currentRoom',currentRoom);
+              
+              if (currentRoom) {
+                console.log('in the if');
+                handleopenmodal(currentRoom);
+              } else {
+                console.log('in the else');
+                handleChatClick(item._id);
+              }
+            }}
+            className='team-name-container'
+          >
+            {/* Only show Badge if `currentRoom` is found and `roomId` is not equal to the found room's ID */}
+            {findRoom(searchChat, user, item) && String(roomId) !== String(findRoom(searchChat, user, item)?._id) && (
+              <Badge className='team-badge' count={findRoom(searchChat, user, item)?.unread_count} />
+            )}
+            <div className='team-name'>
+              <div className='image-wrapper'>
+                <Image
+                  width={50}
+                  preview={false}
+                  src={item?.logo}
+                  alt='logo'
+                  className='team-logo'
+                />
+                <div className='tooltip'>{item?.name}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    })}
+</div>
+
+
+      
     </div>
 
     <div className='bottom-button'>
@@ -693,6 +764,10 @@ console.log('payload',payload);
   onimagesend={sendDMImage}
   image={image}
   setimage={setImage}
+dmloading={dmloading}
+  setDmLoading={setDmLoading}
+
+
 
   // const [image,setimage]=useState(null)
   // className='personal-chat-modal' // Ensure this class is styled for right-side placement

@@ -490,13 +490,17 @@ const SearchPlayer = () => {
         render: (_, obj) => <p>{obj?.age || '-'}</p>,
       },
 
-      {
-        width: 30,
-        title: <p style={{ lineHeight: 1 }}>CAPHIT</p>,
-        dataIndex: 'caphit',
-        key: 'caphit',
-        render: (_, obj) => <p>{`$${(obj?.caphit || '-').toLocaleString()}`}</p>,
-      },
+
+      ...(position === 'ALL'
+        ? [{
+            width: 30,
+            title: <p style={{ lineHeight: 1 }}>CAPHIT</p>,
+            dataIndex: 'caphit',
+            key: 'caphit',
+            render: (_, obj) => <p>{`$${(obj?.caphit || '-').toLocaleString()}`}</p>,
+          }]
+        : []),
+   
 
 
       {
