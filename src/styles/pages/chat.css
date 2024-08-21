@@ -152,6 +152,13 @@ padding: 5px 22px;
   .main-chat .messages .send-message .send-message-container {
     display: flex;
     align-items: center;
+    gap: 30px;
+  }
+
+  .main-chat .messages .send-message .send-message-container .ant-mentions > textarea {
+    /* width: 80%; */
+    background:transparent;
+    color:white;
   }
   .main-chat .messages .chat-container {
 
@@ -184,10 +191,11 @@ padding: 5px 22px;
   .dm-main-chat {
     /* display: flex; */
     background-color: var(--co-primary-color);
-    min-height: 100vh;
+    max-height: 100vh;
     padding: 20px;
     color: rgba(255, 255, 255, 0.65);
     position: relative;
+    overflow: scroll;
   }
   .dm-main-chat .users {
     width: 35%;
@@ -314,6 +322,9 @@ padding: 5px 22px;
     display: flex;
     align-items: center;
   }
+
+
+
   .dm-main-chat .messages .chat-container {
 
   
@@ -362,18 +373,22 @@ padding: 5px 22px;
 
 
   .main-chat .messages   .allteams {
-    width: 8%;
-    height: 368px;
+
+    width: fit-content;
+    height: max-content;
     overflow: scroll;
     border: 2px solid #289fc9;
     border-radius: 46px;
     display: flex;
     flex-direction: column;
     gap: 9px;
-    margin: auto;
+    /* margin: auto; */
     align-items: center;
     cursor: pointer;
-    padding: 5px; /* Optional: Adjust padding if needed */
+    padding: 5px;
+    margin-top: 20px
+
+
   }
   
 
@@ -494,6 +509,7 @@ padding: 5px 22px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 30px;
   }
   
   .main-chat .upload-img {

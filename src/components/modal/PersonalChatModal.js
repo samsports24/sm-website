@@ -7,19 +7,19 @@ import Loader from '../Loader';
 
 const PersonalChatModal = ({ visible, onClose, chat, teamid,teamname,loader,myMessage,setMyMessage,onSendMessage,onimagesend,image,setImage,dmloading,setDmLoading}) => {
 
-    // console.log('check chat',chat[0]?.to?.name);
+     console.log('check chat',chat);
 
   //   dmloading={dmloading}
   // setDmLoading={setDmLoading}
      console.log('teamname',teamname);
     
-    const displayName = chat[0]?.to?.name === teamname ? chat[1]?.to?.name : chat[0]?.to?.name;
-    console.log('displayName',displayName);
+     const displayName = chat[0]?.to?.name === teamname ? chat[1]?.to?.name : chat[0]?.to?.name;
+    // console.log('displayName',displayName);
     
     
     return (
       <Modal
-        title={displayName}
+         title={displayName}
         visible={visible}
         className='dmchatmodal'
         onCancel={onClose}

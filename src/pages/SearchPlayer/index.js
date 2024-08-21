@@ -59,7 +59,7 @@ const SearchPlayer = () => {
 
     const res = await getData()
 
-    console.log('here res', res)
+    // console.log('here res', res)
 
     let tempResultArr = []
     let regularpts = 0
@@ -72,52 +72,7 @@ const SearchPlayer = () => {
 
       let tempObj = {}
 
-      // tempWeeks?.map((week) => {
-      //   const filteredObj = item?.player?.weeklyScoring?.filter(
-      //     (wScore) => Number(wScore?.week) == Number(week),
-      //   )?.[0]
-      //   tempObj = {
-      //     ...tempObj,
-      //     [`week_${week}_score`]: filteredObj?.score,
-      //     week,
-      //   }
-      // })
-
-      //       tempWeeks.forEach((week) => {
-      //         const filteredObj = item?.player?.weeklyScoring?.find(
-      //           (wScore) => Number(wScore?.week) === Number(week),
-      //         )
-
-      //         const filtersnaps= item?.stats?.stats?.weeklySnapRatios?.find(
-      //           (check) => Number(check?.week) === Number(week),
-
-      //         )
-
-      // const DefensiveRatio=filtersnaps?.DefensiveRatio
-
-      // const OffensiveRatio=filtersnaps?.OffensiveRatio
-
-      // const SpecialTeamsRatio=filtersnaps?.SpecialTeamsRatio
-
-      //         const score = filteredObj?.score || 0
-
-      //         if (week >= 1 && week <= weeksToConsider) {
-      //           regularpts += score
-      //         }
-
-      //         if (week >= 1 && week <= postweek) {
-      //           postpts += score
-      //         }
-
-      //         tempObj = {
-      //           ...tempObj,
-      //           [`week_${week}_score`]: score,
-      //           [`week_${week}_DefensiveRatio`]: DefensiveRatio,
-      //           [`week_${week}_score`]: OffensiveRatio,
-      //           [`week_${week}_score`]: SpecialTeamsRatio,
-      //           week,
-      //         }
-      //       })
+   
 
       tempWeeks.forEach((week) => {
         const filteredObj = item?.player?.weeklyScoring?.find(
@@ -207,19 +162,7 @@ const SearchPlayer = () => {
         const OL_TimesSacked = filterolweek?.TimesSacked?.toFixed(2) || '0'
         const OL_SACKSGIVENUP = 15 - (filterolweek?.TimesSacked || 0)
 
-        // OL_AVG_SNAP=
-        // filterolweek?.stats?.OL?.totalSnap && filterolweek?.stats?.OL?.NoOfWeeks
-        //   ? (() => {
-        //       const avgSnap = filterolweek.stats.OL.totalSnap / filterolweek.stats.OL.NoOfWeeks
-        //       return avgSnap % 1 === 0 ? avgSnap.toFixed(0) + '%' : avgSnap.toFixed(2) + '%'
-        //     })()
-        //   : '-';
-
-        // OL_TotalTeamScore: item?.stats?.OL?.TotalTeamScore..toFixed(2),
-
-        // RushingAttempts: item?.stats?.stats?.RushingAttempts.toFixed(2),
-        // RushingYards: item?.stats?.stats?.RushingYards.toFixed(2),
-        // RushingTouchdowns: item?.stats?.stats?.RushingTouchdowns.toFixed(2),
+  
 
         const score = filteredObj?.score || 0
 
@@ -231,7 +174,7 @@ const SearchPlayer = () => {
           postpts += score
         }
 
-        console.log(' ----- filterWeek?.RushingTouchdowns', filterWeek?.RushingTouchdowns)
+        // console.log(' ----- filterWeek?.RushingTouchdowns', filterWeek?.RushingTouchdowns)
 
         tempObj = {
           ...tempObj,
@@ -339,47 +282,7 @@ const SearchPlayer = () => {
         post_season_pts: item?.stats?.post_season_pts,
         regular_season_pts: item?.stats?.regular_season_pts,
 
-        // RUSHING
-
-        // RushingAttempts: item?.stats?.stats?.RushingAttempts.toFixed(2),
-        // RushingYards: item?.stats?.stats?.RushingYards.toFixed(2),
-        // RushingTouchdowns: item?.stats?.stats?.RushingTouchdowns.toFixed(2),
-
-        // // RECEIVING
-
-        // ReceivingTargets: item?.stats?.stats?.ReceivingTargets.toFixed(2),
-        // ReceivingYards: item?.stats?.stats?.ReceivingYards.toFixed(2),
-        // ReceivingTouchdowns: item?.stats?.stats?.ReceivingTouchdowns.toFixed(2),
-        // Receptions: item?.stats?.stats?.Receptions.toFixed(2),
-
-        // // PASSING
-
-        // PassingAttempts: item?.stats?.stats?.PassingAttempts.toFixed(2),
-        // PassingYards: item?.stats?.stats?.PassingYards.toFixed(2),
-        // PassingTouchdowns: item?.stats?.stats?.PassingTouchdowns.toFixed(2),
-        // PassingSacks: item?.stats?.stats?.PassingSacks.toFixed(2),
-        // PassingCompletions: item?.stats?.stats?.PassingCompletions.toFixed(2),
-
-        // // RETURN
-
-        // PuntReturnYards: item?.stats?.stats?.PuntReturnYards.toFixed(2),
-        // PuntReturns: item?.stats?.stats?.PuntReturns.toFixed(2),
-        // KickReturnYards: item?.stats?.stats?.KickReturnYards.toFixed(2),
-        // KickReturns: item?.stats?.stats?.KickReturns.toFixed(2),
-
-        // // DEFENDER STATS
-
-        // IDP: item?.stats?.stats?.IDP.toFixed(2),
-        // SCKS: item?.stats?.stats?.SCKS.toFixed(2),
-        // QBH: item?.stats?.stats?.QBH.toFixed(2),
-        // TKLS: item?.stats?.stats?.TKLS.toFixed(2),
-        // TFL: item?.stats?.stats?.TFL.toFixed(2),
-        // FF: item?.stats?.stats?.FF.toFixed(2),
-        // INTS: item?.stats?.stats?.INTS.toFixed(2),
-        // PD: item?.stats?.stats?.PD.toFixed(2),
-        // FumblesRecovered: item?.stats?.stats?.FumblesRecovered.toFixed(2),
-        // SpecialTeamsTouchdowns: item?.stats?.stats?.SpecialTeamsTouchdowns.toFixed(2),
-
+       
         // OL STATS
 
         SNAPS: item?.stats?.OL?.totalSnap
@@ -388,11 +291,7 @@ const SearchPlayer = () => {
               : item.stats.OL.totalSnap.toFixed(2)) + '%'
           : '-',
 
-        // OL_PassingTouchdowns: item?.stats?.OL?.PassingTouchdowns?.toFixed(2),
-        // OL_RushingTouchdowns: item?.stats?.OL?.RushingTouchdowns?.toFixed(2),
-        // OL_RushingYards: item?.stats?.OL?.RushingYards?.toFixed(2),
-        // OL_TimesSacked: item?.stats?.OL?.TimesSacked?.toFixed(2),
-        // OL_SACKSGIVENUP: 15 - item?.stats?.OL.TimesSacked,
+  
 
         OL_AVG_SNAP:
           item?.stats?.OL?.totalSnap && item?.stats?.OL?.NoOfWeeks
@@ -404,25 +303,7 @@ const SearchPlayer = () => {
 
         OL_TotalTeamScore: item?.stats?.OL?.TotalTeamScore.toFixed(2),
 
-        // KICKER AND PUNTERS
-
-        // FieldGoalsMade: item?.stats?.stats?.FieldGoalsMade.toFixed(2),
-        // Punts: item?.stats?.stats?.Punts.toFixed(2),
-        // PuntInside20: item?.stats?.stats?.PuntInside20.toFixed(2),
-        // FieldGoalsAttempted: item?.stats?.stats?.FieldGoalsAttempted.toFixed(2),
-        // FGM0TO19: item?.stats?.stats?.FGM0TO19.toFixed(2),
-        // FGM20TO29: item?.stats?.stats?.FGM20TO29.toFixed(2),
-        // FGM30TO39: item?.stats?.stats?.FGM30TO39.toFixed(2),
-        // FGM40TO49: item?.stats?.stats?.FGM40TO49.toFixed(2),
-        // FGM50: item?.stats?.stats?.FGM50.toFixed(2),
-        // ExtraPointsMade: item?.stats?.stats?.ExtraPointsMade.toFixed(2),
-
-        // ExtraPointsAttempted: item?.stats?.stats?.ExtraPointsAttempted.toFixed(2),
-
-        // PuntYards: item?.stats?.stats?.PuntYards.toFixed(2),
-        // PuntsHadBlocked: item?.stats?.stats?.PuntsHadBlocked.toFixed(2),
-
-        // OFFENSIVE SNAPS
+       
       }
 
       tempResultArr.push(tempObj)
@@ -872,7 +753,7 @@ const SearchPlayer = () => {
 
               // Construct the key dynamically based on the week
               const RushingAttempts = `week_${weekNumber}_RushingAttempts`
-              console.log('RushingAttempts', RushingAttempts)
+              // console.log('RushingAttempts', RushingAttempts)
 
               return (
                 <div>
@@ -888,7 +769,7 @@ const SearchPlayer = () => {
             key: 'yard',
 
             render: (_, obj) => {
-              console.log('my obj', obj)
+              // console.log('my obj', obj)
               // Ensure week is a number
               const weekNumber = Number(checkweek)
               // console.log('weekNumber', weekNumber)
@@ -1466,7 +1347,7 @@ const SearchPlayer = () => {
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          console.log('weekNumber', weekNumber)
+          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const SoloTackles = `week_${weekNumber}_SoloTackles`
@@ -1492,7 +1373,7 @@ const SearchPlayer = () => {
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          console.log('weekNumber', weekNumber)
+          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const TFL = `week_${weekNumber}_TacklesForLoss`
@@ -1518,7 +1399,7 @@ const SearchPlayer = () => {
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          console.log('weekNumber', weekNumber)
+          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const SCKS = `week_${weekNumber}_Sacks`
@@ -1544,7 +1425,7 @@ const SearchPlayer = () => {
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          console.log('weekNumber', weekNumber)
+          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const FF = `week_${weekNumber}_FumblesForced`
@@ -1669,7 +1550,7 @@ const SearchPlayer = () => {
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          console.log('weekNumber', weekNumber)
+          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const scoreKey = `week_${weekNumber}_score`
@@ -1822,7 +1703,7 @@ const SearchPlayer = () => {
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          console.log('weekNumber', weekNumber)
+          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const scoreKey = `week_${weekNumber}_score`
@@ -1991,7 +1872,7 @@ const SearchPlayer = () => {
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              console.log('weekNumber', weekNumber)
+              // console.log('weekNumber', weekNumber)
               console.log('my obj', obj)
 
               // Construct the key dynamically based on the week
@@ -2022,7 +1903,7 @@ const SearchPlayer = () => {
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              console.log('weekNumber', weekNumber)
+              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const FGM50 = `week_${weekNumber}_FieldGoalsMade50Plus`
@@ -2079,7 +1960,7 @@ const SearchPlayer = () => {
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              console.log('weekNumber', weekNumber)
+              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const ExtraPointsMade = `week_${weekNumber}_ExtraPointsMade`
@@ -2143,7 +2024,7 @@ const SearchPlayer = () => {
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              console.log('weekNumber', weekNumber)
+              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const PuntYards = `week_${weekNumber}_PuntYards`
@@ -2200,7 +2081,7 @@ const SearchPlayer = () => {
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              console.log('weekNumber', weekNumber)
+              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const PuntsHadBlocked = `week_${weekNumber}_PuntsHadBlocked`

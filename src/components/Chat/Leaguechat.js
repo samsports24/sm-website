@@ -5,6 +5,25 @@ import { Image } from 'antd'
 const Leaguechat = ({ chat, teamid, chatRef }) => {
   // Ensure chat is an array and is not null or undefined
 
+  const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%?=~_|])|(\bwww\.[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%?=~_|])/gi;
+  const mentionRegex = /@(\w+)/g;
+
+  // Function to transform message text
+  const transformMessageText = (text) => {
+    // Replace URLs with <a> tags
+    const urlText = text.replace(urlRegex, (url) => {
+      const href = url.startsWith('www') ? `https://${url}` : url;
+      return `<a href="${href}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+    });
+
+    // Replace mentions with <span> tags
+    const mentionText = urlText.replace(mentionRegex, (mention) => {
+      return `<span style="font-weight: bold">${mention}</span>`;
+    });
+
+    // Convert the final HTML string to JSX
+    return <span dangerouslySetInnerHTML={{ __html: mentionText }} />;
+  };
   console.log('teamid', teamid)
 
   console.log('chat', chat)
@@ -38,7 +57,8 @@ const Leaguechat = ({ chat, teamid, chatRef }) => {
               {message?.media_url ? (
                 <Image width={180} height={180} src={message.media_url} alt='Message Media' />
               ) : (
-                message.message
+                // message.message
+                <span>{transformMessageText(message.message)}</span>
               )}
               <br />
               <span

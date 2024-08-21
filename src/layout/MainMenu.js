@@ -32,6 +32,9 @@ import Community from '../assets/community.png'
 import Job from '../assets/job.png'
 import Support from '../assets/support.png'
 import FAQ from '../assets/faq.png'
+import { clearChatNotification, clearNotification, getAllChatNotification, getAllNotification } from '../redux/actions/notificationAction'
+import { getUser } from '../redux'
+import { getchatacount } from '../redux/actions/chatAction'
 
 const MainMenu = ({ visible }) => {
   const isAuthenticated = localStorage.getItem('token')
@@ -41,10 +44,19 @@ const MainMenu = ({ visible }) => {
   const [active, setActive] = useState('dashboard')
   const user = useSelector((state) => state.user.userDetails)
   const isdraftlive = user?.team?.currentLeague?.isDraftLive
-
+ 
+  const [filteredCount, setFilteredCount] = useState(0)
+  const SETTING = useSelector((state) => state?.user)
   const { pathname } = useLocation()
 
-  console.log('check', isdraftlive)
+  // console.log('check', isdraftlive)
+  
+// console.log('user',user?._id);
+
+
+useEffect(()=>{
+  getUser()
+})
 
   useEffect(() => {
     switch (pathname) {
@@ -129,6 +141,36 @@ const MainMenu = ({ visible }) => {
         setActive('')
     }
   }, [pathname])
+
+
+  useEffect(() => {
+    getData()
+  }, [user])
+
+  const getData = async () => {
+    try {
+      const res = await getchatacount();
+console.log('res',res);
+
+     
+       setFilteredCount(res?.count);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    
+    }
+  };
+
+  // console.log('char notification',chatnotificationData);
+  console.log('filteredCount',filteredCount);
+  
+  
+
+  const handleClick = () => {
+    if (filteredCount > 0) {
+      clearChatNotification();
+    }
+    navigate('/chat');
+  };
 
   const navigatePath = (path) => {
     if (user?.team?.currentLeague?._id) {
@@ -303,9 +345,16 @@ const MainMenu = ({ visible }) => {
                 </div>
 
                 <div
-                  className={`sidebar_menu_item ${active === 'search-player' ? 'activeRoute' : ''}`}
-                  onClick={() => navigatePath('/chat')}
+                  className={`sidebar_menu_item ${active === 'chat' ? 'activeRoute' : ''}`}
+                  onClick={handleClick}
+                  // onClick={() =>   
+                  //   navigatePath('/chat')}
                 >
+         {filteredCount > 0 && (
+        <span style={{ color: 'red', fontSize: '15px' }}>
+          {filteredCount}
+        </span>
+      )}
                   <SiWechat />
                   <p>Chat</p>
                 </div>

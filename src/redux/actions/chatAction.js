@@ -60,8 +60,9 @@ import store from '../store'
 
 export const getPreviousMessages = async (roomId) => {
   console.log('going there');
+
   
-    //  console.log('roomId', roomId)
+     console.log('roomId', roomId)
     try {
       attachToken()
       const res = await privateAPI.get(`/chat/user/get/${roomId}?page=1&perPage=10000`)
@@ -100,8 +101,14 @@ export const sendMessage = async (payload) => {
       const res = await privateAPI.post('/chat/user/send', payload)
       if (res) {
         console.log('res',res);
+        console.log('before get chat room')
         await getChatRooms()
-        await getPreviousMessages(payload.room_id)
+        console.log('after get chat room')
+        // store.dispatch(searchChat(res.data.data.chat_rooms))
+
+        if (payload.room_id){
+          await getPreviousMessages(payload.room_id)
+        }
         
         // store.dispatch(getClubhouse(payload))
         // await getClubhouse(payload)
@@ -139,6 +146,24 @@ export const sendMessage = async (payload) => {
     }
   }
 
+
+  export const getchatacount = async () => {
+    try {
+      attachToken()
+      const res = await privateAPI.get('/chat/user/chat-count')
+      // console.log('res.data.data',res.data.data.chat_rooms);
+      
+     // store.dispatch(searchChat(res.data.data.chat_rooms))
+      return res.data.data
+    } catch (err) {
+      notification.error({
+        message: err?.response?.data?.message || 'Server Error',
+        duration: 3,
+      })
+    }
+  }
+
+  // router.get("/user/chat-count",isAuthenticated, chat.getchatacount);
   
 
   // export const sendMessage = (payload) => {
