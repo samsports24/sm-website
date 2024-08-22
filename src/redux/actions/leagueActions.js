@@ -110,12 +110,15 @@ export const joinLeague = async (payload) => {
       localStorage.removeItem('selectedGame')
       localStorage.removeItem('email')
       localStorage.removeItem('imagePath')
+      localStorage.removeItem('leagueroom')
+      localStorage.removeItem('roomId')
 
       // window.open(`${link.frontEndUrl}/login`, '_self', 'noreferrer')
       // navigate('/professional-league')
     }
   } catch (err) {
-    console.log('err', err)
+    
+    console.log('in the err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
