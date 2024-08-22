@@ -28,6 +28,8 @@ const VerticalLayout = ({ children, active }) => {
     navigate('/fantasy-league')
     dispatch(removeLeague())
     localStorage.removeItem('token')
+    localStorage.removeItem('leagueroom')
+    localStorage.removeItem('roomId')
   }
   const login = () => navigate('/login')
 

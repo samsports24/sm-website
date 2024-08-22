@@ -253,6 +253,7 @@ const Chat = () => {
   const closeModal = () => {
     setIsModalVisible(false)
     toggleChatWidth()
+    localStorage.removeItem('roomId')
   }
 
   const myleague = async () => {
