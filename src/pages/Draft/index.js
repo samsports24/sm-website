@@ -40,14 +40,14 @@ const Draft = () => {
   return (
     <>
       <Header />
-      <div className='main_draft_container'>
+      {/* <div className='main_draft_container'>
         {loading || roundLoading ? (
           <Loader />
         ) : (
           <>
             {!currentLeague?.draftCompleted ? (
               <>
-                {/* {completed && <p>Time is up running auto player pick</p>} */}
+            
                 <div className='main_d_left'>
                   <ClockComponent />
                   <RoundComponent height={'485px'} />
@@ -60,9 +60,41 @@ const Draft = () => {
             ) : (
               <LeagueEnd />
             )}
+
+
+   
+    
           </>
         )}
-      </div>
+      </div> */}
+
+
+<div className='main_draft_container'>
+      {loading || roundLoading ? (
+        <Loader />
+      ) : (
+        <>
+          {!currentLeague?.draftCompleted && currentLeague?.draftPaused ? (
+            <LeaguePaused />
+          ) : !currentLeague?.draftCompleted ? (
+            <>
+              {/* {completed && <p>Time is up running auto player pick</p>} */}
+              <div className='main_d_left'>
+                <ClockComponent />
+                <RoundComponent height={'485px'} />
+              </div>
+              <div className='main_d_center'>
+                <RosterDetail />
+                <TableComponent professionalDraft tableScroll={{ x: 1000, y: 329 }} />
+              </div>
+            </>
+          ) : (
+            <LeagueEnd />
+          )}
+        </>
+      )}
+    </div>
+      
     </>
   )
 }
@@ -71,6 +103,16 @@ const LeagueEnd = () => {
   return (
     <section className='coming_soon'>
       <h1>Live Draft is Completed!</h1>
+      <div className='time_container'></div>
+    </section>
+  )
+}
+
+
+const LeaguePaused = () => {
+  return (
+    <section className='coming_soon'>
+      <h1>Live Draft is Paused!</h1>
       <div className='time_container'></div>
     </section>
   )
