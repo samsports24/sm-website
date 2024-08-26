@@ -51,6 +51,14 @@ const TableComponent = ({ tableScroll }) => {
 
   const dispatch = useDispatch()
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      dispatch(setSearch(e.target.value));
+      handleSearch(e.target.value);
+      page !== 1 && dispatch(setPage(1));
+    }
+  };
+
   useEffect(() => {
     if (localStorage.getItem('token')) {
       socket.on('counter', async (data) => {
@@ -303,11 +311,12 @@ const TableComponent = ({ tableScroll }) => {
               AUTODRAFT
             </Button>
             <Input
-              onChange={(e) => {
-                dispatch(setSearch(e.target.value))
-                handleSearch(e.target.value)
-                page !== 1 && dispatch(setPage(1))
-              }}
+              // onChange={(e) => {
+              //   dispatch(setSearch(e.target.value))
+              //   handleSearch(e.target.value)
+              //   page !== 1 && dispatch(setPage(1))
+              // }}
+              onKeyDown={handleKeyDown}
               allowClear
               placeholder='Search Player'
               suffix={<CiSearch color='var(--primary)' />}

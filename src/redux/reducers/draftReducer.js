@@ -15,7 +15,7 @@ const initialState = {
     limit: 10,
     position: 'ALL',
     page: 1,
-    Rookieplayers:'',
+    Rookieplayers:'Active',
     draftQueues: [],
     blacklistQueues : [],
     activeTab: 1,
