@@ -13,6 +13,10 @@ const ClockComponent = () => {
     completed: _completed,
   } = useSelector((state) => state.draft)
 
+
+  // console.log('draftCounter',draftCounter);
+  
+
   const dispatch = useDispatch()
 
 

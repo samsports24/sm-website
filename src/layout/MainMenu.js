@@ -204,6 +204,14 @@ console.log('res',res);
                   <AiOutlineSetting />
                   <p>team setting</p>
                 </div>
+                
+                <div
+                  className={`sidebar_menu_item ${active === 'draft' ? 'activeRoute' : ''}`}
+                  onClick={() => navigate('/live-draft')}
+                >
+                  <RiDraftLine />
+                  <p>draft</p>
+                </div>
               </>
             ) : (
               <>

@@ -10,7 +10,7 @@ import baseball from "../assets/new_Baseball.png"
 // export const frontEndUrl = 'http://localhost:3000'
 
  export const base_url = 'https://backend.samsports.io'
-export const frontEndUrl = 'https://samsports.io'
+ export const frontEndUrl = 'https://samsports.io'
 
 
 
