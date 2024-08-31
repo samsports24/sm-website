@@ -25,6 +25,10 @@ const PowerRanking = ({ data, maxHeight = '500px' }) => {
   }
 // console.log('user?.team',user?.team);
 
+
+
+console.log('data',data);
+
  
 
   const handleChatClick = async (teamId) => {

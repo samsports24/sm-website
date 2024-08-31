@@ -24,6 +24,8 @@ export const getProfessionalLeagueRanks = async (week) => {
     attachToken()
     const res = await privateAPI.get(`/ranking/professionalStats/${week}`)
     if (res) {
+      console.log('res.data.data',res.data.data);
+      
       return res.data.data
     }
   } catch (err) {

@@ -11,8 +11,8 @@ import {
 } from '../../redux/actions/draftAction'
 
 const DraftOrder = () => {
-  const positionLength = 3 // 32  // 5
-  const roundLength = 10 // 40  // 5
+  const positionLength = 32 // 32  // 5
+  const roundLength = 53 // 40  // 5
   const { loading, draftRounds } = useSelector((state) => state.draft)
   const { currentLeague } = useSelector((state) => state.league)
   const [data, setData] = useState([])
