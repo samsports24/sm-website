@@ -10,6 +10,7 @@ const HeadingAndWeek = ({ heading, week = true, goLive = true }) => {
   const location = useLocation();
   const isProfessionalLeague = location.pathname === '/professional-league'
   const leagueType = user?.team?.currentLeague?.leagueType
+  const draftCompleted = user?.team?.currentLeague?.draftCompleted
   const draftstarttime = user?.team?.currentLeague?.draftStart
   const [timeRemaining, setTimeRemaining] = useState({
     days: '00',
@@ -69,7 +70,7 @@ const HeadingAndWeek = ({ heading, week = true, goLive = true }) => {
 
   return (
     <>
-  { (leagueType === 'professional' || leagueType === 'Ultimate' || leagueType === 'freemium') && !isTimeComplete && isProfessionalLeague && (
+  {/* { (leagueType === 'professional' || leagueType === 'Ultimate' || leagueType === 'freemium') && !isTimeComplete && isProfessionalLeague && draftCompleted && (
   <div style={{ position: 'relative', top: '40px' }}>
     <Button
       className='auctionforpicklefttime'
@@ -83,7 +84,7 @@ const HeadingAndWeek = ({ heading, week = true, goLive = true }) => {
       </span>
     </Button>
   </div>
-)}
+)} */}
 
 
 
