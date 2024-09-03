@@ -58,7 +58,8 @@ const Draft = () => {
                 </div>
               </>
             ) : (
-              <LeagueEnd />
+              // <LeagueEnd />
+              <></>
             )}
           </>
         )}

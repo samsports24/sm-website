@@ -74,7 +74,7 @@ const Draft = () => {
         <Loader />
       ) : (
         <>
-          {!currentLeague?.draftCompleted && currentLeague?.draftPaused ? (
+          {currentLeague?.draftPaused  ? (
             <LeaguePaused />
           ) : !currentLeague?.draftCompleted ? (
             <>
@@ -89,7 +89,17 @@ const Draft = () => {
               </div>
             </>
           ) : (
-            <LeagueEnd />
+            // <LeagueEnd />
+<>
+            <div className='main_d_left'>
+            {/* <ClockComponent /> */}
+            <RoundComponent height={'485px'} />
+          </div>
+          <div className='main_d_center'>
+            <RosterDetail />
+            <TableComponent professionalDraft tableScroll={{ x: 1000, y: 329 }} />
+          </div>
+          </>
           )}
         </>
       )}
