@@ -17,6 +17,7 @@ const NewRosterCard = (props) => {
     playerCaps,
     checkBox = true,
     averagePf,
+    // currentYearSalaryCap,
   } = props
   const {
     players: {
@@ -31,10 +32,14 @@ const NewRosterCard = (props) => {
       isPlayerLocked,
       InjuryStatus,
       FantasyPosition,
+      currentYearSalaryCap,
     },
     team,
   } = data
   const { id } = useParams()
+
+  console.log('currentYearSalaryCap',currentYearSalaryCap);
+  
 
   return (
     <div className='nrc_container'>
@@ -88,7 +93,9 @@ const NewRosterCard = (props) => {
             <p>P-RANK:{getRankAndPosition(averagePf[PlayerID])?.playerOverallRank}</p>
             <p>OPP:{UpcomingGameOpponent || '-'}</p>
             <p>
-              CAPHIT:{playerCaps[PlayerID] ? `$${playerCaps[PlayerID]?.toLocaleString()}` : '-'}
+              {/* CAPHIT:{playerCaps[PlayerID] ? `$${playerCaps[PlayerID]?.toLocaleString()}` : '-'} */}
+                   {/* CAPHIT:{currentYearSalaryCap}  */}
+              CAPHIT:${currentYearSalaryCap?.toLocaleString() || '-'}
             </p>
           </div>
         </div>

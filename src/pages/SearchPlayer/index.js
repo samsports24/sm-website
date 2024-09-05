@@ -391,14 +391,18 @@ const SearchPlayer = () => {
         dataIndex: 'HostedHeadshotNoBackgroundUrl',
         key: 'HostedHeadshotNoBackgroundUrl',
         render: (_, obj) => {
-           console.log('chekcimg obj',obj);
+          //  console.log('chekcimg obj',obj);
 
           return (
-            <div className='squad_image_box'>
+            <div >
               {obj?.teaminfo ? (
-                // <p>{obj?.teaminfo.logo}</p>
-                <img width={20} src={obj?.teaminfo.logo}>
-                </img>
+                // <p>{obj?.teaminfo?.name}</p>
+                <p >
+  {obj?.teaminfo?.name ? obj.teaminfo.name.split('team')[1]?.trim() : '-'}
+</p>
+
+                // <img width={20} src={obj?.teaminfo.logo}>
+                // </img>
               ) : (
                 <Button
                   disabled={false}

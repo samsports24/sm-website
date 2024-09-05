@@ -254,7 +254,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
     setAuctionLoading(false)
   }
 
-  console.log('playerContract',data?.playerContract);
+  console.log('playerContract',data?.player.currentYearSalaryCap);
 
   return (
     <div className='player_interface_popup'>
@@ -523,8 +523,8 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
                   </p>
                   <p>
                   {/* {obj ? `$${obj.currentYearSalaryCap.toLocaleString()}` : '-'} */}
-                    <b>23&apos;</b>{' '}
-                    {data?.playerContract?.PlayerCap
+                    <b>24&apos;</b>{' '}
+                    {data?.player?.currentYearSalaryCap
                       // ? `$${data?.playerContract?.PlayerCap?.toLocaleString()}`
                          ? `$${data?.player?.currentYearSalaryCap?.toLocaleString()}`
                       : '-'}
@@ -532,10 +532,15 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
                 </div>
                 <div className='caphit_year_box'>
                   <p>
-                    24&apos; CAP<b>HIT</b>
+                    25&apos; CAP<b>HIT</b>
                   </p>
                   <div>
-                    <p>$-</p>
+                    <p>
+                    {data?.player?.nextYearSalaryCap
+                      // ? `$${data?.playerContract?.PlayerCap?.toLocaleString()}`
+                         ? `$${data?.player?.nextYearSalaryCap?.toLocaleString()}`
+                      : '-'}
+                    </p>
                   </div>
                 </div>
                 <div className='caphit_year_box'>
