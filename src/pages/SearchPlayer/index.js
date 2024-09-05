@@ -26,7 +26,7 @@ const SearchPlayer = () => {
   const [search, setSearch] = useState('')
   const [position, setPosition] = useState('ALL')
   const [playerType, setPlayerType] = useState('ALL')
-  const [year, setYear] = useState(moment().format('2023'))
+  const [year, setYear] = useState(moment().format('2024'))
   // const currentweek = SETTING?.week;
   const [week, setWeek] = useState(SETTING?.week)
   const [checkweek, setCheckWeek] = useState(SETTING?.week)
@@ -281,6 +281,7 @@ const SearchPlayer = () => {
         caphit: item?.player?.currentYearSalaryCap,
         post_season_pts: item?.stats?.post_season_pts,
         regular_season_pts: item?.stats?.regular_season_pts,
+        teaminfo:item?.team?.team,
 
        
         // OL STATS
@@ -390,15 +391,17 @@ const SearchPlayer = () => {
         dataIndex: 'HostedHeadshotNoBackgroundUrl',
         key: 'HostedHeadshotNoBackgroundUrl',
         render: (_, obj) => {
-          // console.log('obj',obj);
+           console.log('chekcimg obj',obj);
 
           return (
             <div className='squad_image_box'>
-              {obj?.team ? (
-                <p>{obj?.team || '-'}</p>
+              {obj?.teaminfo ? (
+                // <p>{obj?.teaminfo.logo}</p>
+                <img width={20} src={obj?.teaminfo.logo}>
+                </img>
               ) : (
                 <Button
-                  disabled={true}
+                  disabled={false}
                   // loading={loading}
                   loading={playerID == obj?.PlayerID}
                   type='primary'

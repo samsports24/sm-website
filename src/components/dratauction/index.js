@@ -49,7 +49,7 @@ console.log('isTimerFinished',isTimerFinished);
       position: 1,
       name: 'Apex',
       conference: '65d6eb7560a538b0337bfabc',
-      division: '65d6ecc460a538b0337c1a6c',
+      division: '65d6ecba60a538b0337c12d7',
       imageurl: 'https://samsports.s3.amazonaws.com/17175803434309120.539375051409.png',
     },
     {
@@ -161,14 +161,14 @@ console.log('isTimerFinished',isTimerFinished);
       position: 16,
       name: 'Apex',
       conference: '65d6eb7560a538b0337bfabc',
-      division: '65d6ecc460a538b0337c1a6c',
+      division: '65d6ecba60a538b0337c12d7',
       imageurl: 'https://samsports.s3.amazonaws.com/17175803434309120.539375051409.png',
     },
 
     {
       position: 17,
       conference: '65d6eb7560a538b0337bfabc',
-      division: '65d6ecc460a538b0337c1a6c',
+      division: '65d6ecba60a538b0337c12d7',
       name: 'elite',
       imageurl: 'https://samsports.s3.amazonaws.com/17175803434309120.539375051409.png',
     },
@@ -283,7 +283,7 @@ console.log('isTimerFinished',isTimerFinished);
     {
       position: 32,
       conference: '65d6eb7560a538b0337bfabc',
-      division: '65d6ecc460a538b0337c1a6c',
+      division: '65d6ecba60a538b0337c12d7',
       name: 'Apex',
       imageurl: 'https://samsports.s3.amazonaws.com/17175803434309120.539375051409.png',
     },

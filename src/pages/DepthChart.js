@@ -296,7 +296,11 @@ const DepthChart = () => {
       teamId: teamId?.team?._id,
       season: USER?.setting?.season,
     }
+  
     const result = await getteamFormation(payload)
+
+    console.log('result?.offense_Formation',result?.offense_Formation);
+    
 
     if (activeFilter === 'offense') {
       setSelectedValue(result?.offense_Formation || 'shortgunnormal')
