@@ -82,7 +82,7 @@ const TeamFinancials = () => {
       key: 'teamSalaryCap',
       render: (t) => {
         return (
-          <p className={`${leagueSalaryCap - t > 0 ? 'green' : 'red'}`}>
+          <p className={`${myleagueSalaryCap - t > 0 ? 'green' : 'red'}`}>
             {t ? `$${(myleagueSalaryCap - t)?.toLocaleString()}` : '-'}
           </p>
         )
