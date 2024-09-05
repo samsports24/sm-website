@@ -40,7 +40,7 @@ const TeamRoster = () => {
   }, [SETTING?.week, id])
 
 
-  console.log('res?.active',res?.active);
+  // console.log('res?.active',res?.active);
   console.log('activePlayerData',activePlayerData);
   const getData = async () => {
     
