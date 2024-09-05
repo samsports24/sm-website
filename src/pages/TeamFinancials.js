@@ -9,16 +9,19 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { getTeamFinancials } from '../redux/actions/leagueActions'
 import HeadingAndWeek from '../components/Pagination/HeadingAndWeek'
+import { getUser } from '../redux'
 
 const TeamFinancials = () => {
   const SETTING = useSelector((state) => state.user)
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const myleagueSalaryCap = useSelector((state) => state.user?.leagueSalaryCap?.leagueSalaryCap)
 
   const navigate = useNavigate()
 
   useEffect(() => {
     getData()
+    getUser()
   }, [])
 
   const getData = async () => {
@@ -80,7 +83,7 @@ const TeamFinancials = () => {
       render: (t) => {
         return (
           <p className={`${leagueSalaryCap - t > 0 ? 'green' : 'red'}`}>
-            {t ? `$${(leagueSalaryCap - t)?.toLocaleString()}` : '-'}
+            {t ? `$${(myleagueSalaryCap - t)?.toLocaleString()}` : '-'}
           </p>
         )
       },
