@@ -143,6 +143,7 @@ const PlayerRoster = () => {
                             handleClick={handleNonActive}
                             playerCaps={data?.playerCaps}
                             averagePf={data?.averagePf}
+                            currentYearSalaryCap={data?.currentyearsalarycap}
                             // currentYearSalaryCap={data?.currentYearSalaryCap}
                           />
                         )
@@ -174,6 +175,7 @@ const PlayerRoster = () => {
                             handleClick={handleNonActive}
                             playerCaps={data?.playerCaps}
                             averagePf={data?.averagePf}
+                            currentYearSalaryCap={data?.currentyearsalarycap}
                            // currentYearSalaryCap={data?.currentYearSalaryCap}
                           />
                         )
@@ -216,6 +218,7 @@ const PlayerRoster = () => {
                             isPractice={true}
                             playerCaps={data?.playerCaps}
                             averagePf={data?.averagePf}
+                            currentYearSalaryCap={data?.currentyearsalarycap}
                            // currentYearSalaryCap={data?.currentYearSalaryCap}
                           />
                         )
@@ -248,6 +251,7 @@ const PlayerRoster = () => {
                             isPractice={true}
                             playerCaps={data?.playerCaps}
                             averagePf={data?.averagePf}
+                            currentYearSalaryCap={data?.currentyearsalarycap}
                            // currentYearSalaryCap={data?.currentYearSalaryCap}
                           />
                         )

@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.6aeb19f2.css",
-    "main.js": "/static/js/main.07807336.js",
+    "main.js": "/static/js/main.81884c80.js",
     "static/media/fantasy-sports-video.mp4": "/static/media/fantasy-sports-video.c5175e93ee3d160c3055.mp4",
     "static/media/SAMBOWL24.png": "/static/media/SAMBOWL24.1f68633ca81992f0b1d0.png",
     "static/media/Soccer_banner_edit.png": "/static/media/Soccer_banner_edit.892d54c94b5955e95f8e.png",
@@ -216,10 +216,10 @@
     "static/media/youtube.svg": "/static/media/youtube.ed864766e3b013e4e67a2b38107f1313.svg",
     "static/media/fb.svg": "/static/media/fb.99d8a901875e4a0b67073c0d8b4b57fa.svg",
     "main.6aeb19f2.css.map": "/static/css/main.6aeb19f2.css.map",
-    "main.07807336.js.map": "/static/js/main.07807336.js.map"
+    "main.81884c80.js.map": "/static/js/main.81884c80.js.map"
   },
   "entrypoints": [
     "static/css/main.6aeb19f2.css",
-    "static/js/main.07807336.js"
+    "static/js/main.81884c80.js"
   ]
 }
