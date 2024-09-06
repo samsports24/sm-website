@@ -60,7 +60,7 @@ const TeamRoster = () => {
         }
       })
 
-      setPlayerCaps(res?.playerCaps)
+      setPlayerCaps(res?.currentyearsalarycap)
       setDrafts(res?.drafts)
       setAveragePf(res?.averagePf)
       setActivePlayerData(res?.active)
@@ -117,6 +117,7 @@ const TeamRoster = () => {
                           checkBoxIds={nonActive}
                           handleClick={() => {}}
                           playerCaps={playerCaps}
+                          currentYearSalaryCap={playerCaps}
                           averagePf={averagePf}
                           checkBox={false}
                         />
@@ -146,6 +147,7 @@ const TeamRoster = () => {
                           checkBoxIds={nonActive}
                           handleClick={() => {}}
                           playerCaps={playerCaps}
+                          currentYearSalaryCap={playerCaps}
                           averagePf={averagePf}
                           checkBox={false}
                         />
@@ -177,6 +179,7 @@ const TeamRoster = () => {
                           handleClick={() => {}}
                           playerCaps={playerCaps}
                           averagePf={averagePf}
+                          currentYearSalaryCap={playerCaps}
                           isPractice={true}
                           checkBox={false}
                         />
@@ -207,6 +210,7 @@ const TeamRoster = () => {
                           handleClick={() => {}}
                           playerCaps={playerCaps}
                           averagePf={averagePf}
+                          currentYearSalaryCap={playerCaps}
                           isPractice={true}
                           checkBox={false}
                         />
