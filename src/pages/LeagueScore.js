@@ -137,6 +137,8 @@ const CarouselComponent = ({ data }) => {
   const handleNext = () => carousel.next()
 
   const getSchedule = (status, obj) => {
+    console.log('obj',obj);
+    
     let value = null
     if (obj?.AwayTeam === 'BYE') {
       value = `${obj?.HomeTeam} is on BYE`
@@ -147,7 +149,8 @@ const CarouselComponent = ({ data }) => {
     } else {
       const minutes = obj?.TimeRemainingMinutes > 0 ? obj?.TimeRemainingMinutes : '00'
       const seconds = obj?.TimeRemainingSeconds > 0 ? obj?.TimeRemainingSeconds : '00'
-      value = `${minutes} : ${seconds} ${status}`
+      value = `${status}`
+      // value = `${minutes} : ${seconds} ${status}`
     }
     return value
   }
