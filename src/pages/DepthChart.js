@@ -472,6 +472,15 @@ const DepthChart = () => {
   // console.log('filterKey',filterKey);
   // console.log('activeFilter',activeFilter);
 
+  console.log('activeRosterCount',activeRosterCount);
+  console.log('nonActivePlayers',nonActivePlayers);
+  console.log('legalPlayers',legalPlayers);
+console.log('activeCount',activeCount);
+
+  
+  
+  
+
   return (
     <div className='depth_chart_container'>
       <Header />
@@ -535,7 +544,7 @@ const DepthChart = () => {
         >
           {/* ILLEGAL ROSTER */}
 
-          {/* {!teamID && (
+          {!teamID && (
             
             <div
               className='overlay'
@@ -547,7 +556,7 @@ const DepthChart = () => {
               <h2>{`You have an illegal Roster`}</h2>
               <h4>{`kindly have ${activeRosterCount} players and ${nonActivePlayers} non active players on the roster`}</h4>
             </div>
-          )} */}
+          )}
 
           {!teamID && USER?.setting?.week == USER?.currentWeek && (
             <div className='clear_button_box'>

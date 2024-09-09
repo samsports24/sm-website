@@ -160,7 +160,7 @@ const Header = () => {
 
                 <div className='leaguedifflex'>
                   <img className='imgdiv' src={sampointslogo} alt='SAMPOINTS' />
-                  <div className='leaguemoney'>{user?.team?.currentLeague?.prizePool}</div>
+                  <div className='leaguemoney'>{user?.team?.currentLeague?.prizePool?.toLocaleString() || '0' }</div>
                 </div>
               </div>
               <div className='leaguediff'>
