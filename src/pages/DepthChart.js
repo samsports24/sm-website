@@ -272,6 +272,7 @@ const DepthChart = () => {
   const [activeFilter, setActiveFilter] = useState('offense')
   const [data, setData] = useState([])
   const [activeCount, setActiveCount] = useState(null)
+  console.log("🚀 ~ DepthChart ~ activeCount:", activeCount)
   const [loading, setLoading] = useState(true)
   const [clearBtnLoading, setClearBtnLoading] = useState(false)
   const [selectedValue, setSelectedValue] = useState(null)
@@ -554,7 +555,7 @@ console.log('activeCount',activeCount);
               }}
             >
               <h2>{`You have an illegal Roster`}</h2>
-              <h4>{`kindly have ${activeRosterCount} players and ${nonActivePlayers} non active players on the roster`}</h4>
+              <h4>{`kindly have ${legalPlayers} players and ${nonActivePlayers} non active players on the roster`}</h4>
             </div>
           )}
 
