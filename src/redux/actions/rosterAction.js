@@ -377,6 +377,10 @@ export const createAuction = async (paylaod) => {
     }
     return res.data.data
   } catch (err) {
+    // if(err?.response?.status == 420){
+
+    // }
+    
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,

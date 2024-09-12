@@ -17,10 +17,12 @@ import { createAuction } from '../../redux/actions/rosterAction'
 
 const SearchPlayer = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
+  const userDetails = useSelector((state) => state?.user?.userDetails)
   const sampoints = useSelector((state) => state.user?.SamPoints?.SamPoints)
   const [loading, setLoading] = useState(true)
   const [playerID, setPlayerID] = useState(false)
   const [data, setData] = useState([])
+  console.log("🚀 ~ data:", data)
   const [limit] = useState(10)
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
@@ -76,7 +78,7 @@ const SearchPlayer = () => {
 
       tempWeeks.forEach((week) => {
         const filteredObj = item?.player?.weeklyScoring?.find(
-          (wScore) => Number(wScore?.week) === Number(week),
+          (wScore) => Number(wScore?.week) === Number(week) && Number(wScore.season) === Number(year),
         )
 
         const filtersnaps = item?.stats?.stats?.weeklySnapRatios?.find(
@@ -353,11 +355,17 @@ const SearchPlayer = () => {
               button={<span className='fa_p_name name_text_hover'> {obj?.name}</span>}
               state={{
                 playerID: obj?.PlayerID,
-                teamId: null,
-                teamName: '',
+                teamId: obj?.teaminfo?._id === userDetails?.team?._id ? null : obj?.teaminfo?._id,
+                teamName: obj?.teaminfo?.name,
                 teamLogo: null,
                 isFreeAgent: {
-                  status: true,
+                  status: obj?.teaminfo ? false : true,
+                },
+                isTeamRoster: {
+                  status: obj?.teaminfo?._id === userDetails?.team?._id ? false : true,
+                },
+                isOwnRoster: {
+                  status: obj?.teaminfo?._id === userDetails?.team?._id ? true : false,
                 },
               }}
             />
@@ -396,14 +404,15 @@ const SearchPlayer = () => {
           return (
             <div >
               {obj?.teaminfo ? (
-                // <p>{obj?.teaminfo?.name}</p>
-                <p >
-  {obj?.teaminfo?.name ? obj.teaminfo.name.split('team')[1]?.trim() : '-'}
-</p>
+                <p>{obj?.teaminfo?.name}</p>
+//                 <p >
+//   {obj?.teaminfo?.name ? obj.teaminfo.name.split('team')[1]?.trim() : '-'}
+// </p>
 
                 // <img width={20} src={obj?.teaminfo.logo}>
                 // </img>
               ) : (
+                obj?.teaminfo?._id === userDetails?.team?._id ?
                 <Button
                   disabled={false}
                   // loading={loading}
@@ -417,6 +426,8 @@ const SearchPlayer = () => {
                 >
                   Auction
                 </Button>
+                :
+                ""
               )}
             </div>
           )

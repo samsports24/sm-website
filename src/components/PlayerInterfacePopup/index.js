@@ -254,8 +254,6 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
     setAuctionLoading(false)
   }
 
-  console.log('playerContract',data?.player.currentYearSalaryCap);
-
   return (
     <div className='player_interface_popup'>
       <AiOutlineCloseCircle className='close_icon' onClick={closeModal} />
@@ -365,7 +363,10 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
               {/* --------- OWN ROSTER --------- */}
               {isOwnRoster && !isLocked() && (
                 <>
-                  <AuctionPlayer
+                <Button disabled={false} loading={auctionLoading} onClick={handleCreateAuction} type='primary'>
+                    AUCTION PLAYER
+                  </Button>
+                  {/* <AuctionPlayer
                     disabled={isPlayerLocked}
                     playerIds={{
                       PlayerID: playerIdSmall,
@@ -373,7 +374,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
                       playercaphit:CapHit,
                     }}
                     pInterfaceModalClose={closeModal}
-                  />
+                  /> */}
 
                   <TradePlayer disabled={isPlayerLocked} pInterfaceModalClose={closeModal} />
 
