@@ -230,7 +230,7 @@
 
 import React, { useEffect, useState } from 'react'
 
-import { Button, Select } from 'antd'
+import { Button, notification, Select } from 'antd'
 
 // Component
 import Header from '../components/Header'
@@ -248,7 +248,7 @@ import {
   getActiveRosterCount,
   getteamFormation,
 } from '../redux/actions/depthChartAction'
-import { activeRosterCount, legalPlayers, nonActivePlayers } from '../config/constants'
+import { activeRosterCount, isLocked, legalPlayers, nonActivePlayers } from '../config/constants'
 
 import { useSelector } from 'react-redux'
 import { useLocation, useParams } from 'react-router-dom'
@@ -423,38 +423,38 @@ const DepthChart = () => {
 
 
 
-    setClearBtnLoading(true)
-    let playerIds = []
-    data?.forEach((v) => {
-      if (!v?.isPlayerLocked && v?._id) {
-        playerIds.push(v?._id)
-      }
-    })
-    const res = await clearDepthChart({
-      type: activeFilter,
-      ids: playerIds,
-    })
-    setClearBtnLoading(false)
-    if (res) {
-      await getDepthChartData()
-    }
+    // setClearBtnLoading(true)
+    // let playerIds = []
+    // data?.forEach((v) => {
+    //   if (!v?.isPlayerLocked && v?._id) {
+    //     playerIds.push(v?._id)
+    //   }
+    // })
+    // const res = await clearDepthChart({
+    //   type: activeFilter,
+    //   ids: playerIds,
+    // })
+    // setClearBtnLoading(false)
+    // if (res) {
+    //   await getDepthChartData()
+    // }
 
 
 
 
 
-    setSelectedValue(selectedOption)
-    const checkpayload = {
-      week: SETTING?.week,
-      teamId: teamId?.team?._id,
-      season: SETTING?.season,
-      formation: selectedOption,
-      activeFilter: activeFilter,
-    }
+    // setSelectedValue(selectedOption)
+    // const checkpayload = {
+    //   week: SETTING?.week,
+    //   teamId: teamId?.team?._id,
+    //   season: SETTING?.season,
+    //   formation: selectedOption,
+    //   activeFilter: activeFilter,
+    // }
 
     try {
-      const response = await assignLineupFormation({ payload: checkpayload })
-      console.log('Function Response:', response.data)
+      // const response = await assignLineupFormation({ payload: checkpayload })
+      // console.log('Function Response:', response.data)
     } catch (error) {
       console.error('Function Error:', error)
     }
@@ -527,7 +527,17 @@ console.log('activeCount',activeCount);
           <div
             key={option.value}
             className={`image-item ${selectedValue === option.value ? 'selected' : ''}`}
-            onClick={() => handleChange(option.value)}
+            onClick={() => {
+              if(teamID || isLocked()){
+notification.error({
+  message : "You cannot change the formation",
+  duration : 3
+})
+              }else{
+                handleChange(option.value)
+
+              }
+            }}
           >
             <img src={option.imageSrc} alt={option.value} />
           </div>

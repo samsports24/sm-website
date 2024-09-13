@@ -170,12 +170,11 @@ const AllTransaction = () => {
                               }
                             })}{' '}
                           </span>
-                          move to Active squad{' '}
+                          {item?.player?.find(obj => obj.status === "from") &&  `move to Active squad and `}
                           {item?.player?.map((v, index) => {
                             if (v?.status === 'to') {
                               return (
                                 <>
-                                  and{' '}
                                   <span style={{ color: 'var(--primary)' }}>
                                     <PlayerDetailsModal
                                       key={index}
