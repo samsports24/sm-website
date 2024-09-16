@@ -27,6 +27,7 @@ const initialState = {
   notificationCount: null,
   SamPoints:0,
   leagueSalaryCap:0,
+  leagueSalaryFloor:0, // 89% of leagueSalaryCap
   showPaymentModal: false,
 }
 
@@ -50,6 +51,7 @@ const userReducer = (state = initialState, action) => {
         auctionCount: payload?.liveAuctionCount,
         SamPoints :payload?.sampoints,
         leagueSalaryCap:payload?.leagueSalaryCap,
+        leagueSalaryFloor:payload?.leagueSalaryFloor // 89% of leagueSalaryCap
       }
     }
     case 'UPDATE_WEEK': {

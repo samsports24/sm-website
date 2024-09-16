@@ -16,6 +16,10 @@ const TeamFinancials = () => {
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const myleagueSalaryCap = useSelector((state) => state.user?.leagueSalaryCap?.leagueSalaryCap)
+  const leagueSalaryFloor=useSelector((state)=>state.user?.leagueSalaryCap?.leagueSalaryFloor)
+
+  // console.log('leagueSalaryFloor',leagueSalaryFloor);
+  
 
   const navigate = useNavigate()
 
@@ -76,22 +80,96 @@ const TeamFinancials = () => {
         multiple: 3,
       },
     },
+    // {
+    //   title: 'Team Cap Left',
+    //   dataIndex: 'teamSalaryCap',
+    //   key: 'teamSalaryCap',
+    //   render: (t) => {
+    //     return (
+    //       <p className={`${myleagueSalaryCap - t > 0 ? 'green' : 'red'}`}>
+    //         {t ? `$${(myleagueSalaryCap - t)?.toLocaleString()}` : '-'}
+    //       </p>
+    //     )
+    //   },
+    //   sorter: {
+    //     compare: (a, b) => a.teamSalaryCap - b.teamSalaryCap,
+    //     multiple: 3,
+    //   },
+    // },
+
+
+    // {
+    //   title: 'Team Cap Left',
+    //   dataIndex: 'teamSalaryCap',
+    //   key: 'teamSalaryCap',
+    //   render: (t) => {
+      
+    //     const capDifference = myleagueSalaryCap - t;
+    //     const floorDifference = leagueSalaryFloor - t;
+    //     // console.log('floorDifference',floorDifference);
+        
+    
+     
+    //     let className = '';
+    //     if (capDifference > 0) {
+    //       className = floorDifference < 0 ? 'orange' : 'green';
+    //     } else {
+    //       className = 'red';
+    //     }
+    
+    //     return (
+    //       <p className={className}>
+    //         {t ? `$${capDifference.toLocaleString()}` : '-'}
+    //       </p>
+    //     );
+    //   },
+    //   sorter: {
+    //     compare: (a, b) => a.teamSalaryCap - b.teamSalaryCap,
+    //     multiple: 3,
+    //   },
+    // },
+    
+
     {
       title: 'Team Cap Left',
       dataIndex: 'teamSalaryCap',
       key: 'teamSalaryCap',
       render: (t) => {
+        const capDifference = myleagueSalaryCap - t;
+    
+// console.log('myleagueSalaryCap.toLocaleString()',myleagueSalaryCap.toLocaleString());
+// console.log('leagueSalaryFloor.toLocaleString()',leagueSalaryFloor.toLocaleString());
+
+
+
+
+      
+        let className = '';
+        if (t.toLocaleString() < leagueSalaryFloor.toLocaleString()) {
+
+
+          className = 'orange';
+        } else if (capDifference > 0) {
+          className = 'green';
+        } else {
+          className = 'red';
+        }
+    
+   
         return (
-          <p className={`${myleagueSalaryCap - t > 0 ? 'green' : 'red'}`}>
-            {t ? `$${(myleagueSalaryCap - t)?.toLocaleString()}` : '-'}
+          <p className={className}>
+            {t ? `$${capDifference.toLocaleString()}` : '-'}
           </p>
-        )
+        );
       },
       sorter: {
         compare: (a, b) => a.teamSalaryCap - b.teamSalaryCap,
         multiple: 3,
       },
     },
+    
+
+
     {
       title: 'Rosters',
       dataIndex: '_id',
@@ -120,6 +198,11 @@ const TeamFinancials = () => {
           {
             name: 'Within Salary Cap',
             color: '#7ed957',
+          },
+          {
+            name: 'Below Salary Floor',
+            // color: '#ff3131',
+            color:'#FFC300',
           },
           {
             name: 'Over Salary Cap',

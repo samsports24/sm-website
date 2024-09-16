@@ -59,9 +59,11 @@ const Header = () => {
       console.log('payload', payload)
       const data = await TransferPointsToLeague(payload)
       console.log('poinst transfer to league wallet successfully:', data)
+      setLeaguepoints('')
       // cancel()
     } catch (error) {
       console.error('Error in transfering the league wallet :', error)
+      setLeaguepoints('')
     }
   }
 
