@@ -26,11 +26,15 @@ const Stadium = () => {
   const allstadiumlevel = useSelector((state) => state?.stadium?.allstadium?.allstadiumlevel)
   const mystadiumlevel = useSelector((state) => state?.stadium?.mystadium)
 
+  // console.log('mystadiumlevel',mystadiumlevel[0]?.teamId?.name);
+  
+
 
   const dispatch = useDispatch()
 
   const [loading, setLoading] = useState(false)
   const [team, setTeam] = useState(null)
+  // const [team, setTeam] = useState(user?.team?.name || '');
   const [modalshow, setModalshow] = useState(false)
   const myleague = async () => {
     await getLeagueDetails()
@@ -78,9 +82,9 @@ const Stadium = () => {
       setLoading(true)
       const data = await getstadium({
         season: user?.team?.currentLeague?.season,
-        user: user?._id,
+        // user: user?._id,
         league: user?.team?.currentLeague._id,
-        teamId: user?.team?.name,
+        teamId: user?.team?._id,
       })
       if (data) {
         dispatch(setMystadium(data))
@@ -92,6 +96,40 @@ const Stadium = () => {
       fetchData()
     }
   }, [user])
+
+
+
+  const getteamstadium = async (teamid) => {
+    // console.log('teamName',teamName);
+    
+    if (!teamid) return; 
+    setLoading(true);
+    setTeam(teamid);
+    try {
+
+
+      const data = await getstadium({
+        season: user?.team?.currentLeague?.season,
+        // user: user?._id,
+        league: user?.team?.currentLeague._id,
+        teamId: teamid,
+      });
+      if (data) {
+        dispatch(setMystadium(data));
+      }
+    } catch (error) {
+      console.error('Failed to fetch stadium data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  const handleChange = (value) => {
+    setTeam(value); 
+    getteamstadium(value); 
+  };
+
 
   // Find the maximum level in the mystadiumlevel array
   const maxMyStadiumLevel = Math.max(
@@ -179,6 +217,10 @@ console.log('weeklyticketsale',weeklyticketsale);
           .map(([key, value]) => [dayMapping[key] || key.toUpperCase(), value])
       : defaultDays.map((day) => [day, false])
 
+
+
+
+
   return (
     <>
       <Header />
@@ -190,7 +232,7 @@ console.log('weeklyticketsale',weeklyticketsale);
         <div className='stadium-main'>
           <div className='firstdiv'>
             <div className='year_selector_container'>
-              {currentLeague && currentLeague?.teams && (
+              {/* {currentLeague && currentLeague?.teams && (
                 <Select
                   shape='circle'
                   className='year_selector'
@@ -206,7 +248,30 @@ console.log('weeklyticketsale',weeklyticketsale);
                     </Select.Option>
                   ))}
                 </Select>
-              )}
+              )} */}
+
+
+
+
+      {currentLeague && currentLeague?.teams && (
+        <Select
+          shape="circle"
+          className="year_selector"
+          allowClear
+          placeholder={user?.team?.name}
+          onChange={getteamstadium}
+          value={team} // Ensure the Select component reflects the current selected team
+          style={{ width: '56%', marginBottom: '13px' }}
+          suffixIcon={<IoMdArrowDropdown size={20} color="var(--link)" />}
+        >
+          {currentLeague.teams.map((team) => (
+            <Select.Option key={team._id} value={team._id}>
+              {team.name}
+            </Select.Option>
+          ))}
+        </Select>
+      )}
+     
 
               <p>Your Stadium</p>
               <img
@@ -215,7 +280,7 @@ console.log('weeklyticketsale',weeklyticketsale);
                 alt='stadium'
               />
               <p>Stadium Name</p>
-              <p>{team || user?.team?.name}</p>
+              <p>{mystadiumlevel[0]?.teamId?.name || user?.team?.name}</p>
               <div className='ticketcost'>
                 <p>
                   Average Ticket <span>Cost</span>

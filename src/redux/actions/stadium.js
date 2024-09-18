@@ -81,7 +81,7 @@ export const setAllstadium = (payload) => {
     console.log('get payload',payload);
     try {
       attachToken()
-      const res = await privateAPI.get('/stadium/getstadium', payload)
+      const res = await privateAPI.post('/stadium/getstadium', payload)
       store.dispatch(setMystadium(res.data.data))
       return res.data.data
     } catch (err) {
