@@ -281,6 +281,8 @@ const DepthChart = () => {
     defense: 'defense',
   })
 
+
+
   const { teamID } = useParams()
   const { state } = useLocation()
   const handleFilter = (value) => {
@@ -423,38 +425,38 @@ const DepthChart = () => {
 
 
 
-    // setClearBtnLoading(true)
-    // let playerIds = []
-    // data?.forEach((v) => {
-    //   if (!v?.isPlayerLocked && v?._id) {
-    //     playerIds.push(v?._id)
-    //   }
-    // })
-    // const res = await clearDepthChart({
-    //   type: activeFilter,
-    //   ids: playerIds,
-    // })
-    // setClearBtnLoading(false)
-    // if (res) {
-    //   await getDepthChartData()
-    // }
+    setClearBtnLoading(true)
+    let playerIds = []
+    data?.forEach((v) => {
+      if (!v?.isPlayerLocked && v?._id) {
+        playerIds.push(v?._id)
+      }
+    })
+    const res = await clearDepthChart({
+      type: activeFilter,
+      ids: playerIds,
+    })
+    setClearBtnLoading(false)
+    if (res) {
+      await getDepthChartData()
+    }
 
 
 
 
 
-    // setSelectedValue(selectedOption)
-    // const checkpayload = {
-    //   week: SETTING?.week,
-    //   teamId: teamId?.team?._id,
-    //   season: SETTING?.season,
-    //   formation: selectedOption,
-    //   activeFilter: activeFilter,
-    // }
+    setSelectedValue(selectedOption)
+    const checkpayload = {
+      week: SETTING?.week,
+      teamId: teamId?.team?._id,
+      season: SETTING?.season,
+      formation: selectedOption,
+      activeFilter: activeFilter,
+    }
 
     try {
-      // const response = await assignLineupFormation({ payload: checkpayload })
-      // console.log('Function Response:', response.data)
+      const response = await assignLineupFormation({ payload: checkpayload })
+      console.log('Function Response:', response.data)
     } catch (error) {
       console.error('Function Error:', error)
     }
@@ -529,11 +531,14 @@ console.log('activeCount',activeCount);
             className={`image-item ${selectedValue === option.value ? 'selected' : ''}`}
             onClick={() => {
               if(teamID || isLocked()){
+                console.log('in the if');
+                
 notification.error({
   message : "You cannot change the formation",
   duration : 3
 })
               }else{
+                console.log('in the else');
                 handleChange(option.value)
 
               }

@@ -46,7 +46,7 @@ const AddPlayerToTrade = ({ data, teamName, selected, setSelected }) => {
                 <div key={i} className='_row'>
                   <p style={{ width: '100px' }}>{v?.players?.Position}</p>
                   <p style={{ flex: 1 }}>{v?.players?.Name}</p>
-                  <p style={{ width: '150px' }}>${v?.players?.PlayerCap}</p>
+                  <p style={{ width: '150px' }}>${v?.players?.currentYearSalaryCap}</p>
                   <Button
                     disabled={isDisable}
                     type='primary'
