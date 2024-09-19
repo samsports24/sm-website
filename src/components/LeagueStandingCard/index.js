@@ -81,12 +81,28 @@ const LeagueStandingCard = ({ data, index, teams }) => {
     }
   }
 
+console.log('data?.standing',data?.standing);
+
+
   return (
     <div className='league_standing_card' style={{ marginTop: index === 0 && '0px' }}>
       <h3 className='text'>
         {data?.conference} - {data?._id}
       </h3>
-      {data?.standing?.map((v) => {
+      {data?.standing
+      
+      ?.sort((a, b) => {
+        // First, sort by wins
+        const winDifference = b?.teamScore?.win - a?.teamScore?.win;
+        if (winDifference !== 0) return winDifference;
+    
+        // If wins are the same, sort by avgPf
+        return (b?.teamScore?.avgPf) - (a?.teamScore?.avgPf);
+      })
+
+      ?.map((v) => {
+
+
         // const team = teams.find((x) => v?.teamId === x?._id)
         return (
           <div key={v?.team?.name} className='table_card'>

@@ -36,7 +36,7 @@ const PoachPlayer = () => {
           </div>
 
           <div className='modal_footer'>
-            <Button type='primary' className='button_1'>
+            <Button onClick={closeModal} type='primary' className='button_1'>
               confirm
             </Button>
             <Button onClick={closeModal} type='primary' className='button_2'>

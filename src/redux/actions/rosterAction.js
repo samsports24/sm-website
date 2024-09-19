@@ -454,7 +454,7 @@ export const addBid = async (payload, customnotification) => {
         message: res?.data?.data?.message,
         duration: 3,
       })
-      // getAuctionPlayer()
+       getAuctionPlayer()
       console.log('after get auction player')
       // dispatch(getUser())
       console.log('after get user')

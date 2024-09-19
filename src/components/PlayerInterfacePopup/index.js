@@ -621,8 +621,13 @@ const dispatch = useDispatch()
       interval = setInterval(() => {
         const now = moment()
         const end = moment(data?.endDate)
+        // console.log('end',end);
+        
         const duration = moment.duration(end.diff(now))
+        // console.log('second duration.asSeconds()',duration.asSeconds());
+        
         if (duration.asSeconds() <= 0) {
+          // console.log('in the second check');
           clearInterval(interval)
           setRemainingTime('Time is up!')
           ended()

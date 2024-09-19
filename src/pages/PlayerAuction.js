@@ -240,12 +240,17 @@ const AuctionTimer = ({ data: v, getData }) => {
     if (!v?.hasAuctionEnded) {
       interval = setInterval(() => {
         const now = moment()
+        // console.log('v?.endDate',v?.endDate);
+        
         const end = moment(v?.endDate)
+        // console.log('check end',end);
         const duration = moment.duration(end.diff(now))
+        // console.log('first duration.asSeconds()',duration.asSeconds());
         if (duration.asSeconds() <= 0) {
+          // console.log('in the first check');
           clearInterval(interval)
           setRemainingTime('Auction Ended!')
-          ended()
+         ended()
         } else {
           const days = Math.floor(duration.asDays())
           const hours = String(duration.hours()).padStart(2, '0')
@@ -266,6 +271,44 @@ const AuctionTimer = ({ data: v, getData }) => {
       clearInterval(interval)
     }
   }, [v?.endDate])
+
+
+  // useEffect(() => {
+  //   let interval
+  //   if (!data?.hasAuctionEnded) {
+  //     interval = setInterval(() => {
+  //       const now = moment()
+  //       console.log('v?.endDate',data?.endDate);
+        
+  //       const end = moment(data?.endDate)
+  //       console.log('check end',end);
+  //       const duration = moment.duration(end.diff(now))
+  //       console.log('first duration.asSeconds()',duration.asSeconds());
+  //       if (duration.asSeconds() <= 0) {
+  //         console.log('in the first check');
+  //         clearInterval(interval)
+  //         setRemainingTime('Auction Ended!')
+  //        ended()
+  //       } else {
+  //         const days = Math.floor(duration.asDays())
+  //         const hours = String(duration.hours()).padStart(2, '0')
+  //         const minutes = String(duration.minutes()).padStart(2, '0')
+  //         const seconds = String(duration.seconds()).padStart(2, '0')
+  //         setRemainingTime(
+  //           days === 0
+  //             ? `${hours}h ${minutes}m ${seconds}s`
+  //             : `${days}d ${hours}h ${minutes}m ${seconds}s`,
+  //         )
+  //       }
+  //     }, 1000)
+  //   } else {
+  //     setRemainingTime('Auction Ended!')
+  //   }
+
+  //   return () => {
+  //     clearInterval(interval)
+  //   }
+  // }, [data?.endDate])
 
   return (
     <>
@@ -330,8 +373,8 @@ const PayButton = ({ data: v, getData }) => {
     const res = await approveAndRejectAuction({ auctionId: id, wallet_deduct,status})
     if (res) {
       setLoadingId('')
-      getData()
-      getAuctionPlayer()
+    await  getData()
+     await getAuctionPlayer()
     }
   }
 
@@ -341,7 +384,7 @@ const PayButton = ({ data: v, getData }) => {
 
   return (
     <>
-      {v?.assigned?.user === USER?._id && (
+      {v?.bidHistory.length > 1 && v?.assigned?.user === USER?._id && (
         <Tooltip
           placement='top'
           title={

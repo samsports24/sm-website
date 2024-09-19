@@ -29,10 +29,15 @@ const SearchPlayer = () => {
   const [position, setPosition] = useState('ALL')
   const [playerType, setPlayerType] = useState('ALL')
   const [year, setYear] = useState(moment().format('2024'))
-  // const currentweek = SETTING?.week;
+   const currentweek = SETTING?.week;
   const [week, setWeek] = useState(SETTING?.week)
   const [checkweek, setCheckWeek] = useState(SETTING?.week)
   const [totalCount, setTotalCount] = useState(0)
+
+  // console.log('week',week);
+  // console.log('currentweek',currentweek);
+  
+  
 
   const weekOptions = Array.from({ length: 18 }, (_, index) => ({
     value: index + 1,

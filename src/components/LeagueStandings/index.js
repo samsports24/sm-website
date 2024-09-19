@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 
 const LeagueStandings = ({ data, maxHeight }) => {
   const navigate = useNavigate()
+  // console.log('data?.teamRanks',data?.teamRanks);
   return (
     <div className='league_standings_box'>
       <header>
@@ -25,7 +26,15 @@ const LeagueStandings = ({ data, maxHeight }) => {
         style={{ maxHeight: maxHeight ? maxHeight : '1172px' }}
       >
         {data?.teamRanks
-          ?.sort((a, b) => b?.teamScore?.win - a?.teamScore?.win)
+          // ?.sort((a, b) => b?.teamScore?.win - a?.teamScore?.win)
+          ?.sort((a, b) => {
+            // First, sort by wins
+            const winDifference = b?.teamScore?.win - a?.teamScore?.win;
+            if (winDifference !== 0) return winDifference;
+        
+            // If wins are the same, sort by avgPf
+            return (b?.teamScore?.avgPf) - (a?.teamScore?.avgPf);
+          })
           ?.map((v) => {
             const team = data?.teams?.find((x) => v?.teamId === x?._id)
             return (
