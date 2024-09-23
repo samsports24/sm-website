@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.208d7007.css",
-    "main.js": "/static/js/main.4fdb5ccb.js",
+    "main.js": "/static/js/main.632da9cc.js",
     "static/media/fantasy-sports-video.mp4": "/static/media/fantasy-sports-video.c5175e93ee3d160c3055.mp4",
     "static/media/SAMBOWL24.png": "/static/media/SAMBOWL24.1f68633ca81992f0b1d0.png",
     "static/media/Soccer_banner_edit.png": "/static/media/Soccer_banner_edit.892d54c94b5955e95f8e.png",
@@ -75,6 +75,7 @@
     "static/media/football-lobby-1.jpg": "/static/media/football-lobby-1.f4205aa5aa37450ff8a5.jpg",
     "static/media/news-feed-1.jpg": "/static/media/news-feed-1.fab9de4160634381dbb5.jpg",
     "static/media/football.png": "/static/media/football.e4f0ee78653c1c73c5e9.png",
+    "static/media/new alert.png": "/static/media/new alert.985c82087387760a980e.png",
     "static/media/wjhockey.png": "/static/media/wjhockey.df2121a9e84311aac190.png",
     "static/media/hockey.png": "/static/media/hockey.08fc60dce03e0246b580.png",
     "static/media/dot-font.ttf": "/static/media/dot-font.9573cb386c42dc1630bc.ttf",
@@ -216,10 +217,10 @@
     "static/media/youtube.svg": "/static/media/youtube.ed864766e3b013e4e67a2b38107f1313.svg",
     "static/media/fb.svg": "/static/media/fb.99d8a901875e4a0b67073c0d8b4b57fa.svg",
     "main.208d7007.css.map": "/static/css/main.208d7007.css.map",
-    "main.4fdb5ccb.js.map": "/static/js/main.4fdb5ccb.js.map"
+    "main.632da9cc.js.map": "/static/js/main.632da9cc.js.map"
   },
   "entrypoints": [
     "static/css/main.208d7007.css",
-    "static/js/main.4fdb5ccb.js"
+    "static/js/main.632da9cc.js"
   ]
 }

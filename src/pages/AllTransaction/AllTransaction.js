@@ -286,6 +286,35 @@ const AllTransaction = () => {
                         </span>
                       )}
 
+{item?.module?.toLowerCase() === 'squad' &&
+                      item?.sub_module?.toLowerCase() === 'poaching' && (
+                        <span className='text2'>
+                          <span style={{ color: 'var(--primary)' }}>
+                            {item?.player?.map((v, index) => (
+                              <PlayerDetailsModal
+                                key={index}
+                                button={v?.player_id?.Name}
+                                state={{
+                                  isFreeAgent: {
+                                    status: true,
+                                  },
+                                  playerID: v?.player_id?.PlayerID,
+                                  teamId: item?.team?._id,
+                                  teamName: item?.team?.name,
+                                  teamLogo: item?.team?.logo,
+                                }}
+                                transaction={true}
+                              />
+                            ))}
+                          </span>{' '}
+                          is being Poached
+                        </span>
+                      )}
+
+
+
+
+
                     {item?.module?.toLowerCase() === 'squad' &&
                       item?.sub_module?.toLowerCase() === 'player approved from draft' && (
                         <span className='text2'>
