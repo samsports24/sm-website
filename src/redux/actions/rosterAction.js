@@ -543,3 +543,24 @@ export const auctionEnded = async (payload) => {
     })
   }
 }
+
+
+
+export const PlayerPoached = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/player/poach-player', payload)
+    if (res) {
+      notification.success({
+        message: res.data.data?.message,
+        duration: 3,
+      })
+    }
+    return res.data.data
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}

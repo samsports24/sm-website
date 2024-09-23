@@ -112,7 +112,14 @@ const GmCard = (props) => {
                 >
                   make offer
                 </Button>
-                <PoachPlayer />
+                {/* <PoachPlayer /> */}
+                {data?.inPracticeSquad  && !data?.isPlayerProtected ? <PoachPlayer data={data} /> :
+<>
+</>
+}
+
+
+
               </div>
             ) : isLocked() ? (
               <></>

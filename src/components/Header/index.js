@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Image, Badge, Spin, Button } from 'antd'
 
 // Image
@@ -12,6 +12,9 @@ import { leagueSalaryCap } from '../../config/constants'
 import ConnectWallet from '../ConnectWallet'
 import LeaguePointsTransfer from '../modal/LeaguePointsTransfer'
 import { TransferPointsToLeague } from '../../redux/actions/leagueActions'
+// import { LuAlertTriangle } from "react-icons/lu";
+import alertimage from '../../assets/new alert.png'
+import { getAllNotification } from '../../redux/actions/notificationAction'
 
 const Header = () => {
   const record = useSelector((state) => state.user.record)
@@ -25,7 +28,9 @@ const Header = () => {
   const myleagueSalaryCap = useSelector((state) => state.user?.leagueSalaryCap?.leagueSalaryCap)
   const [modalVisible, setModalVisible] = useState(false)
   const [leaguepoints, setLeaguepoints] = useState('')
+  const [notificationData, setNotificationData] = useState(null)
   const navigate = useNavigate()
+  const SETTING = useSelector((state) => state?.user)
 
   // console.log('safepaylink', safepaylink)
 
@@ -41,11 +46,33 @@ const Header = () => {
     }
   }
 
+  useEffect(() => {
+    getData()
+  }, [])
+
+  const getData = async () => {
+    // setIsLoading(true)
+    const res = await getAllNotification({
+      week: SETTING?.currentWeek,
+    })
+    setNotificationData(res)
+    // setIsLoading(false)
+  }
+
+  // console.log('notificationData',notificationData);
+  
+
   //  season:user?.team?.currentLeague?.season
 
   const confirm = () => {
     setModalVisible(true)
   }
+
+  const isPoaching = notificationData?.data?.some(notification => 
+    notification.module === "poaching"
+      && notification?.metadata?.team === user?.team?._id  &&
+      new Date(notification.createdAt) > new Date(Date.now() - 24 * 60 * 60 * 1000)
+  );
 
   const handletransferleaguepoints = async () => {
     try {
@@ -78,6 +105,7 @@ const Header = () => {
             <span style={{ color: !!notificationCount ? 'red' : ' var(--lightGrayText)' }}>
               League Notification
             </span>{' '}
+         
             {notificationCount ? (
               <Badge count={notificationCount}>
                 <img src={bellIcon} alt='Icon' />
@@ -86,6 +114,18 @@ const Header = () => {
               <img src={bellIcon} alt='Icon' />
             )}
           </p>
+
+<>
+{isPoaching && (
+      <p style={{ marginTop: '5px' }}>
+        <span style={{ color: 'yellow' }}>
+          POACHING ALERT
+          <img style={{ position: 'relative', left: '8%' }} width={20} src={alertimage} alt='Icon' />
+        </span>
+      </p>
+    )}
+</>
+
         </div>
         <div className='center'>
           <div className='title_box'>

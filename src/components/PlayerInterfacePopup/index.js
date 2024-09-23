@@ -430,7 +430,12 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
                   >
                     Make Offer
                   </Button>
-                  <PoachPlayer />
+{data?.player?.inPracticeSquad  && !data?.player?.isPlayerProtected ? <PoachPlayer data={data} state={state} /> :
+<>
+</>
+}
+
+                  
                 </>
               )}
               {isTeamRoster && state?.teamId && isLocked() && <PreviousDayView />}
