@@ -51,7 +51,10 @@ const MoveToInjured = ({ playerId, disabled, pInterfaceModalClose }) => {
               {`To place this player on the Injured Reserve, click the "Move to I.R." button if you're sure.`}
             </p>
             <p style={{ textTransform: 'uppercase' }}>
-              {`info: This action will lead to the player's Cap Hit being excluded from your team's overall total until the player is reinstated to your active roster.`}
+              {/* {`info: This action will lead to the player's Cap Hit being excluded from your team's overall total until the player is reinstated to your active roster.`} */}
+              {`info:When a player is placed on IR, their salary remains on the Team Salary Cap, but the team frees up an additional roster spot to utilize.Once you accept, your player will stay for a period of 30 days in IR minimum`}
+
+          
             </p>
           </div>
 

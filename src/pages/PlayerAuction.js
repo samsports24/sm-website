@@ -243,9 +243,9 @@ const AuctionTimer = ({ data: v, getData }) => {
         // console.log('v?.endDate',v?.endDate);
         
         const end = moment(v?.endDate)
-        // console.log('check end',end);
+         console.log('check end',end);
         const duration = moment.duration(end.diff(now))
-        // console.log('first duration.asSeconds()',duration.asSeconds());
+         console.log('first duration.asSeconds()',duration.asSeconds());
         if (duration.asSeconds() <= 0) {
           // console.log('in the first check');
           clearInterval(interval)

@@ -20,6 +20,8 @@ const AllTransaction = () => {
   const { isLoading } = useSelector((state) => state?.transaction)
   const { userDetails } = useSelector((state) => state?.user)
 
+  console.log('userDetails', userDetails?.team?.name)
+
   const getData = async () => {
     const payload = {
       team: selectedTeam,
@@ -94,7 +96,11 @@ const AllTransaction = () => {
                 <div key={i} className='card_box'>
                   <div>
                     <span className='text1'>Franchise:</span> &nbsp;
-                    <span className='text2'>{item?.team?.name}</span>
+                    <span className='text2'>
+                      {item?.team?.name || userDetails?.team?._id === item?.buyerTeam?._id
+                        ? item?.buyerTeam?.name
+                        : item?.sellerTeam?.name}
+                    </span>
                   </div>
                   <div>
                     <span className='text1'>Type:</span> &nbsp;
@@ -170,7 +176,8 @@ const AllTransaction = () => {
                               }
                             })}{' '}
                           </span>
-                          {item?.player?.find(obj => obj.status === "from") &&  `move to Active squad and `}
+                          {item?.player?.find((obj) => obj.status === 'from') &&
+                            `move to Active squad and `}
                           {item?.player?.map((v, index) => {
                             if (v?.status === 'to') {
                               return (
@@ -285,8 +292,7 @@ const AllTransaction = () => {
                           moved to auction
                         </span>
                       )}
-
-{item?.module?.toLowerCase() === 'squad' &&
+                    {item?.module?.toLowerCase() === 'squad' &&
                       item?.sub_module?.toLowerCase() === 'poaching' && (
                         <span className='text2'>
                           <span style={{ color: 'var(--primary)' }}>
@@ -302,6 +308,7 @@ const AllTransaction = () => {
                                   teamId: item?.team?._id,
                                   teamName: item?.team?.name,
                                   teamLogo: item?.team?.logo,
+                                  // userDetails?.team?.name
                                 }}
                                 transaction={true}
                               />
@@ -311,10 +318,122 @@ const AllTransaction = () => {
                         </span>
                       )}
 
+{item?.module?.toLowerCase() === 'squad' &&
+                      item?.sub_module?.toLowerCase() === 'auction completed' && (
+                        <span className='text2'>
+                          <span style={{ color: 'var(--primary)' }}>
+                            {item?.player?.map((v, index) => (
+                              <PlayerDetailsModal
+                                key={index}
+                                button={v?.player_id?.Name}
+                                state={{
+                                  isFreeAgent: {
+                                    status: true,
+                                  },
+                                  playerID: v?.player_id?.PlayerID,
+                                  teamId: item?.team?._id,
+                                  teamName: item?.team?.name,
+                                  teamLogo: item?.team?.logo,
+                                  // userDetails?.team?.name
+                                }}
+                                transaction={true}
+                              />
+                            ))}
+                          </span>{' '}
+                       is move to {item?.team?.name} and {item?.team?.name} won the auction
+                        </span>
+                      )}
+
+{item?.module?.toLowerCase() === 'squad' &&
+                      item?.sub_module?.toLowerCase() === 'poaching completed' && (
+                        <span className='text2'>
+                          <span style={{ color: 'var(--primary)' }}>
+                            {item?.player?.map((v, index) => (
+                              <PlayerDetailsModal
+                                key={index}
+                                button={v?.player_id?.Name}
+                                state={{
+                                  isFreeAgent: {
+                                    status: true,
+                                  },
+                                  playerID: v?.player_id?.PlayerID,
+                                  teamId: item?.team?._id,
+                                  teamName: item?.team?.name,
+                                  teamLogo: item?.team?.logo,
+                                  // userDetails?.team?.name
+                                }}
+                                transaction={true}
+                              />
+                            ))}
+                          </span>{' '}
+                     has been signed to {item?.poachingteam?.name} from {item?.team?.name} through Poaching
+                        </span>
+                      )}
 
 
-
-
+                    {item?.module?.toLowerCase() === 'trade' &&
+                      item?.sub_module?.toLowerCase() === 'player traded' && (
+                        <span className='text2'>
+                          <span style={{ color: 'var(--primary)' }}>
+                            {/* {item?.player?.map((v, index) => (
+                                // console.log('item.buyerTeam',item?.buyerTeam?.name),
+                                // console.log('item.sellerTeam',item?.sellerTeam?.name)
+                              
+                              <PlayerDetailsModal
+                                key={index}
+                                button={v?.player_id?.Name}
+                                state={{
+                                  isFreeAgent: {
+                                    status: true,
+                                  },
+                                  playerID: v?.player_id?.PlayerID,
+                                  //  teamId: item?.buyerTeam?._id,
+                                        // teamName: item?.buyerTeam?.name,
+                                 // teamLogo: item?.buyerTeam?.logo,
+                                  teamId: userDetails?.team?._id === item?.buyerTeam?._id
+                                  ? item?.buyerTeam?._id
+                                  : item?.sellerTeam?._id,
+                                   teamName:userDetails?.team?._id === item?.buyerTeam?._id
+                                   ? item?.buyerTeam?.name
+                                   : item?.sellerTeam?.name,
+                                  teamLogo:userDetails?.team?._id === item?.buyerTeam?._id
+                                  ? item?.buyerTeam?.logo
+                                  : item?.sellerTeam?.logo,
+                                }}
+                                transaction={true}
+                              />
+                            ))} */}
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                              {item?.player?.map((v, index) => (
+                                <PlayerDetailsModal
+                                  key={index}
+                                  button={v?.player_id?.Name}
+                                  state={{
+                                    isFreeAgent: {
+                                      status: true,
+                                    },
+                                    playerID: v?.player_id?.PlayerID,
+                                    teamId:
+                                      userDetails?.team?._id === item?.buyerTeam?._id
+                                        ? item?.buyerTeam?._id
+                                        : item?.sellerTeam?._id,
+                                    teamName:
+                                      userDetails?.team?._id === item?.buyerTeam?._id
+                                        ? item?.buyerTeam?.name
+                                        : item?.sellerTeam?.name,
+                                    teamLogo:
+                                      userDetails?.team?._id === item?.buyerTeam?._id
+                                        ? item?.buyerTeam?.logo
+                                        : item?.sellerTeam?.logo,
+                                  }}
+                                  transaction={true}
+                                />
+                              ))}
+                            </div>
+                          </span>{' '}
+                          player Traded between {item?.sellerTeam?.name} and {item?.buyerTeam?.name}
+                        </span>
+                      )}
                     {item?.module?.toLowerCase() === 'squad' &&
                       item?.sub_module?.toLowerCase() === 'player approved from draft' && (
                         <span className='text2'>

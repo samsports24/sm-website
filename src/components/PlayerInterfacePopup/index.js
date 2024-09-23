@@ -244,7 +244,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
     const res = await createAuction({
       PlayerID: playerIdSmall,
       player_id: playerIdBig,
-      auctionFrom: 'nonowner',
+      auctionFrom: 'owner',
       CapHit:CapHit,
     })
     if (res) {
@@ -626,10 +626,10 @@ const dispatch = useDispatch()
       interval = setInterval(() => {
         const now = moment()
         const end = moment(data?.endDate)
-        // console.log('end',end);
+         console.log('end',end);
         
         const duration = moment.duration(end.diff(now))
-        // console.log('second duration.asSeconds()',duration.asSeconds());
+         console.log('second duration.asSeconds()',duration.asSeconds());
         
         if (duration.asSeconds() <= 0) {
           // console.log('in the second check');

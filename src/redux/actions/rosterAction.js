@@ -449,12 +449,13 @@ export const addBid = async (payload, customnotification) => {
 
     if (res) {
       console.log('inside if clause of add bid')
+      getAuctionPlayer()
       // store?.dispatch(setAuctionPlayer(res?.data?.data?.auction))
       customnotification.success({
         message: res?.data?.data?.message,
         duration: 3,
       })
-       getAuctionPlayer()
+       
       console.log('after get auction player')
       // dispatch(getUser())
       console.log('after get user')
@@ -475,6 +476,7 @@ export const markAsPaid = async (payload) => {
     attachToken()
     const res = await privateAPI.post('/auction/mark-as-paid', payload)
     if (res) {
+   
       notification.success({
         message: res.data.data.message,
         duration: 10,
@@ -491,9 +493,11 @@ export const markAsPaid = async (payload) => {
 
 export const approveAndRejectAuction = async (payload) => {
   try {
+    
     attachToken()
     const res = await privateAPI.post('/auction/approve-auction', payload)
     if (res) {
+      getAuctionPlayer()
       notification.success({
         message: res.data.data.message,
         duration: 3,

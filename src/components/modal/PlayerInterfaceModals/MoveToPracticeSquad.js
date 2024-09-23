@@ -81,7 +81,8 @@ const MakeOffer = ({
               style={{ textTransform: 'uppercase' }}
             >{`You need to choose a player from your roster to assign to your practice squad.`}</p>
             <p style={{ textTransform: 'uppercase' }}>
-              {`info: This action will lead to the player's Cap Hit being excluded from your team's overall total until the player is reinstated to your active roster.`}
+              {/* {`info: This action will lead to the player's Cap Hit being excluded from your team's overall total until the player is reinstated to your active roster.`} */}
+              {`info:Player's cap hit still count toward your team overall cap hit.please note that any player moved to practice squad can be poached if not protected`}
             </p>
           </div>
 
