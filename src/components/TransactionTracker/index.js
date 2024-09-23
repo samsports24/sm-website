@@ -39,11 +39,18 @@ const TransactionTracker = ({ height = '343px' }) => {
             <div key={i} className='card_box'>
               <div>
                 <span className='text1'>Franchise:</span> &nbsp;
-                <span className='text2'>
-                  {item?.team?.name || userDetails?.team?._id === item?.buyerTeam?._id
+                {/* <span className='text2'>
+                  {item?.team?.name || userDetails?.team?._id === item?.buyerTeam?._id 
                     ? item?.buyerTeam?.name
                     : item?.sellerTeam?.name}
-                </span>
+                </span> */}
+                <span className='text2'>
+  {item?.team?.name ? item.team.name : 
+    (userDetails?.team?._id === item?.buyerTeam?._id 
+      ? item?.buyerTeam?.name 
+      : item?.sellerTeam?.name)}
+</span>
+
               </div>
               <div>
                 <span className='text1'>Type:</span> &nbsp;
