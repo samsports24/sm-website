@@ -279,6 +279,7 @@ const SearchPlayer = () => {
         name: item?.player?.Name,
         PlayerID: item?.player?.PlayerID,
         position: item?.player?.Position,
+        nflteam: item?.player?.Team,
         pf: item?.player?.pf?.toFixed(2),
         avgPf: item?.player?.avgPf?.toFixed(2),
         nflGamesPlayed: item?.player?.nflGamesPlayed,
@@ -384,6 +385,14 @@ const SearchPlayer = () => {
         key: 'age',
         render: (_, obj) => <p>{obj?.age || '-'}</p>,
       },
+      {
+        width: 30,
+        title: <p style={{ lineHeight: 1 }}>nfl team</p>,
+        dataIndex: 'nflteam',
+        key: 'nflteam',
+        render: (_, obj) => <p>{obj?.nflteam || '-'}</p>,
+      },
+
 
 
       ...(position === 'ALL'
