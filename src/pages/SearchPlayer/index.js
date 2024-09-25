@@ -37,6 +37,7 @@ const SearchPlayer = () => {
   // console.log('week',week);
   // console.log('currentweek',currentweek);
   
+  console.log('year',year);
   
 
   const weekOptions = Array.from({ length: 18 }, (_, index) => ({
@@ -73,6 +74,7 @@ const SearchPlayer = () => {
     let weeksToConsider = 18
     let postpts = 0
     let postweek = 23
+    let regularseasonpts = 0;
 
     res?.map((item) => {
       // console.log('item', item)
@@ -82,9 +84,47 @@ const SearchPlayer = () => {
    
 
       tempWeeks.forEach((week) => {
+        // console.log('week',week);
+        
+        console.log('item?.player?.weeklyScoring',item?.player?.weeklyScoring);
+
+        
         const filteredObj = item?.player?.weeklyScoring?.find(
           (wScore) => Number(wScore?.week) === Number(week) && Number(wScore.season) === Number(year),
         )
+
+      
+        // console.log('filteredObj',filteredObj);
+        // const wScore = item?.player?.weeklyScoring?.find(
+        //   (wScore) =>   Number(wScore.season) === Number(year)
+        // );
+
+        const filteredScores2024 = item?.player?.weeklyScoring?.filter(
+          (wScore) => Number(wScore.season) === 2024
+        ) || []
+        
+// console.log('filteredScores2024',filteredScores2024.length);
+
+        // Initialize the variable to hold the score
+        
+        
+        // If wScore is found, use its score
+        // if (wScore) {
+        //    console.log('wScore',wScore);
+          
+        //   regularseasonpts = Number(wScore.score) || 0; // Handle possible NaN
+        // }
+
+        regularseasonpts = filteredScores2024.reduce((total, wScore) => {
+          return total + (Number(wScore.score) || 0); 
+        }, 0);
+        
+        // console.log('regularseasonpts',regularseasonpts);
+        
+        // console.log('filteredObj',filteredObj);
+     
+        
+        
 
         const filtersnaps = item?.stats?.stats?.weeklySnapRatios?.find(
           (check) => Number(check?.week) === Number(week),
@@ -268,6 +308,8 @@ const SearchPlayer = () => {
         regularavgpts,
         postpts,
         postavgpts,
+        regularseasonpts,
+        
       }
 
       // console.log('regularavgpts',regularavgpts.toFixed(2));
@@ -290,6 +332,7 @@ const SearchPlayer = () => {
         post_season_pts: item?.stats?.post_season_pts,
         regular_season_pts: item?.stats?.regular_season_pts,
         teaminfo:item?.team?.team,
+        // regularseasonpts:
 
        
         // OL STATS
@@ -318,9 +361,23 @@ const SearchPlayer = () => {
       tempResultArr.push(tempObj)
     })
 
+
+
+
+
     tempResultArr.sort((a, b) => {
-      const aPoints = a.regular_season_pts || 0
-      const bPoints = b.regular_season_pts || 0
+      //  console.log('tempResultArr',tempResultArr);
+      
+       const aPoints = a.regular_season_pts || 0
+       const bPoints = b.regular_season_pts || 0
+   
+
+  
+
+      // console.log('aPoints',aPoints);
+      // console.log('bPoints',bPoints);
+      
+      
       return bPoints - aPoints // Descending order
     })
 
@@ -448,13 +505,32 @@ const SearchPlayer = () => {
         },
       },
 
+      // {
+      //   width: 30,
+      //   title: <p style={{ lineHeight: 1 }}>TOTAL PTS</p>,
+      //   dataIndex: 'totalPts',
+      //   key: 'totalPts',
+      //   // render: (_, obj) => <p>{obj?.regular_season_pts?.toFixed(2) || '-'}</p>,
+      //   render: (_, obj) => <p>{
+          
+      //     year == 2024 ?  obj?.regularseasonpts.toFixed(2) :{obj?.regular_season_pts?.toFixed(2)|| '-'}</p>,
+        
+      // },
+
       {
         width: 30,
         title: <p style={{ lineHeight: 1 }}>TOTAL PTS</p>,
         dataIndex: 'totalPts',
         key: 'totalPts',
-        render: (_, obj) => <p>{obj?.regular_season_pts?.toFixed(2) || '-'}</p>,
+        render: (_, obj) => (
+          <p>
+            {Number(year) === 2024 
+              ? obj?.regularseasonpts?.toFixed(2) 
+              : obj?.regular_season_pts?.toFixed(2) || '-'}
+          </p>
+        ),
       },
+      
       {
         width: 30,
         title: 'PPG',
@@ -462,7 +538,11 @@ const SearchPlayer = () => {
         key: 'playerScore',
         render: (_, obj) => {
           // Extract values
-          const regularSeasonPts = obj?.regular_season_pts || 0
+          // const regularSeasonPts =  {Number(year) === 2024 ? obj?.regularseasonpts : obj?.regular_season_pts : || 0
+          const regularSeasonPts = Number(year) === 2024 
+  ? obj?.regularseasonpts || 0 
+  : obj?.regular_season_pts || 0;
+
           const nflGamesPlayed = obj?.nflGamesPlayed || 0
 
           // Calculate PPG
@@ -739,7 +819,8 @@ const SearchPlayer = () => {
 
           return (
             <div>
-              <p>{averageSnapPercentage}%</p>
+              {/* <p>{averageSnapPercentage}%</p> */}
+              <p>{(averageSnapPercentage * 100).toFixed(0)}%</p>
             </div>
           )
         },
@@ -760,7 +841,9 @@ const SearchPlayer = () => {
           const offensivescoreKey = `week_${weekNumber}_OffensiveRatio`
           return (
             <div>
-              <p>{obj?.[offensivescoreKey].toFixed(2) ?? '-'}%</p>
+              {/* <p>{obj?.[offensivescoreKey].toFixed(2) ?? '-'}%</p> */}
+              <p>{obj?.[offensivescoreKey] ? (obj[offensivescoreKey] * 100).toFixed(0) + '%' : '-'}</p>
+
             </div>
           )
         },
@@ -1340,7 +1423,9 @@ const SearchPlayer = () => {
 
           return (
             <div>
-              <p>{averageSnapPercentage}%</p>
+              {/* <p>{averageSnapPercentage}%</p> */}
+              <p>{(averageSnapPercentage * 100).toFixed(0)}%</p>
+
             </div>
           )
         },
@@ -1360,7 +1445,9 @@ const SearchPlayer = () => {
           const defensivecoreKey = `week_${weekNumber}_DefensiveRatio`
           return (
             <div>
-              <p>{obj?.[defensivecoreKey].toFixed(2) ?? '-'}%</p>
+              {/* <p>{obj?.[defensivecoreKey].toFixed(2) ?? '-'}%</p> */}
+              <p>{obj?.[defensivecoreKey] ? (obj[defensivecoreKey] * 100).toFixed(0) + '%' : '-'}</p>
+
             </div>
           )
         },
@@ -1613,7 +1700,9 @@ const SearchPlayer = () => {
 
           return (
             <div>
-              <p>{averageSnapPercentage}%</p>
+              {/* <p>{averageSnapPercentage}%</p> */}
+              <p>{(averageSnapPercentage * 100).toFixed(0)}%</p>
+
             </div>
           )
         },
@@ -1634,7 +1723,9 @@ const SearchPlayer = () => {
           const offensivescoreKey = `week_${weekNumber}_OffensiveRatio`
           return (
             <div>
-              <p>{obj?.[offensivescoreKey].toFixed(2) ?? '-'}%</p>
+              {/* <p>{obj?.[offensivescoreKey].toFixed(2) ?? '-'}%</p> */}
+              <p>{obj?.[offensivescoreKey] ? (obj[offensivescoreKey] * 100).toFixed(0) + '%' : '-'}</p>
+
             </div>
           )
         },
@@ -1772,7 +1863,9 @@ const SearchPlayer = () => {
 
               return (
                 <div>
-                  <p>{averageSnapPercentage}%</p>
+                  {/* <p>{averageSnapPercentage}%</p> */}
+                  <p>{(averageSnapPercentage * 100).toFixed(0)}%</p>
+
                 </div>
               )
             },
@@ -1792,7 +1885,7 @@ const SearchPlayer = () => {
               const specialteamscoreKey = `week_${weekNumber}_SpecialTeamsRatio`
               return (
                 <div>
-                  <p>{obj?.[specialteamscoreKey].toFixed(2) ?? '-'}%</p>
+                  {/* <p>{obj?.[specialteamscoreKey].toFixed(2) ?? '-'}%</p> */}
                 </div>
               )
             },
