@@ -245,7 +245,9 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
       PlayerID: playerIdSmall,
       player_id: playerIdBig,
       auctionFrom: 'owner',
-      CapHit:CapHit,
+      // CapHit:CapHit,
+      // CapHit: CapHit === 0 ? 1 : CapHit,
+      CapHit : (CapHit === 0) ? 1 : (CapHit === undefined ? 1 : CapHit),
     })
     if (res) {
       closeModal()

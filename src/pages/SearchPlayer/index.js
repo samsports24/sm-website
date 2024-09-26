@@ -2267,7 +2267,8 @@ const SearchPlayer = () => {
       PlayerID: playerID,
       player_id: player_id,
       auctionFrom: 'nonowner',
-      CapHit: CapHit === 0 ? 50000 : CapHit,
+      // CapHit: CapHit === 0 ? 50000 : CapHit,
+      CapHit : (CapHit === 0) ? 1 : (CapHit === undefined ? 1 : CapHit),
     })
     if (res) {
       setLoading(false)
