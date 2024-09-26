@@ -365,7 +365,7 @@ const SearchPlayer = () => {
     })
 
     tempResultArr.sort((a, b) => {
-      //  console.log('tempResultArr',tempResultArr);
+        console.log('tempResultArr',tempResultArr);
 
       const aPoints = a.regular_season_pts || 0
       const bPoints = b.regular_season_pts || 0
@@ -799,13 +799,41 @@ const SearchPlayer = () => {
 
           // Construct the key dynamically based on the week
           const scoreKey = `week_${weekNumber}_score`
+           const offensivescoreKey = `week_${weekNumber}_OffensiveRatio`
           return (
             <div className='_positionColumn'>
               <p>{obj?.[scoreKey] ?? '-'}</p>
+              {/* <p>{obj?.[offensivescoreKey] ? obj?.[scoreKey] : 0}</p> */}
             </div>
           )
         },
       },
+
+      // {
+      //   width: 30,
+      //   title: 'AVERAGE SNAP %',
+      //   dataIndex: 'averagesnap%',
+      //   key: 'averagesnap',
+      //   render: (_, obj) => {
+      //     const weekNumber = Number(checkweek)
+
+      //     const offensivescoreKey = `week_${weekNumber}_OffensiveRatio`
+
+      //     const offensiveRatio = obj?.[offensivescoreKey] ?? 0
+
+      //     // Ensure nflGamesPlayed is a number and not zero
+      //     const gamesPlayed = Number(obj.nflGamesPlayed)
+      //     const averageSnapPercentage =
+      //       gamesPlayed > 0 ? (offensiveRatio / gamesPlayed).toFixed(2) : '-'
+
+      //     return (
+      //       <div>
+      //         {/* <p>{averageSnapPercentage}%</p> */}
+      //         <p>{(averageSnapPercentage * 100).toFixed(0)}%</p>
+      //       </div>
+      //     )
+      //   },
+      // },
 
       {
         width: 30,
@@ -813,25 +841,29 @@ const SearchPlayer = () => {
         dataIndex: 'averagesnap%',
         key: 'averagesnap',
         render: (_, obj) => {
-          const weekNumber = Number(checkweek)
-
-          const offensivescoreKey = `week_${weekNumber}_OffensiveRatio`
-
-          const offensiveRatio = obj?.[offensivescoreKey] ?? 0
-
+          // Initialize a variable to hold the total OffensiveRatio
+          let totalOffensiveRatio = 0;
+      
+          // Loop through the weeks to accumulate the OffensiveRatio values
+          for (let week = 1; week <= 23; week++) { // Adjust the range as necessary
+            const offensivescoreKey = `week_${week}_OffensiveRatio`;
+            totalOffensiveRatio += obj?.[offensivescoreKey] || 0; // Safely add the value, defaulting to 0 if undefined
+          }
+      
           // Ensure nflGamesPlayed is a number and not zero
-          const gamesPlayed = Number(obj.nflGamesPlayed)
+          const gamesPlayed = Number(obj.nflGamesPlayed);
           const averageSnapPercentage =
-            gamesPlayed > 0 ? (offensiveRatio / gamesPlayed).toFixed(2) : '-'
-
+            gamesPlayed > 0 ? (totalOffensiveRatio / gamesPlayed).toFixed(2) : '-';
+      
           return (
             <div>
-              {/* <p>{averageSnapPercentage}%</p> */}
-              <p>{(averageSnapPercentage * 100).toFixed(0)}%</p>
+              <p>{averageSnapPercentage === '-' ? '-' : (averageSnapPercentage * 100).toFixed(0)}%</p>
             </div>
-          )
+          );
         },
       },
+      
+
 
       // week_1_OffensiveRatio
       {
@@ -1418,25 +1450,48 @@ const SearchPlayer = () => {
         title: 'AVERAGE SNAP %',
         dataIndex: 'averagesnap%',
         key: 'averagesnap',
+        // render: (_, obj) => {
+        //   const weekNumber = Number(checkweek)
+
+        //   const defensivecoreKey = `week_${weekNumber}_DefensiveRatio`
+
+        //   const defensiveRatio = obj?.[defensivecoreKey] ?? 0
+
+        //   // Ensure nflGamesPlayed is a number and not zero
+        //   const gamesPlayed = Number(obj.nflGamesPlayed)
+        //   const averageSnapPercentage =
+        //     gamesPlayed > 0 ? (defensiveRatio / gamesPlayed).toFixed(2) : '-'
+
+        //   return (
+        //     <div>
+        //       {/* <p>{averageSnapPercentage}%</p> */}
+        //       <p>{(averageSnapPercentage * 100).toFixed(0)}%</p>
+        //     </div>
+        //   )
+        // },
         render: (_, obj) => {
-          const weekNumber = Number(checkweek)
-
-          const defensivecoreKey = `week_${weekNumber}_DefensiveRatio`
-
-          const defensiveRatio = obj?.[defensivecoreKey] ?? 0
-
+          // Initialize a variable to hold the total OffensiveRatio
+          let totaldefensiveRatio = 0;
+      
+          // Loop through the weeks to accumulate the OffensiveRatio values
+          for (let week = 1; week <= 23; week++) { // Adjust the range as necessary
+            // const offensivescoreKey = `week_${week}_OffensiveRatio`;
+            const defensivecoreKey = `week_${week}_DefensiveRatio`
+            totaldefensiveRatio += obj?.[defensivecoreKey] || 0; // Safely add the value, defaulting to 0 if undefined
+          }
+      
           // Ensure nflGamesPlayed is a number and not zero
-          const gamesPlayed = Number(obj.nflGamesPlayed)
-          const averageSnapPercentage =
-            gamesPlayed > 0 ? (defensiveRatio / gamesPlayed).toFixed(2) : '-'
-
+          const gamesPlayed = Number(obj.nflGamesPlayed);
+          const averagedefensiveSnapPercentage =
+            gamesPlayed > 0 ? (totaldefensiveRatio / gamesPlayed).toFixed(2) : '-';
+      
           return (
             <div>
-              {/* <p>{averageSnapPercentage}%</p> */}
-              <p>{(averageSnapPercentage * 100).toFixed(0)}%</p>
+              <p>{averagedefensiveSnapPercentage === '-' ? '-' : (averagedefensiveSnapPercentage * 100).toFixed(0)}%</p>
             </div>
-          )
+          );
         },
+
       },
 
       {
@@ -1695,24 +1750,45 @@ const SearchPlayer = () => {
         title: 'AVERAGE SNAP %',
         dataIndex: 'averagesnap%',
         key: 'averagesnap',
+        // render: (_, obj) => {
+        //   const weekNumber = Number(checkweek)
+
+        //   const offensivescoreKey = `week_${weekNumber}_OffensiveRatio`
+
+        //   const offensiveRatio = obj?.[offensivescoreKey] ?? 0
+
+        //   // Ensure nflGamesPlayed is a number and not zero
+        //   const gamesPlayed = Number(obj.nflGamesPlayed)
+        //   const averageSnapPercentage =
+        //     gamesPlayed > 0 ? (offensiveRatio / gamesPlayed).toFixed(2) : '-'
+
+        //   return (
+        //     <div>
+        //       {/* <p>{averageSnapPercentage}%</p> */}
+        //       <p>{(averageSnapPercentage * 100).toFixed(0)}%</p>
+        //     </div>
+        //   )
+        // },
         render: (_, obj) => {
-          const weekNumber = Number(checkweek)
-
-          const offensivescoreKey = `week_${weekNumber}_OffensiveRatio`
-
-          const offensiveRatio = obj?.[offensivescoreKey] ?? 0
-
+          // Initialize a variable to hold the total OffensiveRatio
+          let totalOffensiveRatio = 0;
+      
+          // Loop through the weeks to accumulate the OffensiveRatio values
+          for (let week = 1; week <= 23; week++) { // Adjust the range as necessary
+            const offensivescoreKey = `week_${week}_OffensiveRatio`;
+            totalOffensiveRatio += obj?.[offensivescoreKey] || 0; // Safely add the value, defaulting to 0 if undefined
+          }
+      
           // Ensure nflGamesPlayed is a number and not zero
-          const gamesPlayed = Number(obj.nflGamesPlayed)
+          const gamesPlayed = Number(obj.nflGamesPlayed);
           const averageSnapPercentage =
-            gamesPlayed > 0 ? (offensiveRatio / gamesPlayed).toFixed(2) : '-'
-
+            gamesPlayed > 0 ? (totalOffensiveRatio / gamesPlayed).toFixed(2) : '-';
+      
           return (
             <div>
-              {/* <p>{averageSnapPercentage}%</p> */}
-              <p>{(averageSnapPercentage * 100).toFixed(0)}%</p>
+              <p>{averageSnapPercentage === '-' ? '-' : (averageSnapPercentage * 100).toFixed(0)}%</p>
             </div>
-          )
+          );
         },
       },
 
@@ -1774,20 +1850,25 @@ const SearchPlayer = () => {
 
       {
         width: 50,
-        title: 'TEAM RUSHED SACKS',
+        title: 'TEAM RUSHING YARDS',
         dataIndex: 'teamrushedsacks',
         key: 'teamrushedsacks',
         render: (_, obj) => {
           const weekNumber = Number(checkweek)
           const OL_TimesSacked = `week_${weekNumber}_TimesSacked`
           const timesSackedValue = obj?.[OL_TimesSacked]
+          
+          const OL_RushingYards = `week_${weekNumber}_RushingYards`
+
+          
 
           // Calculate the value, ensuring that NaN or undefined are handled
           const calculatedValue = 15 - (isNaN(timesSackedValue) ? 0 : Number(timesSackedValue))
 
           return (
             <div>
-              <p>{calculatedValue || '0'}</p>
+              {/* <p>{calculatedValue || '0'}</p> */}
+              <p>{obj?.[OL_RushingYards] ?? '-'}</p>
             </div>
           )
         },
@@ -1858,24 +1939,48 @@ const SearchPlayer = () => {
             title: 'AVERAGE SNAP %',
             dataIndex: 'averagesnap%',
             key: 'averagesnap',
+            // render: (_, obj) => {
+            //   const weekNumber = Number(checkweek)
+
+            //   const specialteamscoreKey = `week_${weekNumber}_SpecialTeamsRatio`
+
+            //   const specialteamRatio = obj?.[specialteamscoreKey] ?? 0
+
+            //   // Ensure nflGamesPlayed is a number and not zero
+            //   const gamesPlayed = Number(obj.nflGamesPlayed)
+            //   const averageSnapPercentage =
+            //     gamesPlayed > 0 ? (specialteamRatio / gamesPlayed).toFixed(2) : '-'
+
+            //   return (
+            //     <div>
+            //       {/* <p>{averageSnapPercentage}%</p> */}
+            //       <p>{(averageSnapPercentage * 100).toFixed(0)}%</p>
+            //     </div>
+            //   )
+            // },
+
+
             render: (_, obj) => {
-              const weekNumber = Number(checkweek)
-
-              const specialteamscoreKey = `week_${weekNumber}_SpecialTeamsRatio`
-
-              const specialteamRatio = obj?.[specialteamscoreKey] ?? 0
-
+              // Initialize a variable to hold the total OffensiveRatio
+              let totalspecialRatio = 0;
+          
+              // Loop through the weeks to accumulate the OffensiveRatio values
+              for (let week = 1; week <= 23; week++) { // Adjust the range as necessary
+                // const offensivescoreKey = `week_${week}_OffensiveRatio`;
+                const specialscoreKey = `week_${week}_SpecialTeamsRatio`
+                totalspecialRatio += obj?.[specialscoreKey] || 0; // Safely add the value, defaulting to 0 if undefined
+              }
+          
               // Ensure nflGamesPlayed is a number and not zero
-              const gamesPlayed = Number(obj.nflGamesPlayed)
-              const averageSnapPercentage =
-                gamesPlayed > 0 ? (specialteamRatio / gamesPlayed).toFixed(2) : '-'
-
+              const gamesPlayed = Number(obj.nflGamesPlayed);
+              const averagespecialSnapPercentage =
+                gamesPlayed > 0 ? (totalspecialRatio / gamesPlayed).toFixed(2) : '-';
+          
               return (
                 <div>
-                  {/* <p>{averageSnapPercentage}%</p> */}
-                  <p>{(averageSnapPercentage * 100).toFixed(0)}%</p>
+                  <p>{averagespecialSnapPercentage === '-' ? '-' : (averagespecialSnapPercentage * 100).toFixed(0)}%</p>
                 </div>
-              )
+              );
             },
           },
 
