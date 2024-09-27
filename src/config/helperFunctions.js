@@ -42,7 +42,7 @@ export const positionOrder = {
 
 
 export const sortedArray = (arr) => {
-  console.log('arr', arr);
+  // console.log('arr', arr);
   return arr?.sort((a, b) => {
     const positionA = a?.players?.Position || '';
     const positionB = b?.players?.Position || '';
@@ -130,10 +130,17 @@ export const getRemainingSeconds = (timeString) => {
 
 export const getPf = (arr) => {
   if (arr && arr?.length > 0) {
+    // console.log('arr',arr);
+    //  console.log('arr?.length',arr?.length);
+    // const week = store?.getState()?.user?.setting?.week
+    // console.log('week',week);
+    
+    
     const setting = store?.getState()?.user?.setting
     const filtered = arr.filter((v) => v?.season === setting?.season && v?.week <= setting?.week)
     const tpf = filtered?.reduce((acc, obj) => acc + obj.score, 0) || 0
-    const apf = tpf > 0 ? tpf / arr?.length : 0
+     const apf = tpf > 0 ? tpf / arr?.length : 0
+
     return {
       tpf: tpf?.toFixed(2),
       apf: apf?.toFixed(2),

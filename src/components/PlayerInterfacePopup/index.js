@@ -59,7 +59,9 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
   const isFreeAgent = state?.isFreeAgent?.status
   const isAuction = state?.isAuction
 
-// console.log('data?.player',data?.player);
+//  console.log('data?.player',data?.player);
+// console.log('data?.playerContract?.weeklyScoring',data?.playerContract?.weeklyScoring);
+
 
 // console.log('mysampoints',sampoints);
 
@@ -255,6 +257,8 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
     }
     setAuctionLoading(false)
   }
+
+  
 
   return (
     <div className='player_interface_popup'>
@@ -491,17 +495,32 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
                 <div>
                   <h2>TPF / APF</h2>
                   <div className='tpf_apf_box'>
-                    <p>
+                    {/* <p>
                       {isFreeAgent
+                      // {console.log('data?.playerContract?',data?.playerContract?.weeklyScoring)
+                      
                         ? data?.player?.pf || '-'
-                        : getPf(data?.playerContract?.weeklyScoring)?.tpf}
-                    </p>
-                    <span style={{ fontSize: '22px', color: '#fff' }}>|</span>
+                        : getPf(data?.playerContract?.weeklyScoring)?.tpf
+                        }
+                    </p> */}
                     <p>
+  {isFreeAgent
+    ? data?.player?.pf || '-'
+    : getPf(data?.playerContract?.weeklyScoring?.filter(item => item.season === 2024))?.tpf}
+</p>
+
+                    <span style={{ fontSize: '22px', color: '#fff' }}>|</span>
+                    {/* <p>
                       {isFreeAgent
                         ? data?.player?.avgPf || '-'
                         : getPf(data?.playerContract?.weeklyScoring)?.apf}
-                    </p>
+                    </p> */}
+                    <p>
+  {isFreeAgent
+    ? data?.player?.avgPf || '-'
+    : getPf(data?.playerContract?.weeklyScoring?.filter(item => item.season === 2024))?.apf}
+</p>
+
                   </div>
                 </div>
               </div>

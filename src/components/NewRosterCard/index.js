@@ -40,7 +40,8 @@ const NewRosterCard = (props) => {
   const { id } = useParams()
 
   // console.log('leaguesalarycap',currentYearSalaryCap);
-  
+
+  // console.log('averagePf', averagePf)
 
   return (
     <div className='nrc_container'>
@@ -89,14 +90,26 @@ const NewRosterCard = (props) => {
             <p>BYE:{ByeWeek || '-'}</p>
           </div>
           <div className='bottom'>
-            <p>AVG.PF:{averagePf[PlayerID] ? getPf(averagePf[PlayerID])?.apf : '-'}</p>
-            <p>PPG:{pts || '-'}</p>
+            <p>TPF:{averagePf[PlayerID] ? getPf(averagePf[PlayerID])?.tpf : '-'}</p>
+            <p></p>
+
+            <p>
+              PPG:{' '}
+              {averagePf[PlayerID]
+                ? getPf(averagePf[PlayerID].filter((item) => item.season === 2024))?.apf || '-'
+                : '-'}
+            </p>
+
+            {/* <p>PPG:{getPf(data?.playerContract?.weeklyScoring?.filter(item => item.season === 2024))?.apf}</p> */}
             <p>P-RANK:{getRankAndPosition(averagePf[PlayerID])?.playerOverallRank}</p>
             <p>OPP:{UpcomingGameOpponent || '-'}</p>
             <p>
-               CAPHIT:{currentYearSalaryCap[PlayerID] ? `$${currentYearSalaryCap[PlayerID]?.toLocaleString()}` : '-'}  
-                   {/* CAPHIT:{currentYearSalaryCap}  */}
-               {/* CAPHIT:${currentYearSalaryCap?.toLocaleString() || '-'}  */}
+              CAPHIT:
+              {currentYearSalaryCap[PlayerID]
+                ? `$${currentYearSalaryCap[PlayerID]?.toLocaleString()}`
+                : '-'}
+              {/* CAPHIT:{currentYearSalaryCap}  */}
+              {/* CAPHIT:${currentYearSalaryCap?.toLocaleString() || '-'}  */}
             </p>
           </div>
         </div>
