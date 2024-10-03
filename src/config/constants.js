@@ -7,11 +7,17 @@ import scocer from "../assets/new_Soccerball.png"
 import baseball from "../assets/new_Baseball.png"
 
 
-// export const base_url = 'http://localhost:8000'
+//  export const base_url = 'http://localhost:8000'
+//  export const draft_base_url = 'http://localhost:8002'
 // export const frontEndUrl = 'http://localhost:3000'
+
+
 
  export const base_url = 'https://backend.samsports.io'
  export const frontEndUrl = 'https://samsports.io'
+ export const draft_base_url = 'https://nfl-draft.samsports.io'
+
+
 
 
 
@@ -20,15 +26,28 @@ import baseball from "../assets/new_Baseball.png"
 
 
 export const publicAPI = Axios.create({ baseURL: base_url })
-
 export const privateAPI = Axios.create({ baseURL: base_url })
+export const privateDRAFTAPI = Axios.create({ baseURL: draft_base_url })
+
+
 
 export const attachToken = async () => {
   const jwt = localStorage.getItem('token')
   privateAPI.defaults.headers.common.Authorization = `Bearer ${jwt}`
+  privateDRAFTAPI.defaults.headers.common.Authorization = `Bearer ${jwt}`
 }
 
 privateAPI.interceptors.response.use(
+  async (response) => {
+    store?.dispatch(getNotiCount())
+    return response
+  },
+  (error) => {
+    return Promise.reject(error)
+  },
+)
+
+privateDRAFTAPI.interceptors.response.use(
   async (response) => {
     store?.dispatch(getNotiCount())
     return response

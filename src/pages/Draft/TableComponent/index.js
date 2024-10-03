@@ -47,24 +47,35 @@ const TableComponent = ({ tableScroll }) => {
   const [loading, setLoading] = useState(false)
   const socket = io(base_url)
 
-  const [isRookieActive, setIsRookieActive] = useState(true);
+  const [isRookieActive, setIsRookieActive] = useState(true)
 
   const dispatch = useDispatch()
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      dispatch(setSearch(e.target.value));
-      handleSearch(e.target.value);
-      page !== 1 && dispatch(setPage(1));
+      dispatch(setSearch(e.target.value))
+      handleSearch(e.target.value)
+      page !== 1 && dispatch(setPage(1))
     }
-  };
+  }
+
+  useEffect(() => {
+    const getLeagueDetailsTemp = async () => {
+      // console.log('in the console here');
+      
+      await getLeagueDetails().then(() => {
+        // alert('getLeagueDetails')
+      })
+    }
+    getLeagueDetailsTemp()
+  }, [])
 
   useEffect(() => {
     if (localStorage.getItem('token')) {
       socket.on('counter', async (data) => {
+        // alert('socket working')
         dispatch(setRoundLoading(true))
         await getDraftCounter()
-        await getLeagueDetails()
         await getAllPlayers({
           position: position,
           search: search,
@@ -86,18 +97,16 @@ const TableComponent = ({ tableScroll }) => {
     }
   }, [localStorage.getItem('token')])
 
-
   const handleRookieButtonClick = () => {
     if (isRookieActive) {
-      dispatch(setRookieplayers(''));
+      dispatch(setRookieplayers(''))
       // dispatch(setPage(1));
     } else {
-      dispatch(setRookieplayers('Rookie'));
+      dispatch(setRookieplayers('Rookie'))
     }
-    setIsRookieActive(!isRookieActive); // Toggle the state
-    dispatch(setPage(1)); // Reset page to 1 (assuming you need to do this on button click)
-  };
-
+    setIsRookieActive(!isRookieActive) // Toggle the state
+    dispatch(setPage(1)) // Reset page to 1 (assuming you need to do this on button click)
+  }
 
   const items = [
     {
@@ -245,7 +254,15 @@ const TableComponent = ({ tableScroll }) => {
                   )
                 } else {
                   return (
-                    <div key={i} style={{display: 'flex', flexDirection: 'column' ,alignItems: "start", rowGap: "5px"}}>
+                    <div
+                      key={i}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'start',
+                        rowGap: '5px',
+                      }}
+                    >
                       <Button
                         key={i}
                         type='primary'
@@ -261,19 +278,19 @@ const TableComponent = ({ tableScroll }) => {
                       </Button>
 
                       <Button
-                  key={i}
-                  type='primary'
-                  className={`${Rookieplayers === 'Rookie' ? 'active' : ''}`}
-                  // onClick={() => {
-                  //   // dispatch(setPosition('ALL'))
-                  //   dispatch(setRookieplayers(''))
-                  //   dispatch(setPage(1))
-                  // }}
+                        key={i}
+                        type='primary'
+                        className={`${Rookieplayers === 'Rookie' ? 'active' : ''}`}
+                        // onClick={() => {
+                        //   // dispatch(setPosition('ALL'))
+                        //   dispatch(setRookieplayers(''))
+                        //   dispatch(setPage(1))
+                        // }}
 
-                  onClick={handleRookieButtonClick}
-                >
-                  Rookie
-                </Button>
+                        onClick={handleRookieButtonClick}
+                      >
+                        Rookie
+                      </Button>
                     </div>
                   )
                 }

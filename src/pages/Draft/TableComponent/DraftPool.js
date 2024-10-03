@@ -39,7 +39,7 @@ const DraftPool = ({ tableScroll }) => {
   const [loading, setLoading] = useState('')
   const SETTING = useSelector((state) => state?.user?.setting)
 
-  console.log('SETTING', SETTING?.season)
+  // console.log('SETTING', SETTING?.season)
 
   const [color, setColor] = useState('')
 
@@ -86,11 +86,11 @@ const DraftPool = ({ tableScroll }) => {
   // for age sorting
   const handleAgeClick = () => {
     const newSortingOrder = age === 'asc' ? 'desc' : 'asc'
-    console.log('newSortingOrder', newSortingOrder)
+    // console.log('newSortingOrder', newSortingOrder)
     setAge(newSortingOrder)
   }
 
-  console.log('age', age)
+  // console.log('age', age)
 
   const handleAddQueue = async (id) => {
     setLoading(id)
@@ -114,7 +114,7 @@ const DraftPool = ({ tableScroll }) => {
 
   // add black list
   const handleAddBlackList = async (id) => {
-    console.log('inside the black list', id)
+    // console.log('inside the black list', id)
     setLoading(id)
     await createBlackListQueue({
       team: userDetails?.team?._id,
@@ -125,7 +125,7 @@ const DraftPool = ({ tableScroll }) => {
   }
 
   const getColumns = (position) => {
-    console.log('🚀 ~ getColumns ~ position:', position)
+    // console.log('🚀 ~ getColumns ~ position:', position)
     const columns = [
       {
         width: 50,
@@ -179,7 +179,7 @@ const DraftPool = ({ tableScroll }) => {
                       handleDeleteBlackListQueue(obj?.player?._id, isblacklist?._id)
                       setColor('none')
                     }
-                    console.log('fist Additional functionality executed')
+                    // console.log('fist Additional functionality executed')
                   }}
                 />
               ) : (
@@ -190,7 +190,7 @@ const DraftPool = ({ tableScroll }) => {
                     handleAddQueue(obj?.player?._id)
                     setColor('var(--primary)') // Update color to 'var(--primary)'
                     // Additional functionality here
-                    console.log('second Additional functionality executed')
+                    // console.log('second Additional functionality executed')
                   }}
                 />
               )}

@@ -1,5 +1,5 @@
 import { notification } from 'antd'
-import { attachToken, privateAPI } from '../../config/constants'
+import { attachToken, privateDRAFTAPI,privateAPI } from '../../config/constants'
 import store from '../store'
 import { getUser } from './authActions'
 
@@ -132,10 +132,10 @@ export const getAllPlayers = async (payload) => {
   try {
     store.dispatch(setDraftTableLoading(true))
     attachToken()
-    // const res = await privateAPI.post('/player/get-all-players', payload)
-    // const res = await privateAPI.post('/draft/get-draft-all-players', payload)
-    // const res = await privateAPI.post(`/draft/get-draft-all-players?position=${payload.position}`);
-   const res = await privateAPI.post(`/draft/get-draft-all-players?position=${payload.position}`, payload);
+    // const res = await privateDRAFTAPI.post('/player/get-all-players', payload)
+    // const res = await privateDRAFTAPI.post('/draft/get-draft-all-players', payload)
+    // const res = await privateDRAFTAPI.post(`/draft/get-draft-all-players?position=${payload.position}`);
+   const res = await privateDRAFTAPI.post(`/draft/get-draft-all-players?position=${payload.position}`, payload);
     store.dispatch(setAllPlayers(res.data.data))
     return res.data.data
   } catch (err) {
@@ -153,8 +153,8 @@ export const getALLplayerStats = async (payload)=>{
   try {
     store.dispatch(setDraftTableLoading(true))
     attachToken()
-    // const res = await privateAPI.post('/player/get-all-players', payload)
-    const res = await privateAPI.post('/draft/get-stats-draft-all-players', payload)
+    // const res = await privateDRAFTAPI.post('/player/get-all-players', payload)
+    const res = await privateDRAFTAPI.post('/draft/get-stats-draft-all-players', payload)
     store.dispatch(setAllPlayersStats(res.data.data))
     return res.data.data
   } catch (err) {
@@ -170,7 +170,7 @@ export const getALLplayerStats = async (payload)=>{
 export const createDraftRound = async (payload) => {
   try {
     attachToken()
-    const res = await privateAPI.post('/draft/create-draft-round', payload)
+    const res = await privateDRAFTAPI.post('/draft/create-draft-round', payload)
     if (res) {
       getDraftRound(false)
       return res.data.data
@@ -186,7 +186,7 @@ export const createDraftRound = async (payload) => {
 export const createRandomizedDraftRound = async (payload) => {
   try {
     attachToken()
-    const res = await privateAPI.post('/draft/create-randomized-draft-round', payload)
+    const res = await privateDRAFTAPI.post('/draft/create-randomized-draft-round', payload)
     if (res) {
       getDraftRound()
     }
@@ -202,7 +202,7 @@ export const createRandomizedDraftRound = async (payload) => {
 export const generateAllRound = async (payload) => {
   try {
     attachToken()
-    const res = await privateAPI.post('/draft/generate-all-draft-round', payload)
+    const res = await privateDRAFTAPI.post('/draft/generate-all-draft-round', payload)
     if (res) {
       getDraftRound()
     }
@@ -219,7 +219,7 @@ export const getDraftRound = async (isLoading = true) => {
   try {
     attachToken()
     isLoading && store.dispatch(setDraftLoading(true))
-    const res = await privateAPI.get('/draft/get-draft-round')
+    const res = await privateDRAFTAPI.get('/draft/get-draft-round')
     if (res) {
       await getDraftCounter()
       store.dispatch(setDraftRound(res.data.data))
@@ -238,7 +238,7 @@ export const getDraftRound = async (isLoading = true) => {
 export const deleteDraftRound = async (id) => {
   try {
     attachToken()
-    const res = await privateAPI.delete(`/draft/delete-draft-round?id=${id}`)
+    const res = await privateDRAFTAPI.delete(`/draft/delete-draft-round?id=${id}`)
     if (res) {
       getDraftRound(false)
       return res.data.data
@@ -255,7 +255,7 @@ export const deleteDraftRound = async (id) => {
 export const createDraftQueue = async (payload) => {
   try {
     attachToken()
-    const res = await privateAPI.post('/draft/create-draft-queue', payload)
+    const res = await privateDRAFTAPI.post('/draft/create-draft-queue', payload)
     if (res) {
       await getDraftQueue()
       return res.data.data
@@ -272,7 +272,7 @@ export const getDraftQueue = async () => {
   try {
     attachToken()
     // store.dispatch(setDraftLoading(true))
-    const res = await privateAPI.get('/draft/get-draft-queue')
+    const res = await privateDRAFTAPI.get('/draft/get-draft-queue')
     if (res) {
       store.dispatch(setDraftQueue(res.data.data))
       return res.data.data
@@ -289,7 +289,7 @@ export const getDraftQueue = async () => {
 export const deleteDraftQueue = async (id) => {
   try {
     attachToken()
-    const res = await privateAPI.delete(`/draft/delete-draft-queue?id=${id}`)
+    const res = await privateDRAFTAPI.delete(`/draft/delete-draft-queue?id=${id}`)
     if (res) {
       await getDraftQueue()
       return res.data.data
@@ -306,8 +306,8 @@ export const deleteDraftQueue = async (id) => {
 export const changeDraftQueueOrder = async (id,direction) => {
   try {
     attachToken()
-    // const res = await privateAPI.delete(`/draft/change-order-draft-queue?id=${id}`)
-    const res = await privateAPI.put(`/draft/change-order-draft-queue?id=${id}&direction=${direction}`);
+    // const res = await privateDRAFTAPI.delete(`/draft/change-order-draft-queue?id=${id}`)
+    const res = await privateDRAFTAPI.put(`/draft/change-order-draft-queue?id=${id}&direction=${direction}`);
     if (res) {
       await getDraftQueue()
       return res.data.data
@@ -328,7 +328,7 @@ export const changeDraftQueueOrder = async (id,direction) => {
 export const createBlackListQueue = async (payload) => {
   try {
     attachToken()
-    const res = await privateAPI.post('/draft/create-black-list', payload)
+    const res = await privateDRAFTAPI.post('/draft/create-black-list', payload)
     if (res) {
       await getBlackListQueue()
       return res.data.data
@@ -346,7 +346,7 @@ export const getBlackListQueue = async () => {
   try {
     attachToken()
     // store.dispatch(setDraftLoading(true))
-    const res = await privateAPI.get('/draft/get-black-list')
+    const res = await privateDRAFTAPI.get('/draft/get-black-list')
     if (res) {
       store.dispatch(setBlackListQueue(res.data.data))
       return res.data.data
@@ -367,7 +367,7 @@ export const deleteBlacklistQueue = async (id) => {
   console.log('inside id here',id);
   try {
     attachToken()
-    const res = await privateAPI.delete(`/draft/delete-black-list?id=${id}`)
+    const res = await privateDRAFTAPI.delete(`/draft/delete-black-list?id=${id}`)
     if (res) {
       await getBlackListQueue()
       return res.data.data
@@ -386,7 +386,7 @@ export const addPlayerToDraft = async (payload) => {
   try {
     console.log('payload',payload);
     attachToken()
-    const res = await privateAPI.post('/draft/add-player-to-draft', payload)
+    const res = await privateDRAFTAPI.post('/draft/add-player-to-draft', payload)
     if (res) {
       // const draftState = store.getState().draft
       // // getDraftCounter()
@@ -416,7 +416,7 @@ export const addPlayerToDraft = async (payload) => {
 export const getDraftCounter = async () => {
   try {
     attachToken()
-    const res = await privateAPI.get('/draft/get-draft-counter')
+    const res = await privateDRAFTAPI.get('/draft/get-draft-counter')
     if (res) {
       store.dispatch(setDraftCounter(res?.data?.data))
       return res.data.data
@@ -437,7 +437,7 @@ export const makeBid = async (payload) => {
   try {
     console.log('payload in bid ',payload);
     attachToken()
-    const res = await privateAPI.post('/draft/make-bidding', payload)
+    const res = await privateDRAFTAPI.post('/draft/make-bidding', payload)
     if (res) {
       getDraftRound()
       store.dispatch(getUser())
