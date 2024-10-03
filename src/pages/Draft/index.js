@@ -47,7 +47,6 @@ const Draft = () => {
   useEffect(() => {
     if (socket) {
       console.log('in the socket');
-      
       socket.on('draftLive', getData)
       return () => {
         socket.off('draftLive', getData)

@@ -379,12 +379,15 @@ const PayButton = ({ data: v, getData }) => {
   }
 
 
-  // console.log('v',v);
+ console.log('v',v);
+
+  console.log('USER?.team._id',USER?.team._id);
+  
  
 
   return (
     <>
-      {v?.bidHistory.length > 1 && v?.assigned?.user === USER?._id && (
+      {v?.bidHistory.length > 1 && v?.auctionStartedBy?.team !== USER?.team._id && (
         <Tooltip
           placement='top'
           title={

@@ -50,6 +50,9 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
     getData()
   }, [openModal])
 
+  // console.log('statster',starter);
+  
+
   const handleStarter = async (id) => {
     setPlayerId(id)
     const res = await assignPlayerToStarter({
@@ -85,6 +88,9 @@ const DepthChart = ({ openModal, setOpenModal, data: propsData, getDepthChartDat
 
   const Card = ({ data, button = false, scores }) => {
     const { players: p } = data
+
+    // console.log('p',p);
+    
 
     return (
       <div className='content_body'>

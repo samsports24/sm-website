@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react'
 import PlayerInfoBottom from '../components/PlayerInfoBottom'
 import moment from 'moment'
 import { addBid, getSingleAuctionPlayer } from '../redux/actions/rosterAction'
+import { useSelector } from 'react-redux'
 
 const PlayerLiveAuction = () => {
   const [noti, contextHolder] = notification.useNotification()
@@ -30,6 +31,7 @@ const PlayerLiveAuction = () => {
   const [news, setNews] = useState('')
   const navigate = useNavigate()
   const params = useParams()
+  const USER = useSelector((state) => state.user)
 
   useEffect(() => {
     bidError && setBidError(false)
@@ -230,6 +232,8 @@ const PlayerLiveAuction = () => {
                     loading={isLoading?.status && isLoading?.type === 'submit'}
                     type='primary'
                     onClick={handleManualBid}
+                     disabled={state?.auctionStartedBy?.team === USER?.team?._id}
+
                   >
                     Submit
                   </Button>
@@ -238,6 +242,7 @@ const PlayerLiveAuction = () => {
                     loading={isLoading?.status && isLoading?.type === 'quick'}
                     type='primary'
                     onClick={handleQuickBid}
+                     disabled={state?.auctionStartedBy?.team === USER?.team?._id}
                   >
                     Quick Bid
                   </Button>

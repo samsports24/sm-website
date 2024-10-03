@@ -626,6 +626,8 @@ const LiveAuctionBid = ({ data, getData,closeModal }) => {
   })
   const [manualBid, setManualBid] = useState('')
   const [bidError, setBidError] = useState('')
+  // const USER = useSelector((state) => state.user)
+  const USER = useSelector((state) => state.user.userDetails)
 
 const dispatch = useDispatch()
 
@@ -803,6 +805,16 @@ const handleQuickBid = async () => {
   }
 };
 
+console.log('data?.auctionStartedBy?.team',data?.auctionStartedBy?.team);
+console.log('USER?.team?._id',USER);
+
+
+
+ let  isDisabled = data?.auctionStartedBy?.team._id === USER?.team?._id;
+
+ console.log('isDisabled',isDisabled);
+
+
 
   return (
     <>
@@ -833,7 +845,13 @@ const handleQuickBid = async () => {
               </div>
             </div>
           </div>
-          <div className='bid_button' onClick={handleQuickBid}>
+          <div     style={{
+      cursor: isDisabled ? 'not-allowed' : 'pointer',
+      opacity: isDisabled ? 0.5 : 1 
+    }} className='bid_button' 
+    // onClick={handleQuickBid}
+    onClick={!isDisabled ? handleQuickBid : undefined} 
+    >
             {isLoading?.status && isLoading?.type === 'quick' ? (
               <Spin />
             ) : (
@@ -862,7 +880,13 @@ const handleQuickBid = async () => {
             />
             {bidError != '' && <p className='error_text'>{bidError}</p>}
           </div>
-          <div className='bid_button' onClick={handleManualBid}>
+          <div  onClick={!isDisabled ? handleManualBid : undefined} 
+    style={{
+      cursor: isDisabled ? 'not-allowed' : 'pointer',
+      opacity: isDisabled ? 0.5 : 1 
+    }} className='bid_button'
+     // onClick={handleManualBid}
+     >
             {isLoading?.status && isLoading?.type === 'submit' ? <Spin /> : <p>SUBMIT</p>}
           </div>
         </div>
