@@ -810,7 +810,7 @@ console.log('USER?.team?._id',USER);
 
 
 
- let  isDisabled = data?.auctionStartedBy?.team._id === USER?.team?._id;
+ let  isDisabled = data?.auctionStartedBy?.team._id === USER?.team?._id && String(data?.auctionFrom) === 'owner';
 
  console.log('isDisabled',isDisabled);
 

@@ -232,7 +232,7 @@ const PlayerLiveAuction = () => {
                     loading={isLoading?.status && isLoading?.type === 'submit'}
                     type='primary'
                     onClick={handleManualBid}
-                     disabled={state?.auctionStartedBy?.team === USER?.team?._id}
+                     disabled={state?.auctionStartedBy?.team === USER?.team?._id && String(state?.auctionFrom) === 'owner'}
 
                   >
                     Submit
@@ -242,7 +242,7 @@ const PlayerLiveAuction = () => {
                     loading={isLoading?.status && isLoading?.type === 'quick'}
                     type='primary'
                     onClick={handleQuickBid}
-                     disabled={state?.auctionStartedBy?.team === USER?.team?._id}
+                     disabled={state?.auctionStartedBy?.team === USER?.team?._id && String(state?.auctionFrom) === 'owner'}
                   >
                     Quick Bid
                   </Button>
