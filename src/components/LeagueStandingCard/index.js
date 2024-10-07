@@ -83,6 +83,11 @@ const LeagueStandingCard = ({ data, index, teams }) => {
 
 console.log('data?.standing',data?.standing);
 
+console.log('data?.conference',data?.conference);
+console.log('data?._id',data?._id);
+
+
+
 
   return (
     <div className='league_standing_card' style={{ marginTop: index === 0 && '0px' }}>
@@ -102,6 +107,7 @@ console.log('data?.standing',data?.standing);
 
       ?.map((v) => {
 
+// console.log('v',v);
 
         // const team = teams.find((x) => v?.teamId === x?._id)
         return (
@@ -128,7 +134,9 @@ console.log('data?.standing',data?.standing);
                     {
                       key: v?._id,
                       wlt: `${v?.teamScore?.win}-${v?.teamScore?.lose}-${v?.teamScore?.tie}`,
-                      pct: v?.teamScore?.pct,
+                      // pct: v?.teamScore?.pct,
+                      pct:v?.teamScore?.win  / (v?.teamScore?.win + v?.teamScore?.lose + v?.teamScore?.tie || 1),
+
                       gb: v?.teamScore?.gb,
                       strk: v?.teamScore?.strk ? v?.teamScore?.strk : '-',
                       pf: v?.teamScore?.pf?.toFixed(2),

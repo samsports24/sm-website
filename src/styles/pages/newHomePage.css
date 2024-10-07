@@ -59,12 +59,12 @@
   align-items: center;
   padding: 30px;
   margin-bottom: 95px;
-  /* background: rgb(176, 141, 25);
+   background: rgb(0, 71, 171);
   background: linear-gradient(
     263deg,
-    rgba(176, 141, 25, 1) 0%,
+    rgb(0, 71, 171,1) 0%,
     rgba(255, 255, 255, 0.12368697478991597) 100%
-  ); */
+  ); 
 }
 .card1 > div h1 {
   font-size: 30px;

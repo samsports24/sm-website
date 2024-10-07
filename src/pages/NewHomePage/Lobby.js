@@ -14,50 +14,38 @@ const Lobby = () => {
   const [data, setData] = useState([])
   const navigate = useNavigate()
   const week = useSelector((state) => state.user?.setting?.week)
-  const league =useSelector((state)=> state.user?.userDetails?.team?.currentLeague?.leagueType)
-  
+  const league = useSelector((state) => state.user?.userDetails?.team?.currentLeague?.leagueType)
 
-// console.log('USER',USER);
+  // console.log('USER',USER);
 
-//  console.log('league',league);
+  //  console.log('league',league);
 
-
-
-
-useEffect(() => {
-  getData()
-}, [
-  week,
-
-])
-
+  useEffect(() => {
+    getData()
+  }, [week])
 
   // console.log('my check',data);
 
-// console.log('data?.opponentOne.name',data?.opponentOne.name);
+  // console.log('data?.opponentOne.name',data?.opponentOne.name);
 
+  const getData = async () => {
+    // setLoading(true)
+    // const res = await getTeamSchedule({ teamFilter: selectedTeam })
+    const res = await getTeamSchedule({ teamFilter: '', week })
+    console.log('rws', res[0])
+    //   const today = moment().startOf('day');
+    //   console.log('today',today);
 
+    // // Filter the array
+    // const filteredData = res?.filter(item => moment(item?.matchStartDate).isAfter(today));
 
-const getData = async () => {
-  // setLoading(true)
-  // const res = await getTeamSchedule({ teamFilter: selectedTeam })
-  const res = await getTeamSchedule({ teamFilter: '', week })
-    console.log('rws',res[0]);
-  //   const today = moment().startOf('day');
-  //   console.log('today',today);
-    
+    // console.log('filteredData',filteredData);
 
-  // // Filter the array
-  // const filteredData = res?.filter(item => moment(item?.matchStartDate).isAfter(today));
+    // console.log('c',res[0]);
 
-  // console.log('filteredData',filteredData);
-  
-  // console.log('c',res[0]);
-  
-  setData(res)
-  // setLoading(false)
-}
-
+    setData(res)
+    // setLoading(false)
+  }
 
   return (
     <div className='lobby_container'>
@@ -91,10 +79,7 @@ const getData = async () => {
                     }}
                   />
                 )}
-                <Card1 
-                league={league}
-               
-                 />
+                <Card1 league={league} />
                 <CreateLeague
                   button={
                     <Card2
@@ -105,7 +90,6 @@ const getData = async () => {
                         text2: 'Leagues',
                       }}
                       paddingBlock={'70px'}
-                      
                     />
                   }
                 />
@@ -114,7 +98,7 @@ const getData = async () => {
           </Col>
           <Col xs={24} lg={12} xl={8}>
             <Row gutter={[10, 10]}>
-            {!isAuthenticated && (
+              {!isAuthenticated && (
                 <div
                   className='overlay'
                   // style={{background: 'red'}}
@@ -182,34 +166,25 @@ const getData = async () => {
                     'Rank yourself against your peers and be the ultimate best GM, rise the ranks and get your chance to GM a pro team!',
                 }}
               />
- <Card2
-    alignCenter
-    proScoring
-    flip
-    isAuthenticated
-    week
-    data={data}
-    text={
-        !isAuthenticated && week ? 
-        {
-            text1: 'PRO SCORING',
-            text3: 'FOLLOW YOUR FAVORITE',
-            text4: 'PRO TEAM PERFORMANCE',
-        } : 
-        {
-            text1: `Week ${week}`
-        }
-    }
->
-
-
-
-
-
-
-</Card2>
-
-
+              <Card2
+                alignCenter
+                proScoring
+                flip
+                isAuthenticated
+                week
+                data={data}
+                text={
+                  !isAuthenticated && week
+                    ? {
+                        text1: 'PRO SCORING',
+                        text3: 'FOLLOW YOUR FAVORITE',
+                        text4: 'PRO TEAM PERFORMANCE',
+                      }
+                    : {
+                        text1: `Week ${week}`,
+                      }
+                }
+              ></Card2>
             </div>
             {/* <Row gutter={[10, 10]}>
               <Card2
@@ -249,8 +224,6 @@ const getData = async () => {
 // const Card1 = ({ flip,isAuthenticated,week }) => {
 //   return (
 
-
-    
 //     <div className={`card1 ${flip ? 'flip' : ''}`}>
 //       <div>
 //         <h1>SAM Ultimate</h1>
@@ -259,24 +232,30 @@ const getData = async () => {
 //   )
 // }
 
-const Card1 = ({ flip,league }) => {
+const Card1 = ({ flip, league }) => {
   return (
     <>
- 
-        <div className={`card1 ${flip ? 'flip' : ''}`}>
-          <div>
-            <h1>{league || 'SFL'}</h1>
-          </div>
+      <div className={`card1 ${flip ? 'flip' : ''}`}>
+        <div>
+          <h1>{league || 'SFL'}</h1>
         </div>
-      
+      </div>
     </>
-  );
-};
+  )
+}
 
-const Card2 = ({ isImage, text, alignCenter, cursor, onClick, flip, paddingBlock,isAuthenticated,week,data }) => {
-
-
-
+const Card2 = ({
+  isImage,
+  text,
+  alignCenter,
+  cursor,
+  onClick,
+  flip,
+  paddingBlock,
+  isAuthenticated,
+  week,
+  data,
+}) => {
   return (
     <div
       className={`card2 ${flip ? 'flip' : ''}`}
@@ -289,7 +268,6 @@ const Card2 = ({ isImage, text, alignCenter, cursor, onClick, flip, paddingBlock
       <div className='content'>
         {isImage && <img src={logo} />}
 
-        
         <div>
           {text?.text1 && (
             <h1 style={{ textAlign: alignCenter ? 'center' : 'initial' }}>{text?.text1}</h1>
@@ -304,46 +282,37 @@ const Card2 = ({ isImage, text, alignCenter, cursor, onClick, flip, paddingBlock
             <p style={{ textAlign: alignCenter ? 'center' : 'initial' }}>{text?.text4}</p>
           )}
 
-{(isAuthenticated && week && data?.length > 0) ? (
-    <LobbyMatchOfTheWeek key={0} data={{ ...data[0] }} />
-) : (
-    <p></p>
-)}
-
-
+          {isAuthenticated && week && data?.length > 0 ? (
+            <LobbyMatchOfTheWeek key={0} data={{ ...data[data.length - 1] }} />
+          ) : (
+            <p></p>
+          )}
         </div>
-   
-
       </div>
     </div>
   )
 }
 const Card3 = ({ flip }) => {
   const USER = useSelector((state) => state.user.userDetails?.team)
-  const navigate=useNavigate()
+  const navigate = useNavigate()
 
-
-  
   return (
-    <div  className={`card3 ${flip ? 'flip' : ''}`}>
-
-      
-{USER ? (
-  <div className='team-content-info' onClick={() => navigate('/player-roster')} >
-    <p>{USER?.name}</p>
-    <h1>Roster</h1>
-    <img width={50} src={USER?.logo} alt="User Logo" />
-  </div>
-) : (
-  <div className='content'>
-    <div>
-      <img src={logo} alt="Logo" />
-      <h1>SFL</h1>
-    </div>
-    <h1>PRO</h1>
-  </div>
-)}
-
+    <div className={`card3 ${flip ? 'flip' : ''}`}>
+      {USER ? (
+        <div className='team-content-info' onClick={() => navigate('/player-roster')}>
+          <p>{USER?.name}</p>
+          <h1>Roster</h1>
+          <img width={50} src={USER?.logo} alt='User Logo' />
+        </div>
+      ) : (
+        <div className='content'>
+          <div>
+            <img src={logo} alt='Logo' />
+            <h1>SFL</h1>
+          </div>
+          <h1>PRO</h1>
+        </div>
+      )}
 
       {/* <div className='content'>
         <div>
