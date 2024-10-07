@@ -388,7 +388,7 @@ const PayButton = ({ data: v, getData }) => {
   return (
     <>
       {v?.bidHistory.length > 1 && v?.auctionStartedBy?.team !== USER?.team._id && 
-hasAuctionEnded &&  (
+v?.hasAuctionEnded &&  (
         <Tooltip
           placement='top'
           title={
