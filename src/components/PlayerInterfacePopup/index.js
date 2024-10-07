@@ -228,7 +228,10 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
     }
   }
 
-  const handleCreateAuction = async () => {
+  const handleCreateAuction = async ({auctionFrom}) => {
+
+    // console.log('auctionFrom',auctionFrom);
+    
 
     if (sampoints < CapHit) {
  
@@ -246,7 +249,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
     const res = await createAuction({
       PlayerID: playerIdSmall,
       player_id: playerIdBig,
-      auctionFrom: 'owner',
+      auctionFrom: auctionFrom ? String(auctionFrom): 'owner',
       // CapHit:CapHit,
       // CapHit: CapHit === 0 ? 1 : CapHit,
       CapHit : (CapHit === 0) ? 1 : (CapHit === undefined ? 1 : CapHit),
@@ -418,7 +421,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
               {/* --------- FREE AGENT --------- */}
               {isFreeAgent && (
                 <>
-                  <Button disabled={false} loading={auctionLoading} onClick={handleCreateAuction} type='primary'>
+                  <Button disabled={false} loading={auctionLoading}    onClick={() => handleCreateAuction({ auctionFrom: 'nonowner' })}  type='primary'>
                     AUCTION PLAYER
                   </Button>
                 </>

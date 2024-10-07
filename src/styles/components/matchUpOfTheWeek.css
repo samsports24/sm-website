@@ -146,3 +146,56 @@
     font-size: 15px;
   }
 }
+
+
+
+/*  for lobby match up box */
+
+
+
+.lobbymatchupbox {
+  margin-top: 30px;
+  /* width: 50%; */
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  width: 100%;
+  gap: 30px;
+}
+
+
+
+.lobbymatchupbox .opponentonebox {
+
+
+  background-color: var(--primaryPurple);
+justify-content: center;
+align-items:center;
+  border: 1px solid var(--border);
+  /* padding: 20px; */
+}
+
+.lobbymatchupbox .opponentonebox >img {
+  width: 76px;
+  margin: auto;
+  justify-content: center;
+  align-items:center;
+  justify-items: center;  
+  display: flex;
+
+}
+
+
+.lobbymatchupbox .scores {
+  display: flex;
+  gap: 30px;
+  background-color: var(--primaryPurple);
+  justify-content: center;
+  align-items:center;
+  border: 1px solid var(--border);
+  padding: 20px;
+}
+
+
+
+/*  for lobby match up box */
