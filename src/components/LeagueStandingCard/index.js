@@ -81,13 +81,10 @@ const LeagueStandingCard = ({ data, index, teams }) => {
     }
   }
 
-console.log('data?.standing',data?.standing);
+  // console.log('data?.standing',data?.standing);
 
-console.log('data?.conference',data?.conference);
-console.log('data?._id',data?._id);
-
-
-
+  // console.log('data?.conference',data?.conference);
+  // console.log('data?._id',data?._id);
 
   return (
     <div className='league_standing_card' style={{ marginTop: index === 0 && '0px' }}>
@@ -95,69 +92,131 @@ console.log('data?._id',data?._id);
         {data?.conference} - {data?._id}
       </h3>
       {data?.standing
-      
-      ?.sort((a, b) => {
-        // First, sort by wins
-        const winDifference = b?.teamScore?.win - a?.teamScore?.win;
-        if (winDifference !== 0) return winDifference;
-    
-        // If wins are the same, sort by avgPf
-        return (b?.teamScore?.avgPf) - (a?.teamScore?.avgPf);
-      })
 
-      ?.map((v) => {
+        ?.sort((a, b) => {
+          // First, sort by wins
+          const winDifference = b?.teamScore?.win - a?.teamScore?.win
+          if (winDifference !== 0) return winDifference
 
-// console.log('v',v);
+          // If wins are the same, sort by avgPf
+          return b?.teamScore?.avgPf - a?.teamScore?.avgPf
+        })
 
-        // const team = teams.find((x) => v?.teamId === x?._id)
-        return (
-          <div key={v?.team?.name} className='table_card'>
-            <div className='table_header'>
-              <h3 onClick={() => handleNavigate(v?.teamId)}>{v?.team?.name}</h3>
-              <div>
-                <h4 onClick={() => handleStartersNavigate(v?.teamId, v?.team?.name)}>
-                  View Starters
-                </h4>
+        ?.map((v) => {
+          // console.log('v',v);
+
+          let separatedObjects = {}
+          let divisionName = v.team.division.name
+
+          if (!separatedObjects[divisionName]) {
+            separatedObjects[divisionName] = []
+          }
+
+          separatedObjects[divisionName].push(data)
+
+          // console.log('separatedObjects',separatedObjects);
+
+          const firstKey = Object.keys(separatedObjects)[0]
+
+          // Extracting teams from the dynamic key
+          let teams = separatedObjects[firstKey][0].standing
+
+          // Find the highest number of wins
+          let highestWins = Math.max(...teams.map((team) => team.teamScore.win))
+          let lowestWins = Math.min(...teams.map((team) => team.teamScore.lose))
+          // console.log('highestWins',highestWins);
+          // console.log('lowestWins',lowestWins);
+
+          // Calculate gb for each team
+          let gbResults = teams.map((team) => {
+            const wins = team.teamScore.win
+            const losses = team.teamScore.lose
+
+            const gb = (highestWins - wins + (losses - lowestWins)) / 2
+
+            return {
+              teamId: team.teamId,
+              gb: gb,
+            }
+          })
+
+          // Log the results
+          // console.log('gbResults',gbResults);
+
+          //   console.log('v',v);
+
+          const getGbValue = (teamId) => {
+            // console.log('inside teamId',teamId);
+
+            const found = gbResults.find((item) => String(item.teamId) === String(teamId))
+            return found ? found.gb : '-' // Return gb or '-' if not found
+          }
+
+          let calculatestrk =
+            v.teamScore.win + v.teamScore.lose + v.teamScore.tie === 0
+              ? '-' // If all are zero, show '-'
+              : v.teamScore.win === 0 && v.teamScore.lose === 0
+              ? '-' // If both win and lose are zero, also show '-'
+              : v.teamScore.win === 0
+              ? `${v.teamScore.lose} L` // If win is zero, show losses
+              : v.teamScore.lose === 0
+              ? `${v.teamScore.win} W` // If lose is zero, show wins
+              : `${v.teamScore.win} W, ${v.teamScore.lose} L`
+
+          // const team = teams.find((x) => v?.teamId === x?._id)
+          return (
+            <div key={v?.team?.name} className='table_card'>
+              <div className='table_header'>
+                <h3 onClick={() => handleNavigate(v?.teamId)}>{v?.team?.name}</h3>
+                <div>
+                  <h4 onClick={() => handleStartersNavigate(v?.teamId, v?.team?.name)}>
+                    View Starters
+                  </h4>
+                </div>
+              </div>
+              <div className='table_body'>
+                <div
+                  className='table_image'
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleNavigate(v?.teamId)}
+                >
+                  <img src={v?.team?.logo} alt={v?.team?.name} />
+                </div>
+                <div className='main_ls_table'>
+                  <Table
+                    dataSource={[
+                      {
+                        key: v?._id,
+                        wlt: `${v?.teamScore?.win}-${v?.teamScore?.lose}-${v?.teamScore?.tie}`,
+                        // pct: v?.teamScore?.pct,
+                        pct:
+                          v?.teamScore?.win /
+                          (v?.teamScore?.win + v?.teamScore?.lose + v?.teamScore?.tie || 1),
+
+                        // gb: v?.teamScore?.gb,
+                        gb: getGbValue(v.teamId),
+                        // strk: v?.teamScore?.strk ? v?.teamScore?.strk : '-',
+
+                        strk: calculatestrk,
+                        pf: v?.teamScore?.pf?.toFixed(2),
+                        avgpf: v?.teamScore?.avgPf?.toFixed(2),
+                        pa: v?.teamScore?.pa?.toFixed(2),
+                        avgpa: v?.teamScore?.avgPa?.toFixed(2),
+                        divwlt: `${v?.teamScore?.divWin}-${v?.teamScore?.divLose}-${v?.teamScore?.divTie}`,
+                        confwlt: `${v?.teamScore?.confWin}-${v?.teamScore?.confLose}-${v?.teamScore?.confTie}`,
+                      },
+                    ]}
+                    columns={columns}
+                    bordered={false}
+                    pagination={false}
+                    size='small'
+                    scroll={{ x: 800 }}
+                  />
+                </div>
               </div>
             </div>
-            <div className='table_body'>
-              <div
-                className='table_image'
-                style={{ cursor: 'pointer' }}
-                onClick={() => handleNavigate(v?.teamId)}
-              >
-                <img src={v?.team?.logo} alt={v?.team?.name} />
-              </div>
-              <div className='main_ls_table'>
-                <Table
-                  dataSource={[
-                    {
-                      key: v?._id,
-                      wlt: `${v?.teamScore?.win}-${v?.teamScore?.lose}-${v?.teamScore?.tie}`,
-                      // pct: v?.teamScore?.pct,
-                      pct:v?.teamScore?.win  / (v?.teamScore?.win + v?.teamScore?.lose + v?.teamScore?.tie || 1),
-
-                      gb: v?.teamScore?.gb,
-                      strk: v?.teamScore?.strk ? v?.teamScore?.strk : '-',
-                      pf: v?.teamScore?.pf?.toFixed(2),
-                      avgpf: v?.teamScore?.avgPf?.toFixed(2),
-                      pa: v?.teamScore?.pa?.toFixed(2),
-                      avgpa: v?.teamScore?.avgPa?.toFixed(2),
-                      divwlt: `${v?.teamScore?.divWin}-${v?.teamScore?.divLose}-${v?.teamScore?.divTie}`,
-                      confwlt: `${v?.teamScore?.confWin}-${v?.teamScore?.confLose}-${v?.teamScore?.confTie}`,
-                    },
-                  ]}
-                  columns={columns}
-                  bordered={false}
-                  pagination={false}
-                  size='small'
-                  scroll={{ x: 800 }}
-                />
-              </div>
-            </div>
-          </div>
-        )
-      })}
+          )
+        })}
     </div>
   )
 }

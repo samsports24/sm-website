@@ -232,8 +232,8 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
 
     // console.log('auctionFrom',auctionFrom);
     
-
-    if (sampoints < CapHit) {
+if (auctionFrom === 'nonowner'){
+    if (sampoints < CapHit ) {
  
       // noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
       notification.error({
@@ -242,6 +242,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
       });
       return
     }
+  }
 
     setAuctionLoading(true)
 
