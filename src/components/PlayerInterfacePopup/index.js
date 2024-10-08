@@ -25,7 +25,7 @@ import { getPf, getPfScore, getRankAndPosition } from '../../config/helperFuncti
 import { isLocked } from '../../config/constants'
 
 import Image from '../../assets/logo2.png'
-import sampointslogo from "../../assets/samcoinlogo.png"
+import sampointslogo from '../../assets/samcoinlogo.png'
 
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 
@@ -38,7 +38,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [auctionLoading, setAuctionLoading] = useState(false)
   const sampoints = useSelector((state) => state.user?.SamPoints?.SamPoints)
- 
+
   const [data, setData] = useState({
     player: {},
     news: '',
@@ -59,11 +59,10 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
   const isFreeAgent = state?.isFreeAgent?.status
   const isAuction = state?.isAuction
 
-//  console.log('data?.player',data?.player);
-// console.log('data?.playerContract?.weeklyScoring',data?.playerContract?.weeklyScoring);
+  //  console.log('data?.player',data?.player);
+  // console.log('data?.playerContract?.weeklyScoring',data?.playerContract?.weeklyScoring);
 
-
-// console.log('mysampoints',sampoints);
+  // console.log('mysampoints',sampoints);
 
   useEffect(() => {
     if (isModalOpen) {
@@ -228,32 +227,29 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
     }
   }
 
-  const handleCreateAuction = async ({auctionFrom}) => {
-
+  const handleCreateAuction = async ({ auctionFrom }) => {
     // console.log('auctionFrom',auctionFrom);
-    
-if (auctionFrom === 'nonowner'){
-    if (sampoints < CapHit ) {
- 
-      // noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
-      notification.error({
-        message: `Bid amount ${CapHit} exceeds your available points of ${sampoints}.`,
-        duration: 4,
-      });
-      return
+
+    if (auctionFrom === 'nonowner') {
+      if (sampoints < CapHit) {
+        // noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
+        notification.error({
+          message: `Bid amount ${CapHit} exceeds your available points of ${sampoints}.`,
+          duration: 4,
+        })
+        return
+      }
     }
-  }
 
     setAuctionLoading(true)
-
 
     const res = await createAuction({
       PlayerID: playerIdSmall,
       player_id: playerIdBig,
-      auctionFrom: auctionFrom ? String(auctionFrom): 'owner',
+      auctionFrom: auctionFrom ? String(auctionFrom) : 'owner',
       // CapHit:CapHit,
       // CapHit: CapHit === 0 ? 1 : CapHit,
-      CapHit : (CapHit === 0) ? 1 : (CapHit === undefined ? 1 : CapHit),
+      CapHit: CapHit === 0 ? 1 : CapHit === undefined ? 1 : CapHit,
     })
     if (res) {
       closeModal()
@@ -261,8 +257,6 @@ if (auctionFrom === 'nonowner'){
     }
     setAuctionLoading(false)
   }
-
-  
 
   return (
     <div className='player_interface_popup'>
@@ -373,7 +367,12 @@ if (auctionFrom === 'nonowner'){
               {/* --------- OWN ROSTER --------- */}
               {isOwnRoster && !isLocked() && (
                 <>
-                <Button disabled={false} loading={auctionLoading} onClick={handleCreateAuction} type='primary'>
+                  <Button
+                    disabled={false}
+                    loading={auctionLoading}
+                    onClick={handleCreateAuction}
+                    type='primary'
+                  >
                     AUCTION PLAYER
                   </Button>
                   {/* <AuctionPlayer
@@ -422,7 +421,12 @@ if (auctionFrom === 'nonowner'){
               {/* --------- FREE AGENT --------- */}
               {isFreeAgent && (
                 <>
-                  <Button disabled={false} loading={auctionLoading}    onClick={() => handleCreateAuction({ auctionFrom: 'nonowner' })}  type='primary'>
+                  <Button
+                    disabled={false}
+                    loading={auctionLoading}
+                    onClick={() => handleCreateAuction({ auctionFrom: 'nonowner' })}
+                    type='primary'
+                  >
                     AUCTION PLAYER
                   </Button>
                 </>
@@ -440,12 +444,11 @@ if (auctionFrom === 'nonowner'){
                   >
                     Make Offer
                   </Button>
-{data?.player?.inPracticeSquad  && !data?.player?.isPlayerProtected ? <PoachPlayer data={data} state={state} /> :
-<>
-</>
-}
-
-                  
+                  {data?.player?.inPracticeSquad && !data?.player?.isPlayerProtected ? (
+                    <PoachPlayer data={data} state={state} />
+                  ) : (
+                    <></>
+                  )}
                 </>
               )}
               {isTeamRoster && state?.teamId && isLocked() && <PreviousDayView />}
@@ -508,10 +511,14 @@ if (auctionFrom === 'nonowner'){
                         }
                     </p> */}
                     <p>
-  {isFreeAgent
-    ? data?.player?.pf || '-'
-    : getPf(data?.playerContract?.weeklyScoring?.filter(item => item.season === 2024))?.tpf}
-</p>
+                      {isFreeAgent
+                        ? data?.player?.pf || '-'
+                        : getPf(
+                            data?.playerContract?.weeklyScoring?.filter(
+                              (item) => item.season === 2024,
+                            ),
+                          )?.tpf}
+                    </p>
 
                     <span style={{ fontSize: '22px', color: '#fff' }}>|</span>
                     {/* <p>
@@ -520,11 +527,14 @@ if (auctionFrom === 'nonowner'){
                         : getPf(data?.playerContract?.weeklyScoring)?.apf}
                     </p> */}
                     <p>
-  {isFreeAgent
-    ? data?.player?.avgPf || '-'
-    : getPf(data?.playerContract?.weeklyScoring?.filter(item => item.season === 2024))?.apf}
-</p>
-
+                      {isFreeAgent
+                        ? data?.player?.avgPf || '-'
+                        : getPf(
+                            data?.playerContract?.weeklyScoring?.filter(
+                              (item) => item.season === 2024,
+                            ),
+                          )?.apf}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -553,11 +563,11 @@ if (auctionFrom === 'nonowner'){
                     CAP<b>HIT</b>
                   </p>
                   <p>
-                  {/* {obj ? `$${obj.currentYearSalaryCap.toLocaleString()}` : '-'} */}
+                    {/* {obj ? `$${obj.currentYearSalaryCap.toLocaleString()}` : '-'} */}
                     <b>24&apos;</b>{' '}
                     {data?.player?.currentYearSalaryCap
-                      // ? `$${data?.playerContract?.PlayerCap?.toLocaleString()}`
-                         ? `$${data?.player?.currentYearSalaryCap?.toLocaleString()}`
+                      ? // ? `$${data?.playerContract?.PlayerCap?.toLocaleString()}`
+                        `$${data?.player?.currentYearSalaryCap?.toLocaleString()}`
                       : '-'}
                   </p>
                 </div>
@@ -567,10 +577,10 @@ if (auctionFrom === 'nonowner'){
                   </p>
                   <div>
                     <p>
-                    {data?.player?.nextYearSalaryCap
-                      // ? `$${data?.playerContract?.PlayerCap?.toLocaleString()}`
-                         ? `$${data?.player?.nextYearSalaryCap?.toLocaleString()}`
-                      : '-'}
+                      {data?.player?.nextYearSalaryCap
+                        ? // ? `$${data?.playerContract?.PlayerCap?.toLocaleString()}`
+                          `$${data?.player?.nextYearSalaryCap?.toLocaleString()}`
+                        : '-'}
                     </p>
                   </div>
                 </div>
@@ -620,7 +630,7 @@ const WinningBid = ({ data }) => {
     </section>
   )
 }
-const LiveAuctionBid = ({ data, getData,closeModal }) => {
+const LiveAuctionBid = ({ data, getData, closeModal }) => {
   const [noti, contextHolder] = notification.useNotification()
   const sampoints = useSelector((state) => state.user?.SamPoints?.SamPoints)
   const [remainingTime, setRemainingTime] = useState('')
@@ -633,8 +643,7 @@ const LiveAuctionBid = ({ data, getData,closeModal }) => {
   // const USER = useSelector((state) => state.user)
   const USER = useSelector((state) => state.user.userDetails)
 
-const dispatch = useDispatch()
-
+  const dispatch = useDispatch()
 
   useEffect(() => {
     bidError && setBidError(false)
@@ -653,11 +662,11 @@ const dispatch = useDispatch()
       interval = setInterval(() => {
         const now = moment()
         const end = moment(data?.endDate)
-         console.log('end',end);
-        
+        console.log('end', end)
+
         const duration = moment.duration(end.diff(now))
-         console.log('second duration.asSeconds()',duration.asSeconds());
-        
+        console.log('second duration.asSeconds()', duration.asSeconds())
+
         if (duration.asSeconds() <= 0) {
           // console.log('in the second check');
           clearInterval(interval)
@@ -694,8 +703,6 @@ const dispatch = useDispatch()
     //   return
     // }
 
-    
-
     // if  (sampoints > manualBid) {
     //    setBidError(`Bid amount ${manualBid} exceeds your available points of ${sampoints}.`)
     //   return
@@ -717,14 +724,12 @@ const dispatch = useDispatch()
         auctionId: data?._id,
         bidAmount: Number(manualBid),
       },
-        noti,
+      noti,
     )
     if (res) {
-
-   
-     await  getData()
-     closeModal
-   //  await getUser()
+      await getData()
+      closeModal
+      //  await getUser()
     }
     setIsLoading({
       type: 'submit',
@@ -732,93 +737,89 @@ const dispatch = useDispatch()
     })
   }
 
-//   const handleQuickBid = async () => {
-//     setIsLoading({
-//       type: 'quick',
-//       status: true,
-//     })
+  //   const handleQuickBid = async () => {
+  //     setIsLoading({
+  //       type: 'quick',
+  //       status: true,
+  //     })
 
-    
-//     // samWallet?.SamPoints < bidamount
-//     const res = await addBid(
-//       {
-//         auctionId: data?._id,
-//         // bidAmount: Number(data?.highestCurrentBid) + 5,
-//         bidAmount: Number(data?.highestCurrentBid) + 50000,
-//       },
-//       noti,
-//     )
-// if(sampoints > bidamount){
-//   noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
+  //     // samWallet?.SamPoints < bidamount
+  //     const res = await addBid(
+  //       {
+  //         auctionId: data?._id,
+  //         // bidAmount: Number(data?.highestCurrentBid) + 5,
+  //         bidAmount: Number(data?.highestCurrentBid) + 50000,
+  //       },
+  //       noti,
+  //     )
+  // if(sampoints > bidamount){
+  //   noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
 
-// }
-
-//     if (res) {
-//       getData()
-// closeModal()
-//     }
-//     setIsLoading({
-//       type: 'quick',
-//       status: false,
-//     })
-//   }
-
-const handleQuickBid = async () => {
-  setIsLoading({
-    type: 'quick',
-    status: true,
-  });
-
-  const bidAmount = Number(data?.highestCurrentBid) + 50000;
-
-  // Check if the user has enough points
-  // if (sampoints < bidAmount) {
-  //   setIsLoading({
-  //     type: 'quick',
-  //     status: false,
-  //   });
-  //   // noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
-  //   notification.error({
-  //     message: `Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`,
-  //     duration: 4,
-  //   });
-  //   return
   // }
 
-  try {
-    const res = await addBid(
-      {
-        auctionId: data?._id,
-        bidAmount,
-      },
-      noti,
-    );
+  //     if (res) {
+  //       getData()
+  // closeModal()
+  //     }
+  //     setIsLoading({
+  //       type: 'quick',
+  //       status: false,
+  //     })
+  //   }
 
-    if (res) {
-      await getData();
-      // await getUser()
-    }
-  } catch (error) {
-    // Handle potential errors from addBid or getData
-    noti.error('An error occurred while placing your bid. Please try again.');
-  } finally {
+  const handleQuickBid = async () => {
     setIsLoading({
       type: 'quick',
-      status: false,
-    });
+      status: true,
+    })
+
+    const bidAmount = Number(data?.highestCurrentBid) + 50000
+
+    // Check if the user has enough points
+    // if (sampoints < bidAmount) {
+    //   setIsLoading({
+    //     type: 'quick',
+    //     status: false,
+    //   });
+    //   // noti.error(`Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`);
+    //   notification.error({
+    //     message: `Bid amount ${bidAmount} exceeds your available points of ${sampoints}.`,
+    //     duration: 4,
+    //   });
+    //   return
+    // }
+
+    try {
+      const res = await addBid(
+        {
+          auctionId: data?._id,
+          bidAmount,
+        },
+        noti,
+      )
+
+      if (res) {
+        await getData()
+        // await getUser()
+      }
+    } catch (error) {
+      // Handle potential errors from addBid or getData
+      noti.error('An error occurred while placing your bid. Please try again.')
+    } finally {
+      setIsLoading({
+        type: 'quick',
+        status: false,
+      })
+    }
   }
-};
 
-console.log('data?.auctionStartedBy?.team',data?.auctionStartedBy?.team);
-console.log('USER?.team?._id',USER);
+  console.log('data?.auctionStartedBy?.team', data?.auctionStartedBy?.team)
+  console.log('USER?.team?._id', USER)
 
+  let isDisabled =
+    data?.auctionStartedBy?.team._id === USER?.team?._id && String(data?.auctionFrom) === 'owner'
 
-
- let  isDisabled = data?.auctionStartedBy?.team._id === USER?.team?._id && String(data?.auctionFrom) === 'owner';
-
- console.log('isDisabled',isDisabled);
-
-
+  console.log('isDisabled', isDisabled)
 
   return (
     <>
@@ -838,33 +839,33 @@ console.log('USER?.team?._id',USER);
               />
             </div>
             <div className='amount'>
-              
               <p>
                 TOP<b>BID</b>
               </p>
 
-              <div style={{display:'flex',justifyContent:'space-between',gap:'5px'}}>
-            <img width={10} src={sampointslogo}></img>
-              <p>{data?.highestCurrentBid && `${data?.highestCurrentBid?.toLocaleString()}`}</p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '5px' }}>
+                <img width={10} src={sampointslogo}></img>
+                <p>{data?.highestCurrentBid && `${data?.highestCurrentBid?.toLocaleString()}`}</p>
               </div>
             </div>
           </div>
-          <div     style={{
-      cursor: isDisabled ? 'not-allowed' : 'pointer',
-      opacity: isDisabled ? 0.5 : 1 
-    }} className='bid_button' 
-    // onClick={handleQuickBid}
-    onClick={!isDisabled ? handleQuickBid : undefined} 
-    >
+          <div
+            style={{
+              cursor: isDisabled ? 'not-allowed' : 'pointer',
+              opacity: isDisabled ? 0.5 : 1,
+            }}
+            className='bid_button'
+            // onClick={handleQuickBid}
+            onClick={!isDisabled ? handleQuickBid : undefined}
+          >
             {isLoading?.status && isLoading?.type === 'quick' ? (
               <Spin />
             ) : (
               <>
-
                 <p>QUICK BID</p>
-                <div style={{display:'flex',justifyContent:'space-between',gap:'5px'}}>
-                <img width={10} src={sampointslogo}></img>
-                <p>50,000</p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '5px' }}>
+                  <img width={10} src={sampointslogo}></img>
+                  <p>50,000</p>
                 </div>
               </>
             )}
@@ -884,13 +885,15 @@ console.log('USER?.team?._id',USER);
             />
             {bidError != '' && <p className='error_text'>{bidError}</p>}
           </div>
-          <div  onClick={!isDisabled ? handleManualBid : undefined} 
-    style={{
-      cursor: isDisabled ? 'not-allowed' : 'pointer',
-      opacity: isDisabled ? 0.5 : 1 
-    }} className='bid_button'
-     // onClick={handleManualBid}
-     >
+          <div
+            onClick={!isDisabled ? handleManualBid : undefined}
+            style={{
+              cursor: isDisabled ? 'not-allowed' : 'pointer',
+              opacity: isDisabled ? 0.5 : 1,
+            }}
+            className='bid_button'
+            // onClick={handleManualBid}
+          >
             {isLoading?.status && isLoading?.type === 'submit' ? <Spin /> : <p>SUBMIT</p>}
           </div>
         </div>

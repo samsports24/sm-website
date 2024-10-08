@@ -21,9 +21,11 @@ import {
 import { leagueSalaryCap } from '../config/constants'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Empty from '../components/Empty'
+import { useSelector } from 'react-redux'
 
 const CounterTrade = () => {
   const [loading, setLoading] = useState('all')
+  const SETTING = useSelector((state) => state?.user)
 
   const [data, setData] = useState(null)
 
@@ -35,6 +37,7 @@ const CounterTrade = () => {
 
   const [myTeamSelectedDraft, setMyTeamSelectedDraft] = useState([])
   const [otherTeamSelectedDraft, setOtherTeamSelectedDraft] = useState([])
+  const myleagueSalaryCap = useSelector((state) => state.user?.leagueSalaryCap?.leagueSalaryCap)
 
   const { state } = useLocation()
   const navigate = useNavigate()
@@ -289,13 +292,36 @@ const CounterTrade = () => {
                 {[
                   {
                     title: 'UFAFL TOTAL CAP',
-                    value: `$${leagueSalaryCap?.toLocaleString()}`,
+                    // value: `$${leagueSalaryCap?.toLocaleString()}`,
+                    value: `$${myleagueSalaryCap?.toLocaleString()}`,
                   },
                   {
                     title: 'TEAM TOTAL CAP',
-                    value: data?.teamData?.buyer?.caps
-                      ? `$${data?.teamData?.buyer?.caps?.toLocaleString()}`
-                      : `$0`,
+                    // value: data?.teamData?.buyer?.caps
+                    //   ? `$${data?.teamData?.buyer?.caps?.toLocaleString()}`
+                    //   : `$0`,
+                    value: (() => {
+                      const totalCurrentYearSalaryCap = myTeamSelected.reduce((total, player) => {
+                        // console.log('myteamCurrentYearSalaryCap player',player);
+                        
+                        return total + (player?.players?.currentYearSalaryCap || 0);
+                      }, 0);
+
+
+                      const otherteamCurrentYearSalaryCap = otherTeamSelected.reduce((total, player) => {
+                        // console.log('otherteamCurrentYearSalaryCap player',player);
+                        
+                        return total + (player?.players?.currentYearSalaryCap || 0);
+                      }, 0);
+
+                      //  console.log('seller totalCurrentYearSalaryCap',totalCurrentYearSalaryCap);
+                      //  console.log('seller otherteamCurrentYearSalaryCap',otherteamCurrentYearSalaryCap);
+                      
+                  
+                      const totalSalaryCap = (SETTING?.teamSalaryCap || 0) - totalCurrentYearSalaryCap + otherteamCurrentYearSalaryCap;
+                      
+                      return totalSalaryCap ? `$${totalSalaryCap.toLocaleString()}` : '$0';
+                    })(),
                   },
                 ].map((item, index) => (
                   <div key={index} className='add-player-section'>
@@ -316,13 +342,38 @@ const CounterTrade = () => {
                 {[
                   {
                     title: 'UFAFL TOTAL CAP',
-                    value: `$${leagueSalaryCap?.toLocaleString()}`,
+                    // value: `$${leagueSalaryCap?.toLocaleString()}`,
+                    value: `$${myleagueSalaryCap?.toLocaleString()}`,
                   },
                   {
                     title: 'TEAM TOTAL CAP',
-                    value: data?.teamData?.seller?.caps
-                      ? `$${data?.teamData?.seller?.caps?.toLocaleString()}`
-                      : `$0`,
+                    value: (() => {
+                      const totalCurrentYearSalaryCap = otherTeamSelected.reduce((total, player) => {
+                        console.log('player',player);
+                        
+                        return total + (player?.players?.currentYearSalaryCap || 0);
+                      }, 0);
+
+
+                      const myteamCurrentYearSalaryCap = myTeamSelected.reduce((total, player) => {
+                        console.log('player',player);
+                        
+                        return total + (player?.players?.currentYearSalaryCap || 0);
+                      }, 0);
+
+                      
+
+                      // console.log('totalCurrentYearSalaryCap',totalCurrentYearSalaryCap);
+                      
+                  
+                      const otherteamSalaryCap = (data?.teamData?.seller?.salaryCap || 0) - totalCurrentYearSalaryCap + myteamCurrentYearSalaryCap;
+                      
+                      return otherteamSalaryCap ? `$${otherteamSalaryCap.toLocaleString()}` : '$0';
+                    })(),
+                    // value: data?.teamData?.seller?.caps
+                    //   ? `$${data?.teamData?.seller?.caps?.toLocaleString()}`
+                    //   : `$0`,
+                    
                   },
                 ].map((item, index) => (
                   <div key={index} className='add-player-section'>
