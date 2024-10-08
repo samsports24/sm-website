@@ -25,11 +25,11 @@ const LeagueStandingCard = ({ data, index, teams }) => {
       dataIndex: 'gb',
       key: 'gb',
     },
-    {
-      title: 'STRK',
-      dataIndex: 'strk',
-      key: 'strk',
-    },
+    // {
+    //   title: 'STRK',
+    //   dataIndex: 'strk',
+    //   key: 'strk',
+    // },
     {
       title: 'PF',
       dataIndex: 'pf',
@@ -152,16 +152,16 @@ const LeagueStandingCard = ({ data, index, teams }) => {
             return found ? found.gb : '-' // Return gb or '-' if not found
           }
 
-          let calculatestrk =
-            v.teamScore.win + v.teamScore.lose + v.teamScore.tie === 0
-              ? '-' // If all are zero, show '-'
-              : v.teamScore.win === 0 && v.teamScore.lose === 0
-              ? '-' // If both win and lose are zero, also show '-'
-              : v.teamScore.win === 0
-              ? `${v.teamScore.lose} L` // If win is zero, show losses
-              : v.teamScore.lose === 0
-              ? `${v.teamScore.win} W` // If lose is zero, show wins
-              : `${v.teamScore.win} W, ${v.teamScore.lose} L`
+          // let calculatestrk =
+          //   v.teamScore.win + v.teamScore.lose + v.teamScore.tie === 0
+          //     ? '-' // If all are zero, show '-'
+          //     : v.teamScore.win === 0 && v.teamScore.lose === 0
+          //     ? '-' // If both win and lose are zero, also show '-'
+          //     : v.teamScore.win === 0
+          //     ? `${v.teamScore.lose} L` // If win is zero, show losses
+          //     : v.teamScore.lose === 0
+          //     ? `${v.teamScore.win} W` // If lose is zero, show wins
+          //     : `${v.teamScore.win} W, ${v.teamScore.lose} L`
 
           // const team = teams.find((x) => v?.teamId === x?._id)
           return (
@@ -197,7 +197,7 @@ const LeagueStandingCard = ({ data, index, teams }) => {
                         gb: getGbValue(v.teamId),
                         // strk: v?.teamScore?.strk ? v?.teamScore?.strk : '-',
 
-                        strk: calculatestrk,
+                        // strk: calculatestrk,
                         pf: v?.teamScore?.pf?.toFixed(2),
                         avgpf: v?.teamScore?.avgPf?.toFixed(2),
                         pa: v?.teamScore?.pa?.toFixed(2),
