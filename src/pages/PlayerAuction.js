@@ -380,6 +380,8 @@ const PayButton = ({ data: v, getData }) => {
 
 
  console.log('v',v);
+ console.log('v?.bidHistory[0]?.team',v?.bidHistory[0]?.team);
+ 
 
   console.log('USER?.team._id',USER?.team._id);
   
@@ -387,7 +389,9 @@ const PayButton = ({ data: v, getData }) => {
 
   return (
     <>
-      {v?.bidHistory.length > 1 && v?.auctionStartedBy?.team !== USER?.team._id && 
+      {
+      // v?.bidHistory.length > 1 && 
+      v?.bidHistory[0]?.team === USER?.team._id && 
 v?.hasAuctionEnded &&  (
         <Tooltip
           placement='top'
