@@ -14,6 +14,7 @@ const Lobby = () => {
   const [data, setData] = useState([])
   const navigate = useNavigate()
   const week = useSelector((state) => state.user?.setting?.week)
+  const weeknumber = useSelector((state) => state.user?.setting?.week)
   const league = useSelector((state) => state.user?.userDetails?.team?.currentLeague?.leagueType)
 
   // console.log('USER',USER);
@@ -173,6 +174,7 @@ const Lobby = () => {
                 isAuthenticated
                 week
                 data={data}
+                weeknumber={week}
                 text={
                   !isAuthenticated && week
                     ? {
@@ -255,7 +257,12 @@ const Card2 = ({
   isAuthenticated,
   week,
   data,
+  weeknumber,
 }) => {
+  // console.log('chekkckc', data)
+
+  // console.log('my week', weeknumber)
+
   return (
     <div
       className={`card2 ${flip ? 'flip' : ''}`}
@@ -282,10 +289,30 @@ const Card2 = ({
             <p style={{ textAlign: alignCenter ? 'center' : 'initial' }}>{text?.text4}</p>
           )}
 
-          {isAuthenticated && week && data?.length > 0 ? (
+          {/* {isAuthenticated && week && data?.length > 0 ? (
             <LobbyMatchOfTheWeek key={0} data={{ ...data[data.length - 1] }} />
           ) : (
-            <p></p>
+            <></>
+          )} */}
+
+          {isAuthenticated && week && data?.length > 0 ? (
+            // Filter to find matching objects
+            data.filter((item) => item.week === weeknumber).length > 0 ? (
+              <LobbyMatchOfTheWeek key={0} data={{ ...data[data.length - 1] }} />
+            ) : (
+              <p
+                style={{
+                  textAlign: 'center',
+                  justifyContent: 'center',
+                  marginTop: '10px',
+                  fontSize: '20px',
+                }}
+              >
+                by week
+              </p>
+            )
+          ) : (
+            <></>
           )}
         </div>
       </div>

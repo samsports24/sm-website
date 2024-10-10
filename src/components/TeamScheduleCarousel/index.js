@@ -154,6 +154,15 @@ const TeamScheduleCustomCarousel = ({ data }) => {
             </div>
           )
         })}
+
+      {!data.some((v) => SETTING?.currentWeek === v?.week) && (
+        <div className='tsc_card'>
+          <div className='tsc_card_left'>
+            <p className='week_text'>Week {SETTING?.currentWeek}</p>
+            <p className='point_text'>By Week</p>
+          </div>
+        </div>
+      )}
     </CustomCarousel>
   )
 }
