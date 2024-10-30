@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { BiRightArrowAlt } from 'react-icons/bi'
 import { getAllNewsFeed } from '../../redux'
 import Header from '../../components/Header'
+import moment from 'moment'
 
 const AllNews = ({ height = '700px' }) => {
     const [allnews, setAllNews] = useState([])
@@ -25,7 +26,11 @@ const AllNews = ({ height = '700px' }) => {
             return (
               <div key={v.NewsID} className='card_box'>
                 <div className='card_box_header'>
-                  <p>{v.Title}</p>
+                  <p>
+                    {/* {v.Title} */}
+                    
+                    {v.headline}
+                    </p>
                   <BiRightArrowAlt size={18} />
                 </div>
                 <div className='news_feed_share'>
@@ -35,14 +40,23 @@ const AllNews = ({ height = '700px' }) => {
                   <img src={icon} />
                   <img src={fbIcon} />
                 </div> */}
-                  <p>{v.TimeAgo}</p>
+                  <p>
+                  {moment(v.lastModified).fromNow()}
+                    {/* {v.TimeAgo} */}
+                    </p>
                 </div>
-                <p className='news'>{v.Content}</p>
+                <p className='news'>
+                  {/* {v.Content} */}
+                  {v.description}
+                </p>
                 <div className='source'>
-                  <p>{v.Author}</p>
+                  <p>
+                    {/* {v.Author} */}
+                    {v.byline}
+                    </p>
                   <p>
                     <b>
-                      Source: <span>{v.Source}</span>
+                      {/* Source: <span>{v.Source}</span> */}
                     </b>
                   </p>
                 </div>

@@ -6,6 +6,7 @@ import { BiRightArrowAlt } from 'react-icons/bi'
 // import fbIcon from '../../assets/Ellipse 37.svg'
 import { getNewsFeed } from '../../redux'
 import { useNavigate } from 'react-router-dom'
+import moment from 'moment'
 
 const RollingNewsFeed = ({ height = '463px' }) => {
   const [news, setNews] = useState([])
@@ -24,7 +25,7 @@ const RollingNewsFeed = ({ height = '463px' }) => {
       <div className='news_header_top'>
         <h1>THE SAM NEWS</h1>
         <div>
-          <p>Your latest sport news powered by Rotoballer</p>
+          <p>Your latest sport</p>
         </div>
       </div>
 
@@ -44,7 +45,10 @@ const RollingNewsFeed = ({ height = '463px' }) => {
             return (
               <div key={v.NewsID} className='card_box'>
                 <div className='card_box_header'>
-                  <p>{v.Title}</p>
+                  {/* <p>{v.Title}</p> */}
+                  <p>{v.headline}</p>
+                  
+
                   <BiRightArrowAlt size={18} />
                 </div>
                 <div className='news_feed_share'>
@@ -54,14 +58,28 @@ const RollingNewsFeed = ({ height = '463px' }) => {
                   <img src={icon} />
                   <img src={fbIcon} />
                 </div> */}
-                  <p>{v.TimeAgo}</p>
+                  <p>
+                    
+                    {/* {v.TimeAgo} */}
+                    {/* {v.lastModified} */}
+                     {moment(v.lastModified).fromNow()}
+                    
+                    </p>
                 </div>
-                <p className='news'>{v.Content}</p>
+                <p className='news'>
+                  {/* {v.Content} */}
+                  {v.description}
+                  </p>
                 <div className='source'>
-                  <p>{v.Author}</p>
+                  <p>
+                    {/* {v.Author} */}
+                    {v.byline}
+
+                  </p>
                   <p>
                     <b>
-                      Source: <span>{v.Source}</span>
+                      {/* Source: <span>{v.Source}</span> */}
+                      {/* Source: <span>Rapid Api</span> */}
                     </b>
                   </p>
                 </div>

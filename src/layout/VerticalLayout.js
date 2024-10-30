@@ -173,12 +173,13 @@ const VerticalLayout = ({ children, active }) => {
           <Content className='main-content'>{children}</Content>
           <Footer className='mainFooter'>
             <p>© Sam Sports, Inc. All rights reserved.</p>
-            <a href='https://sportsdata.io' target='_blank' rel='noreferrer'>
-              <img
+            {/* <a href='https://sportsdata.io' target='_blank' rel='noreferrer'> */}
+            <a href='' target='_blank' rel='noreferrer'>
+              {/* <img
                 style={{ height: '50px', width: 'auto' }}
                 src='https://sportsdata.io/assets/images/badges/sportsdataio_light_ss_300.png'
                 alt='Powered by SportsDataIO'
-              />
+              /> */}
             </a>
           </Footer>
         </Layout>
