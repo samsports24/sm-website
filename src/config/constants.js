@@ -64,7 +64,7 @@ export const isLocked = () => {
 }
 
 // export const version = '2.0.4'
- export const version = '2.0.5'
+  export const version = '2.0.6'
 
 export const activeRosterCount = 53
 export const practiceRosterCount = 53
