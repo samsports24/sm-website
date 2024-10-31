@@ -121,12 +121,22 @@ const SearchPlayer = () => {
 
         // console.log('regularseasonpts',regularseasonpts);
 
+
+        let filtersnaps;
         // console.log('filteredObj',filteredObj);
 
-        const filtersnaps = item?.stats?.stats?.weeklySnapRatios?.find(
+        if (week<= 8){
+
+         filtersnaps = item?.stats?.stats?.weeklySnapRatios.find(
           (check) => Number(check?.week) === Number(week),
         )
+      }
 
+      // else {
+      //    filtersnaps = item?.stats?.weeklyStats.find(
+      //     (check) => Number(check?.week) === Number(week),
+      //   )
+      // }
         const filterWeek = item?.stats?.weeklyStats?.[week]
 
         // console.log('filterWeek',filterWeek);
@@ -136,6 +146,7 @@ const SearchPlayer = () => {
         // console.log('filterolweek', filterolweek)
 
         // console.log('filterWeek?.RushingYards',filterWeek?.RushingYards);
+        
 
         const DefensiveRatio = filtersnaps?.DefensiveRatio || 0
         const OffensiveRatio = filtersnaps?.OffensiveRatio || 0
@@ -218,6 +229,9 @@ const SearchPlayer = () => {
 
         // console.log(' ----- filterWeek?.RushingTouchdowns', filterWeek?.RushingTouchdowns)
 
+
+if (week <=8){
+
         tempObj = {
           ...tempObj,
           [`week_${week}_score`]: score,
@@ -253,6 +267,8 @@ const SearchPlayer = () => {
 
           // OL STATS
 
+
+
           [`week_${week}_PassingTouchdowns`]: formatValue(filterolweek?.PassingTouchdowns),
           [`week_${week}_RushingTouchdowns`]: formatValue(filterolweek?.RushingTouchdowns),
           [`week_${week}_TimesSacked`]: formatValue(filterolweek?.TimesSacked),
@@ -285,24 +301,102 @@ const SearchPlayer = () => {
 
           week,
         }
-        if (position !== 'OL') {
-          tempObj = {
-            ...tempObj,
-            // [`week_${week}_RushingAttempts`]: filterWeek?.RushingAttempts?.toFixed(2),
-            [`week_${week}_RushingAttempts`]:
-              filterWeek?.RushingAttempts !== undefined && filterWeek.RushingAttempts % 1 > 0
-                ? filterWeek.RushingAttempts.toFixed(2)
-                : filterWeek?.RushingAttempts,
+      }
 
-            // [`week_${week}_RushingYards`]: filterWeek?.RushingYards?.toFixed(2),
-            // [`week_${week}_RushingTouchdowns`]: filterWeek?.RushingTouchdowns?.toFixed(2),
-            // [`week_${week}_PassingTouchdowns`]: filterWeek?.PassingTouchdowns?.toFixed(2),
+      else {
+        tempObj = {
+          ...tempObj,
+          [`week_${week}_score`]: score,
+          [`week_${week}_DefensiveRatio`]: DefensiveRatio,
+          [`week_${week}_OffensiveRatio`]: OffensiveRatio,
+          [`week_${week}_SpecialTeamsRatio`]: SpecialTeamsRatio,
+          // [`week_${week}_RushingAttempts`]: filterWeek?.RushingAttempts,
+          // [`week_${week}_RushingYards`]: filterWeek?.RushingYards,
+          // [`week_${week}_RushingTouchdowns`]: filterWeek?.RushingTouchdowns,
 
-            [`week_${week}_RushingYards`]: formatValue(filterWeek?.RushingYards),
-            [`week_${week}_RushingTouchdowns`]: formatValue(filterWeek?.RushingTouchdowns),
-            [`week_${week}_PassingTouchdowns`]: formatValue(filterWeek?.PassingTouchdowns),
-          }
+          [`week_${week}_RushingAttempts`]: formatValue(filterWeek?.RushingAttempts),
+          [`week_${week}_RushingYards`]: formatValue(filterWeek?.RushingYards),
+          [`week_${week}_RushingTouchdowns`]: formatValue(filterWeek?.RushingTouchdowns),
+
+          // RECEIVING
+          [`week_${week}_ReceivingTargets`]: formatValue(filterWeek?.ReceivingTargets),
+          [`week_${week}_ReceivingYards`]: formatValue(filterWeek?.ReceivingYards),
+          [`week_${week}_ReceivingTouchdowns`]: formatValue(filterWeek?.ReceivingTouchdowns),
+          [`week_${week}_Receptions`]: formatValue(filterWeek?.Receptions),
+
+          // PASSING
+          [`week_${week}_PassingAttempts`]: formatValue(filterWeek?.PassingAttempts),
+          [`week_${week}_PassingYards`]: formatValue(filterWeek?.PassingYards),
+          // [`week_${week}_PassingTouchdowns`]: formatValue(filterWeek?.PassingTouchdowns?.toFixed(2),
+          [`week_${week}_PassingSacks`]: formatValue(filterWeek?.PassingSacks),
+          [`week_${week}_PassingCompletions`]: formatValue(filterWeek?.PassingCompletions),
+
+          // RETURN
+          [`week_${week}_PuntReturnYards`]: formatValue(filterWeek?.PuntReturnYards),
+          [`week_${week}_PuntReturns`]: formatValue(filterWeek?.PuntReturns),
+          [`week_${week}_KickReturnYards`]: formatValue(filterWeek?.KickReturnYards),
+          [`week_${week}_KickReturns`]: formatValue(filterWeek?.KickReturns),
+
+          // OL STATS
+
+
+
+          [`week_${week}_PassingTouchdowns`]: formatValue(filterWeek?.OL?.PassingTouchdowns),
+          [`week_${week}_RushingTouchdowns`]: formatValue(filterWeek?.OL?.RushingTouchdowns),
+          [`week_${week}_TimesSacked`]: formatValue(filterWeek?.OL?.TimesSacked),
+          [`week_${week}_RushingYards`]: formatValue(filterWeek?.OL?.RushingYards),
+
+          // DEFENDER STATS
+          [`week_${week}_DefensiveTouchdowns`]: formatValue(filterWeek?.DefensiveTouchdowns),
+          [`week_${week}_Sacks`]: formatValue(filterWeek?.Sacks),
+          [`week_${week}_QuarterbackHits`]: formatValue(filterWeek?.QuarterbackHits),
+          [`week_${week}_SoloTackles`]: formatValue(filterWeek?.SoloTackles),
+          [`week_${week}_TacklesForLoss`]: formatValue(filterWeek?.TacklesForLoss),
+          [`week_${week}_FumblesForced`]: formatValue(filterWeek?.FumblesForced),
+          [`week_${week}_Interceptions`]: formatValue(filterWeek?.Interceptions),
+          [`week_${week}_PassesDefended`]: formatValue(filterWeek?.PassesDefended),
+          [`week_${week}_FumblesRecovered`]: formatValue(filterWeek?.FumblesRecovered),
+          [`week_${week}_SpecialTeamsTouchdowns`]: formatValue(filterWeek?.SpecialTeamsTouchdowns),
+          [`week_${week}_FieldGoalsMade`]: formatValue(filterWeek?.FieldGoalsMade),
+          [`week_${week}_Punts`]: formatValue(filterWeek?.Punts),
+          [`week_${week}_PuntInside20`]: formatValue(filterWeek?.PuntInside20),
+          [`week_${week}_FieldGoalsAttempted`]: formatValue(filterWeek?.FieldGoalsAttempted),
+          [`week_${week}_FieldGoalsMade0to19`]: formatValue(filterWeek?.FieldGoalsMade0to19),
+          [`week_${week}_FieldGoalsMade20to29`]: formatValue(filterWeek?.FieldGoalsMade20to29),
+          [`week_${week}_FieldGoalsMade30to39`]: formatValue(filterWeek?.FieldGoalsMade30to39),
+          [`week_${week}_FieldGoalsMade40to49`]: formatValue(filterWeek?.FieldGoalsMade40to49),
+          [`week_${week}_FieldGoalsMade50Plus`]: formatValue(filterWeek?.FieldGoalsMade50Plus),
+          [`week_${week}_ExtraPointsMade`]: formatValue(filterWeek?.ExtraPointsMade),
+          [`week_${week}_ExtraPointsAttempted`]: formatValue(filterWeek?.ExtraPointsAttempted),
+          [`week_${week}_PuntYards`]: formatValue(filterWeek?.PuntYards),
+          [`week_${week}_PuntsHadBlocked`]: formatValue(filterWeek?.PuntsHadBlocked),
+
+          week,
         }
+
+      }
+
+
+
+      if (position !== 'OL') {
+        tempObj = {
+          ...tempObj,
+          // [`week_${week}_RushingAttempts`]: filterWeek?.RushingAttempts?.toFixed(2),
+          [`week_${week}_RushingAttempts`]:
+            filterWeek?.RushingAttempts !== undefined && filterWeek.RushingAttempts % 1 > 0
+              ? filterWeek.RushingAttempts.toFixed(2)
+              : filterWeek?.RushingAttempts,
+
+          // [`week_${week}_RushingYards`]: filterWeek?.RushingYards?.toFixed(2),
+          // [`week_${week}_RushingTouchdowns`]: filterWeek?.RushingTouchdowns?.toFixed(2),
+          // [`week_${week}_PassingTouchdowns`]: filterWeek?.PassingTouchdowns?.toFixed(2),
+
+          [`week_${week}_RushingYards`]: formatValue(filterWeek?.RushingYards),
+          [`week_${week}_RushingTouchdowns`]: formatValue(filterWeek?.RushingTouchdowns),
+          [`week_${week}_PassingTouchdowns`]: formatValue(filterWeek?.PassingTouchdowns),
+        }
+      }
+        
       })
 
       // Calculate average points if we have valid weeks
