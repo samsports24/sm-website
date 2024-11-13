@@ -438,6 +438,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
                 <>
                   <Button
                     type='primary'
+                    disabled={true}
                     onClick={() => {
                       navigate('/team-trade')
                     }}

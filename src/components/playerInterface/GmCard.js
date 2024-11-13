@@ -106,6 +106,7 @@ const GmCard = (props) => {
                 <Button
                   type='primary'
                   className='action-bar-btn'
+                  disabled={true}
                   onClick={() => {
                     navigate('/team-trade')
                   }}

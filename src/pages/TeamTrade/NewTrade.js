@@ -405,6 +405,7 @@ const NewTrade = () => {
                 type='primary'
                 style={{ float: 'right' }}
                 onClick={createTrade}
+                disabled={true}
               >
                 Submit
               </Button>
