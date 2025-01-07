@@ -44,6 +44,7 @@ const MainMenu = ({ visible }) => {
   const [active, setActive] = useState('dashboard')
   const user = useSelector((state) => state.user.userDetails)
   const isdraftlive = user?.team?.currentLeague?.isDraftLive
+  const isdrafpaused = user?.team?.currentLeague?.draftPaused
  
   const [filteredCount, setFilteredCount] = useState(0)
   const SETTING = useSelector((state) => state?.user)
@@ -149,11 +150,15 @@ useEffect(()=>{
 
   const getData = async () => {
     try {
+
+      if (isAuthenticated){
+
       const res = await getchatacount();
 console.log('res',res);
 
      
        setFilteredCount(res?.count);
+      }
     } catch (error) {
       console.error('Error fetching notifications:', error);
     
@@ -195,7 +200,7 @@ console.log('res',res);
             <p>HOME</p>
           </div>
           {isAuthenticated ? (
-            isdraftlive ? (
+          isdrafpaused ? (
               <>
                 <div
                   className={`sidebar_menu_item ${active === 'team-setting' ? 'activeRoute' : ''}`}

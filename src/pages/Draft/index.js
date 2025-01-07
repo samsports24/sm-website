@@ -57,16 +57,23 @@ const Draft = () => {
   // console.log('loading',loading);
   // console.log('roundLoading',roundLoading);
   
+  // {!currentLeague?.draftCompleted ? (
+
+  console.log('currentLeague?.playOffDraft ',currentLeague );
+  
 
   return (
     <>
       <Header />
-      <div className='main_draft_container'>
+      {/* <div className='main_draft_container'>
         {loading || roundLoading ? (
           <Loader />
         ) : (
           <>
-            {!currentLeague?.draftCompleted ? (
+
+
+{!currentLeague?.draftCompleted && currentLeague?.playOffDraft  ? (
+       
               <>
             
                 <div className='main_d_left'>
@@ -78,15 +85,41 @@ const Draft = () => {
                   <TableComponent professionalDraft tableScroll={{ x: 1000, y: 329 }} />
                 </div>
               </>
+
+              
             ) : (
               <LeagueEnd />
             )}
     
           </>
         )}
-      </div>
+      </div> */}
 
 
+<div className='main_draft_container'>
+  {loading || roundLoading ? (
+    <Loader />
+  ) : (
+    <>
+      {!currentLeague?.draftCompleted && currentLeague?.playOffDraft && !currentLeague?.draftPaused ? (
+        <>
+          <div className='main_d_left'>
+            <ClockComponent />
+            <RoundComponent height={'485px'} />
+          </div>
+          <div className='main_d_center'>
+            <RosterDetail />
+            <TableComponent professionalDraft tableScroll={{ x: 1000, y: 329 }} />
+          </div>
+        </>
+      ) : currentLeague?.draftPaused ? (
+        <LeaguePaused />
+      ) : (
+        <LeagueEnd />
+      )}
+    </>
+  )}
+</div>
 
       
     </>
@@ -106,7 +139,7 @@ const LeagueEnd = () => {
 const LeaguePaused = () => {
   return (
     <section className='coming_soon'>
-      <h1>Live Draft is Paused!</h1>
+      <h1>Playoff Draft is Paused!</h1>
       <div className='time_container'></div>
     </section>
   )

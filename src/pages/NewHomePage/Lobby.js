@@ -32,8 +32,12 @@ const Lobby = () => {
   const getData = async () => {
     // setLoading(true)
     // const res = await getTeamSchedule({ teamFilter: selectedTeam })
+
+    if (isAuthenticated){
     const res = await getTeamSchedule({ teamFilter: '', week })
-    console.log('rws', res[0])
+    // console.log('rws', res[0])
+    setData(res)
+    }
     //   const today = moment().startOf('day');
     //   console.log('today',today);
 
@@ -44,7 +48,7 @@ const Lobby = () => {
 
     // console.log('c',res[0]);
 
-    setData(res)
+  
     // setLoading(false)
   }
 

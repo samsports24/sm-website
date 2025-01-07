@@ -13,16 +13,18 @@ import baseball from "../assets/new_Baseball.png"
 
 
 
- export const base_url = 'https://backend.samsports.io'
- export const frontEndUrl = 'https://samsports.io'
- export const draft_base_url = 'https://nfl-draft.samsports.io'
+//  export const base_url = 'https://backend.samsports.io'
+//  export const frontEndUrl = 'https://samsports.io'
+//  export const draft_base_url = 'https://nfl-draft.samsports.io'
 
 
 
 
 
-//  export const base_url = 'http://192.168.100.11:8000'
-//  export const frontEndUrl = 'http://192.168.100.11:3000'
+ export const base_url = 'http://192.168.100.10:8000'
+ export const frontEndUrl = 'http://192.168.100.10:3000'
+   export const draft_base_url = 'http://192.168.100.10:8002'
+
 
 
 export const publicAPI = Axios.create({ baseURL: base_url })
