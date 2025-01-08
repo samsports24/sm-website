@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Button, Input, Tabs } from 'antd'
 import { CiSearch } from 'react-icons/ci'
 import { useDispatch, useSelector } from 'react-redux'
@@ -45,7 +45,10 @@ const TableComponent = ({ tableScroll }) => {
   } = useSelector((state) => state.draft)
   const USER = useSelector((state) => state.user)
   const [loading, setLoading] = useState(false)
-  const socket = io(base_url)
+
+
+  const socketRef = useRef(null); // Store the socket instance
+  // const socket = io(base_url)
 
   const [isRookieActive, setIsRookieActive] = useState(true)
 
@@ -58,6 +61,26 @@ const TableComponent = ({ tableScroll }) => {
       page !== 1 && dispatch(setPage(1))
     }
   }
+
+
+  useEffect(() => {
+    // Only create a single socket connection
+  console.log("socketRef.current = io(base_url)")
+    
+    if (!socketRef.current) {
+      socketRef.current = io(base_url)
+    }
+
+    // // Listen for incoming messages
+    // socketRef.current.on("receive_message", (data) => {
+    //   setChat((prevChat) => [...prevChat, data]);
+    // });
+
+    return () => {
+      socketRef.current.disconnect(); // Clean up socket connection on unmount
+      socketRef.current = null;
+    };
+  }, []);
 
   useEffect(() => {
     const getLeagueDetailsTemp = async () => {
@@ -72,7 +95,7 @@ const TableComponent = ({ tableScroll }) => {
 
   useEffect(() => {
     if (localStorage.getItem('token')) {
-      socket.on('counter', async (data) => {
+      socketRef?.current?.on('counter', async (data) => {
         // alert('socket working')
         dispatch(setRoundLoading(true))
         await getDraftCounter()

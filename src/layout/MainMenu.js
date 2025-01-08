@@ -200,7 +200,7 @@ console.log('res',res);
             <p>HOME</p>
           </div>
           {isAuthenticated ? (
-          isdrafpaused ? (
+       isdraftlive  ? (
               <>
                 <div
                   className={`sidebar_menu_item ${active === 'team-setting' ? 'activeRoute' : ''}`}

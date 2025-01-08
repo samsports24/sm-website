@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import 'antd/dist/reset.css'
 
@@ -19,6 +19,7 @@ import { setSocket } from '../redux/actions/socketAction'
 const App = () => {
   const theme = useSelector((state) => state.theme.theme)
   const dispatch = useDispatch()
+  const socketRef = useRef(null);
   const authenticatedID = localStorage.getItem('userId')
   const socket = io(base_url, { transports: ['websocket'] })
   // const socket = io(base_url, {
@@ -27,21 +28,57 @@ const App = () => {
 
 
   // for the use if first connect
-  useEffect(() => {
-    if (authenticatedID) {
-      socket.emit('join', authenticatedID)
-      dispatch(setSocket(socket))
-    }
-  }, [authenticatedID])
+  // useEffect(() => {
+  //   if (authenticatedID) {
+  //     socket.emit('join', authenticatedID)
+  //     dispatch(setSocket(socket))
+  //   }
+  // }, [authenticatedID])
 
-  // for the use if reconnect
+  // // for the use if reconnect
+  // useEffect(() => {
+  //   socket.on('reconnect', () => {
+  //     if (authenticatedID) {
+  //       socket.emit('join', authenticatedID)
+  //     }
+  //   })
+  // }, [])
+
+
   useEffect(() => {
-    socket.on('reconnect', () => {
-      if (authenticatedID) {
-        socket.emit('join', authenticatedID)
+    // Only create a single socket connection if it's not already created
+    if (!socketRef.current) {
+      socketRef.current = io(base_url);
+    }
+
+    if (authenticatedID) {
+      socketRef.current.emit('join', authenticatedID); // Emit join on first connection
+      dispatch(setSocket(socketRef.current)); // Store socket in Redux
+    }
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect(); // Cleanup socket connection on unmount
+        socketRef.current = null;
       }
-    })
-  }, [])
+    };
+  }, [authenticatedID, base_url, dispatch]);
+
+  useEffect(() => {
+    if (socketRef.current) {
+      socketRef.current.on('reconnect', () => {
+        if (authenticatedID) {
+          socketRef.current.emit('join', authenticatedID); // Emit join on reconnect
+        }
+      });
+    }
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.off('reconnect'); // Clean up the reconnect listener
+      }
+    };
+  }, [authenticatedID]);
 
   useEffect(() => {
     if (theme === 'light') {

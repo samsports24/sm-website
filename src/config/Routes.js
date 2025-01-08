@@ -69,7 +69,8 @@ import Draft from '../pages/Draft'
 
 import { version } from './constants'
 import { notification } from 'antd'
-import { useEffect } from 'react'
+// import { useEffect } from 'react'
+import React from 'react'
 import TeamRoster from '../pages/TeamRoster'
 import TeamFinancials from '../pages/TeamFinancials'
 import LeagueRosters from '../pages/LeagueRosters'
@@ -109,7 +110,7 @@ const Routers = () => {
 
     const navigate = useNavigate()
 
-    useEffect(() => {
+    React.useEffect(() => {
       if (localStorage.getItem('version') !== version) {
         navigate('/login')
         localStorage.clear()
@@ -130,6 +131,7 @@ const Routers = () => {
 
   return (
     <BrowserRouter>
+    <React.StrictMode>
       <Routes>
         {/* Uncommit next line to apply token security */}
         <Route element={<PrivateWrapper />}>
@@ -256,6 +258,7 @@ const Routers = () => {
         <Route path='/error' element={<Error />} />
       
       </Routes>
+      </React.StrictMode>
     </BrowserRouter>
   )
 }
