@@ -31,9 +31,11 @@ const NewRosterCard = (props) => {
       Position,
       UpcomingGameOpponent,
       isPlayerLocked,
-      InjuryStatus,
       FantasyPosition,
       // currentYearSalaryCap,
+    },
+    playerDetails:{
+      InjuryStatus,
     },
     team,
   } = data

@@ -59,7 +59,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
   const isFreeAgent = state?.isFreeAgent?.status
   const isAuction = state?.isAuction
 
-  //  console.log('data?.player',data?.player);
+    // console.log('data?.player',data);
   // console.log('data?.playerContract?.weeklyScoring',data?.playerContract?.weeklyScoring);
 
   // console.log('mysampoints',sampoints);
@@ -287,7 +287,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
                 <h2 className='player_name'>{data?.player?.Name || '-'}</h2>
                 <h2 className='player_opponent'>{data?.player?.UpcomingGameOpponent || '-'}</h2>
                 <h2 className='player_team'>{data?.player?.Team || '-'}</h2>
-                <h2 className='player_projection'>{data?.player?.InjuryStatus || '-'}</h2>
+                <h2 className='player_projection'>{data?.playerDetails?.InjuryStatus || '-'}</h2>
               </div>
             </div>
             <div className='top_row_2'>
@@ -394,7 +394,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
                   />
 
                   <MoveToInjured
-                    disabled={data?.player?.InjuryStatus?.toLowerCase() != 'out' || isPlayerLocked}
+                    disabled={data?.playerDetails?.InjuryStatus?.toLowerCase() != 'out' || isPlayerLocked}
                     playerId={playerIdSmall}
                     pInterfaceModalClose={closeModal}
                   />
