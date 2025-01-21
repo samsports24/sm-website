@@ -335,7 +335,7 @@ const DraftPool = ({ tableScroll }) => {
     const columns2 = [
       {
         width: 150,
-        title: '23 TOTAL POINTS',
+        title: '24 TOTAL POINTS',
         dataIndex: 'mlbFantasyPoints',
         key: 'mlbFantasyPoints',
         render: (_, obj) => {
@@ -350,7 +350,7 @@ const DraftPool = ({ tableScroll }) => {
       },
       {
         width: 150,
-        title: '23 AVG.POINTS',
+        title: '24 AVG.POINTS',
         dataIndex: 'pf',
         key: 'pf',
         render: (_, obj) => {
@@ -450,10 +450,13 @@ const DraftPool = ({ tableScroll }) => {
             dataIndex: 'taf',
             key: 'taf',
             render: (_, obj) => {
+
+            
+
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.PassingAttempts || '-'}
+                    {obj?.stats?.stats2024?.weeklyStats?.PassingAttempts || '-'}
                   </p>
                 </div>
               )
@@ -468,7 +471,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.PassingYards?.toFixed(2) || '-'}
+                    {obj?.stats?.stats2024?.weeklyStats?.PassingYards?.toFixed(2) || '-'}
                   </p>
                 </div>
               )
@@ -483,7 +486,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.PassingTouchdowns || '-'}
+                    {obj?.stats?.stats2024?.weeklyStats?.PassingTouchdowns || '-'}
                   </p>
                 </div>
               )
@@ -506,7 +509,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.ReceivingTargets || '-'}
+                    {obj?.stats?.stats2024?.weeklyStats?.ReceivingTargets || '-'}
                   </p>
                 </div>
               )
@@ -521,7 +524,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.ReceivingYards || '-'}
+                    {obj?.stats?.stats2024?.weeklyStats?.ReceivingYards || '-'}
                   </p>
                 </div>
               )
@@ -536,7 +539,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.ReceivingTouchdowns || '-'}
+                    {obj?.stats?.stats2024?.weeklyStats?.ReceivingTouchdowns || '-'}
                   </p>
                 </div>
               )
@@ -559,7 +562,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.RushingAttempts || '-'}
+                    {obj?.stats?.stats2024?.weeklyStats?.RushingAttempts || '-'}
                   </p>
                 </div>
               )
@@ -574,7 +577,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.RushingYards || '-'}
+                    {obj?.stats?.stats2024?.weeklyStats?.RushingYards || '-'}
                   </p>
                 </div>
               )
@@ -589,7 +592,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.RushingTouchdowns || '-'}
+                    {obj?.stats?.stats2024?.weeklyStats?.RushingTouchdowns || '-'}
                   </p>
                 </div>
               )
@@ -730,7 +733,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.SCKS || '-'}
+                    {obj?.stats?.stats2024?.weeklyStats?.Sacks || '-'}
                   </p>
                 </div>
               )
@@ -746,7 +749,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.QBH || '-'}
+                    {obj?.stats?.stats2024?.weeklyStats.QuarterbackHits || '-'}
                   </p>
                 </div>
               )
@@ -762,7 +765,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.TKLS || '-'}
+                    {obj?.stats?.stats2024?.weeklyStats?.TotalTackles || '-'}
                   </p>
                 </div>
               )
@@ -777,7 +780,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.TFL || '-'}
+                    {obj?.stats?.stats2024?.weeklyStats?.TacklesForLoss || '-'}
                   </p>
                 </div>
               )
@@ -793,7 +796,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.FF || '-'}
+                    {obj?.stats?.stats2024?.weeklyStats?.FumblesForced || '-'}
                   </p>
                 </div>
               )
@@ -809,7 +812,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.INTS || '-'}
+                    {obj?.stats?.stats2024?.weeklyStats?.Interceptions || '-'}
                   </p>
                 </div>
               )
@@ -825,7 +828,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.PD || '-'}
+                    {obj?.stats?.stats2024?.weeklyStats?.PassesDefended || '-'}
                   </p>
                 </div>
               )
@@ -882,7 +885,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.FieldGoalsMade || '-'}
+                    {obj?.stats?.stats2024?.weeklyStats?.FieldGoalsMade || '-'}
                   </p>
                 </div>
               )
@@ -912,7 +915,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.Punts || '-'}
+                    {obj?.stats?.stats2024?.weeklyStats?.Punts || '-'}
                   </p>
                 </div>
               )
@@ -927,7 +930,7 @@ const DraftPool = ({ tableScroll }) => {
               return (
                 <div className='table_player_name_box nrc_container'>
                   <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.PuntInside20 || '-'}
+                    {obj?.stats?.stats2024?.weeklyStats?.PuntInside20 || '-'}
                   </p>
                 </div>
               )

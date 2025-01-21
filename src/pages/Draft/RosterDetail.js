@@ -97,14 +97,14 @@ const RosterDetail = ({ playerFinancials }) => {
           {/* <p>{`24' PROJ.`}<br /> TOTAL POINTS</p> */}
           <p>{`24' PROJ.`}TOTAL POINTS</p>
             {/* <p>{player?.stats?.stats?.FantasyPoints24?.toFixed(3) || '-'}</p> */}
-            <p>{player?.stats?.stats.FantasyPoints24 ? `${player?.stats?.stats?.FantasyPoints24.toFixed(3)}` : '-'}</p>
+            <p>{player?.stats?.stats?.FantasyPoints24 ? `${player?.stats?.stats?.FantasyPoints24.toFixed(3)}` : '-'}</p>
           </div>
          
           <div>
             {/* <p>{`24' PROJ.`}<br /> AVG.POINTS</p> */}
             <p>{`24' PROJ.`} AVG.POINTS</p>
             {/* <p>{player?.stats?.stats?.AvgFantasyPoints24?.toFixed(3) || '-'}</p> */}
-            <p>{player?.stats?.stats.AvgFantasyPoints24 ? `${player?.stats?.stats?.AvgFantasyPoints24.toFixed(3)}` : '-'}</p>
+            <p>{player?.stats?.stats?.AvgFantasyPoints24 ? `${player?.stats?.stats?.AvgFantasyPoints24.toFixed(3)}` : '-'}</p>
           </div>
 
          

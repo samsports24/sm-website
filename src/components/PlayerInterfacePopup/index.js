@@ -394,7 +394,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
                   />
 
                   <MoveToInjured
-                    disabled={data?.playerDetails?.InjuryStatus?.toLowerCase() != 'out' || isPlayerLocked}
+                    disabled={data?.playerDetails?.InjuryStatus?.toLowerCase() != 'out'|| data?.playerDetails?.InjuryStatus != 'Injured Reserve' || isPlayerLocked}
                     playerId={playerIdSmall}
                     pInterfaceModalClose={closeModal}
                   />

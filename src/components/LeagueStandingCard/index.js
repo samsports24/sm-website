@@ -189,9 +189,14 @@ const LeagueStandingCard = ({ data, index, teams }) => {
                         key: v?._id,
                         wlt: `${v?.teamScore?.win}-${v?.teamScore?.lose}-${v?.teamScore?.tie}`,
                         // pct: v?.teamScore?.pct,
-                        pct:
-                          v?.teamScore?.win /
-                          (v?.teamScore?.win + v?.teamScore?.lose + v?.teamScore?.tie || 1),
+                        // pct:
+                        //   v?.teamScore?.win /
+                        //   (v?.teamScore?.win + v?.teamScore?.lose + v?.teamScore?.tie || 1),
+                        pct: (
+                          (v?.teamScore?.win / 
+                           (v?.teamScore?.win + v?.teamScore?.lose + v?.teamScore?.tie || 1))
+                        ).toFixed(3),
+                        
 
                         // gb: v?.teamScore?.gb,
                         gb: getGbValue(v.teamId),

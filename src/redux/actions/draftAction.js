@@ -127,8 +127,8 @@ export const setCompleted = (payload) => {
 }
 
 export const getAllPlayers = async (payload) => {
-  console.log('payload',payload);
-  console.log('payloadposition',payload.position);
+  // console.log('payload',payload);
+  // console.log('payloadposition',payload.position);
   try {
     store.dispatch(setDraftTableLoading(true))
     attachToken()
