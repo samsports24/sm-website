@@ -312,7 +312,7 @@ const Card2 = ({
                   fontSize: '20px',
                 }}
               >
-                by week
+                {/* Bye Week */}Off Season
               </p>
             )
           ) : (
