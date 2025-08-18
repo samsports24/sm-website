@@ -1,6 +1,7 @@
 import React from 'react'
 // import { FaArrowsRotate } from 'react-icons/fa6'
 import { useSelector } from 'react-redux'
+import { positions } from '../../config/constants'
 
 const RoundComponent = ({ height }) => {
   const { currentLeague } = useSelector((state) => state.league)
@@ -13,6 +14,10 @@ const RoundComponent = ({ height }) => {
   //         return a.position - b.position; // Sort by position within the same round
   //     }
   // });
+
+function mapPosition(position) {
+  return positions[position] || position;
+}
 
   return (
     <div className='round_box' style={{ maxHeight: height ? height : '500px' }}>
@@ -58,7 +63,7 @@ const RoundComponent = ({ height }) => {
                   <p>{v?.team?.name}</p>
                   {v?.playerPick && (
                     <p style={{ color: 'var(--primary) !important' }}>
-                      {v?.playerPick?.Position} - {v?.playerPick?.FirstName}{' '}
+                      {mapPosition(v?.playerPick?.Position)} - {v?.playerPick?.FirstName}{' '}
                       {v?.playerPick?.LastName}
                     </p>
                   )}

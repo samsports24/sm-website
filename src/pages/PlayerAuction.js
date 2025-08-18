@@ -12,6 +12,7 @@ import { approveAndRejectAuction, auctionEnded, getAuctionPlayer, markAsPaid } f
 import { useSelector } from 'react-redux'
 import moment from 'moment'
 import PlayerDetailsModal from '../components/modal/PlayerDetailsModal'
+import { positions } from '../config/constants'
 
 const PlayerAuction = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -29,6 +30,10 @@ const PlayerAuction = () => {
     await getAuctionPlayer()
     setIsLoading(false)
   }
+
+  function mapPosition(position) {
+  return positions[position] || position;
+}
 
   const columns = [
     {
@@ -51,7 +56,7 @@ const PlayerAuction = () => {
       title: 'POSITION',
       dataIndex: 'Position',
       key: 'Position',
-      render: (_, obj) => <p>{obj?.player_id?.Position || '-'}</p>,
+      render: (_, obj) => <p>{mapPosition(obj?.player_id?.Position) || '-'}</p>,
     },
     {
       title: 'PLAYER NAME',

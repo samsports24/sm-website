@@ -3,7 +3,7 @@ import { Tooltip } from 'antd'
 import React, { useState } from 'react'
 
 import DepthChartModal from '../modal/DepthChart'
-import { isLocked } from '../../config/constants'
+import { isLocked,positions } from '../../config/constants'
 import { MdLock } from 'react-icons/md'
 import { useParams } from 'react-router-dom'
 
@@ -36,6 +36,10 @@ const DepthCard = ({ data, index, getDepthChartData,selectedValue }) => {
   // console.log('classKey',classKey);
   // console.log('Name',Name);
 
+  function mapPosition(position) {
+  return positions[position] || position;
+}
+
   return (
     <>
       {isPlayerLocked && (
@@ -64,6 +68,7 @@ const DepthCard = ({ data, index, getDepthChartData,selectedValue }) => {
         <div className='wrapper'>
           <img
             className='card_bg_img'
+            // src={require(`../../assets/offense-card/${getImage(Position)}.png`)}
             src={require(`../../assets/offense-card/${getImage(Position)}.png`)}
           />
           <div className='image_box'>

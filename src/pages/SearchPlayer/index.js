@@ -15,6 +15,7 @@ import { getAllPlayers } from '../../redux/actions/draftAction'
 import { getPlayerForWeeklyScoring } from '../../redux'
 import { createAuction } from '../../redux/actions/rosterAction'
 import { useNavigate } from 'react-router-dom'
+import { positions } from '../../config/constants'
 
 const SearchPlayer = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
@@ -40,6 +41,10 @@ const SearchPlayer = () => {
   // console.log('currentweek',currentweek);
 
   // console.log('year', year)
+
+  function mapPosition(position) {
+  return positions[position] || position;
+}
 
   const weekOptions = Array.from({ length: 18 }, (_, index) => ({
     value: index + 1,
@@ -489,7 +494,9 @@ if (week <=8){
         key: 'position',
         render: (_, obj) => (
           <div className='_positionColumn'>
-            <p>{obj?.position || '-'}</p>
+            {/* <p>{obj?.position || '-'}</p> */}
+            <p>{mapPosition(obj?.position) || '-'}</p>
+            
           </div>
         ),
       },

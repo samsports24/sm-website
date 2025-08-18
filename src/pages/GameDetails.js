@@ -14,6 +14,7 @@ import HeadingAndWeek from '../components/Pagination/HeadingAndWeek'
 
 import Player1 from '../assets/player-img-60x60.png'
 import ViewBreakdown from '../components/modal/ViewBreakdown'
+import { positions } from '../config/constants'
 
 const GameDetails = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
@@ -322,6 +323,10 @@ const GameHeader = ({ state, lockedPlayer }) => {
   )
 }
 
+function mapPosition(position) {
+  return positions[position] || position;
+}
+
 const PlayerCardRow = ({ data }) => {
   return (
     <div className='gd_card_box'>
@@ -336,7 +341,7 @@ const PlayerCardRow = ({ data }) => {
                 {data?.player1?.Name?.length >= 17 ? data?.player1?.ShortName : data?.player1?.Name}
               </p>
               <span>
-                {data?.player1?.Position} - {data?.player1?.Team}
+                {mapPosition(data?.player1?.Position)} - {data?.player1?.Team}
               </span>
             </div>
             {/* <p>FINAL L 31-33 to CLE</p> */}
@@ -368,7 +373,7 @@ const PlayerCardRow = ({ data }) => {
                 {data?.player2?.Name?.length >= 17 ? data?.player2?.ShortName : data?.player2?.Name}
               </p>
               <span>
-                {data?.player2?.Position} - {data?.player2?.Team}
+                {mapPosition(data?.player2?.Position)} - {data?.player2?.Team}
               </span>
             </div>
             {/* <p>FINAL L 31-33 to CLE</p> */}

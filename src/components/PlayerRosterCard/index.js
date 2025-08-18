@@ -3,7 +3,7 @@ import React from 'react'
 import { Checkbox } from 'antd'
 
 import { useNavigate, useParams } from 'react-router-dom'
-import { isLocked } from '../../config/constants'
+import { isLocked,positions } from '../../config/constants'
 
 import { MdLock } from 'react-icons/md'
 import { HiPlusCircle } from 'react-icons/hi'
@@ -37,6 +37,10 @@ const PlayerRosterCard = ({
   } = data
   const navigate = useNavigate()
   const { id } = useParams()
+
+  function mapPosition(position) {
+  return positions[position] || position;
+}
 
   return (
     <div className='stats_card_container' style={style || null}>

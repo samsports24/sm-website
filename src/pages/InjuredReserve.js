@@ -10,6 +10,7 @@ import { getAllIr } from '../redux/actions/rosterAction'
 
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import { getPf, getRankAndPosition } from '../config/helperFunctions'
+import { positions } from '../config/constants'
 
 const InjuredReserve = () => {
   const [injuredReserve, setInjuredReserve] = useState([])
@@ -18,6 +19,10 @@ const InjuredReserve = () => {
   useEffect(() => {
     getData()
   }, [])
+
+  function mapPosition(position) {
+  return positions[position] || position;
+}
 
   const getData = async () => {
     setLoading(true)
@@ -48,7 +53,9 @@ const InjuredReserve = () => {
       title: 'POSITION',
       dataIndex: 'Position',
       key: 'Position',
-      render: (_, obj) => <p>{obj?.player?.Position || '-'}</p>,
+      // render: (_, obj) => <p>{obj?.player?.Position || '-'}</p>,
+      render: (_, obj) => <p>{mapPosition(obj?.player?.Position) || '-'}</p>,
+      
     },
     {
       title: 'PLAYER NAME',

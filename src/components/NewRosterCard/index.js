@@ -1,6 +1,6 @@
 import { Checkbox } from 'antd'
 import React from 'react'
-import { isLocked } from '../../config/constants'
+import { isLocked,positions } from '../../config/constants'
 import { MdLock } from 'react-icons/md'
 import PlayerDetailsModal from '../modal/PlayerDetailsModal'
 import { useParams } from 'react-router-dom'
@@ -41,6 +41,10 @@ const NewRosterCard = (props) => {
   } = data
   const { id } = useParams()
 
+  function mapPosition(position) {
+  return positions[position] || position;
+}
+
   // console.log('leaguesalarycap',currentYearSalaryCap);
 
   // console.log('averagePf', averagePf)
@@ -53,7 +57,8 @@ const NewRosterCard = (props) => {
       <div className='content_box'>
         <div className='content_box_left'>
           <span style={{ color: getPositionColor(FantasyPosition === 'OL' ? 'OL' : Position) }}>
-            {Position}
+            {/* {Position} */}
+            {mapPosition(Position)}
           </span>
         </div>
         <div className='content_box_center'>

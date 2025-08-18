@@ -3,6 +3,7 @@ import { Button } from 'antd'
 import { useSelector } from 'react-redux'
 import { getRemainingSeconds, isDraftStart } from '../../config/helperFunctions'
 import { addPlayerToDraft } from '../../redux/actions/draftAction'
+import { positions } from '../../config/constants'
 
 const RosterDetail = ({ playerFinancials }) => {
   const {
@@ -29,6 +30,10 @@ const RosterDetail = ({ playerFinancials }) => {
     setLoading(false)
   }
 
+  function mapPosition(position) {
+  return positions[position] || position;
+}
+
  
   return (
     <div className='roster_detail_box'>
@@ -41,7 +46,7 @@ const RosterDetail = ({ playerFinancials }) => {
           <div className='left'>
             <p>{player?.player?.Name}</p>
             <p>
-              {/* #12  */}- {player?.player?.Position}, {player?.player?.Team}
+              {/* #12  */}- {mapPosition(player?.player?.Position)}, {player?.player?.Team}
             </p>
           </div>
           <div className='right'>

@@ -12,11 +12,17 @@ import {
   getDraftQueue,
   setSelectedPlayer,
 } from '../../../redux/actions/draftAction'
+import { positions } from '../../../config/constants';
 
 const DraftQueue = ({ tableScroll }) => {
   const { draftQueues, activeTab } = useSelector((state) => state.draft)
   const [loading, setLoading] = useState('')
   const [orderloading, setOrderLoading] = useState('')
+
+
+  function mapPosition(position) {
+  return positions[position] || position;
+}
 
   const dispatch = useDispatch()
 
@@ -196,7 +202,7 @@ const DraftQueue = ({ tableScroll }) => {
         return (
           <div className='table_player_name_box nrc_container'>
             <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-              {obj?.player?.Position || '-'}
+              {mapPosition(obj?.player?.Position) || '-'}
             </p>
           </div>
         )

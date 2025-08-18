@@ -101,7 +101,8 @@ const Draft = () => {
     <Loader />
   ) : (
     <>
-      {!currentLeague?.draftCompleted && currentLeague?.playOffDraft && !currentLeague?.draftPaused ? (
+      {/* {!currentLeague?.draftCompleted && currentLeague?.playOffDraft && !currentLeague?.draftPaused ? ( */}
+            {!currentLeague?.draftCompleted  && !currentLeague?.draftPaused ? (
         <>
           <div className='main_d_left'>
             <ClockComponent />

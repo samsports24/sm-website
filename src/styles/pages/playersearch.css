@@ -70,7 +70,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 35px;
+    /* width: 35px; */
     height: 25px;
   }
   ._searchPlayerContainer ._positionColumn p {

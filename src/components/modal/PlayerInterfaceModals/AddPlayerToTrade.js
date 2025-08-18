@@ -1,11 +1,17 @@
 import React, { useState } from 'react'
 import { Button, Modal } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
+import { positions } from '../../../config/constants'
 
 const AddPlayerToTrade = ({ data, teamName, selected, setSelected }) => {
   const [open, setOpen] = useState(false)
   const showModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
+
+  function mapPosition(position) {
+  return positions[position] || position;
+}
+  
 
   return (
     <>
@@ -44,7 +50,9 @@ const AddPlayerToTrade = ({ data, teamName, selected, setSelected }) => {
               )
               return (
                 <div key={i} className='_row'>
-                  <p style={{ width: '100px' }}>{v?.players?.Position}</p>
+                  {/* <p style={{ width: '100px' }}>{v?.players?.Position}</p> */}
+                           <p style={{ width: '100px' }}>{mapPosition(v?.players?.Position)}</p>
+                  
                   <p style={{ flex: 1 }}>{v?.players?.Name}</p>
                   <p style={{ width: '150px' }}>${v?.players?.currentYearSalaryCap}</p>
                   <Button

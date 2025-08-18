@@ -22,7 +22,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 import { getPf, getPfScore, getRankAndPosition } from '../../config/helperFunctions'
-import { isLocked } from '../../config/constants'
+import { isLocked,positions } from '../../config/constants'
 
 import Image from '../../assets/logo2.png'
 import sampointslogo from '../../assets/samcoinlogo.png'
@@ -258,6 +258,10 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
     setAuctionLoading(false)
   }
 
+    function mapPosition(position) {
+    return positions[position] || position;
+  }
+
   return (
     <div className='player_interface_popup'>
       <AiOutlineCloseCircle className='close_icon' onClick={closeModal} />
@@ -298,7 +302,10 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
               <div className='player_details_box'>
                 <p>
                   <b>position:</b>
-                  {data?.player?.Position || '-'}
+                  {/* {data?.player?.Position || '-'} */}
+
+                  {mapPosition(data?.player?.Position)}
+
                 </p>
                 <p>
                   <b>team:</b>

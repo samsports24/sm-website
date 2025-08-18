@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { Button, Row, Col, Form, Input, Avatar } from 'antd'
+import { Button, Row, Col, Form, Input, Avatar, Checkbox } from 'antd'
 
 // import Arrow from '../assets/arrow-right.svg'
 
@@ -41,6 +41,8 @@ const TeamSetting = () => {
   }
 
   const onFinish = async (values) => {
+    // console.log('values',values);
+
     const name = values?.name ? values?.name : user?.team?.name || ''
     const picture = file ? file : user?.team?.logo || ''
     const gmName = values?.gmName ? values?.gmName : user?.team?.gmName || ''
@@ -52,6 +54,8 @@ const TeamSetting = () => {
     const hometown = values?.hometown ? values?.hometown : user?.team?.hometown || ''
     const teamTwitter = values?.teamTwitter ? values?.teamTwitter : user?.team?.teamTwitter || ''
     const teamColor = values?.teamColor ? values?.teamColor : user?.team?.teamColor || ''
+    const autoDraft =
+      values.autoDraft !== undefined ? values.autoDraft : user?.team?.autoDraft ?? false
 
     if (file) {
       let formdata = new FormData()
@@ -64,6 +68,7 @@ const TeamSetting = () => {
       formdata.append('hometown', hometown)
       formdata.append('teamTwitter', teamTwitter)
       formdata.append('teamColor', teamColor)
+      formdata.append('autoDraft', autoDraft)
 
       await _updateTeam(formdata)
     } else {
@@ -76,7 +81,11 @@ const TeamSetting = () => {
         hometown,
         teamTwitter,
         teamColor,
+        autoDraft,
       }
+
+      // console.log('obj',obj);
+
       await _updateTeam(obj)
     }
   }
@@ -141,9 +150,13 @@ const TeamSetting = () => {
               name: 'teamColor',
               value: user?.team?.teamColor,
             },
+            {
+              name: 'autoDraft',
+              value: user?.team?.autoDraft,
+            },
           ]}
         >
-          <Row gutter={[30, 30]} align={"middle"}>
+          <Row gutter={[30, 30]} align={'middle'}>
             <Col xs={24}>
               <div className='header'>
                 <h2>TEAM SETTINGS</h2>
@@ -216,6 +229,23 @@ const TeamSetting = () => {
             <Col xs={24} lg={12} xl={8}>
               <Form.Item name={'teamTwitter'} label='Team Twitter Handle'>
                 <Input placeholder='www.twitter.com/teamname' />
+              </Form.Item>
+
+              <Form.Item
+                // label="Enable Auto Draft"
+                name='autoDraft'
+                valuePropName='checked'
+                style={{ display: 'flex', alignItems: 'center', gap: '12px' }}
+              >
+                <Checkbox
+                  style={{
+                    color: 'white',
+                    fontSize: '18px',
+                    marginLeft: '8px',
+                  }}
+                >
+                  Auto Draft
+                </Checkbox>
               </Form.Item>
             </Col>
 

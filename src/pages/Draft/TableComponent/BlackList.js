@@ -11,12 +11,17 @@ import {
   getDraftQueue,
   setSelectedPlayer,
 } from '../../../redux/actions/draftAction'
+import { positions } from '../../../config/constants'
 
 const BlackList = ({ tableScroll }) => {
   const { blacklistQueues, activeTab } = useSelector((state) => state.draft)
   const [loading, setLoading] = useState('')
 
   const dispatch = useDispatch()
+
+  function mapPosition(position) {
+  return positions[position] || position;
+}
 
   useEffect(() => {
     if (activeTab == 4) getData()
@@ -116,7 +121,10 @@ const BlackList = ({ tableScroll }) => {
         return (
           <div className='table_player_name_box nrc_container'>
             <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-              {obj?.player?.Position || '-'}
+              {/* {obj?.player?.Position || '-'} */}
+
+     {mapPosition(obj?.player?.Position) || '-'}
+              
             </p>
           </div>
         )

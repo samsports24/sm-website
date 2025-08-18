@@ -5,12 +5,17 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setSelectedPlayer } from '../../../redux/actions/draftAction'
 import { getDraftTeamRoster, getRosterForDraftPick } from '../../../redux/actions/rosterAction'
 import { sortedArray } from '../../../config/helperFunctions'
+import { positions } from '../../../config/constants'
 
 const TeamRosters = ({ tableScroll }) => {
   const { activeTab,draftRounds } = useSelector((state) => state?.draft)
   const SETTING = useSelector((state) => state?.user?.setting)
   const { roasterdraftdata,roasterroundandpick } = useSelector((state) => state?.roster)
 
+
+function mapPosition(position) {
+  return positions[position] || position;
+}
 
   console.log('roasterdraftdata',roasterdraftdata);
 // console.log('roasterdraftdata',roasterdraftdata);
@@ -243,12 +248,13 @@ const TeamRosters = ({ tableScroll }) => {
       key: 'pos',
       render: (_, obj) => {
       
-        console.log('obj',obj);
-        console.log('obj?.Position',obj?._id?.Position);
+
         return (
           <div className='table_player_name_box nrc_container'>
             <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-              {obj?.Position || obj?._id?.Position || '-'}
+              {/* {obj?.Position || obj?._id?.Position || '-'} */}
+    {mapPosition(obj?.Position) || mapPosition(obj?._id?.Position) || '-'}
+              
             </p>
           </div>
         )
