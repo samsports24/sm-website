@@ -50,6 +50,7 @@ function mapPosition(position) {
                 <div className='rb_card_left'>
                   {v?.playerPick && <img src={v?.playerPick?.HostedHeadshotNoBackgroundUrl} />}
                 </div>
+               
                 <div
                   className='rb_card_center'
                   style={{ backgroundImage: `url(${v?.team?.logo})` }}
@@ -67,6 +68,10 @@ function mapPosition(position) {
                       {v?.playerPick?.LastName}
                     </p>
                   )}
+                </div>
+
+                     <div style={{ color: 'var(--primary) !important' }} className='rb_card_left'>
+                  {v?.team?.autoDraft ? 'Auto Draft':null}
                 </div>
                 {v?._id === onTheClock?._id && currentLeague?.isDraftLive && (
                   <div className='rb_card_end'>
