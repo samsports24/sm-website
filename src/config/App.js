@@ -158,7 +158,24 @@ const App = () => {
     // })
   }, [])
 
-  return <Routes />
+  const handleExit = () => {
+    const originalToken = localStorage.getItem("originalToken");
+    if (originalToken) {
+      localStorage.setItem("token", originalToken);
+      localStorage.removeItem("originalToken");
+      window.location.href = "/comissioner"; // redirect back
+    }
+  };
+
+  return (
+  <div>
+    {localStorage.getItem("originalToken") &&
+     <div style={{height: '50px', background: 'orange', position: 'fixed', top: 0, width: '100%', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold'}}>
+      <span>Logged in as Comissioner.</span>
+      <button style={{marginLeft: '10px', padding: '5px 10px', cursor: 'pointer', position: 'fixed', right: '10px'}} onClick={handleExit}>Exit</button>
+    </div>}
+    <Routes />
+    </div>)
 }
 
 export default App

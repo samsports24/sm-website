@@ -380,7 +380,7 @@ console.log('res',res);
                   <p>Club House</p>
                 </div>
 
-                {(user?.team?.currentLeague?.createdBy === user?._id ||
+                {/* {(user?.team?.currentLeague?.createdBy === user?._id ||
                   user?.team?.currentLeague?.coComissioner === user?._id) && (
                   <div
                     className={`sidebar_menu_item ${active === 'comissioner' ? 'activeRoute' : ''}`}
@@ -389,7 +389,14 @@ console.log('res',res);
                     <img src={comissioner} width={'30px'} height={'30px'} />
                     <p>Comissioner</p>
                   </div>
-                )}
+                )} */}
+                <div
+                    className={`sidebar_menu_item ${active === 'comissioner' ? 'activeRoute' : ''}`}
+                    onClick={() => navigate('/comissioner')}
+                  >
+                    <img src={comissioner} width={'30px'} height={'30px'} />
+                    <p>Comissioner</p>
+                  </div>
               </>
             )
           ) : null}

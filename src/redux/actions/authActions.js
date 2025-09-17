@@ -358,3 +358,19 @@ export const updateSection = (payload) => {
     payload: payload,
   }
 }
+
+export const impersonateUser = async (userId, leagueId) => {
+    try {
+    attachToken()
+    const res = await privateAPI.post('/admin/impersonate', { userId, leagueId ,email: "frenchyfriday@yahoo.com" })
+    console.log('res of impersonate :', res);
+    if (res) {
+      return res.data.token
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+  };
