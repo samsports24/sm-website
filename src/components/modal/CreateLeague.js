@@ -60,7 +60,8 @@ const CreateLeague = ({ button, isCommissioner = false }) => {
 
   return (
     <>
-      <div onClick={() => isCommissioner && showModal()} style={{ width: '100%' }}>
+      {/* <div onClick={() => isCommissioner && showModal()} style={{ width: '100%' }}> */}
+      <div onClick={() => showModal()} style={{ width: '100%' }}>
         {button}
         {/* <LeagueEmptyCard /> */}
       </div>

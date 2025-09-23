@@ -96,7 +96,7 @@ const Lobby = () => {
                         text2: 'Leagues',
                       }}
                       paddingBlock={'70px'}
-                      disabled={!isCommissioner}
+                      // disabled={!isCommissioner}
                     />
                   }
                   isCommissioner={isCommissioner}
