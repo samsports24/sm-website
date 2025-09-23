@@ -1,17 +1,38 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Modal, Button, Input, Form, Row, Col, DatePicker, Avatar, Radio, Rate, Select } from 'antd'
 import LeagueEmptyCard from '../NewPopularLeagueCard/EmptyCard'
-import { createNewLeagueFromDashboard } from '../../redux'
+import { updateLeagueCommissioner } from '../../redux'
 import { landingSignup } from '../../config/constants'
+import { CiMenuKebab } from "react-icons/ci";
 import dayjs from 'dayjs'
 
-const CreateLeague = ({ button, isCommissioner = false }) => {
+const EditLeague = ({ data, isCommissioner = false }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
   const [imageSrc, setImageSrc] = useState(null)
   const [file, setFile] = useState(null)
   const [isPrivate, setIsPrivate] = useState(false)
+
+  useEffect(() => {
+    if(isModalVisible && data){
+      console.log("data inside edit league modal", data)
+      data?.name && form.setFieldValue('name', data?.name)
+      data?.numberOfTeams && form.setFieldValue('numberOfTeams', data?.numberOfTeams)
+      data?.draftType && form.setFieldValue('draftType', data?.draftType)
+      data?.leagueId && form.setFieldValue('leagueId', data?.leagueId)
+      data?.prizePool && form.setFieldValue('prizePool', data?.prizePool)
+      data?.entryFee && form.setFieldValue('entryFee', data?.entryFee)
+      data?.leagueLevel && form.setFieldValue('leagueLevel', data?.leagueLevel)
+      data?.description && form.setFieldValue('description', data?.description)
+      data?.draftStart && form.setFieldValue('draftStart', dayjs(data?.draftStart))
+      data?.leagueType && form.setFieldValue('leagueType', data?.leagueType)
+      if (data?.leagueType === 'private') {
+      //   form.setFieldValue('leaguePassword', data?.leaguePassword ?? '')
+        setIsPrivate(true)
+      }
+    }
+  },[isModalVisible ,data])
 
   const showModal = () => {
     if (localStorage.getItem('token')) {
@@ -31,6 +52,7 @@ const CreateLeague = ({ button, isCommissioner = false }) => {
   const onFinish = async (values) => {
     setLoading(true)
     const obj = {
+      ...data,
       ...values,
       draftStart: dayjs(values?.draftStart).toISOString(),
     }
@@ -39,19 +61,21 @@ const CreateLeague = ({ button, isCommissioner = false }) => {
       delete obj.leaguePassword
     }
 
-    let formdata = new FormData()
-    if (file) {
-      formdata.append('pictures', file)
-    }
-    Object.entries(obj).map(([key, value]) => {
-      if (value) {
-        formdata.append(key, value)
-      }
-    })
-    await createNewLeagueFromDashboard(formdata)
+    // let formdata = new FormData()
+    // if (file) {
+    //   formdata.append('pictures', file)
+    // }
+    // Object.entries(obj).map(([key, value]) => {
+    //   if (value) {
+    //     formdata.append(key, value)
+    //   }
+    // })
+
+    await updateLeagueCommissioner(obj)
     setLoading(false)
     handleCancel()
   }
+
   const handleFile = (file) => {
     setFile(file)
     const src = URL.createObjectURL(file)
@@ -60,9 +84,16 @@ const CreateLeague = ({ button, isCommissioner = false }) => {
 
   return (
     <>
-      <div onClick={() => isCommissioner && showModal()} style={{ width: '100%' }}>
-        {button}
-        {/* <LeagueEmptyCard /> */}
+      <div 
+        onClick={(e) => {
+          e.stopPropagation()
+          if(isCommissioner){
+            showModal()
+          }
+        }}   
+        style={{ width: 'max-content', position: 'absolute', top: 10 ,right: 10, zIndex: 1000 ,cursor: 'pointer' }}
+      >
+        <CiMenuKebab style={{color: 'white'}} />
       </div>
       <Modal
         centered
@@ -78,7 +109,7 @@ const CreateLeague = ({ button, isCommissioner = false }) => {
           x
         </div>
         <div className='modal_body'>
-          <h2 className='modal_header_heading main_heading'>Create New League</h2>
+          <h2 className='modal_header_heading main_heading'>Edit League</h2>
           <div>
             <Form
               form={form}
@@ -141,7 +172,7 @@ const CreateLeague = ({ button, isCommissioner = false }) => {
                   </Form.Item>
                 </Col>
 
-                <Col lg={24} xl={4}>
+                {/* <Col lg={24} xl={4}>
                   <Form.Item name={'logo'} label='League Logo'>
                     <>
                       <label style={{ color: 'white' }} className='file_button' htmlFor='fileInput'>
@@ -157,7 +188,9 @@ const CreateLeague = ({ button, isCommissioner = false }) => {
                       />
                     </>
                   </Form.Item>
-                </Col>
+                </Col> */}
+
+                <Col lg={24} xl={4}></Col>
 
                 <Col xs={24} md={12} xl={8}>
                   <Form.Item
@@ -250,7 +283,7 @@ const CreateLeague = ({ button, isCommissioner = false }) => {
                         label='League Password'
                         rules={[
                           {
-                            required: isPrivate ? true : false,
+                            required: data?.leaguePassword ? false : isPrivate ? true : false,
                             message: 'Required!',
                           },
                         ]}
@@ -271,6 +304,29 @@ const CreateLeague = ({ button, isCommissioner = false }) => {
                     <Input placeholder='Prize Pool wallet address' />
                   </Form.Item>
                 </Col>
+
+                {/* <Col xs={24} xl={12}>
+                  <Form.Item name={'users'} label='Users'>
+                    <Select placeholder='Select users' mode='multiple'>
+                      <Select.Option value={10}>10</Select.Option>
+                      <Select.Option value={16}>16</Select.Option>
+                      <Select.Option value={24}>24</Select.Option>
+                      <Select.Option value={32}>32</Select.Option>
+                    </Select>
+                  </Form.Item>
+                </Col>
+                
+                <Col xs={24} xl={12}>
+                  <Form.Item name={'teams'} label='Teams'>
+                    <Select placeholder='Select teams' mode='multiple'>
+                      <Select.Option value={10}>10</Select.Option>
+                      <Select.Option value={16}>16</Select.Option>
+                      <Select.Option value={24}>24</Select.Option>
+                      <Select.Option value={32}>32</Select.Option>
+                    </Select>
+                  </Form.Item>
+                </Col> */}
+
                 <Col xs={24}>
                   <Form.Item name={'description'} label='League Description'>
                     <Input.TextArea rows={4} placeholder='' />
@@ -280,7 +336,7 @@ const CreateLeague = ({ button, isCommissioner = false }) => {
                 <Col xs={24}>
                   <Form.Item>
                     <Button loading={loading} type='primary' htmlType='submit'>
-                      JOIN
+                      Save
                     </Button>
                   </Form.Item>
                 </Col>
@@ -293,4 +349,4 @@ const CreateLeague = ({ button, isCommissioner = false }) => {
   )
 }
 
-export default CreateLeague
+export default EditLeague

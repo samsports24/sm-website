@@ -1,6 +1,7 @@
 const initialState = {
   userLeagues: [],
   nonUserLeagues: [],
+  futureLeagues: [],
   currentLeague: [],
   allSamMetric:[],
 }
@@ -13,6 +14,7 @@ const leagueReducer = (state = initialState, action) => {
         ...state,
         userLeagues: payload?.userLeagues,
         nonUserLeagues: payload?.nonUserLeagues,
+        futureLeagues: payload?.futureLeagues,
       }
     }
     case 'SET_LEAGUES': {

@@ -31,20 +31,22 @@ const MyLeague = () => {
 
       <Row gutter={[20, 20]} style={{ marginTop: '20px' }}>
         {leagues && leagues?.userLeagues?.length > 0
-          ? leagues?.userLeagues?.map((value, index) => (
+          ? <>
+          {
+            leagues?.userLeagues?.map((value, index) => (
               <Col xs={24} sm={12} xl={8} xxl={6} key={index}>
                 <div
-                  style={{ cursor: 'pointer' }}
-                  onClick={async () => {
-                    if (user?.team?.currentLeague?._id === value?._id) {
-                      notification.error({
-                        message: 'This League is already active',
-                        duration: 6,
-                      })
-                    } else {
-                      await selectLeague({ leagueId: value?._id }, navigate)
-                    }
-                  }}
+                  // style={{ cursor: 'pointer' }}
+                  // onClick={async () => {
+                  //   if (user?.team?.currentLeague?._id === value?._id) {
+                  //     notification.error({
+                  //       message: 'This League is already active',
+                  //       duration: 6,
+                  //     })
+                  //   } else {
+                  //     await selectLeague({ leagueId: value?._id }, navigate)
+                  //   }
+                  // }}
                 >
                   {/* <PopularLeagueCard
             data={value}
@@ -62,6 +64,37 @@ const MyLeague = () => {
                 </div>
               </Col>
             ))
+          }
+          {
+            leagues?.futureLeagues?.map((value, index) => (
+              <Col xs={24} sm={12} xl={8} xxl={6} key={index}>
+                <div
+                  style={{ cursor: 'not-allowed' }}
+                  // onClick={async () => {
+                  //   if (user?.team?.currentLeague?._id === value?._id) {
+                  //     notification.error({
+                  //       message: 'This League is already active',
+                  //       duration: 6,
+                  //     })
+                  //   } else {
+                  //     await selectLeague({ leagueId: value?._id }, navigate)
+                  //   }
+                  // }}
+                >
+                  <UpdatedLeagueCard
+                    data={value}
+                    active={false}
+                    // yourLeague={false}
+                    //  fromHome={true}
+                    yourLeague={false}
+                    totalTeams={value?.numberOfTeams}
+                    isFutureLeague={true}
+                  />
+                </div>
+              </Col>
+            ))
+          }
+          </> 
           : leagues?.nonUserLeagues
               // ?.filter((value) => value.leagueType === 'Ultimate')
               // ?.filter(value => value.leagueType === 'professional' && value.leagueType === 'freemium' && value._id !== '64fc5edaf8f2513bd263845a')

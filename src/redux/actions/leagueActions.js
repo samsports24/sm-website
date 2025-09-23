@@ -184,6 +184,46 @@ export const updateLeague = async (payload) => {
   }
 }
 
+export const updateLeagueCommissioner = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/league/update-league-commissioner`, payload)
+    if (res) {
+      notification.success({
+        description: res.data.data.message,
+        duration: 2,
+      })
+      getUserLeagues()
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const deleteLeagueCommissioner = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/league/delete-league-commissioner`, payload)
+    if (res) {
+      notification.success({
+        description: res.data.data.message,
+        duration: 2,
+      })
+      getUserLeagues()
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
 export const selectLeague = async (payload, navigate) => {
   try {
     attachToken()

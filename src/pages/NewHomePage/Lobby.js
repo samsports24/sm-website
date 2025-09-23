@@ -13,6 +13,7 @@ const Lobby = () => {
   const isAuthenticated = localStorage.getItem('token')
   const [data, setData] = useState([])
   const navigate = useNavigate()
+  const isCommissioner = useSelector((state) => state.user?.userDetails?.isCommissioner)
   const week = useSelector((state) => state.user?.setting?.week)
   const weeknumber = useSelector((state) => state.user?.setting?.week)
   const league = useSelector((state) => state.user?.userDetails?.team?.currentLeague?.leagueType)
@@ -95,8 +96,10 @@ const Lobby = () => {
                         text2: 'Leagues',
                       }}
                       paddingBlock={'70px'}
+                      disabled={!isCommissioner}
                     />
                   }
+                  isCommissioner={isCommissioner}
                 />
               </div>
             </Row>
@@ -262,6 +265,7 @@ const Card2 = ({
   week,
   data,
   weeknumber,
+  disabled,
 }) => {
   // console.log('chekkckc', data)
 
@@ -271,7 +275,7 @@ const Card2 = ({
     <div
       className={`card2 ${flip ? 'flip' : ''}`}
       style={{
-        cursor: cursor ? 'pointer' : 'initial',
+        cursor: disabled ? 'not-allowed' : cursor ? 'pointer' : 'initial',
         paddingBlock: paddingBlock ? paddingBlock : '30px',
       }}
       onClick={onClick}

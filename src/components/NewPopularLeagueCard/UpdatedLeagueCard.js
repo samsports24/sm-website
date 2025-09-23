@@ -3,11 +3,12 @@ import { IoStar } from 'react-icons/io5'
 import JoinLeague from '../modal/JoinLeague'
 import { useNavigate } from 'react-router-dom'
 import Logo from '../../assets/sam-football.png'
-import { joinLeague } from '../../redux'
+import { deleteLeagueCommissioner, joinLeague, selectLeague } from '../../redux'
 import { useSelector } from 'react-redux'
 import { useState } from 'react'
 import Loader from '../Loader'
-const UpdatedLeagueCard = ({ data, yourLeague, active, fromHome }) => {
+import EditLeague from '../modal/EditLeague'
+const UpdatedLeagueCard = ({ data, yourLeague, active, fromHome, totalTeams, isFutureLeague = false }) => {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   // console.log('yourLeague',yourLeague);
@@ -50,10 +51,12 @@ const leaguejoin =async()=>{
   }
 }
 
+const deleteHandler = async () => {
+  await deleteLeagueCommissioner({_id: data?._id})
+}
+
 
   return (
-
-
     <div className='u_league_card_wrapper'>
           {loading ? (
       <Loader />
@@ -69,8 +72,10 @@ const leaguejoin =async()=>{
       ? 'ultimate_league_border'
       : ''
         }`}
+        style={{position: "relative"}}
       >
-        <div className='top'>
+        {user?.isCommissioner && <EditLeague data={data} isCommissioner={user?.isCommissioner} />}
+        <div className='top' style={{opacity : isFutureLeague ? 0.6 : 1}} >
           <div className='row_1'>
           {/* <div className='image_box' style={{ backgroundImage: `url(${leagueLogo} || Logo)` }} /> */}
           <div className='image_box' style={{ backgroundImage: `url(${leagueLogo ? leagueLogo : Logo})` }} />
@@ -80,7 +85,7 @@ const leaguejoin =async()=>{
               <p className='text_value'>{name}</p>
 
               <p style={{marginTop:'30px'}} className='text_title'>Users:</p>
-              <p  className='color_text_value'>{data?.teams?.length || totalPlayers || 0}  /32</p>
+              <p  className='color_text_value'>{data?.teams?.length || totalPlayers || 0}  /{totalTeams ? totalTeams : 32}</p>
             </div>
             
           </div>
@@ -121,29 +126,52 @@ const leaguejoin =async()=>{
             <p className='text_value'>{data?.prizePool || '-'}</p>
           </div> */}
         </div>
-        <>
+
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '10px' ,margin: '0 20px 35px 0'}}>
+          {
+            (user?.isCommissioner && data?.teams?.length === 0 && data?.users?.length === 0) && 
+            <div className='button_row button_row_updated' onClick={deleteHandler}>
+              <p>Delete</p>
+            </div>
+          }
           {yourLeague ? (
-            <div className='button_row'>
+            <>
+            <div 
+              className='button_row button_row_updated' 
+              onClick={async () => {
+                if (!active) {
+                  await selectLeague({ leagueId: data?._id }, navigate)
+                } 
+              }}
+              style={{opacity: active ? 0.6 : 1, cursor: active ? 'initial' : 'pointer'}}
+            >
+              <p>Select</p>
+            </div>
+            <div className='button_row button_row_updated'>
               <p>Joined</p>
             </div>
+            </>
           ) : fromHome ? (
             <div
-              className='button_row'
-              
+              className='button_row button_row_updated'
               // onClick={() => {
               //   navigate('/select-game')
               // }}
               style={{ cursor: 'pointer' }}
             >
-              <p onClick={() => {
-                leaguejoin()
-              }}
-               className='join-now'>JOIN</p>
+              <p 
+                className='join-now'
+                onClick={() => {
+                  leaguejoin()
+                }}
+               >
+                JOIN
+              </p>
             </div>
           ) : (
             <JoinLeague data={data} />
           )}
-        </>
+        </div>
       </div>
     )}
     </div>

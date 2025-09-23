@@ -359,10 +359,10 @@ export const updateSection = (payload) => {
   }
 }
 
-export const impersonateUser = async (userId, leagueId) => {
+export const impersonateUser = async (userId, leagueId, email) => {
     try {
     attachToken()
-    const res = await privateAPI.post('/admin/impersonate', { userId, leagueId ,email: "frenchyfriday@yahoo.com" })
+    const res = await privateAPI.post('/admin/impersonate', { userId, leagueId ,email })
     console.log('res of impersonate :', res);
     if (res) {
       return res.data.token

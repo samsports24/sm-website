@@ -20,7 +20,7 @@
   
   .u_league_card .top {
     width: 100%;
-    padding: 20px;
+    padding: 30px 20px 20px 20px;
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -53,10 +53,11 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    gap: 10px;
   }
   .u_league_card .row_1 .image_box {
     border-radius: 25%;
-    width: 150px;
+    min-width: 150px;
     height: 150px;
     background-repeat: no-repeat;
     background-position: center;
@@ -90,19 +91,25 @@
   }
   
   .u_league_card .button_row {
-    height: 40px;
+    cursor: pointer;
+    height: 35px;
     display: flex;
     width: 30%;
     border-radius:30px;
     justify-content: center;
     align-items: center;
     align-self: flex-end;
-    margin-bottom: 47px;
+    margin-bottom: 35px;
     margin-right: 21px;
     /* border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px; */
     background-color: rgb(41, 157, 199);
   }
+
+  .u_league_card .button_row_updated{
+    margin: 0;
+  }
+
   .u_league_card .button_row .join-now {
     cursor: pointer;
     font-size: 20px;

@@ -40,7 +40,7 @@ const Comissioner = () => {
 
     const handleImpersonate = async (userId) => {
 
-      const impersonatedToken = await impersonateUser(userId, userLeague);
+      const impersonatedToken = await impersonateUser(userId, userLeague, user?.email);
 
       if (impersonatedToken) {
         // Save impersonation token and reload dashboard
@@ -106,6 +106,7 @@ const Comissioner = () => {
           />
         </div> */}
 
+        {user?.isCommissioner && 
         <div>
           <Row gutter={[20, 20]}>
           {teams?.length > 0 && teams?.map((team, index) => {
@@ -121,6 +122,7 @@ const Comissioner = () => {
           })}
           </Row>
         </div>
+        }
       {/* ) : (
         <div />
       )} */}
