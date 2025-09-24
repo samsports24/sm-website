@@ -1,4 +1,4 @@
-import { Col, Row, Tabs } from 'antd'
+import { Button, Col, Row, Select, Tabs } from 'antd'
 import { useEffect, useState } from 'react'
 
 import LeagueSetting from './LeagueSettings'
@@ -6,9 +6,11 @@ import TeamAndOwnership from './TeamAndOwnership'
 import Trades from './Trades'
 import { useSelector } from 'react-redux'
 import DraftOrder from './DraftOrder'
-import { getProfessionalLeagueRanks, impersonateUser } from '../../redux'
+import { getProfessionalLeagueRanks, impersonateUser, updateCommissionersInLeague } from '../../redux'
 
 const Comissioner = () => {
+  const [loading, setLoading] = useState(false)
+  const [goingToBeCommissioner, setGoingToBeCommissioner] = useState([])
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [teams, setTeams] = useState(null)
   const SETTING = useSelector((state) => state.user.setting)
@@ -65,6 +67,34 @@ const Comissioner = () => {
     // }
   };
 
+  const makeCommissionerHandler = (values) => {
+    // let teamsArr = [...users];
+    // Build updated commissioner list based on values array
+    // let updatedCommissionerTobe = values.map(val => {
+    //   const teamObj = teamsArr.find(t => t?._id == val);
+    //   return {
+    //     team: teamObj?._id,
+    //     user: teamObj?.user?._id
+    //   };
+    // });
+
+    setGoingToBeCommissioner(values);
+  };
+
+  useEffect(() => {
+    console.log("goingToBeCommissioner :", goingToBeCommissioner)
+  },[goingToBeCommissioner])
+
+  const updateLeagueCommissioners = async () => {
+    setLoading(true)
+    await updateCommissionersInLeague({
+      leagueId: userLeague,
+      users: goingToBeCommissioner
+    })
+    setGoingToBeCommissioner([])
+    setLoading(false)
+  }
+
   return (
     <>
       {/* {isAuthenticated ? ( */}
@@ -107,7 +137,27 @@ const Comissioner = () => {
         </div> */}
 
         {user?.isCommissioner && 
-        <div>
+        <div style={{display: 'flex', flexDirection: 'column', gap: '2rem'}}>
+          <div style={{ display: 'flex', flexDirection: "column", gap: "10px"}}>
+            <p>Make Others Commissioner</p>
+
+            <Select placeholder='Select Users' mode="multiple" value={goingToBeCommissioner} allowClear onChange={makeCommissionerHandler}>
+              {
+                teams?.map((item) => item?.user && <Select.Option value={item?.user?._id}>{`${item?.user?.userName} (${item?.name})`}</Select.Option>)
+              }
+            </Select>
+            <div style={{width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
+              <Button 
+                style={{color: 'orange'}} 
+                disabled={goingToBeCommissioner?.length === 0 || loading}
+                onClick={updateLeagueCommissioners}
+                // loading={loading}
+                loading={loading}
+              >
+                Save
+              </Button>
+            </div>
+          </div>
           <Row gutter={[20, 20]}>
           {teams?.length > 0 && teams?.map((team, index) => {
             return (

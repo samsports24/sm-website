@@ -84,6 +84,26 @@ export const createNewLeagueFromDashboard = async (payload) => {
   }
 }
 
+export const updateCommissionersInLeague = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/league/update-commissioners-in-league`, payload)
+    if (res) {
+      // getUserLeagues()
+      notification.success({
+        description: res.data.data.message,
+        duration: 2,
+      })
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
 export const joinLeague = async (payload) => {
   // console.log('redux payload',payload);
   try {
