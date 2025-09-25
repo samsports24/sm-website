@@ -3,17 +3,22 @@ import { IoStar } from 'react-icons/io5'
 import JoinLeague from '../modal/JoinLeague'
 import { useNavigate } from 'react-router-dom'
 import Logo from '../../assets/sam-football.png'
-import { deleteLeagueCommissioner, joinLeague, selectLeague } from '../../redux'
+import { deleteLeagueCommissioner, joinLeague, resetLeagueCommissioner, selectLeague } from '../../redux'
 import { useSelector } from 'react-redux'
 import { useState } from 'react'
 import Loader from '../Loader'
 import EditLeague from '../modal/EditLeague'
+import DeleteLeague from '../modal/DeleteLeague'
+import ResetLeague from '../modal/ResetLeague'
 const UpdatedLeagueCard = ({ data, yourLeague, active, fromHome, totalTeams, isFutureLeague = false }) => {
   const [loading, setLoading] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
   const navigate = useNavigate()
   // console.log('yourLeague',yourLeague);
   const user = useSelector((state) => state.user.userDetails)
   const userId = localStorage.getItem('userId');
+
+  console.log("data inside update league card :", data)
 
   const { name, draftStart, leagueType, leagueLevel, entryFee, leagueLogo, totalPlayers,leagueId } = data
 //   console.log('draftStart',draftStart);
@@ -52,7 +57,15 @@ const leaguejoin =async()=>{
 }
 
 const deleteHandler = async () => {
+  setDeleteLoading(true)
   await deleteLeagueCommissioner({_id: data?._id})
+  setDeleteLoading(false)
+}
+
+const resetHandler = async () => {
+  setDeleteLoading(true)
+  await resetLeagueCommissioner({_id: data?._id})
+  setDeleteLoading(false)
 }
 
 
@@ -129,14 +142,16 @@ const deleteHandler = async () => {
 
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '10px' ,margin: '0 20px 35px 0'}}>
           {
+            (user?.isCommissioner && data?.mainCommissioner === user?._id) && 
+              <ResetLeague deleteHandler={resetHandler}  deleteLoading={deleteLoading} />
+          }
+          {
             (user?.isCommissioner && data?.teams?.length === 0 && data?.users?.length === 0) && 
-            <div className='button_row button_row_updated' onClick={deleteHandler}>
-              <p>Delete</p>
-            </div>
+              <DeleteLeague deleteHandler={deleteHandler}  deleteLoading={deleteLoading} />
           }
           {yourLeague ? (
             <>
-            <div 
+            {/* <div 
               className='button_row button_row_updated' 
               onClick={async () => {
                 if (!active) {
@@ -146,8 +161,14 @@ const deleteHandler = async () => {
               style={{opacity: active ? 0.6 : 1, cursor: active ? 'initial' : 'pointer'}}
             >
               <p>Select</p>
-            </div>
-            <div className='button_row button_row_updated'>
+            </div> */}
+            <div className='button_row button_row_updated' 
+              onClick={async () => {
+                  if (!active) {
+                    await selectLeague({ leagueId: data?._id }, navigate)
+                  } 
+                }}
+              >
               <p>Joined</p>
             </div>
             </>

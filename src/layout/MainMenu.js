@@ -400,6 +400,7 @@ console.log('res',res);
               </>
             )
           ) : null}
+          {
           <div
             className={`sidebar_menu_item ${active === 'rules-book' ? 'activeRoute' : ''}`}
             onClick={() => {
@@ -409,6 +410,7 @@ console.log('res',res);
             <PiNotebookLight />
             <p>RULESBOOK</p>
           </div>
+          }
 
           <div
             className={`sidebar_menu_item ${active === 'job-search' ? 'activeRoute' : ''}`}

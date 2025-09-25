@@ -11,12 +11,12 @@ import moment from 'moment'
 const RollingNewsFeed = ({ height = '463px' }) => {
   const [news, setNews] = useState([])
 
-  useEffect(() => {
-    ;(async () => {
-      let data = await getNewsFeed()
-      setNews(data)
-    })()
-  }, [])
+  // useEffect(() => {
+  //   ;(async () => {
+  //     let data = await getNewsFeed()
+  //     setNews(data)
+  //   })()
+  // }, [])
 
   const navigate = useNavigate()
 

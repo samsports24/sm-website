@@ -244,6 +244,26 @@ export const deleteLeagueCommissioner = async (payload) => {
   }
 }
 
+export const resetLeagueCommissioner = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/league/reset-league-commissioner`, payload)
+    if (res) {
+      notification.success({
+        description: res.data.data.message,
+        duration: 2,
+      })
+      getUserLeagues()
+    }
+  } catch (err) {
+    console.log('err', err)
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
 export const selectLeague = async (payload, navigate) => {
   try {
     attachToken()

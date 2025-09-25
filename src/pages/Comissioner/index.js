@@ -10,12 +10,14 @@ import { getProfessionalLeagueRanks, impersonateUser, updateCommissionersInLeagu
 
 const Comissioner = () => {
   const [loading, setLoading] = useState(false)
+  const [currentLeague, setCurrentLeague] = useState()
   const [goingToBeCommissioner, setGoingToBeCommissioner] = useState([])
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [teams, setTeams] = useState(null)
   const SETTING = useSelector((state) => state.user.setting)
   const user = useSelector((state) => state.user.userDetails)
   const userLeague = useSelector((state) => state.user.SamPoints.league)
+  const league = useSelector((state) => state.league.userLeagues)
 
   useEffect(() => {
     const currentUser = user?._id
@@ -29,14 +31,26 @@ const Comissioner = () => {
   }, [user])
 
   useEffect(() => {
-      if (localStorage.getItem('token')) {
-        getProLeagueRank()
-      }
-    }, [SETTING?.week])
+    if (localStorage.getItem('token')) {
+      getProLeagueRank()
+    }
+  }, [SETTING?.week])
+
+  useEffect(() => {
+    if (league && league.length) {
+      let tempCurrentLeague = league.find(_l => _l?._id == userLeague)
+      setCurrentLeague(tempCurrentLeague)
+    }
+  }, [league])
+
+  useEffect(() => {
+    if(currentLeague){
+      setGoingToBeCommissioner(currentLeague.leagueCommissioners)
+    }
+  },[currentLeague])
 
   const getProLeagueRank = async () => {
       let data = await getProfessionalLeagueRanks(SETTING?.week)
-      console.log("data for proLeague:", data)
       setTeams(data?.teams)
     }
 
@@ -136,6 +150,8 @@ const Comissioner = () => {
           />
         </div> */}
 
+          <h1 style={{marginBottom: '30px'}}>Commissioners Portal</h1>
+
         {user?.isCommissioner && 
         <div style={{display: 'flex', flexDirection: 'column', gap: '2rem'}}>
           <div style={{ display: 'flex', flexDirection: "column", gap: "10px"}}>
@@ -148,7 +164,7 @@ const Comissioner = () => {
             </Select>
             <div style={{width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
               <Button 
-                style={{color: 'orange'}} 
+                style={{color: 'white', background: 'rgb(41, 157, 199)'}} 
                 disabled={goingToBeCommissioner?.length === 0 || loading}
                 onClick={updateLeagueCommissioners}
                 // loading={loading}
@@ -158,18 +174,20 @@ const Comissioner = () => {
               </Button>
             </div>
           </div>
+
+          <h2>Teams</h2>
+
           <Row gutter={[20, 20]}>
-          {teams?.length > 0 && teams?.map((team, index) => {
-            return (
-              <Col key={index} lg={8} md={12}>
+          {teams?.length > 0 && teams?.map((team, index) => 
+             team?.user && 
+             <Col key={index} lg={8} md={12}>
                 <div key={index} onClick={() => handleImpersonate(team?.user)} style={{cursor: 'pointer' ,border: '1px solid #6e6980', borderRadius: '16px', padding: '20px', background: 'var(--secondaryPurple)', display: 'flex', flexDirection: 'column', gap: '10px'}} >
                   <h2>{team?.name}</h2>
                   <p>Abb: {team?.abbreviation}</p>
                   <p>Town: {team?.hometown}</p>
                 </div>
               </Col>
-            )
-          })}
+          )}
           </Row>
         </div>
         }

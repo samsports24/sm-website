@@ -8,12 +8,12 @@ import moment from 'moment'
 const AllNews = ({ height = '700px' }) => {
     const [allnews, setAllNews] = useState([])
 
-    useEffect(() => {
-      ;(async () => {
-        let data = await getAllNewsFeed()
-        setAllNews(data)
-      })()
-    }, [])
+    // useEffect(() => {
+    //   ;(async () => {
+    //     let data = await getAllNewsFeed()
+    //     setAllNews(data)
+    //   })()
+    // }, [])
   return (
     <>
     <Header/>
