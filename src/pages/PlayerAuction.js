@@ -102,7 +102,7 @@ const PlayerAuction = () => {
       title: 'AGE',
       dataIndex: 'BirthDate',
       key: 'BirthDate',
-      render: (_, obj) => <p>{obj?.player_id?.Age || getAge(obj?.player_id?.BirthDate) || '-'}</p>,
+      render: (_, obj) => <p>{obj?.player_id?.Age || (obj?.player_id?.BirthDate) || '-'}</p>,
     },
     {
       title: 'TEAM',
