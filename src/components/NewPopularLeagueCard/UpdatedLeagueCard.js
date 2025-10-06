@@ -98,7 +98,8 @@ const resetHandler = async () => {
               <p className='text_value'>{name}</p>
 
               <p style={{marginTop:'30px'}} className='text_title'>Users:</p>
-              <p  className='color_text_value'>{data?.teams?.length || totalPlayers || 0}  /{totalTeams ? totalTeams : 32}</p>
+              <p  className='color_text_value'>{data?.teams?.length || totalPlayers || 0}  /{data.
+numberOfTeams ? data?.numberOfTeams : 32}</p>
             </div>
             
           </div>
