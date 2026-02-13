@@ -57,7 +57,7 @@ const Content = ({ mainTitle }) => {
             Social: <span>@SAMSports_</span>
           </p>
         </div>
-        <div>
+        {/* <div>
           <p className='text4 linksBox'>
             <a
               href='https://app.termly.io/document/terms-of-service/372d4c41-9267-4833-8bbb-aba80f6fbbb8'
@@ -71,7 +71,7 @@ const Content = ({ mainTitle }) => {
               White Paper
             </a>
           </p>
-        </div>
+        </div> */}
         <p className='text6'>
           SAMSPORTS is not in any way affiliated with any sports team or sports league, nor is it
           affiliated with any player, players association, or collection of players. The use of

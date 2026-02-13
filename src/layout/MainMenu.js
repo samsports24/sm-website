@@ -6,7 +6,7 @@ import { HiOutlineHome } from 'react-icons/hi'
 import { MdDashboard, MdOutlineStadium } from 'react-icons/md'
 import { FaPlusCircle, FaRegChartBar } from 'react-icons/fa'
 import { RiAuctionLine, RiDraftLine } from 'react-icons/ri'
-import { SiLeagueoflegends,SiWechat } from 'react-icons/si'
+import { SiLeagueoflegends, SiWechat } from 'react-icons/si'
 
 import { BsShop } from 'react-icons/bs'
 import {
@@ -18,8 +18,7 @@ import {
 } from 'react-icons/gi'
 import { RxEnvelopeClosed } from 'react-icons/rx'
 
-import { PiUsersThreeLight, PiNotebookLight,PiMagnifyingGlassLight } from 'react-icons/pi'
-
+import { PiUsersThreeLight, PiNotebookLight, PiMagnifyingGlassLight } from 'react-icons/pi'
 
 import { TbLivePhoto } from 'react-icons/tb'
 import { AiOutlineSetting } from 'react-icons/ai'
@@ -32,7 +31,12 @@ import Community from '../assets/community.png'
 import Job from '../assets/job.png'
 import Support from '../assets/support.png'
 import FAQ from '../assets/faq.png'
-import { clearChatNotification, clearNotification, getAllChatNotification, getAllNotification } from '../redux/actions/notificationAction'
+import {
+  clearChatNotification,
+  clearNotification,
+  getAllChatNotification,
+  getAllNotification,
+} from '../redux/actions/notificationAction'
 import { getUser } from '../redux'
 import { getchatacount } from '../redux/actions/chatAction'
 
@@ -45,19 +49,18 @@ const MainMenu = ({ visible }) => {
   const user = useSelector((state) => state.user.userDetails)
   const isdraftlive = user?.team?.currentLeague?.isDraftLive
   const isdrafpaused = user?.team?.currentLeague?.draftPaused
- 
+
   const [filteredCount, setFilteredCount] = useState(0)
   const SETTING = useSelector((state) => state?.user)
   const { pathname } = useLocation()
 
   // console.log('check', isdraftlive)
-  
-// console.log('user',user?._id);
 
+  // console.log('user',user?._id);
 
-useEffect(()=>{
-  getUser()
-})
+  useEffect(() => {
+    getUser()
+  })
 
   useEffect(() => {
     switch (pathname) {
@@ -143,39 +146,32 @@ useEffect(()=>{
     }
   }, [pathname])
 
-
   useEffect(() => {
     getData()
   }, [user])
 
   const getData = async () => {
     try {
+      if (isAuthenticated) {
+        const res = await getchatacount()
+        console.log('res', res)
 
-      if (isAuthenticated){
-
-      const res = await getchatacount();
-console.log('res',res);
-
-     
-       setFilteredCount(res?.count);
+        setFilteredCount(res?.count)
       }
     } catch (error) {
-      console.error('Error fetching notifications:', error);
-    
+      console.error('Error fetching notifications:', error)
     }
-  };
+  }
 
   // console.log('char notification',chatnotificationData);
-  console.log('filteredCount',filteredCount);
-  
-  
+  console.log('filteredCount', filteredCount)
 
   const handleClick = () => {
     if (filteredCount > 0) {
-      clearChatNotification();
+      clearChatNotification()
     }
-    navigate('/chat');
-  };
+    navigate('/chat')
+  }
 
   const navigatePath = (path) => {
     if (user?.team?.currentLeague?._id) {
@@ -200,7 +196,7 @@ console.log('res',res);
             <p>HOME</p>
           </div>
           {isAuthenticated ? (
-       isdraftlive  ? (
+            isdraftlive ? (
               <>
                 <div
                   className={`sidebar_menu_item ${active === 'team-setting' ? 'activeRoute' : ''}`}
@@ -209,7 +205,7 @@ console.log('res',res);
                   <AiOutlineSetting />
                   <p>team setting</p>
                 </div>
-                
+
                 <div
                   className={`sidebar_menu_item ${active === 'draft' ? 'activeRoute' : ''}`}
                   onClick={() => navigate('/live-draft')}
@@ -360,14 +356,12 @@ console.log('res',res);
                 <div
                   className={`sidebar_menu_item ${active === 'chat' ? 'activeRoute' : ''}`}
                   onClick={handleClick}
-                  // onClick={() =>   
+                  // onClick={() =>
                   //   navigatePath('/chat')}
                 >
-         {filteredCount > 0 && (
-        <span style={{ color: 'red', fontSize: '15px' }}>
-          {filteredCount}
-        </span>
-      )}
+                  {filteredCount > 0 && (
+                    <span style={{ color: 'red', fontSize: '15px' }}>{filteredCount}</span>
+                  )}
                   <SiWechat />
                   <p>Chat</p>
                 </div>
@@ -391,25 +385,25 @@ console.log('res',res);
                   </div>
                 )} */}
                 <div
-                    className={`sidebar_menu_item ${active === 'comissioner' ? 'activeRoute' : ''}`}
-                    onClick={() => navigate('/comissioner')}
-                  >
-                    <img src={comissioner} width={'30px'} height={'30px'} />
-                    <p>Comissioner</p>
-                  </div>
+                  className={`sidebar_menu_item ${active === 'comissioner' ? 'activeRoute' : ''}`}
+                  onClick={() => navigate('/comissioner')}
+                >
+                  <img src={comissioner} width={'30px'} height={'30px'} />
+                  <p>Comissioner</p>
+                </div>
               </>
             )
           ) : null}
           {
-          <div
-            className={`sidebar_menu_item ${active === 'rules-book' ? 'activeRoute' : ''}`}
-            onClick={() => {
-              navigate('/rule-book')
-            }}
-          >
-            <PiNotebookLight />
-            <p>RULESBOOK</p>
-          </div>
+            <div
+              className={`sidebar_menu_item ${active === 'rules-book' ? 'activeRoute' : ''}`}
+              onClick={() => {
+                navigate('/rule-book')
+              }}
+            >
+              <PiNotebookLight />
+              <p>RULESBOOK</p>
+            </div>
           }
 
           <div
@@ -419,20 +413,20 @@ console.log('res',res);
             <img src={Job} width={32} />
             <p>Job Search</p>
           </div>
-          <div
+          {/* <div
             className={`sidebar_menu_item ${active === 'Community' ? 'activeRoute' : ''}`}
             onClick={() => {}}
           >
             <img src={Community} width={32} />
             <p>Community</p>
-          </div>
-          <div
+          </div> */}
+          {/* <div
             className={`sidebar_menu_item ${active === 'token' ? 'activeRoute' : ''}`}
             onClick={() => window.open('https://sam-wallet-10b1f.web.app/')}
           >
             <GiCoins />
             <p>sams token</p>
-          </div>
+          </div> */}
           <div
             className={`sidebar_menu_item ${active === 'faq' ? 'activeRoute' : ''}`}
             onClick={() => {}}
@@ -440,13 +434,13 @@ console.log('res',res);
             <img src={FAQ} width={32} />
             <p>faq</p>
           </div>
-          <div
+          {/* <div
             className={`sidebar_menu_item ${active === 'support' ? 'activeRoute' : ''}`}
             onClick={() => window.open('https://discord.gg/pAb5B7Npmy')}
           >
             <img src={Support} width={32} />
             <p>Support</p>
-          </div>
+          </div> */}
         </div>
       </div>
 

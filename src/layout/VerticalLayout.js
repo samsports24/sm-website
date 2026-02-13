@@ -83,17 +83,7 @@ const VerticalLayout = ({ children, active }) => {
               <img src={YouTube} />
             </div>
             <div className='caution'>
-              <p style={{ lineHeight: 1.5 }}>
-                API • Privacy •{' '}
-                <a
-                  href='https://app.termly.io/document/terms-of-service/372d4c41-9267-4833-8bbb-aba80f6fbbb8'
-                  target='_blank'
-                  rel='noreferrer'
-                >
-                  Terms
-                </a>{' '}
-                • Jobs • Responsible Play
-              </p>
+              <p style={{ lineHeight: 1.5 }}>Jobs • Responsible Play</p>
             </div>
           </div>
         </Sider>

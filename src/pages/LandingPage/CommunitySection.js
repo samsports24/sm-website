@@ -106,7 +106,7 @@ const CommunitySection = () => {
             </Col>
           )
         })} */}
-        <Col xs={24}>
+        {/* <Col xs={24}>
           <div className='community_button_box'>
             <div className='button' onClick={() => window.open('https://discord.gg/pAb5B7Npmy')}>
               <div className='icon_box'>
@@ -115,7 +115,7 @@ const CommunitySection = () => {
               <Typography.Title level={3}>Join our community now</Typography.Title>
             </div>
           </div>
-        </Col>
+        </Col> */}
       </Row>
     </div>
   )

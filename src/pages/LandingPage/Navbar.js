@@ -5,7 +5,6 @@ import Logo from '../../assets/Logo.svg'
 import Title from '../../assets/landing/title.png'
 import SamLogo from '../../assets/sam-football.png'
 
-
 import { FaBars } from 'react-icons/fa'
 import { IoClose } from 'react-icons/io5'
 import { useNavigate } from 'react-router-dom'
@@ -29,27 +28,19 @@ const Navbar = () => {
               //   }}
               // >
               //   {item.name}
-                 
+
               // </span>
               <span
-              style={{ color: item?.disabled ? 'gray' : '#fff' }}
-              key={item.key}
-              onClick={() => {
-                if (!item?.disabled) window.open(`${item.frontEndUrl}`, '_self', 'noreferrer')
-              }}
-            >
-              {item.image ? (
-                <img src={item?.image} alt='logo' className='logo' />
-              ) : (
-                null
-              )}
-            </span>
+                style={{ color: item?.disabled ? 'gray' : '#fff' }}
+                key={item.key}
+                onClick={() => {
+                  if (!item?.disabled && item.frontEndUrl)
+                    window.open(`${item.frontEndUrl}`, '_self', 'noreferrer')
+                }}
+              >
+                {item.image ? <img src={item?.image} alt='logo' className='logo' /> : null}
+              </span>
             ))}
-
-
-
-
-
 
             {/* <span>Baseball</span>
             <span>Hockey</span>
@@ -64,16 +55,16 @@ const Navbar = () => {
             type='primary'
             className='auth_btn'
             onClick={() => {
-              localStorage.setItem('myinvitationtype', 'Freemium');
-              navigate('/select-game');
+              localStorage.setItem('myinvitationtype', 'Freemium')
+              navigate('/select-game')
             }}
-           // onClick={() => navigate('/select-game')}
+            // onClick={() => navigate('/select-game')}
           >
             Join Now
           </Button>
-      
+
           <DrawerMenu />
-              {/* <Button shape='round' type='primary' className='auth_btn'>
+          {/* <Button shape='round' type='primary' className='auth_btn'>
             Login
           </Button> */}
         </div>
@@ -109,9 +100,12 @@ const DrawerMenu = () => {
           <div className='company_logo'>
             <img src={SamLogo} alt='Logo' />
           </div>
-        
+
           <div className='menu_item_box'>
-            <div className='menu_item' onClick={() => window.open('https://samsports.io/fantasy-league', '_self')}>
+            <div
+              className='menu_item'
+              onClick={() => window.open('https://samsports.io/fantasy-league', '_self')}
+            >
               <p>Football</p>
               {/* <img src={football} alt='logo' className='football-logo' /> */}
             </div>

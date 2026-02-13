@@ -1,38 +1,27 @@
 import Axios from 'axios'
 import store from '../redux/store'
 import { getNotiCount } from '../redux/actions/notificationAction'
-import football from "../assets/new_Football.png"
-import hockey from "../assets/new_Hockey.png"
-import scocer from "../assets/new_Soccerball.png"
-import baseball from "../assets/new_Baseball.png"
-
+import football from '../assets/new_Football.png'
+import hockey from '../assets/new_Hockey.png'
+import scocer from '../assets/new_Soccerball.png'
+import baseball from '../assets/new_Baseball.png'
 
 //  export const base_url = 'http://localhost:8000'
 // //  export const base_url = 'https://backend.samsports.io'
 //   export const draft_base_url = 'http://localhost:8002'
 // export const frontEndUrl = 'http://localhost:3000'
 
-
-
- export const base_url = 'https://backend.samsports.io'
- export const frontEndUrl = 'https://samsports.io'
-  export const draft_base_url = 'https://nfl-draft.samsports.io'
-
-
-
-
+export const base_url = 'https://backend.samsports.io'
+export const frontEndUrl = 'https://samsports.io'
+export const draft_base_url = 'https://nfl-draft.samsports.io'
 
 //  export const base_url = 'http://192.168.100.10:8000'
 //  export const frontEndUrl = 'http://192.168.100.10:3000'
 // export const draft_base_url = 'http://192.168.100.10:8002'
 
-
-
 export const publicAPI = Axios.create({ baseURL: base_url })
 export const privateAPI = Axios.create({ baseURL: base_url })
 export const privateDRAFTAPI = Axios.create({ baseURL: draft_base_url })
-
-
 
 export const attachToken = async () => {
   const jwt = localStorage.getItem('token')
@@ -67,11 +56,11 @@ export const isLocked = () => {
 }
 
 // export const version = '2.0.4'
-  export const version = '2.0.6'
+export const version = '2.0.6'
 
 export const activeRosterCount = 53
 export const practiceRosterCount = 53
- export const legalPlayers = 46
+export const legalPlayers = 46
 // export const legalPlayers = 53
 export const proctectedSquadCount = 4
 export const nonActivePlayers = 7
@@ -88,7 +77,7 @@ export const serverUrls = [
     url: base_url,
     frontEndUrl: `${frontEndUrl}/fantasy-league`,
     disabled: false,
-    image:football,
+    image: football,
   },
   {
     key: 'hockey',
@@ -98,7 +87,7 @@ export const serverUrls = [
     // frontEndUrl: 'http://localhost:3002',
     // url: 'http://localhost:9000',
     disabled: false,
-    image:hockey,
+    image: hockey,
   },
   {
     key: 'baseball',
@@ -106,9 +95,9 @@ export const serverUrls = [
     // url: 'https://baseballbackend.samsports.io',
     // frontEndUrl: 'https://baseball.samsports.io',
     url: 'http://localhost:8000',
-    frontEndUrl: 'http://localhost:3000',
+    frontEndUrl: '',
     disabled: false,
-    image:baseball,
+    image: baseball,
   },
   {
     key: 'eleven_fc',
@@ -116,7 +105,7 @@ export const serverUrls = [
     url: 'https://elevenfcbackend.samsports.io',
     frontEndUrl: 'http://localhost:3000',
     disabled: true,
-    image:scocer,
+    image: scocer,
   },
   {
     key: 'college_football',
@@ -144,8 +133,7 @@ export const serverUrls = [
 export const positions = {
   DE: 'Edge',
   DT: 'IDL',
-  ILB:'LB',
-  OLB:'Edge',
+  ILB: 'LB',
+  OLB: 'Edge',
   // DL:'Edge'
-};
-
+}
