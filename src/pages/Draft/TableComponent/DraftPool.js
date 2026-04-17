@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Image, Input, Spin, Table, Tabs } from 'antd'
-import { CiSearch } from 'react-icons/ci'
-import { BiSolidPlusCircle } from 'react-icons/bi'
+import { Button, Image, Spin, Table, Tooltip } from 'antd'
+import { UnorderedListOutlined, StopOutlined } from '@ant-design/icons'
+import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import { useDispatch, useSelector } from 'react-redux'
 
 import useDebounce from '../../../hooks/useDebounce'
@@ -21,6 +21,14 @@ import {
   deleteBlacklistQueue,
   getBlackListQueue,
 } from '../../../redux/actions/draftAction'
+import PlayerDetailsModal from '../../../components/modal/PlayerDetailsModal'
+
+/* ── colour palette ─────────────────────────── */
+const POS_COLORS = {
+  QB: '#EF4444', RB: '#3B82F6', WR: '#F59E0B', TE: '#22C55E',
+  OL: '#8B5CF6', EDGE: '#EC4899', IDL: '#EC4899', DE: '#EC4899', DT: '#EC4899', LB: '#06B6D4',
+  CB: '#F97316', S: '#14B8A6', 'K/P': '#A78BFA',
+}
 
 const DraftPool = ({ tableScroll }) => {
   const {
@@ -39,10 +47,6 @@ const DraftPool = ({ tableScroll }) => {
   const [loading, setLoading] = useState('')
   const SETTING = useSelector((state) => state?.user?.setting)
 
-  // console.log('SETTING', SETTING?.season)
-
-  const [color, setColor] = useState('')
-
   const [age, setAge] = useState('')
   const dispatch = useDispatch()
 
@@ -58,915 +62,355 @@ const DraftPool = ({ tableScroll }) => {
       })
     getBlackListQueue()
     getDraftQueue()
-  }, [position, limit, page, age, activeTab,Rookieplayers])
-
-  // useEffect(() => {
-  //   setColor(isQueue ? 'var(--primary)' : isblacklist ? 'black' : 'none');
-  // }, [isQueue, isblacklist]);
-
-  //   useEffect(() => {
-  //     const newColors = {};
-  //     allPlayers?.players.forEach((player) => {
-  //       console.log('player?._id',player.player?._id);
-  //       const checkisQueue = draftQueues?.find((v) => v?.player?._id === player.player?._id);
-  //       const checkisblacklist = blacklistQueues?.find((v) => v?.player?._id === player.player?._id);
-  //       console.log('checkisQueue',checkisQueue);
-  //       newColors[player.player?._id] = checkisQueue ? 'var(--primary)' : checkisblacklist ? 'black' : 'none';
-  //     });
-  // console.log('newColors',newColors);
-  //     console.log('color',color);
-  //     setColor(newColors);
-  //   }, [allPlayers, draftQueues, blacklistQueues])
+  }, [position, limit, page, age, activeTab, Rookieplayers])
 
   const getData = async (payload) => {
     await getAllPlayers(payload, position)
-    // await getDraftQueue()
   }
 
-  // for age sorting
   const handleAgeClick = () => {
     const newSortingOrder = age === 'asc' ? 'desc' : 'asc'
-    // console.log('newSortingOrder', newSortingOrder)
     setAge(newSortingOrder)
   }
 
-  // console.log('age', age)
-
   const handleAddQueue = async (id) => {
     setLoading(id)
-    await createDraftQueue({
-      team: userDetails?.team?._id,
-      player: id,
-    })
+    await createDraftQueue({ team: userDetails?.team?._id, player: id })
     setLoading('')
   }
 
   const handleDeleteQueue = async (playerId, queueId) => {
-    // setLoading(playerId)
     await deleteDraftQueue(queueId)
-    // setLoading('')
   }
+
   const handleDeleteBlackListQueue = async (playerId, blacklistid) => {
     setLoading(playerId)
     await deleteBlacklistQueue(blacklistid)
     setLoading('')
   }
 
-  // add black list
   const handleAddBlackList = async (id) => {
-    // console.log('inside the black list', id)
     setLoading(id)
-    await createBlackListQueue({
-      team: userDetails?.team?._id,
-      player: id,
-      season: SETTING?.season,
-    })
+    await createBlackListQueue({ team: userDetails?.team?._id, player: id, season: SETTING?.season })
     setLoading('')
   }
 
+  /* ── helper: compact cell ── */
+  const cell = (val, opts = {}) => (
+    <span style={{
+      fontSize: opts.size || 12,
+      fontWeight: opts.bold ? 700 : 500,
+      color: opts.color || 'rgba(255,255,255,0.85)',
+      fontFamily: opts.mono ? "'Barlow Condensed', sans-serif" : "'Inter', sans-serif",
+      letterSpacing: opts.mono ? '0.3px' : undefined,
+    }}>
+      {val ?? '-'}
+    </span>
+  )
+
+  /* ── COLUMNS ─────────────────────────── */
   const getColumns = (position) => {
-    // console.log('🚀 ~ getColumns ~ position:', position)
-    const columns = [
+    const baseColumns = [
+      /* Actions — queue + blacklist */
       {
-        width: 50,
-        title: ' ',
-        dataIndex: 'plus-icon',
-        key: 'plus-icon',
+        width: 70,
+        title: '',
+        dataIndex: 'actions',
+        key: 'actions',
+        fixed: 'left',
         render: (_, obj) => {
-          const isQueue = draftQueues?.filter((v) => v?.player?._id === obj?.player?._id)?.[0]
-          const isblacklist = blacklistQueues?.filter(
-            (v) => v?.player?._id === obj?.player?._id,
-          )?.[0]
-          const color = isQueue ? 'var(--primary)' : isblacklist ? 'black' : 'none'
-          // blacklistQueues.filter((item) => item.player?._id == obj?.player?._id) ? 'red' : 'green'
-          // console.log('is blacklist',blacklistQueues);
-          // console.log('obj?.player?._id',obj?.player?._id);
+          const isQueue = draftQueues?.find((v) => v?.player?._id === obj?.player?._id)
+          const isblacklist = blacklistQueues?.find((v) => v?.player?._id === obj?.player?._id)
+          if (loading === obj?.player?._id) return <Spin size="small" />
           return (
-            // <div>
-            //   {loading === obj?.player?._id ? (
-            //     <Spin />
-            //   ) : isQueue ? (
-            //     <BiSolidPlusCircle
-            //       size={18}
-            //       style={{ marginBottom: '-3px', cursor: 'pointer' }}
-            //       color={'var(--primary)'}
-            //       onClick={() => handleDeleteQueue(obj?._id, isQueue?._id)}
-            //     />
-            //   ) : (
-            //     <BiSolidPlusCircle
-            //       size={18}isQueue
-            //       style={{ marginBottom: '-3px', cursor: 'pointer' }}
-            //       onClick={() => handleAddQueue(obj?.player?._id)}
-            //     />
-            //   )}
-            // </div>
-            <div>
-              {loading === obj?.player?._id ? (
-                <Spin />
-              ) : isQueue || isblacklist ? (
-                <BiSolidPlusCircle
-                  size={18}
-                  style={{ marginBottom: '-3px', cursor: 'pointer' }}
-                  color={color}
-                  //  color={isQueue ? 'var(--primary)' : isblacklist ? 'black' : 'none' }
-                  onClick={() => {
-                    console.log('mycolor', color)
-                    if (color === 'var(--primary)') {
-                      handleAddBlackList(obj?.player?._id)
-                      handleDeleteQueue(obj?._id, isQueue?._id)
-                      setColor('black')
-                    } else if (color === 'black') {
-                      handleDeleteBlackListQueue(obj?.player?._id, isblacklist?._id)
-                      setColor('none')
-                    }
-                    // console.log('fist Additional functionality executed')
+            <div style={{ display: 'flex', gap: '3px', alignItems: 'center' }}>
+              <Tooltip title={isQueue ? 'Remove from queue' : 'Add to queue'}>
+                <Button
+                  size="small"
+                  icon={<UnorderedListOutlined style={{ fontSize: 12 }} />}
+                  onClick={() => isQueue ? handleDeleteQueue(obj?._id, isQueue?._id) : handleAddQueue(obj?.player?._id)}
+                  style={{
+                    background: isQueue ? 'rgba(212,168,67,0.25)' : 'rgba(212,168,67,0.06)',
+                    border: `1px solid ${isQueue ? 'rgba(212,168,67,0.6)' : 'rgba(212,168,67,0.2)'}`,
+                    color: '#D4A843',
+                    borderRadius: '6px', width: 26, height: 26, padding: 0,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}
                 />
-              ) : (
-                <BiSolidPlusCircle
-                  size={18}
-                  style={{ marginBottom: '-3px', cursor: 'pointer' }}
-                  onClick={() => {
-                    handleAddQueue(obj?.player?._id)
-                    setColor('var(--primary)') // Update color to 'var(--primary)'
-                    // Additional functionality here
-                    // console.log('second Additional functionality executed')
+              </Tooltip>
+              <Tooltip title={isblacklist ? 'Remove from blacklist' : 'Blacklist'}>
+                <Button
+                  size="small"
+                  icon={<StopOutlined style={{ fontSize: 12 }} />}
+                  onClick={() => isblacklist ? handleDeleteBlackListQueue(obj?.player?._id, isblacklist?._id) : handleAddBlackList(obj?.player?._id)}
+                  style={{
+                    background: isblacklist ? 'rgba(239,68,68,0.25)' : 'rgba(239,68,68,0.06)',
+                    border: `1px solid ${isblacklist ? 'rgba(239,68,68,0.6)' : 'rgba(239,68,68,0.2)'}`,
+                    color: '#EF4444',
+                    borderRadius: '6px', width: 26, height: 26, padding: 0,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}
                 />
-              )}
+              </Tooltip>
             </div>
           )
         },
       },
+
+      /* Player — name + headshot + injury/rookie badges in one compact cell */
       {
-        width: 90,
-        title: 'Rank',
-        dataIndex: 'mlbFantasyRank',
-        key: 'mlbFantasyRank',
-        render: (t) => <p>{t || '-'}</p>,
-      },
-      {
-        width: 150,
-        title: 'Player',
+        width: 190,
+        title: 'PLAYER',
         dataIndex: 'player',
         key: 'player',
+        fixed: 'left',
         render: (_, obj) => {
-          //  console.log('obj', obj)
-          // console.log('FieldGoalsMade', obj?.stats?.stats?.FieldGoalsMade)
-
-          const inj = obj?.player?.InjuryStatus
-          const rookie = obj?.player?.ExperienceString
-          // console.log('rookie', rookie)
+          const p = obj?.player
+          const inj = p?.InjuryStatus
+          const rookie = p?.ExperienceString === 'Rookie'
+          const hasImg = !!p?.HostedHeadshotNoBackgroundUrl
           return (
-            <div className='table_player_name_box nrc_container'>
-              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.player?.Name}{' '}
-              </p>{' '}
-              {/* <p>
-            {obj?.Position} - {obj?.Team}{' '}
-          </p> */}
-              {rookie === 'Rookie' ? (
-                <Image width={20} className='rookie_image2' src={rookieimg} alt='rookie Image' />
-              ) : (
-                ''
-              )}
-              {/* <Image width={20} className='rookie_image2'  src={rookieimg} alt='rookie Image' /> */}
-              {inj === 'Out' ? (
-                <>
-                  <span className='injury_plus'>
-                    <b>+</b>
-                  </span>
-                  <p className='injury_plus_text'>O</p>
-                </>
-              ) : inj === 'Questionable' ? (
-                <p className='injury_status'>Q</p>
-              ) : inj === 'Doubtful' ? (
-                <p className='injury_status'>D</p>
-              ) : inj === 'Suspended' ? (
-                <p className='injury_status'>SSPD</p>
-              ) : inj === 'Injured Reserve' ? (
-                <p className='injury_status'>IR</p>
-              ) : (
-                ''
-              )}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {/* Mini headshot */}
+              <div style={{
+                width: 32, height: 32, borderRadius: '50%', flexShrink: 0, overflow: 'hidden',
+                background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                {hasImg
+                  ? <img src={p.HostedHeadshotNoBackgroundUrl} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <GiAmericanFootballPlayer size={18} color="rgba(255,255,255,0.2)" />
+                }
+              </div>
+              <div style={{ minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'nowrap' }}>
+                  <PlayerDetailsModal
+                    button={
+                      <span style={{
+                        fontSize: 13, fontWeight: 600, color: 'var(--primary)',
+                        fontFamily: "'Inter', sans-serif",
+                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 120,
+                        cursor: 'pointer',
+                      }}>
+                        {p?.Name}
+                      </span>
+                    }
+                    state={{
+                      isFreeAgent: { status: true },
+                      playerID: p?.PlayerID,
+                      teamId: null,
+                      teamName: p?.Team || '',
+                      teamLogo: null,
+                    }}
+                    tableRow={true}
+                  />
+                  {rookie && (
+                    <Image width={14} className='rookie_image2' src={rookieimg} alt='R' preview={false} />
+                  )}
+                  {inj === 'Out' && <span style={{ fontSize: 9, fontWeight: 800, color: '#EF4444', background: 'rgba(239,68,68,0.15)', padding: '1px 4px', borderRadius: 3 }}>O</span>}
+                  {inj === 'Questionable' && <span style={{ fontSize: 9, fontWeight: 800, color: '#F59E0B', background: 'rgba(245,158,11,0.15)', padding: '1px 4px', borderRadius: 3 }}>Q</span>}
+                  {inj === 'Doubtful' && <span style={{ fontSize: 9, fontWeight: 800, color: '#F97316', background: 'rgba(249,115,22,0.15)', padding: '1px 4px', borderRadius: 3 }}>D</span>}
+                  {inj === 'Suspended' && <span style={{ fontSize: 9, fontWeight: 700, color: '#A855F7', background: 'rgba(168,85,247,0.15)', padding: '1px 4px', borderRadius: 3 }}>SSPD</span>}
+                  {inj === 'Injured Reserve' && <span style={{ fontSize: 9, fontWeight: 700, color: '#EF4444', background: 'rgba(239,68,68,0.15)', padding: '1px 4px', borderRadius: 3 }}>IR</span>}
+                </div>
+              </div>
             </div>
           )
         },
       },
 
+      /* Position — colour-coded pill */
       {
-        width: 180,
+        width: 55,
+        title: 'POS',
+        dataIndex: 'pos',
+        key: 'pos',
+        render: (_, obj) => {
+          const pos = obj?.player?.otcPosition || obj?.player?.Position || '-'
+          const c = POS_COLORS[pos] || '#6B7280'
+          return (
+            <span style={{
+              fontSize: 10, fontWeight: 700, fontFamily: "'Rajdhani', sans-serif",
+              color: c, background: `${c}18`, padding: '2px 7px', borderRadius: 4,
+              letterSpacing: '0.5px',
+            }}>{pos}</span>
+          )
+        },
+      },
+
+      /* Team */
+      {
+        width: 50,
+        title: 'TEAM',
+        dataIndex: 'team',
+        key: 'team',
+        render: (_, obj) => cell(obj?.player?.Team, { size: 12, bold: true, color: '#22C55E' }),
+      },
+
+      /* Age */
+      {
+        width: 45,
         title: 'AGE',
         dataIndex: 'age',
         key: 'age',
         sorter: handleAgeClick,
-        render: (_, obj) => {
-          return (
-            <div className='table_player_name_box nrc_container'>
-              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.player?.Age || '-'}
-              </p>
-              {/* <p onClick={handleAgeClick} style={{ cursor: 'pointer' }}>
-              {obj?.player?.Age || '-'}
-            </p> */}
-            </div>
-          )
-        },
+        render: (_, obj) => cell(obj?.player?.Age, { mono: true }),
       },
 
+      /* Cap Hit */
       {
-        width: 180,
-        title: 'POSITION',
-        dataIndex: 'pos',
-        key: 'pos',
-        render: (_, obj) => {
-          return (
-            <div className='table_player_name_box nrc_container'>
-              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.player?.Position || '-'}
-              </p>
-            </div>
-          )
-        },
-      },
-      {
-        width: 180,
-        title: 'TEAM',
-        dataIndex: 'team',
-        key: 'team',
-        render: (_, obj) => {
-          return (
-            <div className='table_player_name_box nrc_container'>
-              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.player?.Team || '-'}
-              </p>
-            </div>
-          )
-        },
-      },
-      {
-        width: 180,
+        width: 80,
         title: 'CAP HIT',
         dataIndex: 'caphit',
         key: 'caphit',
         render: (_, obj) => {
-          return (
-            <div className='table_player_name_box nrc_container'>
-              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {/* {obj?.player?.PlayerCap || '-'} */}
-                {/* {`$${obj?.player?.PlayerCap || '-'}`} */}
-                {`$${(obj?.player?.currentYearSalaryCap || '-').toLocaleString()}`}
-              </p>
-            </div>
-          )
+          const otcHit = obj?.player?.otcCapHit
+          const txt = otcHit && otcHit > 0
+            ? `$${(otcHit / 1_000_000).toFixed(1)}M`
+            : obj?.player?.currentYearSalaryCap
+              ? `${Number(obj.player.currentYearSalaryCap).toLocaleString()} SP`
+              : '-'
+          return cell(txt, { mono: true, color: '#D4A843' })
         },
       },
+
+      /* Contract */
       {
-        width: 150,
-        title: 'SAM ADP',
+        width: 90,
+        title: 'CONTRACT',
+        dataIndex: 'contract',
+        key: 'contract',
+        render: (_, obj) => {
+          const totalVal = obj?.player?.otcTotalValue
+          const yrsLeft = obj?.player?.yearsLeftSalaryCap
+          const txt = totalVal && totalVal > 0
+            ? `$${(totalVal / 1_000_000).toFixed(0)}M / ${yrsLeft || '-'}yr`
+            : obj?.player?.contractInfo || '-'
+          return cell(txt, { size: 11, mono: true })
+        },
+      },
+
+      /* SAM ADP */
+      {
+        width: 70,
+        title: 'ADP',
         dataIndex: 'adp',
         key: 'adp',
         render: (_, obj) => {
-          return <p>{obj?.player?.samAdp24?.toFixed(3) || '-'}</p>
+          const adp = obj?.player?.samAdp24
+          return cell(adp && adp > 0 ? adp.toFixed(1) : '-', { mono: true, color: '#3B82F6' })
         },
       },
     ]
 
-    const columns2 = [
-      {
-        width: 150,
-        title: '24 TOTAL POINTS',
-        dataIndex: 'mlbFantasyPoints',
-        key: 'mlbFantasyPoints',
-        render: (_, obj) => {
-          return (
-            <div className='table_player_name_box nrc_container'>
-              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.player?.pf?.toFixed(3) || '-'}
-              </p>
-            </div>
-          )
-        },
-      },
-      {
-        width: 150,
-        title: '24 AVG.POINTS',
-        dataIndex: 'pf',
-        key: 'pf',
-        render: (_, obj) => {
-          return (
-            <div className='table_player_name_box nrc_container'>
-              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.player?.avgPf?.toFixed(3) || '-'}
-              </p>
-            </div>
-          )
-        },
-      },
+    /* ── position-specific stat columns ─── */
+    const statCell = (val) => cell(val, { mono: true, size: 11 })
 
-      {
-        width: 150,
-        title: '24 PROJ.TOTAL POINTS',
-        dataIndex: 'pf',
-        key: 'pf',
-        // render: (t) => <p>{t?.toFixed(2) || '-'}</p>,
-        render: (_, obj) => {
-          return (
-            <div className='table_player_name_box nrc_container'>
-              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.stats?.stats?.FantasyPoints24?.toFixed(3) || '-'}
-              </p>
-            </div>
-          )
-        },
+    const projCols = [
+      { width: 70, title: 'PROJ PTS', dataIndex: 'projTotal', key: 'projTotal',
+        render: (_, obj) => statCell(
+          obj?.player?.projectedFantasyPoints > 0
+            ? obj.player.projectedFantasyPoints.toFixed(1)
+            : obj?.stats?.stats?.FantasyPoints24?.toFixed(1)
+        ),
       },
-      {
-        width: 150,
-        title: '24 PROJ.AVG POINTS',
-        dataIndex: 'pf',
-        key: 'pf',
-        // render: (t) => <p>{t?.toFixed(2) || '-'}</p>,
-        render: (_, obj) => {
-          return (
-            <div className='table_player_name_box nrc_container'>
-              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.stats?.stats?.AvgFantasyPoints24?.toFixed(3) || '-'}
-              </p>
-            </div>
-          )
-        },
+      { width: 65, title: 'PROJ AVG', dataIndex: 'projAvg', key: 'projAvg',
+        render: (_, obj) => statCell(
+          obj?.player?.projectedAvgFantasyPoints > 0
+            ? obj.player.projectedAvgFantasyPoints.toFixed(1)
+            : obj?.stats?.stats?.AvgFantasyPoints24?.toFixed(1)
+        ),
       },
     ]
 
-    const columns3 = [
-      {
-        //  width: 90,
-        title: 'Projected',
-        dataIndex: 'proj',
-        key: 'proj',
-        children: [
-          {
-            width: 90,
-            title: 'TAF',
-            dataIndex: 'taf',
-            key: 'taf',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.player?.pf || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 90,
-            title: 'AVG',
-            dataIndex: 'avg',
-            key: 'avg',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.AvgFantasyPoints24?.toFixed(3) || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-        ],
+    const totalPtsCols = [
+      { width: 65, title: 'TOT PTS', dataIndex: 'totPts', key: 'totPts',
+        render: (_, obj) => statCell(obj?.player?.pf?.toFixed(1)),
       },
-
-      {
-        // width: 150,
-        title: 'PASSING',
-        dataIndex: 'pass',
-        key: 'pass',
-        children: [
-          {
-            width: 70,
-            title: 'ATD',
-            dataIndex: 'taf',
-            key: 'taf',
-            render: (_, obj) => {
-
-            
-
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats2024?.weeklyStats?.PassingAttempts || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 70,
-            title: 'YRD',
-            dataIndex: 'yrd',
-            key: 'yrd',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats2024?.weeklyStats?.PassingYards?.toFixed(2) || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 70,
-            title: 'TD',
-            dataIndex: 'taf',
-            key: 'taf',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats2024?.weeklyStats?.PassingTouchdowns || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-        ],
-      },
-      {
-        // width: 150,
-        title: 'RECEIVING',
-        dataIndex: 'rec',
-        key: 'rec',
-        children: [
-          {
-            width: 70,
-            title: 'TAR',
-            dataIndex: 'att',
-            key: 'att',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats2024?.weeklyStats?.ReceivingTargets || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 70,
-            title: 'YARD',
-            dataIndex: 'yard',
-            key: 'yard',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats2024?.weeklyStats?.ReceivingYards || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 70,
-            title: 'TD',
-            dataIndex: 'td',
-            key: 'td',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats2024?.weeklyStats?.ReceivingTouchdowns || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-        ],
-      },
-      {
-        width: 150,
-        title: 'RUSHING',
-        dataIndex: 'rush',
-        key: 'rush',
-        children: [
-          {
-            width: 70,
-            title: 'ATT',
-            dataIndex: 'att',
-            key: 'att',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats2024?.weeklyStats?.RushingAttempts || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 70,
-            title: 'YARD',
-            dataIndex: 'yard',
-            key: 'yard',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats2024?.weeklyStats?.RushingYards || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 70,
-            title: 'TD',
-            dataIndex: 'td',
-            key: 'td',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats2024?.weeklyStats?.RushingTouchdowns || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-        ],
+      { width: 65, title: 'AVG PTS', dataIndex: 'avgPts', key: 'avgPts',
+        render: (_, obj) => statCell(obj?.player?.avgPf?.toFixed(1)),
       },
     ]
 
-    const columns4 = [
-      {
-        width: 150,
-        title: '23 TEAMSCOREAVG',
-        dataIndex: 'tsg',
-        key: 'tsg',
-        render: (_, obj) => {
-          return (
-            <div className='table_player_name_box nrc_container'>
-              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.stats?.OL?.TotalTeamScore?.toFixed(3) || '-'}
-              </p>
-            </div>
-          )
-        },
+    /* QB / RB / WR / TE — passing, rushing, receiving */
+    const offenseStats = [
+      ...projCols,
+      { width: 55, title: 'P.YRD', dataIndex: 'pyd', key: 'pyd',
+        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.PassingYards?.toFixed(0)),
       },
-      {
-        width: 150,
-        title: '23 TOTAL POINTS',
-        dataIndex: 'tp',
-        key: 'tp',
-        render: (_, obj) => {
-          return (
-            <div className='table_player_name_box nrc_container'>
-              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.player?.pf || '-'}
-              </p>
-            </div>
-          )
-        },
+      { width: 45, title: 'P.TD', dataIndex: 'ptd', key: 'ptd',
+        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.PassingTouchdowns),
       },
-
-      {
-        width: 150,
-        title: '23 SNAP %',
-        dataIndex: 'snap',
-        key: 'snap',
-        render: (_, obj) => {
-          return (
-            <div className='table_player_name_box nrc_container'>
-              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {/* {obj?.stats?.OL?.totalSnap?.toFixed(3) || '-'} */}
-                {obj?.stats?.OL?.totalSnap
-                  ? (Number.isInteger(obj?.stats?.OL?.totalSnap)
-                      ? obj.stats.OL.totalSnap.toFixed(0)
-                      : obj.stats.OL.totalSnap.toFixed(2)) + '%'
-                  : '-'}
-              </p>
-            </div>
-          )
-        },
+      { width: 50, title: 'TAR', dataIndex: 'tar', key: 'tar',
+        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.ReceivingTargets),
       },
-      {
-        width: 150,
-        title: '23 AVG. POINTS',
-        dataIndex: 'avgpoints',
-        key: 'avgpoints',
-        render: (_, obj) => {
-          return (
-            <div className='table_player_name_box nrc_container'>
-              <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                {obj?.player?.avgPf || '-'}
-              </p>
-            </div>
-          )
-        },
+      { width: 55, title: 'R.YRD', dataIndex: 'ryd', key: 'ryd',
+        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.ReceivingYards),
+      },
+      { width: 45, title: 'R.TD', dataIndex: 'rtd', key: 'rtd',
+        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.ReceivingTouchdowns),
+      },
+      { width: 50, title: 'RSH', dataIndex: 'rsh', key: 'rsh',
+        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.RushingAttempts),
+      },
+      { width: 55, title: 'RS.YD', dataIndex: 'rsyd', key: 'rsyd',
+        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.RushingYards),
+      },
+      { width: 45, title: 'RS.TD', dataIndex: 'rstd', key: 'rstd',
+        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.RushingTouchdowns),
       },
     ]
 
-    const columns5 = [
-      {
-        //  width: 90,
-        title: 'PAST YEARS STATS',
-        dataIndex: 'past',
-        key: 'past',
-        children: [
-          {
-            width: 90,
-            title: 'TPF',
-            dataIndex: 'tpf',
-            key: 'tpf',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.player?.pf || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 90,
-            title: 'TAPF',
-            dataIndex: 'tapf',
-            key: 'tapf',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.player?.avgPf || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-
-          {
-            width: 90,
-            title: 'IDP TDS',
-            dataIndex: 'idp',
-            key: 'idp',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.IDP || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 90,
-            title: 'SCKS ',
-            dataIndex: 'scks',
-            key: 'scks',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats2024?.weeklyStats?.Sacks || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-
-          {
-            width: 90,
-            title: 'QBH',
-            dataIndex: 'qbh',
-            key: 'qbh',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats2024?.weeklyStats?.QuarterbackHits || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-
-          {
-            width: 90,
-            title: 'TKLS',
-            dataIndex: 'tkls',
-            key: 'idp',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats2024?.weeklyStats?.TotalTackles || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 90,
-            title: 'TFL ',
-            dataIndex: 'tfl',
-            key: 'tfl',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats2024?.weeklyStats?.TacklesForLoss || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-
-          {
-            width: 90,
-            title: 'FF',
-            dataIndex: 'ff',
-            key: 'ff',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats2024?.weeklyStats?.FumblesForced || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-
-          {
-            width: 90,
-            title: 'INTS',
-            dataIndex: 'ints',
-            key: 'ints',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats2024?.weeklyStats?.Interceptions || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-
-          {
-            width: 90,
-            title: 'PD',
-            dataIndex: 'pd',
-            key: 'pd',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats2024?.weeklyStats?.PassesDefended || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-        ],
+    /* DEF positions */
+    const defenseStats = [
+      ...projCols,
+      { width: 55, title: 'TKLS', dataIndex: 'tkls', key: 'tkls',
+        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.TotalTackles),
+      },
+      { width: 50, title: 'SCKS', dataIndex: 'scks', key: 'scks',
+        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.Sacks),
+      },
+      { width: 50, title: 'QBH', dataIndex: 'qbh', key: 'qbh',
+        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.QuarterbackHits),
+      },
+      { width: 45, title: 'TFL', dataIndex: 'tfl', key: 'tfl',
+        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.TacklesForLoss),
+      },
+      { width: 40, title: 'FF', dataIndex: 'ff', key: 'ff',
+        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.FumblesForced),
+      },
+      { width: 45, title: 'INT', dataIndex: 'ints', key: 'ints',
+        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.Interceptions),
+      },
+      { width: 40, title: 'PD', dataIndex: 'pd', key: 'pd',
+        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.PassesDefended),
+      },
+      { width: 50, title: 'IDP', dataIndex: 'idp', key: 'idp',
+        render: (_, obj) => statCell(obj?.stats?.stats?.IDP),
       },
     ]
 
-    const columns6 = [
-      {
-        //  width: 90,
-        title: 'PAST YEARS STATS',
-        dataIndex: 'past',
-        key: 'past',
-        children: [
-          {
-            width: 90,
-            title: 'TPF',
-            dataIndex: 'tpf',
-            key: 'tpf',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.TPF || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 90,
-            title: 'TAPF',
-            dataIndex: 'tapf',
-            key: 'tapf',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.TAPF || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-
-          {
-            width: 90,
-            title: 'FG MADE',
-            dataIndex: 'fgmade',
-            key: 'fgmade',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats2024?.weeklyStats?.FieldGoalsMade || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 90,
-            title: 'FG MISSED',
-            dataIndex: 'fgmissed',
-            key: 'fgmissed',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats?.FGMissed?.toFixed(3) || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 90,
-            title: 'PUNTS',
-            dataIndex: 'punts',
-            key: 'punts',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats2024?.weeklyStats?.Punts || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 90,
-            title: 'PUNTS INSIDE 20',
-            dataIndex: 'puntsinside',
-            key: 'puntsinside',
-            render: (_, obj) => {
-              return (
-                <div className='table_player_name_box nrc_container'>
-                  <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-                    {obj?.stats?.stats2024?.weeklyStats?.PuntInside20 || '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-        ],
+    /* K/P */
+    const kickerStats = [
+      ...projCols,
+      { width: 60, title: 'FG MD', dataIndex: 'fgmade', key: 'fgmade',
+        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.FieldGoalsMade),
+      },
+      { width: 65, title: 'FG MIS', dataIndex: 'fgmiss', key: 'fgmiss',
+        render: (_, obj) => statCell(obj?.stats?.stats?.FGMissed?.toFixed(1)),
+      },
+      { width: 55, title: 'PUNTS', dataIndex: 'punts', key: 'punts',
+        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.Punts),
+      },
+      { width: 55, title: 'P i20', dataIndex: 'pi20', key: 'pi20',
+        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.PuntInside20),
       },
     ]
 
-    if (position === 'ALL') {
-      return [...columns, ...columns2]
-    }
-
-    if (position === 'QB' || position === 'RB' || position === 'WR' || position === 'TE') {
-      return [...columns, ...columns3]
-    }
-
-    if (position === 'OL') {
-      return [...columns, ...columns4]
-    }
-
-    if (
-      position === 'DE' ||
-      position === 'DT' ||
-      position === 'LB' ||
-      position === 'CB' ||
-      position === 'S'
-    ) {
-      return [...columns, ...columns5]
-    }
-
-    if (position === 'K/P') {
-      return [...columns, ...columns6]
-    } else {
-      return columns
-    }
+    if (position === 'ALL' || position === 'OL') return [...baseColumns, ...totalPtsCols, ...projCols]
+    if (['QB', 'RB', 'WR', 'TE'].includes(position)) return [...baseColumns, ...offenseStats]
+    if (['DE', 'DT', 'EDGE', 'IDL', 'LB', 'CB', 'S'].includes(position)) return [...baseColumns, ...defenseStats]
+    if (position === 'K/P') return [...baseColumns, ...kickerStats]
+    return baseColumns
   }
 
   return (

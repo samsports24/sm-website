@@ -1,5 +1,6 @@
 import React from 'react'
 // import { FaArrowsRotate } from 'react-icons/fa6'
+import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import { useSelector } from 'react-redux'
 import { positions } from '../../config/constants'
 
@@ -48,7 +49,11 @@ function mapPosition(position) {
                 }`}
               >
                 <div className='rb_card_left'>
-                  {v?.playerPick && <img src={v?.playerPick?.HostedHeadshotNoBackgroundUrl} />}
+                  {v?.playerPick && (
+                    v?.playerPick?.HostedHeadshotNoBackgroundUrl
+                      ? <img src={v.playerPick.HostedHeadshotNoBackgroundUrl} loading="lazy" />
+                      : <GiAmericanFootballPlayer size={32} color='rgba(255,255,255,0.25)' />
+                  )}
                 </div>
                
                 <div
