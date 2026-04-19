@@ -14,7 +14,7 @@
   }
   
   .image-item.selected {
-    border: 2px solid #007bff; /* Example border color for selected item */
+    border: 2px solid #22C55E;
   }
   
   .image-item img {

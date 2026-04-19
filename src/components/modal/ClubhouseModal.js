@@ -1,61 +1,80 @@
-import React, { useState } from 'react'
-import { Modal, Button } from 'antd'
+import { Modal } from 'antd'
 import '../../styles/modals/pointstransfermessage.css'
-import { useSelector } from 'react-redux'
-import sammdglogo from '../../assets/samlogomessage.png'
+import sammdglogo from '../../assets/samcoinlogo.png'
+import {
+  TrophyOutlined,
+  UserAddOutlined,
+  GiftOutlined,
+  TeamOutlined,
+} from '@ant-design/icons'
 
 const ClubhouseModal = ({ visible, onClose }) => {
-  console.log('🚀 ~ MessageModal ~ visible:', visible)
-  //  console.log('user',user?.team?.currentLeague?.name);
-
-  // const cancel = () => {
-  //   // setPlayerInfo({})
-  //   onClose()
-  // }
-
   return (
     <Modal
-      className='pointstransfermsg'
-      title=''
+      className='chm-modal'
       open={visible}
       onCancel={onClose}
       centered
-      footer={[
-        <Button onClick={onClose} className='customBTN' key='save' type='primary'>
-          GOT IT!
-        </Button>,
-      ]}
+      footer={null}
+      closeIcon={false}
+      closable={false}
+      width={520}
     >
-      <img src={sammdglogo} className='msgimg' alt='samlogo' />
+      <div className='chm-content'>
+        {/* Header */}
+        <div className='chm-header'>
+          <img src={sammdglogo} className='chm-logo' alt='SamSports' />
+          <h2 className='chm-title'>Welcome to the Clubhouse</h2>
+          <p className='chm-subtitle'>
+            Your hub for connecting with friends and challenging peers on SamSports.
+            Invite friends and earn SamPoints as rewards.
+          </p>
+        </div>
 
-      <div className='clubhousetext'>
-        <span>
-          Welcome to the Clubhouse
-          <br />
-          The Clubhouse is your hub for connecting with friends and challenging your peers on
-          SamSports. By inviting friends to join you on the platform, you can earn SamPoints as a
-          reward. Invite and Earn Rewards:
-          <br />
-          <br />
-          <h2>Pro Level Invitation:</h2>
-          <ul>
-            <li>Invite a user who creates a team within the Pro level.</li>
-            <li>Earn 7,500,000 SamPoints as a reward.</li>
-          </ul>
-          <br />
-          <h2>Freemium Invitation:</h2>
-          <ul>
-            <l1>Invite a friend to join a freemium league</l1>
-            <li>Earn 3,250,000 SamPoints as a reward.</li>
-          </ul>
-          Use the Clubhouse to expand your network, challenge others, and boost your SamPoints
-          earnings by inviting more friends to join SamSports.
-        </span>
+        {/* Reward Cards */}
+        <div className='chm-sections'>
+          <div className='chm-reward-card chm-reward-pro'>
+            <div className='chm-reward-header'>
+              <TrophyOutlined className='chm-reward-icon' />
+              <h3>League Invitation</h3>
+            </div>
+            <ul className='chm-reward-list'>
+              <li>Invite a user who creates a team and joins a league</li>
+              <li>
+                Earn <strong>2,500,000 SamPoints</strong> as a reward
+              </li>
+            </ul>
+          </div>
+
+          <div className='chm-reward-card chm-reward-free'>
+            <div className='chm-reward-header'>
+              <UserAddOutlined className='chm-reward-icon' />
+              <h3>Freemium Invitation</h3>
+            </div>
+            <ul className='chm-reward-list'>
+              <li>Invite a friend to join a freemium league</li>
+              <li>
+                Earn <strong>2,500,000 SamPoints</strong> as a reward
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className='chm-footer'>
+          <div className='chm-footer-note'>
+            <TeamOutlined className='chm-footer-icon' />
+            <span>
+              Expand your network, challenge others, and boost your SamPoints earnings
+            </span>
+          </div>
+          <button className='chm-btn' onClick={onClose}>
+            <GiftOutlined /> GOT IT!
+          </button>
+        </div>
       </div>
     </Modal>
   )
 }
 
 export default ClubhouseModal
-
-

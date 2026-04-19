@@ -83,7 +83,7 @@ const AgentPlayerInterface = () => {
           <PlayerInfoBottom
             player={player}
             contract={
-              playerContract?.PlayerCap ? `$${playerContract?.PlayerCap?.toLocaleString()}` : '-'
+              playerContract?.PlayerCap ? `${playerContract?.PlayerCap?.toLocaleString()} SP` : '-'
             }
           />
 

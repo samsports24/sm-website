@@ -40,7 +40,6 @@ const SignUp = () => {
     }
   }
   // const onChange = (e) => {
-  //   console.log(`checked = ${e.target.checked}`)
   // }
   // if (localStorage.hasOwnProperty("token")) {
   //   // return <Navigate replace to="/home" />;
@@ -134,21 +133,19 @@ const SignUp = () => {
                   <div className='remember'>
                     <Checkbox checked={terms} onChange={(e) => setTerms(e.target.checked)}>
                       I agree to the{' '}
-                      <span
-                        className='highlight'
-                        onClick={() => {
-                          navigate('/terms-condition')
-                        }}
-                      >
-                        Terms and Conditions
-                      </span>{' '}
+                      <a href='/terms' target='_blank' rel='noreferrer' className='highlight'>
+                        Terms of Service
+                      </a>
                     </Checkbox>
                   </div>
                 </Form.Item>
                 <Form.Item name='policy' requiredMark='optional'>
                   <div className='remember'>
                     <Checkbox checked={policy} onChange={(e) => setPolicy(e.target.checked)}>
-                      I agree to the Privacy Policy
+                      I agree to the{' '}
+                      <a href='/privacy' target='_blank' rel='noreferrer' className='highlight'>
+                        Privacy Policy
+                      </a>
                     </Checkbox>
                   </div>
                 </Form.Item>

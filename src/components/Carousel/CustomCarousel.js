@@ -7,6 +7,7 @@ const CustomCarousel = ({ children, height }) => {
   const wrapperRef = useRef(null)
 
   const handleMouseDown = (e) => {
+    if (!wrapperRef.current) return
     setDragging(true)
     setStartX(e.pageX - wrapperRef.current.offsetLeft)
     setScrollLeft(wrapperRef.current.scrollLeft)
@@ -17,7 +18,7 @@ const CustomCarousel = ({ children, height }) => {
   }
 
   const handleMouseMove = (e) => {
-    if (!dragging) return
+    if (!dragging || !wrapperRef.current) return
     const x = e.pageX - wrapperRef.current.offsetLeft
     const walk = (x - startX) * 1
     wrapperRef.current.scrollLeft = scrollLeft - walk

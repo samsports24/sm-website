@@ -1,0 +1,327 @@
+/* ═══════════════════════════════════════════════════════════
+   GM RANKING WIDGET — Landing Page Sidebar (Redesigned)
+   ═══════════════════════════════════════════════════════════ */
+
+.gmw-container {
+  background: linear-gradient(180deg, #111827, #0D1117);
+  border: 1px solid rgba(212, 168, 67, 0.12);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* ─── Header ─── */
+.gmw-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(212, 168, 67, 0.08), rgba(17, 24, 39, 0.8));
+  border-bottom: 1px solid rgba(212, 168, 67, 0.1);
+}
+
+.gmw-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gmw-header-icon {
+  font-size: 18px;
+}
+
+.gmw-header-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: #F1F5F9;
+  letter-spacing: 1.5px;
+}
+
+.gmw-header-badge {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: #D4A843;
+  background: rgba(212, 168, 67, 0.12);
+  border: 1px solid rgba(212, 168, 67, 0.2);
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 1.2px;
+}
+
+/* ─── Sport Tabs ─── */
+.gmw-sport-tabs {
+  display: flex;
+  padding: 8px 10px;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.gmw-sport-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 8px 4px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gmw-sport-tab:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.gmw-sport-tab.active {
+  background: rgba(212, 168, 67, 0.1);
+  border-color: rgba(212, 168, 67, 0.25);
+  box-shadow: 0 0 12px rgba(212, 168, 67, 0.08);
+}
+
+.gmw-sport-emoji {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.gmw-sport-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  color: #64748B;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.gmw-sport-tab.active .gmw-sport-label {
+  color: #D4A843;
+}
+
+/* ─── Rankings List ─── */
+.gmw-list {
+  padding: 4px 0;
+}
+
+.gmw-row {
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  transition: all 0.2s ease;
+  border-left: 2px solid transparent;
+}
+
+.gmw-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-left-color: rgba(212, 168, 67, 0.3);
+}
+
+.gmw-row-top1 {
+  background: linear-gradient(90deg, rgba(212, 168, 67, 0.08), transparent);
+  border-left-color: #D4A843;
+}
+.gmw-row-top2 {
+  background: linear-gradient(90deg, rgba(192, 192, 192, 0.05), transparent);
+  border-left-color: #C0C0C0;
+}
+.gmw-row-top3 {
+  background: linear-gradient(90deg, rgba(205, 127, 50, 0.05), transparent);
+  border-left-color: #CD7F32;
+}
+
+/* Rank */
+.gmw-rank {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  color: #64748B;
+  text-align: center;
+  width: 30px;
+}
+
+/* GM Info */
+.gmw-gm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.gmw-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1.5px solid rgba(212, 168, 67, 0.2);
+}
+
+.gmw-avatar-ph {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(212, 168, 67, 0.12), rgba(212, 168, 67, 0.06));
+  border: 1.5px solid rgba(212, 168, 67, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  color: #D4A843;
+  flex-shrink: 0;
+}
+
+.gmw-gm-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.gmw-gm-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #F1F5F9;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gmw-gm-leagues {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  color: #64748B;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Score Area */
+.gmw-score-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.gmw-grade {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 900;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid;
+  border-radius: 6px;
+  line-height: 1;
+}
+
+.gmw-rating {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  min-width: 36px;
+  text-align: right;
+}
+
+/* ─── My Rank Callout ─── */
+.gmw-my-rank {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: linear-gradient(90deg, rgba(212, 168, 67, 0.06), transparent);
+  border-top: 1px solid rgba(212, 168, 67, 0.1);
+}
+
+.gmw-my-rank-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  color: #94A3B8;
+  flex: 1;
+}
+
+.gmw-my-rank-pos {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: #D4A843;
+}
+
+.gmw-my-rank-score {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+/* ─── Toggle ─── */
+.gmw-toggle {
+  width: 100%;
+  padding: 10px;
+  background: none;
+  border: none;
+  border-top: 1px solid rgba(212, 168, 67, 0.08);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #D4A843;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gmw-toggle:hover {
+  background: rgba(212, 168, 67, 0.06);
+}
+
+/* ─── Loading ─── */
+.gmw-loading {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gmw-loading-bar {
+  height: 34px;
+  background: linear-gradient(90deg, rgba(212, 168, 67, 0.04) 0%, rgba(212, 168, 67, 0.08) 50%, rgba(212, 168, 67, 0.04) 100%);
+  border-radius: 6px;
+  animation: gmw-shimmer 1.5s infinite;
+}
+
+@keyframes gmw-shimmer {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+/* ─── Empty ─── */
+.gmw-empty {
+  padding: 28px 16px;
+  text-align: center;
+}
+
+.gmw-empty p {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #94A3B8;
+  margin: 0 0 4px 0;
+}
+
+.gmw-empty span {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: #64748B;
+}

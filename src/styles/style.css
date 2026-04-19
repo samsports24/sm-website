@@ -78,6 +78,7 @@
 /* Page CSS */
 @import './pages/landing.css';
 @import './pages/login.css';
+@import './pages/authentication.css';
 @import './pages/EditProfile.css';
 @import './pages/teams.css';
 @import './pages/leagueScore.css';
@@ -118,12 +119,14 @@
 @import './pages/selectLeague.css';
 @import './pages/createOrJoinLeague.css';
 @import './pages/newHomePage.css';
+@import './pages/warRoom.css';
 @import './pages/stadium.css';
 @import './pages/clubhouse.css';
 @import './pages/proleague.css';
-@import './pages//rulebook.css';
-@import './pages//playersearch.css';
+@import './pages/rulebook.css';
+@import './pages/playersearch.css';
 @import './pages/chat.css';
+@import './pages/postseason.css';
 
 /* COMPONENT HOCKEY */
 @import './components/leagueStandingsHockey.css';

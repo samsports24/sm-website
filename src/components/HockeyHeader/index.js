@@ -9,7 +9,6 @@ import { useSelector } from 'react-redux'
 import { BiRightArrowAlt } from 'react-icons/bi'
 import { useNavigate } from 'react-router-dom'
 import RoutesButton from '../RoutesButton'
-import { leagueSalaryCap } from '../../config/constants'
 
 const Header = () => {
   const user = useSelector((state) => state.user.userDetails)
@@ -19,9 +18,7 @@ const Header = () => {
 
   const navigate = useNavigate()
 
-
-
-  const teamFinancials = () => {}
+  const teamFinancials = () => navigate('/team-financials')
 
   return user?.team ? (
     <header className='hockey-header'>
@@ -73,16 +70,15 @@ const Header = () => {
             </div>
             <div>
               <p>League Salary Cap</p>
-              {/* <span>$199,759,446</span> */}
-              <span>{`$${leagueSalaryCap?.toLocaleString()}`}</span>
+              <span>{`${teamSalary?.toLocaleString()} SP`}</span>
             </div>
             <div>
               <p>Team Salary Cap</p>
-              <span>{`$${teamSalary?.toLocaleString()}`}</span>
+              <span>{`${teamSalary?.toLocaleString()} SP`}</span>
             </div>
             <div>
               <p>Team Cap Left</p>
-              <span>{`$${(leagueSalaryCap - teamSalary)?.toLocaleString()}`}</span>
+              <span>{`${(0 - teamSalary)?.toLocaleString()} SP`}</span>
             </div>
           </div>
         </div>

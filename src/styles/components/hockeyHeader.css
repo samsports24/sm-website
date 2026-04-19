@@ -7,7 +7,7 @@
   padding: 20px;
   border-radius: 16px;
   background-color: var(--secondaryPurple);
-  border: 1px solid #6e6980;
+  border: 1px solid #64748B;
 }
 
 /* LEFT */
@@ -16,7 +16,7 @@
   text-align: center;
 }
 .hockey-header .left .image_div {
-  border: 1px solid #6e6980;
+  border: 1px solid #64748B;
   margin-bottom: 10px;
   border-radius: 8px;
   min-height: 165px;
@@ -59,7 +59,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 16px;
-  border: 1px solid #6e6980;
+  border: 1px solid #64748B;
   border-radius: 8px;
   gap: 10px;
   flex-wrap: wrap;
@@ -100,7 +100,7 @@
 }
 .hockey-header .center .center_left .button_and_team_box button {
   background-color: transparent !important;
-  border: 1px solid #6e6980;
+  border: 1px solid #64748B;
   border-radius: 8px;
   color: var(--text);
   font-size: 16px;
@@ -113,7 +113,7 @@
 .hockey-header .center .center_right .team_financials_box {
   display: flex;
   flex-direction: column;
-  border: 1px solid #6e6980;
+  border: 1px solid #64748B;
   border-radius: 8px;
   flex: 1;
   padding: 20px 20px;
@@ -171,7 +171,7 @@
   width: 100%;
   margin-bottom: 10px;
   padding: 20px 30px;
-  border: 1px solid #6e6980;
+  border: 1px solid #64748B;
   border-radius: 8px;
   display: flex;
   flex-direction: column;

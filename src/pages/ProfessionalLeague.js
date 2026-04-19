@@ -1,30 +1,71 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useCallback } from 'react'
+import { FiZap } from 'react-icons/fi'
 
-// import { Breadcrumb } from 'antd'
-
-// Components
 import Header from '../components/Header'
 import LeagueStandings from '../components/LeagueStandings'
-import PowerRanking from '../components/PowerRanking'
 import PlayerRanking from '../components/PlayerRanking'
-import MatchUpOfTheWeek from '../components/MatchUpOfTheWeek'
 import RollingNewsFeed from '../components/RollingNewsFeed'
 import TransactionTracker from '../components/TransactionTracker'
+import TopPlayersBox from '../components/TopPlayersBox'
 import Loader from '../components/Loader'
 import HeadingAndWeek from '../components/Pagination/HeadingAndWeek'
 
-import { getProfessionalLeagueRanks, getScheduleByWeek } from '../redux'
+import { getProfessionalLeagueRanks, getScheduleByWeek, getNewsFeed } from '../redux'
 import { useSelector } from 'react-redux'
 import { getTeamSchedule } from '../redux/actions/teamActions'
-import TeamScheduleCarousel, {
-  TeamScheduleCustomCarousel,
-} from '../components/TeamScheduleCarousel'
+import { TeamScheduleCustomCarousel } from '../components/TeamScheduleCarousel'
+import { useNavigate } from 'react-router-dom'
+import DraftCountdownBanner from '../components/DraftCountdownBanner'
+import DashboardTour from '../components/DashboardTour'
+
+/* ═══ Live News Ticker ═══ */
+const LiveNewsTicker = ({ headlines }) => {
+  const trackRef = useRef(null)
+  const [paused, setPaused] = useState(false)
+  const navigate = useNavigate()
+
+  if (!headlines || headlines.length === 0) return null
+
+  // Double the headlines for seamless loop
+  const doubled = [...headlines, ...headlines]
+
+  return (
+    <div
+      className='ticker-bar'
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div className='ticker-label'>
+        <FiZap size={12} />
+        <span>LIVE</span>
+      </div>
+      <div className='ticker-track-wrap'>
+        <div
+          className={`ticker-track ${paused ? 'ticker-paused' : ''}`}
+          ref={trackRef}
+        >
+          {doubled.map((item, i) => (
+            <span
+              key={i}
+              className='ticker-item'
+              onClick={() => navigate('/all-news')}
+            >
+              <span className='ticker-bullet'>&#9679;</span>
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 const ProfessionalLeague = () => {
   const SETTING = useSelector((state) => state.user.setting)
   const [ranks, setRanks] = useState(null)
   const [data, setData] = useState([])
   const [teamSchedule, setTeamSchedule] = useState([])
+  const [tickerHeadlines, setTickerHeadlines] = useState([])
   const [isLoading, setIsloading] = useState(true)
 
   useEffect(() => {
@@ -32,6 +73,15 @@ const ProfessionalLeague = () => {
       getTeamAndPlayerRank()
     }
   }, [SETTING?.week])
+
+  useEffect(() => {
+    ;(async () => {
+      const news = await getNewsFeed()
+      if (news && news.length > 0) {
+        setTickerHeadlines(news.slice(0, 8).map((n) => n.headline).filter(Boolean))
+      }
+    })()
+  }, [])
 
   const getTeamAndPlayerRank = async () => {
     setIsloading(true)
@@ -53,9 +103,13 @@ const ProfessionalLeague = () => {
     const res = await getTeamSchedule({ teamFilter: '', week: SETTING?.week })
     setTeamSchedule(res)
   }
+
   return (
     <div className='pro_league_container'>
       <Header />
+
+      <DashboardTour />
+      <DraftCountdownBanner />
 
       {isLoading ? (
         <Loader />
@@ -63,25 +117,28 @@ const ProfessionalLeague = () => {
         <>
           <HeadingAndWeek />
 
-          {teamSchedule?.length > 0 && <TeamScheduleCustomCarousel data={teamSchedule} />}
-          {/* <TeamScheduleCarousel data={teamSchedule} /> */}
+          {/* ═══ Live News Ticker ═══ */}
+          <LiveNewsTicker headlines={tickerHeadlines} />
 
-          <section className='league_details_container'>
-            <div className='left'>
-              <LeagueStandings data={ranks} maxHeight={'1325px'} />
-            </div>
-            <div className='center'>
-              {[data?.[0]].map((item, index) => (
-                <MatchUpOfTheWeek key={index} data={{ ...item }} />
-              ))}
-              <RollingNewsFeed />
+          {teamSchedule?.length > 0 && <TeamScheduleCustomCarousel data={teamSchedule} />}
+
+          {/* ═══ Main Dashboard Grid ═══ */}
+          <div className='dash-grid'>
+
+            {/* ── Left: News Feed (main content) ── */}
+            <div className='dash-main'>
+              <RollingNewsFeed height='520px' />
               <TransactionTracker />
             </div>
-            <div className='right'>
-              <PowerRanking data={ranks} maxHeight={'626px'} />
-              <PlayerRanking data={ranks} maxHeight={'626px'} />
+
+            {/* ── Right: Sidebar widgets ── */}
+            <div className='dash-sidebar'>
+              <LeagueStandings data={ranks} maxHeight='400px' />
+              <TopPlayersBox data={ranks} side='offense' />
+              <TopPlayersBox data={ranks} side='defense' />
             </div>
-          </section>
+
+          </div>
         </>
       )}
     </div>

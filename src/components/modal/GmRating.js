@@ -5,8 +5,6 @@ import samverifylogo from '../../assets/samverficationlogo.png'
 import cross from '../../assets/cross.png'
 
 const GmRatingModal = ({ visible, onClose,onCancel}) => {
-  console.log("🚀 ~ MessageModal ~ visible:", visible)
-
   return (
     <Modal
       className='gmrating'
@@ -27,7 +25,7 @@ const GmRatingModal = ({ visible, onClose,onCancel}) => {
       <div className='msgtext'>
 <p> GM Rating:
 <span>
-        A metric of your strategic acumen in managing fantasy football teams within SamSports. Highlight your skills and achievements, potentially positioning you for future opportunities as a General Manager in the Ultimate League.
+        A metric of your strategic acumen in managing fantasy A.Football teams within SamSports. Highlight your skills and achievements, potentially positioning you for future opportunities as a General Manager in the SFL.
         </span>
 
 </p>

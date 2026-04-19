@@ -2,7 +2,7 @@ import { Button, Col, Row } from 'antd'
 import { useNavigate } from 'react-router-dom'
 
 // import Arrow from '../assets/arrow-right.svg'
-import DollorIcon from '../assets/dollor-icon.svg'
+import SampointsCoin from '../assets/sampoints-coin.svg'
 import AddCoupon from '../components/modal/AddCoupon'
 
 const TotalPayment = () => {
@@ -21,8 +21,8 @@ const TotalPayment = () => {
                 <div key={i} className='table_row'>
                   <p>{v?.key}</p>
                   <div className='lead'>
-                    <img src={DollorIcon} />
-                    <p>${v?.value?.toFixed(2)}</p>
+                    <img src={SampointsCoin} />
+                    <p>{v?.value?.toFixed(2)} SP</p>
                   </div>
                 </div>
               )

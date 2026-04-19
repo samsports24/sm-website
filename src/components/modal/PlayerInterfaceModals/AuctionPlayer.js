@@ -1,21 +1,43 @@
 import React, { useEffect, useState } from 'react'
 
-import { Button, DatePicker, Form, Input, Modal, notification } from 'antd'
+import { Button, Form, Input, Modal, notification } from 'antd'
+import SamDatePicker from '../../../components/SamDatePicker'
 
 import dayjs from 'dayjs'
 import { createAuction } from '../../../redux/actions/rosterAction'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 const AuctionPlayer = ({ playerIds, disabled, pInterfaceModalClose }) => {
-console.log('playerIds',playerIds.playercaphit);
-
   const [form] = Form.useForm()
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const navigate = useNavigate()
+  const leagueState = useSelector((state) => state.league) || {}
+  const currentLeague = leagueState.currentLeague
+  const ownerAuctionsDisabled = currentLeague?.ownerToOwnerAuctionsEnabled === false
+  const draftNotCompleted = currentLeague && currentLeague.draftCompleted !== true
 
-  const showModal = () => setOpen(true)
+  const showModal = () => {
+    if (draftNotCompleted) {
+      notification.warning({
+        message: 'Draft In Progress',
+        description: 'Auctions will become available once the league draft has been completed.',
+        duration: 5,
+      })
+      return
+    }
+    if (ownerAuctionsDisabled) {
+      notification.error({
+        message: 'Owner-to-Owner Auctions Disabled',
+        description: 'This feature has been turned off by your commissioner.',
+        duration: 5,
+      })
+      return
+    }
+    setOpen(true)
+  }
   const closeModal = () => {
     form.resetFields()
     setOpen(false)
@@ -73,9 +95,18 @@ if (reserveBidPrice < openingBidPrice) {
 
   return (
     <>
-      <Button disabled={disabled} type='primary' className='action-bar-btn' onClick={showModal}>
-        Auction Player
-      </Button>
+      {draftNotCompleted ? (
+        <span style={{
+          padding: '1px 8px', borderRadius: 3,
+          background: 'rgba(110,105,128,0.1)',
+          color: 'rgba(255,255,255,0.2)', fontSize: 10, fontWeight: 600,
+          letterSpacing: 0.5, textTransform: 'uppercase',
+        }}>locked</span>
+      ) : (
+        <Button disabled={disabled || ownerAuctionsDisabled} type='primary' className='action-bar-btn' onClick={showModal} title={ownerAuctionsDisabled ? 'Disabled by commissioner' : ''}>
+          {ownerAuctionsDisabled ? 'Auctions Disabled' : 'Auction Player'}
+        </Button>
+      )}
       <Modal
         centered
         open={open}
@@ -102,7 +133,7 @@ if (reserveBidPrice < openingBidPrice) {
                 ]}
                 requiredMark='optional'
               >
-                <DatePicker
+                <SamDatePicker
                   suffixIcon={<></>}
                   inputReadOnly={true}
                   placeholder='Auction Start Date'
@@ -124,7 +155,7 @@ if (reserveBidPrice < openingBidPrice) {
                 ]}
                 requiredMark='optional'
               >
-                <DatePicker
+                <SamDatePicker
                   suffixIcon={<></>}
                   inputReadOnly={true}
                   placeholder='Auction End Date'

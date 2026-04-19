@@ -5,15 +5,15 @@
   display: flex;
   align-items: center;
   column-gap: 14px;
-  background-color: #30215d66;
-  border: 1px solid #6e698066;
+  background-color: #1A233266;
+  border: 1px solid #64748B66;
   border-radius: 16px;
 }
 .sc-team .team-card .content {
   width: 100%;
 }
 .sc-team .team-card .content .top {
-  border-bottom: 1px solid #6e6980;
+  border-bottom: 1px solid #64748B;
   padding-bottom: 10px;
 }
 .sc-team .team-card .content .top .handle {

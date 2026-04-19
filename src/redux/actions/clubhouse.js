@@ -19,11 +19,8 @@ export const createClubhouse = async (payload) => {
     attachToken()
     const res = await privateAPI.post(`/league/clubhouse`, payload)
     if (res) {
-      // console.log('res',res);
-      // console.log('res.data.data',res.data.data);
       // store.dispatch(getClubhouse(payload))
       // store.dispatch(setAllclubhouse(res.data.data))
-      console.log('payload inside create club house', payload)
       const tempPayload = {
         leagueId: payload?.league,
         userId: payload?.user,
@@ -40,7 +37,6 @@ export const createClubhouse = async (payload) => {
       // getLeagueDetails()
     }
   } catch (err) {
-    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
@@ -49,7 +45,6 @@ export const createClubhouse = async (payload) => {
 }
 
 export const getClubhouse = async (params) => {
-  console.log('params', params)
   try {
     attachToken()
     const res = await privateAPI.get('/league/get-clubhouse', { params })
@@ -77,7 +72,6 @@ export const GenerateVerificationCode = async (payload) => {
       // getLeagueDetails()
     }
   } catch (err) {
-    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
@@ -86,7 +80,6 @@ export const GenerateVerificationCode = async (payload) => {
 }
 
 export const resendInvitation = async (payload) => {
-  console.log('in the action', payload)
   try {
     attachToken()
     const res = await privateAPI.post(`/league/resendinvitation`, payload)
@@ -101,7 +94,6 @@ export const resendInvitation = async (payload) => {
       // getLeagueDetails()
     }
   } catch (err) {
-    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,

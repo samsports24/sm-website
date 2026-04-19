@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Input, Pagination as AntPagination, Table, Select, Button, notification } from 'antd'
+import { Input, Pagination as AntPagination, Table, Select, Button, notification, Tooltip } from 'antd'
 
 import moment from 'moment'
 import { useSelector } from 'react-redux'
@@ -16,31 +16,67 @@ import { getPlayerForWeeklyScoring } from '../../redux'
 import { createAuction } from '../../redux/actions/rosterAction'
 import { useNavigate } from 'react-router-dom'
 import { positions } from '../../config/constants'
+import OnboardingGuide from '../../components/OnboardingGuide'
+
+// ── Position color map (matches Draft page) ──
+const POS_COLORS = {
+  QB: '#EF4444', RB: '#3B82F6', WR: '#F59E0B', TE: '#22C55E',
+  OL: '#8B5CF6', OT: '#8B5CF6', OG: '#8B5CF6', C: '#8B5CF6',
+  DE: '#EC4899', DT: '#EC4899', DL: '#EC4899',
+  LB: '#06B6D4', ILB: '#06B6D4', OLB: '#06B6D4',
+  CB: '#F97316', S: '#14B8A6', FS: '#14B8A6', SS: '#14B8A6', DB: '#F97316',
+  K: '#A78BFA', P: '#A78BFA', 'K/P': '#A78BFA', ST: '#A78BFA',
+}
+
+const getScoreColor = (score) => {
+  if (!score || score === '-') return {}
+  const val = Number(score)
+  if (val >= 20) return { color: '#22C55E', fontWeight: 700 }
+  if (val >= 15) return { color: '#4ADE80', fontWeight: 600 }
+  if (val >= 10) return { color: '#86EFAC' }
+  if (val >= 5) return { color: '#CBD5E1' }
+  if (val > 0) return { color: '#94A3B8' }
+  return { color: '#475569' }
+}
+
+const getCapColor = (capHit) => {
+  if (!capHit || capHit <= 0) return '#22C55E'
+  if (capHit >= 20_000_000) return '#EF4444'
+  if (capHit >= 10_000_000) return '#F59E0B'
+  return '#22C55E'
+}
+
+const getContractYrsColor = (yrs) => {
+  if (!yrs || yrs === '-') return '#94A3B8'
+  const n = Number(yrs)
+  if (n >= 4) return '#22C55E'
+  if (n >= 2) return '#F59E0B'
+  return '#EF4444'
+}
 
 const SearchPlayer = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
   const userDetails = useSelector((state) => state?.user?.userDetails)
+  const currentLeague = useSelector((state) => state.league?.currentLeague)
+  const draftNotCompleted = currentLeague && currentLeague.draftCompleted !== true
   const sampoints = useSelector((state) => state.user?.SamPoints?.SamPoints)
   const [loading, setLoading] = useState(true)
   const [auctionbtnloading, setAuctionBtnLoading] = useState(false)
   const [playerID, setPlayerID] = useState(false)
   const [data, setData] = useState([])
-  // console.log('🚀 ~ data:', data)
   const [limit] = useState(10)
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
   const [position, setPosition] = useState('ALL')
   const [playerType, setPlayerType] = useState('ALL')
-  const [year, setYear] = useState(moment().format('2024'))
+  const [year, setYear] = useState(Number(moment().format('YYYY')))
   const [week, setWeek] = useState(SETTING?.week)
   const [checkweek, setCheckWeek] = useState(SETTING?.week)
   const [totalCount, setTotalCount] = useState(0)
+  const [emptyMessage, setEmptyMessage] = useState('')
   const navigate = useNavigate()
 
-  // console.log('week',week);
-  // console.log('currentweek',currentweek);
 
-  // console.log('year', year)
 
   function mapPosition(position) {
   return positions[position] || position;
@@ -52,15 +88,13 @@ const SearchPlayer = () => {
   }))
 
   const getData = async () => {
-    console.log('inide position', position)
     const res = await getPlayerForWeeklyScoring({ page, position, playerType, search, year })
     setTotalCount(res?.total)
-    // console.log('res',res);
+    setEmptyMessage(res?.message || '')
 
     return res?.players
   }
 
-  // console.log('totalCount',totalCount);
 
   const getWeeklyScoring = async () => {
     setLoading(true)
@@ -73,7 +107,6 @@ const SearchPlayer = () => {
 
     const res = await getData()
 
-    // console.log('here res', res)
 
     let tempResultArr = []
     let regularpts = 0
@@ -83,14 +116,11 @@ const SearchPlayer = () => {
     let regularseasonpts = 0
 
     res?.map((item) => {
-      // console.log('item', item)
 
       let tempObj = {}
 
       tempWeeks.forEach((week) => {
-        // console.log('week',week);
 
-        // console.log('item?.player?.weeklyScoring', item?.player?.weeklyScoring)
 
         const filteredObj = item?.player?.weeklyScoring?.find(
           (wScore) =>
@@ -101,56 +131,30 @@ const SearchPlayer = () => {
           return value !== undefined && value % 1 > 0 ? value.toFixed(2) : value
         }
 
-        // console.log('filteredObj',filteredObj);
         // const wScore = item?.player?.weeklyScoring?.find(
         //   (wScore) =>   Number(wScore.season) === Number(year)
         // );
 
-        const filteredScores2024 =
-          item?.player?.weeklyScoring?.filter((wScore) => Number(wScore.season) === 2024) || []
+        const filteredScoresForYear =
+          item?.player?.weeklyScoring?.filter((wScore) => Number(wScore.season) === Number(year)) || []
 
-        // console.log('filteredScores2024',filteredScores2024.length);
-
-        // Initialize the variable to hold the score
-
-        // If wScore is found, use its score
-        // if (wScore) {
-        //    console.log('wScore',wScore);
-
-        //   regularseasonpts = Number(wScore.score) || 0; // Handle possible NaN
-        // }
-
-        regularseasonpts = filteredScores2024.reduce((total, wScore) => {
+        regularseasonpts = filteredScoresForYear.reduce((total, wScore) => {
           return total + (Number(wScore.score) || 0)
         }, 0)
 
-        // console.log('regularseasonpts',regularseasonpts);
 
 
         let filtersnaps;
-        // console.log('filteredObj',filteredObj);
 
-        if (week<= 8){
-
-         filtersnaps = item?.stats?.stats?.weeklySnapRatios.find(
+         filtersnaps = item?.stats?.stats?.weeklySnapRatios?.find(
           (check) => Number(check?.week) === Number(week),
         )
-      }
-
-      // else {
-      //    filtersnaps = item?.stats?.weeklyStats.find(
-      //     (check) => Number(check?.week) === Number(week),
-      //   )
-      // }
         const filterWeek = item?.stats?.weeklyStats?.[week]
 
-        // console.log('filterWeek',filterWeek);
 
         const filterolweek = item?.stats?.olWeeklyStats?.[week]
 
-        // console.log('filterolweek', filterolweek)
 
-        // console.log('filterWeek?.RushingYards',filterWeek?.RushingYards);
         
 
         const DefensiveRatio = filtersnaps?.DefensiveRatio || 0
@@ -232,7 +236,6 @@ const SearchPlayer = () => {
           postpts += score
         }
 
-        // console.log(' ----- filterWeek?.RushingTouchdowns', filterWeek?.RushingTouchdowns)
 
 
 if (week <=8){
@@ -418,15 +421,64 @@ if (week <=8){
         regularseasonpts,
       }
 
-      // console.log('regularavgpts',regularavgpts.toFixed(2));
 
-      // console.log('regularpts',regularpts.toFixed(2));
+
+      // ── Accumulate season totals from all weeks ──
+      let szn_RushAtt = 0, szn_RushYds = 0, szn_RushTD = 0
+      let szn_RecTar = 0, szn_Rec = 0, szn_RecYds = 0, szn_RecTD = 0
+      let szn_PassComp = 0, szn_PassAtt = 0, szn_PassYds = 0, szn_PassTD = 0, szn_PassINT = 0
+      for (let w = 1; w <= 18; w++) {
+        const ws = item?.stats?.weeklyStats?.[w]
+        if (ws) {
+          szn_RushAtt += ws.RushingAttempts || 0
+          szn_RushYds += ws.RushingYards || 0
+          szn_RushTD += ws.RushingTouchdowns || 0
+          szn_RecTar += ws.ReceivingTargets || 0
+          szn_Rec += ws.Receptions || 0
+          szn_RecYds += ws.ReceivingYards || 0
+          szn_RecTD += ws.ReceivingTouchdowns || 0
+          szn_PassComp += ws.PassingCompletions || 0
+          szn_PassAtt += ws.PassingAttempts || 0
+          szn_PassYds += ws.PassingYards || 0
+          szn_PassTD += ws.PassingTouchdowns || 0
+          szn_PassINT += ws.PassingInterceptions || 0
+        }
+      }
+
+      // ── Compute per-week % stats for each week ──
+      tempWeeks.forEach((week) => {
+        const ws = item?.stats?.weeklyStats?.[week]
+        if (ws) {
+          const compPct = ws.PassingAttempts > 0 ? ((ws.PassingCompletions / ws.PassingAttempts) * 100).toFixed(1) : '-'
+          const ypc = ws.RushingAttempts > 0 ? (ws.RushingYards / ws.RushingAttempts).toFixed(1) : '-'
+          const catchPct = ws.ReceivingTargets > 0 ? ((ws.Receptions / ws.ReceivingTargets) * 100).toFixed(1) : '-'
+          tempObj = {
+            ...tempObj,
+            [`week_${week}_CompPct`]: compPct,
+            [`week_${week}_YPC`]: ypc,
+            [`week_${week}_CatchPct`]: catchPct,
+          }
+        }
+      })
+
+      // ── Season total % stats ──
+      const szn_CompPct = szn_PassAtt > 0 ? ((szn_PassComp / szn_PassAtt) * 100).toFixed(1) : '-'
+      const szn_YPC = szn_RushAtt > 0 ? (szn_RushYds / szn_RushAtt).toFixed(1) : '-'
+      const szn_CatchPct = szn_RecTar > 0 ? ((szn_Rec / szn_RecTar) * 100).toFixed(1) : '-'
 
       tempObj = {
         ...tempObj,
+        // Season totals
+        szn_RushAtt, szn_RushYds, szn_RushTD,
+        szn_RecTar, szn_Rec, szn_RecYds, szn_RecTD,
+        szn_PassComp, szn_PassAtt, szn_PassYds, szn_PassTD, szn_PassINT,
+        szn_CompPct, szn_YPC, szn_CatchPct,
         name: item?.player?.Name,
         PlayerID: item?.player?.PlayerID,
-        position: item?.player?.Position,
+        apiSportsId: item?.player?.apiSportsId,
+        HostedHeadshotNoBackgroundUrl: item?.player?.HostedHeadshotNoBackgroundUrl,
+        // OTC position takes priority over API-Sports position
+        position: item?.player?.otcPosition || item?.player?.Position,
         nflteam: item?.player?.Team,
         pf: item?.player?.pf?.toFixed(2),
         avgPf: item?.player?.avgPf?.toFixed(2),
@@ -435,6 +487,17 @@ if (week <=8){
         currentYearSalaryCap: item?.player?.currentYearSalaryCap,
         age: item?.player?.Age,
         caphit: item?.player?.currentYearSalaryCap,
+        // OTC contract data
+        otcCapHit: item?.player?.otcCapHit,
+        otcBaseSalary: item?.player?.otcBaseSalary,
+        otcTotalValue: item?.player?.otcTotalValue,
+        otcTotalGuaranteed: item?.player?.otcTotalGuaranteed,
+        otcAvgAnnualValue: item?.player?.otcAvgAnnualValue,
+        otcContractYears: item?.player?.otcContractYears,
+        otcFreeAgentYear: item?.player?.otcFreeAgentYear,
+        yearsLeftSalaryCap: item?.player?.yearsLeftSalaryCap,
+        nextYearSalaryCap: item?.player?.nextYearSalaryCap,
+        contractInfo: item?.player?.contractInfo,
         post_season_pts: item?.stats?.post_season_pts,
         regular_season_pts: item?.stats?.regular_season_pts,
         teaminfo: item?.team?.team,
@@ -463,13 +526,10 @@ if (week <=8){
     })
 
     tempResultArr.sort((a, b) => {
-      console.log('tempResultArr', tempResultArr)
 
       const aPoints = a.regular_season_pts || 0
       const bPoints = b.regular_season_pts || 0
 
-      // console.log('aPoints',aPoints);
-      // console.log('bPoints',bPoints);
 
       return bPoints - aPoints // Descending order
     })
@@ -484,7 +544,6 @@ if (week <=8){
   }, [page, position, playerType, search, year])
 
   const getColumns = (position) => {
-    // console.log('🚀 ~ getColumns ~ position:', position)
 
     const columns = [
       {
@@ -492,43 +551,82 @@ if (week <=8){
         title: 'POS',
         dataIndex: 'position',
         key: 'position',
-        render: (_, obj) => (
-          <div className='_positionColumn'>
-            {/* <p>{obj?.position || '-'}</p> */}
-            <p>{mapPosition(obj?.position) || '-'}</p>
-            
-          </div>
-        ),
+        render: (_, obj) => {
+          const pos = mapPosition(obj?.position) || '-'
+          const posColor = POS_COLORS[pos] || POS_COLORS[obj?.position] || '#22C55E'
+          return (
+            <div style={{
+              border: `1px solid ${posColor}33`,
+              borderRadius: 4,
+              display: 'inline-flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: 22,
+              paddingInline: 6,
+              background: `${posColor}10`,
+            }}>
+              <p style={{ color: posColor, fontFamily: "'Rajdhani', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 0.5, margin: 0 }}>{pos}</p>
+            </div>
+          )
+        },
       },
 
       {
-        width: 30,
+        width: 50,
         title: 'PLAYER NAME',
         dataIndex: 'Name',
         key: 'Name',
-        render: (_, obj) => (
-          <div>
-            {/* <p>{obj?.name || '-'}</p> */}
-            <PlayerDetailsModal
-              button={<span className='fa_p_name name_text_hover'> {obj?.name}</span>}
-              state={{
-                playerID: obj?.PlayerID,
-                teamId: obj?.teaminfo?._id === userDetails?.team?._id ? null : obj?.teaminfo?._id,
-                teamName: obj?.teaminfo?.name,
-                teamLogo: null,
-                isFreeAgent: {
-                  status: obj?.teaminfo ? false : true,
-                },
-                isTeamRoster: {
-                  status: obj?.teaminfo?._id === userDetails?.team?._id ? false : true,
-                },
-                isOwnRoster: {
-                  status: obj?.teaminfo?._id === userDetails?.team?._id ? true : false,
-                },
-              }}
-            />
-          </div>
-        ),
+        render: (_, obj) => {
+          const photoUrl = obj?.HostedHeadshotNoBackgroundUrl ||
+            (obj?.apiSportsId ? `https://media.api-sports.io/american-football/players/${obj.apiSportsId}.png` : null)
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              {photoUrl ? (
+                <img
+                  src={photoUrl}
+                  alt=""
+                  style={{
+                    width: 26,
+                    height: 26,
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    border: '1.5px solid rgba(34, 197, 94, 0.3)',
+                    background: 'rgba(10, 15, 26, 0.5)',
+                    flexShrink: 0,
+                  }}
+                  onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling && (e.target.nextSibling.style.display = 'flex') }}
+                />
+              ) : null}
+              {photoUrl ? (
+                <div style={{ display: 'none', width: 26, height: 26, borderRadius: '50%', background: 'rgba(34, 197, 94, 0.1)', border: '1.5px solid rgba(34, 197, 94, 0.2)', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <GiAmericanFootballPlayer size={14} style={{ color: 'rgba(34, 197, 94, 0.5)' }} />
+                </div>
+              ) : (
+                <div style={{ display: 'flex', width: 26, height: 26, borderRadius: '50%', background: 'rgba(34, 197, 94, 0.1)', border: '1.5px solid rgba(34, 197, 94, 0.2)', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <GiAmericanFootballPlayer size={14} style={{ color: 'rgba(34, 197, 94, 0.5)' }} />
+                </div>
+              )}
+              <PlayerDetailsModal
+                button={<span className='fa_p_name name_text_hover'> {obj?.name}</span>}
+                state={{
+                  playerID: obj?.PlayerID,
+                  teamId: obj?.teaminfo?._id === userDetails?.team?._id ? null : obj?.teaminfo?._id,
+                  teamName: obj?.teaminfo?.name,
+                  teamLogo: null,
+                  isFreeAgent: {
+                    status: obj?.teaminfo ? false : true,
+                  },
+                  isTeamRoster: {
+                    status: obj?.teaminfo?._id === userDetails?.team?._id ? false : true,
+                  },
+                  isOwnRoster: {
+                    status: obj?.teaminfo?._id === userDetails?.team?._id ? true : false,
+                  },
+                }}
+              />
+            </div>
+          )
+        },
       },
       {
         width: 30,
@@ -539,23 +637,87 @@ if (week <=8){
       },
       {
         width: 30,
-        title: <p style={{ lineHeight: 1 }}>nfl team</p>,
+        title: <p style={{ lineHeight: 1 }}>pro team</p>,
         dataIndex: 'nflteam',
         key: 'nflteam',
         render: (_, obj) => <p>{obj?.nflteam || '-'}</p>,
       },
 
-      ...(position === 'ALL'
-        ? [
-            {
-              width: 30,
-              title: <p style={{ lineHeight: 1 }}>CAPHIT</p>,
-              dataIndex: 'caphit',
-              key: 'caphit',
-              render: (_, obj) => <p>{`$${(obj?.caphit || '-').toLocaleString()}`}</p>,
-            },
-          ]
-        : []),
+      {
+        width: 30,
+        title: <p style={{ lineHeight: 1 }}>CAP HIT</p>,
+        dataIndex: 'caphit',
+        key: 'caphit',
+        render: (_, obj) => {
+          if (obj?.otcCapHit && obj.otcCapHit > 0) {
+            const millions = (obj.otcCapHit / 1_000_000).toFixed(1)
+            const capColor = getCapColor(obj.otcCapHit)
+            return (
+              <div style={{ lineHeight: 1.2 }}>
+                <p style={{ margin: 0, fontWeight: 700, fontSize: 12, color: capColor }}>${millions}M</p>
+                <p style={{ margin: 0, fontSize: 9, color: 'rgba(255,255,255,0.35)' }}>{`${(obj?.caphit || 0).toLocaleString()} SP`}</p>
+              </div>
+            )
+          }
+          return <p style={{ color: '#94A3B8' }}>{`${(obj?.caphit || '-').toLocaleString()} SP`}</p>
+        },
+      },
+      {
+        width: 30,
+        title: <p style={{ lineHeight: 1 }}>CONTRACT</p>,
+        dataIndex: 'contractInfo',
+        key: 'contractInfo',
+        render: (_, obj) => {
+          if (obj?.otcTotalValue && obj.otcTotalValue > 0) {
+            const totalM = (obj.otcTotalValue / 1_000_000).toFixed(1)
+            const yrsLeft = obj?.yearsLeftSalaryCap || obj?.otcContractYears || '-'
+            const yrsColor = getContractYrsColor(yrsLeft)
+            return (
+              <div style={{ lineHeight: 1.2 }}>
+                <p style={{ margin: 0, fontWeight: 700, fontSize: 12, color: '#E2E8F0' }}>${totalM}M</p>
+                <p style={{ margin: 0, fontSize: 9 }}>
+                  <span style={{ color: yrsColor, fontWeight: 600 }}>{yrsLeft}yr left</span>
+                  {obj?.otcFreeAgentYear ? <span style={{ color: 'rgba(255,255,255,0.3)' }}> · FA {obj.otcFreeAgentYear}</span> : ''}
+                </p>
+              </div>
+            )
+          }
+          // Parse contractInfo text into short format — never show full paragraph in table
+          const raw = obj?.contractInfo || ''
+          if (raw.length > 0) {
+            // Try to extract dollar amount from text like "signed a 4 year, $48,000,000 contract"
+            const match = raw.match(/(\d+)\s*year.*?\$(\d[\d,]*)/i)
+            if (match) {
+              const yrs = match[1]
+              const dollars = parseInt(match[2].replace(/,/g, ''))
+              const totalM = (dollars / 1_000_000).toFixed(1)
+              return (
+                <div style={{ lineHeight: 1.2 }}>
+                  <p style={{ margin: 0, fontWeight: 700, fontSize: 12, color: '#E2E8F0' }}>${totalM}M</p>
+                  <p style={{ margin: 0, fontSize: 9, color: 'rgba(255,255,255,0.4)' }}>{yrs}yr</p>
+                </div>
+              )
+            }
+            // Try alternate format: just find a dollar amount
+            const dollarMatch = raw.match(/\$(\d[\d,]*)/i)
+            if (dollarMatch) {
+              const dollars = parseInt(dollarMatch[1].replace(/,/g, ''))
+              const totalM = (dollars / 1_000_000).toFixed(1)
+              return (
+                <div style={{ lineHeight: 1.2 }}>
+                  <p style={{ margin: 0, fontWeight: 700, fontSize: 12, color: '#E2E8F0' }}>${totalM}M</p>
+                </div>
+              )
+            }
+          }
+          // Fallback: show cap hit as SP or dash — full contract text is in player popup
+          const capHit = obj?.caphit
+          if (capHit && capHit > 0) {
+            return <p style={{ fontSize: 11, color: '#94A3B8' }}>{`${Number(capHit).toLocaleString()} SP`}</p>
+          }
+          return <p style={{ fontSize: 11, color: '#475569' }}>-</p>
+        },
+      },
 
       {
         width: 30,
@@ -563,49 +725,36 @@ if (week <=8){
         dataIndex: 'HostedHeadshotNoBackgroundUrl',
         key: 'HostedHeadshotNoBackgroundUrl',
         render: (_, obj) => {
-          //  console.log('chekcimg obj',obj);
 
           return (
-            // <div>
-            //   {obj?.teaminfo ? (
-            //     <p>{obj?.teaminfo?.name}</p>
-            //   ) : obj?.teaminfo?._id === userDetails?.team?._id ? (
-            //     ''
-            //   ) : (
-            //     <Button
-            //       disabled={false}
-            //       loading={loading}
-            //       // loading={playerID == obj?.PlayerID}
-            //       type='primary'
-            //       className='_button'
-            //       onClick={() => {
-            //         // handleCreateAuction(obj?.PlayerID, obj?._id, obj?.currentYearSalaryCap)
-            //         handleCreateAuction(obj?.PlayerID, obj?.id, obj?.currentYearSalaryCap)
-            //       }}
-            //     >
-            //       Auction
-            //     </Button>
-            //   )}
-            // </div>
             <div>
               {obj?.teaminfo ? (
                 <p>{obj?.teaminfo?.name}</p>
               ) : obj?.teaminfo?._id === userDetails?.team?._id ? (
                 ''
               ) : (
-                Number(year) === 2024 && ( // Add this condition
-                  <Button
-                    disabled={false}
-                    // loading={loading}
-                    loading={playerID == obj?.PlayerID}
-                    type='primary'
-                    className='_button'
-                    onClick={() => {
-                      handleCreateAuction(obj?.PlayerID, obj?.id, obj?.currentYearSalaryCap)
-                    }}
-                  >
-                    Auction
-                  </Button>
+                Number(year) >= 2024 && (
+                  draftNotCompleted ? (
+                    <span style={{
+                      padding: '2px 10px', borderRadius: 4,
+                      background: 'rgba(139,92,246,0.12)',
+                      border: '1px solid rgba(139,92,246,0.25)',
+                      color: '#A78BFA', fontSize: 10, fontWeight: 700,
+                      letterSpacing: 1, textTransform: 'uppercase',
+                      fontFamily: "'Rajdhani', sans-serif",
+                    }}>locked</span>
+                  ) : (
+                    <Button
+                      loading={playerID == obj?.PlayerID}
+                      type='primary'
+                      className='_button'
+                      onClick={() => {
+                        handleCreateAuction(obj?.PlayerID, obj?.id, obj?.currentYearSalaryCap)
+                      }}
+                    >
+                      Auction
+                    </Button>
+                  )
                 )
               )}
             </div>
@@ -630,13 +779,14 @@ if (week <=8){
         title: <p style={{ lineHeight: 1 }}>TOTAL PTS</p>,
         dataIndex: 'totalPts',
         key: 'totalPts',
-        render: (_, obj) => (
-          <p>
-            {Number(year) === 2024
-              ? obj?.regularseasonpts?.toFixed(2)
-              : obj?.regular_season_pts?.toFixed(2) || '-'}
-          </p>
-        ),
+        render: (_, obj) => {
+          const pts = Number(year) >= 2024
+            ? obj?.regularseasonpts
+            : obj?.regular_season_pts
+          const val = pts ? pts.toFixed(2) : '-'
+          const ptsColor = pts >= 200 ? '#22C55E' : pts >= 100 ? '#4ADE80' : pts >= 50 ? '#86EFAC' : '#CBD5E1'
+          return <p style={{ fontWeight: 700, color: pts ? ptsColor : '#475569' }}>{val}</p>
+        },
       },
 
       {
@@ -645,22 +795,23 @@ if (week <=8){
         dataIndex: 'playerScore',
         key: 'playerScore',
         render: (_, obj) => {
-          // Extract values
-          // const regularSeasonPts =  {Number(year) === 2024 ? obj?.regularseasonpts : obj?.regular_season_pts : || 0
           const regularSeasonPts =
-            Number(year) === 2024 ? obj?.regularseasonpts || 0 : obj?.regular_season_pts || 0
+            Number(year) >= 2024 ? obj?.regularseasonpts || 0 : obj?.regular_season_pts || 0
 
-          const nflGamesPlayed = obj?.nflGamesPlayed || 0
-          const currentweek = SETTING?.week
-          // Calculate PPG
-          let ppg = 0
-          if (nflGamesPlayed > 0 && regularSeasonPts > 0) {
-            // ppg = (regularSeasonPts / nflGamesPlayed)?.toFixed(2)
-            ppg = (regularSeasonPts / currentweek)?.toFixed(2)
+          // Count weeks with a score > 0 for accurate games played
+          let gamesPlayed = 0
+          for (let w = 1; w <= 18; w++) {
+            const sc = obj?.[`week_${w}_score`]
+            if (sc && sc > 0) gamesPlayed++
           }
 
-          // Return formatted result
-          return <p>{ppg || '0'}</p>
+          let ppg = 0
+          if (gamesPlayed > 0 && regularSeasonPts > 0) {
+            ppg = (regularSeasonPts / gamesPlayed).toFixed(2)
+          }
+
+          const ppgStyle = getScoreColor(ppg)
+          return <p style={ppgStyle}>{ppg || '0'}</p>
         },
       },
     ]
@@ -677,7 +828,7 @@ if (week <=8){
             title: 'WK1',
             dataIndex: 'wk1',
             key: 'wk1',
-            render: (_, obj) => <p>{obj?.week_1_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_1_score)}>{obj?.week_1_score || '-'}</p>,
           },
 
           {
@@ -685,70 +836,70 @@ if (week <=8){
             title: 'WK2',
             dataIndex: 'wk2',
             key: 'wk2',
-            render: (_, obj) => <p>{obj?.week_2_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_2_score)}>{obj?.week_2_score || '-'}</p>,
           },
           {
             width: 30,
             title: 'WK3',
             dataIndex: 'wk3',
             key: 'wk3',
-            render: (_, obj) => <p>{obj?.week_3_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_3_score)}>{obj?.week_3_score || '-'}</p>,
           },
           {
             width: 30,
             title: 'WK4',
             dataIndex: 'wk4',
             key: 'wk4',
-            render: (_, obj) => <p>{obj?.week_4_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_4_score)}>{obj?.week_4_score || '-'}</p>,
           },
           {
             width: 30,
             title: 'WK5',
             dataIndex: 'wk5',
             key: 'wk1',
-            render: (_, obj) => <p>{obj?.week_5_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_5_score)}>{obj?.week_5_score || '-'}</p>,
           },
           {
             width: 30,
             title: 'WK6',
             dataIndex: 'wk6',
             key: 'wk1',
-            render: (_, obj) => <p>{obj?.week_6_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_6_score)}>{obj?.week_6_score || '-'}</p>,
           },
           {
             width: 30,
             title: 'WK7',
             dataIndex: 'wk7',
             key: 'wk7',
-            render: (_, obj) => <p>{obj?.week_7_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_7_score)}>{obj?.week_7_score || '-'}</p>,
           },
           {
             width: 30,
             title: 'WK8',
             dataIndex: 'wk8',
             key: 'wk1',
-            render: (_, obj) => <p>{obj?.week_8_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_8_score)}>{obj?.week_8_score || '-'}</p>,
           },
           {
             width: 30,
             title: 'WK9',
             dataIndex: 'wk9',
             key: 'wk9',
-            render: (_, obj) => <p>{obj?.week_9_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_9_score)}>{obj?.week_9_score || '-'}</p>,
           },
           {
             width: 30,
             title: 'WK10',
             dataIndex: 'wk10',
             key: 'wk10',
-            render: (_, obj) => <p>{obj?.week_10_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_10_score)}>{obj?.week_10_score || '-'}</p>,
           },
           {
             width: 30,
             title: 'WK11',
             dataIndex: 'wk11',
             key: 'wk11',
-            render: (_, obj) => <p>{obj?.week_11_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_11_score)}>{obj?.week_11_score || '-'}</p>,
           },
 
           {
@@ -756,7 +907,7 @@ if (week <=8){
             title: 'WK12',
             dataIndex: 'wk12',
             key: 'wk12',
-            render: (_, obj) => <p>{obj?.week_12_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_12_score)}>{obj?.week_12_score || '-'}</p>,
           },
 
           {
@@ -764,7 +915,7 @@ if (week <=8){
             title: 'WK13',
             dataIndex: 'wk13',
             key: 'wk13',
-            render: (_, obj) => <p>{obj?.week_13_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_13_score)}>{obj?.week_13_score || '-'}</p>,
           },
 
           {
@@ -772,35 +923,35 @@ if (week <=8){
             title: 'WK14',
             dataIndex: 'wk14',
             key: 'wk14',
-            render: (_, obj) => <p>{obj?.week_14_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_14_score)}>{obj?.week_14_score || '-'}</p>,
           },
           {
             width: 30,
             title: 'WK15',
             dataIndex: 'wk15',
             key: 'wk15',
-            render: (_, obj) => <p>{obj?.week_15_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_15_score)}>{obj?.week_15_score || '-'}</p>,
           },
           {
             width: 30,
             title: 'WK16',
             dataIndex: 'wk16',
             key: 'wk11',
-            render: (_, obj) => <p>{obj?.week_16_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_16_score)}>{obj?.week_16_score || '-'}</p>,
           },
           {
             width: 30,
             title: 'WK17',
             dataIndex: 'wk17',
             key: 'wk11',
-            render: (_, obj) => <p>{obj?.week_17_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_17_score)}>{obj?.week_17_score || '-'}</p>,
           },
           {
             width: 100,
             title: 'WK18',
             dataIndex: 'wk18',
             key: 'wk11',
-            render: (_, obj) => <p>{obj?.week_18_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_18_score)}>{obj?.week_18_score || '-'}</p>,
           },
         ],
       },
@@ -816,7 +967,7 @@ if (week <=8){
             title: 'RD1',
             dataIndex: 'rd1',
             key: 'rd1',
-            render: (_, obj) => <p>{obj?.week_19_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_19_score)}>{obj?.week_19_score || '-'}</p>,
           },
 
           {
@@ -824,7 +975,7 @@ if (week <=8){
             title: 'RD2',
             dataIndex: 'rd2',
             key: 'rd2',
-            render: (_, obj) => <p>{obj?.week_20_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_20_score)}>{obj?.week_20_score || '-'}</p>,
           },
 
           {
@@ -832,7 +983,7 @@ if (week <=8){
             title: 'RD3',
             dataIndex: 'rd3',
             key: 'rd1',
-            render: (_, obj) => <p>{obj?.week_21_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_21_score)}>{obj?.week_21_score || '-'}</p>,
           },
 
           {
@@ -840,7 +991,7 @@ if (week <=8){
             title: 'SB',
             dataIndex: 'sb',
             key: 'sb',
-            render: (_, obj) => <p>{obj?.week_23_score || '-'}</p>,
+            render: (_, obj) => <p style={getScoreColor(obj?.week_23_score)}>{obj?.week_23_score || '-'}</p>,
           },
 
           {
@@ -848,7 +999,12 @@ if (week <=8){
             title: <p style={{ lineHeight: 1 }}>TOTAL PTS</p>,
             dataIndex: 'totalPts',
             key: 'totalPts',
-            render: (_, obj) => <p>{obj?.post_season_pts?.toFixed(2) || '-'}</p>,
+            render: (_, obj) => {
+              const pts = obj?.post_season_pts
+              const val = pts ? pts.toFixed(2) : '-'
+              const ptsColor = pts >= 50 ? '#22C55E' : pts >= 20 ? '#4ADE80' : pts > 0 ? '#86EFAC' : '#475569'
+              return <p style={{ fontWeight: 700, color: pts ? ptsColor : '#475569' }}>{val}</p>
+            },
           },
           {
             width: 30,
@@ -868,7 +1024,8 @@ if (week <=8){
               }
 
               // Return formatted result
-              return <p>{ppg || '0'}</p>
+              const ppgStyle = getScoreColor(ppg)
+              return <p style={ppgStyle}>{ppg || '0'}</p>
             },
           },
         ],
@@ -896,7 +1053,6 @@ if (week <=8){
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const scoreKey = `week_${weekNumber}_score`
@@ -976,7 +1132,6 @@ if (week <=8){
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const offensivescoreKey = `week_${weekNumber}_OffensiveRatio`
@@ -1006,11 +1161,9 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const RushingAttempts = `week_${weekNumber}_RushingAttempts`
-              // console.log('RushingAttempts', RushingAttempts)
 
               return (
                 <div>
@@ -1027,15 +1180,11 @@ if (week <=8){
             key: 'yard',
 
             render: (_, obj) => {
-              // console.log('my obj', obj)
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const RushingYards = `week_${weekNumber}_RushingYards`
-              //  console.log('insdoe RushingYards',RushingYards);
-              //  console.log('obj?.[RushingYards]',obj?.[RushingYards]);
               return (
                 <div>
                   <p>{obj?.[RushingYards] ?? '-'}</p>
@@ -1061,7 +1210,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const RushingTouchdowns = `week_${weekNumber}_RushingTouchdowns`
@@ -1099,7 +1247,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const ReceivingTargets = `week_${weekNumber}_ReceivingTargets`
@@ -1128,7 +1275,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const Receptions = `week_${weekNumber}_Receptions`
@@ -1157,7 +1303,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const ReceivingYards = `week_${weekNumber}_ReceivingYards`
@@ -1186,7 +1331,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const ReceivingTouchdowns = `week_${weekNumber}_ReceivingTouchdowns`
@@ -1224,7 +1368,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const PassingCompletions = `week_${weekNumber}_PassingCompletions`
@@ -1253,7 +1396,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const PassingAttempts = `week_${weekNumber}_PassingAttempts`
@@ -1282,7 +1424,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const PassingYards = `week_${weekNumber}_PassingYards`
@@ -1310,7 +1451,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const newPassingTouchdowns = `week_${weekNumber}_PassingTouchdowns`
@@ -1338,7 +1478,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const PassingSacks = `week_${weekNumber}_PassingSacks`
@@ -1368,7 +1507,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const INTS = `week_${weekNumber}_Interceptions`
@@ -1377,6 +1515,53 @@ if (week <=8){
                   <p>{obj?.[INTS] ?? '-'}</p>
                 </div>
               )
+            },
+          },
+        ],
+      },
+
+      {
+        title: 'AVERAGES',
+        dataIndex: 'averages',
+        key: 'averages',
+        children: [
+          {
+            width: 40,
+            title: 'COMP %',
+            dataIndex: 'compPct',
+            key: 'compPct',
+            render: (_, obj) => {
+              const weekNumber = Number(checkweek)
+              const weekVal = obj?.[`week_${weekNumber}_CompPct`]
+              const sznVal = obj?.szn_CompPct
+              const val = weekVal != null && weekVal !== '-' ? weekVal + '%' : (sznVal != null && sznVal !== '-' ? sznVal + '%' : '-')
+              return <div><p style={{ color: '#A855F7' }}>{val}</p></div>
+            },
+          },
+          {
+            width: 40,
+            title: 'YPC',
+            dataIndex: 'ypc',
+            key: 'ypc',
+            render: (_, obj) => {
+              const weekNumber = Number(checkweek)
+              const weekVal = obj?.[`week_${weekNumber}_YPC`]
+              const sznVal = obj?.szn_YPC
+              const val = weekVal != null && weekVal !== '-' ? weekVal : (sznVal != null && sznVal !== '-' ? sznVal : '-')
+              return <div><p style={{ color: '#F59E0B' }}>{val}</p></div>
+            },
+          },
+          {
+            width: 40,
+            title: 'CATCH %',
+            dataIndex: 'catchPct',
+            key: 'catchPct',
+            render: (_, obj) => {
+              const weekNumber = Number(checkweek)
+              const weekVal = obj?.[`week_${weekNumber}_CatchPct`]
+              const sznVal = obj?.szn_CatchPct
+              const val = weekVal != null && weekVal !== '-' ? weekVal + '%' : (sznVal != null && sznVal !== '-' ? sznVal + '%' : '-')
+              return <div><p style={{ color: '#06B6D4' }}>{val}</p></div>
             },
           },
         ],
@@ -1403,7 +1588,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const KickReturns = `week_${weekNumber}_KickReturns`
@@ -1429,7 +1613,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const KickReturnYards = `week_${weekNumber}_KickReturnYards`
@@ -1456,7 +1639,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const PuntReturns = `week_${weekNumber}_PuntReturns`
@@ -1482,7 +1664,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const PuntReturnYards = `week_${weekNumber}_PuntReturnYards`
@@ -1511,7 +1692,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const SpecialTeamsTouchdowns = `week_${weekNumber}_SpecialTeamsTouchdowns`
@@ -1535,7 +1715,6 @@ if (week <=8){
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const scoreKey = `week_${weekNumber}_score`
@@ -1609,7 +1788,6 @@ if (week <=8){
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const defensivecoreKey = `week_${weekNumber}_DefensiveRatio`
@@ -1637,7 +1815,6 @@ if (week <=8){
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const SoloTackles = `week_${weekNumber}_SoloTackles`
@@ -1663,7 +1840,6 @@ if (week <=8){
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const TFL = `week_${weekNumber}_TacklesForLoss`
@@ -1689,7 +1865,6 @@ if (week <=8){
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const SCKS = `week_${weekNumber}_Sacks`
@@ -1715,7 +1890,6 @@ if (week <=8){
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const FF = `week_${weekNumber}_FumblesForced`
@@ -1741,7 +1915,6 @@ if (week <=8){
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const FumblesRecovered = `week_${weekNumber}_FumblesRecovered`
@@ -1766,7 +1939,6 @@ if (week <=8){
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const PD = `week_${weekNumber}_PassesDefended`
@@ -1792,7 +1964,6 @@ if (week <=8){
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const INTS = `week_${weekNumber}_Interceptions`
@@ -1818,7 +1989,6 @@ if (week <=8){
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const SpecialTeamsTouchdowns = `week_${weekNumber}_SpecialTeamsTouchdowns`
@@ -1840,7 +2010,6 @@ if (week <=8){
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const scoreKey = `week_${weekNumber}_score`
@@ -1911,7 +2080,6 @@ if (week <=8){
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const offensivescoreKey = `week_${weekNumber}_OffensiveRatio`
@@ -2024,7 +2192,6 @@ if (week <=8){
         render: (_, obj) => {
           // Ensure week is a number
           const weekNumber = Number(checkweek)
-          // console.log('weekNumber', weekNumber)
 
           // Construct the key dynamically based on the week
           const scoreKey = `week_${weekNumber}_score`
@@ -2105,7 +2272,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const specialteamscoreKey = `week_${weekNumber}_SpecialTeamsRatio`
@@ -2141,7 +2307,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const FieldGoalsAttempted = `week_${weekNumber}_FieldGoalsAttempted`
@@ -2170,7 +2335,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const FieldGoalsMade = `week_${weekNumber}_FieldGoalsMade`
@@ -2200,7 +2364,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const FGM30TO39 = `week_${weekNumber}_FieldGoalsMade30to39`
@@ -2229,8 +2392,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
-              // console.log('my obj', obj)
 
               // Construct the key dynamically based on the week
               const FGM40TO49 = `week_${weekNumber}_FieldGoalsMade40to49`
@@ -2260,7 +2421,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const FGM50 = `week_${weekNumber}_FieldGoalsMade50Plus`
@@ -2288,7 +2448,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const ExtraPointsAttempted = `week_${weekNumber}_ExtraPointsAttempted`
@@ -2317,7 +2476,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const ExtraPointsMade = `week_${weekNumber}_ExtraPointsMade`
@@ -2353,7 +2511,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const Punts = `week_${weekNumber}_Punts`
@@ -2381,7 +2538,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const PuntYards = `week_${weekNumber}_PuntYards`
@@ -2409,7 +2565,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const PuntInside20 = `week_${weekNumber}_PuntInside20`
@@ -2438,7 +2593,6 @@ if (week <=8){
             render: (_, obj) => {
               // Ensure week is a number
               const weekNumber = Number(checkweek)
-              // console.log('weekNumber', weekNumber)
 
               // Construct the key dynamically based on the week
               const PuntsHadBlocked = `week_${weekNumber}_PuntsHadBlocked`
@@ -2461,7 +2615,7 @@ if (week <=8){
       return [...columns, ...columns3]
     }
 
-    if (position === 'DL' || position === 'LB' || position === 'DB') {
+    if (position === 'DL' || position === 'DE' || position === 'DT' || position === 'LB' || position === 'DB' || position === 'CB' || position === 'S') {
       return [...columns, ...columns4]
     }
 
@@ -2469,7 +2623,7 @@ if (week <=8){
       return [...columns, ...columns5]
     }
 
-    if (position === 'ST') {
+    if (position === 'ST' || position === 'K/P') {
       return [...columns, ...columns6]
     }
   }
@@ -2482,9 +2636,6 @@ if (week <=8){
   const handleCreateAuction = async (playerID, player_id, CapHit) => {
     setAuctionBtnLoading(true)
 
-    // console.log('playerID',playerID);
-    // console.log('player_id',player_id);
-    // console.log('CapHit',CapHit);
 
     if (sampoints < CapHit) {
       notification.error({
@@ -2502,8 +2653,6 @@ if (week <=8){
       // CapHit: CapHit === 0 ? 50000 : CapHit,
       CapHit: CapHit === 0 ? 1 : CapHit === undefined ? 1 : CapHit,
     })
-    // console.log('checkichg res',res);
-    // console.log('checkichg res msg',res.message);
 
     if (res) {
       setAuctionBtnLoading(false)
@@ -2512,29 +2661,34 @@ if (week <=8){
 
     setPlayerID('')
   }
-  // console.log('total data',data);
 
-  // console.log('allPlayers?.players',allPlayers?.players);
 
   return (
-    <div className='_searchPlayerContainer'>
+    <div className='sp-container'>
       <Header />
-      <hr className='divider' />
-      <header>
-        <h2>
-          PLAYER<b> SEARCH</b>
-        </h2>
-        <PositionComponent position={position} setPosition={setPosition} />
-        <div className='_searchBox'>
-          <p>
-            PLAYER<b>NAME</b>
-          </p>
+
+      <OnboardingGuide tabKey="search" />
+
+      {/* ── Page Header ── */}
+      <div className='sp-page-header'>
+        <div className='sp-page-header-bg' />
+        <div className='sp-page-header-content'>
+          <h1 className='sp-page-title'>
+            PLAYER <span>SEARCH</span>
+          </h1>
+          <p className='sp-page-subtitle'>Browse &amp; discover players across all teams</p>
+        </div>
+      </div>
+
+      {/* ── Toolbar: search + filters + results count ── */}
+      <div className='sp-toolbar'>
+        <div className='sp-search-box'>
           <Input
             value={search}
-            className='_searchInput'
+            className='sp-search-input'
             size='small'
-            placeholder='Type Name...'
-            suffix={<LiaSearchSolid size={20} style={{ color: '#00DDE9' }} />}
+            placeholder='Search player name...'
+            suffix={<LiaSearchSolid size={18} style={{ color: '#22C55E' }} />}
             onChange={(e) => {
               setSearch(e.target.value)
               if (e.target.value === '') {
@@ -2544,99 +2698,86 @@ if (week <=8){
             allowClear={{
               clearIcon: (
                 <IoIosClose
-                  size={25}
-                  style={{ color: '#00DDE9', marginBottom: '-4px' }}
+                  size={22}
+                  style={{ color: '#22C55E', marginBottom: '-3px' }}
                   onClick={() => {}}
                 />
               ),
             }}
           />
         </div>
-      </header>
-      <section>
-        <div className='new_table_container _tableContainer'>
-          <div className='_filterBox'>
-            <Select
-              value={playerType}
-              style={{ width: 180 }}
-              onChange={(val) => setPlayerType(val)}
-              options={[
-                {
-                  value: 'All',
-                  label: 'All',
-                },
-                {
-                  value: 'FreeAgents',
-                  label: 'Free Agents',
-                },
-                {
-                  value: 'Rookie',
-                  label: 'Rookie Players',
-                },
-              ]}
-            />
-            <Select
-              value={year}
-              style={{ width: 120 }}
-              onChange={(val) => setYear(val)}
-              options={[
-                {
-                  value: 2024,
-                  label: 2024,
-                },
-                {
-                  value: 2023,
-                  label: 2023,
-                },
-                {
-                  value: 2022,
-                  label: 2022,
-                },
-                {
-                  value: 2021,
-                  label: 2021,
-                },
-              ]}
-            />
-            {/* <Select
-              value={checkweek}
-              style={{ width: 120 }}
-              onChange={(val) => setCheckWeek(val)}
-              options={weekOptions}
-            /> */}
 
-            {position !== 'ALL' && (
-              <Select
-                value={checkweek}
-                style={{ width: 120 }}
-                onChange={(val) => setCheckWeek(val)}
-                options={weekOptions}
-              />
-            )}
-          </div>
-          <Table
-            loading={loading}
-            dataSource={data}
-            // dataSource={allPlayers?.players}
-            total={totalCount}
-            // columns={columns}
-            columns={getColumns(position)}
-            bordered={false}
-            pagination={false}
-            scroll={{ x: 1700 }}
-            rowKey='_id'
+        <div className='sp-toolbar-divider' />
+
+        <Select
+          value={playerType}
+          style={{ width: 160 }}
+          onChange={(val) => setPlayerType(val)}
+          options={[
+            { value: 'All', label: 'All Players' },
+            { value: 'FreeAgents', label: 'Free Agents' },
+            { value: 'Rookie', label: 'Rookies' },
+          ]}
+        />
+        <Select
+          value={year}
+          style={{ width: 110 }}
+          onChange={(val) => setYear(val)}
+          options={[
+            { value: 2026, label: '2026' },
+            { value: 2025, label: '2025' },
+            { value: 2024, label: '2024' },
+            { value: 2023, label: '2023' },
+          ]}
+        />
+        {position !== 'ALL' && (
+          <Select
+            value={checkweek}
+            style={{ width: 110 }}
+            onChange={(val) => setCheckWeek(val)}
+            options={weekOptions}
           />
+        )}
+
+        <div className='sp-results-count'>
+          <span>{totalCount}</span> players found
         </div>
-        <div className='custom_pagination_box pagination_box'>
-          <AntPagination
-            defaultCurrent={page}
-            total={totalCount}
-            showSizeChanger={false}
-            onChange={handlePagination}
-            pageSize={limit}
-          />
-        </div>
-      </section>
+      </div>
+
+      {/* ── Position Filter Bar ── */}
+      <div className='sp-pos-bar'>
+        <PositionComponent position={position} setPosition={setPosition} playerType={playerType} setPlayerType={setPlayerType} />
+      </div>
+
+      {/* ── Data Table ── */}
+      <div className='sp-table-wrap'>
+        <Table
+          loading={loading}
+          dataSource={data}
+          total={totalCount}
+          columns={getColumns(position)}
+          bordered={false}
+          pagination={false}
+          scroll={{ x: 1700 }}
+          rowKey={(record, index) => record?.id || record?.PlayerID || index}
+          locale={emptyMessage ? { emptyText: (
+            <div style={{ padding: '40px 0', color: 'rgba(255,255,255,0.4)', fontSize: 14 }}>
+              {emptyMessage}
+            </div>
+          )} : undefined}
+        />
+      </div>
+
+      {/* ── Pagination ── */}
+      <div className='sp-pagination'>
+        <AntPagination
+          defaultCurrent={page}
+          total={totalCount}
+          showSizeChanger={false}
+          onChange={handlePagination}
+          pageSize={limit}
+        />
+      </div>
     </div>
   )
 }

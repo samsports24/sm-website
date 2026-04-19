@@ -123,12 +123,12 @@ const PlayerRosterCard = ({
         <div>
           <p className='text1'>Player Cap #:</p>
           <p className='text2'>
-            {playerCaps[PlayerID] ? `$${playerCaps[PlayerID]?.toLocaleString()}` : '-'}
+            {playerCaps[PlayerID] ? `${playerCaps[PlayerID]?.toLocaleString()} SP` : '-'}
           </p>
         </div>
         <div>
           <p className='text1'>Player Rank:</p>
-          <p className='text2'>{PlayerRank ? `$${PlayerRank}` : '-'}</p>
+          <p className='text2'>{PlayerRank ? `${PlayerRank} SP` : '-'}</p>
         </div>
       </section>
     </div>

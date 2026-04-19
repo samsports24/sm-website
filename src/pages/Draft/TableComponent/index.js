@@ -30,7 +30,7 @@ import { getRemainingSeconds } from '../../../config/helperFunctions'
 import { getLeagueDetails } from '../../../redux'
 import BlackList from './BlackList'
 
-const TableComponent = ({ tableScroll }) => {
+const TableComponent = ({ tableScroll, autoDraftOn = false }) => {
   const {
     position,
     page,
@@ -44,6 +44,8 @@ const TableComponent = ({ tableScroll }) => {
     Rookieplayers,
   } = useSelector((state) => state.draft)
   const USER = useSelector((state) => state.user)
+  const currentLeague = useSelector((state) => state.league?.currentLeague)
+  const isOffenseOnly = currentLeague?.leagueMode === 'offense_only'
   const [loading, setLoading] = useState(false)
 
 
@@ -65,7 +67,6 @@ const TableComponent = ({ tableScroll }) => {
 
   useEffect(() => {
     // Only create a single socket connection
-  console.log("socketRef.current = io(base_url)")
     
     if (!socketRef.current) {
       socketRef.current = io(base_url)
@@ -84,7 +85,6 @@ const TableComponent = ({ tableScroll }) => {
 
   useEffect(() => {
     const getLeagueDetailsTemp = async () => {
-      // console.log('in the console here');
       
       await getLeagueDetails().then(() => {
         // alert('getLeagueDetails')
@@ -170,11 +170,9 @@ const TableComponent = ({ tableScroll }) => {
   }
 
   // useEffect(() => {
-  //   console.log('allPlayers', allPlayers?.players?.[0]?.player?._id);
 
   // }, [allPlayers]);
 
-  // console.log('Rookieplayers',Rookieplayers);
 
   // const handleAutoDraft = async () => {
   //   setLoading(true)
@@ -193,60 +191,37 @@ const TableComponent = ({ tableScroll }) => {
   // }
 
   const handleAutoDraft = async () => {
-    console.log('inside this')
     setLoading(true)
     const draftQueue = await getDraftQueue()
     const blacklistQueue = await getBlackListQueue()
 
     let playerId = null
 
-    // if (!playerId && draftQueue?.length > 0) {
-    //   console.log('inside this draft queue if');
-    //   playerId = draftQueue[0]?.player?._id ;;
-    // }
-
-    // console.log('first',playerId);
-
-    // if (!playerId && blacklistQueue.length > 0) {
-    //   console.log('inside this blaclist if');
-
-    //   // If the first player ID in blacklistQueue matches the first player ID in allPlayers, use the second player ID
-    //   if (blacklistQueue[0]?.player?._id === allPlayers?.players?.[0]?.player?._id) {
-    //     playerId = allPlayers?.players?.[1]?.player?._id;
-    //   }
-    // }
-
-    // else{
-    //   playerId = allPlayers?.players?.[0]?.player?._id
-    // }
-
-    if (!playerId && draftQueue?.length > 0) {
-      console.log('inside this draft queue if')
+    // 1. Try draft queue first (first queued player)
+    if (draftQueue?.length > 0) {
       playerId = draftQueue[0]?.player?._id
-      console.log('first', playerId)
-    } else if (!playerId && blacklistQueue.length > 0) {
-      console.log('inside this blacklist if')
-
-      // If the first player ID in blacklistQueue matches the first player ID in allPlayers, use the second player ID
-      if (blacklistQueue[0]?.player?._id === allPlayers?.players?.[0]?.player?._id) {
-        playerId = allPlayers?.players?.[1]?.player?._id
-      } else {
-        playerId = blacklistQueue[0]?.player?._id
-      }
-    } else {
-      playerId = allPlayers?.players?.[0]?.player?._id
     }
 
-    // Add player to draft with the selected playerId
+    // 2. If no queue pick, pick best available player that is NOT blacklisted
+    if (!playerId) {
+      const blacklistIds = new Set(
+        (blacklistQueue || []).map((b) => b?.player?._id?.toString())
+      )
+      const available = allPlayers?.players || []
+      const eligible = available.find(
+        (p) => p?.player?._id && !blacklistIds.has(p.player._id.toString())
+      )
+      playerId = eligible?.player?._id || available[0]?.player?._id
+    }
+
+    // 3. Execute the pick
     if (playerId) {
-      console.log('inside this if')
       await addPlayerToDraft({
         playerId: playerId,
-        //  playerId:allPlayers?.players?.[0]?.player?._id,
         position: draftCounter?.position,
         round: draftCounter?.round,
         remainingTime: getRemainingSeconds(draftCounter?.time),
-        teamId: onTheClock?.team?._id, // will be removed after testing
+        teamId: onTheClock?.team?._id,
       })
     }
 
@@ -258,7 +233,10 @@ const TableComponent = ({ tableScroll }) => {
       {
         <div className='pro_table_header'>
           <div className='pro_button_box'>
-            {['ALL', 'QB', 'RB', 'WR', 'TE', 'OL', 'DE', 'DT', 'LB', 'CB', 'S', 'K/P']?.map(
+            {(isOffenseOnly
+              ? ['ALL', 'QB', 'RB', 'WR', 'TE', 'K']
+              : ['ALL', 'QB', 'RB', 'WR', 'TE', 'OL', 'EDGE', 'IDL', 'LB', 'CB', 'S', 'K/P']
+            )?.map(
               (v, i) => {
                 if (i < 11) {
                   return (
@@ -287,7 +265,7 @@ const TableComponent = ({ tableScroll }) => {
                       }}
                     >
                       <Button
-                        key={i}
+                        key={`${i}-pos`}
                         type='primary'
                         className={`${position === v ? 'active' : ''}`}
                         onClick={() => {
@@ -301,7 +279,7 @@ const TableComponent = ({ tableScroll }) => {
                       </Button>
 
                       <Button
-                        key={i}
+                        key={`${i}-rookie`}
                         type='primary'
                         className={`${Rookieplayers === 'Rookie' ? 'active' : ''}`}
                         // onClick={() => {
@@ -342,13 +320,13 @@ const TableComponent = ({ tableScroll }) => {
             <Button
               loading={loading}
               disabled={
-                // false
                 completed || !(onTheClock?.team?._id === USER?.userDetails?.team?._id)
               }
               type='primary'
               onClick={handleAutoDraft}
+              className={autoDraftOn ? 'autodraft-btn-active' : ''}
             >
-              AUTODRAFT
+              {autoDraftOn ? '🤖 AUTODRAFT ON' : 'AUTODRAFT'}
             </Button>
             <Input
               // onChange={(e) => {

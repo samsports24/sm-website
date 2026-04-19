@@ -1,22 +1,63 @@
-/* BUTTON */
-.modal_button_text {
-  color: var(--text);
-  font-size: 22px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-  cursor: pointer;
-  text-transform: uppercase;
-  opacity: 0.4;
+/* ═══════════════════════════════════════════════════════════════
+   PLAYER INTERFACE MODALS — Shared Styles
+   Legacy classes kept for other modals (Release, Trade, etc.)
+   New pim- prefix for redesigned modals
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Modal Container ── */
+.player_interface_modals {
+  width: 850px !important;
+}
+.player_interface_modals .ant-modal-content {
+  padding: 38px 33px !important;
+  border-radius: 16px !important;
+  border: 1px solid #22C55E !important;
+  background-color: rgba(17, 24, 39, 0.4) !important;
+  backdrop-filter: blur(12px) !important;
 }
 
-/* CLOSE BUTTON */
+/* Narrower + dark bg for redesigned modals */
+.player_interface_modals.pim-modal {
+  width: 560px !important;
+}
+.player_interface_modals.pim-modal .ant-modal-content {
+  padding: 0 !important;
+  border: 1px solid rgba(40, 159, 201, 0.15) !important;
+  background: #0A0F1A !important;
+  backdrop-filter: none !important;
+}
+.player_interface_modals.pim-modal .ant-modal-body {
+  background: transparent !important;
+}
+
+/* ── Close Button (new) ── */
+.pim-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.pim-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+/* ── Close Button (legacy — keep for other modals) ── */
 .close_modal_button {
   color: var(--text);
   font-size: 16px;
-  font-style: normal;
   font-weight: 500;
-  line-height: 20px;
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -30,33 +71,497 @@
   cursor: pointer;
 }
 
-.player_interface_modals {
-  width: 850px !important;
-}
-.player_interface_modals .ant-modal-content {
-  padding: 38px 33px !important;
-  border-radius: 16px !important;
-  border: 1px solid #289fc9 !important;
-  background-color: rgba(48, 33, 93, 0.4) !important;
-  backdrop-filter: blur(12px) !important;
+/* ── Body ── */
+.pim-body {
+  padding: 32px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.player_interface_modals
-  :where(.css-dev-only-do-not-override-1jqvr6p).ant-input-status-error:not(.ant-input-disabled):not(.ant-input-borderless).ant-input {
-  border-color: var(--colors-theme-border-color, rgba(110, 105, 128, 0.4)) !important;
+/* ── Header ── */
+.pim-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
+.pim-icon-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(40, 159, 201, 0.08);
+  border: 1px solid rgba(40, 159, 201, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #22C55E;
+  margin-bottom: 4px;
+}
+.pim-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+}
+.pim-subtitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.5;
+  max-width: 380px;
 }
 
-/* BODY */
+/* ── Info Notice ── */
+.pim-notice {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(255, 167, 38, 0.05);
+  border: 1px solid rgba(255, 167, 38, 0.1);
+}
+.pim-notice svg {
+  flex-shrink: 0;
+  color: #ffa726;
+  margin-top: 1px;
+}
+.pim-notice p {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── Section Label ── */
+.pim-section-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.pim-section-label > span:first-child {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.pim-section-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+/* ── Player Roster List ── */
+.pim-roster-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.pim-roster-list::-webkit-scrollbar {
+  width: 4px;
+}
+.pim-roster-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 2px;
+}
+
+.pim-player-row {
+  display: grid;
+  grid-template-columns: 44px 1fr auto 28px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(110, 105, 128, 0.08);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.pim-player-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(110, 105, 128, 0.15);
+}
+.pim-row-selected {
+  background: rgba(40, 159, 201, 0.06) !important;
+  border-color: rgba(40, 159, 201, 0.2) !important;
+}
+
+.pim-pr-pos {
+  font-size: 12px;
+  font-weight: 800;
+  color: #22C55E;
+  text-transform: uppercase;
+  text-align: center;
+}
+.pim-pr-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pim-pr-cap {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.35);
+  white-space: nowrap;
+}
+.pim-pr-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pim-pr-radio {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(110, 105, 128, 0.25);
+  transition: border-color 0.12s;
+}
+.pim-player-row:hover .pim-pr-radio {
+  border-color: rgba(40, 159, 201, 0.3);
+}
+
+/* ── Action Buttons ── */
+.pim-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+.pim-btn-primary {
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding: 0 24px !important;
+  height: 38px !important;
+  background: rgba(40, 159, 201, 0.15) !important;
+  border: 1px solid rgba(40, 159, 201, 0.25) !important;
+  color: #22C55E !important;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.pim-btn-primary:hover {
+  background: rgba(40, 159, 201, 0.25) !important;
+}
+.pim-btn-secondary {
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  padding: 0 20px !important;
+  height: 38px !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(110, 105, 128, 0.15) !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+.pim-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* ── Danger Variant (Release) ── */
+.pim-icon-danger {
+  background: rgba(239, 68, 68, 0.08) !important;
+  border-color: rgba(239, 68, 68, 0.12) !important;
+  color: #ef4444 !important;
+}
+.pim-notice-danger {
+  background: rgba(239, 68, 68, 0.05) !important;
+  border-color: rgba(239, 68, 68, 0.1) !important;
+}
+.pim-notice-danger svg {
+  color: #ef4444 !important;
+}
+.pim-btn-danger {
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding: 0 24px !important;
+  height: 38px !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+  border: 1px solid rgba(239, 68, 68, 0.25) !important;
+  color: #ef4444 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.pim-btn-danger:hover {
+  background: rgba(239, 68, 68, 0.25) !important;
+}
+
+/* ── Warning Variant (Injured, Poach) ── */
+.pim-icon-warning {
+  background: rgba(255, 167, 38, 0.08) !important;
+  border-color: rgba(255, 167, 38, 0.12) !important;
+  color: #ffa726 !important;
+}
+.pim-notice-warning {
+  background: rgba(255, 167, 38, 0.05) !important;
+  border-color: rgba(255, 167, 38, 0.1) !important;
+}
+.pim-notice-warning svg {
+  color: #ffa726 !important;
+}
+
+/* ── Selected radio fill ── */
+.pim-row-selected .pim-pr-radio {
+  border-color: #22C55E;
+  background: #22C55E;
+  box-shadow: inset 0 0 0 3px #0A0F1A;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LEGACY STYLES — Kept for other modals that haven't been
+   redesigned yet (Release, Trade, Auction, Injured, etc.)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* BUTTON */
+.modal_button_text {
+  color: var(--text);
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  opacity: 0.4;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MAKE OFFER MODAL — Redesigned Theme
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Trigger Button */
+.mo-trigger-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-family: var(--font-heading), sans-serif;
+  padding: 0;
+  margin: 0;
+  transition: all 0.25s ease;
+  position: relative;
+  letter-spacing: 0.5px;
+}
+
+.mo-trigger-btn:hover {
+  color: #22C55E;
+  text-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
+}
+
+.mo-trigger-btn::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #22C55E, transparent);
+  transition: width 0.3s ease;
+}
+
+.mo-trigger-btn:hover::after {
+  width: 100%;
+}
+
+/* Modal Container */
+.mo-modal {
+  width: 520px !important;
+}
+
+.mo-modal .ant-modal-content {
+  background: linear-gradient(135deg, #0A0F1A 0%, #111827 100%) !important;
+  border: 1px solid #22C55E !important;
+  box-shadow: 0 0 32px rgba(34, 197, 94, 0.08), inset 0 0 1px rgba(34, 197, 94, 0.1) !important;
+  border-radius: 14px !important;
+}
+
+/* Body */
+.mo-body {
+  padding: 36px 28px 24px !important;
+  gap: 22px !important;
+}
+
+/* Header */
+.mo-header {
+  gap: 12px !important;
+}
+
+.mo-icon {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(34, 197, 94, 0.06)) !important;
+  border: 1.5px solid rgba(34, 197, 94, 0.2) !important;
+  color: #22C55E !important;
+  box-shadow: 0 0 16px rgba(34, 197, 94, 0.1) !important;
+}
+
+.mo-title {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 24px !important;
+  font-weight: 800 !important;
+  color: #fff !important;
+  margin: 0 !important;
+  letter-spacing: 0.5px;
+}
+
+.mo-subtitle {
+  font-family: var(--font-body), sans-serif;
+  font-size: 13px !important;
+  color: rgba(255, 255, 255, 0.45) !important;
+  max-width: 380px !important;
+}
+
+/* Form Section */
+.mo-form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(34, 197, 94, 0.08);
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+}
+
+.mo-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mo-label {
+  font-family: var(--font-stats), sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.mo-input {
+  background: rgba(17, 24, 39, 0.6) !important;
+  border: 1.5px solid rgba(34, 197, 94, 0.15) !important;
+  border-radius: 10px !important;
+  padding: 10px 14px !important;
+  color: #fff !important;
+  font-family: var(--font-body), sans-serif;
+  font-size: 13px !important;
+  font-weight: 600;
+  transition: all 0.2s ease !important;
+  height: 42px !important;
+}
+
+.mo-input::placeholder {
+  color: rgba(255, 255, 255, 0.25) !important;
+}
+
+.mo-input:hover {
+  border-color: rgba(34, 197, 94, 0.25) !important;
+  background: rgba(17, 24, 39, 0.8) !important;
+}
+
+.mo-input:focus,
+.mo-input:focus-visible {
+  border-color: #22C55E !important;
+  background: rgba(17, 24, 39, 0.9) !important;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.15) !important;
+}
+
+.mo-input .ant-input {
+  background: transparent !important;
+  color: #fff !important;
+}
+
+/* Notice */
+.mo-notice {
+  background: rgba(34, 197, 94, 0.05) !important;
+  border: 1px solid rgba(34, 197, 94, 0.12) !important;
+  padding: 14px 16px !important;
+  border-radius: 10px !important;
+}
+
+.mo-notice svg {
+  color: #22C55E !important;
+}
+
+.mo-notice p {
+  color: rgba(255, 255, 255, 0.48) !important;
+  font-size: 12px !important;
+}
+
+/* Actions */
+.mo-actions {
+  display: flex !important;
+  gap: 12px !important;
+  justify-content: flex-end !important;
+  padding-top: 8px !important;
+}
+
+.mo-cancel {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(110, 105, 128, 0.15) !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  border-radius: 10px !important;
+  height: 40px !important;
+  padding: 0 22px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease !important;
+}
+
+.mo-cancel:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  border-color: rgba(110, 105, 128, 0.25) !important;
+}
+
+.mo-submit {
+  background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%) !important;
+  border: 1px solid rgba(34, 197, 94, 0.3) !important;
+  color: #0A0F1A !important;
+  border-radius: 10px !important;
+  height: 40px !important;
+  padding: 0 26px !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2) !important;
+}
+
+.mo-submit:hover {
+  background: linear-gradient(135deg, #16A34A 0%, #15803D 100%) !important;
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.3) !important;
+  transform: translateY(-1px);
+}
+
+.mo-submit:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2) !important;
+}
+
+/* BODY (legacy) */
 .player_interface_modals .modal_body {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 30px;
+  padding: 38px 33px;
 }
 .player_interface_modals .modal_header_heading {
   color: var(--text);
   font-size: 34px;
-  font-style: normal;
   font-weight: 800;
   line-height: 1;
   text-transform: uppercase;
@@ -77,7 +582,7 @@
   border-bottom: 1px solid gray;
 }
 
-/* FOOTER */
+/* FOOTER (legacy) */
 .player_interface_modals .modal_footer {
   width: 100%;
   display: flex;
@@ -89,9 +594,7 @@
   height: 50px;
   border-radius: 20px;
   font-size: 14px;
-  font-style: normal;
   font-weight: 500;
-  line-height: 20px;
   border: 1px solid var(--primary);
   text-transform: uppercase;
 }
@@ -129,14 +632,11 @@
   font-weight: 500;
 }
 .player_interface_modals .auction_button_groups .ant-picker {
-  /* width: calc(50% - 10px); */
   border-radius: 8px;
   border: 1px solid var(--colors-theme-border-color, rgba(110, 105, 128, 0.4));
   color: var(--text);
   font-size: 16px;
-  font-style: normal;
   font-weight: 700;
-  line-height: normal;
   text-transform: uppercase;
   background-color: transparent !important;
   height: 45px;
@@ -144,36 +644,28 @@
 .player_interface_modals .auction_button_groups .ant-picker input {
   color: var(--text);
   font-size: 16px;
-  font-style: normal;
   font-weight: 700;
-  line-height: normal;
   text-transform: uppercase;
   text-align: center;
 }
 .player_interface_modals .auction_button_groups .ant-input {
-  /* width: calc(50% - 10px); */
   border-radius: 8px;
   border: 1px solid var(--colors-theme-border-color, rgba(110, 105, 128, 0.4));
   color: var(--text);
   font-size: 16px;
-  font-style: normal;
   font-weight: 700;
-  line-height: normal;
   text-transform: uppercase;
   background-color: transparent !important;
   height: 45px;
   text-align: center;
 }
-
 .player_interface_modals .auction_button_groups button {
   width: calc(50% - 10px);
   border-radius: 8px;
   border: 1px solid var(--colors-theme-border-color, rgba(110, 105, 128, 0.4));
   color: var(--text);
   font-size: 16px;
-  font-style: normal;
   font-weight: 700;
-  line-height: normal;
   text-transform: uppercase;
   background-color: transparent !important;
   height: 45px;
@@ -182,26 +674,19 @@
 /* CENTER CONTENT */
 .player_interface_modals .center_content {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 30px;
   align-items: center;
-  flex-direction: column;
   padding-block: 10px;
 }
 .player_interface_modals .center_content p {
   color: var(--text);
   font-size: 16px;
-  font-style: normal;
   font-weight: 700;
-  line-height: normal;
   text-align: center;
 }
 
-/* RELEASE PLAYER */
-/* MOVE TO INJURED IR */
-/* ACTIVATE FROM PRACTICE SQUAD */
-/* MOVE TO PRACTICE SQUAD */
-/* POACH PLAYER */
+/* RELEASE / INJURED / PRACTICE / POACH / TRADE widths */
 .player_interface_modals .release_player p:nth-of-type(1),
 .player_interface_modals .move_to_injured p:nth-of-type(1),
 .player_interface_modals .activate_from_practice_squad p:nth-of-type(1),
@@ -215,16 +700,14 @@
 .player_interface_modals .trade_player p:nth-of-type(2) {
   width: 60%;
 }
-/* MOVE TO PRACTICE SQUAD */
 .player_interface_modals .move_to_practice_squad p:nth-of-type(1) {
   width: 80%;
 }
-/* POACH PLAYER */
 .player_interface_modals .poach_player p:nth-of-type(2) {
   width: 64%;
 }
 
-/* TRADE PLAYER */
+/* ROW (legacy — used by Trade, etc.) */
 .player_interface_modals ._row {
   display: flex;
   flex-direction: row;
@@ -236,9 +719,7 @@
 .player_interface_modals ._row p {
   color: var(--text);
   font-size: 16px;
-  font-style: normal;
   font-weight: 700;
-  line-height: normal;
   text-transform: uppercase;
 }
 .player_interface_modals ._row p:nth-of-type(2) {
@@ -249,9 +730,7 @@
   padding-inline: 40px;
   border-radius: 20px;
   font-size: 14px;
-  font-style: normal;
   font-weight: 500;
-  line-height: 20px;
   text-transform: uppercase;
   border: 2px solid var(--primary);
 }
@@ -259,31 +738,79 @@
   background-color: transparent !important;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 1440px) {
   .player_interface_modals .modal_header_heading {
     font-size: 26px;
   }
 }
 @media (max-width: 900px) {
-  /* CLOSE BUTTON */
   .close_modal_button {
     display: none;
   }
-  /* HEADING */
   .player_interface_modals .modal_header_heading {
     font-size: 24px;
   }
 }
 @media (max-width: 600px) {
-  .player_interface_modals .ant-modal-content {
-    padding: 38px 15px !important;
+  .player_interface_modals {
+    width: 100% !important;
   }
-  /* HEADING */
+  .player_interface_modals .ant-modal-content {
+    padding: 0 !important;
+  }
+  .pim-body {
+    padding: 24px 16px 20px;
+  }
+  .pim-title {
+    font-size: 18px;
+  }
+  .pim-player-row {
+    grid-template-columns: 36px 1fr auto 24px;
+    gap: 8px;
+    padding: 8px 10px;
+  }
+  .pim-actions {
+    flex-direction: column;
+  }
+  .pim-btn-primary,
+  .pim-btn-secondary {
+    width: 100% !important;
+  }
+
+  /* Make Offer Modal Responsive */
+  .mo-modal {
+    width: 100% !important;
+  }
+  .mo-body {
+    padding: 28px 20px 18px !important;
+    gap: 18px !important;
+  }
+  .mo-title {
+    font-size: 20px !important;
+  }
+  .mo-form-section {
+    padding: 16px;
+    gap: 14px;
+  }
+  .mo-actions {
+    flex-direction: column !important;
+  }
+  .mo-cancel,
+  .mo-submit {
+    width: 100% !important;
+  }
+
+  /* Legacy responsive */
+  .player_interface_modals .modal_body {
+    padding: 38px 15px;
+  }
   .player_interface_modals .modal_header_heading {
     font-size: 20px !important;
     line-height: 1.5;
   }
-  /* FOOTER */
   .player_interface_modals .modal_footer {
     flex-direction: column;
   }
@@ -291,20 +818,12 @@
     height: 40px;
     width: 100%;
   }
-  /* AUCTION PLAYER */
   .player_interface_modals .auction_button_groups {
     flex-direction: column;
   }
   .player_interface_modals .auction_button_groups button {
     width: 100%;
   }
-  /* RELEASE PLAYER */
-  /* MOVE TO INJURED IR */
-  /* ACTIVATE FROM PRACTICE SQUAD */
-  /* MOVE TO PRACTICE SQUAD */
-  /* POACH PLAYER */
-  /* MOVE TO PRACTICE SQUAD */
-  /* POACH PLAYER */
   .player_interface_modals .release_player p:nth-of-type(1),
   .player_interface_modals .move_to_injured p:nth-of-type(1),
   .player_interface_modals .activate_from_practice_squad p:nth-of-type(1),
@@ -321,4 +840,528 @@
   .player_interface_modals ._row button {
     height: 40px;
   }
+}
+
+/* ============================================
+   TRADE PROPOSAL MODAL STYLES
+   ============================================ */
+
+.trade-player-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: rgba(34, 197, 94, 0.06);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 12px;
+  margin: 16px 0;
+  position: relative;
+}
+
+.trade-player-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid rgba(34, 197, 94, 0.4);
+  background: linear-gradient(135deg, #1A2332, #111827);
+}
+
+.trade-player-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.trade-player-initials {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 800;
+  color: #22C55E;
+}
+
+.trade-player-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.trade-player-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #F1F5F9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trade-player-meta {
+  font-size: 11px;
+  color: #94A3B8;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.trade-player-salary {
+  font-size: 11px;
+  color: #22C55E;
+  font-weight: 600;
+}
+
+.trade-direction-badge {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 8px;
+  font-weight: 800;
+  color: #0A0F1A;
+  background: linear-gradient(135deg, #22C55E, #16A34A);
+  padding: 2px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.trade-step {
+  margin-top: 8px;
+}
+
+.trade-field-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.trade-team-select .ant-select-selector {
+  background: rgba(17, 24, 39, 0.8) !important;
+  border: 1.5px solid #1E293B !important;
+  border-radius: 10px !important;
+  color: #F1F5F9 !important;
+}
+
+.trade-summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid #1E293B;
+  border-radius: 12px;
+}
+
+.trade-summary-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.trade-summary-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.trade-summary-team {
+  font-size: 14px;
+  font-weight: 700;
+  color: #F1F5F9;
+  text-align: center;
+}
+
+.trade-arrow {
+  flex-shrink: 0;
+}
+
+.trade-analyzing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px 0;
+}
+
+.trade-analyzing-text {
+  font-size: 13px;
+  color: #94A3B8;
+  font-weight: 500;
+}
+
+.trade-ai-result {
+  margin-bottom: 16px;
+}
+
+.trade-verdict {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border: 1.5px solid;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.trade-verdict-label {
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.trade-verdict-score {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94A3B8;
+}
+
+.trade-ai-summary {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #94A3B8;
+  line-height: 1.5;
+  padding: 0 4px;
+}
+
+/* ============================================
+   ADD PLAYER TO TRADE MODAL
+   ============================================ */
+
+/* ── Ant Design overrides for modal shell ── */
+.trade-add-player-modal .ant-modal-content {
+  padding: 0 !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(34, 197, 94, 0.2) !important;
+  background: linear-gradient(180deg, #0D1420 0%, #0A0F1A 100%) !important;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(34, 197, 94, 0.08) !important;
+  overflow: hidden;
+}
+.trade-add-player-modal .ant-modal-body {
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+/* ── Header ── */
+.trade-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(34, 197, 94, 0.03);
+}
+.trade-modal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.trade-modal-header-icon-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.05));
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.trade-modal-header-icon {
+  font-size: 18px;
+  color: #22C55E;
+}
+.trade-modal-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #F1F5F9;
+  letter-spacing: 1.5px;
+  margin: 0;
+  line-height: 1.2;
+}
+.trade-modal-subtitle {
+  font-size: 12px;
+  color: #64748B;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+.trade-modal-close {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748B;
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.trade-modal-close:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.2);
+  color: #EF4444;
+}
+
+/* ── Search & Position Filter Bar ── */
+.trade-modal-filters {
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.trade-modal-search.ant-input-affix-wrapper {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 10px !important;
+  padding: 10px 14px !important;
+  color: #F1F5F9 !important;
+  font-size: 13px !important;
+  transition: border-color 0.2s ease !important;
+}
+.trade-modal-search.ant-input-affix-wrapper:hover,
+.trade-modal-search.ant-input-affix-wrapper-focused {
+  border-color: rgba(34, 197, 94, 0.4) !important;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.08) !important;
+}
+.trade-modal-search .ant-input {
+  background: transparent !important;
+  color: #F1F5F9 !important;
+  font-size: 13px !important;
+}
+.trade-modal-search .ant-input::placeholder {
+  color: rgba(255, 255, 255, 0.25) !important;
+}
+.trade-modal-search .ant-input-clear-icon {
+  color: #64748B !important;
+}
+
+/* ── Position Pills ── */
+.trade-modal-pos-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.trade-pos-pill {
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  font-family: inherit;
+}
+.trade-pos-pill:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #94A3B8;
+}
+.trade-pos-pill-active {
+  border-width: 1.5px;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.1);
+}
+
+/* ── Player List (scrollable area) ── */
+.trade-modal-roster {
+  max-height: 340px;
+  overflow-y: auto;
+  padding: 8px 12px;
+}
+.trade-modal-roster::-webkit-scrollbar {
+  width: 5px;
+}
+.trade-modal-roster::-webkit-scrollbar-track {
+  background: transparent;
+}
+.trade-modal-roster::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+}
+.trade-modal-roster::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* ── Individual Player Row ── */
+.trade-modal-player-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  margin-bottom: 2px;
+}
+.trade-modal-player-row:hover {
+  background: rgba(34, 197, 94, 0.06);
+  border-color: rgba(34, 197, 94, 0.12);
+}
+.trade-modal-player-disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ── Player Info (left side) ── */
+.trade-modal-player-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Player Avatar / Headshot ── */
+.trade-modal-player-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.trade-modal-player-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.trade-modal-player-initials {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  border-radius: 10px;
+}
+
+/* ── Position Badge ── */
+.trade-modal-player-pos {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  flex-shrink: 0;
+  min-width: 32px;
+  text-align: center;
+}
+
+/* ── Player Name + Salary ── */
+.trade-modal-player-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.trade-modal-player-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #F1F5F9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+.trade-modal-player-salary {
+  font-size: 11px;
+  font-weight: 600;
+  color: #22C55E;
+  letter-spacing: 0.3px;
+}
+
+/* ── Right Side (ADD / ADDED badge) ── */
+.trade-modal-player-right {
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+.trade-modal-player-badge-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 14px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: #22C55E;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  transition: all 0.2s ease;
+}
+.trade-modal-player-row:hover .trade-modal-player-badge-add {
+  background: rgba(34, 197, 94, 0.2);
+  border-color: rgba(34, 197, 94, 0.4);
+  color: #4ade80;
+}
+.trade-modal-player-badge-selected {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 14px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: #22C55E;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+/* ── Empty State ── */
+.trade-modal-empty {
+  padding: 40px 20px;
+  text-align: center;
+}
+.trade-modal-empty .ant-empty-image svg {
+  opacity: 0.2;
+}
+
+/* ── Footer ── */
+.trade-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+}
+.trade-modal-footer-count {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748B;
+}
+.trade-modal-footer-selected {
+  font-size: 12px;
+  font-weight: 700;
+  color: #22C55E;
+  background: rgba(34, 197, 94, 0.1);
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(34, 197, 94, 0.15);
 }

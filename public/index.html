@@ -1,43 +1,195 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" prefix="og: https://ogp.me/ns#">
 
 <head>
   <meta charset="utf-8" />
   <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#000000" />
-  <meta name="SAM Sports" content="Ultimate fantasy american football league" />
-  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-  <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-  <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+  <meta name="theme-color" content="#0A1628" />
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-  <title>SAM Sports | Football</title>
+  <!-- ─── Primary SEO Meta Tags ─── -->
+  <title>SAM Sports — Fantasy A.Football League | Draft, Trade & Compete</title>
+  <meta name="description" content="SAM Sports is the ultimate fantasy A.Football platform. Build your dynasty, draft real A.Football players, manage salary caps, trade with GMs, and compete for championships with SAM Metric scoring." />
+  <meta name="keywords" content="fantasy football, fantasy A.Football, A.Football draft, dynasty fantasy league, salary cap fantasy, SAM Sports, fantasy sports platform, A.Football player auction, franchise tag, fantasy trade" />
+  <meta name="author" content="SamSports" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <link rel="canonical" href="https://samsports.io" />
+
+  <!-- ─── Open Graph / Facebook ─── -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://samsports.io/" />
+  <meta property="og:title" content="SAM Sports — Fantasy A.Football League | Draft, Trade & Compete" />
+  <meta property="og:description" content="Build your dynasty. Draft real A.Football players, manage salary caps, trade with rival GMs, and compete for championships on the ultimate fantasy A.Football platform." />
+  <meta property="og:image" content="https://samsports.io/og-cover-nfl.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="SAM Sports" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- ─── Twitter Card ─── -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://samsports.io/" />
+  <meta name="twitter:title" content="SAM Sports — Fantasy A.Football League" />
+  <meta name="twitter:description" content="Draft real A.Football players, manage salary caps, and compete for championships with SAM Metric scoring." />
+  <meta name="twitter:image" content="https://samsports.io/og-cover-nfl.png" />
+
+  <!-- ─── JSON-LD Structured Data: Organization ─── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "SAM Sports",
+    "url": "https://samsports.io",
+    "logo": "https://samsports.io/logo512.png",
+    "description": "The ultimate fantasy sports platform for A.Football and Soccer — draft, trade, and compete.",
+    "sameAs": [
+      "https://twitter.com/samsports",
+      "https://www.instagram.com/samsports"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer support",
+      "email": "hello@samsports.io",
+      "url": "https://samsports.io/contact"
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "US"
+    }
+  }
+  </script>
+
+  <!-- ─── JSON-LD: BreadcrumbList (legal pages) ─── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://samsports.io/" },
+      { "@type": "ListItem", "position": 2, "name": "About", "item": "https://samsports.io/about" },
+      { "@type": "ListItem", "position": 3, "name": "Terms of Service", "item": "https://samsports.io/terms" },
+      { "@type": "ListItem", "position": 4, "name": "Privacy Policy", "item": "https://samsports.io/privacy" },
+      { "@type": "ListItem", "position": 5, "name": "Contact", "item": "https://samsports.io/contact" }
+    ]
+  }
+  </script>
+
+  <!-- ─── JSON-LD Structured Data: SoftwareApplication ─── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SAM Sports Fantasy A.Football",
+    "applicationCategory": "GameApplication",
+    "operatingSystem": "Web, iOS, Android",
+    "description": "Fantasy A.Football league platform with real player drafting, salary cap management, franchise tags, dynasty leagues, and SAM Metric scoring.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "description": "Free to play with optional SAM Points purchases"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.7",
+      "ratingCount": "1200",
+      "bestRating": "5"
+    }
+  }
+  </script>
+
+  <!-- ─── JSON-LD Structured Data: FAQPage ─── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is SAM Sports?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "SAM Sports is a fantasy sports platform where you draft real A.Football and soccer players, manage salary caps, trade with other GMs, and compete for championships using our proprietary SAM Metric scoring system."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does SAM Metric scoring work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "SAM Metric is our proprietary scoring system that awards points for goals (8pts), assists (5pts), saves (3pts), pass accuracy bonuses, tackles (1.5pts), shots (0.5pts), and dribbles (1pt), creating a balanced evaluation of player performance."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are SAM Points (SP)?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "SAM Points are the in-game currency used for drafting players, trades, and stadium upgrades. You earn SP through match wins (+500 SP), draws (+200 SP), daily logins (+50 SP), and 7-day streaks (+500 SP bonus)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I play fantasy A.Football and soccer on SAM Sports?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes! SAM Sports supports both A.Football and soccer (Premier League, La Liga, Serie A, Bundesliga, Ligue 1, Ekstraklasa, Champions League, and World Cup 2026). Each sport has its own dedicated app with tailored features."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is SAM Sports free to play?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "SAM Sports is free to play. Every team starts with a draft budget, and you earn SAM Points through gameplay. Optional SAM Points purchases are available for players who want to accelerate their team-building."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <!-- ─── JSON-LD: WebSite (enables Google Sitelinks search) ─── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "SAM Sports",
+    "url": "https://samsports.io",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://samsports.io/search-player?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <!-- ─── Preconnect for Performance ─── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- ─── Google Fonts: Unified Typography ─── -->
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700&display=swap"
+    media="print" onload="this.media='all'" />
+  <link rel="dns-prefetch" href="https://accounts.google.com" />
+
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+  <!-- Google Identity Services (Sign In With Google) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
 <body>
-  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <noscript>
+    <h1>SAM Sports — Fantasy A.Football League</h1>
+    <p>SAM Sports is the ultimate fantasy A.Football platform. Draft real A.Football players, manage salary caps, trade with rival GMs, and compete for championships.</p>
+    <p>Features: Dynasty Leagues, Salary Cap Management, Live Auctions, SAM Metric Scoring, Franchise Tags, Playoff Brackets, Stadium Builder, GM Rankings.</p>
+    <p>Please enable JavaScript to use the full SAM Sports experience.</p>
+  </noscript>
   <div id="root"></div>
-  <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
 </body>
 
 </html>

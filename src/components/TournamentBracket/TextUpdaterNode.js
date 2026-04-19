@@ -11,7 +11,7 @@ function TextUpdaterNode({ data, isConnectable }) {
             style={{
               display: 'flex',
               alignItems: 'center',
-              background: '#30215D66',
+              background: '#1A233266',
               borderBottom: '1px solid #6E698066',
             }}
           >
@@ -40,7 +40,7 @@ function TextUpdaterNode({ data, isConnectable }) {
 
         {/* Bottom */}
         {data?.team2 && (
-          <div style={{ display: 'flex', alignItems: 'center', background: '#30215D66' }}>
+          <div style={{ display: 'flex', alignItems: 'center', background: '#1A233266' }}>
             <div
               style={{
                 background: 'transparent',

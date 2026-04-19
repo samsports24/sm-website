@@ -152,7 +152,7 @@ const PublicLeague = () => {
         <div className='center'>
           <QuickJoin />
           <div className='join-league'>
-            <h2>Join A Sam Football League</h2>
+            <h2>Join A Sam A.Football League</h2>
             <Button
               type='primary'
               onClick={() => {

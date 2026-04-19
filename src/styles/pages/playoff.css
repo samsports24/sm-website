@@ -26,3 +26,38 @@
   left: 50%;
   transform: translate(-50%);
 }
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .playoff-container .wrapper {
+    max-height: 600px;
+    margin-top: 20px;
+  }
+
+  .bracket-wrapper {
+    height: 500px;
+    margin-top: 30px;
+  }
+
+  .bracket-wrapper .super-bowl {
+    width: 350px;
+    top: -15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .playoff-container .wrapper {
+    max-height: 500px;
+    margin-top: 15px;
+  }
+
+  .bracket-wrapper {
+    height: 400px;
+    margin-top: 20px;
+  }
+
+  .bracket-wrapper .super-bowl {
+    width: 280px;
+    top: -10px;
+  }
+}

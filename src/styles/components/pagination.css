@@ -12,11 +12,11 @@
   line-height: 28px;
 }
 .custom_pagination_box ul li {
-  border: 1px solid #6e6980 !important;
+  border: 1px solid #64748B !important;
 }
 .custom_pagination_box .ant-pagination-next button,
 .custom_pagination_box .ant-pagination-prev button {
-  color: #6e6980 !important;
+  color: #64748B !important;
   border: none;
   font-size: 15px;
 }
@@ -31,7 +31,7 @@
 }
 
 .custom_pagination_box .ant-pagination-item a {
-  color: #6e6980 !important;
+  color: #64748B !important;
 }
 .custom_pagination_box .ant-pagination-item-active {
   background-color: var(--primary) !important;
@@ -41,7 +41,7 @@
   color: var(--text) !important;
 }
 .custom_pagination_box .ant-pagination-item-ellipsis {
-  color: #6e6980 !important;
+  color: #64748B !important;
   font-size: 10px;
 }
 

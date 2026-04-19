@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commissioner Portal — Design Preview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0A0F1A;
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-height: 100vh;
+    padding: 32px;
+  }
+
+  .cm-page { width: 100%; max-width: 1200px; margin: 0 auto; }
+
+  /* Header */
+  .cm-page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; }
+  .cm-header-left { display: flex; align-items: center; gap: 14px; }
+  .cm-header-icon-wrap {
+    width: 48px; height: 48px; border-radius: 14px;
+    background: linear-gradient(135deg, rgba(40,159,201,0.15), rgba(165,180,252,0.1));
+    border: 1px solid rgba(40,159,201,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; color: #22C55E;
+  }
+  .cm-page-title { font-size: 24px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+  .cm-page-subtitle { font-size: 13px; color: rgba(255,255,255,0.4); font-weight: 500; }
+
+  /* Nav Tabs */
+  .cm-nav { display: flex; gap: 4px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 4px; }
+  .cm-nav::-webkit-scrollbar { height: 0; }
+  .cm-nav-btn {
+    display: flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 10px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    border: 1px solid rgba(110,105,128,0.2); background: rgba(255,255,255,0.02);
+    color: rgba(255,255,255,0.45); transition: all 0.2s; white-space: nowrap;
+  }
+  .cm-nav-btn:hover { color: rgba(255,255,255,0.7); border-color: rgba(110,105,128,0.4); background: rgba(255,255,255,0.04); }
+  .cm-nav-btn-active { background: rgba(40,159,201,0.1); border-color: rgba(40,159,201,0.35); color: #22C55E; }
+
+  /* Section Card */
+  .cm-section {
+    background: linear-gradient(145deg, rgba(38,27,70,0.35) 0%, rgba(15,13,31,0.6) 100%);
+    border: 1px solid rgba(110,105,128,0.2); border-radius: 16px;
+    padding: 24px; margin-bottom: 20px;
+  }
+  .cm-section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid rgba(110,105,128,0.15); }
+  .cm-section-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;
+  }
+  .cm-section-icon-blue { background: rgba(40,159,201,0.1); border: 1px solid rgba(40,159,201,0.2); color: #22C55E; }
+  .cm-section-icon-green { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.2); color: #22c55e; }
+  .cm-section-icon-purple { background: rgba(165,180,252,0.1); border: 1px solid rgba(165,180,252,0.2); color: #a5b4fc; }
+  .cm-section-icon-amber { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.2); color: #fbbf24; }
+  .cm-section-icon-red { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); color: #ef4444; }
+  .cm-section-title { font-size: 16px; font-weight: 700; color: #fff; }
+  .cm-section-desc { font-size: 12px; color: rgba(255,255,255,0.35); margin-left: auto; }
+
+  /* Form Grid */
+  .cm-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .cm-form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .cm-field { display: flex; flex-direction: column; gap: 6px; }
+  .cm-field-label { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.5px; }
+  .cm-field input {
+    background: rgba(0,0,0,0.2); border: 1px solid rgba(110,105,128,0.25); border-radius: 8px;
+    color: #fff; padding: 8px 12px; font-size: 13px; outline: none; transition: border-color 0.2s;
+  }
+  .cm-field input:focus { border-color: rgba(40,159,201,0.5); box-shadow: 0 0 0 2px rgba(40,159,201,0.1); }
+
+  /* Roster Grid */
+  .cm-roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+  .cm-roster-slot {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; background: rgba(0,0,0,0.15); border-radius: 10px; border: 1px solid rgba(110,105,128,0.1);
+  }
+  .cm-roster-pos { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.8); }
+  .cm-roster-count { font-size: 14px; font-weight: 700; color: #22C55E; background: rgba(34,197,94,0.1); padding: 2px 10px; border-radius: 6px; border: 1px solid rgba(34,197,94,0.2); }
+
+  /* Toggle Row */
+  .cm-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(110,105,128,0.1); }
+  .cm-toggle-row:last-child { border-bottom: none; }
+  .cm-toggle-info { display: flex; flex-direction: column; gap: 2px; }
+  .cm-toggle-title { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.85); }
+  .cm-toggle-desc { font-size: 12px; color: rgba(255,255,255,0.35); }
+  .toggle-switch {
+    width: 40px; height: 22px; border-radius: 11px; cursor: pointer; position: relative; transition: all 0.3s;
+    border: none; flex-shrink: 0;
+  }
+  .toggle-switch.on { background: #22C55E; }
+  .toggle-switch.off { background: rgba(110,105,128,0.3); }
+  .toggle-switch::after {
+    content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%; background: #fff; top: 3px; transition: all 0.3s;
+  }
+  .toggle-switch.on::after { left: 21px; }
+  .toggle-switch.off::after { left: 3px; }
+
+  /* Rule Row */
+  .cm-rule-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; background: rgba(0,0,0,0.15); border-radius: 10px;
+    border: 1px solid rgba(110,105,128,0.1); margin-bottom: 8px; transition: border-color 0.15s;
+  }
+  .cm-rule-row:hover { border-color: rgba(110,105,128,0.25); }
+  .cm-rule-name { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.8); }
+  .cm-rule-value { display: flex; align-items: center; gap: 6px; }
+  .cm-rule-input {
+    width: 60px; text-align: center; background: rgba(0,0,0,0.3); border: 1px solid rgba(110,105,128,0.25);
+    border-radius: 6px; color: #fff; padding: 4px 8px; font-size: 13px; font-weight: 700; outline: none;
+  }
+  .cm-rule-unit { font-size: 11px; color: rgba(255,255,255,0.3); white-space: nowrap; }
+
+  /* Team Cards */
+  .cm-teams-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .cm-team-card {
+    display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+    background: rgba(0,0,0,0.15); border: 1px solid rgba(110,105,128,0.15);
+    border-radius: 12px; cursor: pointer; transition: all 0.2s;
+  }
+  .cm-team-card:hover { border-color: rgba(40,159,201,0.3); background: rgba(40,159,201,0.05); transform: translateY(-1px); }
+  .cm-team-avatar {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: rgba(165,180,252,0.08); border: 1px solid rgba(165,180,252,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800; color: #a5b4fc; flex-shrink: 0;
+  }
+  .cm-team-info { flex: 1; min-width: 0; }
+  .cm-team-name { font-size: 14px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cm-team-owner { font-size: 11px; color: rgba(255,255,255,0.4); }
+  .cm-team-division-badge {
+    font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 6px;
+    background: rgba(40,159,201,0.1); border: 1px solid rgba(40,159,201,0.2); color: #22C55E; white-space: nowrap;
+  }
+  .cm-team-impersonate { font-size: 10px; color: rgba(255,255,255,0.25); padding: 3px 8px; border-radius: 6px; background: rgba(255,255,255,0.04); }
+  .cm-team-card:hover .cm-team-impersonate { color: #22C55E; background: rgba(40,159,201,0.08); }
+
+  /* Trade Cards */
+  .cm-trade-list { display: flex; flex-direction: column; gap: 10px; }
+  .cm-trade-card {
+    display: flex; align-items: center; gap: 16px; padding: 16px 18px;
+    background: rgba(0,0,0,0.15); border: 1px solid rgba(110,105,128,0.15); border-radius: 12px;
+  }
+  .cm-trade-desc { flex: 1; font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.5; }
+  .cm-trade-actions { display: flex; gap: 8px; flex-shrink: 0; }
+  .cm-approve-btn {
+    padding: 6px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;
+    border: 1px solid rgba(34,197,94,0.3); background: rgba(34,197,94,0.1); color: #22c55e; transition: all 0.2s;
+  }
+  .cm-approve-btn:hover { background: rgba(34,197,94,0.2); border-color: rgba(34,197,94,0.5); }
+  .cm-reject-btn {
+    padding: 6px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;
+    border: 1px solid rgba(239,68,68,0.3); background: rgba(239,68,68,0.08); color: #ef4444; transition: all 0.2s;
+  }
+  .cm-reject-btn:hover { background: rgba(239,68,68,0.18); border-color: rgba(239,68,68,0.5); }
+
+  /* Save Bar */
+  .cm-save-bar { display: flex; justify-content: flex-end; padding-top: 16px; border-top: 1px solid rgba(110,105,128,0.12); margin-top: 16px; }
+  .cm-save-btn {
+    padding: 10px 28px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer;
+    border: 1px solid rgba(40,159,201,0.4); background: rgba(40,159,201,0.12);
+    color: #22C55E; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .cm-save-btn:hover { background: rgba(40,159,201,0.25); border-color: rgba(40,159,201,0.6); }
+
+  /* Tab Content Panels */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Badge */
+  .tab-badge {
+    font-size: 10px; font-weight: 700; background: rgba(239,68,68,0.15); color: #ef4444;
+    padding: 1px 7px; border-radius: 10px; margin-left: 4px;
+  }
+</style>
+</head>
+<body>
+
+<div class="cm-page">
+  <!-- Page Header -->
+  <div class="cm-page-header">
+    <div class="cm-header-left">
+      <div class="cm-header-icon-wrap">&#9881;</div>
+      <div>
+        <h2 class="cm-page-title">Commissioner Portal</h2>
+        <span class="cm-page-subtitle">DYNASTY-2026 — Manage your league settings</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="cm-nav">
+    <button class="cm-nav-btn cm-nav-btn-active" onclick="switchTab('rules', this)">&#9881; Game Rules</button>
+    <button class="cm-nav-btn" onclick="switchTab('scoring', this)">&#127942; Scoring</button>
+    <button class="cm-nav-btn" onclick="switchTab('teams', this)">&#128101; Teams & Owners</button>
+    <button class="cm-nav-btn" onclick="switchTab('trades', this)">&#8644; Trades <span class="tab-badge">2</span></button>
+    <button class="cm-nav-btn" onclick="switchTab('draft', this)">&#128203; Draft Order</button>
+    <button class="cm-nav-btn" onclick="switchTab('integrity', this)">&#128737; Team Control</button>
+    <button class="cm-nav-btn" onclick="switchTab('admins', this)">&#128100; Commissioners</button>
+    <button class="cm-nav-btn" onclick="switchTab('season', this)">&#128197; Season</button>
+  </div>
+
+  <!-- ═══ GAME RULES TAB ═══ -->
+  <div id="tab-rules" class="tab-content active">
+    <!-- General Settings -->
+    <div class="cm-section">
+      <div class="cm-section-header">
+        <div class="cm-section-icon cm-section-icon-blue">&#9881;</div>
+        <h3 class="cm-section-title">General Settings</h3>
+      </div>
+      <div class="cm-form-grid">
+        <div class="cm-field">
+          <label class="cm-field-label">League ID</label>
+          <input value="DYNASTY-2026" placeholder="e.g. DYNASTY-2026">
+        </div>
+      </div>
+    </div>
+
+    <!-- Roster Positions -->
+    <div class="cm-section">
+      <div class="cm-section-header">
+        <div class="cm-section-icon cm-section-icon-green">&#128101;</div>
+        <h3 class="cm-section-title">Roster Positions</h3>
+        <span class="cm-section-desc">Set how many slots per position</span>
+      </div>
+      <div class="cm-roster-grid">
+        <div class="cm-roster-slot"><span class="cm-roster-pos">QB</span><span class="cm-roster-count">2</span></div>
+        <div class="cm-roster-slot"><span class="cm-roster-pos">RB</span><span class="cm-roster-count">4</span></div>
+        <div class="cm-roster-slot"><span class="cm-roster-pos">WR</span><span class="cm-roster-count">5</span></div>
+        <div class="cm-roster-slot"><span class="cm-roster-pos">TE</span><span class="cm-roster-count">2</span></div>
+        <div class="cm-roster-slot"><span class="cm-roster-pos">OL</span><span class="cm-roster-count">9</span></div>
+        <div class="cm-roster-slot"><span class="cm-roster-pos">DT</span><span class="cm-roster-count">4</span></div>
+        <div class="cm-roster-slot"><span class="cm-roster-pos">DE</span><span class="cm-roster-count">4</span></div>
+        <div class="cm-roster-slot"><span class="cm-roster-pos">LB</span><span class="cm-roster-count">6</span></div>
+        <div class="cm-roster-slot"><span class="cm-roster-pos">CB</span><span class="cm-roster-count">5</span></div>
+        <div class="cm-roster-slot"><span class="cm-roster-pos">S</span><span class="cm-roster-count">4</span></div>
+        <div class="cm-roster-slot"><span class="cm-roster-pos">K</span><span class="cm-roster-count">1</span></div>
+        <div class="cm-roster-slot"><span class="cm-roster-pos">P</span><span class="cm-roster-count">1</span></div>
+      </div>
+    </div>
+
+    <!-- Trade Rules -->
+    <div class="cm-section">
+      <div class="cm-section-header">
+        <div class="cm-section-icon cm-section-icon-amber">&#8644;</div>
+        <h3 class="cm-section-title">Trade Rules</h3>
+      </div>
+      <div class="cm-toggle-row">
+        <div class="cm-toggle-info"><span class="cm-toggle-title">Trade Review Period</span><span class="cm-toggle-desc">Allow other owners to review trades before they process</span></div>
+        <button class="toggle-switch on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
+      </div>
+      <div class="cm-toggle-row">
+        <div class="cm-toggle-info"><span class="cm-toggle-title">Commissioner Approval Required</span><span class="cm-toggle-desc">All trades must be approved by the commissioner</span></div>
+        <button class="toggle-switch on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
+      </div>
+      <div class="cm-toggle-row">
+        <div class="cm-toggle-info"><span class="cm-toggle-title">Allow Draft Pick Trading</span><span class="cm-toggle-desc">Teams can trade future draft picks</span></div>
+        <button class="toggle-switch on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
+      </div>
+      <div class="cm-toggle-row">
+        <div class="cm-toggle-info"><span class="cm-toggle-title">Trade Deadline Enforcement</span><span class="cm-toggle-desc">Block trades after the configured deadline week</span></div>
+        <button class="toggle-switch off" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
+      </div>
+    </div>
+
+    <!-- Auction & Free Agency -->
+    <div class="cm-section">
+      <div class="cm-section-header">
+        <div class="cm-section-icon cm-section-icon-purple">&#128203;</div>
+        <h3 class="cm-section-title">Auction & Free Agency</h3>
+        <span class="cm-section-desc">Player acquisition via SamPoints bidding</span>
+      </div>
+      <div class="cm-toggle-row">
+        <div class="cm-toggle-info"><span class="cm-toggle-title">Free Agent Auctions</span><span class="cm-toggle-desc">Allow owners to auction free agents using SamPoints — starting bid equals the player's salary cap hit</span></div>
+        <button class="toggle-switch on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
+      </div>
+      <div class="cm-toggle-row">
+        <div class="cm-toggle-info"><span class="cm-toggle-title">Owner-to-Owner Auctions</span><span class="cm-toggle-desc">Allow owners to put their rostered players up for auction with a custom starting bid</span></div>
+        <button class="toggle-switch on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
+      </div>
+      <div class="cm-toggle-row">
+        <div class="cm-toggle-info"><span class="cm-toggle-title">Commissioner Auction Approval</span><span class="cm-toggle-desc">Require commissioner sign-off before auction results are finalized</span></div>
+        <button class="toggle-switch on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
+      </div>
+      <div class="cm-toggle-row">
+        <div class="cm-toggle-info"><span class="cm-toggle-title">Practice Squad Poaching</span><span class="cm-toggle-desc">Allow teams to poach unprotected practice squad players (3-week lockout applies)</span></div>
+        <button class="toggle-switch on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
+      </div>
+      <!-- Economy Settings -->
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(110,105,128,0.15)">
+        <span style="font-size:12px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.5px;font-weight:600">Economy Settings</span>
+        <div class="cm-form-grid" style="margin-top:12px">
+          <div class="cm-field"><label class="cm-field-label">Auction Duration (hours)</label><input type="number" value="24" min="1" max="72"></div>
+          <div class="cm-field"><label class="cm-field-label">Starting SamPoints Wallet</label><input value="1,000,000"></div>
+          <div class="cm-field"><label class="cm-field-label">Salary Cap</label><input value="$301,200,000"></div>
+          <div class="cm-field"><label class="cm-field-label">Auction Commission Fee (%)</label><input value="15%"></div>
+        </div>
+      </div>
+      <!-- Cap Violation Settings -->
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(110,105,128,0.15)">
+        <span style="font-size:12px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.5px;font-weight:600">Salary Cap Enforcement</span>
+        <div class="cm-toggle-row" style="margin-top:12px">
+          <div class="cm-toggle-info"><span class="cm-toggle-title">Cap Violation Fines</span><span class="cm-toggle-desc">Auto-fine teams that exceed the salary cap (tiered: 2.5M → 25M SamPoints)</span></div>
+          <button class="toggle-switch on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
+        </div>
+        <div class="cm-toggle-row">
+          <div class="cm-toggle-info"><span class="cm-toggle-title">Lineup Lock on Violation</span><span class="cm-toggle-desc">Lock a team's lineup after 21 days of unresolved cap violations</span></div>
+          <button class="toggle-switch on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conferences & Divisions -->
+    <div class="cm-section">
+      <div class="cm-section-header">
+        <div class="cm-section-icon cm-section-icon-red">&#127942;</div>
+        <h3 class="cm-section-title">Conferences & Divisions</h3>
+      </div>
+      <div class="cm-form-grid" style="margin-bottom: 16px">
+        <div class="cm-field"><label class="cm-field-label">Conference 1</label><input placeholder="e.g. NFC" value="National"></div>
+        <div class="cm-field"><label class="cm-field-label">Conference 2</label><input placeholder="e.g. AFC" value="American"></div>
+      </div>
+      <div class="cm-form-grid">
+        <div class="cm-field"><label class="cm-field-label">National — Division 1</label><input placeholder="Division 1" value="East"></div>
+        <div class="cm-field"><label class="cm-field-label">National — Division 2</label><input placeholder="Division 2" value="West"></div>
+        <div class="cm-field"><label class="cm-field-label">National — Division 3</label><input placeholder="Division 3" value="North"></div>
+        <div class="cm-field"><label class="cm-field-label">National — Division 4</label><input placeholder="Division 4" value="South"></div>
+        <div class="cm-field"><label class="cm-field-label">American — Division 1</label><input placeholder="Division 5" value="East"></div>
+        <div class="cm-field"><label class="cm-field-label">American — Division 2</label><input placeholder="Division 6" value="West"></div>
+        <div class="cm-field"><label class="cm-field-label">American — Division 3</label><input placeholder="Division 7" value="North"></div>
+        <div class="cm-field"><label class="cm-field-label">American — Division 4</label><input placeholder="Division 8" value="South"></div>
+      </div>
+    </div>
+
+    <div class="cm-save-bar"><button class="cm-save-btn">Save Settings</button></div>
+  </div>
+
+  <!-- ═══ SCORING TAB ═══ -->
+  <div id="tab-scoring" class="tab-content">
+    <!-- Scoring Mode Toggle -->
+    <div class="cm-section">
+      <div class="cm-section-header">
+        <div class="cm-section-icon cm-section-icon-blue">&#127942;</div>
+        <h3 class="cm-section-title">Scoring System</h3>
+        <span class="cm-section-desc">Choose between SAM Metric or custom scoring rules</span>
+      </div>
+      <div class="cm-toggle-row" style="margin-bottom:20px">
+        <div class="cm-toggle-info">
+          <span class="cm-toggle-title">Use SAM Metric Scoring</span>
+          <span class="cm-toggle-desc" id="scoring-mode-desc">Position-based scoring derived from NFL franchise tag valuations — the SamSports standard</span>
+        </div>
+        <button class="toggle-switch on" id="sam-toggle" onclick="toggleScoringMode(this)"></button>
+      </div>
+    </div>
+
+    <!-- SAM Metric View -->
+    <div id="sam-metric-view">
+      <div class="cm-section">
+        <div class="cm-section-header">
+          <div class="cm-section-icon cm-section-icon-green">&#127942;</div>
+          <h3 class="cm-section-title">SAM Metric Scoring</h3>
+          <span class="cm-section-desc">Position-based scoring from franchise tag valuations</span>
+        </div>
+
+        <!-- Position Selector Buttons -->
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px" id="pos-btns">
+          <button class="cm-nav-btn cm-nav-btn-active" style="border-color:#FFE871;color:#FFE871;background:rgba(255,232,113,0.08)" onclick="selectPos(this,'QB','$17,225,116','100%','#FFE871')">QB</button>
+          <button class="cm-nav-btn" onclick="selectPos(this,'RB','$11,443,000','66.4%','#FFFF72')">RB</button>
+          <button class="cm-nav-btn" onclick="selectPos(this,'WR','$19,826,000','115.1%','#EE909E')">WR</button>
+          <button class="cm-nav-btn" onclick="selectPos(this,'TE','$11,345,000','65.9%','#EE919E')">TE</button>
+          <button class="cm-nav-btn" onclick="selectPos(this,'OL','$18,024,000','104.6%','#FE73FF')">OL</button>
+          <button class="cm-nav-btn" onclick="selectPos(this,'DT','$16,690,000','96.9%','#93FF94')">DT</button>
+          <button class="cm-nav-btn" onclick="selectPos(this,'DE','$20,099,000','116.7%','#93FF94')">DE</button>
+          <button class="cm-nav-btn" onclick="selectPos(this,'LB','$15,828,000','91.9%','#98CBE6')">LB</button>
+          <button class="cm-nav-btn" onclick="selectPos(this,'CB','$17,298,000','100.4%','#C3E2A6')">CB</button>
+          <button class="cm-nav-btn" onclick="selectPos(this,'S','$14,010,000','81.3%','#98CCE6')">S</button>
+          <button class="cm-nav-btn" onclick="selectPos(this,'P','$5,500,000','31.9%','#98CBE6')">P</button>
+          <button class="cm-nav-btn" onclick="selectPos(this,'K','$5,250,000','30.5%','#D1D0C6')">K</button>
+        </div>
+
+        <!-- Position Summary -->
+        <div style="display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap">
+          <div class="cm-roster-slot" style="flex:1;min-width:160px">
+            <span class="cm-roster-pos">Franchise Tag</span>
+            <span id="tag-val" style="font-size:14px;font-weight:700;color:#FFE871">$17,225,116</span>
+          </div>
+          <div class="cm-roster-slot" style="flex:1;min-width:160px">
+            <span class="cm-roster-pos">Metric %</span>
+            <span id="pct-val" style="font-size:14px;font-weight:700;color:#FFE871">100%</span>
+          </div>
+        </div>
+
+        <!-- Column Headers -->
+        <div class="cm-rule-row" style="background:rgba(255,255,255,0.03);border-color:rgba(110,105,128,0.25);margin-bottom:4px">
+          <span class="cm-rule-name" style="flex:3;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:rgba(255,255,255,0.45)">Scoring Topic</span>
+          <span style="flex:1;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:rgba(255,255,255,0.45);text-align:center">Full Scale</span>
+          <span style="flex:1;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:rgba(255,255,255,0.45);text-align:right">Points</span>
+        </div>
+
+        <!-- QB Scoring Rows (default) -->
+        <div id="scoring-rows">
+          <div class="cm-rule-row" style="margin-bottom:4px"><span class="cm-rule-name" style="flex:3;font-size:12px">Passing Yards (For every 1 Passing Yard)</span><span style="flex:1;font-size:13px;font-weight:600;color:rgba(255,255,255,0.6);text-align:center">0.04</span><span style="flex:1;font-size:13px;font-weight:700;color:#FFE871;text-align:right">0.0400</span></div>
+          <div class="cm-rule-row" style="margin-bottom:4px"><span class="cm-rule-name" style="flex:3;font-size:12px">Passing Touchdown</span><span style="flex:1;font-size:13px;font-weight:600;color:rgba(255,255,255,0.6);text-align:center">4</span><span style="flex:1;font-size:13px;font-weight:700;color:#FFE871;text-align:right">4.0000</span></div>
+          <div class="cm-rule-row" style="margin-bottom:4px"><span class="cm-rule-name" style="flex:3;font-size:12px">Passing 2-Pointer</span><span style="flex:1;font-size:13px;font-weight:600;color:rgba(255,255,255,0.6);text-align:center">2</span><span style="flex:1;font-size:13px;font-weight:700;color:#FFE871;text-align:right">2.0000</span></div>
+          <div class="cm-rule-row" style="margin-bottom:4px"><span class="cm-rule-name" style="flex:3;font-size:12px">Passing Attempts</span><span style="flex:1;font-size:13px;font-weight:600;color:rgba(255,255,255,0.6);text-align:center">-0.5</span><span style="flex:1;font-size:13px;font-weight:700;color:#FFE871;text-align:right">-0.5000</span></div>
+          <div class="cm-rule-row" style="margin-bottom:4px"><span class="cm-rule-name" style="flex:3;font-size:12px">Passing Completions</span><span style="flex:1;font-size:13px;font-weight:600;color:rgba(255,255,255,0.6);text-align:center">1</span><span style="flex:1;font-size:13px;font-weight:700;color:#FFE871;text-align:right">1.0000</span></div>
+          <div class="cm-rule-row" style="margin-bottom:4px"><span class="cm-rule-name" style="flex:3;font-size:12px">Interception Thrown</span><span style="flex:1;font-size:13px;font-weight:600;color:rgba(255,255,255,0.6);text-align:center">-3</span><span style="flex:1;font-size:13px;font-weight:700;color:#FFE871;text-align:right">-3.0000</span></div>
+          <div class="cm-rule-row" style="margin-bottom:4px"><span class="cm-rule-name" style="flex:3;font-size:12px">Incompletions</span><span style="flex:1;font-size:13px;font-weight:600;color:rgba(255,255,255,0.6);text-align:center">-0.5</span><span style="flex:1;font-size:13px;font-weight:700;color:#FFE871;text-align:right">-0.5000</span></div>
+          <div class="cm-rule-row" style="margin-bottom:4px"><span class="cm-rule-name" style="flex:3;font-size:12px">Sacked</span><span style="flex:1;font-size:13px;font-weight:600;color:rgba(255,255,255,0.6);text-align:center">-1.5</span><span style="flex:1;font-size:13px;font-weight:700;color:#FFE871;text-align:right">-1.5000</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Scoring View (hidden by default) -->
+    <div id="custom-scoring-view" style="display:none">
+      <div class="cm-section">
+        <div class="cm-section-header">
+          <div class="cm-section-icon cm-section-icon-amber">&#127942;</div>
+          <h3 class="cm-section-title">Custom Scoring</h3>
+          <span class="cm-section-desc">Set your own points per stat for each position group</span>
+        </div>
+
+        <!-- Custom Position Selector -->
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px">
+          <button class="cm-nav-btn cm-nav-btn-active" onclick="selectCustomPos(this,'QB')">QB</button>
+          <button class="cm-nav-btn" onclick="selectCustomPos(this,'RB')">RB</button>
+          <button class="cm-nav-btn" onclick="selectCustomPos(this,'WR')">WR</button>
+          <button class="cm-nav-btn" onclick="selectCustomPos(this,'TE')">TE</button>
+          <button class="cm-nav-btn" onclick="selectCustomPos(this,'OL')">OL</button>
+          <button class="cm-nav-btn" onclick="selectCustomPos(this,'DT')">DT</button>
+          <button class="cm-nav-btn" onclick="selectCustomPos(this,'DE')">DE</button>
+          <button class="cm-nav-btn" onclick="selectCustomPos(this,'LB')">LB</button>
+          <button class="cm-nav-btn" onclick="selectCustomPos(this,'CB')">CB</button>
+          <button class="cm-nav-btn" onclick="selectCustomPos(this,'S')">S</button>
+          <button class="cm-nav-btn" onclick="selectCustomPos(this,'K')">K</button>
+          <button class="cm-nav-btn" onclick="selectCustomPos(this,'P')">P</button>
+        </div>
+
+        <!-- Column Headers -->
+        <div class="cm-rule-row" style="background:rgba(255,255,255,0.03);border-color:rgba(110,105,128,0.25);margin-bottom:4px">
+          <span class="cm-rule-name" style="flex:3;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:rgba(255,255,255,0.45)">Stat</span>
+          <span style="flex:1;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:rgba(255,255,255,0.45);text-align:right">Points</span>
+          <span style="width:32px"></span>
+        </div>
+
+        <!-- Editable QB custom rows -->
+        <div id="custom-scoring-rows">
+          <div class="cm-rule-row" style="margin-bottom:4px;align-items:center"><input value="Passing Yards" style="flex:3;background:rgba(255,255,255,0.05);border:1px solid rgba(110,105,128,0.2);color:#fff;font-size:12px;padding:4px 8px;border-radius:4px"><input type="number" value="0.04" step="0.01" style="flex:1;margin-left:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(110,105,128,0.2);color:#fff;font-size:12px;padding:4px 8px;border-radius:4px;text-align:right"><button style="width:32px;height:28px;background:none;border:none;color:rgba(255,80,80,0.6);cursor:pointer;font-size:16px;margin-left:4px">×</button></div>
+          <div class="cm-rule-row" style="margin-bottom:4px;align-items:center"><input value="Passing TD" style="flex:3;background:rgba(255,255,255,0.05);border:1px solid rgba(110,105,128,0.2);color:#fff;font-size:12px;padding:4px 8px;border-radius:4px"><input type="number" value="4" step="0.01" style="flex:1;margin-left:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(110,105,128,0.2);color:#fff;font-size:12px;padding:4px 8px;border-radius:4px;text-align:right"><button style="width:32px;height:28px;background:none;border:none;color:rgba(255,80,80,0.6);cursor:pointer;font-size:16px;margin-left:4px">×</button></div>
+          <div class="cm-rule-row" style="margin-bottom:4px;align-items:center"><input value="Interception" style="flex:3;background:rgba(255,255,255,0.05);border:1px solid rgba(110,105,128,0.2);color:#fff;font-size:12px;padding:4px 8px;border-radius:4px"><input type="number" value="-2" step="0.01" style="flex:1;margin-left:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(110,105,128,0.2);color:#fff;font-size:12px;padding:4px 8px;border-radius:4px;text-align:right"><button style="width:32px;height:28px;background:none;border:none;color:rgba(255,80,80,0.6);cursor:pointer;font-size:16px;margin-left:4px">×</button></div>
+          <div class="cm-rule-row" style="margin-bottom:4px;align-items:center"><input value="Rushing Yards" style="flex:3;background:rgba(255,255,255,0.05);border:1px solid rgba(110,105,128,0.2);color:#fff;font-size:12px;padding:4px 8px;border-radius:4px"><input type="number" value="0.1" step="0.01" style="flex:1;margin-left:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(110,105,128,0.2);color:#fff;font-size:12px;padding:4px 8px;border-radius:4px;text-align:right"><button style="width:32px;height:28px;background:none;border:none;color:rgba(255,80,80,0.6);cursor:pointer;font-size:16px;margin-left:4px">×</button></div>
+          <div class="cm-rule-row" style="margin-bottom:4px;align-items:center"><input value="Rushing TD" style="flex:3;background:rgba(255,255,255,0.05);border:1px solid rgba(110,105,128,0.2);color:#fff;font-size:12px;padding:4px 8px;border-radius:4px"><input type="number" value="6" step="0.01" style="flex:1;margin-left:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(110,105,128,0.2);color:#fff;font-size:12px;padding:4px 8px;border-radius:4px;text-align:right"><button style="width:32px;height:28px;background:none;border:none;color:rgba(255,80,80,0.6);cursor:pointer;font-size:16px;margin-left:4px">×</button></div>
+          <div class="cm-rule-row" style="margin-bottom:4px;align-items:center"><input value="Fumble Lost" style="flex:3;background:rgba(255,255,255,0.05);border:1px solid rgba(110,105,128,0.2);color:#fff;font-size:12px;padding:4px 8px;border-radius:4px"><input type="number" value="-2" step="0.01" style="flex:1;margin-left:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(110,105,128,0.2);color:#fff;font-size:12px;padding:4px 8px;border-radius:4px;text-align:right"><button style="width:32px;height:28px;background:none;border:none;color:rgba(255,80,80,0.6);cursor:pointer;font-size:16px;margin-left:4px">×</button></div>
+        </div>
+
+        <!-- Add Stat Button -->
+        <button style="margin-top:12px;padding:6px 16px;background:rgba(34,197,94,0.1);border:1px dashed rgba(34,197,94,0.3);border-radius:6px;color:#22C55E;font-size:12px;cursor:pointer">+ Add Stat</button>
+      </div>
+    </div>
+
+    <div class="cm-save-bar"><button class="cm-save-btn">Save Scoring Settings</button></div>
+  </div>
+
+  <!-- ═══ TEAMS TAB ═══ -->
+  <div id="tab-teams" class="tab-content">
+    <div class="cm-section">
+      <div class="cm-section-header">
+        <div class="cm-section-icon cm-section-icon-blue">&#128101;</div>
+        <h3 class="cm-section-title">Teams & Ownership</h3>
+        <span class="cm-section-desc">8 teams · Click to impersonate</span>
+      </div>
+      <div class="cm-teams-grid">
+        <div class="cm-team-card">
+          <div class="cm-team-avatar">VO</div>
+          <div class="cm-team-info"><p class="cm-team-name">Voodoo</p><span class="cm-team-owner">samsports · New Orleans</span></div>
+          <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end"><span class="cm-team-division-badge">East</span><span class="cm-team-impersonate">Impersonate</span></div>
+        </div>
+        <div class="cm-team-card">
+          <div class="cm-team-avatar">DF</div>
+          <div class="cm-team-info"><p class="cm-team-name">Defiance</p><span class="cm-team-owner">player2 · Miami</span></div>
+          <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end"><span class="cm-team-division-badge">West</span><span class="cm-team-impersonate">Impersonate</span></div>
+        </div>
+        <div class="cm-team-card">
+          <div class="cm-team-avatar">SB</div>
+          <div class="cm-team-info"><p class="cm-team-name">Storm Breakers</p><span class="cm-team-owner">player3 · Houston</span></div>
+          <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end"><span class="cm-team-division-badge">North</span><span class="cm-team-impersonate">Impersonate</span></div>
+        </div>
+        <div class="cm-team-card">
+          <div class="cm-team-avatar">HH</div>
+          <div class="cm-team-info"><p class="cm-team-name">Hammerheads</p><span class="cm-team-owner">player4 · Tampa Bay</span></div>
+          <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end"><span class="cm-team-division-badge">South</span><span class="cm-team-impersonate">Impersonate</span></div>
+        </div>
+        <div class="cm-team-card">
+          <div class="cm-team-avatar">TH</div>
+          <div class="cm-team-info"><p class="cm-team-name">Thunderhawks</p><span class="cm-team-owner">player5 · Denver</span></div>
+          <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end"><span class="cm-team-division-badge">Central</span><span class="cm-team-impersonate">Impersonate</span></div>
+        </div>
+        <div class="cm-team-card">
+          <div class="cm-team-avatar">PH</div>
+          <div class="cm-team-info"><p class="cm-team-name">Phantoms</p><span class="cm-team-owner">player6 · Phoenix</span></div>
+          <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end"><span class="cm-team-division-badge">Pacific</span><span class="cm-team-impersonate">Impersonate</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TRADES TAB ═══ -->
+  <div id="tab-trades" class="tab-content">
+    <div class="cm-section">
+      <div class="cm-section-header">
+        <div class="cm-section-icon cm-section-icon-amber">&#8644;</div>
+        <h3 class="cm-section-title">Pending Trades</h3>
+        <span class="cm-section-desc">2 awaiting review</span>
+      </div>
+      <div class="cm-trade-list">
+        <div class="cm-trade-card">
+          <p class="cm-trade-desc">Voodoo has agreed to trade John Smith and Michael Owen. Defiance has agreed to trade 1st round pick 2024 and Lebron James.</p>
+          <div class="cm-trade-actions">
+            <button class="cm-approve-btn">Approve</button>
+            <button class="cm-reject-btn">Reject &#9662;</button>
+          </div>
+        </div>
+        <div class="cm-trade-card">
+          <p class="cm-trade-desc">Storm Breakers have agreed to trade Patrick Mahomes. Hammerheads have agreed to trade 2025 1st round pick and Justin Jefferson.</p>
+          <div class="cm-trade-actions">
+            <button class="cm-approve-btn">Approve</button>
+            <button class="cm-reject-btn">Reject &#9662;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ DRAFT TAB ═══ -->
+  <div id="tab-draft" class="tab-content">
+    <div class="cm-section">
+      <div class="cm-section-header">
+        <div class="cm-section-icon cm-section-icon-blue">&#128203;</div>
+        <h3 class="cm-section-title">Draft Order</h3>
+        <span class="cm-section-desc">32 positions · 53 rounds</span>
+      </div>
+      <div style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.3)">
+        <div style="font-size:40px;margin-bottom:12px">&#128203;</div>
+        <p style="font-size:14px;font-weight:600">Draft Order Grid</p>
+        <p style="font-size:12px;margin-top:4px">Interactive grid with team dropdowns for each position × round slot</p>
+        <div style="display:flex;gap:8px;justify-content:center;margin-top:16px">
+          <button class="cm-save-btn">Generate Random Order</button>
+          <button class="cm-save-btn">Generate All Rounds</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TEAM CONTROL TAB ═══ -->
+  <div id="tab-integrity" class="tab-content">
+    <!-- Anti-Tanking Enforcement -->
+    <div class="cm-section">
+      <div class="cm-section-header">
+        <div class="cm-section-icon cm-section-icon-red">&#9888;</div>
+        <h3 class="cm-section-title">Anti-Tanking Enforcement</h3>
+        <span class="cm-section-desc">Uses the same scoring values as AI Commissioner</span>
+      </div>
+      <p style="color:rgba(255,255,255,0.4);font-size:13px;margin-bottom:16px;line-height:1.6">
+        The AI Commissioner scores tanking risk based on player value dumps, salary cap drops,
+        roster gutting, and trade imbalances. Configure the thresholds and automatic responses below.
+      </p>
+      <div class="cm-toggle-row">
+        <div class="cm-toggle-info"><span class="cm-toggle-title">Auto-Block High-Risk Trades</span><span class="cm-toggle-desc">Automatically block trades flagged as high tanking risk by the AI Commissioner</span></div>
+        <button class="toggle-switch on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
+      </div>
+      <div class="cm-toggle-row">
+        <div class="cm-toggle-info"><span class="cm-toggle-title">Notify Commissioner on Detection</span><span class="cm-toggle-desc">Send commissioner a notification when any tanking behavior is detected</span></div>
+        <button class="toggle-switch on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
+      </div>
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(110,105,128,0.15)">
+        <span style="font-size:12px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.5px;font-weight:600">Tanking Score Thresholds</span>
+        <div class="cm-form-grid" style="margin-top:12px">
+          <div class="cm-field">
+            <label class="cm-field-label">High Risk Threshold (auto-block)</label>
+            <input type="number" value="50" min="20" max="100">
+            <span class="cm-field-hint" style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:4px;display:block">Default: 50 — Trades scoring at or above this are blocked</span>
+          </div>
+          <div class="cm-field">
+            <label class="cm-field-label">Medium Risk Threshold (flag for review)</label>
+            <input type="number" value="30" min="10" max="80">
+            <span class="cm-field-hint" style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:4px;display:block">Default: 30 — Trades scoring at or above this require commissioner review</span>
+          </div>
+        </div>
+      </div>
+      <!-- Tanking Score Breakdown -->
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(110,105,128,0.15)">
+        <span style="font-size:12px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.5px;font-weight:600">How Tanking Score is Calculated</span>
+        <div style="margin-top:12px">
+          <div class="cm-rule-row" style="margin-bottom:4px"><span class="cm-rule-name" style="flex:4;font-size:12px">Selling high-value players for low returns (&gt;2.5× gap)</span><span style="flex:1;font-size:13px;font-weight:700;color:#EF4444;text-align:right">+30</span></div>
+          <div class="cm-rule-row" style="margin-bottom:4px"><span class="cm-rule-name" style="flex:4;font-size:12px">Moderate value gap in trades (&gt;1.8× gap)</span><span style="flex:1;font-size:13px;font-weight:700;color:#EF4444;text-align:right">+15</span></div>
+          <div class="cm-rule-row" style="margin-bottom:4px"><span class="cm-rule-name" style="flex:4;font-size:12px">Dropping to &lt;2% of salary cap floor</span><span style="flex:1;font-size:13px;font-weight:700;color:#EF4444;text-align:right">+40</span></div>
+          <div class="cm-rule-row" style="margin-bottom:4px"><span class="cm-rule-name" style="flex:4;font-size:12px">Dropping to &lt;5% of salary cap floor</span><span style="flex:1;font-size:13px;font-weight:700;color:#EF4444;text-align:right">+20</span></div>
+          <div class="cm-rule-row" style="margin-bottom:4px"><span class="cm-rule-name" style="flex:4;font-size:12px">Selling 2× more players than receiving</span><span style="flex:1;font-size:13px;font-weight:700;color:#EF4444;text-align:right">+20</span></div>
+          <div class="cm-rule-row" style="margin-bottom:4px"><span class="cm-rule-name" style="flex:4;font-size:12px">Leaving roster near minimum players</span><span style="flex:1;font-size:13px;font-weight:700;color:#EF4444;text-align:right">+15</span></div>
+          <div class="cm-rule-row" style="margin-bottom:4px"><span class="cm-rule-name" style="flex:4;font-size:12px">Salary cap drop &gt;20% from single trade</span><span style="flex:1;font-size:13px;font-weight:700;color:#EF4444;text-align:right">+25</span></div>
+          <div class="cm-rule-row" style="margin-bottom:4px"><span class="cm-rule-name" style="flex:4;font-size:12px">Salary cap drop &gt;10% from single trade</span><span style="flex:1;font-size:13px;font-weight:700;color:#EF4444;text-align:right">+10</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inactive Owner Detection -->
+    <div class="cm-section">
+      <div class="cm-section-header">
+        <div class="cm-section-icon cm-section-icon-amber">&#128197;</div>
+        <h3 class="cm-section-title">Inactive Owner Detection</h3>
+        <span class="cm-section-desc">Automatically detect and respond to unresponsive owners</span>
+      </div>
+      <div class="cm-form-grid">
+        <div class="cm-field">
+          <label class="cm-field-label">Warning After (days inactive)</label>
+          <input type="number" value="7" min="3" max="30">
+          <span class="cm-field-hint" style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:4px;display:block">Send the owner a warning notification after this many days of inactivity</span>
+        </div>
+        <div class="cm-field">
+          <label class="cm-field-label">Takeover Eligible After (days inactive)</label>
+          <input type="number" value="14" min="7" max="60">
+          <span class="cm-field-hint" style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:4px;display:block">Commissioner can take control of team after this many days with no response</span>
+        </div>
+      </div>
+      <div class="cm-toggle-row" style="margin-top:16px">
+        <div class="cm-toggle-info"><span class="cm-toggle-title">Auto-Transfer to AI on Expiry</span><span class="cm-toggle-desc">If the owner does not respond after the takeover window, automatically hand the team to the AI Commissioner</span></div>
+        <button class="toggle-switch off" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
+      </div>
+    </div>
+
+    <!-- Team Takeover & AI Autopilot -->
+    <div class="cm-section">
+      <div class="cm-section-header">
+        <div class="cm-section-icon cm-section-icon-blue">&#128737;</div>
+        <h3 class="cm-section-title">Team Takeover & AI Autopilot</h3>
+        <span class="cm-section-desc">Take control of a team or assign AI Commissioner to manage it</span>
+      </div>
+      <div class="cm-toggle-row" style="margin-bottom:20px">
+        <div class="cm-toggle-info"><span class="cm-toggle-title">Enable AI Autopilot</span><span class="cm-toggle-desc">Allow the AI Commissioner to fully manage a team — setting lineups, making roster moves, and handling auctions — while you find a replacement owner</span></div>
+        <button class="toggle-switch on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
+      </div>
+      <div style="margin-bottom:16px"><span style="font-size:12px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.5px;font-weight:600">Take Action on a Team</span></div>
+      <div class="cm-form-grid" style="margin-bottom:16px">
+        <div class="cm-field">
+          <label class="cm-field-label">Select Team</label>
+          <select style="width:100%;padding:8px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(110,105,128,0.3);border-radius:8px;color:#fff;font-size:13px">
+            <option value="">Choose a team</option>
+            <option>Voodoo — samsports</option>
+            <option>Defiance — player2</option>
+            <option>Storm Breakers — player3</option>
+            <option>Hammerheads — player4</option>
+          </select>
+        </div>
+        <div class="cm-field">
+          <label class="cm-field-label">Action</label>
+          <select style="width:100%;padding:8px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(110,105,128,0.3);border-radius:8px;color:#fff;font-size:13px">
+            <option value="">Select action</option>
+            <option>Assign AI Commissioner (Autopilot)</option>
+            <option>Transfer Team to New Owner</option>
+            <option>Lock Team (Freeze All Activity)</option>
+            <option>Remove AI Autopilot (Return to Owner)</option>
+          </select>
+        </div>
+      </div>
+      <button class="cm-save-btn">Execute Action</button>
+    </div>
+
+    <div class="cm-save-bar"><button class="cm-save-btn">Save Team Control Settings</button></div>
+  </div>
+
+  <!-- ═══ ADMINS TAB ═══ -->
+  <div id="tab-admins" class="tab-content">
+    <div class="cm-section">
+      <div class="cm-section-header">
+        <div class="cm-section-icon cm-section-icon-purple">&#128100;</div>
+        <h3 class="cm-section-title">Commissioner Management</h3>
+      </div>
+      <div class="cm-toggle-row">
+        <div class="cm-toggle-info"><span class="cm-toggle-title">Transfer Commissioner Role</span><span class="cm-toggle-desc">Hand over primary commissioner powers to another owner</span></div>
+        <button class="cm-reject-btn">Transfer</button>
+      </div>
+      <div class="cm-toggle-row">
+        <div class="cm-toggle-info"><span class="cm-toggle-title">Co-Commissioners</span><span class="cm-toggle-desc">Add or remove co-commissioners who can manage league settings</span></div>
+        <button class="cm-approve-btn">Manage</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SEASON TAB ═══ -->
+  <div id="tab-season" class="tab-content">
+
+    <!-- Schedule Management — Smaller Leagues -->
+    <div class="cm-section">
+      <div class="cm-section-header">
+        <div class="cm-section-icon cm-section-icon-green">&#128197;</div>
+        <h3 class="cm-section-title">Schedule Management</h3>
+        <span class="cm-section-desc">16-team league — all standard rules apply, no playoffs</span>
+      </div>
+      <div style="background:rgba(255,170,0,0.08);border:1px solid rgba(255,170,0,0.25);border-radius:8px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:flex-start;gap:10px">
+        <span style="color:#ffaa00;font-size:16px;margin-top:2px">&#9888;</span>
+        <div>
+          <div style="color:#ffaa00;font-weight:600;font-size:13px;margin-bottom:2px">Playoffs Not Available</div>
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;line-height:1.5">Leagues with 10–24 teams follow regular season play only. All other rules — salary cap ($301.2M), SamPoints economy, auction system, trade rules, AI Commissioner enforcement, and tanking detection — apply the same as a 32-team league.</div>
+        </div>
+      </div>
+      <div class="cm-form-grid" style="margin-bottom:20px">
+        <div class="cm-field">
+          <label class="cm-field-label">Schedule Generation</label>
+          <select style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;padding:8px 12px;font-size:13px">
+            <option value="ai_random" selected>AI Commissioner — Random Balanced Schedule</option>
+            <option value="commissioner_manual">Commissioner — Manual Setup</option>
+          </select>
+          <span style="color:rgba(255,255,255,0.35);font-size:11px;margin-top:6px;display:block">AI generates a balanced schedule ensuring every team plays each opponent at least once with fair home/away distribution.</span>
+        </div>
+      </div>
+      <div class="cm-form-grid" style="margin-bottom:20px">
+        <div class="cm-field">
+          <label class="cm-field-label">Regular Season Length (Weeks)</label>
+          <input type="number" value="15" min="15" max="18" style="width:120px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;padding:8px 12px;font-size:13px" />
+          <span style="color:rgba(255,255,255,0.35);font-size:11px;margin-top:6px;display:block">Minimum 15 weeks so every team faces each opponent at least once. Maximum 18 weeks (NFL regular season).</span>
+        </div>
+        <div class="cm-field">
+          <label class="cm-field-label">Matchups Per Week</label>
+          <input type="number" value="8" disabled style="width:120px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:rgba(255,255,255,0.4);padding:8px 12px;font-size:13px" />
+          <span style="color:rgba(255,255,255,0.35);font-size:11px;margin-top:6px;display:block">8 matchups per week (16 teams / 2).</span>
+        </div>
+      </div>
+      <div class="cm-save-bar">
+        <button class="cm-save-btn">Generate Schedule with AI</button>
+      </div>
+    </div>
+
+    <div class="cm-section">
+      <div class="cm-section-header">
+        <div class="cm-section-icon cm-section-icon-green">&#128197;</div>
+        <h3 class="cm-section-title">Season Status</h3>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:14px;padding:16px 20px;border-radius:10px;border:1px solid rgba(40,159,201,0.2);background:rgba(40,159,201,0.06);margin-bottom:16px">
+        <div style="width:10px;height:10px;border-radius:50%;background:#22C55E;box-shadow:0 0 8px rgba(40,159,201,0.5);margin-top:4px;flex-shrink:0;animation:pulse 2s ease-in-out infinite"></div>
+        <div><span style="font-size:14px;font-weight:700">Active</span><p style="font-size:12px;color:rgba(255,255,255,0.45);margin-top:2px">Season 2026 is currently in progress. Week 4 of 17.</p></div>
+      </div>
+      <div class="cm-toggle-row">
+        <div class="cm-toggle-info"><span class="cm-toggle-title">Season Renewal</span><span class="cm-toggle-desc">Renew the league for next season when the current one ends</span></div>
+        <button class="cm-approve-btn">Renew</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }</style>
+<script>
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.cm-nav > .cm-nav-btn').forEach(b => b.classList.remove('cm-nav-btn-active'));
+  document.getElementById('tab-' + tabId).classList.add('active');
+  btn.classList.add('cm-nav-btn-active');
+}
+function selectPos(btn, pos, tag, pct, color) {
+  document.querySelectorAll('#pos-btns .cm-nav-btn').forEach(b => { b.classList.remove('cm-nav-btn-active'); b.style.borderColor=''; b.style.color=''; b.style.background=''; });
+  btn.classList.add('cm-nav-btn-active');
+  btn.style.borderColor = color; btn.style.color = color; btn.style.background = color + '15';
+  document.getElementById('tag-val').textContent = tag; document.getElementById('tag-val').style.color = color;
+  document.getElementById('pct-val').textContent = pct; document.getElementById('pct-val').style.color = color;
+  document.querySelectorAll('#scoring-rows [id="pts"], #scoring-rows span[style*="text-align:right"]').forEach(s => s.style.color = color);
+}
+function toggleScoringMode(btn) {
+  btn.classList.toggle('on');
+  btn.classList.toggle('off');
+  var isSam = btn.classList.contains('on');
+  document.getElementById('sam-metric-view').style.display = isSam ? '' : 'none';
+  document.getElementById('custom-scoring-view').style.display = isSam ? 'none' : '';
+  document.getElementById('scoring-mode-desc').textContent = isSam
+    ? 'Position-based scoring derived from NFL franchise tag valuations — the SamSports standard'
+    : 'SAM Metric is off — configure your own points per stat below';
+}
+function selectCustomPos(btn, pos) {
+  btn.parentElement.querySelectorAll('.cm-nav-btn').forEach(function(b) { b.classList.remove('cm-nav-btn-active'); });
+  btn.classList.add('cm-nav-btn-active');
+}
+</script>
+</body>
+</html>

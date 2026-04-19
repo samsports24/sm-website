@@ -10,7 +10,6 @@ import store from '../store'
 //     );
 //     return data;
 //   } catch (e) {
-//     // console.log(`e`, e);
 //   }
 // };
 
@@ -59,22 +58,14 @@ import store from '../store'
 
 
 export const getPreviousMessages = async (roomId) => {
-  console.log('going there');
-
-  
-     console.log('roomId', roomId)
     try {
       attachToken()
       const res = await privateAPI.get(`/chat/user/get/${roomId}?page=1&perPage=10000`)
       // store.dispatch(appendMessage(res.data.data))
       const messages = res.data.data.messages;
-      console.log('res',res.data.data.messages)
        store.dispatch(appendMessage(messages))
-       console.log('messages',messages);
-       
-       const filteredMessages = messages.filter(message => message.sender && typeof message.sender === 'object');
 
-       console.log('filteredMessages',filteredMessages);
+       const filteredMessages = messages.filter(message => message.sender && typeof message.sender === 'object');
        
        // If there are any filtered messages, dispatch leagueMessage
        if (filteredMessages.length > 0) {
@@ -95,15 +86,11 @@ export const getPreviousMessages = async (roomId) => {
 
 
 export const sendMessage = async (payload) => {
-    console.log('in the action', payload)
     try {
       attachToken()
       const res = await privateAPI.post('/chat/user/send', payload)
       if (res) {
-        console.log('res',res);
-        console.log('before get chat room')
         await getChatRooms()
-        console.log('after get chat room')
         // store.dispatch(searchChat(res.data.data.chat_rooms))
 
         if (payload.room_id){
@@ -121,7 +108,6 @@ export const sendMessage = async (payload) => {
         // getLeagueDetails()
       }
     } catch (err) {
-      console.log('err', err)
       notification.error({
         message: err?.response?.data?.message || 'Server Error',
         duration: 3,
@@ -134,7 +120,6 @@ export const sendMessage = async (payload) => {
     try {
       attachToken()
       const res = await privateAPI.get('/chat/user/chat-rooms')
-      console.log('res.data.data',res.data.data.chat_rooms);
       
       store.dispatch(searchChat(res.data.data.chat_rooms))
       return res.data.data
@@ -151,7 +136,6 @@ export const sendMessage = async (payload) => {
     try {
       attachToken()
       const res = await privateAPI.get('/chat/user/chat-count')
-      // console.log('res.data.data',res.data.data.chat_rooms);
       
      // store.dispatch(searchChat(res.data.data.chat_rooms))
       return res.data.data
@@ -172,7 +156,6 @@ export const sendMessage = async (payload) => {
 //     const { data } = privateAPI.post("/chat/user/send", payload);
 //     return data;
 //   } catch (e) {
-//     // console.log(`e`, e);
 //   }
 // };
 
@@ -182,7 +165,6 @@ export const sendMessage = async (payload) => {
 //     const { data } = await privateAPI.get("/chat/user/chat-rooms");
 //     return data;
 //   } catch (e) {
-//     // console.log(`e`, e);
 //   }
 // };
 

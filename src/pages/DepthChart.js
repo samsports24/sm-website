@@ -1,642 +1,349 @@
-// import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useParams } from 'react-router-dom'
+import { Button, Spin, notification } from 'antd'
+import { ClearOutlined } from '@ant-design/icons'
 
-// import { Button, Select } from 'antd'
-
-// // Component
-// import Header from '../components/Header'
-// import DepthCard from '../components/DepthCard'
-// import Loader from '../components/Loader'
-// import ConfirmationModal from '../components/modal/ConfirmationModal'
-// import HeadingAndWeek from '../components/Pagination/HeadingAndWeek'
-
-// // Mock Data
-// import { depthCardData } from './mockData'
-
-// import { clearDepthChart, getActiveRosterCount } from '../redux/actions/depthChartAction'
-// import { activeRosterCount, legalPlayers, nonActivePlayers } from '../config/constants'
-
-// import { useSelector } from 'react-redux'
-// import { useLocation, useParams } from 'react-router-dom'
-
-// const DepthChart = () => {
-//   const USER = useSelector((state) => state?.user)
-//   const [activeFilter, setActiveFilter] = useState('offense')
-//   const [data, setData] = useState([])
-//   const [activeCount, setActiveCount] = useState(null)
-//   const [loading, setLoading] = useState(true)
-//   const [clearBtnLoading, setClearBtnLoading] = useState(false)
-//   const [filterKey] = useState({
-//     offense: 'offense',
-//     defense: 'defense',
-//   })
-
-//    const { teamID } = useParams()
-//   const { state } = useLocation()
-//   console.log('legalPlayers',legalPlayers);
-
-//   const handleFilter = (value) => {
-//     setActiveFilter(value)
-//   }
-
-//   useEffect(() => {
-//     getDepthChartData()
-//   }, [activeFilter, USER?.setting?.week])
-
-//   const getDepthChartData = async () => {
-//     const filtered = depthCardData.filter((obj) => obj.type === activeFilter)
-//     setLoading(true)
-
-//     const res = await getActiveRosterCount({
-//       type: activeFilter,
-//       week: USER?.setting?.week,
-//        teamId: teamID ? teamID : null,
-//       // teamId: state?.teamId !== undefined ? state.teamId : null,
-
-//     })
-
-//     if (res) {
-//       console.log('res?.data',res?.data);
-//       console.log('res',res?.count);
-//       setActiveCount(res?.count)
-//       if (res?.data?.length > 0) {
-//         res?.data.map((item) => {
-//           let index = filtered.findIndex((item2) => {
-//             return item2.classKey === item.classKey
-//           })
-//           if (index !== -1) {
-//             filtered.splice(index, 1, {
-//               imageUrl: item?.player?.HostedHeadshotNoBackgroundUrl || filtered[index].imageUrl,
-//               Name: item?.player?.Name,
-//               Opponent: item?.player?.UpcomingGameOpponent,
-//               Team: item?.player?.Team,
-//               InjuryStatus: item?.player?.InjuryStatus,
-//               Position: filtered[index].Position,
-//               classKey: filtered[index].classKey,
-//               type: filtered[index].type,
-//               isPlayerLocked: item?.player?.isPlayerLocked ? item?.player?.isPlayerLocked : false,
-//               _id: item?.player?._id ? item?.player?._id : false,
-//             })
-//           }
-//         })
-//         setData([...filtered])
-//       } else {
-//         setData([...filtered])
-//       }
-//     }
-//     setLoading(false)
-//   }
-
-//   const clearDepthChartRoster = async () => {
-//     setClearBtnLoading(true)
-//     let playerIds = []
-//     data?.forEach((v) => {
-//       if (!v?.isPlayerLocked && v?._id) {
-//         playerIds.push(v?._id)
-//       }
-//     })
-//     const res = await clearDepthChart({
-//       type: activeFilter,
-//       ids: playerIds,
-//     })
-//     setClearBtnLoading(false)
-//     if (res) {
-//       await getDepthChartData()
-//     }
-//   }
-
-//    console.log('activeCount',activeCount);
-
-//    const offenseOptions = [
-//     { value: 'pistol', label: 'Pistol Formation' },
-//     { value: 'singleback', label: 'Single Back Formation' },
-//     { value: 'shotgunbunch', label: 'Shotgun Bunch Formation' },
-//     { value: 'shortgunnormal', label: 'Shotgun Normal Formation' },
-//   ];
-
-//   const defenseOptions = [
-//     { value: '34_formation', label: '3-4 Formation' },
-//     { value: '425_formation', label: '4-2-5 Formation' },
-//     { value: '43_formation', label: '4-3 Formation' },
-//     { value: 'dime', label: 'Dime Formation' },
-//   ];
-
-//   const options = activeFilter === 'offense' ? offenseOptions : defenseOptions
-
-// // console.log('filterKey',filterKey);
-// // console.log('activeFilter',activeFilter);
-
-//   return (
-//     <div className='depth_chart_container'>
-//       <Header />
-//       <HeadingAndWeek />
-
-//       {teamID && (
-//         <div className='viewing_roster_heading'>
-//           <h2>Your are viewing {state?.teamName || 'other Team'} rosters.</h2>
-//         </div>
-//       )}
-
-//       <div className='filter_chart_box'>
-//         <Button
-//           type='primary'
-//           onClick={() => handleFilter(filterKey.offense)}
-//           className={`${activeFilter === filterKey.offense ? 'active_filter' : ''}`}
-//         >
-//           OFFENSE
-//         </Button>
-//         <Button
-//           type='primary'
-//           onClick={() => handleFilter(filterKey.defense)}
-//           className={`${activeFilter === filterKey.defense ? 'active_filter' : ''}`}
-//         >
-//           DEFENSE
-//         </Button>
-//       </div>
-
-//       <Select
-//               placeholder='Formation'
-//              // onChange={(v) => setFilterBy(v)}
-//              // allowClear={{ clearIcon: <GrFormClose size={25} onClick={() => {}} /> }}
-//              options={options}
-//               className='filter_select_box'
-//             />
-
-//       {loading ? (
-//         <Loader />
-//       ) : (
-//         <section
-//           className='depth_chart_content_container'
-//           style={{ position: 'relative', marginTop: '20px' }}
-//         >
-//           {/* ILLEGAL ROSTER */}
-
-//           {/* {!teamID && (
-
-//             <div
-//               className='overlay'
-//               style={{
-//                  display: activeCount != legalPlayers ? 'flex' : 'none',
-
-//               }}
-//             >
-//               <h2>{`You have an illegal Roster`}</h2>
-//               <h4>{`kindly have ${activeRosterCount} players and ${nonActivePlayers} non active players on the roster`}</h4>
-//             </div>
-//           )} */}
-
-//           {!teamID && USER?.setting?.week == USER?.currentWeek && (
-//             <div className='clear_button_box'>
-//               <ConfirmationModal
-//                 onClick={clearDepthChartRoster}
-//                 content={{
-//                   title: 'ARE YOU SURE?',
-//                   mainButton: {
-//                     disbaled: false,
-//                     text: `Clear ${activeFilter}`,
-//                   },
-//                   submitButton: {
-//                     disbaled: false,
-//                     text: 'Confirm',
-//                     loading: clearBtnLoading,
-//                   },
-//                 }}
-//               />
-//             </div>
-//           )}
-
-//           <section className='depth_chart_wrapper'>
-//             <div
-//               className={`depth_chart_cards ${
-//                 activeFilter === filterKey.special
-//                   ? 'special_team_container'
-//                   : activeFilter + '_container'
-//               } ${"ylo1"}`}
-//             >
-//               <img src={require('../assets/depth-chart-bg.png')} />
-//               {data?.map((v, i) => {
-//                 return (
-//                   <DepthCard key={i} data={v} index={i} getDepthChartData={getDepthChartData} />
-//                 )
-//               })}
-//             </div>
-//           </section>
-//         </section>
-//       )}
-//     </div>
-//   )
-// }
-
-// export default DepthChart
-
-import React, { useEffect, useState } from 'react'
-
-import { Button, notification, Select } from 'antd'
-
-// Component
 import Header from '../components/Header'
 import DepthCard from '../components/DepthCard'
 import Loader from '../components/Loader'
-import ConfirmationModal from '../components/modal/ConfirmationModal'
 import HeadingAndWeek from '../components/Pagination/HeadingAndWeek'
-
-// Mock Data
-import { depthCardData } from './mockData'
+import OnboardingGuide from '../components/OnboardingGuide'
 
 import {
-  assignLineupFormation,
-  clearDepthChart,
   getActiveRosterCount,
+  assignLineupFormation,
   getteamFormation,
+  clearDepthChart,
 } from '../redux/actions/depthChartAction'
-import { activeRosterCount, isLocked, legalPlayers, nonActivePlayers } from '../config/constants'
 
-import { useSelector } from 'react-redux'
-import { useLocation, useParams } from 'react-router-dom'
-import shotgunbunch from "../assets/Shotgun Bunch.png"
-import shotgunnormal from "../assets/Shotgun Normal.png"
-import singleback from "../assets/SingleBack.png"
-import pistol from "../assets/Pistol.png"
+import '../styles/pages/depthChart.css'
 
-import threefour from "../assets/3-4.png"
-import dime from "../assets/DIME.png"
-import fourthree from "../assets/4-3_.png"
-import fourtofive from "../assets/4-2-5.png"
+/* ── Formation options ──
+   IMPORTANT: values MUST match the CSS class names in depthCard.css
+   so the parent container class triggers correct player positioning.
+── */
+const DEFENSE_FORMATIONS = [
+  { label: '4-3', value: 'formation_43' },
+  { label: '3-4', value: 'formation_34' },
+  { label: 'Nickel', value: 'formation_425' },
+  { label: 'Dime', value: 'dime' },
+  { label: '3-3-5', value: 'nickel' },
+  { label: 'Cover 2', value: 'cover2' },
+]
 
+const OFFENSE_FORMATIONS = [
+  { label: 'Shotgun', value: 'shortgunnormal' },
+  { label: 'Singleback', value: 'singleback' },
+  { label: 'I-Form', value: 'iformaton' },
+  { label: 'Pistol', value: 'pistol' },
+  { label: 'Spread', value: 'spread' },
+]
 
-
+/* ── Pure CSS Football Field ── */
+const FootballField = () => {
+  const yardLines = [12, 24, 36, 48, 60, 72, 84]
+  return (
+    <div className='dc-field'>
+      <div className='dc-field-midline' />
+      {yardLines.map((pct, i) => (
+        <div
+          key={i}
+          className='dc-field-yardline'
+          style={{ top: `${pct}%` }}
+        >
+          <span>{50 - i * 10}</span>
+        </div>
+      ))}
+      <div className='dc-field-hash dc-field-hash-left' />
+      <div className='dc-field-hash dc-field-hash-right' />
+      <div className='dc-field-logo'>SAMSPORTS</div>
+      <div className='dc-field-endzone' />
+    </div>
+  )
+}
 
 const DepthChart = () => {
-  const USER = useSelector((state) => state?.user)
-  const teamId = useSelector((state) => state?.user.userDetails)
-  const SETTING = useSelector((state) => state?.user?.setting)
-  const [activeFilter, setActiveFilter] = useState('offense')
-  const [data, setData] = useState([])
-  const [activeCount, setActiveCount] = useState(null)
-  console.log("🚀 ~ DepthChart ~ activeCount:", activeCount)
-  const [loading, setLoading] = useState(true)
-  const [clearBtnLoading, setClearBtnLoading] = useState(false)
-  const [selectedValue, setSelectedValue] = useState(null)
-  const [filterKey] = useState({
-    offense: 'offense',
-    defense: 'defense',
-  })
-
-
-
+  const dispatch = useDispatch()
   const { teamID } = useParams()
-  const { state } = useLocation()
-  const handleFilter = (value) => {
-    setActiveFilter(value)
-  }
+  const SETTING = useSelector((state) => state?.user?.setting)
+  const currentLeagueId = useSelector((state) => state?.user?.userDetails?.team?.currentLeague?._id)
+  const currentLeague = useSelector((state) => state.league?.currentLeague)
+  const isOffenseOnly = currentLeague?.leagueMode === 'offense_only'
+  const depthChartState = useSelector((state) => state?.depthChart)
+  const { staticData, data, activeFilter, rosterCount } = depthChartState
 
-  useEffect(() => {
-    getDepthChartData()
-  }, [activeFilter, USER?.setting?.week])
+  const [isLoading, setIsLoading] = useState(true)
+  const [offenseFormation, setOffenseFormation] = useState('shortgunnormal')
+  const [defenseFormation, setDefenseFormation] = useState('formation_43')
+  const [clearLoading, setClearLoading] = useState(false)
 
-  const getFn = async () => {
-    const payload = {
-      week: USER?.setting?.week,
-      teamId: teamId?.team?._id,
-      season: USER?.setting?.season,
-    }
-  
-    const result = await getteamFormation(payload)
+  // Active formation based on current filter
+  const selectedFormation = activeFilter === 'offense' ? offenseFormation : defenseFormation
 
-    console.log('result?.offense_Formation',result?.offense_Formation);
-    
-
-    if (activeFilter === 'offense') {
-      setSelectedValue(result?.offense_Formation || 'shortgunnormal')
-    } else if (activeFilter === 'defense') {
-      setSelectedValue(result?.defense_Formation || 'formation_43')
-    }
-    // console.log('result', result)
-  }
-
-  useEffect(() => {
-    if (teamId?.team?._id) {
-      getFn()
-    }
-  }, [USER?.setting?.week, teamId?.team?._id, USER?.setting?.season, activeFilter])
-
-  const getDepthChartData = async () => {
-    const filtered = depthCardData.filter((obj) => obj.type === activeFilter)
-    setLoading(true)
-
-    console.log('filtered', filtered)
-
-    const res = await getActiveRosterCount({
-      type: activeFilter,
-      week: USER?.setting?.week,
-      teamId: teamID ? teamID : null,
-      // teamId: state?.teamId !== undefined ? state.teamId : null,
-    })
-
-    if (res) {
-      console.log('res?.data', res?.data)
-      console.log('res', res?.count)
-      setActiveCount(res?.count)
-      if (res?.data?.length > 0) {
-        res?.data.map((item) => {
-          if (item?.classKey === 'offense_wr-1') {
-            console.log('item wr 1 name', item?.player?.Name)
-          }
-          if (item?.classKey === 'offense_wr-2') {
-            console.log('item wr 2 name', item?.player?.Name)
-          }
-          let index = filtered.findIndex((item2) => {
-            return item2.classKey === item.classKey
-          })
-          if (index !== -1) {
-            filtered.splice(index, 1, {
-              imageUrl: item?.player?.HostedHeadshotNoBackgroundUrl || filtered[index].imageUrl,
-              Name: item?.player?.Name,
-              Opponent: item?.player?.UpcomingGameOpponent,
-              Team: item?.player?.Team,
-              InjuryStatus: item?.player?.InjuryStatus,
-              Position: filtered[index].Position,
-              classKey: filtered[index].classKey,
-              type: filtered[index].type,
-              isPlayerLocked: item?.player?.isPlayerLocked ? item?.player?.isPlayerLocked : false,
-              _id: item?.player?._id ? item?.player?._id : false,
-            })
-          }
-        })
-        setData([...filtered])
-      } else {
-        setData([...filtered])
-      }
-    }
-    setLoading(false)
-  }
-
-  const clearDepthChartRoster = async () => {
-    setClearBtnLoading(true)
-    let playerIds = []
-    data?.forEach((v) => {
-      if (!v?.isPlayerLocked && v?._id) {
-        playerIds.push(v?._id)
-      }
-    })
-    const res = await clearDepthChart({
-      type: activeFilter,
-      ids: playerIds,
-    })
-    setClearBtnLoading(false)
-    if (res) {
-      await getDepthChartData()
-    }
-  }
-
-  console.log('activeCount', activeCount)
-
-  // const offenseOptions = [
-  //   { value: 'pistol', label: 'Pistol Formation' },
-  //   { value: 'singleback', label: 'Single Back Formation' },
-  //   { value: 'shotgunbunch', label: 'Shotgun Bunch Formation' },
-  //   { value: 'shortgunnormal', label: 'Shotgun Normal Formation' },
-  // ]
-
-  const offenseOptions = [
-    { value: 'pistol', imageSrc: pistol },
-    { value: 'singleback', imageSrc: singleback },
-    { value: 'shotgunbunch', imageSrc: shotgunbunch },
-    { value: 'shortgunnormal', imageSrc: shotgunnormal },
-  ];
-
-  // const defenseOptions = [
-  //   { value: 'formation_34', label: '3-4 Formation' },
-  //   { value: 'formation_425', label: '4-2-5 Formation' },
-  //   { value: 'formation_43', label: '4-3 Formation' },
-  //   { value: 'dime', label: 'Dime Formation' },
-  // ]
-
-  const defenseOptions = [
-    { value: 'formation_34', imageSrc: threefour },
-    { value: 'formation_425', imageSrc: fourtofive },
-    { value: 'formation_43', imageSrc: fourthree },
-    { value: 'dime', imageSrc: dime },
-  ]
-
-  const options = activeFilter === 'offense' ? offenseOptions : defenseOptions
-
-  const handleChange = async (selectedOption) => {
-    // clearDepthChartRoster()
-
-
-
-    setClearBtnLoading(true)
-    let playerIds = []
-    data?.forEach((v) => {
-      if (!v?.isPlayerLocked && v?._id) {
-        playerIds.push(v?._id)
-      }
-    })
-    const res = await clearDepthChart({
-      type: activeFilter,
-      ids: playerIds,
-    })
-    setClearBtnLoading(false)
-    if (res) {
-      await getDepthChartData()
-    }
-
-
-
-
-
-    setSelectedValue(selectedOption)
-    const checkpayload = {
-      week: SETTING?.week,
-      teamId: teamId?.team?._id,
-      season: SETTING?.season,
-      formation: selectedOption,
-      activeFilter: activeFilter,
-    }
-
+  /* ── Load formation + depth chart data ── */
+  const getDepthChartData = useCallback(async () => {
+    setIsLoading(true)
     try {
-      const response = await assignLineupFormation({ payload: checkpayload })
-      console.log('Function Response:', response.data)
-    } catch (error) {
-      console.error('Function Error:', error)
+      const payload = {
+        week: SETTING?.week,
+        type: activeFilter,
+        formation: selectedFormation,
+      }
+      if (teamID) payload.teamId = teamID
+
+      const res = await getActiveRosterCount(payload)
+      if (res) {
+        dispatch({ type: 'SET_DEPTH_CHART_DATA', payload: { data: res.data, count: res.count } })
+      }
+    } catch (err) {
+      console.error('Failed to load depth chart:', err)
     }
+    setIsLoading(false)
+  }, [SETTING?.week, activeFilter, selectedFormation, teamID, dispatch, currentLeagueId])
+
+  /* ── Load saved formation on mount ── */
+  useEffect(() => {
+    const loadFormation = async () => {
+      try {
+        const res = await getteamFormation()
+        if (res?.offense_Formation) {
+          setOffenseFormation(res.offense_Formation)
+        }
+        if (res?.defense_Formation) {
+          setDefenseFormation(res.defense_Formation)
+        }
+      } catch {}
+    }
+    loadFormation()
+  }, [currentLeagueId])
+
+  /* ── Re-fetch when filter/formation/week/league changes ── */
+  useEffect(() => {
+    if (SETTING?.week) {
+      getDepthChartData()
+    }
+  }, [getDepthChartData])
+
+  /* ── Handle formation change ── */
+  const handleFormationChange = async (formation) => {
+    if (activeFilter === 'offense') {
+      setOffenseFormation(formation)
+    } else {
+      setDefenseFormation(formation)
+    }
+    try {
+      await assignLineupFormation({
+        payload: {
+          formation,
+          activeFilter: activeFilter,
+          week: SETTING?.week,
+        },
+      })
+    } catch {}
   }
 
+  /* ── Handle offense/defense/special toggle ── */
+  const handleFilterChange = (filter) => {
+    // Offense-only leagues can't switch to defense
+    if (isOffenseOnly && filter === 'defense') return
+    dispatch({ type: 'SET_ACTIVE_FILTER', payload: filter })
+  }
 
+  /* ── Force offense filter for offense-only leagues ── */
+  useEffect(() => {
+    if (isOffenseOnly && activeFilter === 'defense') {
+      dispatch({ type: 'SET_ACTIVE_FILTER', payload: 'offense' })
+    }
+  }, [isOffenseOnly, activeFilter, dispatch])
 
-  // useEffect(() => {
-  //   if (activeFilter === 'offense') {
-  //     setSelectedValue('shortgunnormal');
-  //   } else if (activeFilter === 'defense') {
-  //     setSelectedValue('formation_43');
-  //   }
-  // }, [activeFilter])
+  /* ── Clear lineup ── */
+  const handleClearLineup = async () => {
+    setClearLoading(true)
+    try {
+      await clearDepthChart({
+        week: SETTING?.week,
+        type: activeFilter,
+      })
+      await getDepthChartData()
+      notification.success({ message: 'Lineup cleared', duration: 2 })
+    } catch {
+      notification.error({ message: 'Failed to clear lineup', duration: 3 })
+    }
+    setClearLoading(false)
+  }
 
-  // console.log('filterKey',filterKey);
-  // console.log('activeFilter',activeFilter);
+  /* ── ClassKeys for bench cards (BQB, K, P) - rendered below the field ── */
+  const BENCH_KEYS = ['offense_qb-2', 'special_team_pk', 'special_team_pn']
 
-  console.log('activeRosterCount',activeRosterCount);
-  console.log('nonActivePlayers',nonActivePlayers);
-  console.log('legalPlayers',legalPlayers);
-console.log('activeCount',activeCount);
+  // Offense-only leagues: punter is completely hidden (not field, not bench)
+  const HIDDEN_KEYS = isOffenseOnly ? ['special_team_pn'] : []
 
-  
-  
-  
+  /* ── Filter data by active type ── */
+  const allFilteredData = data?.length > 0
+    ? data?.filter((p) => !HIDDEN_KEYS.includes(p.classKey))
+    : staticData?.filter((item) => item.type === activeFilter && !HIDDEN_KEYS.includes(item.classKey))
+
+  /* Split into field players and bench players */
+  const filteredData = allFilteredData?.filter((p) => !BENCH_KEYS.includes(p.classKey))
+  const benchData = activeFilter === 'offense'
+    ? allFilteredData?.filter((p) => BENCH_KEYS.includes(p.classKey))
+    : []
+
+  if (isLoading && !data?.length) {
+    return (
+      <>
+        <Header />
+        <Loader />
+      </>
+    )
+  }
 
   return (
-    <div className='depth_chart_container'>
+    <>
       <Header />
-      <HeadingAndWeek />
+      <div className='depth_chart_container'>
+        <OnboardingGuide tabKey="depth-chart" />
+        <HeadingAndWeek heading='Depth Chart' />
 
-      {teamID && (
-        <div className='viewing_roster_heading'>
-          <h2>Your are viewing {state?.teamName || 'other Team'} rosters.</h2>
-        </div>
-      )}
-
-      <div className='filter_chart_box'>
-        <Button
-          type='primary'
-          onClick={() => handleFilter(filterKey.offense)}
-          className={`${activeFilter === filterKey.offense ? 'active_filter' : ''}`}
-        >
-          OFFENSE
-        </Button>
-        <Button
-          type='primary'
-          onClick={() => handleFilter(filterKey.defense)}
-          className={`${activeFilter === filterKey.defense ? 'active_filter' : ''}`}
-        >
-          DEFENSE
-        </Button>
-      </div>
-
-      <div className="image-row" style={{ marginTop: '40px' }}>
-        {/* <Select
-          placeholder='Formation'
-          // onChange={(v) => setFilterBy(v)}
-          // allowClear={{ clearIcon: <GrFormClose size={25} onClick={() => {}} /> }}
-          options={options}
-          className='depart-chart-filter_select_box'
-          value={selectedValue}
-          onChange={handleChange}
-          //  onChange={(selectedOption) => setSelectedValue(selectedOption)}
-        /> */}
-
-
-        {options.map((option) => (
-          <div
-            key={option.value}
-            className={`image-item ${selectedValue === option.value ? 'selected' : ''}`}
-            onClick={() => {
-              if(teamID || isLocked()){
-                console.log('in the if');
-                
-notification.error({
-  message : "You cannot change the formation",
-  duration : 3
-})
-              }else{
-                console.log('in the else');
-                handleChange(option.value)
-
-              }
-            }}
-          >
-            <img src={option.imageSrc} alt={option.value} />
+        {/* Viewing another team banner */}
+        {teamID && (
+          <div className='viewing_roster_heading'>
+            <p>Viewing another team&apos;s starters (read-only)</p>
           </div>
-        ))}
-   
+        )}
 
-      </div>
-
-      {loading ? (
-        <Loader />
-      ) : (
-        <section
-          className='depth_chart_content_container'
-          style={{ position: 'relative', marginTop: '20px' }}
-        >
-          {/* ILLEGAL ROSTER */}
-
-          {!teamID && (
-            
-            <div
-              className='overlay'
-              style={{
-                 display: activeCount != legalPlayers ? 'flex' : 'none',
-               
-              }}
-            >
-              <h2>{`You have an illegal Roster`}</h2>
-              <h4>{`kindly have ${legalPlayers} players and ${nonActivePlayers} non active players on the roster`}</h4>
+        {/* ── Offense / Defense Toggle + Clear Button ── */}
+        <div style={{ padding: '0 20px', maxWidth: 1140, margin: '0 auto' }}>
+          <div className='filter_chart_box' style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {(isOffenseOnly ? ['offense'] : ['offense', 'defense']).map((filter) => (
+                <Button
+                  key={filter}
+                  type='primary'
+                  className={activeFilter === filter ? 'active_filter' : ''}
+                  onClick={() => handleFilterChange(filter)}
+                >
+                  {filter}
+                </Button>
+              ))}
+              {isOffenseOnly && (
+                <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', marginLeft: 8, alignSelf: 'center' }}>
+                  Offense Only League
+                </span>
+              )}
             </div>
-          )}
-
-          {!teamID && USER?.setting?.week == USER?.currentWeek && (
-            <div className='clear_button_box'>
-              <ConfirmationModal
-                onClick={clearDepthChartRoster}
-                content={{
-                  title: 'ARE YOU SURE?',
-                  mainButton: {
-                    disbaled: false,
-                    text: `Clear ${activeFilter}`,
-                  },
-                  submitButton: {
-                    disbaled: false,
-                    text: 'Confirm',
-                    loading: clearBtnLoading,
-                  },
+            {!teamID && (
+              <Button
+                danger
+                icon={<ClearOutlined />}
+                loading={clearLoading}
+                onClick={handleClearLineup}
+                style={{
+                  textTransform: 'uppercase',
+                  fontWeight: 700,
+                  letterSpacing: 1,
+                  borderRadius: 10,
                 }}
-              />
+              >
+                Clear {activeFilter}
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* ── Formation Picker ── */}
+        <div style={{ padding: '0 20px', maxWidth: 1140, margin: '0 auto' }}>
+          <div className='dc-formation-picker'>
+            <span className='dc-formation-label'>Formation</span>
+            <div className='dc-formation-pills'>
+              {(activeFilter === 'offense' || isOffenseOnly ? OFFENSE_FORMATIONS : DEFENSE_FORMATIONS).map((f) => (
+                <div
+                  key={f.value}
+                  className={`dc-formation-pill ${selectedFormation === f.value ? 'dc-pill-active' : ''}`}
+                  onClick={() => handleFormationChange(f.value)}
+                >
+                  {f.label}
+                </div>
+              ))}
             </div>
-          )}
+          </div>
+        </div>
 
-          <section className='depth_chart_wrapper'>
-            <div
-              //   className={`depth_chart_cards ${
-              //     activeFilter === filterKey.special
-              //       ? 'special_team_container'
-              //       : activeFilter + '_container'
-              // //   } ${"pistol"}`}
-              // } "${selectedValue?.value || ''}"`}
+        {/* ── Depth Chart Field ── */}
+        <div className='depth_chart_wrapper'>
+          <div className={`depth_chart_cards ${selectedFormation}`}>
+            {/* Pure CSS football field background */}
+            <FootballField />
 
-              // className={`depth_chart_cards ${
-              //   selectedValue
-              //     ? selectedValue
-              //     : activeFilter === filterKey.special
-              //     ? 'special_team_container'
-              //     : `${activeFilter}_container`
-              // }`}
+            {/* Player cards rendered on top of the field */}
+            {isLoading ? (
+              <div style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                zIndex: 20,
+              }}>
+                <Spin size='large' />
+              </div>
+            ) : (
+              filteredData?.map((player, index) => (
+                <DepthCard
+                  key={player.classKey || index}
+                  data={player}
+                  index={index}
+                  getDepthChartData={getDepthChartData}
+                  selectedValue={selectedFormation}
+                />
+              ))
+            )}
+          </div>
+        </div>
 
-              className={`depth_chart_cards ${
-                selectedValue
-                  ? selectedValue
-                  : activeFilter === 'special'
-                  ? 'special_team_container'
-                  : ''
-              }`}
-            >
-              <img src={require('../assets/depth-chart-bg.png')} />
-              {data?.map((v, i) => {
-                return (
-                  <DepthCard
-                    selectedValue={selectedValue}
-                    setSelectedValue={setSelectedValue}
-                    key={i}
-                    data={v}
-                    index={i}
-                    getDepthChartData={getDepthChartData}
-                  />
-                )
-              })}
+        {/* ── Bench Strip: BQB, K, P (below the field) ── */}
+        {activeFilter === 'offense' && benchData?.length > 0 && (
+          <div className='bench-strip'>
+            <span className='bench-strip-label'>Bench</span>
+            <div className='bench-strip-divider' />
+            <div className='bench-strip-cards'>
+              {benchData.map((player, index) => (
+                <DepthCard
+                  key={player.classKey || index}
+                  data={player}
+                  index={index}
+                  getDepthChartData={getDepthChartData}
+                  selectedValue={selectedFormation}
+                />
+              ))}
             </div>
-          </section>
-        </section>
-      )}
-    </div>
+          </div>
+        )}
+
+        {/* ── Roster count info ── */}
+        {rosterCount !== null && rosterCount !== undefined && (
+          <div style={{
+            maxWidth: 1140,
+            margin: '20px auto 0',
+            padding: '0 20px',
+            display: 'flex',
+            justifyContent: 'center',
+          }}>
+            <div style={{
+              background: 'rgba(34, 197, 94, 0.08)',
+              border: '1px solid rgba(34, 197, 94, 0.2)',
+              borderRadius: 10,
+              padding: '10px 24px',
+              color: '#94A3B8',
+              fontSize: 13,
+              fontWeight: 600,
+            }}>
+              Active Roster: <span style={{ color: '#22C55E' }}>{typeof rosterCount === 'object' ? rosterCount?.length || 0 : rosterCount}</span> / {isOffenseOnly ? 30 : 53}
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   )
 }
 

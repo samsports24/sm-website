@@ -1,13 +1,33 @@
 import { Table } from 'antd'
+import { useState, useEffect } from 'react'
 
 // Components
 import StandingHeader from '../components/StandingHeader'
-
-// Mock Data
-import { draftPicksData } from './mockData'
 import FilterBox from '../components/FilterComponent'
 
+// API
+import { privateAPI } from '../config/constants'
+
 const DraftPicks = () => {
+  const [draftPicksData, setDraftPicksData] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchDraftPicks()
+  }, [])
+
+  const fetchDraftPicks = async () => {
+    try {
+      setLoading(true)
+      const response = await privateAPI.get('/draft/get-draft-round')
+      setDraftPicksData(response.data || [])
+    } catch (error) {
+      console.error('Error fetching draft picks:', error)
+      setDraftPicksData([])
+    } finally {
+      setLoading(false)
+    }
+  }
   const columns = [
     {
       title: 'ROUND',
@@ -47,7 +67,15 @@ const DraftPicks = () => {
         </div>
       </section>
 
+      {/* LOADING STATE */}
+      {loading && <div style={{ textAlign: 'center', padding: '40px' }}>Loading draft picks...</div>}
+
+      {/* EMPTY STATE */}
+      {!loading && draftPicksData.length === 0 && <div style={{ textAlign: 'center', padding: '40px' }}>No draft picks available</div>}
+
       {/* TABLE */}
+      {!loading && draftPicksData.length > 0 && (
+      <>
       {/* GENERAL CSS */}
       <section className='main_table_container adp_report_table'>
         <div className='header'>
@@ -86,6 +114,8 @@ const DraftPicks = () => {
           />
         </div>
       </section>
+      </>
+      )}
     </div>
   )
 }

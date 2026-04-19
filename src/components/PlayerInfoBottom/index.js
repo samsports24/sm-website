@@ -52,7 +52,7 @@ const PlayerInfoBottom = ({ player = {}, contract }) => {
       <hr className='divider-new' />
 
       <div className='player_caps_box_new'>
-        <h1>Player Cap Hit: {contract || '-'}</h1>
+        <h1>Player Value: {contract || '-'}</h1>
       </div>
     </>
   )

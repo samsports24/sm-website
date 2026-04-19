@@ -6,6 +6,7 @@ import Header from '../../components/Header'
 import HeadingAndWeek from '../../components/Pagination/HeadingAndWeek'
 import NewTrade from './NewTrade'
 import PendingTrade from './PendingTrade'
+import OnboardingGuide from '../../components/OnboardingGuide'
 
 const TeamTrade = () => {
   const [tab, setTab] = useState(1)
@@ -26,6 +27,8 @@ const TeamTrade = () => {
   return (
     <div className='practice_squad_container team_trade_main'>
       <Header />
+
+      <OnboardingGuide tabKey="transactions" />
 
       <HeadingAndWeek />
 

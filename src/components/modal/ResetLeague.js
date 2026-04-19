@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Modal, Button, Input, Form, Row, Col, DatePicker, Avatar, Radio, Rate, Select } from 'antd'
+import { Modal, Button, Input, Form, Row, Col, Avatar, Radio, Rate, Select } from 'antd'
 import LeagueEmptyCard from '../NewPopularLeagueCard/EmptyCard'
 import { updateLeagueCommissioner } from '../../redux'
 import { landingSignup } from '../../config/constants'

@@ -1,5 +1,5 @@
 import { notification } from 'antd'
-import { attachToken, privateAPI, publicAPI, serverUrls } from '../../config/constants'
+import { attachToken, privateAPI, publicAPI, serverUrls, setLeagueSwitching } from '../../config/constants'
 import store from '../store'
 import { getUser } from './authActions'
 import axios from 'axios'
@@ -20,20 +20,46 @@ export const setAllSamMetric = (payload) => {
 
 
 export const getProfessionalLeagueRanks = async (week) => {
+  if (!week && week !== 0) return null
   try {
     attachToken()
     const res = await privateAPI.get(`/ranking/professionalStats/${week}`)
     if (res) {
-      console.log('res.data.data',res.data.data);
-      
       return res.data.data
     }
   } catch (err) {
-    console.log('err', err)
+    const msg = err?.response?.data?.message
     notification.error({
-      message: err?.response?.data?.message || 'Server Error',
+      message: typeof msg === 'string' ? msg : 'Server Error',
       duration: 3,
     })
+  }
+}
+
+export const getGmRatings = async (week) => {
+  try {
+    attachToken()
+    const res = await privateAPI.get(`/ranking/gm-ratings/${week || 1}`)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    return null
+  }
+}
+
+export const getGlobalGmRankings = async (sport) => {
+  try {
+    attachToken()
+    const url = sport
+      ? `/ranking/gm-rankings/global?sport=${sport}`
+      : '/ranking/gm-rankings/global'
+    const res = await privateAPI.get(url)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    return null
   }
 }
 
@@ -56,7 +82,6 @@ export const createNewLeague = async (payload) => {
        window.open(`${link.frontEndUrl}/login`, '_self', 'noreferrer')
     }
   } catch (err) {
-    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
@@ -69,14 +94,23 @@ export const createNewLeagueFromDashboard = async (payload) => {
     attachToken()
     const res = await privateAPI.post(`/league/create-from-platform`, payload)
     if (res) {
+      // Reset ALL league-specific state so new league starts clean
+      store.dispatch({ type: 'RESET_LEAGUE_DATA' })
+      // Save new token (includes team/league info)
+      if (res.data?.data?.token) {
+        // TODO: Migrate to httpOnly cookies (requires backend cookie support)
+        localStorage.setItem('token', res.data.data.token)
+        attachToken()
+      }
+      // Update user state so team/currentLeague are available for navigation
+      store.dispatch(getUser())
       getUserLeagues()
       notification.success({
-        description: res.data.data.message,
+        description: res.data.data.message || 'League created successfully!',
         duration: 2,
       })
     }
   } catch (err) {
-    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
@@ -96,7 +130,6 @@ export const updateCommissionersInLeague = async (payload) => {
       })
     }
   } catch (err) {
-    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
@@ -105,7 +138,6 @@ export const updateCommissionersInLeague = async (payload) => {
 }
 
 export const joinLeague = async (payload) => {
-  // console.log('redux payload',payload);
   try {
     attachToken()
     let game = localStorage.getItem('selectedGame')
@@ -114,16 +146,14 @@ export const joinLeague = async (payload) => {
 
     // const res = await publicAPI.post(`/league/join`, payload)
     if (res) {
-      console.log('res',res);
-      console.log('res.data.data.token',res.data.data.token);
-
       // store.dispatch(getUser())
+      // TODO: Migrate to httpOnly cookies (requires backend cookie support)
       localStorage.setItem('token', res.data.data.token)
       store.dispatch(getUser())
       attachToken()
-      navigate('/professional-league')
+      window.location.href = '/dashboard'
 
-      
+
       notification.success({
         description: res.data.data.message,
         duration: 2,
@@ -136,11 +166,9 @@ export const joinLeague = async (payload) => {
       localStorage.removeItem('roomId')
 
       // window.open(`${link.frontEndUrl}/login`, '_self', 'noreferrer')
-      // navigate('/professional-league')
+      // navigate('/dashboard')
     }
   } catch (err) {
-    
-    console.log('in the err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
@@ -150,8 +178,6 @@ export const joinLeague = async (payload) => {
 
 
 export const joinleaguePaymenttrue = async (payload) => {
-
-  console.log('redux payload',payload);
   try {
     let game = localStorage.getItem('selectedGame')
     let link = serverUrls.find((item) => item.key === game)
@@ -170,10 +196,9 @@ export const joinleaguePaymenttrue = async (payload) => {
       localStorage.removeItem('paid')
 
       // window.open(`${link.frontEndUrl}/login`, '_self', 'noreferrer')
-      // navigate('/fantasy-league')
+      // navigate('/homepage')
     }
   } catch (err) {
-    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
@@ -196,7 +221,6 @@ export const updateLeague = async (payload) => {
       getLeagueDetails()
     }
   } catch (err) {
-    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
@@ -207,7 +231,18 @@ export const updateLeague = async (payload) => {
 export const updateLeagueCommissioner = async (payload) => {
   try {
     attachToken()
-    const res = await privateAPI.post(`/league/update-league-commissioner`, payload)
+    // Convert to FormData, the backend uses a global multer middleware that
+    // strips req.body when receiving application/json instead of multipart/form-data
+    const formData = new FormData()
+    for (const [key, value] of Object.entries(payload)) {
+      if (value === undefined || value === null) continue
+      if (typeof value === 'object' && !(value instanceof File) && !(value instanceof Blob)) {
+        formData.append(key, JSON.stringify(value))
+      } else {
+        formData.append(key, value)
+      }
+    }
+    const res = await privateAPI.post(`/league/update-league-commissioner`, formData)
     if (res) {
       notification.success({
         description: res.data.data.message,
@@ -216,7 +251,6 @@ export const updateLeagueCommissioner = async (payload) => {
       getUserLeagues()
     }
   } catch (err) {
-    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
@@ -236,7 +270,6 @@ export const deleteLeagueCommissioner = async (payload) => {
       getUserLeagues()
     }
   } catch (err) {
-    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
@@ -256,7 +289,6 @@ export const resetLeagueCommissioner = async (payload) => {
       getUserLeagues()
     }
   } catch (err) {
-    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
@@ -267,17 +299,32 @@ export const resetLeagueCommissioner = async (payload) => {
 export const selectLeague = async (payload, navigate) => {
   try {
     attachToken()
+    const oldToken = localStorage.getItem('token')
     const res = await privateAPI.post(`/league/select-league`, payload)
     if (res) {
-      localStorage.setItem('token', res.data.data.token)
-      store.dispatch(getUser())
-      attachToken()
-      navigate('/professional-league')
+      const newToken = res.data.data.token
+      console.log('[selectLeague] Switching league:', payload.leagueId)
+      console.log('[selectLeague] Token changed:', oldToken !== newToken)
+
+      // Decode JWT payload to verify it has the right league (base64 middle segment)
+      try {
+        const jwtPayload = JSON.parse(atob(newToken.split('.')[1]))
+        console.log('[selectLeague] New JWT payload:', jwtPayload)
+      } catch (e) { /* ignore */ }
+
+      // Set the new JWT which embeds the target league + team context
+      // TODO: Migrate to httpOnly cookies (requires backend cookie support)
+      localStorage.setItem('token', newToken)
+      // Force a full page reload, this ensures:
+      // 1. All Redux state is re-initialised from scratch
+      // 2. App.js calls getUser() with the new JWT on mount
+      // 3. Header, SamPoints, salary cap, team name all reflect the new league
+      window.location.replace('/dashboard')
     }
   } catch (err) {
-    console.log('err', err)
+    const msg = err?.response?.data?.message
     notification.error({
-      message: err?.response?.data?.message || 'Server Error',
+      message: typeof msg === 'string' ? msg : 'Server Error',
       duration: 3,
     })
   }
@@ -290,7 +337,6 @@ export const getHomeLeagues = async () => {
       return res.data.data
     }
   } catch (err) {
-    console.log('err', err)
     // notification.error({
     //   message: err?.response?.data?.message || 'Server Error',
     //   duration: 3,
@@ -310,7 +356,6 @@ export const getLeagueDetails = async () => {
       return res.data.data
     }
   } catch (err) {
-    console.log('err', err)
     // notification.error({
     //   message: err?.response?.data?.message || 'Server Error',
     //   duration: 3,
@@ -323,6 +368,16 @@ export const joinLeagueFromPlatform = async (payload) => {
     attachToken()
     const res = await privateAPI.post(`/league/join-from-platform`, payload)
     if (res) {
+      // Reset ALL league-specific state so new league starts clean
+      store.dispatch({ type: 'RESET_LEAGUE_DATA' })
+      // Save new token (includes team/league info) so auth middleware picks up the new team
+      if (res.data?.data?.token) {
+        // TODO: Migrate to httpOnly cookies (requires backend cookie support)
+        localStorage.setItem('token', res.data.data.token)
+        attachToken()
+      }
+      // Refresh user state so Header/Dashboard show the team
+      store.dispatch(getUser())
       getUserLeagues()
       notification.success({
         description: res.data.data.message,
@@ -331,11 +386,11 @@ export const joinLeagueFromPlatform = async (payload) => {
       return res
     }
   } catch (err) {
-    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
     })
+    throw err
   }
 }
 
@@ -350,7 +405,6 @@ export const getUserLeagues = async (params) => {
       })
     }
   } catch (err) {
-    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
@@ -370,7 +424,6 @@ export const getALLeagues = async () => {
       })
     }
   } catch (err) {
-    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
@@ -389,7 +442,6 @@ export const getLandingLeagues = async () => {
       })
     }
   } catch (err) {
-    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
@@ -413,6 +465,7 @@ export const getLeagueStandings = async (week) => {
 }
 
 export const getScheduleByWeek = async (week) => {
+  if (!week && week !== 0) return null
   try {
     attachToken()
     const res = await privateAPI.get(`/schedule/get-schedule/${week}`)
@@ -420,9 +473,9 @@ export const getScheduleByWeek = async (week) => {
       return res.data.data
     }
   } catch (err) {
-    console.log('err', err)
+    const msg = err?.response?.data?.message
     notification.error({
-      message: err?.response?.data?.message || 'Server Error',
+      message: typeof msg === 'string' ? msg : 'Server Error',
       duration: 3,
     })
   }
@@ -436,7 +489,6 @@ export const getWeeklyNflSchedule = async (payload) => {
       return res.data.data
     }
   } catch (err) {
-    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
@@ -482,7 +534,6 @@ export const getTeamFinancials = async () => {
       return res.data.data
     }
   } catch (err) {
-    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
@@ -522,7 +573,6 @@ export const TransferPointsToLeague =async (payload) =>{
      // getLeagueDetails()
     }
   } catch (err) {
-    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
@@ -547,7 +597,6 @@ export const makeiswallettrue =async (payload) =>{
      // getLeagueDetails()
     }
   } catch (err) {
-    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
@@ -563,7 +612,7 @@ export const makeiswallettrue =async (payload) =>{
 
 export const getSamMetric =async (payload) =>{
   try {
-    // attachToken()
+    attachToken()
     const res = await privateAPI.get(`/admin/league/getsammetric`, payload)
     if (res) {
       
@@ -576,7 +625,6 @@ export const getSamMetric =async (payload) =>{
      // getLeagueDetails()
     }
   } catch (err) {
-    console.log('err', err)
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,

@@ -1,65 +1,422 @@
-/* Add this to your CSS file */
-.dmchatmodal .ant-modal {
-    top: 0; /* Adjust if needed */
-    right: 0;
-    margin: 0; /* Remove default margin */
+/* ═══════════════════════════════════════════════════
+   DM CHAT MODAL — Modern Messaging Redesign
+   Prefix: dmc-  (DM Chat)
+   ═══════════════════════════════════════════════════ */
 
+/* ── Modal Shell ── */
+.dmchatmodal .ant-modal-content {
+  background: #0f0d1f;
+  border: 1px solid rgba(40, 159, 201, 0.15);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(40, 159, 201, 0.06);
+}
 
-    overflow: scroll; /* Hide overflow of the modal itself */
-    background:blue;
+.dmchatmodal .ant-modal-body {
+  padding: 0 !important;
+  background: #0f0d1f;
+}
+
+.dmchatmodal .ant-modal-header {
+  display: none !important;
+}
+
+.dmchatmodal .ant-modal-footer {
+  display: none !important;
+}
+
+.dmchatmodal .ant-modal-close {
+  display: none !important;
+}
+
+/* ── Custom Header ── */
+.dmc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, #141C2B 0%, #0D1220 100%);
+  border-bottom: 1px solid rgba(40, 159, 201, 0.12);
+}
+
+.dmc-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dmc-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #22C55E 0%, #1a7fa3 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dmc-avatar span {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.dmc-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dmc-header-name {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.dmc-header-status {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 12px;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dmc-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 6px rgba(52, 211, 153, 0.5);
+}
+
+.dmc-close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dmc-close-btn:hover {
+  background: rgba(255, 59, 48, 0.15);
+  border-color: rgba(255, 59, 48, 0.3);
+  color: #ff3b30;
+}
+
+/* ── Chat Container ── */
+.dmc-container {
+  display: flex;
+  flex-direction: column;
+  height: 420px;
+}
+
+/* ── Messages Area ── */
+.dmc-messages-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  position: relative;
+  scroll-behavior: smooth;
+}
+
+.dmc-messages-area::-webkit-scrollbar {
+  width: 4px;
+}
+
+.dmc-messages-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dmc-messages-area::-webkit-scrollbar-thumb {
+  background: rgba(40, 159, 201, 0.25);
+  border-radius: 4px;
+}
+
+.dmc-messages-area::-webkit-scrollbar-thumb:hover {
+  background: rgba(40, 159, 201, 0.45);
+}
+
+/* ── Spinner ── */
+.dmc-spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+}
+
+/* ── Empty State ── */
+.dmc-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 12px;
+}
+
+.dmc-empty-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(40, 159, 201, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dmc-empty-state p {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+/* ── Bubble Row ── */
+.dmc-bubble-row {
+  display: flex;
+  width: 100%;
+}
+
+.dmc-bubble-row.dmc-mine {
+  justify-content: flex-end;
+}
+
+.dmc-bubble-row.dmc-theirs {
+  justify-content: flex-start;
+}
+
+/* ── Bubble Base ── */
+.dmc-bubble {
+  max-width: 72%;
+  padding: 10px 14px;
+  font-size: 14px;
+  line-height: 1.45;
+  word-wrap: break-word;
+  position: relative;
+}
+
+/* ── My Bubbles (Sent) ── */
+.dmc-bubble-mine {
+  background: linear-gradient(135deg, #22C55E 0%, #1a7fa3 100%);
+  color: #fff;
+}
+
+/* Border radius per position */
+.dmc-bubble-mine.dmc-single {
+  border-radius: 18px 18px 4px 18px;
+  margin-bottom: 6px;
+}
+.dmc-bubble-mine.dmc-first {
+  border-radius: 18px 18px 4px 18px;
+}
+.dmc-bubble-mine.dmc-middle {
+  border-radius: 18px 4px 4px 18px;
+}
+.dmc-bubble-mine.dmc-last {
+  border-radius: 18px 4px 4px 18px;
+  margin-bottom: 6px;
+}
+
+/* ── Their Bubbles (Received) ── */
+.dmc-bubble-theirs {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dmc-bubble-theirs.dmc-single {
+  border-radius: 18px 18px 18px 4px;
+  margin-bottom: 6px;
+}
+.dmc-bubble-theirs.dmc-first {
+  border-radius: 18px 18px 18px 4px;
+}
+.dmc-bubble-theirs.dmc-middle {
+  border-radius: 4px 18px 18px 4px;
+}
+.dmc-bubble-theirs.dmc-last {
+  border-radius: 4px 18px 18px 4px;
+  margin-bottom: 6px;
+}
+
+/* ── Message Text ── */
+.dmc-text {
+  font-size: 14px;
+  font-weight: 400;
+  display: block;
+}
+
+/* ── Timestamp ── */
+.dmc-time {
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+  margin-top: 4px;
+  opacity: 0.5;
+  text-align: right;
+}
+
+.dmc-bubble-theirs .dmc-time {
+  text-align: left;
+}
+
+/* ── Media ── */
+.dmc-media {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.dmc-media .ant-image {
+  display: block;
+}
+
+/* ── Input Area ── */
+.dmc-input-area {
+  padding: 12px 16px 14px;
+  background: linear-gradient(180deg, rgba(15, 13, 31, 0) 0%, rgba(15, 13, 31, 1) 20%);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dmc-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 4px 6px 4px 14px;
+  transition: border-color 0.2s ease;
+}
+
+.dmc-input-wrapper:focus-within {
+  border-color: rgba(40, 159, 201, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dmc-file-hidden {
+  display: none;
+}
+
+.dmc-attach-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 20px;
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+  padding: 4px;
+}
+
+.dmc-attach-btn:hover {
+  color: #22C55E;
+}
+
+.dmc-text-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 8px 4px;
+  font-family: inherit;
+}
+
+.dmc-text-input::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.dmc-send-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(40, 159, 201, 0.15);
+  color: rgba(40, 159, 201, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.dmc-send-btn.dmc-send-active {
+  background: linear-gradient(135deg, #22C55E 0%, #1a7fa3 100%);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(40, 159, 201, 0.35);
+}
+
+.dmc-send-btn.dmc-send-active:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(40, 159, 201, 0.45);
+}
+
+.dmc-send-btn:disabled {
+  cursor: default;
+}
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════ */
+
+@media (max-width: 576px) {
+  .dmchatmodal .ant-modal-content {
+    border-radius: 12px;
   }
 
+  .dmc-header {
+    padding: 12px 14px;
+  }
 
-  .dmchatmodal .ant-modal-content  {
-    background: #291c49;
+  .dmc-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
 
+  .dmc-avatar span {
+    font-size: 12px;
   }
-  
-  .dmchatmodal .ant-modal-body {
-    height: calc(100% - 55px); /* Adjust for modal header and footer height */
-    overflow-y: auto; /* Enable vertical scrolling */
-    padding: 0; /* Remove padding */
-    background: #291c49; 
-    height: 200px;
-  }
-  
-  .dmchatmodal .ant-modal-header {
-    display: flex;
-    justify-content: left; /* Center the modal title */
-    border:4px solid #5f547b;
-    padding: 10px;
-    
 
+  .dmc-header-name {
+    font-size: 14px;
   }
-  
-  .dmchatmodal .ant-modal-footer {
-    display: none; /* Hide the footer if not needed */
+
+  .dmc-container {
+    height: 380px;
   }
-  
-  .dmchatmodal .ant-modal-close {
-    position: absolute;
-    top: 30px; /* Adjust the vertical position as needed */
-    right: 30px; /* Adjust the horizontal position as needed */
-    width: 20px; /* Set the width of the circular button */
-    height: 20px; /* Set the height of the circular button */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%; /* Makes the button circular */
-    background-color: #289fc9; /* Background color of the button */
-    border: 2px solid #289fc9; /* Border color and width */
-    cursor: pointer; /* Changes cursor to pointer on hover */
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* Optional: adds shadow for better visibility */
-    z-index: 1000; /* Ensure button is above other content */
+
+  .dmc-messages-area {
+    padding: 12px 14px;
   }
-  
-  .dmchatmodal .ant-modal-close:hover {
-    background-color: #f0f0f0; /* Change background color on hover */
+
+  .dmc-bubble {
+    max-width: 82%;
+    font-size: 13px;
   }
-  
-  .dmchatmodal .ant-modal-close .anticon {
-    font-size: 18px; /* Adjust the font size of the close icon */
-    color: #000000; /* Color of the close icon */
+
+  .dmc-input-area {
+    padding: 10px 12px 12px;
   }
-  
-  
+}

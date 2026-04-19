@@ -1,9 +1,17 @@
 import React, { useState } from 'react'
-import SelectGameLeft from '../SelectGame/SelectGameLeft'
-import SelectGameRight from '../SelectGame/SelectGameRight'
-import { Avatar, Button, Col, DatePicker, Form, Input, Radio, Rate, Row } from 'antd'
+// Old SelectGameLeft/Right branding removed — page redirects to /onboarding
+import { Avatar, Button, Col, Form, Input, Radio, Rate, Row, Select } from 'antd'
 import dayjs from 'dayjs'
 import { createNewLeague, joinLeague } from '../../redux'
+import SamDatePicker from '../../components/SamDatePicker'
+
+const SCORING_OPTIONS = [
+  { label: 'PPR (Point Per Reception)', value: 'ppr' },
+  { label: 'Half PPR', value: 'half_ppr' },
+  { label: 'Standard', value: 'standard' },
+  { label: 'Superflex', value: 'superflex' },
+  { label: 'TE Premium', value: 'te_premium' },
+]
 
 const CreateOrJoinLeague = () => {
   const [form] = Form.useForm()
@@ -13,6 +21,7 @@ const CreateOrJoinLeague = () => {
   const [file, setFile] = useState(null)
   const [isPrivate, setIsPrivate] = useState(false)
   const [isPrivateFromJoin, setIsPrivateFromJoin] = useState(false)
+  const [leagueModeValue, setLeagueModeValue] = useState('full')
   let email = localStorage.getItem('email')
 
   const onFinish = async (values) => {
@@ -61,8 +70,7 @@ const CreateOrJoinLeague = () => {
 
   return (
     <div className='select_game_container cjl_container'>
-      <SelectGameLeft logo={localStorage.getItem('imagePath')} />
-      <SelectGameRight>
+      <div />
         <div className='cjl_body'>
           <div className='button_box'>
             <Button type='primary' className='inactive'>
@@ -142,6 +150,37 @@ const CreateOrJoinLeague = () => {
                   </Col>
 
                   <Col xs={24} md={12} xl={8}>
+                    <Form.Item
+                      name={'leagueMode'}
+                      label='Game Mode'
+                      initialValue='full'
+                      rules={[{ required: true, message: 'Required!' }]}
+                    >
+                      <Radio.Group onChange={(e) => {
+                        setLeagueModeValue(e.target.value)
+                        if (e.target.value === 'full') {
+                          form.setFieldsValue({ scoringMode: undefined })
+                        }
+                      }}>
+                        <Radio value={'full'}>Full SAM Metric (53-man)</Radio>
+                        <Radio value={'offense_only'}>Offense Only</Radio>
+                      </Radio.Group>
+                    </Form.Item>
+                  </Col>
+
+                  {leagueModeValue === 'offense_only' && (
+                    <Col xs={24} md={12} xl={8}>
+                      <Form.Item
+                        name={'scoringMode'}
+                        label='Scoring System'
+                        rules={[{ required: leagueModeValue === 'offense_only', message: 'Required!' }]}
+                      >
+                        <Select placeholder='Select scoring system' options={SCORING_OPTIONS} />
+                      </Form.Item>
+                    </Col>
+                  )}
+
+                  <Col xs={24} md={12} xl={8}>
                     <Form.Item name={'email'} label='User Email'>
                       <Input disabled placeholder={email} />
                     </Form.Item>
@@ -176,7 +215,7 @@ const CreateOrJoinLeague = () => {
                         },
                       ]}
                     >
-                      <DatePicker placeholder='Select Draft Date' />
+                      <SamDatePicker placeholder='Select Draft Date' />
                     </Form.Item>
                   </Col>
 
@@ -367,7 +406,6 @@ const CreateOrJoinLeague = () => {
             </div>
           )}
         </div>
-      </SelectGameRight>
     </div>
   )
 }

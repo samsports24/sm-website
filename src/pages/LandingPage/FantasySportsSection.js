@@ -51,27 +51,23 @@ const Content = ({ mainTitle }) => {
         </div>
         <div>
           <p className='text4'>
-            Email: <span>support@samsports.io</span>
+            Email: <span>hello@samsports.io</span>
           </p>
           <p className='text5'>
             Social: <span>@SAMSports_</span>
           </p>
         </div>
-        {/* <div>
+        <div>
           <p className='text4 linksBox'>
-            <a
-              href='https://app.termly.io/document/terms-of-service/372d4c41-9267-4833-8bbb-aba80f6fbbb8'
-              target='_blank'
-              rel='noreferrer'
-            >
-              Terms and Policy
+            <a href='/terms' rel='noreferrer'>
+              Terms of Service
             </a>
             <span style={{ marginInline: '10px' }}>|</span>
-            <a href='https://sam-wallet-10b1f.web.app/' target='_blank' rel='noreferrer'>
-              White Paper
+            <a href='/privacy' rel='noreferrer'>
+              Privacy Policy
             </a>
           </p>
-        </div> */}
+        </div>
         <p className='text6'>
           SAMSPORTS is not in any way affiliated with any sports team or sports league, nor is it
           affiliated with any player, players association, or collection of players. The use of

@@ -26,9 +26,8 @@ const MoveToInjured = ({ playerId, disabled, pInterfaceModalClose }) => {
 
   return (
     <>
-      <Button disabled={disabled} type='primary' className='action-bar-btn' onClick={showModal}>
+      <Button disabled={disabled} type="primary" className="action-bar-btn" onClick={showModal}>
         MOVE TO (I.R.)
-        {/* <span>Practice Squad</span> */}
       </Button>
       <Modal
         centered
@@ -36,33 +35,49 @@ const MoveToInjured = ({ playerId, disabled, pInterfaceModalClose }) => {
         onCancel={closeModal}
         footer={null}
         closeIcon={false}
-        className='player_interface_modals'
+        className="player_interface_modals pim-modal"
         closable={false}
       >
-        <div className='close_modal_button' onClick={closeModal}>
-          x
-        </div>
-        <div className='modal_body'>
-          <h1 className='modal_header_heading main_heading'>MOVE TO INJURED RESERVE (I.R.)</h1>
+        <button className="pim-close" onClick={closeModal} aria-label="Close">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M11 3L3 11M3 3l8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        </button>
 
-          <div className='center_content move_to_injured'>
-            <h1 className='modal_header_heading'>ARE YOU SURE?</h1>
-            <p style={{ textTransform: 'uppercase' }}>
-              {`To place this player on the Injured Reserve, click the "Move to I.R." button if you're sure.`}
-            </p>
-            <p style={{ textTransform: 'uppercase' }}>
-              {/* {`info: This action will lead to the player's Cap Hit being excluded from your team's overall total until the player is reinstated to your active roster.`} */}
-              {`info:When a player is placed on IR, their salary remains on the Team Salary Cap, but the team frees up an additional roster spot to utilize.Once you accept, your player will stay for a period of 30 days in IR minimum`}
-
-          
+        <div className="pim-body">
+          <div className="pim-header">
+            <div className="pim-icon-badge pim-icon-warning">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+              </svg>
+            </div>
+            <h2 className="pim-title">Move to Injured Reserve</h2>
+            <p className="pim-subtitle">
+              Place this player on the Injured Reserve list.
             </p>
           </div>
 
-          <div className='modal_footer'>
-            <Button loading={loading} type='primary' className='button_1' onClick={_moveToIr}>
-              MOVE TO INJURED I.R.
+          <div className="pim-notice pim-notice-warning">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+            <p>
+              The player&apos;s salary stays on your cap, but you free up a roster spot. The player must stay on IR for a minimum of 30 days.
+            </p>
+          </div>
+
+          <div className="pim-actions">
+            <Button
+              loading={loading}
+              type="primary"
+              className="pim-btn-primary"
+              onClick={_moveToIr}
+            >
+              Move to I.R.
             </Button>
-            <Button onClick={closeModal} type='primary' className='button_2'>
+            <Button onClick={closeModal} className="pim-btn-secondary">
               Cancel
             </Button>
           </div>

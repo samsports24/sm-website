@@ -1,0 +1,2235 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Global Cup Predictor — Live (API-Football)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom/client": "https://esm.sh/react-dom@18.3.1/client?deps=react@18.3.1",
+          "lucide-react": "https://esm.sh/lucide-react@0.383.0?deps=react@18.3.1&external=react"
+        }
+      }
+    </script>
+    <style>
+      html, body { background: #000; }
+      body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+      #root-loading {
+        position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+        color: #94a3b8; font-size: 14px; background: #020617;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root-loading">Loading…</div>
+    <div id="root"></div>
+
+    <script type="text/babel" data-type="module" data-presets="react">
+      import React, { useState, useMemo, useEffect, useCallback } from "react";
+      import { createRoot } from "react-dom/client";
+      import {
+        Trophy, Share2, Link2, Medal, Users, RotateCcw, Crown, TrendingUp,
+        Copy, Check, X, Flame, Star, Target, Save,
+        ChevronRight, Sparkles, Shield, CircleCheck, CircleDot, Swords,
+        Satellite, KeyRound, RefreshCw, AlertTriangle, Database, Loader2, Lock
+      } from "lucide-react";
+
+      /* --------------------------------------------
+         Config / Storage
+      ---------------------------------------------- */
+      const LS_KEY = "wcp.apifootball.key";
+      const LS_SEASON = "wcp.apifootball.season";
+      const LS_LEAGUE = "wcp.apifootball.league";
+      const LS_CACHE = "wcp.apifootball.cache.v2"; // bumped v2: fixed "Group Stage" regex bug + standings-based grouping
+      const LS_PICKS = "wcp.userpicks.v1";           // local fallback for non-authenticated users
+      const LS_ACCOUNT = "wcp.account.v1";           // signed-in user profile from parent app
+      const LS_LB = "wcp.leaderboard.v1";            // deprecated — leaderboard comes from backend now
+
+      /* ═══ Backend API helpers ═══
+         All predictor data is saved to the backend when the user is
+         authenticated. localStorage is kept as a fallback for guests. */
+      const API_BASE = window.location.origin; // same-origin backend
+      const apiHeaders = (token) => ({
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      });
+
+      // Save picks to backend (bulk)
+      const apiSavePicks = async (token, picks, data) => {
+        const body = [];
+        const rankings = data?.fifaRankings || {};
+        for (const [key, value] of Object.entries(picks)) {
+          if (key.startsWith("g:")) {
+            // Group match pick: key = "g:{fixtureId}", value = "A"|"B"|"D"
+            const fixtureId = key.slice(2);
+            const resultMap = { A: "home", B: "away", D: "draw" };
+            // Find match in data for team info
+            let homeTeam = null, awayTeam = null;
+            for (const g of (data?.groups || [])) {
+              const m = g.matches.find(m => String(m.id) === String(fixtureId));
+              if (m) { homeTeam = m.teamA; awayTeam = m.teamB; break; }
+            }
+            // Upset multiplier
+            let multiplier = 1;
+            if (value !== "D" && homeTeam && awayTeam) {
+              const winnerId = value === "A" ? homeTeam.id : awayTeam.id;
+              const loserId = value === "A" ? awayTeam.id : homeTeam.id;
+              const rW = rankings[winnerId], rL = rankings[loserId];
+              if (rW && rL && rW > rL) multiplier = 2;
+            }
+            body.push({
+              competition: "worldcup", leagueId: 1, season: 2026,
+              pickType: "match", fixtureId: Number(fixtureId),
+              pickResult: resultMap[value] || null,
+              homeTeamId: homeTeam?.id || null, homeTeamName: homeTeam?.name || null,
+              awayTeamId: awayTeam?.id || null, awayTeamName: awayTeam?.name || null,
+              basePoints: 20000, multiplier,
+            });
+          } else if (key.startsWith("k:")) {
+            // Knockout pick: key = "k:{matchId}", value = winnerId
+            const matchId = key.slice(2);
+            // Find the round for point assignment
+            let round = null, basePoints = 0, homeTeam = null, awayTeam = null;
+            const ko = data?.knockout || {};
+            for (const [rKey, matches] of Object.entries(ko)) {
+              const arr = Array.isArray(matches) ? matches : (matches ? [matches] : []);
+              const m = arr.find(m => String(m.id) === String(matchId));
+              if (m) {
+                round = rKey === "f" ? "final" : rKey;
+                homeTeam = m.teamA; awayTeam = m.teamB;
+                const ptMap = { r32: 75000, r16: 150000, qf: 200000, sf: 500000, third: 350000, f: 1000000 };
+                basePoints = ptMap[rKey] || 0;
+                break;
+              }
+            }
+            let multiplier = 1;
+            if (homeTeam && awayTeam) {
+              const loserId = String(value) === String(homeTeam.id) ? awayTeam.id : homeTeam.id;
+              const rW = rankings[value], rL = rankings[loserId];
+              if (rW && rL && rW > rL) multiplier = 2;
+            }
+            body.push({
+              competition: "worldcup", leagueId: 1, season: 2026,
+              pickType: "knockout", fixtureId: Number(matchId),
+              pickTeamId: Number(value), round,
+              homeTeamId: homeTeam?.id || null, homeTeamName: homeTeam?.name || null,
+              awayTeamId: awayTeam?.id || null, awayTeamName: awayTeam?.name || null,
+              basePoints, multiplier,
+            });
+          }
+          // tie: picks are local-only (tiebreak ordering for standings display)
+        }
+        if (body.length === 0) return { saved: 0 };
+        const resp = await fetch(`${API_BASE}/predictor/picks/bulk`, {
+          method: "POST",
+          headers: apiHeaders(token),
+          body: JSON.stringify({ picks: body }),
+        });
+        if (!resp.ok) throw new Error(`Save failed: ${resp.status}`);
+        return resp.json();
+      };
+
+      // Load picks from backend
+      const apiLoadPicks = async (token) => {
+        const resp = await fetch(
+          `${API_BASE}/predictor/picks?competition=worldcup&season=2026&leagueId=1`,
+          { headers: apiHeaders(token) }
+        );
+        if (!resp.ok) throw new Error(`Load failed: ${resp.status}`);
+        const { data } = await resp.json();
+        // Convert backend picks back to frontend format { "g:{fixtureId}": "A"|"B"|"D", "k:{matchId}": teamId }
+        const picks = {};
+        for (const p of (data?.picks || [])) {
+          if (p.pickType === "match" && p.fixtureId) {
+            const resultMap = { home: "A", away: "B", draw: "D" };
+            picks[`g:${p.fixtureId}`] = resultMap[p.pickResult] || null;
+          } else if (p.pickType === "knockout" && p.fixtureId) {
+            picks[`k:${p.fixtureId}`] = p.pickTeamId;
+          }
+        }
+        return { picks, stats: data?.stats || null };
+      };
+
+      // Load leaderboard from backend
+      const apiLoadLeaderboard = async () => {
+        const resp = await fetch(
+          `${API_BASE}/predictor/leaderboard?competition=worldcup&season=2026&limit=50`
+        );
+        if (!resp.ok) throw new Error(`Leaderboard failed: ${resp.status}`);
+        const { data } = await resp.json();
+        return data?.leaderboard || [];
+      };
+      const DEFAULT_LEAGUE = 1;      // 1 = World Cup
+      const DEFAULT_SEASON = 2026;
+
+      /* SamPoints earning schedule (set by samsports product).
+         Awarded ONLY when a match has settled AND the user's pick is
+         correct. Shown projected before settlement so players can see
+         what's at stake. */
+      const POINTS = {
+        group:        20_000,   // per correct group-stage match result
+        groupPosition:50_000,   // per team finishing in the user's predicted group position
+        r32:          75_000,   // per correct Round of 32 pick
+        r16:         150_000,   // per correct Round of 16 (1/8) pick
+        qf:          200_000,   // per correct Quarter-final pick
+        sf:          500_000,   // per correct Semi-final pick
+        third:       350_000,   // correct 3rd-place match winner
+        final:     1_000_000,   // correct Final winner
+      };
+      const fmtPts = (n) => (n || 0).toLocaleString();
+      const KO_ORDER = ["r32","r16","qf","sf","f"];
+      const KO_META = {
+        r32: { name:"Round of 32",   basePoints:POINTS.r32 },
+        r16: { name:"Round of 16",   basePoints:POINTS.r16 },
+        qf:  { name:"Quarterfinals", basePoints:POINTS.qf },
+        sf:  { name:"Semifinals",    basePoints:POINTS.sf  },
+        f:   { name:"Final",         basePoints:POINTS.final },
+      };
+
+      /* --------------------------------------------
+         Country list for the sign-up form + leaderboard
+         filter. Flag emojis are easy to read and don't
+         require an asset bundle.
+      ---------------------------------------------- */
+      const COUNTRIES = [
+        { code: "AR", name: "Argentina", flag: "🇦🇷" },
+        { code: "AU", name: "Australia", flag: "🇦🇺" },
+        { code: "AT", name: "Austria", flag: "🇦🇹" },
+        { code: "BE", name: "Belgium", flag: "🇧🇪" },
+        { code: "BR", name: "Brazil", flag: "🇧🇷" },
+        { code: "CA", name: "Canada", flag: "🇨🇦" },
+        { code: "CL", name: "Chile", flag: "🇨🇱" },
+        { code: "CO", name: "Colombia", flag: "🇨🇴" },
+        { code: "HR", name: "Croatia", flag: "🇭🇷" },
+        { code: "CZ", name: "Czechia", flag: "🇨🇿" },
+        { code: "DK", name: "Denmark", flag: "🇩🇰" },
+        { code: "EG", name: "Egypt", flag: "🇪🇬" },
+        { code: "EN", name: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
+        { code: "FR", name: "France", flag: "🇫🇷" },
+        { code: "DE", name: "Germany", flag: "🇩🇪" },
+        { code: "GH", name: "Ghana", flag: "🇬🇭" },
+        { code: "GR", name: "Greece", flag: "🇬🇷" },
+        { code: "HU", name: "Hungary", flag: "🇭🇺" },
+        { code: "IN", name: "India", flag: "🇮🇳" },
+        { code: "ID", name: "Indonesia", flag: "🇮🇩" },
+        { code: "IR", name: "Iran", flag: "🇮🇷" },
+        { code: "IE", name: "Ireland", flag: "🇮🇪" },
+        { code: "IT", name: "Italy", flag: "🇮🇹" },
+        { code: "CI", name: "Ivory Coast", flag: "🇨🇮" },
+        { code: "JP", name: "Japan", flag: "🇯🇵" },
+        { code: "KR", name: "South Korea", flag: "🇰🇷" },
+        { code: "MX", name: "Mexico", flag: "🇲🇽" },
+        { code: "MA", name: "Morocco", flag: "🇲🇦" },
+        { code: "NL", name: "Netherlands", flag: "🇳🇱" },
+        { code: "NZ", name: "New Zealand", flag: "🇳🇿" },
+        { code: "NG", name: "Nigeria", flag: "🇳🇬" },
+        { code: "NO", name: "Norway", flag: "🇳🇴" },
+        { code: "PL", name: "Poland", flag: "🇵🇱" },
+        { code: "PT", name: "Portugal", flag: "🇵🇹" },
+        { code: "QA", name: "Qatar", flag: "🇶🇦" },
+        { code: "SA", name: "Saudi Arabia", flag: "🇸🇦" },
+        { code: "SCT", name: "Scotland", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿" },
+        { code: "SN", name: "Senegal", flag: "🇸🇳" },
+        { code: "RS", name: "Serbia", flag: "🇷🇸" },
+        { code: "ZA", name: "South Africa", flag: "🇿🇦" },
+        { code: "ES", name: "Spain", flag: "🇪🇸" },
+        { code: "SE", name: "Sweden", flag: "🇸🇪" },
+        { code: "CH", name: "Switzerland", flag: "🇨🇭" },
+        { code: "TR", name: "Türkiye", flag: "🇹🇷" },
+        { code: "UA", name: "Ukraine", flag: "🇺🇦" },
+        { code: "US", name: "United States", flag: "🇺🇸" },
+        { code: "UY", name: "Uruguay", flag: "🇺🇾" },
+        { code: "WAL", name: "Wales", flag: "🏴󠁧󠁢󠁷󠁬󠁳󠁿" },
+        { code: "OTHER", name: "Other", flag: "🌍" },
+      ];
+      const COUNTRY_BY_CODE = Object.fromEntries(COUNTRIES.map(c => [c.code, c]));
+      function flagFor(code) { return COUNTRY_BY_CODE[code]?.flag || "🌍"; }
+      function countryName(code) { return COUNTRY_BY_CODE[code]?.name || "Unknown"; }
+
+      /* --------------------------------------------
+         API-Football client
+      ---------------------------------------------- */
+      async function apiFetch(path, apiKey) {
+        const url = `https://v3.football.api-sports.io${path}`;
+        const res = await fetch(url, { headers: { "x-apisports-key": apiKey } });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (data.errors && (Array.isArray(data.errors) ? data.errors.length : Object.keys(data.errors).length)) {
+          const msg = Array.isArray(data.errors) ? data.errors.join("; ") : Object.values(data.errors).join("; ");
+          throw new Error(msg);
+        }
+        return data.response || [];
+      }
+
+      async function loadTournament({ apiKey, league, season }) {
+        const [fixtures, standingsResp, rankingsResp] = await Promise.all([
+          apiFetch(`/fixtures?league=${league}&season=${season}`, apiKey),
+          apiFetch(`/standings?league=${league}&season=${season}`, apiKey).catch(() => []),
+          // FIFA World Rankings — league 0 is the special "world ranking" pseudo-league
+          apiFetch(`/standings?league=0&season=${new Date().getFullYear()}`, apiKey).catch(() => []),
+        ]);
+        // standingsResp shape: [{ league: { standings: [[...groupA], [...groupB], ...] } }]
+        let standings = null;
+        if (Array.isArray(standingsResp) && standingsResp[0]?.league?.standings) {
+          standings = standingsResp[0].league.standings;
+        }
+        // Build FIFA ranking map: team.id → rank (1 = best)
+        const fifaRankings = {};
+        try {
+          const ranks = rankingsResp?.[0]?.league?.standings?.[0] || [];
+          ranks.forEach(r => {
+            if (r.team?.id && r.rank) fifaRankings[r.team.id] = r.rank;
+          });
+        } catch (_) { /* rankings unavailable — degrade gracefully */ }
+        return { fixtures, standings, fifaRankings };
+      }
+
+      /* --------------------------------------------
+         Parse fixtures → our internal shape
+      ---------------------------------------------- */
+      const TEAM_CODE_OVERRIDES = {
+        // Friendly 3-letter codes when API name doesn't slice nicely
+        "United States": "USA", "USA": "USA", "South Korea": "KOR", "Korea Republic":"KOR",
+        "IR Iran": "IRN", "Saudi Arabia": "KSA", "Costa Rica": "CRC", "Ivory Coast":"CIV",
+        "Côte d'Ivoire": "CIV", "Czech Republic":"CZE", "New Zealand":"NZL",
+        "Trinidad and Tobago":"TRI", "Bosnia and Herzegovina":"BIH", "North Macedonia":"MKD"
+      };
+
+      function teamShape(t) {
+        if (!t || !t.id) return null;
+        const name = t.name || "Unknown";
+        const code = TEAM_CODE_OVERRIDES[name] || name.replace(/[^A-Za-z]/g,"").slice(0,3).toUpperCase();
+        return { id: t.id, name, code, logo: t.logo || null, flag: "🏳️" };
+      }
+
+      function detectKoKey(round) {
+        const r = (round || "").toLowerCase();
+        if (r.includes("round of 32") || r.includes("1/16")) return "r32";
+        if (r.includes("round of 16") || r.includes("1/8") || r.includes("8th final")) return "r16";
+        if (r.includes("quarter") || r.includes("1/4")) return "qf";
+        if (r.includes("semi") || r.includes("1/2")) return "sf";
+        if (r.includes("3rd place") || r.includes("third place") || r.includes("play-off for 3rd")) return "third";
+        if (r.includes("final")) return "f";
+        return null;
+      }
+
+      // Extract group letter from names like "Group A", "FIFA World Cup - Group A", etc.
+      // The negative lookahead [a-zA-Z] prevents "Group Stage" from matching as letter "S".
+      function extractGroupLetter(name) {
+        if (!name) return null;
+        const m = name.match(/Group\s+([A-Z])(?![a-zA-Z])/i);
+        return m ? m[1].toUpperCase() : null;
+      }
+
+      function parseFixtures(fixtures, standings) {
+        const groupsMap = new Map();
+        const knockout = { r32:[], r16:[], qf:[], sf:[], third:null, f:null };
+        // team-id → group letter lookup (seeded from /standings)
+        const teamToGroup = new Map();
+
+        // 1. Seed groups from standings (authoritative source)
+        if (standings && Array.isArray(standings)) {
+          for (const groupArr of standings) {
+            if (!Array.isArray(groupArr) || !groupArr.length) continue;
+            const letter = extractGroupLetter(groupArr[0].group);
+            if (!letter) continue;
+            if (!groupsMap.has(letter)) {
+              groupsMap.set(letter, { letter, teams: [], matches: [] });
+            }
+            const g = groupsMap.get(letter);
+            for (const entry of groupArr) {
+              const t = teamShape(entry.team);
+              if (!t) continue;
+              if (!g.teams.find(x => x.id === t.id)) g.teams.push(t);
+              teamToGroup.set(entry.team.id, letter);
+            }
+          }
+        }
+
+        // Sort fixtures by timestamp so within-group ordering is stable
+        const sorted = [...fixtures].sort((a,b) =>
+          (a.fixture?.timestamp || 0) - (b.fixture?.timestamp || 0)
+        );
+
+        for (const fix of sorted) {
+          const round = fix.league?.round || "";
+          const teamA = teamShape(fix.teams?.home);
+          const teamB = teamShape(fix.teams?.away);
+          if (!teamA || !teamB) continue;
+
+          const status = fix.fixture?.status?.short || "NS";
+          const gh = fix.goals?.home, ga = fix.goals?.away;
+          let actual = null;
+          if (status === "FT" || status === "AET" || status === "PEN") {
+            if (gh > ga) actual = "A";
+            else if (gh < ga) actual = "B";
+            else actual = "D";
+          }
+
+          const match = {
+            id: fix.fixture.id,
+            date: fix.fixture.date,
+            venue: fix.fixture.venue?.name || null,
+            status, actual,
+            score: { home: gh, away: ga },
+            teamA, teamB,
+            result: null,      // user's group-stage prediction
+            winner: null,      // user's knockout prediction
+          };
+
+          // 2. Knockout? detect by round name
+          const ko = detectKoKey(round);
+          if (ko) {
+            if (ko === "third") knockout.third = { ...match };
+            else if (ko === "f") knockout.f = { ...match };
+            else knockout[ko].push({ ...match });
+            continue;
+          }
+
+          // 3. Group stage via standings lookup (most reliable)
+          const lA = teamToGroup.get(fix.teams?.home?.id);
+          const lB = teamToGroup.get(fix.teams?.away?.id);
+          if (lA && lA === lB) {
+            const g = groupsMap.get(lA);
+            if (g) g.matches.push(match);
+            continue;
+          }
+
+          // 4. Fallback: extract letter from round name (e.g. "Group A - 1")
+          const letter = extractGroupLetter(round);
+          if (letter) {
+            if (!groupsMap.has(letter)) {
+              groupsMap.set(letter, { letter, teams: [], matches: [] });
+            }
+            const g = groupsMap.get(letter);
+            g.matches.push(match);
+            if (!g.teams.find(t=>t.id===teamA.id)) g.teams.push(teamA);
+            if (!g.teams.find(t=>t.id===teamB.id)) g.teams.push(teamB);
+          }
+          // else: unmatched — drop (pre-tournament friendlies, qualifiers leftover, etc.)
+        }
+
+        const groups = [...groupsMap.values()].sort((a,b)=>a.letter.localeCompare(b.letter));
+        return { groups, knockout };
+      }
+
+      /* --------------------------------------------
+         Mock fallback (minimal — used only if the
+         API call fails or draw not ready yet)
+      ---------------------------------------------- */
+      // 48-team, 12-group mock for 2026 format (illustrative — use Load to fetch the real draw)
+      const MOCK_GROUPS = (() => {
+        const raw = [
+          ["A", [["Mexico","MEX","🇲🇽"],["Poland","POL","🇵🇱"],["Ecuador","ECU","🇪🇨"],["Uzbekistan","UZB","🇺🇿"]]],
+          ["B", [["Canada","CAN","🇨🇦"],["Denmark","DEN","🇩🇰"],["Ghana","GHA","🇬🇭"],["Saudi Arabia","KSA","🇸🇦"]]],
+          ["C", [["USA","USA","🇺🇸"],["Wales","WAL","🏴󠁧󠁢󠁷󠁬󠁳󠁿"],["Iran","IRN","🇮🇷"],["New Zealand","NZL","🇳🇿"]]],
+          ["D", [["Argentina","ARG","🇦🇷"],["Austria","AUT","🇦🇹"],["Nigeria","NGA","🇳🇬"],["Honduras","HON","🇭🇳"]]],
+          ["E", [["Brazil","BRA","🇧🇷"],["Croatia","CRO","🇭🇷"],["Senegal","SEN","🇸🇳"],["Qatar","QAT","🇶🇦"]]],
+          ["F", [["France","FRA","🇫🇷"],["Switzerland","SUI","🇨🇭"],["Morocco","MAR","🇲🇦"],["Jordan","JOR","🇯🇴"]]],
+          ["G", [["Portugal","POR","🇵🇹"],["Serbia","SRB","🇷🇸"],["Japan","JPN","🇯🇵"],["Costa Rica","CRC","🇨🇷"]]],
+          ["H", [["Spain","ESP","🇪🇸"],["Belgium","BEL","🇧🇪"],["Cameroon","CMR","🇨🇲"],["Cape Verde","CPV","🇨🇻"]]],
+          ["I", [["England","ENG","🏴󠁧󠁢󠁥󠁮󠁧󠁿"],["Czech Republic","CZE","🇨🇿"],["Ivory Coast","CIV","🇨🇮"],["Jamaica","JAM","🇯🇲"]]],
+          ["J", [["Germany","GER","🇩🇪"],["Scotland","SCO","🏴󠁧󠁢󠁳󠁣󠁴󠁿"],["Tunisia","TUN","🇹🇳"],["Panama","PAN","🇵🇦"]]],
+          ["K", [["Netherlands","NED","🇳🇱"],["Hungary","HUN","🇭🇺"],["South Korea","KOR","🇰🇷"],["Uruguay","URU","🇺🇾"]]],
+          ["L", [["Italy","ITA","🇮🇹"],["Norway","NOR","🇳🇴"],["Algeria","ALG","🇩🇿"],["Australia","AUS","🇦🇺"]]],
+        ];
+        let id = -1;
+        return raw.map(([letter, teams]) => ({
+          letter,
+          teams: teams.map(([name, code, flag]) => ({ id: id--, name, code, logo:null, flag })),
+        }));
+      })();
+      function buildMock() {
+        const groups = MOCK_GROUPS.map(g => ({
+          letter: g.letter, teams: g.teams,
+          matches: [[0,1],[2,3],[0,2],[1,3],[0,3],[1,2]].map(([a,b]) => ({
+            id: `mock-${g.letter}-${a}-${b}`,
+            teamA: g.teams[a], teamB: g.teams[b],
+            result: null, actual:null, status:"NS", date:null, venue:null, score:{home:null,away:null}
+          }))
+        }));
+        return { groups, knockout: { r32:[], r16:[], qf:[], sf:[], third:null, f:null } };
+      }
+
+      /* --------------------------------------------
+         Compute standings for a group
+
+         Because users pick match *outcomes* (W/D/L) and not scores,
+         we can't compute goal difference — FIFA's real tiebreakers
+         (GD → goals-for → head-to-head) are unavailable here.
+         When teams tie on points+wins, we let the user set the order
+         manually. `tieOrder` is an array of teamIds in user-chosen
+         rank for this group.
+      ---------------------------------------------- */
+      function computeStandings(group, tieOrder) {
+        const s = {};
+        group.teams.forEach(t => s[t.id] = { team:t, played:0, won:0, drew:0, lost:0, points:0 });
+        let played = 0;
+        group.matches.forEach(m => {
+          const r = m.result || m.actual;
+          if (!r) return;
+          played++;
+          const A = s[m.teamA.id], B = s[m.teamB.id];
+          if (!A || !B) return;
+          A.played++; B.played++;
+          if (r === "A") { A.won++; A.points+=3; B.lost++; }
+          else if (r === "B") { B.won++; B.points+=3; A.lost++; }
+          else { A.drew++; B.drew++; A.points+=1; B.points+=1; }
+        });
+
+        const userRank = new Map();
+        if (Array.isArray(tieOrder)) {
+          tieOrder.forEach((id, i) => userRank.set(String(id), i));
+        }
+
+        const standings = Object.values(s).sort((a,b) => {
+          if (b.points !== a.points) return b.points - a.points;
+          if (b.won !== a.won) return b.won - a.won;
+          // Apply user tie-break order before falling back to alpha
+          const au = userRank.get(String(a.team.id));
+          const bu = userRank.get(String(b.team.id));
+          if (au != null && bu != null) return au - bu;
+          if (au != null) return -1;
+          if (bu != null) return 1;
+          return a.team.name.localeCompare(b.team.name);
+        });
+
+        // Identify tie clusters (same points+wins = tied from rules POV)
+        const tieClusters = [];
+        let cur = [];
+        for (let i = 0; i < standings.length; i++) {
+          if (i > 0
+              && standings[i].points === standings[i-1].points
+              && standings[i].won   === standings[i-1].won) {
+            if (!cur.length) cur = [i-1];
+            cur.push(i);
+          } else {
+            if (cur.length > 1) tieClusters.push(cur);
+            cur = [];
+          }
+        }
+        if (cur.length > 1) tieClusters.push(cur);
+
+        // Only surface as "needs resolution" if a tie crosses a critical
+        // boundary: 1st↔2nd (who wins the group), 2nd↔3rd (who is runner-up
+        // vs 3rd-place candidate), or within the 3rd-place cluster.
+        const needsResolution = tieClusters.some(c => c[0] <= 2);
+
+        const total = group.matches.length || 6;
+        return { standings, allPlayed: played === total, tieClusters, needsResolution };
+      }
+
+      /* --------------------------------------------
+         FIFA 2026 official knockout bracket template
+
+         Source: FIFA match-schedule pages (match numbers 73-104).
+         Codes used:
+           "1X"  = winner of group X
+           "2X"  = runner-up of group X
+           "3/A/B/C/D/F" = the 3rd-placed team from one of groups A,B,C,D or F
+                           (actual assignment is from FIFA's 495-scenario table;
+                            we approximate greedily — see assignThirds below)
+           "W<n>" = winner of match number <n>
+
+         R32 matches are labeled 73..88 to match the official numbering.
+         R16 → 89..96, QF → 97..100, SF → 101..102, 3rd → 103, Final → 104.
+      ---------------------------------------------- */
+      const FIFA_R32 = [
+        { n: 73, a: "2A", b: "2B" },
+        { n: 74, a: "1E", b: "3/A/B/C/D/F" },
+        { n: 75, a: "1F", b: "2C" },
+        { n: 76, a: "1C", b: "2F" },
+        { n: 77, a: "1I", b: "3/C/D/F/G/H" },
+        { n: 78, a: "2E", b: "2I" },
+        { n: 79, a: "1A", b: "3/C/E/F/H/I" },
+        { n: 80, a: "1L", b: "3/E/H/I/J/K" },
+        { n: 81, a: "1D", b: "3/B/E/F/I/J" },
+        { n: 82, a: "1G", b: "3/A/E/H/I/J" },
+        { n: 83, a: "2K", b: "2L" },
+        { n: 84, a: "1H", b: "2J" },
+        { n: 85, a: "1B", b: "3/E/F/G/I/J" },
+        { n: 86, a: "1J", b: "2H" },
+        { n: 87, a: "1K", b: "3/D/E/I/J/L" },
+        { n: 88, a: "2D", b: "2G" },
+      ];
+      const FIFA_R16 = [
+        { n: 89, a: 74, b: 77 },
+        { n: 90, a: 73, b: 75 },
+        { n: 91, a: 76, b: 78 },
+        { n: 92, a: 79, b: 80 },
+        { n: 93, a: 83, b: 84 },
+        { n: 94, a: 81, b: 82 },
+        { n: 95, a: 86, b: 88 },
+        { n: 96, a: 85, b: 87 },
+      ];
+      const FIFA_QF = [
+        { n:  97, a: 89, b: 90 },
+        { n:  98, a: 93, b: 94 },
+        { n:  99, a: 91, b: 92 },
+        { n: 100, a: 95, b: 96 },
+      ];
+      const FIFA_SF = [
+        { n: 101, a:  97, b:  98 },
+        { n: 102, a:  99, b: 100 },
+      ];
+      const FIFA_THIRD = { n: 103, a: 101, b: 102 };
+      const FIFA_FINAL = { n: 104, a: 101, b: 102 };
+
+      /* Parse a slot code into { kind, payload }. */
+      function parseSlot(code) {
+        if (code[0] === "1" || code[0] === "2") {
+          return { kind: "place", place: +code[0], letter: code[1] };
+        }
+        if (code[0] === "3") {
+          // "3/A/B/C/D/F" => allowed groups
+          const parts = code.split("/").slice(1);
+          return { kind: "third", allowed: parts };
+        }
+        throw new Error("bad slot " + code);
+      }
+
+      /* Assign the 8 best 3rd-placed teams to FIFA's 8 third-place slots.
+         Real FIFA uses a pre-computed 495-scenario table keyed on the set
+         of 8 groups that qualify. We approximate greedily:
+           1) Sort the 8 qualifying 3rd-placed teams by rank.
+           2) Walk the 8 slots in match-number order (74, 77, 79, 80, 81,
+              82, 85, 87) and give each slot the highest-ranked 3rd that
+              is (a) from an allowed group and (b) not yet assigned.
+         This yields a valid bracket that respects FIFA's "no same-group
+         R32 matchup" constraint. It matches FIFA in the common cases but
+         not every edge scenario of the 495-entry table.
+      ---------------------------------------------- */
+      function assignThirds(rankedThirds) {
+        const slots = FIFA_R32.filter(m => m.a[0] === "3" || m.b[0] === "3");
+        const assignment = {}; // match number -> team
+        const used = new Set();
+        const pool = rankedThirds.slice(); // already best->worst
+
+        // First pass: strict — only accept teams from allowed groups.
+        slots.forEach(m => {
+          const code = m.a[0] === "3" ? m.a : m.b;
+          const parsed = parseSlot(code);
+          const pick = pool.find(t =>
+            parsed.allowed.includes(t.groupLetter) && !used.has(t.team.id)
+          );
+          if (pick) { assignment[m.n] = pick.team; used.add(pick.team.id); }
+        });
+        // Second pass: fallback if a slot wasn't satisfied (can happen
+        // when the set of 8 qualifying groups doesn't include any from
+        // a slot's allowed list — rare). Assign any remaining team.
+        slots.forEach(m => {
+          if (assignment[m.n]) return;
+          const pick = pool.find(t => !used.has(t.team.id));
+          if (pick) { assignment[m.n] = pick.team; used.add(pick.team.id); }
+        });
+        return assignment;
+      }
+
+      function resolveSlot(code, groupStandings, thirdsAssignment, matchNumber) {
+        const p = parseSlot(code);
+        if (p.kind === "place") {
+          const gs = groupStandings.find(g => g.letter === p.letter);
+          if (!gs || !gs.allPlayed) return null;
+          return gs.standings[p.place - 1]?.team || null;
+        }
+        // 3rd-placed slot — look up which R32 match this is
+        return thirdsAssignment[matchNumber] || null;
+      }
+
+      function makeDerivedMatch(id, teamA, teamB, userPicks) {
+        const wid = userPicks[`k:${id}`];
+        let winner = null;
+        if (wid != null) {
+          if (teamA && String(teamA.id) === String(wid)) winner = teamA;
+          else if (teamB && String(teamB.id) === String(wid)) winner = teamB;
+        }
+        return {
+          id, teamA, teamB, winner,
+          status: "NS", date: null, venue: null,
+          score: { home: null, away: null }, actual: null,
+        };
+      }
+
+      /* --------------------------------------------
+         Derive bracket from group picks (used when
+         API didn't provide knockout fixtures yet).
+      ---------------------------------------------- */
+      function deriveDownstream(data, userPicks) {
+        // 1) standings per group (apply user tiebreak orders)
+        const groupStandings = data.groups.map(g => ({
+          letter: g.letter,
+          ...computeStandings(g, userPicks[`tie:${g.letter}`]),
+        }));
+
+        // 2) rank 3rd-placed teams, keep the 8 best (FIFA rule)
+        const thirdsPool = groupStandings
+          .map(gs => ({
+            groupLetter: gs.letter,
+            team: gs.standings[2]?.team,
+            entry: gs.standings[2],
+            allPlayed: gs.allPlayed,
+          }))
+          .filter(x => x.team && x.allPlayed);
+        const rankedThirds = thirdsPool
+          .sort((a, b) => {
+            if (b.entry.points !== a.entry.points) return b.entry.points - a.entry.points;
+            if (b.entry.won !== a.entry.won) return b.entry.won - a.entry.won;
+            return a.groupLetter.localeCompare(b.groupLetter);
+          })
+          .slice(0, 8);
+
+        // 3) assign 3rds to the 8 FIFA slots
+        const thirdsAssignment = assignThirds(rankedThirds);
+
+        // 4) R32 from FIFA pairings
+        const r32 = FIFA_R32.map(m => {
+          const teamA = resolveSlot(m.a, groupStandings, thirdsAssignment, m.n);
+          const teamB = resolveSlot(m.b, groupStandings, thirdsAssignment, m.n);
+          return { ...makeDerivedMatch(`d-m${m.n}`, teamA, teamB, userPicks), matchNum: m.n };
+        });
+
+        const byNum = Object.fromEntries(r32.map(m => [m.matchNum, m]));
+
+        const buildFromPrev = (template) => template.map(spec => {
+          const A = byNum[spec.a]?.winner || null;
+          const B = byNum[spec.b]?.winner || null;
+          const m = { ...makeDerivedMatch(`d-m${spec.n}`, A, B, userPicks), matchNum: spec.n };
+          byNum[spec.n] = m;
+          return m;
+        });
+
+        const r16 = buildFromPrev(FIFA_R16);
+        const qf  = buildFromPrev(FIFA_QF);
+        const sf  = buildFromPrev(FIFA_SF);
+
+        // Final (102's winner vs 101's winner)
+        const [sfA, sfB] = sf;
+        const finalA = sfA?.winner || null;
+        const finalB = sfB?.winner || null;
+        const thirdA = sfA && sfA.winner && sfA.teamA && sfA.teamB
+          ? (sfA.winner.id === sfA.teamA.id ? sfA.teamB : sfA.teamA) : null;
+        const thirdB = sfB && sfB.winner && sfB.teamA && sfB.teamB
+          ? (sfB.winner.id === sfB.teamA.id ? sfB.teamB : sfB.teamA) : null;
+
+        const f     = { ...makeDerivedMatch(`d-m${FIFA_FINAL.n}`, finalA, finalB, userPicks), matchNum: FIFA_FINAL.n };
+        const third = { ...makeDerivedMatch(`d-m${FIFA_THIRD.n}`, thirdA, thirdB, userPicks), matchNum: FIFA_THIRD.n };
+
+        return { r32, r16, qf, sf, third, f };
+      }
+
+      /* --------------------------------------------
+         App
+      ---------------------------------------------- */
+      function App() {
+        const [apiKey, setApiKey] = useState(() => localStorage.getItem(LS_KEY) || "41e84d22fdba4b127a20890f19105e8b");
+        const [season, setSeason] = useState(() => localStorage.getItem(LS_SEASON) || String(DEFAULT_SEASON));
+        const [league, setLeague] = useState(() => localStorage.getItem(LS_LEAGUE) || String(DEFAULT_LEAGUE));
+        const [data, setData] = useState(() => {
+          try {
+            const cached = localStorage.getItem(LS_CACHE);
+            if (cached) return JSON.parse(cached);
+          } catch {}
+          return buildMock();
+        });
+        const [source, setSource] = useState(() => localStorage.getItem(LS_CACHE) ? "cache" : "mock");
+        const [loading, setLoading] = useState(false);
+        const [error, setError] = useState(null);
+        const [fixturesCount, setFixturesCount] = useState(null);
+        // Draft picks = what the user is currently clicking on.
+        // Saved picks = what's persisted (backend for auth users, localStorage fallback for guests).
+        const loadPicksLocal = () => {
+          try { return JSON.parse(localStorage.getItem(LS_PICKS) || "{}") || {}; }
+          catch { return {}; }
+        };
+        const [savedPicks, setSavedPicks] = useState(loadPicksLocal);
+        const [userPicks, setUserPicks] = useState(loadPicksLocal); // overlay id-> 'A'|'B'|'D'|winnerId
+        const [authToken, setAuthToken] = useState(null); // JWT from parent samsports app
+        const [backendStats, setBackendStats] = useState(null); // stats from server
+        const [saveToast, setSaveToast] = useState(false);
+        const [tab, setTab] = useState("groups");
+        const [shareOpen, setShareOpen] = useState(false);
+        const [linkCopied, setLinkCopied] = useState(false);
+        const [summaryCopied, setSummaryCopied] = useState(false);
+        const [configOpen, setConfigOpen] = useState(false); // panel hidden from end users
+
+        /* ---------- Account (MOCK auth — replace with samsports real auth) ---------- */
+        const [account, setAccount] = useState(() => {
+          try { return JSON.parse(localStorage.getItem(LS_ACCOUNT) || "null"); }
+          catch { return null; }
+        });
+        const [authModal, setAuthModal] = useState(null); // null | "signin" | "signup" | "welcome"
+        const saveAccount = (profile) => {
+          // On sign-up/in, seed a fantasy wallet if the profile doesn't already have one.
+          const withWallet = { samPointsSynced: 0, ...profile };
+          localStorage.setItem(LS_ACCOUNT, JSON.stringify(withWallet));
+          setAccount(withWallet);
+        };
+        const signOut = () => {
+          localStorage.removeItem(LS_ACCOUNT);
+          setAccount(null);
+        };
+
+        /* ---------- Auto-auth from parent samsports app via postMessage ---------- */
+        useEffect(() => {
+          const handler = (e) => {
+            if (e.data?.type === 'wcp:auth' && e.data.user) {
+              const u = e.data.user;
+              saveAccount({
+                id: u.id,
+                displayName: u.displayName,
+                country: u.country || '',
+                createdAt: new Date().toISOString(),
+              });
+              // Capture JWT token for backend API calls
+              if (e.data.token) {
+                setAuthToken(e.data.token);
+              }
+            }
+          };
+          window.addEventListener('message', handler);
+          return () => window.removeEventListener('message', handler);
+        }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+        /* ---------- Load picks from backend when authenticated ---------- */
+        useEffect(() => {
+          if (!authToken) return;
+          let cancelled = false;
+          (async () => {
+            try {
+              const { picks, stats: serverStats } = await apiLoadPicks(authToken);
+              if (cancelled) return;
+              if (picks && Object.keys(picks).length > 0) {
+                // Merge: backend picks take priority, keep any local-only keys (tie: etc.)
+                const local = loadPicksLocal();
+                const merged = { ...local, ...picks };
+                setUserPicks(merged);
+                setSavedPicks(merged);
+                // Also persist to localStorage as cache
+                try { localStorage.setItem(LS_PICKS, JSON.stringify(merged)); } catch {}
+              }
+              if (serverStats) setBackendStats(serverStats);
+            } catch (err) {
+              console.warn("[WCP] Could not load picks from backend:", err.message);
+              // Fall back to localStorage (already loaded)
+            }
+          })();
+          return () => { cancelled = true; };
+        }, [authToken]);
+
+        /* ---------- Fantasy sync — SamPoints are auto-credited on settlement ---------- */
+        const [syncToast, setSyncToast] = useState(false);
+        const syncToFantasy = useCallback(async (amount) => {
+          if (!account || amount <= 0) return;
+          // SamPoints are now credited automatically by the backend when
+          // predictions are settled (settleFixture endpoint). The sync button
+          // now refreshes the user's stats from the server.
+          if (authToken) {
+            try {
+              const resp = await fetch(
+                `${API_BASE}/predictor/stats?competition=worldcup&season=2026`,
+                { headers: apiHeaders(authToken) }
+              );
+              if (resp.ok) {
+                const { data: statsData } = await resp.json();
+                if (statsData?.stats) setBackendStats(statsData.stats);
+              }
+            } catch (err) {
+              console.warn("[WCP] Stats refresh failed:", err.message);
+            }
+          }
+          const next = {
+            ...account,
+            samPointsSynced: (account.samPointsSynced || 0) + amount,
+            lastSyncAt: new Date().toISOString(),
+          };
+          localStorage.setItem(LS_ACCOUNT, JSON.stringify(next));
+          setAccount(next);
+          setSyncToast(true);
+          setTimeout(() => setSyncToast(false), 2500);
+        }, [account, authToken]);
+
+        /* Merge user picks onto data (and derive bracket if API has no knockout yet) */
+        const merged = useMemo(() => {
+          const clone = JSON.parse(JSON.stringify(data));
+          // apply group picks
+          clone.groups.forEach(g => g.matches.forEach(m => {
+            const p = userPicks[`g:${m.id}`];
+            if (p) m.result = p;
+          }));
+          // does the live data already have a knockout bracket?
+          const ko = clone.knockout;
+          const hasLiveKo = (ko.r32?.length > 0) || (ko.r16?.length > 0)
+            || (ko.qf?.length > 0) || (ko.sf?.length > 0) || !!ko.f || !!ko.third;
+          if (!hasLiveKo) {
+            // No live bracket — derive from group standings
+            clone.knockout = deriveDownstream(clone, userPicks);
+          } else {
+            // Live bracket from API — overlay user picks
+            Object.keys(ko).forEach(k => {
+              const v = ko[k];
+              if (!v) return;
+              if (Array.isArray(v)) v.forEach(m => {
+                const wid = userPicks[`k:${m.id}`];
+                if (wid != null) {
+                  m.winner = (m.teamA && String(m.teamA.id) === String(wid))
+                    ? m.teamA
+                    : (m.teamB && String(m.teamB.id) === String(wid)) ? m.teamB : null;
+                }
+              });
+              else {
+                const wid = userPicks[`k:${v.id}`];
+                if (wid != null) {
+                  v.winner = (v.teamA && String(v.teamA.id) === String(wid))
+                    ? v.teamA
+                    : (v.teamB && String(v.teamB.id) === String(wid)) ? v.teamB : null;
+                }
+              }
+            });
+          }
+          clone.fifaRankings = data.fifaRankings || {};
+          return clone;
+        }, [data, userPicks]);
+
+        /* Load live data */
+        const handleLoad = useCallback(async () => {
+          if (!apiKey) { setError("Paste your API-Football key first."); return; }
+          setLoading(true); setError(null);
+          try {
+            const { fixtures, standings, fifaRankings } = await loadTournament({
+              apiKey, league: Number(league), season: Number(season)
+            });
+            setFixturesCount(fixtures.length);
+            if (!fixtures.length) {
+              setError(`No fixtures returned for league=${league}, season=${season}. The draw may not be finalized yet. Showing mock data.`);
+              setSource("mock");
+              return;
+            }
+            const parsed = parseFixtures(fixtures, standings);
+            parsed.fifaRankings = fifaRankings || {};
+            if (!parsed.groups.length && !parsed.knockout.r16.length && !parsed.knockout.r32.length) {
+              setError(`Fixtures returned but no group/knockout structure detected. Draw may not be finalized.`);
+              setSource("mock");
+              return;
+            }
+            setData(parsed);
+            setSource("live");
+            localStorage.setItem(LS_KEY, apiKey);
+            localStorage.setItem(LS_SEASON, season);
+            localStorage.setItem(LS_LEAGUE, league);
+            try { localStorage.setItem(LS_CACHE, JSON.stringify(parsed)); } catch {}
+            setUserPicks({}); // fresh start
+          } catch (e) {
+            setError(`Failed: ${e.message}`);
+          } finally {
+            setLoading(false);
+          }
+        }, [apiKey, league, season]);
+
+        /* Auto-load on mount if API key is present and we don't have live/cache data yet */
+        useEffect(() => {
+          if (apiKey && source !== "live" && !loading) {
+            handleLoad();
+          }
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, []);
+
+        const clearCache = () => {
+          localStorage.removeItem(LS_CACHE);
+          setData(buildMock());
+          setSource("mock");
+          setUserPicks({});
+          setFixturesCount(null);
+        };
+        const [confirmModal, setConfirmModal] = useState(null); // null | { title, message, onConfirm }
+        const resetPicks = () => {
+          setConfirmModal({
+            title: "Reset Predictions",
+            message: "This will clear all your draft and saved picks. You\u2019ll start fresh with an empty bracket.",
+            confirmLabel: "Reset Everything",
+            onConfirm: async () => {
+              setUserPicks({});
+              setSavedPicks({});
+              try { localStorage.removeItem(LS_PICKS); } catch {}
+              setConfirmModal(null);
+              // Note: backend picks are NOT deleted — they remain as history.
+              // The user simply starts fresh on the frontend.
+            },
+          });
+        };
+
+        /* Count how many picks are different between draft and saved */
+        const unsavedCount = useMemo(() => {
+          let n = 0;
+          const keys = new Set([...Object.keys(userPicks), ...Object.keys(savedPicks)]);
+          keys.forEach(k => {
+            if (String(userPicks[k] ?? "") !== String(savedPicks[k] ?? "")) n++;
+          });
+          return n;
+        }, [userPicks, savedPicks]);
+
+        const [saving, setSaving] = useState(false);
+        const savePicks = useCallback(async () => {
+          try {
+            // Always save to localStorage as cache
+            localStorage.setItem(LS_PICKS, JSON.stringify(userPicks));
+
+            // If authenticated, also save to backend
+            if (authToken) {
+              setSaving(true);
+              try {
+                await apiSavePicks(authToken, userPicks, data);
+              } catch (apiErr) {
+                console.warn("[WCP] Backend save failed, localStorage saved:", apiErr.message);
+                // Don't block — localStorage save succeeded
+              } finally {
+                setSaving(false);
+              }
+            }
+
+            setSavedPicks({ ...userPicks });
+            setSaveToast(true);
+            setTimeout(() => setSaveToast(false), 2000);
+          } catch (e) {
+            setError(`Could not save: ${e.message}`);
+          }
+        }, [userPicks, authToken, data]);
+
+        /* Ctrl/Cmd+S keyboard shortcut */
+        useEffect(() => {
+          const onKey = (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+              e.preventDefault();
+              if (unsavedCount > 0) savePicks();
+            }
+          };
+          window.addEventListener("keydown", onKey);
+          return () => window.removeEventListener("keydown", onKey);
+        }, [unsavedCount, savePicks]);
+
+        /* Picks */
+        const setGroupResult = (matchId, r) => setUserPicks(p => {
+          const key = `g:${matchId}`;
+          const next = { ...p };
+          if (p[key] === r) delete next[key]; else next[key] = r;
+          return next;
+        });
+        const setKoWinner = (matchId, teamId) => setUserPicks(p => {
+          const key = `k:${matchId}`;
+          const next = { ...p };
+          if (String(p[key]) === String(teamId)) delete next[key]; else next[key] = teamId;
+          return next;
+        });
+
+        /* Tiebreak: move a team up one slot within its tied cluster */
+        const bumpTieTeamUp = (groupLetter, teamId) => setUserPicks(p => {
+          const key = `tie:${groupLetter}`;
+          // Find the group + current standings with current override
+          const group = data.groups.find(g => g.letter === groupLetter);
+          if (!group) return p;
+          // Apply group-level picks so standings reflect current draft
+          const gClone = JSON.parse(JSON.stringify(group));
+          gClone.matches.forEach(m => {
+            const pr = p[`g:${m.id}`];
+            if (pr) m.result = pr;
+          });
+          const { standings, tieClusters } = computeStandings(gClone, p[key]);
+          const idx = standings.findIndex(s => String(s.team.id) === String(teamId));
+          if (idx <= 0) return p;
+          // Is this team part of a tie cluster and not already at its top?
+          const cluster = tieClusters.find(c => c.includes(idx));
+          if (!cluster || idx === cluster[0]) return p;
+          // Build a new full-group ordering with `teamId` swapped above its predecessor
+          const newOrder = standings.map(s => s.team.id);
+          [newOrder[idx-1], newOrder[idx]] = [newOrder[idx], newOrder[idx-1]];
+          return { ...p, [key]: newOrder };
+        });
+
+        /* Stats
+
+           We compute TWO point totals:
+
+             - projectedPoints: what the user would have if every pick
+               is correct. This is what shows on the leaderboard and
+               drives the Bragging Rights card. Grows as they pick.
+
+             - settledPoints: SamPoints actually banked. A pick only
+               banks SamPoints when the match has an `actual` result
+               AND the user's pick matches it. This is what's spendable
+               in samsports fantasy. Before the tournament starts, the
+               SamPoints balance is 0 — so users can't farm it by
+               filling in picks.
+
+           The "same points that they can use playing fantasy" rule: one
+           settled predictor point = one SamPoint = one fantasy-game
+           point. 1:1. No conversion tax.
+        ---------------------------------------------- */
+        const stats = useMemo(() => {
+          const rankings = merged.fifaRankings || {};
+          /* Upset helper: returns 2x if the picked winner is lower-ranked
+             (higher rank number) than the opponent. Otherwise 1x. */
+          const upsetMulti = (winId, loseId) => {
+            const rW = rankings[winId], rL = rankings[loseId];
+            if (!rW || !rL) return 1;     // unknown ranking → no bonus
+            return rW > rL ? 2 : 1;       // higher number = lower ranked = upset
+          };
+
+          /* Group matches */
+          let gp=0, gpts=0, gu=0, gSettled=0, gSettledPicks=0;
+          merged.groups.forEach(g => g.matches.forEach(m => {
+            if (!m.result) return;
+            gp++;
+            const isUpset = m.result !== "D" && m.teamA && m.teamB;
+            const winnerId = m.result === "A" ? m.teamA.id : m.result === "B" ? m.teamB.id : null;
+            const loserId  = m.result === "A" ? m.teamB.id : m.result === "B" ? m.teamA.id : null;
+            const multi = (isUpset && winnerId && loserId) ? upsetMulti(winnerId, loserId) : 1;
+            if (multi > 1) gu++;
+            gpts += POINTS.group * multi;
+            if (m.actual && m.actual === m.result) {
+              gSettled += POINTS.group * multi;
+              gSettledPicks++;
+            }
+          }));
+          /* Group positions: +50k per team that finishes in its predicted
+             position. We score up to 4 rows per group (pos 1..4) and
+             only settle positions when every match in the group is played.
+             Uses the tiebreak-aware computeStandings which respects the
+             user's tie order. "Actual" standings come from matches'
+             `actual` fields (same logic, just using actuals). */
+          let posProjected=0, posSettled=0;
+          merged.groups.forEach(g => {
+            // Predicted standings from user picks:
+            const pred = computeStandings(g, userPicks[`tie:${g.letter}`]);
+            if (pred.allPlayed) {
+              // If the user has picked every match, award projected position points.
+              posProjected += pred.standings.length * POINTS.groupPosition;
+            } else {
+              posProjected += pred.standings.filter(s => s.played > 0).length * POINTS.groupPosition;
+            }
+            // Actual standings: build a synthetic group where each match's
+            // result is its actual outcome. Only score if every match has
+            // actually been played.
+            const allActual = g.matches.every(m => m.actual);
+            if (!allActual) return;
+            const actualG = JSON.parse(JSON.stringify(g));
+            actualG.matches.forEach(m => { m.result = m.actual; });
+            const act = computeStandings(actualG);
+            pred.standings.forEach((p, i) => {
+              const a = act.standings[i];
+              if (a && String(a.team.id) === String(p.team.id)) {
+                posSettled += POINTS.groupPosition;
+              }
+            });
+          });
+
+          /* Knockout */
+          let kp=0, kpts=0, kSettled=0, kSettledPicks=0;
+          const tally = (m, base) => {
+            if (!m) return;
+            if (m.winner && m.teamA && m.teamB) {
+              const loserId = m.winner.id === m.teamA.id ? m.teamB.id : m.teamA.id;
+              const multi = upsetMulti(m.winner.id, loserId);
+              kp++;
+              kpts += base * multi;
+              if (m.actual) {
+                const winnerSide = m.winner.id === m.teamA.id ? "A" : "B";
+                if (m.actual === winnerSide) {
+                  kSettled += base * multi;
+                  kSettledPicks++;
+                }
+              }
+            } else if (m.winner) {
+              kp++; kpts += base;
+            }
+          };
+          merged.knockout.r32.forEach(m => tally(m, POINTS.r32));
+          merged.knockout.r16.forEach(m => tally(m, POINTS.r16));
+          merged.knockout.qf.forEach(m => tally(m, POINTS.qf));
+          merged.knockout.sf.forEach(m => tally(m, POINTS.sf));
+          tally(merged.knockout.third, POINTS.third);
+          tally(merged.knockout.f, POINTS.final);
+
+          const totalGroup = merged.groups.reduce((n,g)=>n+g.matches.length,0);
+          const totalKo = merged.knockout.r32.length + merged.knockout.r16.length +
+                          merged.knockout.qf.length + merged.knockout.sf.length +
+                          (merged.knockout.third?1:0) + (merged.knockout.f?1:0);
+          return {
+            groupPicks:gp, groupPoints:gpts, groupUpsets:gu,
+            groupPositionsProjected: posProjected,
+            groupPositionsSettled:  posSettled,
+            koPicks:kp, koPoints:kpts,
+            totalMatches: totalGroup + totalKo,
+            madePicks: gp+kp,
+            totalPoints:  gpts + kpts + posProjected,
+            settledPoints: gSettled + kSettled + posSettled,
+            settledPicks: gSettledPicks+kSettledPicks,
+            upsets: gu,
+            totalGroup, totalKo
+          };
+        }, [merged, userPicks]);
+
+        const champion = merged.knockout.f?.winner || null;
+        const f = merged.knockout.f;
+        const runnerUp = f?.winner && f?.teamA && f?.teamB
+          ? (f.winner.id === f.teamA.id ? f.teamB : f.teamA) : null;
+
+        /* Share */
+        const predictionCode = useMemo(() => {
+          try { return btoa(JSON.stringify(userPicks)).replace(/=+$/,""); }
+          catch { return ""; }
+        }, [userPicks]);
+        const shareLink = `https://samsports.io/world-cup/predictor/${predictionCode.slice(0,16)}`;
+        const copyLink = async () => {
+          try { await navigator.clipboard.writeText(shareLink);
+            setLinkCopied(true); setTimeout(()=>setLinkCopied(false),1800); } catch {}
+        };
+        const shareSummary = useMemo(() => [
+          `🏆 My World Cup Prediction`,
+          champion ? `Champion: ${champion.name}` : `Champion: TBD`,
+          runnerUp ? `Runner-up: ${runnerUp.name}` : `Runner-up: TBD`,
+          `SamPoints: ${fmtPts(stats.totalPoints)} projected · ${fmtPts(stats.settledPoints)} banked`,
+          `🔗 ${shareLink}`,
+        ].join("\n"), [champion, runnerUp, stats, shareLink]);
+        const copySummary = async () => {
+          try { await navigator.clipboard.writeText(shareSummary);
+            setSummaryCopied(true); setTimeout(()=>setSummaryCopied(false),1800); } catch {}
+        };
+
+        /* Community leaderboard — loaded from backend */
+        const [lbData, setLbData] = useState([]);
+        useEffect(() => {
+          let cancelled = false;
+          (async () => {
+            try {
+              const rows = await apiLoadLeaderboard();
+              if (!cancelled) setLbData(rows);
+            } catch (err) {
+              console.warn("[WCP] Leaderboard load failed:", err.message);
+            }
+          })();
+          return () => { cancelled = true; };
+        }, []);
+        // Refresh leaderboard when user saves picks
+        useEffect(() => {
+          if (!saveToast) return; // only refresh after a save
+          (async () => {
+            try {
+              const rows = await apiLoadLeaderboard();
+              setLbData(rows);
+            } catch {}
+          })();
+        }, [saveToast]);
+
+        const leaderboard = useMemo(() => {
+          // Map backend data to display format
+          const serverRows = lbData.map(r => ({
+            name: r.userName || `${r.firstName || ""} ${r.lastName || ""}`.trim() || "Anonymous",
+            country: r.country || "",
+            score: r.totalAwarded || 0,
+            projected: r.totalProjected || 0,
+            accuracy: r.accuracy || 0,
+            correctPicks: r.correctPicks || 0,
+            isUser: account && String(r._id) === String(account.id),
+          }));
+          // If user is authenticated but not in the server leaderboard yet, add them
+          const meInLb = account && serverRows.some(r => r.isUser);
+          const meRow = (account && !meInLb) ? [{
+            isUser: true,
+            name: account.displayName,
+            country: account.country,
+            score: backendStats?.totalAwarded || 0,
+            projected: stats.totalPoints,
+            accuracy: backendStats?.accuracy || 0,
+            correctPicks: backendStats?.correctCount || 0,
+          }] : [];
+          return [...serverRows, ...meRow]
+            .sort((a,b) => (b.score || 0) - (a.score || 0) || (b.projected || 0) - (a.projected || 0))
+            .map((r,i) => ({ ...r, rank: i+1 }));
+        }, [lbData, stats.totalPoints, account, backendStats]);
+
+        const hasKnockout = ["r32","r16","qf","sf"].some(k => merged.knockout[k].length > 0)
+          || merged.knockout.third || merged.knockout.f;
+
+        return (
+          <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,#0a1a2e_0%,#020617_55%,#000_100%)] text-slate-100">
+            <div className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-24">
+
+              {/* ---------- Header ---------- */}
+              <header className="pt-8 pb-4 flex flex-col md:flex-row md:items-end gap-4 justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center shadow-[0_0_30px_rgba(16,185,129,0.35)]">
+                    <Trophy className="h-6 w-6 text-slate-900" />
+                  </div>
+                  <div>
+                    <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                      Global Cup{" "}
+                      <span className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-sky-300 bg-clip-text text-transparent">Predictor</span>
+                      <span className="ml-2 align-middle text-[11px] uppercase tracking-widest text-emerald-300 font-bold">Live</span>
+                    </h1>
+                    <p className="text-sm text-slate-400">Powered by API-Football. Paste your key, load the current draw, predict every match.</p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* Account pill */}
+                  {account ? (
+                    <div className="inline-flex items-center gap-2 rounded-lg px-3 py-2 bg-slate-900 border border-slate-800 text-sm">
+                      <span className="text-base leading-none" title={countryName(account.country)}>{flagFor(account.country)}</span>
+                      <span className="font-semibold text-slate-100 truncate max-w-[9rem]">{account.displayName}</span>
+                      <button
+                        onClick={signOut}
+                        title="Sign out"
+                        className="text-[11px] text-slate-500 hover:text-rose-300 uppercase"
+                      >
+                        out
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        // Ask parent samsports app to open its login modal
+                        if (window.parent !== window) {
+                          window.parent.postMessage({ type: 'wcp:requestLogin' }, '*');
+                        } else {
+                          setAuthModal("signup"); // fallback if opened standalone
+                        }
+                      }}
+                      className="inline-flex items-center gap-2 rounded-lg px-3.5 py-2 bg-slate-900 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/10 text-sm font-semibold"
+                    >
+                      <Star className="h-4 w-4" /> Sign in / Join
+                    </button>
+                  )}
+
+                  {/* SamPoints wallet — only makes sense when signed in */}
+                  {account && (
+                    <SamPointsWallet
+                      account={account}
+                      stats={stats}
+                      onSync={syncToFantasy}
+                      syncToast={syncToast}
+                    />
+                  )}
+                  {/* Save / Confirm */}
+                  <button
+                    onClick={savePicks}
+                    disabled={unsavedCount === 0}
+                    title={unsavedCount === 0 ? "All predictions saved" : `${unsavedCount} unsaved pick${unsavedCount===1?"":"s"} — click to save (Ctrl/Cmd+S)`}
+                    className={
+                      "relative inline-flex items-center gap-2 rounded-lg px-3.5 py-2 font-semibold text-sm transition " +
+                      (unsavedCount > 0
+                        ? "bg-gradient-to-br from-amber-400 to-orange-500 text-slate-900 hover:brightness-110 shadow-[0_0_20px_rgba(251,191,36,0.4)] animate-pulse"
+                        : "bg-slate-800 border border-slate-700 text-slate-300 cursor-default")
+                    }
+                  >
+                    {saveToast
+                      ? <><Check className="h-4 w-4 text-emerald-300" /> Saved!</>
+                      : unsavedCount > 0
+                        ? <><Save className="h-4 w-4" /> Save ({unsavedCount})</>
+                        : <><Check className="h-4 w-4 text-emerald-300" /> Saved</>}
+                  </button>
+
+                  <button onClick={() => setShareOpen(true)} className="inline-flex items-center gap-2 rounded-lg px-3.5 py-2 bg-gradient-to-br from-emerald-400 to-cyan-500 text-slate-900 font-semibold text-sm hover:brightness-110 shadow-[0_0_20px_rgba(16,185,129,0.35)]">
+                    <Share2 className="h-4 w-4" /> Share Card
+                  </button>
+                  <button onClick={copyLink} className="inline-flex items-center gap-2 rounded-lg px-3.5 py-2 bg-slate-800 border border-slate-700 text-slate-100 text-sm hover:bg-slate-700">
+                    {linkCopied ? <Check className="h-4 w-4 text-emerald-400" /> : <Link2 className="h-4 w-4" />}
+                    {linkCopied ? "Copied!" : "Copy Link"}
+                  </button>
+                  <button onClick={resetPicks} className="inline-flex items-center gap-2 rounded-lg px-3.5 py-2 bg-slate-900 border border-slate-800 text-slate-400 hover:text-rose-300 text-sm">
+                    <RotateCcw className="h-4 w-4" /> Reset
+                  </button>
+                </div>
+              </header>
+
+              {/* ---------- Data-source panel (hidden from end users, dev-only) ---------- */}
+              {/* DataSourcePanel removed from production UI — API key is hardcoded and auto-loads */}
+
+              {/* ---------- Stats ---------- */}
+              <section className="grid grid-cols-2 md:grid-cols-5 gap-3 my-5">
+                <StatCard icon={<Target className="h-4 w-4" />} label="Picks" value={`${stats.madePicks}/${stats.totalMatches || "-"}`} color="cyan" />
+                <StatCard
+                  icon={<Sparkles className="h-4 w-4" />}
+                  label="SamPoints"
+                  value={fmtPts(stats.settledPoints)}
+                  sub={stats.totalPoints > stats.settledPoints ? `/${fmtPts(stats.totalPoints)} projected` : null}
+                  color="emerald"
+                />
+                <StatCard icon={<Flame className="h-4 w-4" />} label="Upsets" value={stats.upsets} color="orange" />
+                <StatCard icon={<Crown className="h-4 w-4" />} label="Champion" value={champion ? champion.code : "TBD"} color="amber" />
+                <StatCard icon={<Medal className="h-4 w-4" />} label="Runner-up" value={runnerUp ? runnerUp.code : "TBD"} color="slate" />
+              </section>
+
+              {/* ---------- Tabs ---------- */}
+              <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
+                <nav className="inline-flex rounded-xl bg-slate-900/80 border border-slate-800 p-1">
+                  <TabButton active={tab==="groups"} onClick={()=>setTab("groups")}>
+                    <Users className="h-4 w-4" /> Group Stage
+                    <span className="ml-1 text-[11px] text-slate-400">{stats.groupPicks}/{stats.totalGroup}</span>
+                  </TabButton>
+                  <TabButton active={tab==="knockout"} onClick={()=>setTab("knockout")}>
+                    <Swords className="h-4 w-4" /> Knockout
+                    <span className="ml-1 text-[11px] text-slate-400">{stats.koPicks}/{stats.totalKo}</span>
+                  </TabButton>
+                </nav>
+                {source === "live" && (
+                  <div className="inline-flex items-center gap-2 text-[11px] uppercase tracking-widest text-emerald-300">
+                    <Satellite className="h-3.5 w-3.5" /> Live data · {fixturesCount || "?"} fixtures
+                  </div>
+                )}
+              </div>
+
+              {/* ---------- Main ---------- */}
+              {tab === "groups" ? (
+                <GroupStage data={merged} onPick={setGroupResult} userPicks={userPicks} onBumpTie={bumpTieTeamUp} />
+              ) : (
+                <KnockoutStage data={merged} onPick={setKoWinner} />
+              )}
+
+              {/* ---------- Leaderboard ---------- */}
+              <Leaderboard
+                rows={leaderboard}
+                account={account}
+                onSignIn={() => {
+                  if (window.parent !== window) {
+                    window.parent.postMessage({ type: 'wcp:requestLogin' }, '*');
+                  } else {
+                    setAuthModal("signup");
+                  }
+                }}
+              />
+
+              <footer className="mt-10 text-center text-xs text-slate-500 space-y-1">
+                <div>Data via <span className="text-slate-300">api-football.com</span> · league {league} · season {season} · your picks stored locally</div>
+                <div>Scoring: base SamPoints per round &times; 2 for upset picks (powered by FIFA World Rankings)</div>
+              </footer>
+            </div>
+
+            {shareOpen && (
+              <ShareModal
+                onClose={()=>setShareOpen(false)}
+                champion={champion} runnerUp={runnerUp} stats={stats}
+                shareLink={shareLink} summary={shareSummary}
+                copySummary={copySummary} summaryCopied={summaryCopied}
+                copyLink={copyLink} linkCopied={linkCopied}
+                topScorer={leaderboard[0]}
+                yourRank={leaderboard.find(r=>r.isUser)?.rank || 0}
+              />
+            )}
+
+            {authModal && (
+              <AuthModal
+                mode={authModal}
+                onClose={()=>setAuthModal(null)}
+                onAuth={(profile) => {
+                  saveAccount(profile);
+                  setAuthModal(null);
+                }}
+              />
+            )}
+
+            {/* Custom confirm dialog (replaces native window.confirm) */}
+            {confirmModal && (
+              <div className="fixed inset-0 z-[9999] flex items-center justify-center" onClick={() => setConfirmModal(null)}>
+                <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+                <div
+                  className="relative w-full max-w-sm mx-4 rounded-2xl overflow-hidden border border-slate-700/60 shadow-2xl"
+                  onClick={e => e.stopPropagation()}
+                >
+                  <div className="bg-gradient-to-b from-slate-800 to-slate-900 p-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="h-10 w-10 rounded-full bg-rose-500/15 flex items-center justify-center">
+                        <AlertTriangle className="h-5 w-5 text-rose-400" />
+                      </div>
+                      <h3 className="text-lg font-bold text-white">{confirmModal.title}</h3>
+                    </div>
+                    <p className="text-sm text-slate-300 leading-relaxed mb-6">{confirmModal.message}</p>
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => setConfirmModal(null)}
+                        className="flex-1 px-4 py-2.5 rounded-xl bg-slate-700/50 border border-slate-600/50 text-slate-300 text-sm font-semibold hover:bg-slate-700"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={confirmModal.onConfirm}
+                        className="flex-1 px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-rose-500 text-white text-sm font-bold hover:brightness-110 shadow-lg shadow-rose-500/20"
+                      >
+                        {confirmModal.confirmLabel || "Confirm"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      /* --------------------------------------------
+         Data-source panel
+      ---------------------------------------------- */
+      function DataSourcePanel({ open, setOpen, apiKey, setApiKey, season, setSeason, league, setLeague, onLoad, loading, source, error, fixturesCount, clearCache, matchCount }) {
+        return (
+          <div className={`rounded-2xl border ${source==="live" ? "border-emerald-500/30 bg-emerald-400/5" : "border-slate-800 bg-slate-900/70"} overflow-hidden`}>
+            <button
+              onClick={()=>setOpen(!open)}
+              className="w-full flex items-center justify-between px-4 py-3 text-left"
+            >
+              <div className="flex items-center gap-3">
+                <div className="h-8 w-8 rounded-lg bg-slate-800 flex items-center justify-center">
+                  {source==="live" ? <Satellite className="h-4 w-4 text-emerald-300" />
+                    : source==="cache" ? <Database className="h-4 w-4 text-cyan-300" />
+                    : <AlertTriangle className="h-4 w-4 text-amber-300" />}
+                </div>
+                <div>
+                  <div className="text-sm font-semibold">
+                    {source==="live" ? "Connected to API-Football" :
+                     source==="cache" ? "Using cached tournament data" :
+                     "Using mock data — connect API to load the real draw"}
+                  </div>
+                  <div className="text-xs text-slate-400">
+                    League {league} · Season {season}
+                    {fixturesCount != null && <> · {fixturesCount} fixtures</>}
+                    {matchCount > 0 && <> · {matchCount} matches loaded</>}
+                  </div>
+                </div>
+              </div>
+              <ChevronRight className={`h-4 w-4 text-slate-400 transition ${open ? "rotate-90" : ""}`} />
+            </button>
+            {open && (
+              <div className="px-4 pb-4 pt-1 border-t border-slate-800">
+                <div className="grid grid-cols-1 md:grid-cols-[1fr_120px_120px_auto] gap-2 items-end">
+                  <div>
+                    <label className="text-[11px] uppercase text-slate-500 flex items-center gap-1"><KeyRound className="h-3 w-3" /> API-Football key</label>
+                    <input
+                      type="password"
+                      value={apiKey}
+                      onChange={e=>setApiKey(e.target.value)}
+                      placeholder="Paste your x-apisports-key"
+                      className="mt-1 w-full rounded-md bg-slate-950 border border-slate-800 px-3 py-2 text-sm font-mono focus:outline-none focus:border-emerald-400"
+                      autoComplete="off"
+                      spellCheck={false}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] uppercase text-slate-500">Season</label>
+                    <input
+                      type="number"
+                      value={season}
+                      onChange={e=>setSeason(e.target.value)}
+                      className="mt-1 w-full rounded-md bg-slate-950 border border-slate-800 px-3 py-2 text-sm font-mono focus:outline-none focus:border-emerald-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] uppercase text-slate-500">League ID</label>
+                    <input
+                      type="number"
+                      value={league}
+                      onChange={e=>setLeague(e.target.value)}
+                      className="mt-1 w-full rounded-md bg-slate-950 border border-slate-800 px-3 py-2 text-sm font-mono focus:outline-none focus:border-emerald-400"
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={onLoad}
+                      disabled={loading || !apiKey}
+                      className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 bg-gradient-to-br from-emerald-400 to-cyan-500 text-slate-900 font-semibold text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110"
+                    >
+                      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+                      {loading ? "Loading…" : "Load live data"}
+                    </button>
+                    <button
+                      onClick={clearCache}
+                      className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 bg-slate-800 border border-slate-700 text-slate-300 text-sm hover:bg-slate-700"
+                      title="Clear cached data"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+                {error && (
+                  <div className="mt-2 rounded-md bg-rose-950/40 border border-rose-900/50 px-3 py-2 text-xs text-rose-200 flex items-start gap-2">
+                    <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
+                    <span>{error}</span>
+                  </div>
+                )}
+                <div className="mt-2 text-[11px] text-slate-500 flex items-start gap-2">
+                  <Lock className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                  <span>
+                    Key is stored only in your browser's localStorage. Direct browser calls expose the key to anyone viewing the page — do NOT deploy this file publicly. For production, proxy requests through your backend.
+                    {" "}If the call is blocked by CORS when opening the file directly, run <code className="text-cyan-200">python3 -m http.server 8000</code> and open <code className="text-cyan-200">localhost:8000/WorldCupPredictor-Live.html</code> instead.
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      /* --------------------------------------------
+         Reusable presentational components
+      ---------------------------------------------- */
+      function StatCard({ icon, label, value, sub, color="cyan" }) {
+        const palette = {
+          cyan: "from-cyan-400/20 to-cyan-400/5 text-cyan-300 border-cyan-500/20",
+          emerald: "from-emerald-400/20 to-emerald-400/5 text-emerald-300 border-emerald-500/20",
+          orange: "from-orange-400/20 to-orange-400/5 text-orange-300 border-orange-500/20",
+          amber: "from-amber-400/20 to-amber-400/5 text-amber-300 border-amber-500/20",
+          slate: "from-slate-400/15 to-slate-400/5 text-slate-200 border-slate-600/30",
+        }[color];
+        return (
+          <div className={`rounded-xl bg-gradient-to-br ${palette} border p-3 backdrop-blur-sm`}>
+            <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider opacity-80">{icon}{label}</div>
+            <div className="mt-1 text-lg sm:text-xl font-bold text-white truncate">
+              {value}
+              {sub && <span className="text-[11px] font-normal text-slate-400 ml-1">{sub}</span>}
+            </div>
+          </div>
+        );
+      }
+
+      function TabButton({ active, onClick, children }) {
+        return (
+          <button onClick={onClick} className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm rounded-lg transition ${active ? "bg-gradient-to-br from-emerald-400 to-cyan-500 text-slate-900 font-semibold shadow-[0_0_20px_rgba(16,185,129,0.25)]" : "text-slate-300 hover:bg-slate-800/60"}`}>
+            {children}
+          </button>
+        );
+      }
+
+      function TeamBadge({ team, size=16 }) {
+        if (!team) return null;
+        if (team.logo) return <img src={team.logo} alt="" style={{width:size,height:size}} className="inline-block rounded-sm object-contain bg-white/5" />;
+        return <span className="text-base">{team.flag || "🏳️"}</span>;
+      }
+
+      /* ---------- Group stage ---------- */
+      function GroupStage({ data, onPick, userPicks, onBumpTie }) {
+        if (!data.groups.length) {
+          return (
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-8 text-center">
+              <Shield className="h-10 w-10 mx-auto mb-3 text-slate-500" />
+              <div className="text-lg font-semibold text-slate-200">No group data loaded</div>
+              <div className="text-sm text-slate-400 mt-1">Open the data-source panel above and click "Load live data".</div>
+            </div>
+          );
+        }
+        return (
+          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+            {data.groups.map(g => (
+              <GroupCard
+                key={g.letter}
+                group={g}
+                onPick={onPick}
+                tieOrder={userPicks?.[`tie:${g.letter}`]}
+                onBumpTie={(teamId) => onBumpTie(g.letter, teamId)}
+              />
+            ))}
+          </section>
+        );
+      }
+
+      function GroupCard({ group, onPick, tieOrder, onBumpTie }) {
+        const { standings, allPlayed, tieClusters, needsResolution } = computeStandings(group, tieOrder);
+        const tiedIdxSet = new Set(tieClusters.flat());
+        return (
+          <div className={`rounded-2xl bg-slate-900/80 overflow-hidden shadow-lg border ${needsResolution ? "border-amber-500/50" : "border-slate-800"}`}>
+            <div className="flex items-center justify-between px-3 py-1.5 border-b border-slate-800">
+              <div className="flex items-center gap-1.5">
+                <div className="h-6 w-6 rounded-md bg-gradient-to-br from-cyan-500 to-emerald-500 text-slate-900 font-black flex items-center justify-center text-xs">{group.letter}</div>
+                <div className="text-xs font-semibold">Group {group.letter}</div>
+              </div>
+              <div className="text-[11px] text-slate-400 uppercase">
+                {allPlayed ? (
+                  <span className="text-emerald-300 flex items-center gap-1"><CircleCheck className="h-3 w-3" /> Complete</span>
+                ) : (
+                  <span className="flex items-center gap-1"><CircleDot className="h-3 w-3" />{group.matches.filter(m=>m.result || m.actual).length}/{group.matches.length}</span>
+                )}
+              </div>
+            </div>
+            <div className="px-2 pt-2 pb-1.5 space-y-1">
+              {group.matches.map(m => <GroupMatchRow key={m.id} match={m} onPick={r => onPick(m.id, r)} />)}
+            </div>
+            <div className="px-2 pb-2">
+              <div className="rounded-md bg-slate-950/60 border border-slate-800 overflow-hidden">
+                <div className="grid grid-cols-[1.2rem_1fr_1.2rem_1.2rem_1.2rem_1.5rem_1.2rem] text-[9px] uppercase text-slate-500 px-2 py-1 border-b border-slate-800">
+                  <div>#</div><div>Team</div><div className="text-center">W</div><div className="text-center">D</div><div className="text-center">L</div><div className="text-center">Pts</div><div></div>
+                </div>
+                {standings.map((s, idx) => {
+                  const adv = idx < 2;
+                  const inTie = tiedIdxSet.has(idx);
+                  const cluster = tieClusters.find(c => c.includes(idx));
+                  const canMoveUp = cluster && idx > cluster[0];
+                  return (
+                    <div key={s.team.id} className={`grid grid-cols-[1.2rem_1fr_1.2rem_1.2rem_1.2rem_1.5rem_1.2rem] items-center px-2 py-1 text-[11px] ${idx<group.teams.length-1 ? "border-b border-slate-800/70" : ""} ${inTie ? "bg-amber-500/5" : ""}`}>
+                      <div className={`flex items-center justify-center h-4 w-4 rounded text-[10px] font-bold ${adv ? "bg-emerald-400/20 text-emerald-300" : "text-slate-500"}`}>{idx+1}</div>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <TeamBadge team={s.team} size={14} />
+                        <span className={`truncate ${adv ? "text-white font-medium" : "text-slate-400"}`}>{s.team.name}</span>
+                      </div>
+                      <div className="text-center text-slate-300">{s.won}</div>
+                      <div className="text-center text-slate-300">{s.drew}</div>
+                      <div className="text-center text-slate-300">{s.lost}</div>
+                      <div className={`text-center font-semibold ${adv ? "text-emerald-300" : "text-slate-400"}`}>{s.points}</div>
+                      <div className="text-center">
+                        {canMoveUp && (
+                          <button
+                            onClick={()=>onBumpTie(s.team.id)}
+                            title="Move up in the tiebreaker — these teams are level on points"
+                            className="inline-flex h-5 w-5 items-center justify-center rounded-md bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-500/40 text-[10px] font-bold leading-none"
+                          >
+                            ↑
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              {needsResolution && (
+                <div className="mt-2 rounded-md bg-amber-500/10 border border-amber-500/30 px-3 py-2 text-[11px] text-amber-200 leading-snug flex items-start gap-2">
+                  <AlertTriangle className="h-3.5 w-3.5 flex-none mt-0.5" />
+                  <span>
+                    <b>Tie on points.</b> Without a goal-prediction input we can't auto-apply FIFA's tiebreakers (GD → GF → H2H). Click <b>↑</b> next to a tied team to set who you think finishes higher.
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      }
+
+      function GroupMatchRow({ match, onPick }) {
+        const locked = !!match.actual;
+        const pA = match.actual ? match.actual === "A" : match.result === "A";
+        const pB = match.actual ? match.actual === "B" : match.result === "B";
+        const pD = match.actual ? match.actual === "D" : match.result === "D";
+        return (
+          <div className={`rounded-md border p-1 ${locked ? "bg-slate-950/80 border-cyan-900/40" : "bg-slate-950/60 border-slate-800"}`}>
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-0.5">
+              <button onClick={()=>!locked && onPick("A")} disabled={locked}
+                className={`flex items-center justify-center gap-1 px-1.5 py-1 rounded-md border-2 text-xs transition-all relative ${pA ? "bg-gradient-to-r from-emerald-600/40 to-emerald-500/30 border-emerald-400 text-white shadow-[0_0_12px_rgba(16,185,129,0.35),inset_0_1px_0_rgba(255,255,255,0.1)]" : "bg-slate-900/60 border-slate-800 text-slate-400 hover:border-slate-600 hover:text-slate-200"} ${locked ? "cursor-default opacity-90" : ""}`}>
+                <TeamBadge team={match.teamA} size={13} />
+                <span className={pA ? "font-extrabold text-white" : "font-medium"}>{match.teamA.code}</span>
+                {pA && <span className="absolute top-0 right-0.5 text-[7px] text-emerald-300">✓</span>}
+                {locked && match.score.home != null && <span className="absolute right-1.5 text-[10px] font-mono text-cyan-200">{match.score.home}</span>}
+              </button>
+              <button onClick={()=>!locked && onPick("D")} disabled={locked}
+                className={`px-1.5 py-0.5 rounded-md text-[9px] font-bold tracking-wider border-2 ${pD ? "bg-gradient-to-r from-amber-500/35 to-amber-400/25 border-amber-400 text-white shadow-[0_0_12px_rgba(251,191,36,0.3),inset_0_1px_0_rgba(255,255,255,0.1)]" : "bg-slate-900/60 border-slate-800 text-slate-500 hover:text-amber-300 hover:border-amber-500/40"} ${locked ? "cursor-default opacity-90" : ""}`}>DRAW</button>
+              <button onClick={()=>!locked && onPick("B")} disabled={locked}
+                className={`flex items-center justify-center gap-1 px-1.5 py-1 rounded-md border-2 text-xs transition-all relative ${pB ? "bg-gradient-to-l from-emerald-600/40 to-emerald-500/30 border-emerald-400 text-white shadow-[0_0_12px_rgba(16,185,129,0.35),inset_0_1px_0_rgba(255,255,255,0.1)]" : "bg-slate-900/60 border-slate-800 text-slate-400 hover:border-slate-600 hover:text-slate-200"} ${locked ? "cursor-default opacity-90" : ""}`}>
+                {locked && match.score.away != null && <span className="absolute left-1.5 text-[10px] font-mono text-cyan-200">{match.score.away}</span>}
+                <span className={pB ? "font-extrabold text-white" : "font-medium"}>{match.teamB.code}</span>
+                <TeamBadge team={match.teamB} size={13} />
+                {pB && <span className="absolute top-0 left-0.5 text-[7px] text-emerald-300">✓</span>}
+              </button>
+            </div>
+          </div>
+        );
+      }
+
+      /* ---------- Knockout ---------- */
+      function KnockoutStage({ data, onPick }) {
+        const stages = KO_ORDER.filter(k => {
+          if (k === "f") return !!data.knockout.f;
+          return data.knockout[k].length > 0;
+        });
+        if (!stages.length && !data.knockout.third) {
+          return (
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-8 text-center">
+              <Shield className="h-10 w-10 mx-auto mb-3 text-slate-500" />
+              <div className="text-lg font-semibold text-slate-200">No knockout fixtures yet</div>
+              <div className="text-sm text-slate-400 mt-1">The bracket will appear once API-Football exposes the knockout draw.</div>
+            </div>
+          );
+        }
+        return (
+          <>
+            <div className="overflow-x-auto pb-2">
+              <div className="flex gap-3 min-w-max">
+                {stages.map(key => (
+                  <BracketColumn
+                    key={key}
+                    title={KO_META[key].name}
+                    points={KO_META[key].basePoints}
+                    matches={key === "f" ? [data.knockout.f] : data.knockout[key]}
+                    onPick={onPick}
+                    final={key==="f"}
+                  />
+                ))}
+              </div>
+            </div>
+            {data.knockout.third && (
+              <div className="mt-5">
+                <div className="text-[11px] uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-1.5">
+                  <Medal className="h-3.5 w-3.5 text-amber-300" />
+                  Third-place Playoff <span className="text-amber-300 ml-auto">+{POINTS.third}pt</span>
+                </div>
+                <MatchCard match={data.knockout.third} onPick={team => team && onPick(data.knockout.third.id, team.id)} />
+              </div>
+            )}
+          </>
+        );
+      }
+
+      function BracketColumn({ title, points, matches, onPick, final=false }) {
+        return (
+          <div className="flex-1 min-w-[180px] flex flex-col">
+            <div className="text-[11px] uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
+              <span>{title}</span><span className="text-emerald-300 font-semibold">+{points}pt</span>
+            </div>
+            <div className={`flex-1 flex flex-col justify-around gap-2 ${final ? "justify-center" : ""}`}>
+              {matches.map(m => (
+                <MatchCard key={m?.id || Math.random()} match={m} big={final}
+                  onPick={team => team && m && onPick(m.id, team.id)} />
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      function MatchCard({ match, onPick, big=false }) {
+        if (!match) return null;
+        const locked = !!match.actual;
+        return (
+          <div className={`rounded-lg border overflow-hidden shadow-md transition ${locked ? "border-cyan-900/40 bg-slate-900/80" : "border-slate-800 bg-slate-900/70"} ${big ? "ring-1 ring-amber-400/30 shadow-[0_0_30px_rgba(251,191,36,0.15)]" : ""}`}>
+            {big && (
+              <div className="px-2 py-1 text-[10px] uppercase tracking-widest text-amber-300 bg-amber-400/10 flex items-center gap-1 justify-center">
+                <Crown className="h-3 w-3" /> Final{match.matchNum ? ` · M${match.matchNum}` : ""}
+              </div>
+            )}
+            {!big && match.matchNum && (
+              <div className="px-2 py-0.5 text-[9px] uppercase tracking-wider text-slate-500 bg-slate-950/60 border-b border-slate-800">
+                FIFA M{match.matchNum}
+              </div>
+            )}
+            <KoRow team={match.teamA}
+              winner={(match.actual ? match.actual==="A" : match.winner && match.teamA && match.winner.id === match.teamA.id)}
+              score={match.score.home}
+              locked={locked}
+              onClick={()=>!locked && match.teamA && onPick(match.teamA)}
+              big={big} />
+            <div className="h-px bg-slate-800" />
+            <KoRow team={match.teamB}
+              winner={(match.actual ? match.actual==="B" : match.winner && match.teamB && match.winner.id === match.teamB.id)}
+              score={match.score.away}
+              locked={locked}
+              onClick={()=>!locked && match.teamB && onPick(match.teamB)}
+              big={big} />
+            {match.date && (
+              <div className="px-2 py-1 text-[10px] text-slate-500 flex items-center justify-between border-t border-slate-800">
+                <span>{new Date(match.date).toLocaleDateString(undefined,{month:"short",day:"numeric"})}</span>
+                {locked && <span className="text-cyan-400 uppercase">FT</span>}
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      function KoRow({ team, winner, score, locked, onClick, big=false }) {
+        if (!team) {
+          return <div className={`${big ? "px-3 py-3" : "px-2 py-1.5"} text-xs text-slate-600 italic flex items-center gap-2`}>
+            <span className="opacity-60">⚽</span> awaiting result
+          </div>;
+        }
+        return (
+          <button onClick={onClick} disabled={locked}
+            className={`w-full text-left ${big ? "px-3 py-3" : "px-2 py-1.5"} flex items-center gap-2 text-xs transition ${winner ? "bg-emerald-500/20 text-emerald-200 font-semibold shadow-[inset_0_0_0_1px_rgba(52,211,153,0.4)]" : "hover:bg-slate-800/80 text-slate-200"} ${locked ? "cursor-default" : ""}`}>
+            <TeamBadge team={team} size={big?22:14} />
+            <span className={`${big ? "text-sm" : ""} truncate flex-1`}>{big ? team.name : team.code}</span>
+            {score != null && <span className="text-[11px] font-mono text-cyan-200">{score}</span>}
+            {winner && !locked && <Check className="h-3.5 w-3.5 text-emerald-300 shrink-0" />}
+          </button>
+        );
+      }
+
+      /* ---------- Leaderboard ---------- */
+      function Leaderboard({ rows, account, onSignIn }) {
+        const [mode, setMode] = useState("overall"); // "overall" | "country"
+        // Default the country filter to the signed-in user's country (if any)
+        // so they land on their own leaderboard — then let them change it.
+        const [countryFilter, setCountryFilter] = useState(
+          () => account?.country || "BR"
+        );
+        // Keep filter in sync when user signs in after the component mounts
+        useEffect(() => {
+          if (account?.country) setCountryFilter(account.country);
+        }, [account?.country]);
+
+        // Collect countries actually represented in the leaderboard,
+        // in descending player-count order, so the dropdown surfaces the
+        // active ones first.
+        const countriesInUse = useMemo(() => {
+          const counts = new Map();
+          rows.forEach(r => {
+            if (!r.country) return;
+            counts.set(r.country, (counts.get(r.country) || 0) + 1);
+          });
+          return [...counts.entries()]
+            .sort((a,b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+            .map(([code, n]) => ({ code, n }));
+        }, [rows]);
+
+        const filtered = useMemo(() => {
+          if (mode === "overall") return rows;
+          return rows.filter(r => r.country === countryFilter)
+            .map((r,i) => ({ ...r, countryRank: i+1 }));
+        }, [mode, rows, countryFilter]);
+
+        const myRow = rows.find(r => r.isUser);
+        const myCountryRank = account
+          ? rows.filter(r => r.country === account.country)
+                .findIndex(r => r.isUser) + 1
+          : 0;
+
+        return (
+          <section className="mt-10">
+            <div className="flex items-center gap-2 mb-3 flex-wrap">
+              <TrendingUp className="h-5 w-5 text-cyan-300" />
+              <h2 className="text-lg font-bold">Leaderboard</h2>
+              <span className="text-xs text-slate-500">(simulated — wired to samsports accounts)</span>
+              <div className="ml-auto inline-flex rounded-lg bg-slate-900/80 border border-slate-800 p-1">
+                <button
+                  onClick={()=>setMode("overall")}
+                  className={`px-3 py-1 text-xs rounded-md font-semibold transition ${mode==="overall" ? "bg-slate-800 text-emerald-300" : "text-slate-400 hover:text-slate-200"}`}
+                >
+                  <span className="inline-flex items-center gap-1.5"><Trophy className="h-3.5 w-3.5" /> Overall</span>
+                </button>
+                <button
+                  onClick={()=>setMode("country")}
+                  className={`px-3 py-1 text-xs rounded-md font-semibold transition ${mode==="country" ? "bg-slate-800 text-emerald-300" : "text-slate-400 hover:text-slate-200"}`}
+                >
+                  <span className="inline-flex items-center gap-1.5">🌍 By Country</span>
+                </button>
+              </div>
+            </div>
+
+            {mode === "country" && (
+              <div className="mb-3 flex items-center gap-2 flex-wrap">
+                <label className="text-xs text-slate-400">Showing</label>
+                <select
+                  value={countryFilter}
+                  onChange={e=>setCountryFilter(e.target.value)}
+                  className="bg-slate-900 border border-slate-800 rounded-md px-2 py-1 text-sm text-slate-100"
+                >
+                  {countriesInUse.map(c => (
+                    <option key={c.code} value={c.code}>
+                      {flagFor(c.code)} {countryName(c.code)} ({c.n})
+                    </option>
+                  ))}
+                </select>
+                {account && account.country === countryFilter && myCountryRank > 0 && (
+                  <span className="text-xs text-emerald-300">You're #{myCountryRank} in {countryName(countryFilter)}</span>
+                )}
+              </div>
+            )}
+
+            {/* Guest banner — invite them to sign up to rank */}
+            {!account && (
+              <div className="mb-3 rounded-lg bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 border border-emerald-500/30 px-4 py-3 flex items-center gap-3 flex-wrap">
+                <Star className="h-5 w-5 text-emerald-300 flex-none" />
+                <div className="text-sm text-slate-200 flex-1 min-w-[16rem]">
+                  <b>Playing as guest.</b> Your picks are saved on this device but you won't appear in the rankings.
+                </div>
+                <button onClick={onSignIn} className="inline-flex items-center gap-2 rounded-lg px-3.5 py-2 bg-gradient-to-br from-emerald-400 to-cyan-500 text-slate-900 font-semibold text-sm hover:brightness-110">
+                  Join the leaderboard
+                </button>
+              </div>
+            )}
+
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/70 overflow-hidden">
+              <div className="grid grid-cols-[3rem_2rem_1fr_7rem_5rem] text-[11px] uppercase text-slate-500 px-4 py-2 border-b border-slate-800">
+                <div>Rank</div><div></div><div>Player</div><div className="text-center">Winner pick</div><div className="text-right">Score</div>
+              </div>
+              {filtered.length === 0 ? (
+                <div className="px-4 py-6 text-sm text-slate-500 text-center">
+                  No players yet from {countryName(countryFilter)}. Be the first!
+                </div>
+              ) : filtered.map(row => {
+                const displayRank = mode === "country" ? row.countryRank : row.rank;
+                return (
+                  <div key={`${row.rank}-${row.name}`} className={`grid grid-cols-[3rem_2rem_1fr_7rem_5rem] items-center px-4 py-2 text-sm border-b border-slate-800/70 last:border-none ${row.isUser ? "bg-emerald-400/10 text-emerald-100" : "text-slate-300"}`}>
+                    <div className={`font-bold ${displayRank===1?"text-amber-300":displayRank===2?"text-slate-200":displayRank===3?"text-orange-300":"text-slate-500"}`}>
+                      {displayRank===1 ? <span className="inline-flex items-center gap-1"><Crown className="h-3.5 w-3.5" />1</span> : `#${displayRank}`}
+                    </div>
+                    <div className="text-center text-base leading-none" title={countryName(row.country)}>
+                      {flagFor(row.country)}
+                    </div>
+                    <div className="truncate flex items-center gap-2">
+                      {row.isUser ? <span className="inline-flex items-center gap-1.5"><Star className="h-3.5 w-3.5 text-emerald-300" /><span className="font-semibold">{row.name}</span></span> : row.name}
+                      {mode === "overall" && row.country && <span className="text-[10px] text-slate-500 uppercase">· {countryName(row.country)}</span>}
+                    </div>
+                    <div className="text-center text-xs text-slate-400 truncate">{row.winner}</div>
+                    <div className="text-right font-mono font-semibold">{fmtPts(row.score)}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        );
+      }
+
+      /* ---------- SamPoints wallet ----------
+         Users earn SamPoints from correct predictions. SamPoints are
+         1:1 spendable in samsports fantasy. The "Send to Fantasy" button
+         POSTs the unsynced amount to your fantasy backend.
+      ------------------------------------------------------------ */
+      function SamPointsWallet({ account, stats, onSync, syncToast }) {
+        // Banked = earned from matches that have already settled.
+        // Synced = portion already pushed to the fantasy wallet.
+        // Claimable = banked - synced (what the button will send).
+        const banked = stats.settledPoints || 0;
+        const synced = account.samPointsSynced || 0;
+        const claimable = Math.max(0, banked - synced);
+        const projected = stats.totalPoints || 0;
+
+        const openFantasy = () => {
+          // REAL IMPL: window.location.href = "/fantasy?ref=wcp";
+          // For now, just sync first then show a toast.
+          if (claimable > 0) onSync(claimable);
+        };
+
+        return (
+          <div className="inline-flex items-center gap-2 rounded-lg bg-slate-900 border border-amber-500/40 px-3 py-2 text-sm relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-amber-500/10 to-orange-500/5 pointer-events-none" />
+            <div className="relative flex items-center gap-2">
+              <div className="h-6 w-6 rounded-full bg-gradient-to-br from-amber-300 to-orange-400 flex items-center justify-center text-slate-900 font-black text-[11px]">S</div>
+              <div className="leading-tight">
+                <div className="text-[10px] uppercase tracking-wider text-amber-200/80">SamPoints</div>
+                <div className="font-bold text-white">
+                  {synced.toLocaleString()}
+                  {claimable > 0 && (
+                    <span className="ml-1 text-amber-300 text-xs font-semibold">+{fmtPts(claimable)}</span>
+                  )}
+                </div>
+              </div>
+            </div>
+            {claimable > 0 && (
+              <button
+                onClick={openFantasy}
+                title={`Send ${fmtPts(claimable)} SamPoints to your fantasy wallet (1 point = 1 fantasy credit)`}
+                className="relative inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 bg-gradient-to-br from-amber-400 to-orange-500 text-slate-900 font-semibold text-xs hover:brightness-110"
+              >
+                {syncToast ? <><Check className="h-3.5 w-3.5" /> Sent!</> : <>Send to Fantasy</>}
+              </button>
+            )}
+            {claimable === 0 && projected > 0 && (
+              <span className="relative text-[11px] text-slate-500 italic" title={`You could bank up to ${fmtPts(projected)} SamPoints once those matches finish`}>
+                {fmtPts(projected)} projected
+              </span>
+            )}
+          </div>
+        );
+      }
+
+      /* ---------- Auth modal (MOCK — replace with samsports SSO) ---------- */
+      function AuthModal({ mode, onClose, onAuth }) {
+        const [tab, setTab] = useState(mode === "signup" ? "signup" : "signin");
+        const [displayName, setDisplayName] = useState("");
+        const [email, setEmail] = useState("");
+        const [country, setCountry] = useState("");
+        const [error, setError] = useState(null);
+
+        useEffect(() => {
+          const onKey = e => e.key === "Escape" && onClose();
+          window.addEventListener("keydown", onKey);
+          return () => window.removeEventListener("keydown", onKey);
+        }, [onClose]);
+
+        const submit = (e) => {
+          e?.preventDefault?.();
+          setError(null);
+          if (tab === "signup") {
+            if (!displayName.trim()) return setError("Pick a display name.");
+            if (!email.trim() || !email.includes("@")) return setError("Enter a valid email.");
+            if (!country) return setError("Pick your country — it's how the per-country leaderboard works.");
+            onAuth({
+              id: "u_" + Math.random().toString(36).slice(2, 10),
+              displayName: displayName.trim(),
+              email: email.trim().toLowerCase(),
+              country,
+              createdAt: new Date().toISOString(),
+            });
+          } else {
+            // Mock sign-in: we have no backend, so just accept any email and
+            // seed a default display name. Real impl: call samsports auth.
+            if (!email.trim() || !email.includes("@")) return setError("Enter your email to sign in.");
+            onAuth({
+              id: "u_" + Math.random().toString(36).slice(2, 10),
+              displayName: email.split("@")[0],
+              email: email.trim().toLowerCase(),
+              country: country || "OTHER",
+              createdAt: new Date().toISOString(),
+            });
+          }
+        };
+
+        return (
+          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden">
+              <div className="flex items-center justify-between px-5 py-3 border-b border-slate-800">
+                <div className="inline-flex items-center gap-2 font-semibold">
+                  <Trophy className="h-4 w-4 text-emerald-300" />
+                  Join the leaderboard
+                </div>
+                <button onClick={onClose} className="h-8 w-8 rounded-md hover:bg-slate-800 flex items-center justify-center"><X className="h-4 w-4" /></button>
+              </div>
+              <div className="p-5 space-y-4">
+                <div className="inline-flex rounded-lg bg-slate-950 border border-slate-800 p-1 w-full">
+                  <button onClick={()=>setTab("signup")} className={`flex-1 py-1.5 text-xs font-semibold rounded-md ${tab==="signup" ? "bg-slate-800 text-emerald-300" : "text-slate-400"}`}>Create account</button>
+                  <button onClick={()=>setTab("signin")} className={`flex-1 py-1.5 text-xs font-semibold rounded-md ${tab==="signin" ? "bg-slate-800 text-emerald-300" : "text-slate-400"}`}>Sign in</button>
+                </div>
+
+                <form onSubmit={submit} className="space-y-3">
+                  {tab === "signup" && (
+                    <label className="block">
+                      <div className="text-[11px] uppercase tracking-wider text-slate-400 mb-1">Display name</div>
+                      <input
+                        value={displayName} onChange={e=>setDisplayName(e.target.value)}
+                        placeholder="e.g. StrikerKing07"
+                        className="w-full bg-slate-950 border border-slate-800 rounded-md px-3 py-2 text-sm text-slate-100 focus:border-emerald-500/60 outline-none"
+                      />
+                    </label>
+                  )}
+                  <label className="block">
+                    <div className="text-[11px] uppercase tracking-wider text-slate-400 mb-1">Email</div>
+                    <input
+                      type="email"
+                      value={email} onChange={e=>setEmail(e.target.value)}
+                      placeholder="you@example.com"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-md px-3 py-2 text-sm text-slate-100 focus:border-emerald-500/60 outline-none"
+                    />
+                  </label>
+                  <label className="block">
+                    <div className="text-[11px] uppercase tracking-wider text-slate-400 mb-1">
+                      {tab === "signup" ? "Country" : "Country (optional)"}
+                    </div>
+                    <select
+                      value={country} onChange={e=>setCountry(e.target.value)}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-md px-3 py-2 text-sm text-slate-100 focus:border-emerald-500/60 outline-none"
+                    >
+                      <option value="">— Select country —</option>
+                      {COUNTRIES.map(c => (
+                        <option key={c.code} value={c.code}>{c.flag} {c.name}</option>
+                      ))}
+                    </select>
+                    {tab === "signup" && (
+                      <div className="text-[11px] text-slate-500 mt-1">
+                        Your country determines which national leaderboard you appear on.
+                      </div>
+                    )}
+                  </label>
+
+                  {error && (
+                    <div className="rounded-md bg-rose-500/10 border border-rose-500/40 text-rose-200 text-xs px-3 py-2 flex items-start gap-2">
+                      <AlertTriangle className="h-3.5 w-3.5 mt-0.5 flex-none" />
+                      <span>{error}</span>
+                    </div>
+                  )}
+
+                  <button type="submit" className="w-full rounded-lg bg-gradient-to-br from-emerald-400 to-cyan-500 text-slate-900 font-semibold text-sm py-2 hover:brightness-110">
+                    {tab === "signup" ? "Create account & join leaderboard" : "Sign in"}
+                  </button>
+
+                  <div className="text-[11px] text-slate-500 leading-relaxed">
+                    <b>Note for samsports:</b> this is a local-only demo. Wire to your real auth (samsports SSO, cookie/JWT) and persist predictions + scores server-side so rankings work across devices. See the embed snippet's integration notes.
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      /* ---------- Share modal ---------- */
+      function ShareModal({ onClose, champion, runnerUp, stats, shareLink, summary, copySummary, summaryCopied, copyLink, linkCopied, topScorer, yourRank }) {
+        useEffect(() => {
+          const onKey = e => e.key === "Escape" && onClose();
+          window.addEventListener("keydown", onKey);
+          return () => window.removeEventListener("keydown", onKey);
+        }, [onClose]);
+        return (
+          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="w-full max-w-lg rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden">
+              <div className="flex items-center justify-between px-5 py-3 border-b border-slate-800">
+                <div className="inline-flex items-center gap-2 font-semibold"><Share2 className="h-4 w-4 text-emerald-300" /> Your SamPoints Card</div>
+                <button onClick={onClose} className="h-8 w-8 rounded-md hover:bg-slate-800 flex items-center justify-center"><X className="h-4 w-4" /></button>
+              </div>
+              <div className="p-5">
+                <div className="relative rounded-2xl overflow-hidden border border-emerald-400/20 bg-gradient-to-br from-slate-950 via-emerald-950/40 to-cyan-950/40 p-6">
+                  <div className="absolute -top-24 -right-24 h-48 w-48 bg-emerald-400/20 blur-3xl rounded-full" />
+                  <div className="absolute -bottom-24 -left-24 h-48 w-48 bg-cyan-400/20 blur-3xl rounded-full" />
+                  <div className="relative">
+                    <div className="flex items-center gap-2 text-xs text-emerald-300 uppercase tracking-widest"><Trophy className="h-4 w-4" /> World Cup Prediction</div>
+                    <div className="mt-5 flex flex-col items-center">
+                      <Crown className="h-6 w-6 text-amber-300 mb-1" />
+                      <div className="text-[10px] uppercase tracking-widest text-amber-300">Champion</div>
+                      <div className="mt-3 h-16 w-16 flex items-center justify-center">
+                        {champion?.logo ? <img src={champion.logo} alt="" className="h-16 w-16 object-contain" /> : <span className="text-6xl">🏆</span>}
+                      </div>
+                      <div className="font-bold text-white mt-2 text-2xl">{champion ? champion.name : "Undecided"}</div>
+                      <div className="mt-4 flex items-center gap-2 text-sm text-slate-300">
+                        <Medal className="h-4 w-4 text-slate-400" />
+                        <span className="text-[11px] uppercase tracking-wider text-slate-400">Runner-up</span>
+                        {runnerUp?.logo && <img src={runnerUp.logo} className="h-4 w-4" alt="" />}
+                        <span className="font-medium">{runnerUp ? runnerUp.name : "TBD"}</span>
+                      </div>
+                    </div>
+                    <div className="mt-6 grid grid-cols-3 gap-2">
+                      <MiniStat label="SamPoints" value={fmtPts(stats.totalPoints)} tint="emerald" />
+                      <MiniStat label="Picks" value={`${stats.madePicks}/${stats.totalMatches}`} tint="orange" />
+                      <MiniStat label="Your rank" value={`#${yourRank}`} tint="cyan" />
+                    </div>
+                    <div className="mt-4 text-[11px] text-slate-400">Leader: <span className="text-slate-200">{topScorer?.name}</span>{" — "}<span className="text-emerald-300 font-semibold">{fmtPts(topScorer?.score)} pts</span></div>
+                  </div>
+                </div>
+              </div>
+              <div className="px-5 pb-5 space-y-2">
+                <div className="rounded-lg bg-slate-950/80 border border-slate-800 p-3">
+                  <div className="text-[11px] uppercase text-slate-500 mb-1">Prediction Link</div>
+                  <div className="flex items-center gap-2">
+                    <code className="text-xs text-cyan-200 truncate flex-1">{shareLink}</code>
+                    <button onClick={copyLink} className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-slate-800 text-slate-200 text-xs hover:bg-slate-700">
+                      {linkCopied ? <Check className="h-3.5 w-3.5 text-emerald-300" /> : <Copy className="h-3.5 w-3.5" />}
+                      {linkCopied ? "Copied" : "Copy"}
+                    </button>
+                  </div>
+                </div>
+                <div className="rounded-lg bg-slate-950/80 border border-slate-800 p-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="text-[11px] uppercase text-slate-500">Share Summary</div>
+                    <button onClick={copySummary} className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-800 text-slate-200 text-xs hover:bg-slate-700">
+                      {summaryCopied ? <Check className="h-3.5 w-3.5 text-emerald-300" /> : <Copy className="h-3.5 w-3.5" />}
+                      {summaryCopied ? "Copied" : "Copy text"}
+                    </button>
+                  </div>
+                  <pre className="whitespace-pre-wrap text-[11px] text-slate-300 leading-snug">{summary}</pre>
+                </div>
+                <div className="text-[11px] text-slate-500 text-center">Tip: screenshot the card above to share it on social media.</div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      function MiniStat({ label, value, tint }) {
+        const palette = {
+          emerald: "border-emerald-400/30 text-emerald-200",
+          orange: "border-orange-400/30 text-orange-200",
+          cyan: "border-cyan-400/30 text-cyan-200",
+        }[tint];
+        return (
+          <div className={`rounded-lg border ${palette} bg-slate-950/50 p-2 text-center`}>
+            <div className="text-[10px] uppercase tracking-wider opacity-80">{label}</div>
+            <div className="font-bold text-white text-sm mt-0.5 truncate">{value}</div>
+          </div>
+        );
+      }
+
+      /* mount */
+      document.getElementById("root-loading").remove();
+      createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>

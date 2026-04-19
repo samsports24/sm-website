@@ -1,50 +1,110 @@
 import Axios from 'axios'
 import store from '../redux/store'
 import { getNotiCount } from '../redux/actions/notificationAction'
+import { attachAxiosErrorReporting } from '../utils/errorReporter'
 import football from '../assets/new_Football.png'
 import hockey from '../assets/new_Hockey.png'
-import scocer from '../assets/new_Soccerball.png'
+import soccer from '../assets/new_Soccerball.png'
 import baseball from '../assets/new_Baseball.png'
 
-//  export const base_url = 'http://localhost:8000'
-// //  export const base_url = 'https://backend.samsports.io'
-//   export const draft_base_url = 'http://localhost:8002'
-// export const frontEndUrl = 'http://localhost:3000'
+export const base_url = process.env.REACT_APP_API_URL || 'https://backend.samsports.io'
+export const frontEndUrl = process.env.REACT_APP_FRONTEND_URL || 'https://samsports.io'
+export const draft_base_url = process.env.REACT_APP_DRAFT_API_URL || 'https://backend.samsports.io'
 
-export const base_url = 'https://backend.samsports.io'
-export const frontEndUrl = 'https://samsports.io'
-export const draft_base_url = 'https://nfl-draft.samsports.io'
-
-//  export const base_url = 'http://192.168.100.10:8000'
-//  export const frontEndUrl = 'http://192.168.100.10:3000'
-// export const draft_base_url = 'http://192.168.100.10:8002'
-
-export const publicAPI = Axios.create({ baseURL: base_url })
-export const privateAPI = Axios.create({ baseURL: base_url })
-export const privateDRAFTAPI = Axios.create({ baseURL: draft_base_url })
+export const publicAPI = Axios.create({ baseURL: base_url, withCredentials: true })
+export const privateAPI = Axios.create({ baseURL: base_url, withCredentials: true })
+export const privateDRAFTAPI = Axios.create({ baseURL: draft_base_url, withCredentials: true })
 
 export const attachToken = async () => {
+  // TODO: Migrate to httpOnly cookies (requires backend cookie support)
+  // httpOnly cookies are sent automatically via withCredentials: true
+  // Fall back to localStorage token for backward compatibility during migration
   const jwt = localStorage.getItem('token')
-  privateAPI.defaults.headers.common.Authorization = `Bearer ${jwt}`
-  privateDRAFTAPI.defaults.headers.common.Authorization = `Bearer ${jwt}`
+  if (jwt) {
+    privateAPI.defaults.headers.common.Authorization = `Bearer ${jwt}`
+    privateDRAFTAPI.defaults.headers.common.Authorization = `Bearer ${jwt}`
+  }
 }
+
+// Attach error reporting to all API instances
+attachAxiosErrorReporting(publicAPI)
+attachAxiosErrorReporting(privateAPI)
+attachAxiosErrorReporting(privateDRAFTAPI)
+
+// Flag to skip stale league/team headers during league switching
+// When true, the JWT token alone determines league context on the backend
+let _switchingLeague = false
+export const setLeagueSwitching = (val) => { _switchingLeague = val }
+
+// Debounced notification count, prevents hammering server with get-count
+// on every API response (was firing ~20+ times per page load)
+let _notiTimeout = null
+const debouncedNotiCount = () => {
+  if (_notiTimeout) clearTimeout(_notiTimeout)
+  _notiTimeout = setTimeout(() => {
+    debouncedNotiCount()
+  }, 5000) // 5 seconds, only fires once after all API calls settle
+}
+
+// Inject league & team context headers on every authenticated request
+privateAPI.interceptors.request.use((config) => {
+  if (_switchingLeague) return config
+  const state = store?.getState()
+  const league = state?.league?.currentLeague?._id || state?.user?.userDetails?.team?.currentLeague?._id
+  const team = state?.user?.userDetails?.team?._id
+  if (league) config.headers['x-league-id'] = league
+  if (team) config.headers['x-team-id'] = team
+  return config
+})
+
+privateDRAFTAPI.interceptors.request.use((config) => {
+  if (_switchingLeague) return config
+  const state = store?.getState()
+  const league = state?.league?.currentLeague?._id || state?.user?.userDetails?.team?.currentLeague?._id
+  const team = state?.user?.userDetails?.team?._id
+  if (league) config.headers['x-league-id'] = league
+  if (team) config.headers['x-team-id'] = team
+  return config
+})
 
 privateAPI.interceptors.response.use(
   async (response) => {
-    store?.dispatch(getNotiCount())
+    debouncedNotiCount()
     return response
   },
   (error) => {
+    // Clear token on 401 (unauthorized/token expired)
+    if (error?.response?.status === 401) {
+      console.warn('[Auth] 401 received, token expired or invalid, clearing session')
+      localStorage.removeItem('token')
+      localStorage.removeItem('userName')
+      localStorage.removeItem('userId')
+    }
+    // Ensure error.response.data.message is always a string so notification.error()
+    // doesn't crash React by trying to render a Mongoose error object
+    if (error?.response?.data?.message && typeof error.response.data.message !== 'string') {
+      error.response.data.message = error.response.data.message?.message || 'Server Error'
+    }
     return Promise.reject(error)
   },
 )
 
 privateDRAFTAPI.interceptors.response.use(
   async (response) => {
-    store?.dispatch(getNotiCount())
+    debouncedNotiCount()
     return response
   },
   (error) => {
+    // Clear token on 401 (unauthorized/token expired)
+    if (error?.response?.status === 401) {
+      console.warn('[Auth] 401 received, token expired or invalid, clearing session')
+      localStorage.removeItem('token')
+      localStorage.removeItem('userName')
+      localStorage.removeItem('userId')
+    }
+    if (error?.response?.data?.message && typeof error.response.data.message !== 'string') {
+      error.response.data.message = error.response.data.message?.message || 'Server Error'
+    }
     return Promise.reject(error)
   },
 )
@@ -65,17 +125,32 @@ export const legalPlayers = 46
 export const proctectedSquadCount = 4
 export const nonActivePlayers = 7
 
-export const leagueSalaryCap = 199759446
+export const leagueSalaryCap = (() => { try { const s = JSON.parse(localStorage.getItem('samsports_cap_settings') || '{}'); return s.nflCeiling || 301200000; } catch { return 301200000; } })() // dynamic — editable from Admin Panel
+
+// Trade Deadline System
+export const TRADE_DEADLINE_WARNING_WEEK = 8  // Week 8: warning banner shown
+export const TRADE_DEADLINE_LOCKOUT_WEEK = 9  // Week 9+: trades locked
+
+export const isTradeDeadlinePassed = () => {
+  const SETTING = store?.getState()?.user
+  const currentWeek = SETTING?.currentWeek
+  return currentWeek >= TRADE_DEADLINE_LOCKOUT_WEEK
+}
+
+export const isTradeDeadlineWarning = () => {
+  const SETTING = store?.getState()?.user
+  const currentWeek = SETTING?.currentWeek
+  return currentWeek === TRADE_DEADLINE_WARNING_WEEK
+}
 
 export const landingSignup = () => window.open(frontEndUrl, '_self')
 
-export const includedTeams = ['64e5ee7d6e36d01a688fc6e1', '64e5ee7d6e36d01a688fc6d2']
 export const serverUrls = [
   {
     key: 'football',
-    name: 'Football',
+    name: 'A.Football',
     url: base_url,
-    frontEndUrl: `${frontEndUrl}/fantasy-league`,
+    frontEndUrl: 'https://samsports.io/homepage',
     disabled: false,
     image: football,
   },
@@ -84,56 +159,98 @@ export const serverUrls = [
     name: 'Hockey',
     url: 'https://hockeybackend.samsports.io',
     frontEndUrl: 'https://hockey.samsports.io',
-    // frontEndUrl: 'http://localhost:3002',
-    // url: 'http://localhost:9000',
     disabled: false,
     image: hockey,
   },
   {
     key: 'baseball',
     name: 'Baseball',
-    // url: 'https://baseballbackend.samsports.io',
-    // frontEndUrl: 'https://baseball.samsports.io',
-    url: 'http://localhost:8000',
-    frontEndUrl: '',
+    url: 'https://baseballbackend.samsports.io',
+    frontEndUrl: 'https://baseball.samsports.io',
     disabled: false,
     image: baseball,
   },
   {
     key: 'eleven_fc',
     name: 'Eleven F.C',
-    url: 'https://elevenfcbackend.samsports.io',
-    frontEndUrl: 'http://localhost:3000',
-    disabled: true,
-    image: scocer,
+    url: process.env.REACT_APP_SOCCER_API_URL || 'https://soccerbackend.samsports.io',
+    frontEndUrl: process.env.REACT_APP_SOCCER_URL || 'https://soccer.samsports.io',
+    registerPath: '/api/v1/users/register', // Soccer backend uses a different route path
+    disabled: false,
+    image: soccer,
   },
   {
     key: 'college_football',
     name: 'College Football',
     url: 'https://collegefootballbackend.samsports.io',
-    frontEndUrl: 'http://localhost:3000',
+    frontEndUrl: 'https://collegefootball.samsports.io',
     disabled: true,
   },
   {
     key: 'basketball',
     name: 'Basketball',
     url: 'https://basketballbackend.samsports.io',
-    frontEndUrl: 'http://localhost:3000',
+    frontEndUrl: 'https://basketball.samsports.io',
     disabled: true,
   },
-
   {
     key: 'scouts',
     name: 'Scouting',
     url: 'https://scoutsbackend.samsports.io',
-    frontEndUrl: 'http://localhost:3000',
+    frontEndUrl: 'https://scouts.samsports.io',
     disabled: true,
   },
 ]
 export const positions = {
-  DE: 'Edge',
+  DE: 'EDGE',
   DT: 'IDL',
   ILB: 'LB',
-  OLB: 'Edge',
-  // DL:'Edge'
+  OLB: 'EDGE',
+  // OTC raw positions (from /contracts page before refinement)
+  EDGE: 'EDGE',
+  IDL: 'IDL',
+  S: 'S',
+  LB: 'LB',
+  // OTC granular positions → display names
+  LT: 'LT',
+  LG: 'LG',
+  RG: 'RG',
+  RT: 'RT',
+  C: 'C',
+  FS: 'FS',
+  SS: 'SS',
+  LS: 'LS',
+  FB: 'FB',
+}
+
+/**
+ * Position group expansion map, maps filter buttons to all sub-positions
+ * Used when a filter key like "OL" needs to match C, LG, RG, LT, RT, etc.
+ */
+export const POSITION_GROUPS = {
+  OL: ['OL', 'C', 'LG', 'RG', 'LT', 'RT', 'G', 'T', 'OT', 'OG', 'OC', 'IOL'],
+  LB: ['LB', 'ILB', 'OLB', 'MLB', 'LOLB', 'ROLB', 'LILB', 'RILB', 'WLB', 'SLB'],
+  DL: ['DL', 'DE', 'DT', 'LE', 'RE', 'EDGE', 'NT', 'IDL'],
+  DE: ['DE', 'LE', 'RE', 'EDGE', 'LOLB', 'ROLB'],
+  DT: ['DT', 'NT', 'IDL', 'DL'],
+  S: ['S', 'SS', 'FS'],
+  CB: ['CB', 'SCB', 'NCB'],
+  DB: ['DB', 'CB', 'SCB', 'NCB', 'S', 'SS', 'FS'],
+  DEF: ['DEF', 'DEFENSE'],
+  'K/P': ['K', 'P', 'LS', 'K/P'],
+}
+
+/**
+ * Check if a player's position matches the selected filter key
+ * @param {string} playerPos - The player's stored position (e.g. "LT", "C", "SS")
+ * @param {string} filterKey - The filter button key (e.g. "OL", "LB", "K/P")
+ * @returns {boolean}
+ */
+export const matchesPositionFilter = (playerPos, filterKey) => {
+  if (!filterKey || filterKey === 'ALL') return true
+  if (!playerPos) return false
+  const upper = playerPos.toUpperCase().trim()
+  const group = POSITION_GROUPS[filterKey]
+  if (group) return group.includes(upper)
+  return upper === filterKey.toUpperCase()
 }

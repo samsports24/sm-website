@@ -9,7 +9,6 @@ import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import Header from '../../components/Header'
 import { getNFLFreeAgent, requestIsPicked } from '../../redux/actions/rosterAction'
 import PlayerDetailsModal from '../../components/modal/PlayerDetailsModal'
-import {includedTeams} from '../../config/constants'
 
 const NFLQualifiedFreeAgents = () => {
   const userDetail = useSelector((state) => state?.user?.userDetails)
@@ -35,7 +34,6 @@ const NFLQualifiedFreeAgents = () => {
   }, [page, filterBy])
 
   // useEffect(() => {
-  //   console.log('nflFreeAgents', nflFreeAgents)
   // }, [nflFreeAgents])
 
   const handleFilterByText = async () => {
@@ -93,29 +91,6 @@ const NFLQualifiedFreeAgents = () => {
       title: 'PLAYER NAME',
       dataIndex: 'Name',
       key: 'Name',
-      // render: (v, obj) => {
-      //   return (
-      //     <div style={{display: 'flex', alignItems:'center', gap: '5px'}}>
-      //       {v}
-      //       {obj?.InjuryStatus === 'Out' ? (
-      //         <>
-      //           <img src={require('../../assets/plus-icon.png')} width={20} height={20} />
-      //           <p className='injury_plus_text'>O</p>
-      //         </>
-      //       ) : obj?.InjuryStatus === 'Questionable' ? (
-      //         <p className='injury_status'>Q</p>
-      //       ) : obj?.InjuryStatus === 'Doubtful' ? (
-      //         <p className='injury_status'>D</p>
-      //       ) : obj?.InjuryStatus === 'Suspended' ? (
-      //         <p className='injury_status'>SSPD</p>
-      //       ) : obj?.InjuryStatus === 'Injured Reserve' ? (
-      //         <p className='injury_status'>IR</p>
-      //       ) : (
-      //         ''
-      //       )}
-      //     </div>
-      //   )
-      // },
       render: (t, obj) => {
         return (
           <PlayerDetailsModal
@@ -188,7 +163,7 @@ const NFLQualifiedFreeAgents = () => {
       key: 'auction',
       render: (_, obj) => {
         return (
-          includedTeams.indexOf(userDetail?.team?._id) !== -1 &&  <Button
+          <Button
             // disabled={qualifiedTeams.includes(userTeam?._id) ? false : true}
             disabled={!nflFreeAgents?.draftEnabled}
             loading={playerID == obj?.PlayerID}

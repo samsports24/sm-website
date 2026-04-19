@@ -1,13 +1,35 @@
 import { Col, Row, Table } from 'antd'
+import { useState, useEffect } from 'react'
 
 // Components
 import FilterBox from '../components/FilterComponent'
 import StandingHeader from '../components/StandingHeader'
 
-// Mock Data
-import { rosterData } from './mockData'
+// API
+import { privateAPI } from '../config/constants'
 
 const LeagueRules = () => {
+  const [rosterData, setRosterData] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchLeagueRules()
+  }, [])
+
+  const fetchLeagueRules = async () => {
+    try {
+      setLoading(true)
+      // Fetch league rules/settings
+      const response = await privateAPI.get('/league/get-rules')
+      setRosterData(response.data)
+    } catch (error) {
+      console.error('Error fetching league rules:', error)
+      setRosterData(null)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleFilter = () => {}
 
   const columns = [
@@ -44,7 +66,14 @@ const LeagueRules = () => {
 
       <div style={{ height: '55px' }}></div>
 
+      {/* LOADING STATE */}
+      {loading && <div style={{ textAlign: 'center', padding: '40px' }}>Loading league rules...</div>}
+
+      {/* EMPTY STATE */}
+      {!loading && !rosterData && <div style={{ textAlign: 'center', padding: '40px' }}>No league rules available</div>}
+
       {/* TABLE */}
+      {!loading && rosterData && (
       <Row gutter={[30, 30]}>
         <Col xs={24}>
           <section className='main_table_container'>
@@ -69,6 +98,7 @@ const LeagueRules = () => {
           </h2>
         </Col>
       </Row>
+      )}
     </div>
   )
 }

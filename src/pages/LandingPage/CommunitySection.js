@@ -38,32 +38,11 @@ const CommunitySection = () => {
         '“Sam Sports is an absolute game-changer in the world of fantasy sports! From the moment I logged in, I was blown away by the sleek and smooth dashboard that greeted me.”',
     },
     {
-      name: 'THOMAS CHRISTOPHER',
-      description: `“Being an owner of a  Pro Football and a Pro Hockey teams , it has been an outstanding journey for me and my GM, knowing that there is more to come. If you're looking for an innovative yet simulated version of pro sports then look no further, samsports is the one for you.”`,
+      name: ‘THOMAS CHRISTOPHER’,
+      description: `”Being an owner of a  Pro Football and a Pro Hockey teams , it has been an outstanding journey for me and my GM, knowing that there is more to come. If you’re looking for an innovative yet simulated version of pro sports then look no further, samsports is the one for you.”`,
     },
   ]
-  // const data = [
-  //   {
-  //     name: 'JOHN SURDILLA',
-  //     description:
-  //       '“In my 25+ years of playing fantasy football, both as a team owner and as commissioner of many leagues, I’ve always searched for ways to simulate the NFL General Manager experience through manipulatin... Read More',
-  //   },
-  //   {
-  //     name: 'JAMIE THOMAS',
-  //     description:
-  //       '“I’ve been playing fantasy football since 1994 and I’ve seen the game grow and grow but for some reason I was always wanting more from it. Along came SAM Sports and it has provided that extra challeng... Read More',
-  //   },
-  //   {
-  //     name: 'MAX VONCITO',
-  //     description:
-  //       '“Sam Sports is an absolute game-changer in the world of fantasy sports! From the moment I logged in, I was blown away by the sleek and smooth dashboard that greeted me. Navigating through the platform... Read More',
-  //   },
-  //   {
-  //     name: 'Thomas Christopher',
-  //     description:
-  //     `“Being an owner of a  Pro Football and a Pro Hockey teams , it has been an outstanding journey for me and my GM, knowing that there is more to come. If you're looking for an innovative yet simulated version of pro sports then look no further, samsports is the one for you.”`,
-  //   },
-  // ]
+
   return (
     <div className='community paddingInline'>
       <Carousel

@@ -5,8 +5,8 @@
 .normal-modal .ant-modal-content {
   padding: 38px 33px !important;
   border-radius: 16px !important;
-  border: 1px solid #289fc9 !important;
-  background-color: rgba(48, 33, 93, 0.4) !important;
+  border: 1px solid #22C55E !important;
+  background-color: rgba(17, 24, 39, 0.4) !important;
   backdrop-filter: blur(12px) !important;
 }
 
@@ -94,5 +94,435 @@
   .coupon_modal .modal_footer button {
     height: 40px;
     width: 100%;
+  }
+}
+
+/* ============================================
+   CREATE LEAGUE MODAL — Multi-Step Wizard
+   ============================================ */
+.cl-modal .ant-modal-content {
+  padding: 0 !important;
+  border-radius: 20px !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  background: #0d1117 !important;
+  overflow: hidden;
+}
+
+.cl-modal-inner {
+  padding: 32px 36px 28px;
+}
+
+/* ── Header ── */
+.cl-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+}
+
+.cl-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px;
+  line-height: 1.2;
+  letter-spacing: -0.3px;
+}
+
+.cl-subtitle {
+  font-size: 13px;
+  color: rgba(148, 163, 184, 0.5);
+  margin: 0;
+}
+
+.cl-close {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.4);
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.cl-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+/* ── Progress Steps ── */
+.cl-steps {
+  display: flex;
+  align-items: center;
+  margin-bottom: 32px;
+  gap: 0;
+}
+
+.cl-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.cl-step-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.25);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.cl-step--active .cl-step-dot {
+  background: #22c55e;
+  border-color: #22c55e;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.35);
+}
+
+.cl-step--done .cl-step-dot {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: #22c55e;
+  color: #22c55e;
+}
+
+.cl-step-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.3px;
+  transition: color 0.2s;
+}
+
+.cl-step--active .cl-step-label {
+  color: #fff;
+}
+
+.cl-step--done .cl-step-label {
+  color: rgba(34, 197, 94, 0.7);
+}
+
+.cl-step-line {
+  flex: 1;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  margin: 0 6px;
+  border-radius: 1px;
+  position: relative;
+}
+
+.cl-step--done .cl-step-line {
+  background: rgba(34, 197, 94, 0.25);
+}
+
+/* ── Form Overrides ── */
+.cl-form .ant-form-item {
+  margin-bottom: 20px;
+}
+
+.cl-form .ant-form-item-label > label {
+  color: rgba(148, 163, 184, 0.55) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.cl-form .ant-input,
+.cl-form .ant-picker,
+.cl-form .ant-select-selector,
+.cl-form .ant-input-password {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+
+.cl-form .ant-input-lg,
+.cl-form .ant-picker-large,
+.cl-form .ant-select-lg .ant-select-selector {
+  height: 46px !important;
+}
+
+.cl-form .ant-input:focus,
+.cl-form .ant-input-focused,
+.cl-form .ant-picker-focused,
+.cl-form .ant-select-focused .ant-select-selector {
+  border-color: rgba(34, 197, 94, 0.4) !important;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.08) !important;
+}
+
+.cl-form .ant-input:hover,
+.cl-form .ant-picker:hover,
+.cl-form .ant-select-selector:hover {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.cl-form .ant-input::placeholder,
+.cl-form .ant-picker input::placeholder {
+  color: rgba(255, 255, 255, 0.18) !important;
+}
+
+.cl-form textarea.ant-input {
+  height: auto !important;
+  min-height: 80px !important;
+  resize: vertical;
+  border-radius: 12px !important;
+}
+
+.cl-form .ant-select-arrow,
+.cl-form .ant-picker-suffix {
+  color: rgba(148, 163, 184, 0.35);
+}
+
+/* ── Two-column row ── */
+.cl-row-2 {
+  display: flex;
+  gap: 16px;
+}
+
+.cl-row-2 .cl-flex-1 {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Rate stars ── */
+.cl-rate.ant-rate {
+  margin-top: 6px;
+}
+
+.cl-form .ant-rate-star svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* ── Logo upload ── */
+.cl-logo-upload {
+  display: flex;
+}
+
+.cl-upload-zone {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.cl-upload-zone:hover {
+  background: rgba(34, 197, 94, 0.04);
+  border-color: rgba(34, 197, 94, 0.25);
+}
+
+.cl-upload-placeholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(34, 197, 94, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4ade80;
+  flex-shrink: 0;
+}
+
+.cl-upload-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cl-upload-cta {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4ade80;
+}
+
+.cl-upload-hint {
+  font-size: 11px;
+  color: rgba(148, 163, 184, 0.35);
+}
+
+/* ── Card-style radio selectors ── */
+.cl-card-radios {
+  display: flex !important;
+  gap: 12px !important;
+  width: 100%;
+}
+
+.cl-card-radios .ant-radio-wrapper {
+  display: none !important;
+}
+
+.cl-card-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cl-card-option .ant-radio-wrapper {
+  display: none !important;
+}
+
+.cl-card-option:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.cl-card-option--active {
+  background: rgba(34, 197, 94, 0.06) !important;
+  border-color: rgba(34, 197, 94, 0.35) !important;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.08);
+}
+
+.cl-card-option-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.4);
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.cl-card-option--active .cl-card-option-icon {
+  background: rgba(34, 197, 94, 0.12);
+  color: #4ade80;
+}
+
+.cl-card-option-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.cl-card-option-desc {
+  font-size: 11px;
+  color: rgba(148, 163, 184, 0.4);
+  margin-top: 2px;
+}
+
+/* ── Navigation buttons ── */
+.cl-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.cl-nav-spacer {
+  flex: 1;
+}
+
+.cl-back-btn {
+  height: 46px !important;
+  padding: 0 24px !important;
+  border-radius: 12px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  transition: all 0.2s !important;
+}
+
+.cl-back-btn:hover {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #fff !important;
+}
+
+.cl-next-btn {
+  height: 46px !important;
+  padding: 0 32px !important;
+  border-radius: 12px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  background: #22c55e !important;
+  border: none !important;
+  color: #fff !important;
+  transition: all 0.2s !important;
+}
+
+.cl-next-btn:hover {
+  background: #16a34a !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3) !important;
+}
+
+/* ── Submit button ── */
+.cl-submit-btn {
+  height: 46px !important;
+  padding: 0 32px !important;
+  border-radius: 12px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  background: #22c55e !important;
+  border: none !important;
+  color: #fff !important;
+  transition: all 0.2s !important;
+}
+
+.cl-submit-btn:hover {
+  background: #16a34a !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3) !important;
+}
+
+/* ── Panel transitions ── */
+.cl-panel {
+  min-height: 200px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 520px) {
+  .cl-modal-inner {
+    padding: 24px 20px 24px;
+  }
+  .cl-title {
+    font-size: 20px;
+  }
+  .cl-card-radios {
+    flex-direction: column !important;
+  }
+  .cl-row-2 {
+    flex-direction: column;
+    gap: 0;
+  }
+  .cl-step-label {
+    display: none;
   }
 }

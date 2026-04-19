@@ -1,113 +1,311 @@
-.league_standings_box {
+/* ══════════════════════════════════════════════
+   League Standings — NFL Modern Dark Premium
+   ══════════════════════════════════════════════ */
+
+/* ═══ Container ═══ */
+.ls {
   width: 100%;
-  border-radius: 16px;
-  border: 1px solid var(--border);
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(10,15,25,0.85);
+  overflow: hidden;
+  backdrop-filter: blur(12px);
 }
 
-.league_standings_box header {
-  width: 100%;
-  background-color: var(--primaryPurple);
-  border-radius: 16px 16px 0px 0px;
+/* ═══ Header ═══ */
+.ls-hdr {
   display: flex;
-  flex-direction: row;
-  gap: 20px;
   align-items: center;
   justify-content: space-between;
-  padding: 11px 17px;
+  padding: 11px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.02);
 }
-.league_standings_box header h3 {
-  color: var(--text);
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 28px;
-}
-.league_standings_box header p {
-  color: var(--primary);
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
+.ls-hdr-left {
   display: flex;
-  flex-direction: row;
   align-items: center;
+  gap: 9px;
+}
+.ls-hdr-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(34,197,94,0.10);
+  color: #22C55E;
+  flex-shrink: 0;
+}
+.ls-hdr-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.3px;
+  line-height: 1.15;
+}
+.ls-hdr-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #22C55E;
   cursor: pointer;
+  transition: color 0.15s;
+}
+.ls-hdr-link:hover {
+  color: #4ADE80;
 }
 
-.league_standings_box .league_standings_body {
-  padding: 19px 17px;
+/* ═══ Column Headers ═══ */
+.ls-cols {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-  max-height: 1172px;
+  align-items: center;
+  padding: 7px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.015);
+}
+.ls-col-rank {
+  width: 22px;
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+.ls-col-team {
+  flex: 1;
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 0;
+}
+.ls-col-stat {
+  text-align: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+}
+
+/* ═══ Body ═══ */
+.ls-body {
   overflow-y: auto;
 }
-
-.league_standings_box .league_standings_body .card_box {
-  width: 100%;
-  border: 1px solid var(--border);
+.ls-body::-webkit-scrollbar {
+  width: 4px;
 }
-.league_standings_box .league_standings_body .card_box .header {
-  width: 100%;
+.ls-body::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
+}
+
+/* ═══ Division Group ═══ */
+.ls-div {
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.ls-div:last-child {
+  border-bottom: none;
+}
+
+/* Division header */
+.ls-div-hdr {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
   align-items: center;
-  color: var(--primary);
-  padding: 8px 12px;
-  background-color: var(--primaryPurple);
-}
-.league_standings_box .league_standings_body .card_box .header svg {
-  cursor: pointer;
-}
-.league_standings_box .league_standings_body .card_box .header p {
-  color: var(--primary);
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  cursor: pointer;
-}
-
-.league_standings_box .league_standings_body .card_box .content {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  padding: 12px;
   justify-content: space-between;
+  padding: 8px 14px;
+  background: rgba(255,255,255,0.025);
+  cursor: pointer;
+  transition: background 0.15s;
 }
-
-.league_standings_box .league_standings_body .card_box .content .text1 {
-  color: var(--text);
+.ls-div-hdr:hover {
+  background: rgba(255,255,255,0.04);
+}
+.ls-div-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ls-div-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22C55E;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px rgba(34,197,94,0.4);
+}
+.ls-div-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: #22C55E;
+  letter-spacing: 0.3px;
+}
+.ls-div-conf {
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.3);
+}
+.ls-chev {
   font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  text-transform: uppercase;
-  opacity: 0.5;
-  margin-bottom: 3px;
+  color: rgba(255,255,255,0.3);
+  transition: transform 0.2s ease;
 }
-.league_standings_box .league_standings_body .card_box .content .text2 {
-  color: var(--text);
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
+.ls-chev--closed {
+  transform: rotate(-90deg);
 }
 
+/* ═══ Rows ═══ */
+.ls-rows {
+  display: flex;
+  flex-direction: column;
+}
+.ls-row {
+  display: flex;
+  align-items: center;
+  padding: 7px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  transition: background 0.15s;
+}
+.ls-row:hover {
+  background: rgba(255,255,255,0.03);
+}
+.ls-row:last-child {
+  border-bottom: none;
+}
+.ls-row--first {
+  background: rgba(34,197,94,0.03);
+}
+.ls-row--first:hover {
+  background: rgba(34,197,94,0.06);
+}
+
+/* Rank number */
+.ls-rank {
+  width: 22px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.4);
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+.ls-rank--first {
+  color: #22C55E;
+  font-weight: 700;
+}
+
+/* Team cell */
+.ls-team {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.ls-logo {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.ls-logo-ph {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+.ls-team-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.ls-team-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+.ls-owner {
+  font-size: 9px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.25);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+/* Stat values */
+.ls-val {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.5);
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+.ls-val--bold {
+  color: rgba(255,255,255,0.85);
+  font-weight: 700;
+}
+.ls-diff-pos {
+  color: #4ADE80;
+  font-weight: 600;
+}
+.ls-diff-neg {
+  color: #f87171;
+  font-weight: 600;
+}
+
+/* Empty state */
+.ls-empty {
+  text-align: center;
+  padding: 40px 16px;
+  color: rgba(255,255,255,0.3);
+  font-size: 12px;
+}
+
+/* ═══ Responsive ═══ */
 @media (max-width: 768px) {
-  .league_standings_box header {
-    flex-wrap: wrap;
-    gap: 0px;
+  .ls-hdr {
+    padding: 9px 10px;
   }
-  .league_standings_box header h3 {
-    font-size: 13px;
+  .ls-cols {
+    padding: 6px 10px;
   }
-  .league_standings_box header p {
-    font-size: 12px;
+  .ls-row {
+    padding: 6px 10px;
   }
-  .league_standings_box .league_standings_body .card_box .content {
-    flex-wrap: wrap;
+  .ls-div-hdr {
+    padding: 7px 10px;
+  }
+  .ls-col-stat,
+  .ls-val {
+    font-size: 10px;
+  }
+  .ls-team-name {
+    font-size: 11px;
+  }
+  .ls-logo,
+  .ls-logo-ph {
+    width: 22px;
+    height: 22px;
   }
 }

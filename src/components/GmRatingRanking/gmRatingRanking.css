@@ -1,0 +1,311 @@
+/* ═══════════════════════════════════════════════════════════
+   GM RATING RANKING — War Room Widget
+   ═══════════════════════════════════════════════════════════ */
+
+.gmr-container {
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 0;
+  overflow: hidden;
+  margin-top: 16px;
+}
+
+/* ─── Header ─── */
+.gmr-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #111827, #1A2235);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.gmr-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gmr-header-icon {
+  font-size: 18px;
+}
+
+.gmr-header h3 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #F1F5F9;
+  letter-spacing: 1.5px;
+  margin: 0;
+}
+
+.gmr-header-week {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #22C55E;
+  background: rgba(34, 197, 94, 0.12);
+  padding: 3px 10px;
+  border-radius: 6px;
+  letter-spacing: 1px;
+}
+
+/* ─── Formula Legend ─── */
+.gmr-formula {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.gmr-formula-tag {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  cursor: help;
+}
+
+.gmr-formula-diff {
+  color: #3B82F6;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.gmr-formula-score {
+  color: #22C55E;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.gmr-formula-plus {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: #64748B;
+  font-weight: 600;
+}
+
+/* ─── Rankings List ─── */
+.gmr-list {
+  padding: 6px 0;
+}
+
+.gmr-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 100px 60px;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  transition: background 0.15s ease;
+}
+
+.gmr-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.gmr-row-first {
+  background: rgba(34, 197, 94, 0.06);
+}
+
+.gmr-row-second {
+  background: rgba(59, 130, 246, 0.04);
+}
+
+.gmr-row-third {
+  background: rgba(245, 158, 11, 0.04);
+}
+
+/* Rank */
+.gmr-rank {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #64748B;
+  text-align: center;
+  width: 32px;
+}
+
+.gmr-medal {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* Team */
+.gmr-team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.gmr-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.gmr-logo-ph {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #F1F5F9;
+  flex-shrink: 0;
+}
+
+.gmr-team-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.gmr-team-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #F1F5F9;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gmr-gm-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  color: #64748B;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Rating Bar */
+.gmr-rating-area {
+  display: flex;
+  align-items: center;
+}
+
+.gmr-bar-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.gmr-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+  min-width: 2px;
+}
+
+/* Score */
+.gmr-score-area {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.gmr-score {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.gmr-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  line-height: 1;
+}
+
+/* ─── Show More Toggle ─── */
+.gmr-toggle {
+  width: 100%;
+  padding: 10px;
+  background: none;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #3B82F6;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gmr-toggle:hover {
+  background: rgba(59, 130, 246, 0.08);
+  color: #60A5FA;
+}
+
+/* ─── Loading State ─── */
+.gmr-loading {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gmr-loading-bar {
+  height: 36px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 100%);
+  border-radius: 8px;
+  animation: gmr-shimmer 1.5s infinite;
+}
+
+@keyframes gmr-shimmer {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+/* ─── Empty State ─── */
+.gmr-empty {
+  padding: 30px 20px;
+  text-align: center;
+}
+
+.gmr-empty p {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #94A3B8;
+  margin: 0;
+}
+
+.gmr-empty span {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: #64748B;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1200px) {
+  .gmr-row {
+    grid-template-columns: 28px 1fr 80px 52px;
+    gap: 6px;
+    padding: 7px 12px;
+  }
+
+  .gmr-score {
+    font-size: 16px;
+  }
+}

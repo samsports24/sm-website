@@ -1,0 +1,343 @@
+/* Error Payment Page Styles */
+
+.error-payment-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  background: #0A0F1A;
+  padding: 20px;
+  font-family: var(--font-body), sans-serif;
+}
+
+.error-payment-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 600px;
+  padding: 60px 40px;
+  background: linear-gradient(135deg, #111827 0%, #1F2A3D 100%);
+  border: 1px solid #1E293B;
+  border-radius: 24px;
+  box-shadow: 0 0 60px rgba(34, 197, 94, 0.1),
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Error Icon */
+.error-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 40px;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 100%);
+  border: 2px solid #EF4444;
+  border-radius: 50%;
+  animation: pulseIcon 2s ease-in-out infinite;
+}
+
+@keyframes pulseIcon {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 20px rgba(239, 68, 68, 0);
+  }
+}
+
+.error-icon {
+  font-size: 64px;
+  color: #EF4444;
+  line-height: 1;
+}
+
+/* Error Title */
+.error-title {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 20px 0;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+/* Error Subtitle */
+.error-subtitle {
+  font-family: var(--font-stats), sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #F59E0B;
+  margin: 0 0 30px 0;
+  text-align: center;
+  letter-spacing: 0.3px;
+}
+
+/* Error Description */
+.error-description {
+  width: 100%;
+  margin-bottom: 40px;
+  padding: 20px;
+  background: rgba(34, 197, 94, 0.05);
+  border-left: 4px solid #22C55E;
+  border-radius: 8px;
+}
+
+.error-description p {
+  font-family: var(--font-body), sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #E5E7EB;
+  line-height: 1.6;
+  margin: 0;
+  text-align: center;
+}
+
+/* Action Buttons */
+.error-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.btn-retry {
+  width: 100%;
+  height: 56px;
+  padding: 0 32px;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
+  border: none;
+  border-radius: 12px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.3);
+}
+
+.btn-retry:hover {
+  background: linear-gradient(135deg, #16A34A 0%, #15803D 100%);
+  box-shadow: 0 12px 32px rgba(34, 197, 94, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-retry:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+}
+
+.btn-back {
+  width: 100%;
+  height: 56px;
+  padding: 0 32px;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: transparent;
+  border: 2px solid #3B82F6;
+  border-radius: 12px;
+  color: #3B82F6;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-back:hover {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: #60A5FA;
+  color: #60A5FA;
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
+}
+
+.btn-back:active {
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+/* Support Info */
+.error-support {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid #1E293B;
+}
+
+.error-support p {
+  font-family: var(--font-body), sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #9CA3AF;
+  margin: 0;
+}
+
+.support-link {
+  color: #3B82F6;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  font-weight: 600;
+}
+
+.support-link:hover {
+  color: #60A5FA;
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .error-payment-card {
+    padding: 40px 24px;
+    border-radius: 20px;
+  }
+
+  .error-icon-wrapper {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 32px;
+  }
+
+  .error-icon {
+    font-size: 56px;
+  }
+
+  .error-title {
+    font-size: 32px;
+    margin-bottom: 16px;
+  }
+
+  .error-subtitle {
+    font-size: 18px;
+    margin-bottom: 24px;
+  }
+
+  .error-description {
+    padding: 16px;
+    margin-bottom: 32px;
+  }
+
+  .error-description p {
+    font-size: 15px;
+  }
+
+  .error-actions {
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .btn-retry,
+  .btn-back {
+    height: 48px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .error-payment-container {
+    padding: 16px;
+  }
+
+  .error-payment-card {
+    padding: 32px 16px;
+    border-radius: 16px;
+  }
+
+  .error-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 24px;
+  }
+
+  .error-icon {
+    font-size: 48px;
+  }
+
+  .error-title {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+
+  .error-subtitle {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+
+  .error-description {
+    padding: 12px;
+    margin-bottom: 24px;
+  }
+
+  .error-description p {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .error-actions {
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .btn-retry,
+  .btn-back {
+    height: 44px;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    padding: 0 20px;
+  }
+
+  .error-support {
+    padding-top: 16px;
+  }
+
+  .error-support p {
+    font-size: 12px;
+  }
+}
+
+/* Antd Button Overrides */
+.error-payment-card .ant-btn {
+  font-family: var(--font-heading), sans-serif;
+  border: none;
+}
+
+.error-payment-card .ant-btn:hover {
+  border: none;
+}
+
+.error-payment-card .ant-btn-primary {
+  background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
+}
+
+.error-payment-card .ant-btn-primary:hover {
+  background: linear-gradient(135deg, #16A34A 0%, #15803D 100%);
+}
+
+/* Loading state */
+.error-payment-card.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}

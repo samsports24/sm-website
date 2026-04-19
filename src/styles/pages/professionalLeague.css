@@ -1,3 +1,7 @@
+/* ═══════════════════════════════════════════════════════════
+   PROFESSIONAL LEAGUE DASHBOARD — Modern Sports Media
+   ═══════════════════════════════════════════════════════════ */
+
 .pro_league_container {
   width: 100%;
 }
@@ -35,97 +39,151 @@
   background-color: transparent !important;
 }
 
-.pro_league_container .league_details_container {
-  width: 100%;
+/* ═══════════════════════════════════════
+   LIVE NEWS TICKER
+   ═══════════════════════════════════════ */
+.ticker-bar {
   display: flex;
-  flex-direction: row;
-  gap: 27px;
-  margin-top: 20px;
+  align-items: center;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  border-radius: 8px;
+  margin-top: 14px;
+  overflow: hidden;
+  height: 38px;
 }
 
-.pro_league_container .league_details_container .left,
-.pro_league_container .league_details_container .right {
-  width: 430px !important;
-}
-.pro_league_container .league_details_container .right {
+.ticker-label {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  align-items: center;
+  gap: 5px;
+  background: var(--primary);
+  color: #000;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 0 14px;
+  height: 100%;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  position: relative;
 }
-.pro_league_container .league_details_container .center {
-  width: calc(100% - 914px);
+
+.ticker-label::after {
+  content: '';
+  position: absolute;
+  right: -8px;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  background: linear-gradient(to right, var(--primary), transparent);
+}
+
+.ticker-track-wrap {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  mask-image: linear-gradient(to right, transparent 0%, #000 3%, #000 97%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 3%, #000 97%, transparent 100%);
+}
+
+.ticker-track {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  animation: tickerScroll 35s linear infinite;
+  will-change: transform;
+}
+
+.ticker-track.ticker-paused {
+  animation-play-state: paused;
+}
+
+@keyframes tickerScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 0 24px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.ticker-item:hover {
+  color: var(--primary);
+}
+
+.ticker-bullet {
+  color: var(--primary);
+  font-size: 6px;
+  opacity: 0.7;
+}
+
+/* ═══════════════════════════════════════
+   DASHBOARD GRID — 2-Column Layout
+   Main content left, sidebar right
+   ═══════════════════════════════════════ */
+.dash-grid {
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+  align-items: flex-start;
+}
+
+/* Main column: news + transactions */
+.dash-main {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-@media (max-width: 1800px) {
-  .pro_league_container .league_details_container .center {
-    width: calc(100% - 457px);
-  }
-  .pro_league_container .league_details_container {
-    flex-wrap: wrap;
-  }
-
-  .pro_league_container .league_details_container .right {
-    flex-direction: row;
-    width: 100% !important;
-  }
-
-  /* POWER RANKING */
-  .power_ranking_box {
-    width: 50%;
-  }
-  .power_ranking_box .power_ranking_body {
-    max-height: 517px !important;
-  }
-
-  /* PLAYER RANKING */
-  .player_ranking_box {
-    width: 50%;
-  }
-  .player_ranking_box .player_ranking_body {
-    max-height: 517px !important;
-  }
+/* Sidebar: standings + top players */
+.dash-sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-@media (max-width: 1360px) {
-  .pro_league_container .league_details_container .left {
-    order: 2;
-    width: 100% !important;
-  }
-  .pro_league_container .league_details_container .center {
-    width: 100%;
-    order: 1;
-  }
-  .pro_league_container .league_details_container .right {
-    order: 3;
-  }
-
-  /* LEAGUE STANDING */
-  .league_standings_box .league_standings_body {
-    max-height: 517px !important;
-  }
-}
-
-@media (max-width: 1200px) {
-  .pro_league_container .league_details_container .right {
+/* ═══════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════ */
+@media (max-width: 900px) {
+  .dash-grid {
     flex-direction: column;
   }
-
-  /* POWER RANKING */
-  .power_ranking_box {
+  .dash-sidebar {
     width: 100%;
   }
-
-  /* PLAYER RANKING */
-  .player_ranking_box {
-    width: 100%;
-  }
-}
-
-@media (max-width: 1440px) {
   .pro_league_container .buttons_and_pagination .buttons_group button {
     font-size: 15px;
+  }
+  .ticker-bar {
+    height: 34px;
+  }
+  .ticker-item {
+    font-size: 11.5px;
+    padding: 0 18px;
+  }
+  .ticker-label {
+    padding: 0 10px;
+    font-size: 10px;
   }
 }

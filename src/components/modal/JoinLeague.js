@@ -6,7 +6,6 @@ import {
   Form,
   Row,
   Col,
-  DatePicker,
   Avatar,
   Radio,
   Rate,

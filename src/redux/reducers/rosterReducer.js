@@ -74,14 +74,11 @@ const rosterReducer = (state = initialState, action) => {
         }
       })
 
+      return {
+        ...state,
+        roasterdraftdata: payload,
+      }
     }
-  
-
-    return {
-      ...state,
-      roasterdraftdata: payload,
-    }
-
 
     case 'SET_ROSTERS_PICK_ROUND':{
       return {
@@ -97,45 +94,3 @@ const rosterReducer = (state = initialState, action) => {
 }
 
 export default rosterReducer
-
-
-
-// const initialState = {
-//   isLoading: true,
-//   data: null,
-//   nonActivePlayer: [],
-// }
-
-// const rosterReducer = (state = initialState, action) => {
-//   const { type, payload } = action
-//   switch (type) {
-//     case 'SET_ROSTER_LOADING': {
-//       return {
-//         ...state,
-//         isLoading: payload,
-//       }
-//     }
-//     case 'SET_ROSTERS': {
-//       const nonActive = []
-//       payload?.hitting?.data?.forEach((v) => {
-//         if (v?.isActive !== true) {
-//           nonActive.push(v?.player_id?._id)
-//         }
-//       })
-//       payload?.pitching?.data?.forEach((v) => {
-//         if (v?.isActive !== true) {
-//           nonActive.push(v?.player_id?._id)
-//         }
-//       })
-//       return {
-//         ...state,
-//         data: payload,
-//         nonActivePlayer: nonActive,
-//       }
-//     }
-//     default:
-//       return state
-//   }
-// }
-
-// export default rosterReducer

@@ -32,9 +32,6 @@ const DepthCard = ({ data, index, getDepthChartData,selectedValue }) => {
   }
 
   const { imageUrl, Name, Position, classKey, Opponent, Team, InjuryStatus, isPlayerLocked } = data
-  // console.log('data',data);
-  // console.log('classKey',classKey);
-  // console.log('Name',Name);
 
   function mapPosition(position) {
   return positions[position] || position;

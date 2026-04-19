@@ -15,7 +15,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    /* background: linear-gradient(180deg, #291c4a, #080611); */
+    /* background: linear-gradient(180deg, #0F1726, #0A0F1A); */
     background: rgb(50, 32, 97,0.1);
     border:2px solid rgb(255, 255, 255)
 }
@@ -79,94 +79,429 @@ font-size: 25px;
 }
 
 
-/* // stadium work */
+/* ═══════════════════════════════════════════════════════════
+   STADIUM MODAL — Redesigned
+   ═══════════════════════════════════════════════════════════ */
 
-.stadiummodal .customBTN {
-    padding: .5rem 3rem;
-    border-radius: 20px;
+.stadiummodal .ant-modal-content {
+    background: linear-gradient(165deg, #0F1726 0%, #0A0F1A 100%);
+    border: 1px solid rgba(165, 180, 252, 0.15);
+    border-radius: 16px;
+    padding: 0;
+    overflow: hidden;
 }
-
-.stadiummodal .customBTN:hover {
-    padding: .5rem 3rem;
-    /* opacity: .8; */
-    border-radius: 20px;
-}
-
-.stadiummodal  .ant-modal-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    /* background: linear-gradient(180deg, #291c4a, #080611); */
-    background: rgb(50, 32, 97);
-    border:2px solid rgb(255, 255, 255);
-    height: 50vh;
-    overflow: scroll;
-    justify-content: start;
-}
-
-
 
 .stadiummodal .ant-modal-body {
-    width: 100%;
+    padding: 0;
+}
+
+.stadiummodal .ant-modal-close {
+    color: rgba(255, 255, 255, 0.5);
+    top: 12px;
+    right: 12px;
+}
+
+.stadiummodal .ant-modal-close:hover {
+    color: #fff;
+}
+
+/* ── Modal Content Wrapper ── */
+.stm-modal-content {
     display: flex;
     flex-direction: column;
-    gap: .5rem;
+    gap: 0;
 }
 
-.stadiummodal .msgimg{
-    width: 113px;
-    margin: auto;
-}
-
-
-
-.stadiummodal .msgtext  {
+/* ── Header ── */
+.stm-modal-header {
     text-align: center;
+    padding: 28px 28px 20px;
+    background: linear-gradient(180deg, rgba(99, 102, 241, 0.12) 0%, transparent 100%);
+    border-bottom: 1px solid rgba(165, 180, 252, 0.08);
+}
+
+.stm-modal-logo {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 0 12px rgba(165, 180, 252, 0.3));
+}
+
+.stm-modal-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 6px;
+    letter-spacing: 0.5px;
+}
+
+.stm-modal-subtitle {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.55);
+    margin: 0;
+    line-height: 1.5;
+    max-width: 440px;
+    margin: 0 auto;
+}
+
+/* ── Sections Container ── */
+.stm-modal-sections {
+    padding: 20px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-height: 380px;
+    overflow-y: auto;
+}
+
+.stm-modal-sections::-webkit-scrollbar {
+    width: 4px;
+}
+.stm-modal-sections::-webkit-scrollbar-track {
+    background: transparent;
+}
+.stm-modal-sections::-webkit-scrollbar-thumb {
+    background: rgba(165, 180, 252, 0.2);
+    border-radius: 4px;
+}
+
+/* ── Individual Section ── */
+.stm-modal-section {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(165, 180, 252, 0.08);
+    border-radius: 10px;
+    padding: 14px 16px;
+    transition: border-color 0.2s;
+}
+
+.stm-modal-section:hover {
+    border-color: rgba(165, 180, 252, 0.18);
+}
+
+.stm-modal-section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.stm-modal-section-header h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e0e7ff;
+    margin: 0;
+}
+
+.stm-modal-section-icon {
+    font-size: 16px;
+    color: #22C55E;
+}
+
+.stm-modal-section-icon.stm-icon-green {
+    color: #4ade80;
+}
+
+.stm-modal-section-icon.stm-icon-amber {
+    color: #fbbf24;
+}
+
+.stm-modal-section-icon.stm-icon-emerald {
+    color: #34D399;
+}
+
+.stm-modal-section p {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+    line-height: 1.55;
+}
+
+.stm-modal-section p strong {
+    color: #e0e7ff;
+    font-weight: 600;
+}
+
+/* ── Chips ── */
+.stm-modal-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.stm-modal-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
     font-weight: 500;
-    font-style: normal;
-    color: rgb(255, 255, 255);
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    line-height: 35px;
+}
+
+.stm-modal-chip .anticon {
+    font-size: 11px;
+}
+
+.stm-chip-green {
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    color: #4ade80;
+}
+
+.stm-chip-blue {
+    background: rgba(96, 165, 250, 0.1);
+    border: 1px solid rgba(96, 165, 250, 0.2);
+    color: #60a5fa;
+}
+
+.stm-chip-red {
+    background: rgba(248, 113, 113, 0.1);
+    border: 1px solid rgba(248, 113, 113, 0.2);
+    color: #f87171;
+}
+
+/* ── Footer Button ── */
+.stm-modal-btn {
+    margin: 0 28px 24px;
+    height: 44px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.stm-modal-btn:hover {
+    background: linear-gradient(135deg, #818cf8, #4ADE80);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+    .stm-modal-header {
+        padding: 20px 20px 16px;
+    }
+    .stm-modal-sections {
+        padding: 16px 20px;
+        max-height: 320px;
+    }
+    .stm-modal-btn {
+        margin: 0 20px 20px;
+    }
+    .stm-modal-chips {
+        flex-direction: column;
+    }
 }
 
 
-.stadiummodal .clubhousetext {
-    text-align:left;
-    font-weight: 500;
-    font-style: normal;
-    color: rgb(255, 255, 255);
-    font-size: 20px;
-    /* margin-top: 20px;
-    margin-bottom: 20px; */
-    line-height: normal;
+/* ═══════════════════════════════════════════════════════════
+   CLUBHOUSE MODAL — Redesigned
+   ═══════════════════════════════════════════════════════════ */
 
+.chm-modal .ant-modal-content {
+    background: linear-gradient(165deg, #0F1726 0%, #0A0F1A 100%);
+    border: 1px solid rgba(165, 180, 252, 0.15);
+    border-radius: 16px;
+    padding: 0;
+    overflow: hidden;
 }
 
-/* .stadiummodal .clubhousetext > ul {
-        margin-top: 20px;
-    margin-bottom: 20px;
-
-} */
-
-
-
-.stadiummodal .clubhousetext > span > h2 {
-    margin-top: 19px;
-    /* margin-bottom: 10px; */
-font-size: 25px;
-
+.chm-modal .ant-modal-body {
+    padding: 0;
 }
 
-.stadiummodal .clubhousetext >span > p {
-    margin-top: 10px;
-    margin-bottom: 1px;
+/* ── Content Wrapper ── */
+.chm-content {
+    display: flex;
+    flex-direction: column;
 }
 
+/* ── Header ── */
+.chm-header {
+    text-align: center;
+    padding: 28px 28px 20px;
+    background: linear-gradient(180deg, rgba(99, 102, 241, 0.12) 0%, transparent 100%);
+    border-bottom: 1px solid rgba(165, 180, 252, 0.08);
+}
 
-.stadiummodal .ant-modal-close-x {
-    display: none;
+.chm-logo {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 0 12px rgba(165, 180, 252, 0.3));
+}
+
+.chm-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 8px;
+    letter-spacing: 0.3px;
+}
+
+.chm-subtitle {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.55);
+    margin: 0 auto;
+    line-height: 1.55;
+    max-width: 400px;
+}
+
+/* ── Reward Sections ── */
+.chm-sections {
+    padding: 20px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.chm-reward-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(165, 180, 252, 0.08);
+    border-radius: 10px;
+    padding: 14px 16px;
+    transition: border-color 0.2s;
+}
+
+.chm-reward-card:hover {
+    border-color: rgba(165, 180, 252, 0.18);
+}
+
+.chm-reward-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.chm-reward-header h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e0e7ff;
+    margin: 0;
+}
+
+.chm-reward-icon {
+    font-size: 16px;
+}
+
+/* Pro card accent */
+.chm-reward-pro {
+    border-left: 3px solid rgba(245, 158, 11, 0.5);
+}
+
+.chm-reward-pro .chm-reward-icon {
+    color: #fbbf24;
+}
+
+/* Freemium card accent */
+.chm-reward-free {
+    border-left: 3px solid rgba(165, 180, 252, 0.5);
+}
+
+.chm-reward-free .chm-reward-icon {
+    color: #a5b4fc;
+}
+
+/* Reward list */
+.chm-reward-list {
+    margin: 0;
+    padding-left: 20px;
+    list-style: none;
+}
+
+.chm-reward-list li {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.55;
+    padding: 2px 0;
+    position: relative;
+}
+
+.chm-reward-list li::before {
+    content: '•';
+    position: absolute;
+    left: -14px;
+    color: rgba(165, 180, 252, 0.4);
+}
+
+.chm-reward-list li strong {
+    color: #e0e7ff;
+    font-weight: 600;
+}
+
+/* ── Footer ── */
+.chm-footer {
+    padding: 16px 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.chm-footer-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+    line-height: 1.5;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: rgba(99, 102, 241, 0.06);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+.chm-footer-icon {
+    color: #a5b4fc;
+    font-size: 14px;
+    margin-top: 1px;
+    flex-shrink: 0;
+}
+
+.chm-btn {
+    width: 100%;
+    height: 44px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.chm-btn:hover {
+    background: linear-gradient(135deg, #818cf8, #4ADE80);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+    .chm-header {
+        padding: 20px 20px 16px;
+    }
+    .chm-sections {
+        padding: 16px 20px;
+    }
+    .chm-footer {
+        padding: 12px 20px 20px;
+    }
+    .chm-title {
+        font-size: 18px;
+    }
 }

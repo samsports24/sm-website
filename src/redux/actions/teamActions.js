@@ -51,6 +51,24 @@ export const getTeamSchedule = async (payload) => {
   }
 }
 
+/**
+ * Fetch the full 22-week season calendar (18 reg + 4 playoff)
+ * merged with actual matchup data. Auto-generates calendar if missing.
+ */
+export const getFullTeamSchedule = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/schedule/get-full-team-schedule`, payload)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    // Fallback silently, the carousel will use the old endpoint data
+    console.warn('getFullTeamSchedule failed, falling back:', err?.response?.data?.message || err.message)
+    return null
+  }
+}
+
 export const updateTeam = async (payload) => {
   try {
     attachToken()

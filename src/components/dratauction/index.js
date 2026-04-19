@@ -19,23 +19,18 @@ const DraftAuction = () => {
   const [data, setData] = useState('')
 
   const { currentLeague } = useSelector((state) => state.league)
-  // console.log('🚀 ~ ClockComponent ~ currentLeague:', currentLeague)
-  // console.log('currentLeague?.spotAuctionEnd',currentLeague?.spotAuctionEnd);
 
   const handleInputChange = (e) => {
     setBidAmount(e.target.value)
   }
   const user = useSelector((state) => state.user.userDetails)
 
-  // console.log('user', user)
 
   const round1Data = draftRounds.filter((round) => round.round === 1)
 
   const [loading, setLoading] = useState(true)
   const [isTimerFinished, setIsTimerFinished] = useState(false)
 
- 
-console.log('isTimerFinished',isTimerFinished);
   const myleague = async () => {
     await getLeagueDetails()
   }
@@ -340,7 +335,6 @@ console.log('isTimerFinished',isTimerFinished);
 
       const data = await makeBid(payload)
 
-      console.log('Bid placed successfully:', data)
       setBidAmount('')
       // const res = await getData()
       // if (res) {

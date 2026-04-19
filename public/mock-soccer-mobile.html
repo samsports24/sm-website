@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mobile Mock</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Barlow',sans-serif;background:#080d17;color:#d1d5db;overflow:hidden}
+
+/* Filter tabs row */
+.filters{display:flex;gap:6px;padding:8px 10px;flex-wrap:nowrap}
+.fbtn{display:flex;flex-direction:column;align-items:center;padding:5px 12px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+.fbtn-top{font-size:7px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;line-height:1}
+.fbtn-bot{font-size:11px;font-weight:700;color:#9ca3af;line-height:1.2}
+.fbtn.purple{border-color:rgba(139,92,246,.25);background:rgba(139,92,246,.06)}
+.fbtn.purple .fbtn-top{color:#a78bfa}
+.fbtn.purple .fbtn-bot{color:#c4b5fd}
+.fbtn.gold{border-color:rgba(234,179,8,.25);background:rgba(234,179,8,.06)}
+.fbtn.gold .fbtn-top{color:#fbbf24}
+.fbtn.gold .fbtn-bot{color:#fde68a}
+.fbtn-rookie{padding:6px 14px;border-radius:16px;font-size:11px;font-weight:600;color:#22C55E;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2)}
+
+/* Table container */
+.table-wrap{margin:6px 8px;background:#0c1422;border:1px solid rgba(255,255,255,.06);border-radius:12px;overflow:hidden}
+
+/* Table header */
+.thead{display:grid;grid-template-columns:28px 40px 1fr 30px 44px 62px 62px;align-items:center;padding:10px 10px;font-size:8px;font-weight:600;color:#5a6577;text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid rgba(255,255,255,.06)}
+
+/* Player row */
+.prow{display:grid;grid-template-columns:28px 40px 1fr 30px 44px 62px 62px;align-items:center;padding:10px 10px;border-bottom:1px solid rgba(255,255,255,.04)}
+.prow:last-child{border-bottom:none}
+
+/* Position color indicator (left edge) */
+.pos-ind{width:4px;height:36px;border-radius:2px}
+
+/* Avatar */
+.avatar{width:34px;height:34px;border-radius:50%;overflow:hidden;border:1.5px solid rgba(255,255,255,.08)}
+.avatar-inner{width:100%;height:100%;background:#1a2538;display:flex;align-items:center;justify-content:center}
+.avatar-inner.has-img{background:linear-gradient(135deg,#1a2538,#2a1f4a)}
+.avatar-icon{font-size:12px;color:#4b5563}
+
+/* Player name */
+.pname{line-height:1.2}
+.pname-first{font-size:11px;font-weight:700;color:#f9fafb;display:block}
+.pname-last{font-size:12px;font-weight:700;color:#f9fafb;display:block}
+
+/* Age */
+.age{font-size:13px;font-weight:500;color:#9ca3af;text-align:center}
+
+/* Team */
+.team{font-size:10px;font-weight:600;color:#9ca3af;text-align:center}
+
+/* Cap Hit */
+.cap{line-height:1.3}
+.cap-val{font-size:11px;font-weight:600;color:#22C55E;display:block}
+.cap-sp{font-size:8px;color:#4b5563;display:block}
+
+/* Contract */
+.contract{line-height:1.3}
+.con-val{font-size:11px;font-weight:600;color:#22C55E;display:block}
+.con-yr{font-size:8px;font-weight:600;color:#D4A843;display:block}
+
+/* Pagination */
+.pagination{display:flex;justify-content:center;align-items:center;gap:6px;padding:16px 0}
+.pg{width:30px;height:30px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:transparent;color:#6b7280;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.pg.active{border-color:rgba(59,130,246,.4);color:#60a5fa}
+.pg.dots{border:none;font-size:14px;letter-spacing:2px;color:#374151}
+
+/* Footer */
+.footer{display:flex;justify-content:center;padding:8px 0 16px}
+.footer-pill{padding:6px 24px;border:1px solid rgba(255,255,255,.08);border-radius:20px;font-size:11px;color:#4b5563;font-weight:500}
+
+/* Chat bubble */
+.chat-fab{position:fixed;bottom:70px;right:14px;width:44px;height:44px;border-radius:50%;background:#22C55E;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(34,197,94,.3)}
+.chat-fab span{font-size:20px}
+
+/* Orange dot */
+.orange-fab{position:fixed;bottom:130px;right:14px;width:44px;height:44px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(249,115,22,.3)}
+.orange-fab span{font-size:18px;color:#fff}
+</style>
+</head>
+<body>
+
+<!-- Position filter tabs -->
+<div class="filters">
+  <div class="fbtn purple"><span class="fbtn-top">DEF</span><span class="fbtn-bot">LB</span></div>
+  <div class="fbtn purple"><span class="fbtn-top">DEF</span><span class="fbtn-bot">CB</span></div>
+  <div class="fbtn purple"><span class="fbtn-top">DEF</span><span class="fbtn-bot">S</span></div>
+  <div class="fbtn gold"><span class="fbtn-top">ST</span><span class="fbtn-bot">K/P</span></div>
+  <div class="fbtn-rookie">Rookie</div>
+</div>
+
+<!-- Table -->
+<div class="table-wrap">
+
+<div class="thead">
+  <span></span>
+  <span></span>
+  <span>Player Name</span>
+  <span>Age</span>
+  <span>NFL Team</span>
+  <span>Cap Hit</span>
+  <span>Contract</span>
+</div>
+
+<!-- Row 1: A'Shawn Robinson -->
+<div class="prow">
+  <div class="pos-ind" style="background:#6b7280"></div>
+  <div class="avatar"><div class="avatar-inner has-img"><div class="avatar-icon">👤</div></div></div>
+  <div class="pname"><span class="pname-first">A'Shawn</span><span class="pname-last">Robinson</span></div>
+  <div class="age">30</div>
+  <div class="team">CAR</div>
+  <div class="cap"><span class="cap-val">$10.0M</span><span class="cap-sp">10,000,000 SP</span></div>
+  <div class="contract"><span class="con-val">$10.0M</span><span class="con-yr">1yr left</span></div>
+</div>
+
+<!-- Row 2: A.J. Brown -->
+<div class="prow">
+  <div class="pos-ind" style="background:#3b82f6"></div>
+  <div class="avatar"><div class="avatar-inner has-img" style="background:linear-gradient(135deg,#1a365d,#2a1f5a)"><div class="avatar-icon">👤</div></div></div>
+  <div class="pname"><span class="pname-first">A.J.</span><span class="pname-last">Brown</span></div>
+  <div class="age">28</div>
+  <div class="team">PHI</div>
+  <div class="cap"><span class="cap-val">$23.4M</span><span class="cap-sp">23,393,496 SP</span></div>
+  <div class="contract"><span class="con-val">$96.0M</span><span class="con-yr">9yr left</span></div>
+</div>
+
+<!-- Row 3: A.J. Green -->
+<div class="prow">
+  <div class="pos-ind" style="background:#6b7280"></div>
+  <div class="avatar"><div class="avatar-inner has-img"><div class="avatar-icon">👤</div></div></div>
+  <div class="pname"><span class="pname-first">A.J.</span><span class="pname-last">Green</span></div>
+  <div class="age">27</div>
+  <div class="team">LAR</div>
+  <div class="cap"><span class="cap-val">$1.1M</span><span class="cap-sp">1,075,000 SP</span></div>
+  <div class="contract"><span class="con-val">$1.2M</span><span class="con-yr">1yr left</span></div>
+</div>
+
+<!-- Row 4: A.J. Henning -->
+<div class="prow">
+  <div class="pos-ind" style="background:#3b82f6"></div>
+  <div class="avatar"><div class="avatar-inner"><div class="avatar-icon">📷</div></div></div>
+  <div class="pname"><span class="pname-first">A.J.</span><span class="pname-last">Henning</span></div>
+  <div class="age">24</div>
+  <div class="team">MIA</div>
+  <div class="cap"><span class="cap-val">$0.9M</span><span class="cap-sp">885,000 SP</span></div>
+  <div class="contract"><span class="con-val">$0.9M</span><span class="con-yr">2yr left</span></div>
+</div>
+
+<!-- Row 5: A.J. Terrell -->
+<div class="prow">
+  <div class="pos-ind" style="background:#6b7280"></div>
+  <div class="avatar"><div class="avatar-inner has-img"><div class="avatar-icon">👤</div></div></div>
+  <div class="pname"><span class="pname-first">A.J.</span><span class="pname-last">Terrell</span></div>
+  <div class="age">27</div>
+  <div class="team">ATL</div>
+  <div class="cap"><span class="cap-val">$13.5M</span><span class="cap-sp">13,500,000 SP</span></div>
+  <div class="contract"><span class="con-val">$15.0M</span><span class="con-yr">4yr left</span></div>
+</div>
+
+<!-- Row 6: A.J. Woods -->
+<div class="prow">
+  <div class="pos-ind" style="background:#6b7280"></div>
+  <div class="avatar"><div class="avatar-inner"><div class="avatar-icon">📷</div></div></div>
+  <div class="pname"><span class="pname-first">A.J.</span><span class="pname-last">Woods</span></div>
+  <div class="age">24</div>
+  <div class="team">PHI</div>
+  <div class="cap"><span class="cap-val">$0.9M</span><span class="cap-sp">885,000 SP</span></div>
+  <div class="contract"><span class="con-val">$0.9M</span><span class="con-yr">1yr left</span></div>
+</div>
+
+<!-- Row 7: A.T. Perry -->
+<div class="prow">
+  <div class="pos-ind" style="background:#3b82f6"></div>
+  <div class="avatar"><div class="avatar-inner"><div class="avatar-icon">📷</div></div></div>
+  <div class="pname"><span class="pname-first">A.T.</span><span class="pname-last">Perry</span></div>
+  <div class="age">26</div>
+  <div class="team">DEN</div>
+  <div class="cap"><span class="cap-val">$1.1M</span><span class="cap-sp">1,075,000 SP</span></div>
+  <div class="contract"><span class="con-val">$1.1M</span><span class="con-yr">1yr left</span></div>
+</div>
+
+<!-- Row 8: AJ Arcuri -->
+<div class="prow">
+  <div class="pos-ind" style="background:#6b7280"></div>
+  <div class="avatar"><div class="avatar-inner has-img"><div class="avatar-icon">👤</div></div></div>
+  <div class="pname"><span class="pname-first">AJ</span><span class="pname-last">Arcuri</span></div>
+  <div class="age">28</div>
+  <div class="team">LA Rams</div>
+  <div class="cap"><span class="cap-val">- SP</span></div>
+  <div class="contract"><span class="con-val">-</span></div>
+</div>
+
+<!-- Row 9: AJ Barner -->
+<div class="prow">
+  <div class="pos-ind" style="background:#6b7280"></div>
+  <div class="avatar"><div class="avatar-inner has-img"><div class="avatar-icon">👤</div></div></div>
+  <div class="pname"><span class="pname-first">AJ</span><span class="pname-last">Barner</span></div>
+  <div class="age">23</div>
+  <div class="team">SEA</div>
+  <div class="cap"><span class="cap-val">$1.3M</span><span class="cap-sp">1,263,777 SP</span></div>
+  <div class="contract"><span class="con-val">$1.1M</span><span class="con-yr">2yr left</span></div>
+</div>
+
+<!-- Row 10: AJ Cole -->
+<div class="prow">
+  <div class="pos-ind" style="background:#6b7280"></div>
+  <div class="avatar"><div class="avatar-inner has-img"><div class="avatar-icon">👤</div></div></div>
+  <div class="pname"><span class="pname-first">AJ</span><span class="pname-last">Cole</span></div>
+  <div class="age">27</div>
+  <div class="team">LV</div>
+  <div class="cap"><span class="cap-val">$5.0M</span><span class="cap-sp">5,000,000 SP</span></div>
+  <div class="contract"><span class="con-val">$4.0M</span><span class="con-yr">4yr left</span></div>
+</div>
+
+</div><!-- /table-wrap -->
+
+<!-- Pagination -->
+<div class="pagination">
+  <div class="pg">&lt;</div>
+  <div class="pg active">1</div>
+  <div class="pg">2</div>
+  <div class="pg">3</div>
+  <div class="pg">4</div>
+  <div class="pg dots">···</div>
+  <div class="pg">319</div>
+  <div class="pg">&gt;</div>
+</div>
+
+<!-- Footer -->
+<div class="footer"><div class="footer-pill">samsports.io</div></div>
+
+<!-- FABs -->
+<div class="orange-fab"><span>🎙️</span></div>
+<div class="chat-fab"><span>💬</span></div>
+
+</body>
+</html>

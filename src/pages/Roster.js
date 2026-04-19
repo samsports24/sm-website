@@ -1,14 +1,45 @@
-import { Table } from 'antd'
+import { Table, Empty, Spin } from 'antd'
+import { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 
 // Components
 import FilterBox from '../components/FilterComponent'
 import StandingHeader from '../components/StandingHeader'
-
-// Mock Data
 import Pagination from '../components/Pagination'
-import { rosterData } from './mockData'
+
+// API
+import { privateAPI, attachToken } from '../config/constants'
 
 const Roster = () => {
+  const SETTING = useSelector((state) => state?.user?.setting)
+  const currentLeagueId = useSelector((state) => state?.user?.userDetails?.team?.currentLeague?._id)
+  const [rosterData, setRosterData] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    if (SETTING?.week) {
+      fetchRosterData()
+    }
+  }, [SETTING?.week, currentLeagueId])
+
+  const fetchRosterData = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      await attachToken()
+      const res = await privateAPI.get(`/team/get-roster/${SETTING?.week || 1}`)
+      if (res?.data?.data) {
+        setRosterData(res.data.data)
+      }
+    } catch (err) {
+      setError(err?.response?.data?.message || 'Failed to fetch roster data')
+      console.error('Error fetching roster:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleFilter = () => {}
 
   const columns = [
@@ -33,6 +64,35 @@ const Roster = () => {
       key: 'salary',
     },
   ]
+
+  if (loading) {
+    return (
+      <div className='roster_container'>
+        <StandingHeader />
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+          <Spin size='large' tip='Loading roster data...' />
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className='roster_container'>
+        <StandingHeader />
+        <Empty description={error} style={{ marginTop: '50px' }} />
+      </div>
+    )
+  }
+
+  if (!rosterData) {
+    return (
+      <div className='roster_container'>
+        <StandingHeader />
+        <Empty description='No roster data available' style={{ marginTop: '50px' }} />
+      </div>
+    )
+  }
 
   return (
     <div className='roster_container'>

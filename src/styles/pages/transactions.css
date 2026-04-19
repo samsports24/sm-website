@@ -7,3 +7,16 @@
 
 /* TABLE TRANSACTIONS */
 /* General Css */
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .transactions_container {
+    padding: 0 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .transactions_container {
+    padding: 0 8px;
+  }
+}

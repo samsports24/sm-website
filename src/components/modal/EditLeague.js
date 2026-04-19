@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Modal, Button, Input, Form, Row, Col, DatePicker, Avatar, Radio, Rate, Select } from 'antd'
+import { Modal, Button, Input, Form, Row, Col, Avatar, Radio, Rate, Select } from 'antd'
+import SamDatePicker from '../SamDatePicker'
 import LeagueEmptyCard from '../NewPopularLeagueCard/EmptyCard'
 import { updateLeagueCommissioner } from '../../redux'
 import { landingSignup } from '../../config/constants'
@@ -13,10 +14,10 @@ const EditLeague = ({ data, isCommissioner = false }) => {
   const [imageSrc, setImageSrc] = useState(null)
   const [file, setFile] = useState(null)
   const [isPrivate, setIsPrivate] = useState(false)
+  const [leagueMode, setLeagueMode] = useState('full')
 
   useEffect(() => {
     if(isModalVisible && data){
-      console.log("data inside edit league modal", data)
       data?.name && form.setFieldValue('name', data?.name)
       data?.numberOfTeams && form.setFieldValue('numberOfTeams', data?.numberOfTeams)
       data?.draftType && form.setFieldValue('draftType', data?.draftType)
@@ -27,6 +28,9 @@ const EditLeague = ({ data, isCommissioner = false }) => {
       data?.description && form.setFieldValue('description', data?.description)
       data?.draftStart && form.setFieldValue('draftStart', dayjs(data?.draftStart))
       data?.leagueType && form.setFieldValue('leagueType', data?.leagueType)
+      data?.leagueMode && form.setFieldValue('leagueMode', data?.leagueMode)
+      data?.scoringMode && form.setFieldValue('scoringMode', data?.scoringMode)
+      setLeagueMode(data?.leagueMode || 'full')
       if (data?.leagueType === 'private') {
       //   form.setFieldValue('leaguePassword', data?.leaguePassword ?? '')
         setIsPrivate(true)
@@ -117,8 +121,9 @@ const EditLeague = ({ data, isCommissioner = false }) => {
               onFinish={onFinish}
               autoComplete='off'
               onValuesChange={(e) => {
-                e.leagueType === 'private' && setIsPrivate(true)
-                e.leagueType === 'public' && setIsPrivate(false)
+                if (e.leagueType === 'private') setIsPrivate(true)
+                if (e.leagueType === 'public') setIsPrivate(false)
+                if (e.leagueMode) setLeagueMode(e.leagueMode)
               }}
             >
               <Row gutter={[30, 10]}>
@@ -212,6 +217,18 @@ const EditLeague = ({ data, isCommissioner = false }) => {
 
                 <Col xs={24} md={12} xl={8}>
                   <Form.Item
+                    name={'draftFormat'}
+                    label='Rookie Draft Format'
+                  >
+                    <Radio.Group>
+                      <Radio value={'combined'}>Combined (Rookies in Entry Draft)</Radio>
+                      <Radio value={'separate_rookie'}>Separate Rookie Draft</Radio>
+                    </Radio.Group>
+                  </Form.Item>
+                </Col>
+
+                <Col xs={24} md={12} xl={8}>
+                  <Form.Item
                     name={'draftStart'}
                     label='Select Draft Date'
                     rules={[
@@ -221,7 +238,7 @@ const EditLeague = ({ data, isCommissioner = false }) => {
                       },
                     ]}
                   >
-                    <DatePicker placeholder='Select Draft Date' />
+                    <SamDatePicker placeholder='Select Draft Date' />
                   </Form.Item>
                 </Col>
 
@@ -273,7 +290,38 @@ const EditLeague = ({ data, isCommissioner = false }) => {
                   </Form.Item>
                 </Col>
 
-                <Col xs={24} md={12} xl={8}></Col>
+                <Col xs={24} md={12} xl={8}>
+                  <Form.Item
+                    name={'leagueMode'}
+                    label='League Mode'
+                  >
+                    <Radio.Group onChange={(e) => {
+                      setLeagueMode(e.target.value)
+                      if (e.target.value === 'full') form.setFieldValue('scoringMode', 'sam_metric')
+                      else if (form.getFieldValue('scoringMode') === 'sam_metric') form.setFieldValue('scoringMode', 'ppr')
+                    }}>
+                      <Radio value={'full'}>Full Mode (53-man)</Radio>
+                      <Radio value={'offense_only'}>Offense Only (30-man)</Radio>
+                    </Radio.Group>
+                  </Form.Item>
+                </Col>
+
+                {leagueMode === 'offense_only' && (
+                  <Col xs={24} md={12} xl={8}>
+                    <Form.Item
+                      name={'scoringMode'}
+                      label='Scoring Format'
+                    >
+                      <Select placeholder='Select Scoring Format'>
+                        <Select.Option value='ppr'>PPR (1 pt per reception)</Select.Option>
+                        <Select.Option value='half_ppr'>Half PPR (0.5 pts per reception)</Select.Option>
+                        <Select.Option value='standard'>Standard (No reception bonus)</Select.Option>
+                        <Select.Option value='superflex'>Superflex (PPR + Superflex slot)</Select.Option>
+                        <Select.Option value='te_premium'>TE Premium (1.5 pts per TE catch)</Select.Option>
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                )}
 
                 {isPrivate && (
                   <>

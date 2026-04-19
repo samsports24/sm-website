@@ -3,7 +3,7 @@ import { Button, Drawer } from 'antd'
 
 import Logo from '../../assets/Logo.svg'
 import Title from '../../assets/landing/title.png'
-import SamLogo from '../../assets/sam-football.png'
+import SamLogo from '../../assets/Logo.svg'
 
 import { FaBars } from 'react-icons/fa'
 import { IoClose } from 'react-icons/io5'
@@ -34,8 +34,13 @@ const Navbar = () => {
                 style={{ color: item?.disabled ? 'gray' : '#fff' }}
                 key={item.key}
                 onClick={() => {
-                  if (!item?.disabled && item.frontEndUrl)
-                    window.open(`${item.frontEndUrl}`, '_self', 'noreferrer')
+                  if (!item?.disabled && item.frontEndUrl) {
+                    const token = localStorage.getItem('token')
+                    const url = token
+                      ? `${item.frontEndUrl}?token=${encodeURIComponent(token)}`
+                      : item.frontEndUrl
+                    window.open(url, '_self', 'noreferrer')
+                  }
                 }}
               >
                 {item.image ? <img src={item?.image} alt='logo' className='logo' /> : null}
@@ -104,9 +109,9 @@ const DrawerMenu = () => {
           <div className='menu_item_box'>
             <div
               className='menu_item'
-              onClick={() => window.open('https://samsports.io/fantasy-league', '_self')}
+              onClick={() => window.open('https://samsports.io/homepage', '_self')}
             >
-              <p>Football</p>
+              <p>A.Football</p>
               {/* <img src={football} alt='logo' className='football-logo' /> */}
             </div>
             <div
@@ -121,14 +126,14 @@ const DrawerMenu = () => {
             >
               <p>Baseball</p>
             </div>
-            <div className='menu_item' onClick={() => {}}>
-              <p className='grayColor'>US Football</p>
+            <div className='menu_item' style={{ cursor: 'default', opacity: 0.5 }}>
+              <p className='grayColor'>US A.Football, Soon</p>
             </div>
-            <div className='menu_item' onClick={() => {}}>
-              <p className='grayColor'>College Football</p>
+            <div className='menu_item' style={{ cursor: 'default', opacity: 0.5 }}>
+              <p className='grayColor'>College Football, Soon</p>
             </div>
-            <div className='menu_item' onClick={() => {}}>
-              <p className='grayColor'>Scouting</p>
+            <div className='menu_item' style={{ cursor: 'default', opacity: 0.5 }}>
+              <p className='grayColor'>Scouting, Soon</p>
             </div>
             <div className='menu_item' onClick={() => handleNavigate('/select-game')}>
               <p>Join Now</p>

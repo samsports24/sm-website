@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
 
-import { Button, Row, Col, Form, Input, DatePicker, Select, Checkbox, notification } from 'antd'
-
-import SelectGameLeft from '../SelectGame/SelectGameLeft'
-import SelectGameRight from '../SelectGame/SelectGameRight'
+import { Button, Row, Col, Form, Input, Select, Checkbox, notification } from 'antd'
+import SamDatePicker from '../../components/SamDatePicker'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -15,11 +13,61 @@ import { IoIosArrowRoundBack } from 'react-icons/io'
 import { authSignupAdvanced } from '../../redux'
 import { serverUrls } from '../../config/constants'
 
+const SS = {
+  page: {
+    minHeight: '100vh',
+    background: '#0A0F1A',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  topbar: {
+    width: '100%',
+    padding: '20px 32px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 10,
+    cursor: 'pointer',
+  },
+  logoSam: {
+    fontFamily: "'Rajdhani', sans-serif",
+    fontSize: 26,
+    fontWeight: 900,
+    color: '#fff',
+    letterSpacing: 2,
+  },
+  logoSports: {
+    fontFamily: "'Rajdhani', sans-serif",
+    fontSize: 26,
+    fontWeight: 900,
+    color: '#22C55E',
+    letterSpacing: 2,
+  },
+  card: {
+    width: '100%',
+    maxWidth: 960,
+    margin: '12px auto 48px',
+    padding: '36px 40px 28px',
+    background: 'linear-gradient(135deg, #111827 0%, #0D1321 100%)',
+    border: '1px solid rgba(34,197,94,0.18)',
+    borderRadius: 16,
+  },
+  h1: {
+    fontSize: 28,
+    fontWeight: 800,
+    color: '#fff',
+    fontFamily: "'Rajdhani', sans-serif",
+    margin: '0 0 28px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12,
+  },
+}
+
 const NewSignUp = () => {
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
   const selectedGame = localStorage.getItem('selectedGame')
-  const imagePath = localStorage.getItem('imagePath')
   const navigate = useNavigate()
 
   const onFinish = async (values) => {
@@ -30,8 +78,8 @@ const NewSignUp = () => {
         ...values,
         dateOfBirth: dayjs(values?.dateOfBirth).toISOString(),
         url: url.url,
+        skipVerification: true,
       }
-      console.log(obj)
       await authSignupAdvanced(obj, navigate)
     } else {
       notification.warning({
@@ -48,205 +96,157 @@ const NewSignUp = () => {
   const survey = ['Social Media', 'Google/Search Engine', 'Third-Party Review', 'Other']
 
   return (
-    <div className='select_game_container'>
-      <SelectGameLeft logo={imagePath} />
-      <SelectGameRight>
-        <div className='signup_body'>
-          <h1>
-            <IoIosArrowRoundBack onClick={() => navigate('/select-game')} className='back_arrow' />
-            Create Your Account
-            {/* <span style={{ fontSize: '16px' }}>({selectedGame})</span> */}
-          </h1>
+    <div style={SS.page}>
+      {/* ── Top bar with SAM SPORTS logo ── */}
+      <div style={SS.topbar} onClick={() => navigate('/')}>
+        <span style={SS.logoSam}>SAM</span>
+        <span style={SS.logoSports}>SPORTS</span>
+      </div>
 
-          <Form form={form} layout='vertical' onFinish={onFinish} autoComplete='off'>
-            <Row gutter={[30, 10]}>
-              <Col xs={24} md={12} xl={8}>
-                <Form.Item
-                  name={'userName'}
-                  label='User Name'
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Required!',
-                    },
-                  ]}
-                >
-                  <Input placeholder='User Name Here...' />
-                </Form.Item>
-              </Col>
+      {/* ── Sign-up card ── */}
+      <div style={SS.card}>
+        <h1 style={SS.h1}>
+          <IoIosArrowRoundBack onClick={() => navigate(-1)} style={{ cursor: 'pointer', fontSize: 32 }} />
+          Create Your Account
+        </h1>
 
-              <Col xs={24} md={12} xl={8}>
-                <Form.Item
-                  name={'email'}
-                  label='Email Address'
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Required!',
-                    },
-                  ]}
-                >
-                  <Input type='email' placeholder='Email Address Here...' />
-                </Form.Item>
-              </Col>
+        <Form form={form} layout='vertical' onFinish={onFinish} autoComplete='off'>
+          <Row gutter={[30, 10]}>
+            <Col xs={24} md={12} xl={8}>
+              <Form.Item
+                name={'userName'}
+                label='User Name'
+                rules={[{ required: true, message: 'Required!' }]}
+              >
+                <Input placeholder='User Name Here...' />
+              </Form.Item>
+            </Col>
 
-              <Col xs={24} md={12} xl={8}>
-                <Form.Item
-                  name={'password'}
-                  label='Password'
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Required!',
-                    },
-                  ]}
-                >
-                  <Input placeholder='Password Here...' />
-                </Form.Item>
-              </Col>
+            <Col xs={24} md={12} xl={8}>
+              <Form.Item
+                name={'email'}
+                label='Email Address'
+                rules={[{ required: true, message: 'Required!' }]}
+              >
+                <Input type='email' placeholder='Email Address Here...' />
+              </Form.Item>
+            </Col>
 
-              <Col xs={24} md={12} xl={8}>
-                <Form.Item
-                  name={'dateOfBirth'}
-                  label='Date of Birth'
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Required!',
-                    },
-                  ]}
-                >
-                  <DatePicker placeholder='Select DOB' />
-                </Form.Item>
-              </Col>
+            <Col xs={24} md={12} xl={8}>
+              <Form.Item
+                name={'password'}
+                label='Password'
+                rules={[{ required: true, message: 'Required!' }]}
+              >
+                <Input placeholder='Password Here...' />
+              </Form.Item>
+            </Col>
 
-              <Col xs={24} md={12} xl={8}>
-                <Form.Item
-                  name={'country'}
-                  label='Country'
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Required!',
-                    },
-                  ]}
-                >
-                  <Select
-                    showSearch
-                    placeholder='Select Country'
-                    optionFilterProp='children'
-                    filterOption={filterOption}
-                    options={countries?.map((v) => {
-                      return {
-                        value: v?.name,
-                        label: v?.name,
-                      }
-                    })}
-                  />
-                </Form.Item>
-              </Col>
+            <Col xs={24} md={12} xl={8}>
+              <Form.Item
+                name={'dateOfBirth'}
+                label='Date of Birth'
+                rules={[{ required: true, message: 'Required!' }]}
+              >
+                <SamDatePicker placeholder='Select DOB' />
+              </Form.Item>
+            </Col>
 
-              <Col xs={24} md={12} xl={8}>
-                <Form.Item
-                  name={'provience'}
-                  label='Province'
-                  rules={[
-                    {
-                      required: false,
-                      message: 'Required!',
-                    },
-                  ]}
-                >
-                  <Input placeholder='Province Here...' />
-                </Form.Item>
-              </Col>
+            <Col xs={24} md={12} xl={8}>
+              <Form.Item
+                name={'country'}
+                label='Country'
+                rules={[{ required: true, message: 'Required!' }]}
+              >
+                <Select
+                  showSearch
+                  placeholder='Select Country'
+                  optionFilterProp='children'
+                  filterOption={filterOption}
+                  options={countries?.map((v) => ({
+                    value: v?.name,
+                    label: v?.name,
+                  }))}
+                />
+              </Form.Item>
+            </Col>
 
-              <Col xs={24} md={12} xl={8}>
-                <Form.Item
-                  name={'timezone'}
-                  label='Time Zone'
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Required!',
-                    },
-                  ]}
-                >
-                  <Select
-                    showSearch
-                    placeholder='Select Time Zone'
-                    optionFilterProp='children'
-                    filterOption={filterOption}
-                    options={moment.tz.names()?.map((v) => {
-                      return {
-                        value: v,
-                        label: v,
-                      }
-                    })}
-                  />
-                </Form.Item>
-              </Col>
+            <Col xs={24} md={12} xl={8}>
+              <Form.Item
+                name={'provience'}
+                label='Province'
+                rules={[{ required: false, message: 'Required!' }]}
+              >
+                <Input placeholder='Province Here...' />
+              </Form.Item>
+            </Col>
 
-              <Col xs={24} md={12} xl={8}>
-                <Form.Item
-                  name={'howYouHear'}
-                  label='How did you hear about us?'
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Required!',
-                    },
-                  ]}
-                >
-                  <Select
-                    placeholder='Select Option'
-                    options={survey?.map((v) => {
-                      return {
-                        value: v,
-                        label: v,
-                      }
-                    })}
-                  />
-                </Form.Item>
-              </Col>
+            <Col xs={24} md={12} xl={8}>
+              <Form.Item
+                name={'timezone'}
+                label='Time Zone'
+                rules={[{ required: true, message: 'Required!' }]}
+              >
+                <Select
+                  showSearch
+                  placeholder='Select Time Zone'
+                  optionFilterProp='children'
+                  filterOption={filterOption}
+                  options={moment.tz.names()?.map((v) => ({
+                    value: v,
+                    label: v,
+                  }))}
+                />
+              </Form.Item>
+            </Col>
 
-              <Col xs={24}>
-                <Form.Item
-                  name={'termsAndCondtions'}
-                  label=''
-                  valuePropName='checked'
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Required!',
-                    },
-                  ]}
-                >
-                  <Checkbox>
-                    I have read the{' '}
-                    <a
-                      href='https://app.termly.io/document/terms-of-service/372d4c41-9267-4833-8bbb-aba80f6fbbb8'
-                      target='_blank'
-                      rel='noreferrer'
-                    >
-                      Terms of Service and Privacy Policy
-                    </a>{' '}
-                    and agree to their terms and conditions.
-                  </Checkbox>
-                </Form.Item>
-              </Col>
+            <Col xs={24} md={12} xl={8}>
+              <Form.Item
+                name={'howYouHear'}
+                label='How did you hear about us?'
+                rules={[{ required: true, message: 'Required!' }]}
+              >
+                <Select
+                  placeholder='Select Option'
+                  options={survey?.map((v) => ({
+                    value: v,
+                    label: v,
+                  }))}
+                />
+              </Form.Item>
+            </Col>
 
-              <Col xs={24}>
-                <Form.Item>
-                  <Button loading={loading} type='primary' htmlType='submit'>
-                    Create Account
-                  </Button>
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form>
-        </div>
-      </SelectGameRight>
+            <Col xs={24}>
+              <Form.Item
+                name={'termsAndCondtions'}
+                label=''
+                valuePropName='checked'
+                rules={[{ required: true, message: 'Required!' }]}
+              >
+                <Checkbox>
+                  I have read the{' '}
+                  <a href='/terms' target='_blank' rel='noreferrer'>
+                    Terms of Service
+                  </a>{' '}
+                  and{' '}
+                  <a href='/privacy' target='_blank' rel='noreferrer'>
+                    Privacy Policy
+                  </a>{' '}
+                  and agree to their terms and conditions.
+                </Checkbox>
+              </Form.Item>
+            </Col>
+
+            <Col xs={24}>
+              <Form.Item>
+                <Button loading={loading} type='primary' htmlType='submit'>
+                  Create Account
+                </Button>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+      </div>
     </div>
   )
 }

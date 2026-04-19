@@ -24,11 +24,9 @@ const SignIn2 = () => {
   // }
   const onFinish = async (values) => {
     setLoading(true)
-    console.log(values)
     setLoading(false)
   }
   const onChange = (e) => {
-    console.log(`checked = ${e.target.checked}`)
   }
   // if (localStorage.hasOwnProperty("token")) {
   //   // return <Navigate replace to="/home" />;
@@ -104,7 +102,7 @@ const SignIn2 = () => {
                 <div className='create-account'>
                   <p>
                     Don{"'"}t have an account?{' '}
-                    <span className='highlight' onClick={() => navigate('/sign-up')}>
+                    <span className='highlight' onClick={() => navigate('/select-game')}>
                       CREATE ACCOUNT
                     </span>
                   </p>
@@ -125,7 +123,7 @@ const SignIn2 = () => {
                     <br />
                     ARE MADE!
                   </h3>
-                  <p>SAM ULTIMATE FOOTBALL</p>
+                  <p>SFL FANTASY</p>
                 </div>
               </div>
             </Col>

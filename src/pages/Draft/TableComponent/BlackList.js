@@ -147,7 +147,7 @@ const BlackList = ({ tableScroll }) => {
     },
     {
       width: 180,
-      title: 'CAP HIT',
+      title: 'VALUE',
       dataIndex: 'caphit',
       key: 'caphit',
       render: (_, obj) => {
@@ -156,7 +156,7 @@ const BlackList = ({ tableScroll }) => {
             <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
               {/* {obj?.player?.currentYearSalaryCap || '-'} */}
               {/* {`$${obj?.player?.PlayerCap || '-'}`} */}
-              {`$${(obj?.player?.currentYearSalaryCap || '-').toLocaleString()}`}
+              {`${(obj?.player?.currentYearSalaryCap || '-').toLocaleString()} SP`}
             </p>
           </div>
         )

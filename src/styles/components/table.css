@@ -68,3 +68,32 @@
 .ant-table-tbody > tr > td {
   border-color: var(--borderLight) !important;
 }
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .ant-table {
+    overflow-x: auto;
+  }
+
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    font-size: 14px;
+    padding: 12px 8px !important;
+  }
+
+  .ant-spin-dot {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    font-size: 12px;
+    padding: 8px 4px !important;
+  }
+
+  .ant-pagination-options {
+    margin-right: 0.5rem;
+  }
+}

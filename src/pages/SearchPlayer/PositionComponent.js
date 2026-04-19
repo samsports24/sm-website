@@ -1,206 +1,78 @@
-// import React from 'react'
+import React from 'react'
+import { useSelector } from 'react-redux'
 
-// const PositionComponent = ({ position, setPosition }) => {
-//   const handlePosition = (value) => {
-//     setPosition(value)
-//   }
+const ALL_POSITIONS = [
+  { key: 'ALL', label: 'ALL', color: '#22C55E' },
+  { key: 'QB', label: 'QB', color: '#ef4444', group: 'OFF' },
+  { key: 'RB', label: 'RB', color: '#a5a1a1', group: 'OFF' },
+  { key: 'WR', label: 'WR', color: '#3b82f6', group: 'OFF' },
+  { key: 'TE', label: 'TE', color: '#22c55e', group: 'OFF' },
+  { key: 'OL', label: 'OL', color: '#fbbf24', group: 'OFF' },
+  { key: 'DE', label: 'EDGE', color: '#f97316', group: 'DEF' },
+  { key: 'DT', label: 'IDL', color: '#fb923c', group: 'DEF' },
+  { key: 'LB', label: 'LB', color: '#a5b4fc', group: 'DEF' },
+  { key: 'CB', label: 'CB', color: '#22d3ee', group: 'DEF' },
+  { key: 'S', label: 'S', color: '#06b6d4', group: 'DEF' },
+  { key: 'K/P', label: 'K/P', color: '#d97706', group: 'ST' },
+]
 
-//   return (
+const OFFENSE_ONLY_KEYS = ['ALL', 'QB', 'RB', 'WR', 'TE', 'K']
 
+const PositionComponent = ({ position, setPosition, playerType, setPlayerType }) => {
+  const currentLeague = useSelector((state) => state.league?.currentLeague)
+  const isOffenseOnly = currentLeague?.leagueMode === 'offense_only'
 
-//     <div className='_positionBox'>
-//       <div>
-//         <div
-//           className={_borderLeft ${position === 'ALL' ? '_activePosition' : ''}}
-//           onClick={() => handlePosition('ALL')}
-//         >
-//           <p>ALL</p>
-//         </div>
-//       </div>
-//       <div>
-//         <div className='_borderLeft _hideBorderBottom' style={{ backgroundColor: '#010001' }}>
-//           <p style={{ fontSize: '10px' }} className='_fwd'>
-//             FWD
-//           </p>
-//         </div>
-//         <div
-//           onClick={() => handlePosition('QB')}
-//           className={${position === 'QB' ? '_activePosition' : ''}}
-//         >
-//           <p className='_qb'>QB</p>
-//         </div>
-//       </div>
-//       <div>
-//         <div
-//           onClick={() => handlePosition('RB')}
-//           className={${position === 'RB' ? '_activePosition' : ''}}
-//         >
-//           <p className='_rb'>RB</p>
-//         </div>
-//       </div>
-//       <div>
-//         <div
-//           onClick={() => handlePosition('WR')}
-//           className={${position === 'WR' ? '_activePosition' : ''}}
-//         >
-//           <p className='_wr'>WR</p>
-//         </div>
-//       </div>
-//       <div>
-//         <div
-//           onClick={() => handlePosition('TE')}
-//           className={${position === 'TE' ? '_activePosition' : ''}}
-//         >
-//           <p className='_te'>TE</p>
-//         </div>
-//       </div>
-//       <div>
-//         <div
-//           onClick={() => handlePosition('OL')}
-//           className={${position === 'OL' ? '_activePosition' : ''}}
-//         >
-//           <p className='_ol'>OL</p>
-//         </div>
-//       </div>
-//       <div>
-//         <div className='_borderLeft _hideBorderBottom' style={{ backgroundColor: '#FF001B' }}>
-//           <p style={{ fontSize: '10px' }}>MID</p>
-//         </div>
-//         <div
-//           onClick={() => handlePosition('DL')}
-//           className={${position === 'DL' ? '_activePosition' : ''}}
-//         >
-//           <p className='_dl'>DL</p>
-//         </div>
-//       </div>
-//       <div>
-//         <div
-//           onClick={() => handlePosition('LB')}
-//           className={${position === 'LB' ? '_activePosition' : ''}}
-//         >
-//           <p className='_lb'>LB</p>
-//         </div>
-//       </div>
-//       <div>
-//         <div
-//           onClick={() => handlePosition('DB')}
-//           className={${position === 'DB' ? '_activePosition' : ''}}
-//         >
-//           <p className='_db'>DB</p>
-//         </div>
-//       </div>
-//     </div>
-    
-//   )
-// }
-
-// export default PositionComponent
-
-
-import React from 'react';
-
-const PositionComponent = ({ position, setPosition }) => {
-  const handlePosition = (value) => {
-    setPosition(value);
-  };
+  const POSITIONS = isOffenseOnly
+    ? [
+        { key: 'ALL', label: 'ALL', color: '#22C55E' },
+        { key: 'QB', label: 'QB', color: '#ef4444', group: 'OFF' },
+        { key: 'RB', label: 'RB', color: '#a5a1a1', group: 'OFF' },
+        { key: 'WR', label: 'WR', color: '#3b82f6', group: 'OFF' },
+        { key: 'TE', label: 'TE', color: '#22c55e', group: 'OFF' },
+        { key: 'K', label: 'K', color: '#d97706', group: 'ST' },
+      ]
+    : ALL_POSITIONS
+  const isRookieActive = playerType === 'Rookie'
 
   return (
-    <div className='_positionBox'>
-      <div>
-        <div
-          className={`_borderLeft ${position === 'ALL' ? '_activePosition' : ''}`}
-          onClick={() => handlePosition('ALL')}
-        >
-          <p>ALL</p>
-        </div>
-      </div>
-      <div>
-        <div className='_borderLeft _hideBorderBottom' style={{ backgroundColor: '#010001' }}>
-          <p style={{ fontSize: '10px' }} className='_fwd'>
-            OFF
-          </p>
-        </div>
-        <div
-          onClick={() => handlePosition('QB')}
-          className={`${position === 'QB' ? '_activePosition' : ''}`}
-        >
-          <p className='_qb'>QB</p>
-        </div>
-      </div>
-      <div>
-        <div
-          onClick={() => handlePosition('RB')}
-          className={`${position === 'RB' ? '_activePosition' : ''}`}
-        >
-          <p className='_rb'>RB</p>
-        </div>
-      </div>
-      <div>
-        <div
-          onClick={() => handlePosition('WR')}
-          className={`${position === 'WR' ? '_activePosition' : ''}`}
-        >
-          <p className='_wr'>WR</p>
-        </div>
-      </div>
-      <div>
-        <div
-          onClick={() => handlePosition('TE')}
-          className={`${position === 'TE' ? '_activePosition' : ''}`}
-        >
-          <p className='_te'>TE</p>
-        </div>
-      </div>
-      <div>
-        <div
-          onClick={() => handlePosition('OL')}
-          className={`${position === 'OL' ? '_activePosition' : ''}`}
-        >
-          <p className='_ol'>OL</p>
-        </div>
-      </div>
-      <div>
-        <div className='_borderLeft _hideBorderBottom' style={{ backgroundColor: '#FF001B' }}>
-          <p style={{ fontSize: '10px' }}>DEF</p>
-        </div>
-        <div
-          onClick={() => handlePosition('DL')}
-          className={`${position === 'DL' ? '_activePosition' : ''}`}
-        >
-          <p className='_dl'>DL</p>
-        </div>
-      </div>
-      <div>
-        <div
-          onClick={() => handlePosition('LB')}
-          className={`${position === 'LB' ? '_activePosition' : ''}`}
-        >
-          <p className='_lb'>LB</p>
-        </div>
-      </div>
-      <div>
-        <div
-          onClick={() => handlePosition('DB')}
-          className={`${position === 'DB' ? '_activePosition' : ''}`}
-        >
-          <p className='_db'>DB</p>
-        </div>
+    <div className='sp-pos-bar'>
+      {POSITIONS.map((p) => {
+        const isActive = position === p.key
+        return (
+          <button
+            key={p.key}
+            className={`sp-pos-btn ${isActive ? 'sp-pos-btn-active' : ''}`}
+            onClick={() => setPosition(p.key)}
+            style={{
+              '--pos-color': p.color,
+              '--pos-color-bg': `${p.color}15`,
+              '--pos-color-border': `${p.color}40`,
+            }}
+          >
+            {p.group && !isActive && (
+              <span className='sp-pos-group'>{p.group}</span>
+            )}
+            <span className='sp-pos-label'>{p.label}</span>
+          </button>
+        )
+      })}
 
-     
-      </div>
-
-      <div>
-        <div
-          onClick={() => handlePosition('ST')}
-          className={`${position === 'ST' ? '_activePosition' : ''}`}
+      {/* Rookie toggle */}
+      {setPlayerType && (
+        <button
+          className={`sp-pos-btn sp-pos-btn-rookie ${isRookieActive ? 'sp-pos-btn-active' : ''}`}
+          onClick={() => setPlayerType(isRookieActive ? 'All' : 'Rookie')}
+          style={{
+            '--pos-color': '#e879f9',
+            '--pos-color-bg': '#e879f915',
+            '--pos-color-border': '#e879f940',
+          }}
         >
-          <p className='_st'>ST</p>
-        </div>
-
-     
-      </div>
+          <span className='sp-pos-label'>Rookie</span>
+        </button>
+      )}
     </div>
-  );
-};
+  )
+}
 
-export default PositionComponent;
+export default PositionComponent

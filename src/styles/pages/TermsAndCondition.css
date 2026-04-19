@@ -16,7 +16,7 @@
 }
 
 .terms .head .home-links p {
-  font-family: Poppins;
+  font-family: var(--font-body);
   font-size: 16px;
   font-style: normal;
   font-weight: 400;
@@ -24,11 +24,11 @@
 }
 
 .terms .head .home-links .active-link {
-  color: var(--colors-theme-link-color, #289fc9) !important;
+  color: var(--colors-theme-link-color, #22C55E) !important;
 }
 
 .terms .head .home-links span {
-  font-family: Poppins;
+  font-family: var(--font-body);
   font-size: 16px;
   font-style: normal;
   font-weight: 400;

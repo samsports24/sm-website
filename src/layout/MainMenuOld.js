@@ -16,7 +16,7 @@ const MainMenu = ({ active }) => {
   const isAuthenticated = localStorage.getItem('token')
   const navigate = useNavigate()
   const login = () => navigate('/login')
-  const signUp = () => navigate('/sign-up')
+  const signUp = () => navigate('/select-game')
 
   return (
     <>
@@ -39,7 +39,7 @@ const MainMenu = ({ active }) => {
           className={'sidebar-menu'}
           icon={<img src={PlayerIcon} />}
           onClick={() => {
-            navigate('/fantasy-league')
+            navigate('/homepage')
 
             // isAuthenticated ? navigate('/leagueScore') : navigate('/transactions')
           }}
@@ -52,7 +52,7 @@ const MainMenu = ({ active }) => {
             className={'sidebar-menu'}
             icon={<img src={TeamIcon} />}
             onClick={() => {
-              navigate('/professional-league')
+              navigate('/dashboard')
             }}
           >
             My Team

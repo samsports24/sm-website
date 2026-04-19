@@ -1,13 +1,34 @@
 import { Button, Select, Table } from 'antd'
+import { useState, useEffect } from 'react'
 
 // Components
 import FilterBox from '../components/FilterComponent'
 import StandingHeader from '../components/StandingHeader'
 
-// Mock Data
-import { rosterWStatsData } from './mockData'
+// API
+import { privateAPI } from '../config/constants'
 
 const RosterWStats = () => {
+  const [rosterWStatsData, setRosterWStatsData] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchRosterStats()
+  }, [])
+
+  const fetchRosterStats = async () => {
+    try {
+      setLoading(true)
+      const response = await privateAPI.get('/team/get-roster/1')
+      setRosterWStatsData(response.data?.player || [])
+    } catch (error) {
+      console.error('Error fetching roster stats:', error)
+      setRosterWStatsData([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleFilter = () => {}
   const handleFormat = () => {}
 
@@ -175,7 +196,14 @@ const RosterWStats = () => {
         <Button className='now_btn'>Now</Button>
       </section>
 
+      {/* LOADING STATE */}
+      {loading && <div style={{ textAlign: 'center', padding: '40px' }}>Loading roster stats...</div>}
+
+      {/* EMPTY STATE */}
+      {!loading && rosterWStatsData.length === 0 && <div style={{ textAlign: 'center', padding: '40px' }}>No roster stats available</div>}
+
       {/* TABLE */}
+      {!loading && rosterWStatsData.length > 0 && (
       <section className='main_table_container'>
         <div className='header'>
           <h3>QB</h3>
@@ -190,8 +218,10 @@ const RosterWStats = () => {
           />
         </div>
       </section>
+      )}
       <br />
       <br />
+      {!loading && rosterWStatsData.length > 0 && (
       <section className='main_table_container'>
         <div className='header'>
           <h3>QB</h3>
@@ -218,6 +248,7 @@ const RosterWStats = () => {
           />
         </div>
       </section>
+      )}
     </div>
   )
 }

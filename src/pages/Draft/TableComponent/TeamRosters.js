@@ -17,11 +17,8 @@ function mapPosition(position) {
   return positions[position] || position;
 }
 
-  console.log('roasterdraftdata',roasterdraftdata);
-// console.log('roasterdraftdata',roasterdraftdata);
   const [loading, setLoading] = useState('')
  
- console.log('inside here roasterroundandpick',roasterroundandpick);
 
   const dispatch = useDispatch()
 
@@ -99,38 +96,7 @@ function mapPosition(position) {
 
 
 
-// console.log('roasterdraftdata',roasterdraftdata);
 
-  // const updatedRoasterdraftdata = roasterdraftdata?.map((item) => {
-  //   console.log('item._id?._id',item._id?._id);
-  //   if (item._id?._id === roasterroundandpick?.playerPick._id) {
-  //     const updatedItem = {
-  //       ...item,
-  //       round: roasterroundandpick?.round || '-',
-  //       pick: roasterroundandpick?.position || '-'
-  //     };
-     
-  //     return updatedItem;
-  //   }
-  //   return  item;
-  // });
-
-  // console.log('roasterdraftdata',roasterdraftdata);
-
-  // const updatedRoasterdraftdata = roasterdraftdata?.map((item) => {
-  //  // console.log('roasterroundandpick?.playerPick?._id',roasterroundandpick?.playerPick?._id);
-  //   console.log('roasterroundandpick',roasterroundandpick);
-  // //  console.log('item?._id?._id',item?._id?._id);
-  //   if (item?._id?._id === roasterroundandpick?.playerPick?._id) {
-  //     const updatedItem = {
-  //       ...item,
-  //       round: roasterroundandpick?.round || '-',
-  //       pick: roasterroundandpick?.position || '-'
-  //     };
-  //     return updatedItem;
-  //   }
-  //   return item;
-  // });
   
 
   const updatedRoasterdraftdata = roasterdraftdata?.map((item) => {
@@ -169,20 +135,16 @@ function mapPosition(position) {
     item.Position = "IDP";
   }
 });
-  
-// console.log('sortedRoasterdraftdata',sortedRoasterdraftdata);
 
 
   const getData = async () => {
     setLoading('roasterdraftdata')
-    console.log('SETTING?.date inside get team roster',SETTING?.week);
     await getDraftTeamRoster(SETTING?.week)
     setLoading('')
   }
 
   const get_Pick_and_round_Data = async () => {
   setLoading('roasterroundandpick')
-    console.log('SETTING?.date inside get team roster',SETTING?.week);
     await getRosterForDraftPick(SETTING?.week)
     setLoading('')
   }
@@ -277,16 +239,15 @@ function mapPosition(position) {
     },
     {
       width: 180,
-      title: 'CAP HIT',
+      title: 'VALUE',
       dataIndex: 'caphit',
       key: 'caphit',
       render: (_, obj) => {
-        // console.log('obj',obj);
         return (
           <div className='table_player_name_box nrc_container'>
             <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
               {/* {obj?.PlayerCap || '-'} */}
-           {(obj?.currentYearSalaryCap ? `$${obj.currentYearSalaryCap.toLocaleString()}` : '-')}
+           {(obj?.currentYearSalaryCap ? `${obj.currentYearSalaryCap.toLocaleString()} SP` : '-')}
 
 
             </p>
@@ -332,11 +293,6 @@ function mapPosition(position) {
 
   
   ]
-
-
-
-// console.log('playerPick',playerPick);
- 
 
 
   return (

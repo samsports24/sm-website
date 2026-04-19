@@ -131,20 +131,22 @@ const LeagueSetting = () => {
           layout='vertical'
           autoComplete='off'
         >
-          <Form.Item
-            label='Change League ID'
-            name={'leagueId'}
-            rules={[
-              {
-                required: false,
-                message: 'Reqired',
-              },
-            ]}
-          >
-            <Input />
+          <Form.Item label='League ID'>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0,0,0,0.25)', borderRadius: '8px', padding: '8px 12px', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <span style={{ color: '#F1F5F9', fontFamily: "'Barlow Condensed', sans-serif", fontSize: '15px', fontWeight: 700, letterSpacing: '1px', flex: 1 }}>
+                {currentLeague?.leagueId || '—'}
+              </span>
+              <span
+                style={{ cursor: 'pointer', fontSize: '12px', color: '#22C55E', fontWeight: 600 }}
+                onClick={() => navigator.clipboard.writeText(currentLeague?.leagueId || '')}
+              >
+                Copy
+              </span>
+            </div>
+            <span style={{ display: 'block', fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginTop: '4px' }}>Auto-generated. Cannot be changed.</span>
           </Form.Item>
           <Form.Item
-            label='Add Co-Comissioner'
+            label='Add Co-Commissioner'
             name={'coComissioner'}
             requiredMark={false}
             rules={[

@@ -10,6 +10,8 @@ import { getProfessionalLeagueRanks } from '../redux'
 import UserLog from '../components/UserLog'
 import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
 import DraftOrder from '../components/DraftOrder'
+import OnboardingGuide from '../components/OnboardingGuide'
+import DraftCountdownBanner from '../components/DraftCountdownBanner'
 
 const League = () => {
   const [ranks, setRanks] = useState(null)
@@ -27,6 +29,9 @@ const League = () => {
     <div className='league_container_n1'>
       {/* HEADER */}
       <Header />
+
+      <OnboardingGuide tabKey="league" />
+      <DraftCountdownBanner />
 
       <ButtonsAndPagination />
 

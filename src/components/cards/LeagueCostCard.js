@@ -12,7 +12,7 @@ const LeagueCostCard = () => {
       </div>
       <div className='card-body'>
         <div className='widgets-text'>
-          <p>{`Please note that the $12.99 fee is non-refundable and is paid directly to Sam Ultimate Sports. It’s important to clarify that non of the proceeds from the fee will contribute to your league’s prize pool.`}</p>
+          <p>{`Please note that the $12.99 fee is non-refundable and is paid directly to SamSports SFL. It’s important to clarify that non of the proceeds from the fee will contribute to your league’s prize pool.`}</p>
         </div>
         <div className='draft-order'>
           <h3>Opening Draft Order Bid</h3>

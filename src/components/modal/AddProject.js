@@ -19,7 +19,6 @@ const AddProject = ({ newProject, data }) => {
       await dispatch(createProject(values))
       form.resetFields()
     } else {
-      // console.log('in update')
       await dispatch(
         updateProject({
           ...values,

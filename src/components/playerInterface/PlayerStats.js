@@ -1,4 +1,3 @@
-// import { proLeagueStandingsData } from '../../pages/mockData'
 import comingSoon from '../../assets/coming-soon.png'
 
 const PlayerStats = () => {

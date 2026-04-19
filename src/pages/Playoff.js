@@ -9,6 +9,7 @@ import Header from '../components/Header'
 import ScheduleBox from '../components/ScheduleBox'
 import Flow from '../components/TournamentBracket'
 import { getQualifiedTeams } from '../redux/actions/teamActions'
+import OnboardingGuide from '../components/OnboardingGuide'
 
 const Playoff = () => {
   const [teams, setTeams] = useState([])
@@ -26,6 +27,8 @@ const Playoff = () => {
     <div className='playoff-container'>
       {/* HEADER */}
       <Header />
+
+      <OnboardingGuide tabKey="playoffs" />
 
       <main className='wrapper'>
         {/* SCHEDULE ONE */}

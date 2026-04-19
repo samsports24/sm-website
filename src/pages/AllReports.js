@@ -1,21 +1,26 @@
+import React, { useState, useEffect } from 'react'
 import { Col, Row, Table } from 'antd'
 
 // Components
 import StandingHeader from '../components/StandingHeader'
 
-// Mock Data
-import {
-  leagueHistory,
-  stats,
-  scoreAndResults,
-  auction,
-  draft,
-  playerNews,
-  players,
-  standings,
-} from './mockData'
+// API
+import { privateAPI } from '../config/constants'
 
 const AllReports = () => {
+  const [leagueHistory, setLeagueHistory] = useState({ name: 'League History', data: [] })
+  const [stats, setStats] = useState({ name: 'Stats', data: [] })
+  const [scoreAndResults, setScoreAndResults] = useState({ name: 'Score and Results', data: [] })
+  const [auction, setAuction] = useState({ name: 'Auction', data: [] })
+  const [draft, setDraft] = useState({ name: 'Draft', data: [] })
+  const [playerNews, setPlayerNews] = useState({ name: 'Player News', data: [] })
+  const [players, setPlayers] = useState({ name: 'Players', data: [] })
+  const [standings, setStandings] = useState({ name: 'Standings', data: [] })
+
+  useEffect(() => {
+    // API calls can be added here when endpoints are available
+    // For now, using empty state defaults
+  }, [])
   const columns = [
     {
       title: '',

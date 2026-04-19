@@ -37,7 +37,6 @@
           }
         }
         case 'SEARCH_CHAT': {
-          console.log('payload inside chat reducer', payload)
             return {
               ...state,
               chatRooms: payload,

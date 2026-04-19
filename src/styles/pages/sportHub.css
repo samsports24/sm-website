@@ -1,0 +1,631 @@
+/* ═══════════════════════════════════════════════════════════
+   SPORT HUB — Sleeper-Style Row Layout + SAM RIVALS Cards
+   Clean, vertical, full-width rows for each league
+   ═══════════════════════════════════════════════════════════ */
+
+.sh-page {
+  min-height: 100vh;
+  background: #0B0F19;
+  color: #e8eaed;
+  font-family: var(--font-body), -apple-system, sans-serif;
+}
+
+/* ── Title Bar ── */
+.sh-title-bar {
+  padding: 36px 24px 20px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+.sh-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.sh-title {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 30px;
+  font-weight: 900;
+  color: #fff;
+  margin: 0 0 4px;
+  letter-spacing: -0.3px;
+}
+.sh-subtitle {
+  font-family: var(--font-body), sans-serif;
+  font-size: 13px;
+  color: rgba(255,255,255,0.35);
+  margin: 0;
+}
+.sh-subtitle-accent {
+  color: #10B981;
+  font-weight: 600;
+}
+
+/* ── SamPoints Badge ── */
+.sh-sp-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 8px 14px;
+  flex-shrink: 0;
+}
+.sh-sp-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 11px;
+  color: #0B0F19;
+  letter-spacing: 0.5px;
+}
+.sh-sp-info {
+  display: flex;
+  flex-direction: column;
+}
+.sh-sp-label {
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  line-height: 1;
+}
+.sh-sp-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #F59E0B;
+  line-height: 1.3;
+}
+
+/* ── Content Container ── */
+.sh-content {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Section Labels ── */
+.sh-section-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 2px;
+}
+.sh-section-icon {
+  font-size: 16px;
+}
+.sh-section-title {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.2px;
+}
+.sh-section-desc {
+  font-size: 12px;
+  color: rgba(255,255,255,0.3);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SAM RIVALS CARDS — Side-by-side featured cards
+   ═══════════════════════════════════════════════════════════ */
+.sh-rivals-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.sh-rivals-card {
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.sh-rivals-card:hover {
+  border-color: var(--rivals-color, rgba(255,255,255,0.12));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.sh-rivals-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.sh-rivals-icon-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.sh-rivals-title-area {
+  flex: 1;
+  min-width: 0;
+}
+.sh-rivals-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sh-rivals-name {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+.sh-rivals-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.08);
+  color: var(--rivals-color);
+  border: 1px solid rgba(255,255,255,0.06);
+  letter-spacing: 0.8px;
+}
+.sh-rivals-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  margin-top: 1px;
+}
+
+.sh-rivals-desc {
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.45;
+  margin: 0 0 12px;
+}
+
+.sh-rivals-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.sh-rivals-feature {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 5px;
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--rivals-color);
+  letter-spacing: 0.2px;
+}
+
+.sh-rivals-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 6px 10px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 6px;
+}
+.sh-rivals-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--rivals-color);
+}
+.sh-rivals-division {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 0.3px;
+}
+
+.sh-rivals-cta {
+  width: 100%;
+  padding: 10px 0;
+  border: none;
+  border-radius: 8px;
+  background: var(--rivals-color);
+  color: #fff;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.3px;
+}
+.sh-rivals-cta:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SPORT SECTION — Header + rows in a rounded container
+   ═══════════════════════════════════════════════════════════ */
+.sh-sport-section {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* Sport header row */
+.sh-sport-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.sh-sport-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sh-sport-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.sh-sport-name {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.1;
+}
+.sh-sport-sub {
+  font-family: var(--font-body), sans-serif;
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  margin-top: 1px;
+}
+
+/* Play button */
+.sh-play-btn {
+  padding: 8px 20px;
+  background: var(--sport-color);
+  color: #fff;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+.sh-play-btn:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
+
+.sh-coming-soon {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.04);
+  padding: 6px 14px;
+  border-radius: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LEAGUE ROW — Full-width horizontal row per league
+   ═══════════════════════════════════════════════════════════ */
+.sh-league-rows {
+  /* container for rows, no padding so rows go edge-to-edge */
+}
+
+.sh-league-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.sh-league-row:last-child { border-bottom: none; }
+.sh-league-row:hover {
+  background: rgba(255,255,255,0.03);
+}
+.sh-league-row.active {
+  background: rgba(255,255,255,0.04);
+  border-left: 3px solid var(--sport-color);
+}
+
+/* Row — Left (icon + league info) */
+.sh-lr-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+.sh-lr-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+.sh-lr-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.sh-lr-icon span { font-size: 18px; }
+
+.sh-lr-info {
+  min-width: 0;
+  flex: 1;
+}
+.sh-lr-name {
+  font-family: var(--font-body), sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sh-lr-active-pill {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  color: #22C55E;
+  background: rgba(34,197,94,0.12);
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+.sh-lr-meta {
+  font-family: var(--font-body), sans-serif;
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+  flex-wrap: wrap;
+}
+.sh-lr-badge {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.5);
+}
+.sh-lr-badge.public { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.sh-lr-badge.private { background: rgba(139,92,246,0.15); color: #a78bfa; }
+.sh-lr-fill {
+  font-weight: 600;
+  color: rgba(255,255,255,0.45);
+}
+.sh-lr-draft {
+  color: rgba(255,255,255,0.3);
+}
+
+/* Row — Center (my team) */
+.sh-lr-center {
+  flex: 0 0 auto;
+  min-width: 140px;
+}
+.sh-lr-team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sh-lr-team-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.sh-lr-team-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.sh-lr-team-name {
+  font-family: var(--font-body), sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sh-lr-team-record {
+  font-family: var(--font-stats), sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.2px;
+}
+.sh-lr-no-team {
+  font-size: 11px;
+  color: rgba(255,255,255,0.2);
+  font-style: italic;
+}
+
+/* Row — Right (status + bar) */
+.sh-lr-right {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  min-width: 80px;
+}
+.sh-lr-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-stats), sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--status-color, #64748B);
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+.sh-lr-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--status-color, #64748B);
+  flex-shrink: 0;
+}
+.sh-lr-bar-wrap {
+  width: 60px;
+}
+.sh-lr-bar {
+  height: 3px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.sh-lr-bar-fill {
+  height: 100%;
+  background: var(--sport-color);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* Chevron */
+.sh-lr-chevron {
+  font-size: 20px;
+  color: rgba(255,255,255,0.15);
+  font-weight: 300;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ADD ROW — Row-style add league button
+   ═══════════════════════════════════════════════════════════ */
+.sh-add-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.sh-add-row:last-child { border-bottom: none; }
+.sh-add-row:hover {
+  background: rgba(255,255,255,0.03);
+}
+.sh-add-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px dashed rgba(255,255,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: rgba(255,255,255,0.3);
+  flex-shrink: 0;
+}
+.sh-add-text {
+  flex: 1;
+  min-width: 0;
+}
+.sh-add-label {
+  display: block;
+  font-family: var(--font-body), sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+}
+.sh-add-sub {
+  display: block;
+  font-family: var(--font-body), sans-serif;
+  font-size: 11px;
+  color: rgba(255,255,255,0.25);
+  margin-top: 1px;
+}
+
+/* ── Empty row ── */
+.sh-empty-row {
+  padding: 24px 18px;
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255,255,255,0.25);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .sh-title-bar { padding: 24px 16px 14px; }
+  .sh-title { font-size: 24px; }
+  .sh-content { padding: 0 12px 40px; }
+
+  .sh-rivals-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sh-league-row {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 14px;
+  }
+  .sh-lr-left { flex: 1 1 100%; }
+  .sh-lr-center { flex: 1 1 auto; }
+  .sh-lr-right { flex: 0 0 auto; }
+  .sh-lr-chevron { display: none; }
+
+  .sh-sport-header { padding: 12px 14px; }
+
+  .sh-sp-badge { display: none; }
+}
+
+@media (max-width: 480px) {
+  .sh-lr-center { display: none; }
+  .sh-lr-bar-wrap { display: none; }
+  .sh-rivals-card { padding: 16px; }
+}

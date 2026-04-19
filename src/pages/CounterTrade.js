@@ -292,35 +292,28 @@ const CounterTrade = () => {
                 {[
                   {
                     title: 'UFAFL TOTAL CAP',
-                    // value: `$${leagueSalaryCap?.toLocaleString()}`,
-                    value: `$${myleagueSalaryCap?.toLocaleString()}`,
+                    // value: `${leagueSalaryCap?.toLocaleString()} SP`,
+                    value: `${myleagueSalaryCap?.toLocaleString()} SP`,
                   },
                   {
                     title: 'TEAM TOTAL CAP',
                     // value: data?.teamData?.buyer?.caps
-                    //   ? `$${data?.teamData?.buyer?.caps?.toLocaleString()}`
-                    //   : `$0`,
+                    //   ? `${data?.teamData?.buyer?.caps?.toLocaleString()} SP`
+                    //   : `0 SP`,
                     value: (() => {
                       const totalCurrentYearSalaryCap = myTeamSelected.reduce((total, player) => {
-                        // console.log('myteamCurrentYearSalaryCap player',player);
-                        
                         return total + (player?.players?.currentYearSalaryCap || 0);
                       }, 0);
 
 
                       const otherteamCurrentYearSalaryCap = otherTeamSelected.reduce((total, player) => {
-                        // console.log('otherteamCurrentYearSalaryCap player',player);
-                        
                         return total + (player?.players?.currentYearSalaryCap || 0);
                       }, 0);
 
-                      //  console.log('seller totalCurrentYearSalaryCap',totalCurrentYearSalaryCap);
-                      //  console.log('seller otherteamCurrentYearSalaryCap',otherteamCurrentYearSalaryCap);
-                      
-                  
+
                       const totalSalaryCap = (SETTING?.teamSalaryCap || 0) - totalCurrentYearSalaryCap + otherteamCurrentYearSalaryCap;
-                      
-                      return totalSalaryCap ? `$${totalSalaryCap.toLocaleString()}` : '$0';
+
+                      return totalSalaryCap ? `${totalSalaryCap.toLocaleString()} SP` : '0 SP';
                     })(),
                   },
                 ].map((item, index) => (
@@ -342,37 +335,29 @@ const CounterTrade = () => {
                 {[
                   {
                     title: 'UFAFL TOTAL CAP',
-                    // value: `$${leagueSalaryCap?.toLocaleString()}`,
-                    value: `$${myleagueSalaryCap?.toLocaleString()}`,
+                    // value: `${leagueSalaryCap?.toLocaleString()} SP`,
+                    value: `${myleagueSalaryCap?.toLocaleString()} SP`,
                   },
                   {
                     title: 'TEAM TOTAL CAP',
                     value: (() => {
                       const totalCurrentYearSalaryCap = otherTeamSelected.reduce((total, player) => {
-                        console.log('player',player);
-                        
                         return total + (player?.players?.currentYearSalaryCap || 0);
                       }, 0);
 
 
                       const myteamCurrentYearSalaryCap = myTeamSelected.reduce((total, player) => {
-                        console.log('player',player);
-                        
                         return total + (player?.players?.currentYearSalaryCap || 0);
                       }, 0);
 
-                      
 
-                      // console.log('totalCurrentYearSalaryCap',totalCurrentYearSalaryCap);
-                      
-                  
                       const otherteamSalaryCap = (data?.teamData?.seller?.salaryCap || 0) - totalCurrentYearSalaryCap + myteamCurrentYearSalaryCap;
-                      
-                      return otherteamSalaryCap ? `$${otherteamSalaryCap.toLocaleString()}` : '$0';
+
+                      return otherteamSalaryCap ? `${otherteamSalaryCap.toLocaleString()} SP` : '0 SP';
                     })(),
                     // value: data?.teamData?.seller?.caps
-                    //   ? `$${data?.teamData?.seller?.caps?.toLocaleString()}`
-                    //   : `$0`,
+                    //   ? `${data?.teamData?.seller?.caps?.toLocaleString()} SP`
+                    //   : `0 SP`,
                     
                   },
                 ].map((item, index) => (
@@ -418,7 +403,7 @@ const CounterTrade = () => {
                     ?.map((v, i) => {
                       return (
                         <div key={i} className='draft_pick_row'>
-                          <p>{`${v?.season}' ${v?.team?.name} ${v?.round} Round Pick`}</p>
+                          <p>{`${v?.season}' Rd ${v?.round} Pick`}{v?.team && v?.mainTeam && String(v.team._id) !== String(v.mainTeam._id) ? `, By ${v?.team?.name}` : ''}</p>
                           <AiFillCloseCircle
                             color={'#fff'}
                             size={20}
@@ -445,7 +430,7 @@ const CounterTrade = () => {
                             onClick={() => handleMyTeamSelectedDraft(v)}
                             style={{ cursor: 'pointer' }}
                           >
-                            <p>{`${v?.season}' ${v?.team?.name} ${v?.round} Round Pick`}</p>
+                            <p>{`${v?.season}' Rd ${v?.round} Pick`}{v?.team && v?.mainTeam && String(v.team._id) !== String(v.mainTeam._id) ? `, By ${v?.team?.name}` : ''}</p>
                           </div>
                         )
                       })
@@ -464,7 +449,7 @@ const CounterTrade = () => {
                     ?.map((v, i) => {
                       return (
                         <div key={i} className='draft_pick_row'>
-                          <p>{`${v?.season}' ${v?.team?.name} ${v?.round} Round Pick`}</p>
+                          <p>{`${v?.season}' Rd ${v?.round} Pick`}{v?.team && v?.mainTeam && String(v.team._id) !== String(v.mainTeam._id) ? `, By ${v?.team?.name}` : ''}</p>
                           <AiFillCloseCircle
                             color={'#fff'}
                             size={20}
@@ -492,7 +477,7 @@ const CounterTrade = () => {
                             onClick={() => handleOtherTeamSelectedDraft(v)}
                             style={{ cursor: 'pointer' }}
                           >
-                            <p>{`${v?.season}' ${v?.team?.name} ${v?.round} Round Pick`}</p>
+                            <p>{`${v?.season}' Rd ${v?.round} Pick`}{v?.team && v?.mainTeam && String(v.team._id) !== String(v.mainTeam._id) ? `, By ${v?.team?.name}` : ''}</p>
                           </div>
                         )
                       })

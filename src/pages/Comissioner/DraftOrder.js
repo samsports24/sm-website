@@ -60,7 +60,6 @@ const DraftOrder = () => {
   const getData = () => {
     const mockData = [...getMock()]
     draftRounds?.forEach((v) => {
-      // console.log('round',v?.round);
       const positionIndex = mockData?.findIndex((x) => v?.position === x?.position)
       const roundIndex = mockData[positionIndex].rounds?.findIndex((x) => v?.round === x?.round)
       mockData[positionIndex].rounds[roundIndex].team = v?.team?._id

@@ -1,91 +1,103 @@
-// import React, { useEffect, useState } from 'react'
-
-// import { Breadcrumb } from 'antd'
-
-// import Arrow from '../assets/arrow-right.svg'
-
-// Component
+import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 
-// import { FiArrowLeft } from 'react-icons/fi'
-
-// import moment from 'moment'
-import ButtonsAndPagination from '../components/Pagination/ButtonsAndPagination'
-
-// Mock Data
-
 const ComingSoon = () => {
-  // const [remainingTime, setRemainingTime] = useState(calculateRemainingTime())
-
-  // function calculateRemainingTime() {
-  //   const targetDate = moment('2023-08-31' || new Date())
-  //   const currentDate = moment()
-  //   const duration = moment.duration(targetDate.diff(currentDate))
-  //   return {
-  //     days: Math.floor(duration.asDays()),
-  //     hours: duration.hours(),
-  //     minutes: duration.minutes(),
-  //     seconds: duration.seconds(),
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   const timerInterval = setInterval(() => {
-  //     setRemainingTime(calculateRemainingTime())
-  //   }, 1000)
-  //   return () => clearInterval(timerInterval)
-  // }, [])
-
-  // const RemainingTime = ({ value, type }) => {
-  //   const formatNumber = (number) => {
-  //     return number.toString().padStart(2, '0')
-  //   }
-  //   return (
-  //     <div className='remaining_time_container'>
-  //       <div className='box'>
-  //         <h1>{formatNumber(value)}</h1>
-  //         <p>{type}</p>
-  //       </div>
-  //     </div>
-  //   )
-  // }
+  const navigate = useNavigate()
 
   return (
-    <div className='coming_soon_container'>
-      {/* BREADCRUMB */}
-      {/* <section className='_breadcrumb'>
-        <Breadcrumb
-          className='customize_breadcrumb'
-          separator={<img src={Arrow} />}
-          items={[
-            {
-              title: <p>Team</p>,
-            },
-
-            {
-              title: <p>Coming Soon</p>,
-            },
-          ]}
-        />
-      </section> */}
-
-      {/* HEADER */}
+    <div style={{ minHeight: '100vh', background: '#0A0F1A' }}>
       <Header />
 
-      <ButtonsAndPagination noWeek />
-
-      <section className='coming_soon'>
-        <img src={require('../assets/coming-soon.png')} />
-        <div className='time_container'>
-          {/* <RemainingTime value={remainingTime?.days} type={'DAYS'} />
-          <RemainingTime value={remainingTime?.hours} type={'HOURS'} />
-          <RemainingTime value={remainingTime?.minutes} type={'MINUTES'} />
-          <RemainingTime value={remainingTime?.seconds} type={'SECOND'} /> */}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '65vh',
+        padding: '40px 20px',
+        textAlign: 'center',
+      }}>
+        {/* Icon */}
+        <div style={{
+          width: 80,
+          height: 80,
+          borderRadius: '50%',
+          background: 'linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04))',
+          border: '2px solid rgba(34,197,94,0.2)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: 24,
+        }}>
+          <span style={{ fontSize: 36 }}>🏗️</span>
         </div>
-        {/* <p className='_back_button'>
-          <FiArrowLeft /> BACK
-        </p> */}
-      </section>
+
+        {/* Title */}
+        <h1 style={{
+          color: '#fff',
+          fontFamily: "'Rajdhani', sans-serif",
+          fontSize: 32,
+          fontWeight: 800,
+          margin: '0 0 8px',
+          letterSpacing: '0.5px',
+        }}>
+          Coming Soon
+        </h1>
+
+        <p style={{
+          color: 'rgba(255,255,255,0.45)',
+          fontSize: 15,
+          maxWidth: 420,
+          lineHeight: 1.6,
+          margin: '0 0 32px',
+        }}>
+          We are building something great here. This feature is currently under
+          development and will be available soon.
+        </p>
+
+        {/* Actions */}
+        <div style={{ display: 'flex', gap: 12 }}>
+          <button
+            onClick={() => navigate(-1)}
+            style={{
+              background: 'rgba(255,255,255,0.06)',
+              color: 'rgba(255,255,255,0.7)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: 10,
+              padding: '10px 24px',
+              fontSize: 14,
+              fontWeight: 600,
+              fontFamily: "'Rajdhani', sans-serif",
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+            }}
+          >
+            ← Go Back
+          </button>
+          <button
+            onClick={() => navigate('/dashboard')}
+            style={{
+              background: 'linear-gradient(135deg, #22C55E, #16A34A)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 10,
+              padding: '10px 24px',
+              fontSize: 14,
+              fontWeight: 600,
+              fontFamily: "'Rajdhani', sans-serif",
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+              boxShadow: '0 4px 16px rgba(34,197,94,0.25)',
+            }}
+          >
+            Dashboard
+          </button>
+        </div>
+      </div>
     </div>
   )
 }

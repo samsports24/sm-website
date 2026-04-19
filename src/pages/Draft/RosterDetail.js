@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Button } from 'antd'
 import { useSelector } from 'react-redux'
+import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import { getRemainingSeconds, isDraftStart } from '../../config/helperFunctions'
 import { addPlayerToDraft } from '../../redux/actions/draftAction'
 import { positions } from '../../config/constants'
@@ -17,6 +18,10 @@ const RosterDetail = ({ playerFinancials }) => {
   const USER = useSelector((state) => state.user)
   const { currentLeague } = useSelector((state) => state.league)
   const [loading, setLoading] = useState(false)
+
+  // Dynamic year labels, auto-updates every season
+  const currentYear = new Date().getFullYear()
+  const shortYear = `${currentYear.toString().slice(-2)}'`
 
   const handleDraftPlayer = async () => {
     setLoading(true)
@@ -36,118 +41,99 @@ const RosterDetail = ({ playerFinancials }) => {
 
  
   return (
-    <div className='roster_detail_box'>
-      <div
-        className='rdb_left'
-        style={{ backgroundImage: `url(${player?.player?.HostedHeadshotNoBackgroundUrl})` }}
-      />
-      <div className='rdb_right'>
-        <div className='rdb_right_row1'>
-          <div className='left'>
-            <p>{player?.player?.Name}</p>
-            <p>
-              {/* #12  */}- {mapPosition(player?.player?.Position)}, {player?.player?.Team}
-            </p>
-          </div>
-          <div className='right'>
-            {activeTab != 3 && (
-              <Button
-              className='updatebtn'
-                loading={loading}
-                disabled={
-                  // false
+    <div className='dr-player-card'>
+      {/* Player headshot */}
+      {player?.player?.HostedHeadshotNoBackgroundUrl ? (
+        <div
+          className='dr-player-avatar'
+          style={{ backgroundImage: `url(${player.player.HostedHeadshotNoBackgroundUrl})` }}
+        />
+      ) : (
+        <div
+          className='dr-player-avatar'
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <GiAmericanFootballPlayer size={55} color='rgba(255,255,255,0.25)' />
+        </div>
+      )}
 
-                  // !isDraftStart(currentLeague?.draftStart) &&
-                  completed || !(onTheClock?.team?._id === USER?.userDetails?.team?._id)
-                }
-                type='primary'
-                onClick={handleDraftPlayer}
-              >
-                DRAFT PLAYER
-              </Button>
-            )}
+      <div className='dr-player-info'>
+        {/* Name + Position + Draft button */}
+        <div className='dr-player-top'>
+          <div className='dr-player-name-wrap'>
+            <h3 className='dr-player-name'>{player?.player?.Name || 'Select a Player'}</h3>
+            <span className='dr-player-meta'>
+              {mapPosition(player?.player?.otcPosition || player?.player?.Position)}{player?.player?.Team ? `, ${player.player.Team}` : ''}
+            </span>
           </div>
+          {activeTab != 3 && (
+            <Button
+              className='dr-draft-btn'
+              loading={loading}
+              disabled={completed || !(onTheClock?.team?._id === USER?.userDetails?.team?._id)}
+              type='primary'
+              onClick={handleDraftPlayer}
+            >
+              DRAFT PLAYER
+            </Button>
+          )}
         </div>
 
-
-        
-
-        {/* <div className='rdb_right_row2'>
-          <p className='active'>2023 Stats</p>
-          <p>|</p>
-          <p>2024 Projected Stats</p>
-          <p>-</p>
-          <p>Career Stats</p>
-        </div> */}
-
-        <div style={{display:'flex',justifyContent:'space-between',flexWrap:'wrap'}}>
-        <div className='rdb_right_row3'>
-          {/* <div style={{paddingBottom:'20px'}}> */}
-          <div>
-            <p style={{fontSize:'20px'}}>SAM ADP</p>
-            <p>{player?.player?.samAdp24 ? `${player?.player?.samAdp24?.toFixed(3)}` : '-'}
-            </p>
+        {/* Stats row */}
+        <div className='dr-stats-row'>
+          <div className='dr-stat'>
+            <span className='dr-stat-label'>SAM ADP</span>
+            <span className='dr-stat-value'>
+              {player?.player?.samAdp24 ? player.player.samAdp24.toFixed(3) : '-'}
+            </span>
           </div>
-          <div>
-          <p>{`23' TOTAL POINTS`}</p>
-            {/* <p>{player?.player?.pf.toFixed(3)  || '-'}</p> */}
-            <p>{player?.player?.pf ? `${player.player.pf.toFixed(3)}` : '-'}</p>
+          <div className='dr-stat'>
+            <span className='dr-stat-label'>{shortYear} PROJ. TOTAL PTS</span>
+            <span className='dr-stat-value'>
+              {player?.player?.projectedFantasyPoints && player.player.projectedFantasyPoints > 0
+                ? player.player.projectedFantasyPoints.toFixed(3)
+                : player?.stats?.stats?.FantasyPoints24
+                  ? player.stats.stats.FantasyPoints24.toFixed(3)
+                  : '-'}
+            </span>
           </div>
-          <div>
-            <p>{`23' AVG. POINTS`}</p>
-            {/* <p>{player?.player?.avgPf?.toFixed(3) || '-'}</p> */}
-            <p>{player?.player?.avgPf ? `${player.player.avgPf.toFixed(3)}` : '-'}</p>
+          <div className='dr-stat'>
+            <span className='dr-stat-label'>{shortYear} PROJ. AVG PTS</span>
+            <span className='dr-stat-value'>
+              {player?.player?.projectedAvgFantasyPoints && player.player.projectedAvgFantasyPoints > 0
+                ? player.player.projectedAvgFantasyPoints.toFixed(3)
+                : player?.stats?.stats?.AvgFantasyPoints24
+                  ? player.stats.stats.AvgFantasyPoints24.toFixed(3)
+                  : '-'}
+            </span>
           </div>
-          <div>
-          {/* <p>{`24' PROJ.`}<br /> TOTAL POINTS</p> */}
-          <p>{`24' PROJ.`}TOTAL POINTS</p>
-            {/* <p>{player?.stats?.stats?.FantasyPoints24?.toFixed(3) || '-'}</p> */}
-            <p>{player?.stats?.stats?.FantasyPoints24 ? `${player?.stats?.stats?.FantasyPoints24.toFixed(3)}` : '-'}</p>
+          <div className='dr-stat'>
+            <span className='dr-stat-label'>{shortYear} CAP HIT</span>
+            <span className='dr-stat-value dr-cap-value'>
+              {player?.player?.otcCapHit && player.player.otcCapHit > 0
+                ? `$${(player.player.otcCapHit / 1_000_000).toFixed(1)}M`
+                : player?.player?.currentYearSalaryCap
+                  ? `${player.player.currentYearSalaryCap.toLocaleString()} SP`
+                  : '-'}
+            </span>
           </div>
-         
-          <div>
-            {/* <p>{`24' PROJ.`}<br /> AVG.POINTS</p> */}
-            <p>{`24' PROJ.`} AVG.POINTS</p>
-            {/* <p>{player?.stats?.stats?.AvgFantasyPoints24?.toFixed(3) || '-'}</p> */}
-            <p>{player?.stats?.stats?.AvgFantasyPoints24 ? `${player?.stats?.stats?.AvgFantasyPoints24.toFixed(3)}` : '-'}</p>
-          </div>
-
-         
-          {/* <div>
-            <p>Pass Yds</p>
-            <p>-</p>
-          </div>
-          <div>
-            <p>Pass Td</p>
-            <p>-</p>
-          </div>
-          <div>
-            <p>PassInt</p>
-            <p>-</p>
-          </div> */}
-        </div>
-        <div>
-            <p className='label'>{`24' CAP HIT`}</p>
-            <p className='value'>
-            {`$${(player?.player?.currentYearSalaryCap || '-').toLocaleString()}` ||'-'}
-              {/* {player?.player?.currentYearSalaryCap.toFixed(2) || '-'} */}
-              
-              </p>
-           
-          </div>
-          </div>
-        <div className='rdb_right_row4'>
-          {/* <div className='draft_by'>
-            <p>Draft By</p>
-            <p>Team 4</p>
-          </div> */}
-          {playerFinancials && (
-            <div className='pf_box'>
-              <p>Player Financials:</p>
-              <p>23’ CAP HIT $28,90,000</p>
+          {player?.player?.otcTotalValue > 0 && (
+            <div className='dr-stat'>
+              <span className='dr-stat-label'>CONTRACT</span>
+              <span className='dr-stat-value'>
+                {`$${(player.player.otcTotalValue / 1_000_000).toFixed(0)}M / ${player.player.yearsLeftSalaryCap || player.player.otcContractYears || '-'}yr`}
+              </span>
             </div>
           )}
         </div>
+
+        {/* Player financials (if applicable) */}
+        {playerFinancials && (
+          <div className='dr-financials'>
+            <span>Player Financials:</span>
+            <span>{`${(currentYear - 1).toString().slice(-2)}' VALUE 28,900,000 SP`}</span>
+          </div>
+        )}
       </div>
     </div>
   )

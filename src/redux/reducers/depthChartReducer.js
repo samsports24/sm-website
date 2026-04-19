@@ -297,14 +297,14 @@ const STATIC_DATA = [
     Name: '',
     Position: 'k',
     classKey: 'special_team_pk',
-    type: 'special team',
+    type: 'offense',
   },
   {
     imageUrl: require('../../assets/player-img-6.png'),
     Name: '',
     Position: 'p',
     classKey: 'special_team_pn',
-    type: 'special team',
+    type: 'offense',
   },
 ]
 
@@ -352,7 +352,7 @@ const depthChartReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        rosterCount: payload?.data,
+        rosterCount: payload?.count,
         data: getData(),
       }
     }

@@ -1,0 +1,1063 @@
+/* ═══════════════════════════════════════════════════════════
+   AI COACH SIDEBAR WIDGET
+   Floating toggle + slide-in panel on the right side
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Toggle button ─── */
+.aicw-toggle {
+  position: fixed;
+  right: 24px;
+  bottom: 90px;
+  z-index: 9999;
+  cursor: pointer;
+}
+
+.aicw-toggle-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(249, 115, 22, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.aicw-toggle-icon:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 28px rgba(249, 115, 22, 0.45);
+}
+
+/* ─── Sidebar panel ─── */
+.aicw-sidebar {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 380px;
+  max-width: 100vw;
+  height: 100vh;
+  background: #141422;
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: aicw-slide-in 0.25s ease-out;
+  box-shadow: -8px 0 40px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes aicw-slide-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* ─── Header ─── */
+.aicw-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.aicw-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.aicw-header-icon {
+  font-size: 20px;
+  color: #f97316;
+}
+
+.aicw-header-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.aicw-close {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s;
+}
+
+.aicw-close:hover {
+  color: #fff;
+}
+
+/* ─── Coach list (main view) ─── */
+.aicw-coach-list {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.aicw-coach-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-left: 3px solid;
+  border-radius: 10px;
+  padding: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.aicw-coach-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.aicw-coach-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.aicw-coach-icon {
+  font-size: 24px;
+}
+
+.aicw-coach-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.aicw-coach-name {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.aicw-coach-sub {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.aicw-active-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  font-weight: 500;
+}
+
+.aicw-coach-desc {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.4;
+}
+
+/* ─── Subscribe buttons ─── */
+.aicw-subscribe-btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.aicw-btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.aicw-btn:hover { opacity: 0.85; }
+
+.aicw-btn-monthly {
+  background: #f97316;
+  color: #fff;
+}
+
+.aicw-btn-lifetime {
+  background: rgba(249, 115, 22, 0.15);
+  color: #f97316;
+  border: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+/* ─── Active coach header ─── */
+.aicw-active-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.aicw-back {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.aicw-back:hover { color: #fff; }
+
+.aicw-active-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.aicw-active-name {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.aicw-analyze-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: rgba(249, 115, 22, 0.12);
+  border: 1px solid rgba(249, 115, 22, 0.25);
+  color: #f97316;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.aicw-analyze-btn:hover { background: rgba(249, 115, 22, 0.22); }
+.aicw-analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ─── Tabs ─── */
+.aicw-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.aicw-tab {
+  flex: 1;
+  padding: 10px 0;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.aicw-tab:hover { color: rgba(255, 255, 255, 0.7); }
+
+.aicw-tab-active {
+  color: #f97316;
+  border-bottom-color: #f97316;
+}
+
+/* ─── Content area ─── */
+.aicw-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 14px 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.aicw-loading {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.aicw-summary {
+  background: rgba(249, 115, 22, 0.06);
+  border: 1px solid rgba(249, 115, 22, 0.12);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+
+.aicw-summary p {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.aicw-market {
+  margin-top: 6px !important;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.45) !important;
+}
+
+/* ─── Player cards ─── */
+.aicw-player-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.aicw-player-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.aicw-player-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.aicw-player-rank {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(249, 115, 22, 0.15);
+  color: #f97316;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.aicw-player-info { display: flex; flex-direction: column; }
+
+.aicw-player-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.aicw-player-meta {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: capitalize;
+}
+
+.aicw-player-reason {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.45;
+  margin: 0 0 8px;
+}
+
+.aicw-matchup-insight {
+  font-size: 12px;
+  color: #f97316;
+  background: rgba(249, 115, 22, 0.08);
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin: 0 0 8px;
+  line-height: 1.4;
+}
+
+.aicw-player-stats {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.aicw-stat {
+  font-size: 11px;
+  padding: 2px 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: capitalize;
+}
+
+.aicw-trend {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.aicw-trend-rising { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+.aicw-trend-stable { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+.aicw-trend-declining { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+
+/* ─── Action buttons ─── */
+.aicw-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.aicw-action-btn {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: opacity 0.2s;
+}
+
+.aicw-action-accept { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+.aicw-action-dismiss { background: rgba(239, 68, 68, 0.1); color: rgba(239, 68, 68, 0.7); }
+
+.aicw-action-status {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: capitalize;
+  margin-top: 8px;
+  display: inline-block;
+}
+
+.aicw-status-accepted { color: #22c55e; }
+.aicw-status-dismissed { color: rgba(255, 255, 255, 0.3); }
+.aicw-status-executed { color: #f97316; }
+
+/* ─── Lineup section ─── */
+.aicw-lineup-section { padding-bottom: 20px; }
+
+.aicw-lineup-group { margin-bottom: 20px; }
+
+.aicw-lineup-heading {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.aicw-lineup-item {
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+
+.aicw-lineup-start {
+  background: rgba(34, 197, 94, 0.06);
+  border: 1px solid rgba(34, 197, 94, 0.12);
+}
+
+.aicw-lineup-sit {
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.1);
+}
+
+.aicw-lineup-player {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.aicw-lineup-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.aicw-lineup-pos {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 1px 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.aicw-lineup-reason {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.aicw-lineup-source {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+  text-align: center;
+  margin-top: 16px;
+}
+
+/* ─── Replacement suggestions (bench → start instead) ─── */
+.aicw-replacement {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: rgba(34, 197, 94, 0.06);
+  border: 1px solid rgba(34, 197, 94, 0.15);
+  border-radius: 6px;
+}
+
+.aicw-replacement-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.aicw-replacement-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #22c55e;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.aicw-replacement-player {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+
+.aicw-replacement-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.aicw-replacement-pos {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 1px 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.aicw-replacement-source {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: rgba(34, 197, 94, 0.1);
+  color: rgba(34, 197, 94, 0.8);
+  text-transform: capitalize;
+}
+
+.aicw-replacement-reason {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ─── Chat section ─── */
+.aicw-chat-section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: -14px -16px;
+}
+
+.aicw-chat-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.aicw-chat-title {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+}
+
+.aicw-chat-new-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.aicw-chat-new-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.aicw-chat-messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Welcome state */
+.aicw-chat-welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 30px 10px;
+}
+
+.aicw-chat-welcome-icon {
+  margin-bottom: 12px;
+  opacity: 0.6;
+}
+
+.aicw-chat-welcome p {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.aicw-chat-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.aicw-chat-suggestion {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.aicw-chat-suggestion:hover {
+  background: rgba(249, 115, 22, 0.08);
+  border-color: rgba(249, 115, 22, 0.2);
+  color: #f97316;
+}
+
+/* Chat bubbles */
+.aicw-chat-bubble {
+  display: flex;
+  gap: 8px;
+  max-width: 92%;
+}
+
+.aicw-chat-user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.aicw-chat-coach {
+  align-self: flex-start;
+}
+
+.aicw-chat-avatar {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.aicw-chat-text {
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.aicw-chat-user .aicw-chat-text {
+  background: rgba(249, 115, 22, 0.15);
+  color: rgba(255, 255, 255, 0.9);
+  border-bottom-right-radius: 4px;
+}
+
+.aicw-chat-coach .aicw-chat-text {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.8);
+  border-bottom-left-radius: 4px;
+}
+
+/* Typing indicator */
+.aicw-chat-typing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border-bottom-left-radius: 4px;
+}
+
+.aicw-chat-typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  animation: aicw-typing 1.4s infinite;
+}
+
+.aicw-chat-typing span:nth-child(2) { animation-delay: 0.2s; }
+.aicw-chat-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes aicw-typing {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* Input bar */
+.aicw-chat-input-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.aicw-chat-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.aicw-chat-input::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.aicw-chat-input:focus {
+  border-color: rgba(249, 115, 22, 0.4);
+}
+
+.aicw-chat-input:disabled {
+  opacity: 0.5;
+}
+
+.aicw-chat-send {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #f97316;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+
+.aicw-chat-send:hover { opacity: 0.85; }
+
+.aicw-chat-send:disabled {
+  background: rgba(249, 115, 22, 0.3);
+  cursor: not-allowed;
+}
+
+/* ─── Empty state ─── */
+.aicw-empty {
+  text-align: center;
+  padding: 30px 20px;
+}
+
+.aicw-empty p {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 16px;
+}
+
+/* ─── Role Badges ─── */
+.aicw-role-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+  white-space: nowrap;
+  vertical-align: middle;
+  line-height: 1.4;
+}
+
+/* Chat sender line with badge */
+.aicw-chat-sender {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 2px;
+  margin-left: 32px;
+}
+
+.aicw-chat-sender-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.aicw-chat-sender .aicw-role-badge {
+  font-size: 8px;
+  padding: 1px 4px;
+}
+
+/* ═══ Weekly Usage Section ═══ */
+.aicw-usage-section {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+
+.aicw-usage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.aicw-usage-tier {
+  font-size: 12px;
+  font-weight: 700;
+  color: #f97316;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.aicw-usage-reset {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+}
+
+.aicw-usage-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.aicw-usage-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.aicw-usage-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+}
+
+.aicw-usage-bar {
+  height: 5px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.aicw-usage-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* ═══ Tier Pricing Section ═══ */
+.aicw-tier-section {
+  margin-top: 8px;
+}
+
+.aicw-tier-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.7);
+  margin: 0 0 10px;
+  text-align: center;
+}
+
+.aicw-tier-card {
+  position: relative;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 8px;
+}
+
+.aicw-tier-popular {
+  position: absolute;
+  top: -8px;
+  right: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.aicw-tier-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.aicw-tier-name {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.aicw-tier-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.8);
+}
+
+.aicw-tier-features {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.aicw-tier-features span {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  background: rgba(255,255,255,0.05);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.aicw-btn-yearly {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.6);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.aicw-btn-yearly:hover {
+  border-color: rgba(255,255,255,0.4);
+  color: rgba(255,255,255,0.9);
+}
+
+/* ═══ Paywall inside chat ═══ */
+.aicw-paywall {
+  padding: 16px 14px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 100%);
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.aicw-paywall-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.aicw-paywall-desc {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  text-align: center;
+  margin: 0 0 12px;
+  line-height: 1.4;
+}
+
+.aicw-paywall-plan {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+}
+
+/* ─── Highlight animation when user clicks locked coach ─── */
+@keyframes tierHighlight {
+  0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+  40% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.15); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+.aicw-tier-highlight {
+  animation: tierHighlight 1.2s ease-out;
+}
+
+.aicw-tier-highlight .aicw-tier-title {
+  color: #22C55E;
+}
+
+/* ─── Subscribe buttons row ─── */
+.aicw-subscribe-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.aicw-btn-monthly {
+  background: linear-gradient(135deg, #22C55E, #16A34A);
+  border: none;
+  color: #000;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.aicw-btn-monthly:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+/* ─── Mobile ─── */
+@media (max-width: 480px) {
+  .aicw-sidebar {
+    width: 100vw;
+  }
+}

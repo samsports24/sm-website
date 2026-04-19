@@ -1,82 +1,280 @@
-/* TEAM SCHEDULE CAROUSEL */
-/* .tsc_box {
+/* ═══════════════════════════════════════════════════════
+   TEAM SCHEDULE CAROUSEL — Redesigned
+   Fixed-size cards in a horizontal scroll
+   ═══════════════════════════════════════════════════════ */
+
+.sch-box {
   width: 100%;
-  margin-top: 20px;
+  margin-top: 16px;
 }
 
-.tsc_box .tsc_card {
-  width: 100%;
-  background-color: var(--secondaryPurple);
-  border: 1px solid rgb(129, 129, 129);
+/* ── Individual Card — FIXED SIZE ── */
+.sch-card {
   display: flex;
-  flex-direction: row;
-  min-height: 100px;
-  height: 100%;
-}
-.tsc_box .activeWeek {
-  border: 1px solid var(--primary);
-}
-
-.tsc_box .tsc_card_left {
-  padding: 10px;
-}
-.tsc_box .tsc_card_left .week_text {
-  color: #fff !important;
-  font-weight: 900;
-  font-size: 18px;
-  margin-top: 15px;
-}
-.tsc_box .tsc_card_left .point_text {
-  color: #fff !important;
-  font-weight: 500;
-  font-size: 15px;
-  margin-top: 25px;
-  text-align: center;
-}
-.tsc_box .tsc_card_right {
-  flex: 1;
-  min-width: 60px;
-  background-repeat: no-repeat;
-  background-position: right;
-  background-size: contain;
-} */
-
-/* -------------------------- */
-.tsc_card {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 6px;
+  margin: 0 3px;
   width: 100%;
-  background-color: var(--secondaryPurple);
-  border: 1px solid rgb(129, 129, 129);
+  height: 120px;
+  box-sizing: border-box;
+  background: var(--secondaryPurple);
+  border: 1px solid rgba(110, 105, 128, 0.3);
+  border-radius: 10px;
+  transition: border-color 0.25s, background 0.25s, transform 0.2s;
+  cursor: default;
+  position: relative;
+  overflow: visible;
+}
+
+.sch-card:hover {
+  border-color: rgba(110, 105, 128, 0.55);
+  background: rgba(255, 255, 255, 0.04);
+  transform: translateY(-2px);
+}
+
+/* Active / Live week — bigger card */
+.sch-card-active {
+  height: 140px;
+  border-color: #22C55E;
+  border-width: 2px;
+  background: linear-gradient(180deg, rgba(34, 197, 94, 0.1) 0%, var(--secondaryPurple) 100%);
+  box-shadow: 0 0 16px rgba(34, 197, 94, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15);
+  gap: 6px;
+  z-index: 2;
+}
+.sch-card-active .sch-week-num {
+  color: #22C55E;
+  font-size: 11px;
+}
+.sch-card-active .sch-card-logo-wrap {
+  width: 42px;
+  height: 42px;
+}
+.sch-card-active .sch-score-text {
+  font-size: 13px;
+}
+.sch-card-active .sch-card-opp-name {
+  font-size: 9px;
+}
+.sch-card-active:hover {
+  border-color: #22C55E;
+}
+
+/* Future weeks — slightly muted */
+.sch-card-future {
+  opacity: 0.7;
+}
+.sch-card-future:hover {
+  opacity: 1;
+}
+
+/* ── Week label row ── */
+.sch-card-week {
   display: flex;
-  flex-direction: row;
-  height: 100px;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
 }
-.tsc_activeWeek {
-  border: 1px solid var(--primary);
+
+.sch-week-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--lightGrayText);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  line-height: 1;
+  white-space: nowrap;
 }
-.tsc_card_left {
-  padding: 10px;
+
+/* Green pulsing dot for current week */
+.sch-live-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #22C55E;
+  flex-shrink: 0;
+  animation: sch-pulse 2s ease-in-out infinite;
 }
-.tsc_card_left .week_text {
-  color: #fff !important;
-  font-weight: 900;
-  font-size: 18px;
-  margin-top: 15px;
-  width: max-content;
-  user-select: none;
+
+@keyframes sch-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+  50% { opacity: 0.7; box-shadow: 0 0 0 4px rgba(34, 197, 94, 0); }
 }
-.tsc_card_left .point_text {
-  width: max-content;
-  color: #fff !important;
-  font-weight: 500;
-  font-size: 15px;
-  margin-top: 25px;
-  text-align: center;
-  user-select: none;
+
+/* ── Opponent Logo ── */
+.sch-card-logo-wrap {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
-.tsc_card_right {
-  width: 100px;
+
+.sch-card-logo {
+  width: 100%;
   height: 100%;
-  background-repeat: no-repeat;
-  background-position: right;
-  background-size: contain;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.sch-card-logo-placeholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(110, 105, 128, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--lightGrayText);
+  font-family: var(--font-heading), sans-serif;
+}
+
+/* ── Score / Result (played weeks) ── */
+.sch-card-score {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.sch-result-badge {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 3px;
+  line-height: 1;
+  letter-spacing: 0.3px;
+}
+
+.sch-result-win {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22C55E;
+}
+
+.sch-result-loss {
+  background: rgba(239, 68, 68, 0.2);
+  color: #EF4444;
+}
+
+.sch-result-tie {
+  background: rgba(234, 179, 8, 0.2);
+  color: #EAB308;
+}
+
+.sch-score-text {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* ── Date (future weeks) ── */
+.sch-card-date {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.sch-date-text {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--lightGrayText);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* ── Opponent name ── */
+.sch-card-opp-name {
+  font-size: 8px;
+  font-weight: 600;
+  color: var(--lightGrayText);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  line-height: 1;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+  padding: 0 2px;
+  flex-shrink: 0;
+}
+
+/* ── Bye Week styling ── */
+.sch-bye-icon {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  color: rgba(255, 255, 255, 0.2) !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  border-color: rgba(110, 105, 128, 0.12) !important;
+}
+
+.sch-bye-text {
+  color: rgba(255, 255, 255, 0.2) !important;
+  font-style: italic;
+  font-size: 9px !important;
+}
+
+.sch-tbd-text {
+  color: rgba(255, 255, 255, 0.18) !important;
+  font-size: 9px !important;
+  letter-spacing: 0.8px;
+}
+
+/* ── Playoff card styling ── */
+.sch-card-playoff {
+  border-color: rgba(212, 168, 67, 0.25);
+  background: linear-gradient(180deg, rgba(212, 168, 67, 0.06) 0%, var(--secondaryPurple) 100%);
+}
+.sch-card-playoff:hover {
+  border-color: rgba(212, 168, 67, 0.4);
+}
+
+.sch-week-playoff {
+  color: #D4A843 !important;
+  font-size: 7px !important;
+  letter-spacing: 0.3px !important;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.sch-playoff-icon {
+  color: #D4A843 !important;
+  background: rgba(212, 168, 67, 0.1) !important;
+  border-color: rgba(212, 168, 67, 0.25) !important;
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════ */
+
+@media (max-width: 600px) {
+  .sch-card {
+    height: 100px;
+    padding: 8px 4px;
+    gap: 3px;
+  }
+  .sch-card-logo-wrap {
+    width: 28px;
+    height: 28px;
+  }
+  .sch-card-logo-placeholder {
+    width: 28px;
+    height: 28px;
+    font-size: 9px;
+  }
+  .sch-week-num {
+    font-size: 8px;
+  }
+  .sch-score-text {
+    font-size: 10px;
+  }
 }

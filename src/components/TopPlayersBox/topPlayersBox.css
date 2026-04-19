@@ -1,0 +1,264 @@
+/* ═══════════════════════════════════════════
+   STARTING 11 — Premium Football Field Card
+   ═══════════════════════════════════════════ */
+
+/* ── Accent variables ── */
+.tpb-offense { --off-accent: #fb923c; --off-glow: rgba(251,146,60,0.25); }
+.tpb-defense { --def-accent: #60a5fa; --def-glow: rgba(96,165,250,0.25); }
+
+/* ═══ Container ═══ */
+.tpb {
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(10,15,25,0.85);
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+}
+
+/* ═══ Header ═══ */
+.tpb-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.02);
+}
+.tpb-hdr-left {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.tpb-hdr-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+.tpb-offense .tpb-hdr-icon { background: rgba(251,146,60,0.12); color: #fb923c; }
+.tpb-defense .tpb-hdr-icon { background: rgba(96,165,250,0.12); color: #60a5fa; }
+
+.tpb-hdr-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.3px;
+  line-height: 1.15;
+}
+.tpb-hdr-sub {
+  font-size: 9px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.3px;
+}
+.tpb-hdr-badge {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+.tpb-offense .tpb-hdr-badge {
+  background: linear-gradient(135deg, rgba(251,146,60,0.15), rgba(251,146,60,0.05));
+  color: #fb923c;
+  border: 1px solid rgba(251,146,60,0.2);
+}
+.tpb-defense .tpb-hdr-badge {
+  background: linear-gradient(135deg, rgba(96,165,250,0.15), rgba(96,165,250,0.05));
+  color: #60a5fa;
+  border: 1px solid rgba(96,165,250,0.2);
+}
+
+/* ═══ Field ═══ */
+.tpb-field {
+  position: relative;
+  padding: 18px 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* Grass gradient */
+  background:
+    linear-gradient(180deg,
+      rgba(22,80,45,0.35) 0%,
+      rgba(18,60,35,0.2) 40%,
+      rgba(10,15,25,0) 100%);
+  overflow: hidden;
+}
+
+/* ── Yard lines ── */
+.tpb-yard {
+  position: absolute;
+  left: 0; right: 0;
+  height: 1px;
+  background: rgba(255,255,255,0.04);
+  pointer-events: none;
+}
+.tpb-yard--1 { top: 20%; }
+.tpb-yard--2 { top: 40%; }
+.tpb-yard--3 { top: 60%; }
+.tpb-yard--4 { top: 80%; }
+
+/* ── Hash marks ── */
+.tpb-hash {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 1px;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 14px,
+    rgba(255,255,255,0.035) 14px,
+    rgba(255,255,255,0.035) 18px
+  );
+}
+.tpb-hash--l { left: 34%; }
+.tpb-hash--r { right: 34%; }
+
+/* ═══ Formation Rows ═══ */
+.tpb-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+}
+.tpb-row--wide      { justify-content: space-between; padding: 0 6px; }
+.tpb-row--secondary  { justify-content: space-between; padding: 0 2px; }
+.tpb-row--offset-left { justify-content: flex-start; padding-left: 28px; }
+.tpb-row--center     { justify-content: center; }
+.tpb-row--line       { justify-content: center; gap: 4px; }
+
+/* ═══ Player Node ═══ */
+.pn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+  cursor: default;
+  transition: transform 0.2s ease;
+}
+.pn:hover:not(.pn--empty) {
+  transform: translateY(-2px);
+}
+
+/* ── Position tag ── */
+.pn-pos {
+  font-size: 8px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+.pn-pos--off {
+  background: linear-gradient(135deg, #fb923c, #f97316);
+  color: #1a0a00;
+  box-shadow: 0 2px 8px rgba(251,146,60,0.3);
+}
+.pn-pos--def {
+  background: linear-gradient(135deg, #60a5fa, #3b82f6);
+  color: #001233;
+  box-shadow: 0 2px 8px rgba(96,165,250,0.3);
+}
+
+/* ── Avatar ring ── */
+.pn-ring {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  padding: 2px;
+  background: linear-gradient(135deg,
+    rgba(255,255,255,0.15),
+    rgba(255,255,255,0.04));
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  transition: box-shadow 0.2s;
+}
+.pn:hover:not(.pn--empty) .pn-ring {
+  box-shadow: 0 4px 20px var(--accent, rgba(255,255,255,0.15));
+}
+.pn-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  background: rgba(30,35,50,0.8);
+}
+.pn-ring-empty {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.03);
+  border: 1.5px dashed rgba(255,255,255,0.1);
+}
+
+/* ── Name + score ── */
+.pn-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  max-width: 80px;
+}
+.pn-name {
+  font-size: 9px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80px;
+  text-align: center;
+  line-height: 1.3;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+}
+.pn-score {
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+}
+
+/* ── Compact mode (OL / D-Line) ── */
+.pn--compact .pn-ring {
+  width: 32px;
+  height: 32px;
+}
+.pn--compact .pn-pos {
+  font-size: 7px;
+  padding: 0px 4px;
+}
+.pn-score--compact {
+  font-size: 8px;
+  color: rgba(255,255,255,0.55);
+}
+
+/* ── Empty state ── */
+.pn--empty {
+  opacity: 0.3;
+}
+.pn--empty .pn-pos {
+  opacity: 0.5;
+}
+
+/* ═══ Responsive ═══ */
+@media (max-width: 768px) {
+  .tpb-field {
+    padding: 14px 6px 10px;
+    gap: 8px;
+  }
+  .pn-ring { width: 36px; height: 36px; }
+  .pn--compact .pn-ring { width: 28px; height: 28px; }
+  .pn-name { font-size: 8px; max-width: 64px; }
+  .pn-score { font-size: 9px; }
+  .tpb-row { gap: 5px; }
+  .tpb-row--line { gap: 3px; }
+}

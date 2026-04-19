@@ -1,13 +1,35 @@
 import { Button, Select, Table } from 'antd'
+import { useState, useEffect } from 'react'
 
 // Components
 import StandingHeader from '../components/StandingHeader'
 import Pagination from '../components/Pagination'
 
-// Mock Data
-import { adpReportData } from './mockData'
+// API
+import { privateAPI } from '../config/constants'
 
 const AavReport = () => {
+  const [adpReportData, setAdpReportData] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchAavReport()
+  }, [])
+
+  const fetchAavReport = async () => {
+    try {
+      setLoading(true)
+      const response = await privateAPI.post('/player/get-all', {})
+      // Filter and sort for AAV report
+      const data = response.data || []
+      setAdpReportData(data)
+    } catch (error) {
+      console.error('Error fetching AAV report:', error)
+      setAdpReportData([])
+    } finally {
+      setLoading(false)
+    }
+  }
   const columns = [
     {
       title: 'RANK',
@@ -175,8 +197,14 @@ const AavReport = () => {
         the league (i.e. the sum of all the franchises initial auction funds).
       </p>
 
+      {/* LOADING STATE */}
+      {loading && <div style={{ textAlign: 'center', padding: '40px' }}>Loading AAV report...</div>}
+
+      {/* EMPTY STATE */}
+      {!loading && adpReportData.length === 0 && <div style={{ textAlign: 'center', padding: '40px' }}>No AAV data available</div>}
+
       {/* TABLE */}
-      {/* GENERAL CSS */}
+      {!loading && adpReportData.length > 0 && (
       <section className='main_table_container adp_report_table'>
         <div className='header'>
           <h3>AAV REPORT</h3>
@@ -192,6 +220,7 @@ const AavReport = () => {
           />
         </div>
       </section>
+      )}
 
       <section className='footer_section'>
         <Pagination

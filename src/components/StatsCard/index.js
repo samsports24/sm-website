@@ -125,7 +125,7 @@ const StatsCard = ({ data, index }) => {
         </div>
         <div>
           <p className='text1'>Salary</p>
-          <p className='text2'>{salary ? `$${salary}` : '-'}</p>
+          <p className='text2'>{salary ? `${salary} SP` : '-'}</p>
         </div>
       </section>
 

@@ -2,10 +2,8 @@ import { notification } from 'antd'
 import { attachToken, privateAPI } from '../../config/constants'
 
 export const getActiveRosterCount = async (payload) => {
-  // console.log('payload',payload);
   try {
     attachToken()
-     console.log('insdie payload',payload);
     if (payload?.teamId) {
       const res = await getDepthChartByType(payload)
       
@@ -33,7 +31,6 @@ export const getDepthChartByType = async (payload) => {
     attachToken()
     const res = await privateAPI.post('/depthChart/get-players-by-type', payload)
     if (res) {
-     // console.log('res',res.data.data);
       return res.data.data
     }
   } catch (err) {
@@ -46,12 +43,10 @@ export const getDepthChartByType = async (payload) => {
 
 
 export const assignLineupFormation = async (payload) => {
-  console.log('in the payload',payload);
   try {
     attachToken()
     const res = await privateAPI.post('/depthChart/assignlineupformation', payload)
     if (res) {
-     // console.log('res',res.data.data);
       return res.data.data
     }
   } catch (err) {
@@ -63,12 +58,10 @@ export const assignLineupFormation = async (payload) => {
 }
 
 export const getteamFormation = async (payload) => {
-  console.log('getpaylaod',payload);
   try {
     attachToken()
     const res = await privateAPI.get('/depthChart/get-lineup-formation', payload)
     if (res) {
-     //  console.log('res',res);
       return res.data
     }
   } catch (err) {

@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { Button } from 'antd'
 
 // import Arrow from '../assets/arrow-right.svg'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 // Component
 import Header from '../components/Header'
@@ -12,7 +12,8 @@ import WeekPagination from '../components/WeekPagination'
 import PlayerImage from '../assets/TroutSquare.png'
 import Circa from '../assets/teams/circa_sports_trout.png'
 
-import { proLeagueStandingsData, playerInterfaceData } from './mockData'
+// API
+import { privateAPI } from '../config/constants'
 import {
   ActivateFromPracticeSquad,
   AuctionPlayer,
@@ -25,6 +26,44 @@ import {
 
 const PlayerInterface = () => {
   const navigate = useNavigate()
+  const location = useLocation()
+  const [proLeagueStandingsData, setProLeagueStandingsData] = useState([])
+  const [playerInterfaceData, setPlayerInterfaceData] = useState({
+    name: '',
+    status: '',
+    position: '',
+    yearInLeague: '',
+    age: '',
+    height: '',
+    playerCollege: '',
+    pastYearStats: '',
+    positionRank: '',
+    leagueRank: '',
+    playerNews: '',
+    playerContractInfo: '',
+  })
+
+  useEffect(() => {
+    // Fetch standings data from API
+    const fetchStandings = async () => {
+      try {
+        const response = await privateAPI.get('/ranking/get-league-standings/1')
+        setProLeagueStandingsData(response.data || [])
+      } catch (error) {
+        console.error('Error fetching standings:', error)
+        setProLeagueStandingsData([])
+      }
+    }
+
+    // Get player data from props/navigation or set empty defaults
+    const playerData = location.state?.playerData || {}
+    setPlayerInterfaceData((prev) => ({
+      ...prev,
+      ...playerData,
+    }))
+
+    fetchStandings()
+  }, [location.state])
 
   return (
     <div className='player_interface_container'>

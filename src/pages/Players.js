@@ -1,4 +1,5 @@
 import { Row, Col } from 'antd'
+import { useState, useEffect } from 'react'
 
 // Images
 import Trout from '../assets/trout-square-1.png'
@@ -8,10 +9,32 @@ import Image1 from '../assets/unnamed.png'
 // Component
 import PlayerCard from '../components/cards/PlayerCard'
 
-// Mock Data
-import { playerData } from './mockData'
+// API
+import { privateAPI, attachToken } from '../../config/constants'
 
 const Players = () => {
+  const [players, setPlayers] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchPlayers = async () => {
+      try {
+        setLoading(true)
+        const response = await privateAPI.post('/player/get-all', {}, {
+          headers: attachToken()
+        })
+        setPlayers(response.data || [])
+      } catch (error) {
+        console.error('Failed to fetch players:', error)
+        setPlayers([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchPlayers()
+  }, [])
+
   return (
     <div className='player-container'>
       <div className='banner'>
@@ -55,13 +78,23 @@ const Players = () => {
           <div className='tag-line'>
             <p>Player</p>
           </div>
-          <Row gutter={[30, 30]}>
-            {playerData?.map((data, i) => (
-              <Col xs={24} md={12} lg={12} xl={8} xxl={6} key={i}>
-                <PlayerCard data={data} />
-              </Col>
-            ))}
-          </Row>
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '40px' }}>
+              <p>Loading players...</p>
+            </div>
+          ) : players && players.length > 0 ? (
+            <Row gutter={[30, 30]}>
+              {players.map((data, i) => (
+                <Col xs={24} md={12} lg={12} xl={8} xxl={6} key={i}>
+                  <PlayerCard data={data} />
+                </Col>
+              ))}
+            </Row>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '40px' }}>
+              <p>No players found</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

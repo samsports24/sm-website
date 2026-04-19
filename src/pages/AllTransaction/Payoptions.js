@@ -1,34 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import sampoints from "../../assets/samtoken_image.png";
-import featmoney from '../../assets/fiarmoneylogo.png';
-import redline from "../../assets/redline.webp"
-import discount from "../../assets/discount.png"
-import stripe from "../../assets/stripe-product-image.webp"
+import React, { useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import {
+  CreditCardOutlined,
+  SafetyCertificateOutlined,
+  ArrowLeftOutlined,
+  LockOutlined,
+} from '@ant-design/icons'
 
 import Header from '../../components/Header'
-import { Button, Image } from 'antd'
-import { useLocation } from 'react-router-dom';
-import { createPaymentIntentforsampoints } from '../../redux/actions/paymentAction';
+import { createPaymentIntentforsampoints } from '../../redux/actions/paymentAction'
+import '../../styles/pages/payOptions.css'
 
 const Payoptions = () => {
-  const location = useLocation();
-  const { myamount,mysampoints } = location.state;
-  const [loading,setLoading]=useState(false)
-  console.log('myamount',myamount);
-
-  console.log('mysampoints',mysampoints);
-
-  let discountAmount = 1.69; // Default discount myamount
-
-  if (myamount === 9.99) {
-    discountAmount = 8.49;
-  } else if (myamount === 19.99) {
-    discountAmount = 16.99;
-  }
-
+  const location = useLocation()
+  const navigate = useNavigate()
+  const {
+    myamount, mysampoints, fromRivals: stateFromRivals,
+    netPrice, vatAmount, vatRate,
+  } = location.state || {}
+  const fromRivals = stateFromRivals || new URLSearchParams(location.search).get('from') === 'rivals'
+  // VAT display values (fallback for direct navigation without state)
+  const displayNet = netPrice || myamount
+  const displayVat = vatAmount || 0
+  const displayTotal = myamount || 0
+  const displayVatPct = vatRate ? Math.round(vatRate * 100) : 23
+  const [loading, setLoading] = useState(false)
 
   const sampointspayment = async () => {
-    // console.log('in the onlcick');
     setLoading(true)
     const userId = localStorage.getItem('userId')
 
@@ -38,110 +36,89 @@ const Payoptions = () => {
       return
     }
 
-  
-
     const payload = {
       userId,
-      // amount:myamount * 100,
       amount: Math.round(myamount * 100),
       mysampoints,
-
+      fromRivals: fromRivals || false,
     }
-    console.log('payload', payload)
 
     try {
       const response = await createPaymentIntentforsampoints(payload)
-      //  console.log('response',response?.session);
       const { url } = response?.session
-      // console.log('url',url);
-
-     //   window.open(url);
-       window.location.href = url
+      window.location.href = url
       setLoading(false)
     } catch (error) {
       console.error('Error creating payment intent:', error)
-      // Handle error as needed
+      setLoading(false)
     }
   }
 
-
-  // console.log('myamount',myamount);
   return (
     <>
-      <Header />
+      {!fromRivals && <Header />}
+      <div className="po-page">
+        {/* Back */}
+        <button className="po-back" onClick={() => navigate(-1)}>
+          <ArrowLeftOutlined /> Back to Store
+        </button>
 
-      <div className='payoptions-main-div'>
-        <div className='pickoption'>PICK YOUR OPTION</div>
+        {/* Header */}
+        <div className="po-header">
+          <h1 className="po-title">Complete Your Purchase</h1>
+          <p className="po-subtitle">
+            You&apos;re purchasing <strong>{mysampoints} SAM Points</strong> for <strong>${Number(displayTotal).toFixed(2)}</strong> (incl. {displayVatPct}% VAT)
+          </p>
+        </div>
 
-        <div className='pickfirstdiv'>
-          <div className='flexdiv'>
-            <img className='buyimg' src={stripe} alt='sampointslogo' />
-            <div className='paytext'>
-              PAY WITH STRIPE
-              <p>${myamount}</p>
-            </div>
+        {/* Order summary */}
+        <div className="po-summary">
+          <div className="po-summary-row">
+            <span className="po-summary-label">SAM Points</span>
+            <span className="po-summary-val">{mysampoints} SP</span>
           </div>
-
-          <div>
-            <Button
-             onClick={sampointspayment}
-             loading={loading}
-  
-              type='primary'
-            >
-              PAY NOW
-            </Button>
+          <div className="po-summary-divider" />
+          <div className="po-summary-row">
+            <span className="po-summary-label">Subtotal</span>
+            <span className="po-summary-val">${Number(displayNet).toFixed(2)}</span>
+          </div>
+          <div className="po-summary-row">
+            <span className="po-summary-label">VAT ({displayVatPct}%)</span>
+            <span className="po-summary-val">${Number(displayVat).toFixed(2)}</span>
+          </div>
+          <div className="po-summary-divider" />
+          <div className="po-summary-row po-summary-row--total">
+            <span className="po-summary-label">Total</span>
+            <span className="po-summary-total">${Number(displayTotal).toFixed(2)}</span>
           </div>
         </div>
 
-
-        
-        <div className='pickfirstdiv'>
-          <div className='flexdiv'>
-                     <img className='buyimg' src={sampoints} alt='sampointslogo' />
-            {/* <img className='discount' src={discount} alt='discount'/> */}
-           
-            <div className='paytext'>
-              PAY WITH SAM
-              <div className='discoutgap'>
-              <img className='redline' src={redline} alt='discount'/>
-              <div>
-           
-              <p>${myamount}</p>
-              </div>
-              <div className='discount'>
-                {/* $1.69 */}
-                ${discountAmount.toFixed(2)}
-              </div>
-              </div>
+        {/* Stripe Payment Option */}
+        <div
+          className={`po-method ${loading ? 'po-method--loading' : ''}`}
+          onClick={!loading ? sampointspayment : undefined}
+        >
+          <div className="po-method-left">
+            <div className="po-method-icon">
+              <CreditCardOutlined />
+            </div>
+            <div className="po-method-info">
+              <h3 className="po-method-name">Pay with Card</h3>
+              <p className="po-method-desc">Secure checkout via Stripe, Visa, Mastercard, Amex</p>
             </div>
           </div>
-
-
-
-          <div className='paywithsam'>
-          <Button
-             
-             //
-             type='primary'
-           >
-             PAY SAMS
-           </Button>
-
-
-           <Button
-             
-             onClick={() => window.open('https://sam-wallet-10b1f.web.app/')}
-             type='primary'
-           >
-             GET SAMS
-           </Button>
+          <div className="po-method-right">
+            <span className="po-method-price">${Number(displayTotal).toFixed(2)}</span>
+            <span className="po-method-badge">
+              <LockOutlined /> Secure
+            </span>
           </div>
-          
-       
-          
+        </div>
 
-          
+        {/* Stripe branding */}
+        <div className="po-trust">
+          <SafetyCertificateOutlined />
+          <span>Payments are encrypted and processed securely by Stripe. We never store your card details.</span>
         </div>
       </div>
     </>

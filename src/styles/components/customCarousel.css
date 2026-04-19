@@ -16,3 +16,26 @@
 .custom_carousel::-webkit-scrollbar {
   display: none;
 }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .custom_carousel {
+    height: 80px;
+    margin-top: 15px;
+  }
+
+  .custom_carousel .wrapper {
+    height: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .custom_carousel {
+    height: 70px;
+    margin-top: 10px;
+  }
+
+  .custom_carousel .wrapper {
+    height: 70px;
+  }
+}

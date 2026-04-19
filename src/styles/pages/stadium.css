@@ -1,465 +1,574 @@
-.stadium-main {
-    /* width: 92%; */
-    height: auto;
-    margin: auto;
+/* ═══════════════════════════════════════════════════════════════
+   STADIUM PAGE — NFL Theme (Green Accent, Dark Blue Base)
+   ═══════════════════════════════════════════════════════════════ */
 
+.stm-page {
+  padding: 16px 20px;
+  max-width: 1600px;
+  margin: 0 auto;
 }
 
-.stadium-main .firstdiv {
-    display: flex;
-    /* justify-content: space-between; */
-    flex-direction: row;
-    margin-top: 20px;
-}
-.stadium-main .year_selector_container {
-    /* display: flex; */
-    align-items: center;
-    /* justify-content: start; */
-    width: 25%;
-    /* width: 57%; */
-    gap: 1rem;
-    font-weight: 500;
-    font-style: italic;
+/* ── Page Header ─────────────────────────────────────────────── */
+.stm-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
-
-.stadium-main .year_selector_container p {
-    font-weight: 700;
-    font-style: normal;
-    color: rgb(255, 255, 255);
-    font-size:28px;
-    line-height: 35px;
-    margin-top: 8px;
+.stm-page-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-
-.stadium-main .year_selector_container p:nth-of-type(2) {
-    font-weight: 700;
-    font-style: normal;
-    color: rgb(255, 255, 255);
-    font-size: 29px;
+.stm-page-icon {
+  font-size: 22px;
+  color: #fbbf24;
 }
 
-.stadium-main .year_selector_container p:nth-of-type(3) {
-    font-weight: 400;
-    font-style: italic;
-    color: rgb(255, 255, 255);
-    font-size: 23px;
-    margin-top: 4px;
-    margin-bottom: 7px;
+.stm-page-header h1 {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text, #fff);
+  margin: 0;
+  letter-spacing: 0.3px;
 }
 
-
-.stadium-main .year_selector_container .ticketcost {
-    width: 70%;
-    border:5px solid gray;
-    background-color: rgb(47, 32, 92);
-    padding: 18px 20px
-}
-.stadium-main .year_selector_container .ticketcost p:nth-of-type(1) {
-    font-weight: 700;
-    font-style: normal;
-    color: rgb(255, 255, 255);
-    font-size:20px;
-    line-height: 17px;
-    margin-bottom: 5px;
-   
+.stm-team-select {
+  min-width: 200px;
 }
 
-.stadium-main .year_selector_container .ticketcost p:nth-of-type(1) span{
-    font-weight: 400 !important;
+.stm-team-select .ant-select-selector {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(110, 105, 128, 0.3) !important;
+  border-radius: 10px !important;
+  height: 38px !important;
+  color: var(--text, #fff) !important;
 }
 
-.stadium-main .year_selector_container .ticketcost .per-ticket-price{
-    display: flex;
-    gap:20px;
-    flex-direction: row;
+.stm-team-select .ant-select-selector:hover {
+  border-color: rgba(34, 197, 94, 0.4) !important;
 }
 
-.stadium-main .year_selector_container .ticketcost .per-ticket-price .samlogo {
-    width: 32px !important;
-   
+.stm-team-select .ant-select-selection-placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
 }
 
-.stadium-main .year_selector_container .ticketcost .per-ticket-price  p:nth-of-type(1) {
-    font-weight: 700;
-    font-style: normal;
-    color: rgb(140, 82, 255) !important;
-    font-size:42px;
-    line-height: 34px;
+/* ── Shared Card ─────────────────────────────────────────────── */
+.stm-card {
+  background: rgba(20, 28, 45, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(110, 105, 128, 0.15);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.03);
 }
 
-.stadium-main .year_selector_container .ticketcost .per-ticket-price  p:nth-of-type(2) {
-    font-weight: 700;
-    font-style: normal;
-    color: rgb(140, 82, 255) !important;
-    font-size:14px;
-    line-height: 34px;
-    position: relative;
-    top: 10px;
+.stm-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(110, 105, 128, 0.12);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 15px;
 }
 
-.stadium-main .year_selector_container .stadiumimg {
-    border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 5px;
-  width: 66%;
-  margin-top: 20px;
+.stm-card-header h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text, #fff);
+  margin: 0;
 }
 
-
-.stadium-main  .daily-login-section {
-    width: 25%;
+/* ── Top Row Layout ──────────────────────────────────────────── */
+.stm-top-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
-
-.stadium-main  .daily-login-section .dailylogin {
-    font-weight: 700;
-    font-style: italic;
-    color: rgb(255, 255, 255);
-    font-size: 25px;
-    line-height: 35px;
-    /* width: 25%; */
+/* ── Stadium Card ────────────────────────────────────────────── */
+.stm-stadium-card {
+  display: flex;
+  flex-direction: column;
 }
 
-.stadium-main  .daily-login-section .daydiv {
-    display: flex;
-    gap: 6px;
+.stm-stadium-img-wrap {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0A1628 0%, #0F1F35 100%);
 }
 
-.stadium-main  .daily-login-section .daydiv .day {
-    width: 21%;
-border:1px solid gray;
-border-radius:20px;
-font-weight: 700;
-    font-style: italic;
-    /* color: rgb(255, 222, 89); */
-    color: rgb(255, 255, 255);
-    font-size: 25px;
-    line-height: 35px;
-    padding: 7px 4px;
-    cursor: pointer;
+.stm-stadium-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.stadium-main .daily-login-section .dailylogin span{
-    font-weight: 400 !important;
-    /* width: auto; */
+.stm-stadium-name-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 18px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.stadium-main .daily-login-section p:nth-of-type(1) {
-    font-weight: 700;
-font-style: normal;
-color: rgb(255, 255, 255);
-text-decoration: none;
-font-size: 25px;
-margin-top: 20px;
+.stm-stadium-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.stadium-main .daily-login-section p:nth-of-type(1) span {
-    font-weight: 400;
-    margin-left: 5px;
+.stm-stadium-name {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text, #fff);
 }
 
-.stadium-main .daily-login-section p:nth-of-type(2) {
-    font-weight: 700;
-font-style: normal;
-color: rgb(56, 182, 255) !important;
-text-decoration: none;
-font-size: 29px;
-margin-top: 10px;
+.stm-stadium-details {
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-
-.stadium-main .daily-login-section p:nth-of-type(3) {
-    font-weight: 700;
-font-style: normal;
-color: rgb(255, 255, 255);
-text-decoration: none;
-font-size: 25px;
-margin-top: 20px;
-/* width: max-content; */
+.stm-detail-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.stadium-main .daily-login-section p:nth-of-type(3) span {
-    font-weight: 400;
-    margin-left: 5px;
-
+.stm-detail-icon {
+  font-size: 16px;
+  color: rgba(34, 197, 94, 0.7);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(34, 197, 94, 0.08);
+  border-radius: 8px;
+  flex-shrink: 0;
 }
 
-.stadium-main .daily-login-section p:nth-of-type(4) {
-    font-weight: 700;
-font-style: normal;
-color: rgb(56, 182, 255) !important;
-text-decoration: none;
-font-size: 29px;
-margin-top: 10px;
+.stm-detail-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 
-.stadium-main .daily-login-section .weeklyticketslaes {
-    /* width: 70%; */
-    border:5px solid gray;
-    background-color: rgb(47, 32, 92);
-    padding: 8px 20px;
-    margin-top: 20px;
+.stm-detail-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
-.stadium-main .daily-login-section .weeklyticketslaes p:nth-of-type(1) {
-    font-size: 23px;
-    color: rgb(255, 255, 255);
-    line-height: 17px;
-    font-weight: 800;
-    margin-top: 5px;
-
+.stm-detail-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text, #fff);
 }
 
-.stadium-main .daily-login-section .weeklyticketslaes p:nth-of-type(1) span {
-    font-size: 23px;
-    color: rgb(255, 255, 255);
-    line-height: 17px;
-    font-weight: 400;
-
+.stm-accent {
+  color: #22C55E !important;
 }
 
-.stadium-main .daily-login-section .weeklyticketslaes p:nth-of-type(2)  {
-    /* font-size: 23px; */
-    color: rgb(140, 82, 255);
-    font-weight: 700;
-
+.stm-sp-value {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #22C55E !important;
 }
 
-.stadium-main .daily-login-section .weeklyticketslaes p:nth-of-type(5) {
-    font-size: 23px;
-    color: rgb(255, 255, 255);
-    line-height: 17px;
-    font-weight: 800;
-    margin-top: 19px;
-   
-
+.stm-sp-icon {
+  width: 22px;
+  height: 22px;
 }
 
-.stadium-main .daily-login-section .weeklyticketslaes p:nth-of-type(5) span {
-    font-size: 23px;
-    color: rgb(255, 255, 255);
-    line-height: 17px;
-    font-weight: 400;
-
+.stm-sp-icon-sm {
+  width: 18px;
+  height: 18px;
 }
 
-.stadium-main .daily-login-section .weeklyticketslaes p:nth-of-type(6)  {
-    /* font-size: 23px; */
-    font-weight: 700;
-    font-style: normal;
-    color: rgb(56, 182, 255) !important;
-    text-decoration: none;
-    font-size: 29px;
-    margin-bottom: 20px;
-
+.stm-sp-icon-xs {
+  width: 14px;
+  height: 14px;
 }
 
-
-
-.stadium-main .stadiumupgrade {
-
-    font-weight: 700;
-    font-style: italic;
-    color: rgb(255, 255, 255);
-    font-size: 25px;
-    line-height: 35px;
-    width: 48%;
-    margin-left: 22px;
+/* ── Stats Column ────────────────────────────────────────────── */
+.stm-stats-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.stadium-main .stadiumupgrade span {
-    font-weight: 400 !important;
-
+.stm-stat-card {
+  padding: 16px 18px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.stadium-main .stadiumupgrade .main-stadium-section {
-    background: rgb(47, 32, 92);
-    padding: 20px 50px;
-    border-radius:50px;
-    margin-top: 5px; 
-    
+.stm-stat-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 8px;
 }
 
-
-.stadium-main .stadiumupgrade .main-stadium-section{
-    display: flex;
-    flex-direction: row;
-   gap: 30px;
+.stm-stat-big {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 26px;
+  font-weight: 800;
+  color: #22C55E;
 }
 
-.stadium-main .stadiumupgrade .main-stadium-section .mystadium {
-    width: 20%;
+.stm-pot span {
+  color: #22C55E;
 }
 
-.stadium-main .stadiumupgrade .main-stadium-section .pricecost {
-    display: flex;
-    gap: 15px;
-    flex-direction: row;
-    color: rgb(0, 191, 99);
+.stm-prize span {
+  color: #22C55E;
 }
 
-.stadium-main .stadiumupgrade .main-stadium-section .pricecost p  { 
-
-    color: rgb(56, 182, 255) !important;
+.stm-stat-note {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+  margin-top: 4px;
 }
 
-.stadium-main .stadiumupgrade .main-stadium-section .pricecost .updatecolr {
-    color: rgb(140, 82, 255) !important; 
+/* ── Daily Login Card ────────────────────────────────────────── */
+.stm-login-card {
+  display: flex;
+  flex-direction: column;
 }
 
-.stadium-main .stadiumupgrade .main-stadium-section .upgradepart{
-    display: flex;
-    flex-direction: row;
-   gap: 10px;
-   margin-top: 6px;
+.stm-login-days {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 16px 18px;
 }
 
-
-.stadium-main .stadiumupgrade .main-stadium-section .upgradepart p{
-    color: rgb(140, 82, 255) !important; 
+.stm-login-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 14px 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(110, 105, 128, 0.2);
+  transition: all 0.15s;
 }
 
-.stadium-main .stadiumupgrade .main-stadium-section .upgradebtn {
-    /* font-weight: 600 !important;
-    font-style: normal;
-    color: rgb(255, 255, 255);
-    background: rgb(56, 182, 255);
-    border-radius:20px;
-    border-color:none */
-
-
-    padding: 20px 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 20px;
-    border: none;
-    background: #00a7e5;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text);
-    margin: auto;
-
-
+.stm-login-day-active {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.35);
 }
 
-.firstdiv .stadium-main .year_selector_container .year_selector .ant-select-selector {
-    border-radius: 30px !important;
-    border: 5px solid #ccc !important;
-    
+.stm-day-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
 }
 
-.firstdiv .stadium-main .year_selector_container .year_selector 
-{
-    font-size: 24px !important;
+.stm-login-day-active .stm-day-label {
+  color: #22C55E;
 }
 
-
-
-@media (max-width: 1866px) {
-    .stadium-main .stadiumupgrade .main-stadium-section{
-        gap:15px !important;
-    }
+.stm-day-check {
+  font-size: 14px;
+  color: #22C55E;
+  font-weight: 700;
 }
 
-@media (max-width: 1773px) {
-    .stadium-main .stadiumupgrade .main-stadium-section .upgradepart{
-        flex-direction: column;
-    }
-
-    .stadium-main .daily-login-section p:nth-of-type(2)   {
-        font-size: 35px !important;
-    }
-    .stadium-main .daily-login-section p:nth-of-type(4){
-        
-        font-size: 35px !important;
-    }
-    .stadium-main .daily-login-section p:nth-of-type(6){
-        
-        font-size: 35px !important;
-    }
-    .stadium-main .year_selector_container .ticketcost .per-ticket-price {
-        gap:3px !important
-        
-    }
+.stm-login-hint {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.3);
+  padding: 0 18px 16px 18px;
+  margin: 0;
+  text-align: center;
 }
 
-@media (max-width: 1632px) {
-    .stadium-main .stadiumupgrade .main-stadium-section{
-        align-items:center !important;
-        justify-content:center !important;
-        
-        flex-direction: column;
-    }
-    .stadium-main .stadiumupgrade .main-stadium-section .upgradepart{
-        flex-direction: row;
-    }
-
-    .stadium-main .stadiumupgrade .main-stadium-section .mystadium{
-        width: auto !important;
-    }
-
-    .stadium-main .year_selector_container .ticketcost .per-ticket-price{
-        flex-direction: column;
-    }
-
-    
+/* ── Upgrades Section ────────────────────────────────────────── */
+.stm-upgrades-section {
+  margin-top: 8px;
 }
+
+.stm-upgrades-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.stm-upgrades-icon {
+  font-size: 18px;
+  color: #fbbf24;
+}
+
+.stm-upgrades-header h2 {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text, #fff);
+  margin: 0;
+}
+
+.stm-upgrades-count {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-left: auto;
+}
+
+.stm-upgrades-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+/* ── Upgrade Card ────────────────────────────────────────────── */
+.stm-upgrade-card {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+.stm-upgrade-img-wrap {
+  width: 160px;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0A1628, #0F1F35);
+}
+
+.stm-upgrade-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.stm-upgrade-body {
+  flex: 1;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+
+.stm-upgrade-stats {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.stm-upgrade-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stm-upgrade-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.stm-upgrade-change {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stm-upgrade-old {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.stm-upgrade-arrow {
+  font-size: 14px;
+  color: #22C55E;
+  font-weight: 700;
+}
+
+.stm-upgrade-new {
+  font-size: 15px;
+  font-weight: 700;
+  color: #22C55E;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.stm-upgrade-cost-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 140px;
+}
+
+.stm-upgrade-cost-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.stm-upgrade-cost-value {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #22C55E;
+}
+
+.stm-upgrade-btn {
+  width: 100%;
+  height: 34px !important;
+  border-radius: 10px !important;
+  border: none !important;
+  background: linear-gradient(135deg, #16A34A, #22C55E) !important;
+  color: #fff !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.stm-upgrade-btn:hover:not(:disabled) {
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3) !important;
+  transform: translateY(-1px);
+}
+
+.stm-upgrade-btn:disabled {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: rgba(255, 255, 255, 0.25) !important;
+  cursor: not-allowed;
+}
+
+/* ── No Upgrades ─────────────────────────────────────────────── */
+.stm-no-upgrades {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.stm-no-upgrades-icon {
+  font-size: 32px;
+  color: #fbbf24;
+}
+
+.stm-no-upgrades p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════ */
 
 @media (max-width: 1400px) {
-    .stadium-main .daily-login-section .weeklyticketslaes p:nth-of-type(1){
-        font-weight: 200 !important;
-        font-size: 16px;
-    }
-
-    .stadium-main .daily-login-section .weeklyticketslaes p:nth-of-type(1) span {
-        font-weight: 100 !important;
-        font-size: 16px;
-    }
-
-    .stadium-main .daily-login-section .weeklyticketslaes p:nth-of-type(5){
-        font-weight: 200 !important;
-        font-size: 16px;
-    }
-    
-    
-    .stadium-main .daily-login-section .weeklyticketslaes p:nth-of-type(5) span {
-        font-weight: 100 !important;
-        font-size: 16px;
-    }
-
-    .stadium-main .daily-login-section .weeklyticketslaes p:nth-of-type(3){
-        font-weight: 200 !important;
-        font-size: 16px;
-    }
-    
-    
-    .stadium-main .daily-login-section .weeklyticketslaes p:nth-of-type(3) span {
-        font-weight: 100 !important;
-        font-size: 16px;
-    }
-
+  .stm-upgrades-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
+@media (max-width: 1100px) {
+  .stm-top-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .stm-login-card {
+    grid-column: 1 / -1;
+  }
+}
 
+@media (max-width: 768px) {
+  .stm-page {
+    padding: 12px 14px;
+  }
+  .stm-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .stm-team-select {
+    width: 100%;
+  }
+  .stm-top-row {
+    grid-template-columns: 1fr;
+  }
+  .stm-login-card {
+    grid-column: auto;
+  }
+  .stm-upgrade-card {
+    flex-direction: column;
+  }
+  .stm-upgrade-img-wrap {
+    width: 100%;
+    height: 140px;
+  }
+  .stm-upgrade-body {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .stm-upgrade-cost-section {
+    width: 100%;
+    min-width: auto;
+    align-items: flex-start;
+  }
+  .stm-stat-big {
+    font-size: 22px;
+  }
+}
 
-@media (max-width: 1200px) {
-    .stadium-main .firstdiv{
-        flex-direction: column;
-    }
-
-    .stadium-main .year_selector_container{
-        width: auto !important;
-    }
-    .stadium-main .daily-login-section {
-        width: auto !important;
-    }
-
-    .stadium-main .stadiumupgrade{
-        width: auto !important;
-
-    }
-
+@media (max-width: 480px) {
+  .stm-login-days {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .stm-stadium-img-wrap {
+    height: 140px;
+  }
 }

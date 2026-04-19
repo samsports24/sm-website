@@ -297,3 +297,60 @@
   font-weight: 600;
   line-height: normal;
 }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .time_line_container .body_content {
+    width: 100%;
+  }
+
+  .time_line_container .body_content .body_content_left .card_01 {
+    width: 100px !important;
+    padding: 8px 12px;
+  }
+
+  .bench_player_box {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .time_line_container .buttons_and_pagination {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .time_line_container .gap {
+    gap: 12px;
+  }
+
+  .time_line_container .body_wrapper {
+    overflow-x: auto;
+  }
+
+  .timeline_card_line {
+    width: 120px;
+  }
+
+  .timeline_card {
+    width: 120px;
+  }
+
+  .timeline_card .image_box {
+    width: 120px;
+    height: 100px;
+  }
+
+  .bench_player_box .bench_player_body .bench_player_card {
+    flex-direction: column;
+  }
+
+  .bench_player_box .bench_player_body .bench_player_card .center {
+    width: 100%;
+  }
+
+  .bench_player_box .bench_player_body .bench_player_card .right {
+    width: 100%;
+  }
+}

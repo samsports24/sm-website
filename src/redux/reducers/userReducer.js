@@ -28,6 +28,7 @@ const initialState = {
   SamPoints:0,
   leagueSalaryCap:0,
   leagueSalaryFloor:0, // 89% of leagueSalaryCap
+  soccerFinancials: null, // { leagueValueCap, teamValueCap, salaryCap, leagueSalaryCapAverage }
   showPaymentModal: false,
 }
 
@@ -51,7 +52,8 @@ const userReducer = (state = initialState, action) => {
         auctionCount: payload?.liveAuctionCount,
         SamPoints :payload?.sampoints,
         leagueSalaryCap:payload?.leagueSalaryCap,
-        leagueSalaryFloor:payload?.leagueSalaryFloor // 89% of leagueSalaryCap
+        leagueSalaryFloor:payload?.leagueSalaryFloor, // 89% of leagueSalaryCap
+        soccerFinancials: payload?.soccerFinancials || null,
       }
     }
     case 'UPDATE_WEEK': {

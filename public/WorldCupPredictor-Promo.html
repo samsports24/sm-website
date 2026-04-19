@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SamSports — World Cup 2026 Predictor</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  :root {
+    --gold: #D4AF37;
+    --emerald: #10b981;
+    --cyan: #22d3ee;
+    --dark: #020617;
+    --slate: #0f172a;
+  }
+
+  body {
+    background: var(--dark);
+    color: #e2e8f0;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── Scroll-triggered fade-in ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── Hero ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding: 40px 20px;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212,175,55,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 50% 100%, rgba(16,185,129,0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(212,175,55,0.1);
+    border: 1px solid rgba(212,175,55,0.3);
+    border-radius: 999px; padding: 6px 16px;
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 2px; color: var(--gold);
+    animation: pulse-glow 2s ease-in-out infinite;
+    margin-bottom: 24px;
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(212,175,55,0.1); }
+    50% { box-shadow: 0 0 30px rgba(212,175,55,0.25); }
+  }
+  .hero h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(48px, 8vw, 96px);
+    font-weight: 700;
+    line-height: 0.95;
+    background: linear-gradient(135deg, #fff 0%, var(--gold) 50%, var(--emerald) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+  .hero-sub {
+    font-size: clamp(16px, 2.5vw, 22px);
+    color: rgba(255,255,255,0.6);
+    max-width: 600px;
+    margin-bottom: 32px;
+  }
+  .hero-hosts {
+    font-size: 14px; color: rgba(255,255,255,0.4);
+    letter-spacing: 3px; text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+  .hero-hosts span { color: var(--gold); }
+
+  /* ── Floating particles ── */
+  .particles {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  }
+  .particle {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: var(--gold);
+    border-radius: 50%;
+    opacity: 0;
+    animation: float-up 6s ease-in infinite;
+  }
+  @keyframes float-up {
+    0% { opacity: 0; transform: translateY(100vh) scale(0); }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.1; }
+    100% { opacity: 0; transform: translateY(-20vh) scale(1.5); }
+  }
+
+  /* ── Section layout ── */
+  .section {
+    padding: 80px 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 3px; color: var(--gold); margin-bottom: 8px;
+  }
+  .section h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 700; color: #fff;
+    margin-bottom: 16px;
+  }
+  .section p.desc {
+    font-size: 16px; color: rgba(255,255,255,0.55); max-width: 600px;
+    line-height: 1.7; margin-bottom: 40px;
+  }
+
+  /* ── Feature cards grid ── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .feature-card {
+    background: linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(15,23,42,0.6) 100%);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 28px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+  .feature-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(212,175,55,0.3);
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+  .feature-card h3 {
+    font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px;
+  }
+  .feature-card p {
+    font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.6;
+  }
+
+  /* ── SamPoints showcase ── */
+  .points-table {
+    width: 100%; max-width: 600px;
+    border-collapse: separate; border-spacing: 0 6px;
+  }
+  .points-table td {
+    padding: 12px 16px;
+    background: rgba(15,23,42,0.8);
+    font-size: 14px;
+  }
+  .points-table tr td:first-child {
+    border-radius: 10px 0 0 10px;
+    color: rgba(255,255,255,0.7);
+  }
+  .points-table tr td:last-child {
+    border-radius: 0 10px 10px 0;
+    text-align: right;
+    font-weight: 800;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 20px;
+  }
+  .pts-group td:last-child { color: #94a3b8; }
+  .pts-r32 td:last-child { color: #67e8f9; }
+  .pts-r16 td:last-child { color: var(--cyan); }
+  .pts-qf td:last-child { color: var(--emerald); }
+  .pts-sf td:last-child { color: #a78bfa; }
+  .pts-third td:last-child { color: #fb923c; }
+  .pts-final td:last-child { color: var(--gold); }
+  .pts-pos td:last-child { color: #fbbf24; }
+  .upset-badge {
+    display: inline-block;
+    background: rgba(239,68,68,0.15);
+    border: 1px solid rgba(239,68,68,0.3);
+    color: #fca5a5;
+    padding: 4px 12px; border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+    margin-top: 16px;
+  }
+
+  /* ── Mockup phone ── */
+  .mockup-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 40px 0;
+  }
+  .phone-mockup {
+    width: 320px;
+    background: var(--slate);
+    border-radius: 32px;
+    border: 3px solid rgba(255,255,255,0.1);
+    padding: 16px;
+    box-shadow:
+      0 0 60px rgba(212,175,55,0.1),
+      0 40px 80px rgba(0,0,0,0.5);
+    overflow: hidden;
+  }
+  .phone-screen {
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--dark);
+  }
+  .phone-match {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center; gap: 6px;
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .phone-team {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 600;
+  }
+  .phone-team.right { justify-content: flex-end; }
+  .phone-team .flag { font-size: 16px; }
+  .phone-vs {
+    font-size: 10px; color: rgba(255,255,255,0.3); font-weight: 700;
+  }
+  .phone-picked {
+    background: rgba(16,185,129,0.15);
+    border-radius: 8px;
+  }
+  .phone-header {
+    padding: 12px;
+    text-align: center;
+    font-size: 11px; font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-bottom: 1px solid rgba(212,175,55,0.2);
+  }
+  .phone-stat-bar {
+    display: flex; justify-content: space-around;
+    padding: 10px 8px;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+  .phone-stat {
+    text-align: center;
+  }
+  .phone-stat .num {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 20px; font-weight: 700; color: var(--emerald);
+  }
+  .phone-stat .lbl {
+    font-size: 9px; text-transform: uppercase;
+    color: rgba(255,255,255,0.4); letter-spacing: 1px;
+  }
+
+  /* ── Animated counter ── */
+  .counter {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(48px, 7vw, 80px);
+    font-weight: 700;
+    color: var(--gold);
+    text-align: center;
+    margin: 20px 0;
+  }
+
+  /* ── CTA ── */
+  .cta-section {
+    text-align: center;
+    padding: 100px 20px;
+    position: relative;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(212,175,55,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, var(--gold) 0%, #b8941f 100%);
+    color: #000; font-size: 16px; font-weight: 800;
+    padding: 16px 40px;
+    border-radius: 12px; border: none;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 0 40px rgba(212,175,55,0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 60px rgba(212,175,55,0.5);
+  }
+
+  /* ── Separator ── */
+  .sep {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212,175,55,0.2), transparent);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  /* ── Staggered reveal for children ── */
+  .stagger > * {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .stagger.visible > *:nth-child(1) { transition-delay: 0s; }
+  .stagger.visible > *:nth-child(2) { transition-delay: 0.1s; }
+  .stagger.visible > *:nth-child(3) { transition-delay: 0.2s; }
+  .stagger.visible > *:nth-child(4) { transition-delay: 0.3s; }
+  .stagger.visible > *:nth-child(5) { transition-delay: 0.4s; }
+  .stagger.visible > *:nth-child(6) { transition-delay: 0.5s; }
+  .stagger.visible > *:nth-child(7) { transition-delay: 0.6s; }
+  .stagger.visible > *:nth-child(8) { transition-delay: 0.7s; }
+  .stagger.visible > * {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .section { padding: 60px 16px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .phone-mockup { width: 260px; }
+  }
+
+  /* ── Animated bracket lines ── */
+  .bracket-demo {
+    display: flex; align-items: center; justify-content: center;
+    gap: 24px; flex-wrap: wrap;
+    margin: 30px 0;
+  }
+  .bracket-slot {
+    background: var(--slate);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 14px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.5s ease;
+  }
+  .bracket-slot .flag { font-size: 18px; }
+  .bracket-arrow {
+    color: var(--gold);
+    font-size: 20px;
+    animation: arrow-pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes arrow-pulse {
+    0%, 100% { opacity: 0.3; transform: translateX(0); }
+    50% { opacity: 1; transform: translateX(4px); }
+  }
+  .bracket-winner {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(16,185,129,0.1));
+    box-shadow: 0 0 20px rgba(212,175,55,0.2);
+  }
+
+  /* ── Leaderboard mock ── */
+  .lb-mock {
+    max-width: 500px;
+    margin: 0 auto;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .lb-header {
+    background: linear-gradient(135deg, rgba(212,175,55,0.12), rgba(16,185,129,0.08));
+    padding: 14px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .lb-row {
+    display: grid; grid-template-columns: 2rem 2rem 1fr auto;
+    align-items: center; gap: 10px;
+    padding: 10px 20px;
+    background: var(--slate);
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    font-size: 14px;
+  }
+  .lb-row .rank { color: rgba(255,255,255,0.4); font-weight: 700; }
+  .lb-row .flag { font-size: 16px; }
+  .lb-row .name { font-weight: 600; }
+  .lb-row .score {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: 18px;
+    color: var(--emerald);
+  }
+  .lb-row:first-of-type .rank { color: var(--gold); }
+  .lb-row.you {
+    background: rgba(16,185,129,0.08);
+    border-left: 3px solid var(--emerald);
+  }
+
+  /* ── Share card mock ── */
+  .share-mock {
+    max-width: 360px;
+    margin: 30px auto 0;
+    background: linear-gradient(135deg, var(--slate), #1e293b);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 24px;
+    text-align: center;
+  }
+  .share-mock .trophy { font-size: 48px; margin-bottom: 8px; }
+  .share-mock .champ {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 28px; font-weight: 700; color: #fff;
+  }
+  .share-mock .runner {
+    font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 16px;
+  }
+  .share-stats {
+    display: flex; justify-content: center; gap: 16px;
+    margin-bottom: 16px;
+  }
+  .share-stat {
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px; padding: 8px 14px;
+    text-align: center;
+  }
+  .share-stat .val {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 20px; font-weight: 700;
+  }
+  .share-stat .lbl {
+    font-size: 9px; text-transform: uppercase;
+    color: rgba(255,255,255,0.4); letter-spacing: 1px;
+  }
+  .share-link {
+    background: rgba(0,0,0,0.4);
+    border-radius: 8px; padding: 8px 12px;
+    font-family: monospace;
+    font-size: 11px; color: var(--cyan);
+  }
+
+  .logo-text {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: rgba(255,255,255,0.3);
+    text-align: center;
+    padding: 40px 0;
+    letter-spacing: 3px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════ HERO ════════ -->
+<section class="hero">
+  <div class="particles" id="particles"></div>
+  <div class="hero-badge">&#9917; New on SamSports</div>
+  <h1>World Cup<br/>2026<br/>Predictor</h1>
+  <p class="hero-sub">Predict every match. Pick your champion. Earn SamPoints. Compete with fans worldwide.</p>
+  <p class="hero-hosts"><span>USA</span> &middot; <span>Mexico</span> &middot; <span>Canada</span></p>
+  <a href="https://samsports.io/world-cup" class="cta-btn" style="position:relative;z-index:1;">Play Now &rarr;</a>
+</section>
+
+<div class="sep"></div>
+
+<!-- ════════ FEATURES GRID ════════ -->
+<section class="section reveal">
+  <div class="section-label">Everything you need</div>
+  <h2>Predict. Compete. Win.</h2>
+  <p class="desc">The most complete World Cup predictor on the planet. 48 teams, 12 groups, full knockout bracket — all in one beautiful widget.</p>
+
+  <div class="features-grid stagger reveal">
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(16,185,129,0.1);">&#9917;</div>
+      <h3>48-Team Groups</h3>
+      <p>Predict the winner of every group-stage match across 12 groups. Pick home, away, or draw for all 144 games.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(212,175,55,0.1);">&#127942;</div>
+      <h3>Full Knockout Bracket</h3>
+      <p>Round of 32 through the Final — your picks cascade through the bracket. Pick your champion.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(34,211,238,0.1);">&#128200;</div>
+      <h3>Live API Data</h3>
+      <p>Real-time scores from API-Football lock your picks once matches kick off. Results settle automatically.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(251,191,36,0.1);">&#11088;</div>
+      <h3>SamPoints Rewards</h3>
+      <p>Earn up to 1,000,000 SamPoints per correct pick. Spend them in SamSports Fantasy — 1:1, no conversion.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(239,68,68,0.1);">&#128293;</div>
+      <h3>Upset Bonus (2&times;)</h3>
+      <p>Pick the underdog to beat a higher-ranked team? Powered by FIFA World Rankings, upsets earn double SamPoints.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(167,139,250,0.1);">&#127760;</div>
+      <h3>Global Leaderboards</h3>
+      <p>Compete overall or filter by country. See who's the best predictor from Argentina, France, Brazil, or anywhere.</p>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ════════ GROUP STAGE MOCKUP ════════ -->
+<section class="section reveal">
+  <div class="section-label">Step 1</div>
+  <h2>Pick Every Match</h2>
+  <p class="desc">Tap to predict. Home win, draw, or away win — it's that simple. Your standings table updates in real time.</p>
+
+  <div class="mockup-wrap">
+    <div class="phone-mockup reveal">
+      <div class="phone-screen">
+        <div class="phone-header">Group A — USA 2026</div>
+        <div class="phone-match phone-picked">
+          <div class="phone-team"><span class="flag">&#127474;&#127485;</span> MEX</div>
+          <div class="phone-vs">&#10004;</div>
+          <div class="phone-team right">POL <span class="flag">&#127477;&#127473;</span></div>
+        </div>
+        <div class="phone-match">
+          <div class="phone-team"><span class="flag">&#127463;&#127479;</span> BRA</div>
+          <div class="phone-vs">vs</div>
+          <div class="phone-team right">JPN <span class="flag">&#127471;&#127477;</span></div>
+        </div>
+        <div class="phone-match phone-picked">
+          <div class="phone-team"><span class="flag">&#127467;&#127479;</span> FRA</div>
+          <div class="phone-vs">&#10004;</div>
+          <div class="phone-team right">KSA <span class="flag">&#127480;&#127462;</span></div>
+        </div>
+        <div class="phone-match">
+          <div class="phone-team"><span class="flag">&#127462;&#127479;</span> ARG</div>
+          <div class="phone-vs">vs</div>
+          <div class="phone-team right">NGA <span class="flag">&#127475;&#127468;</span></div>
+        </div>
+        <div class="phone-stat-bar">
+          <div class="phone-stat"><div class="num">2/6</div><div class="lbl">Picks</div></div>
+          <div class="phone-stat"><div class="num" style="color:var(--gold);">40K</div><div class="lbl">SamPts</div></div>
+          <div class="phone-stat"><div class="num" style="color:var(--cyan);">0</div><div class="lbl">Upsets</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ════════ KNOCKOUT BRACKET ════════ -->
+<section class="section reveal">
+  <div class="section-label">Step 2</div>
+  <h2>Build Your Bracket</h2>
+  <p class="desc">From the Round of 32 to the Final — your predictions cascade through every knockout round. Pick your champion and third-place finisher.</p>
+
+  <div class="bracket-demo stagger reveal">
+    <div class="bracket-slot"><span class="flag">&#127463;&#127479;</span> Brazil</div>
+    <div class="bracket-arrow">&rarr;</div>
+    <div class="bracket-slot"><span class="flag">&#127466;&#127480;</span> Spain</div>
+    <div class="bracket-arrow">&rarr;</div>
+    <div class="bracket-slot bracket-winner"><span class="flag">&#127463;&#127479;</span> Brazil &#127942;</div>
+  </div>
+  <div class="bracket-demo stagger reveal" style="margin-top: 12px;">
+    <div class="bracket-slot" style="font-size:12px; opacity:0.6;">R32</div>
+    <div class="bracket-arrow" style="opacity:0.3;">&rarr;</div>
+    <div class="bracket-slot" style="font-size:12px; opacity:0.6;">R16</div>
+    <div class="bracket-arrow" style="opacity:0.3;">&rarr;</div>
+    <div class="bracket-slot" style="font-size:12px; opacity:0.6;">QF</div>
+    <div class="bracket-arrow" style="opacity:0.3;">&rarr;</div>
+    <div class="bracket-slot" style="font-size:12px; opacity:0.6;">SF</div>
+    <div class="bracket-arrow" style="opacity:0.3;">&rarr;</div>
+    <div class="bracket-slot" style="font-size:12px; border-color: var(--gold); color: var(--gold);">FINAL</div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ════════ SAMPOINTS ════════ -->
+<section class="section reveal">
+  <div class="section-label">Rewards</div>
+  <h2>Earn SamPoints</h2>
+  <p class="desc">Every correct prediction earns SamPoints you can spend in SamSports Fantasy. The deeper the round, the bigger the reward.</p>
+
+  <table class="points-table stagger reveal">
+    <tr class="pts-group"><td>&#9917; Group match result</td><td>20,000</td></tr>
+    <tr class="pts-pos"><td>&#127941; Group position (per team)</td><td>50,000</td></tr>
+    <tr class="pts-r32"><td>&#127944; Round of 32</td><td>75,000</td></tr>
+    <tr class="pts-r16"><td>&#9889; Round of 16</td><td>150,000</td></tr>
+    <tr class="pts-qf"><td>&#128165; Quarter-Final</td><td>200,000</td></tr>
+    <tr class="pts-sf"><td>&#128640; Semi-Final</td><td>500,000</td></tr>
+    <tr class="pts-third"><td>&#129353; 3rd Place Match</td><td>350,000</td></tr>
+    <tr class="pts-final"><td>&#127942; The Final</td><td>1,000,000</td></tr>
+  </table>
+
+  <div class="upset-badge reveal">&#128293; Upset picks earn 2&times; &mdash; powered by FIFA World Rankings</div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ════════ LEADERBOARD ════════ -->
+<section class="section reveal">
+  <div class="section-label">Compete</div>
+  <h2>Global Leaderboards</h2>
+  <p class="desc">See how you stack up against fans worldwide. Filter by country to find your local champion.</p>
+
+  <div class="lb-mock stagger reveal">
+    <div class="lb-header">
+      <span>&#127942; Overall Rankings</span>
+      <span style="color:rgba(255,255,255,0.3);font-size:11px;">Season 2026</span>
+    </div>
+    <div class="lb-row">
+      <div class="rank">1</div><div class="flag">&#127463;&#127479;</div>
+      <div class="name">CariocaKing</div><div class="score">2,450,000</div>
+    </div>
+    <div class="lb-row">
+      <div class="rank">2</div><div class="flag">&#127467;&#127479;</div>
+      <div class="name">LesBleus_Fan</div><div class="score">2,300,000</div>
+    </div>
+    <div class="lb-row you">
+      <div class="rank" style="color:var(--emerald);">3</div><div class="flag">&#127468;&#127463;</div>
+      <div class="name" style="color:var(--emerald);">You &#11088;</div><div class="score">2,150,000</div>
+    </div>
+    <div class="lb-row">
+      <div class="rank">4</div><div class="flag">&#127462;&#127479;</div>
+      <div class="name">MessiGOAT</div><div class="score">1,980,000</div>
+    </div>
+    <div class="lb-row">
+      <div class="rank">5</div><div class="flag">&#127466;&#127480;</div>
+      <div class="name">TikiTaka10</div><div class="score">1,850,000</div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ════════ SHARE CARD ════════ -->
+<section class="section reveal">
+  <div class="section-label">Share</div>
+  <h2>Brag About Your Picks</h2>
+  <p class="desc">Generate a beautiful share card with your champion, runner-up, and SamPoints total. Share on social or send to friends.</p>
+
+  <div class="share-mock reveal">
+    <div class="trophy">&#127942;</div>
+    <div class="champ">Brazil</div>
+    <div class="runner">Runner-up: France &middot; #3 Overall</div>
+    <div class="share-stats">
+      <div class="share-stat"><div class="val" style="color:var(--emerald);">2.15M</div><div class="lbl">SamPoints</div></div>
+      <div class="share-stat"><div class="val" style="color:var(--cyan);">104</div><div class="lbl">Picks</div></div>
+      <div class="share-stat"><div class="val" style="color:#fb923c;">12</div><div class="lbl">Upsets</div></div>
+    </div>
+    <div class="share-link">samsports.io/world-cup/predictor/a8f3bc</div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ════════ CTA ════════ -->
+<section class="cta-section reveal">
+  <div class="section-label" style="text-align:center;">Ready?</div>
+  <h2 style="font-family:'Rajdhani',sans-serif;font-size:clamp(36px,6vw,64px);font-weight:700;color:#fff;margin-bottom:16px;text-align:center;">Make Your Predictions</h2>
+  <p style="color:rgba(255,255,255,0.5);font-size:16px;max-width:500px;margin:0 auto 32px;text-align:center;">The World Cup starts June 11, 2026. Lock in your picks before kickoff and earn SamPoints all tournament long.</p>
+  <a href="https://samsports.io/world-cup" class="cta-btn">Start Predicting &rarr;</a>
+</section>
+
+<div class="logo-text">SAMSPORTS.IO</div>
+
+<!-- ════════ SCRIPTS ════════ -->
+<script>
+  // Scroll-triggered reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => observer.observe(el));
+
+  // Floating particles
+  const pc = document.getElementById('particles');
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 6 + 's';
+    p.style.animationDuration = (4 + Math.random() * 4) + 's';
+    if (Math.random() > 0.5) p.style.background = '#10b981';
+    pc.appendChild(p);
+  }
+</script>
+</body>
+</html>

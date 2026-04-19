@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react'
 import Carousel from 'react-multi-carousel'
 import 'react-multi-carousel/lib/styles.css'
 
@@ -6,9 +7,26 @@ import RightArrow from '../../assets/rightArrow.svg'
 
 import PopularLeagueCard from '../cards/popularLeagueCard'
 
-import { popularLeaguesData } from '../../pages/mockData'
+// API
+import { privateAPI } from '../../config/constants'
 
 const QuickJoin = () => {
+  const [popularLeaguesData, setPopularLeaguesData] = useState([])
+
+  useEffect(() => {
+    const fetchLeagues = async () => {
+      try {
+        const response = await privateAPI.get('/league/get')
+        setPopularLeaguesData(response.data || [])
+      } catch (error) {
+        console.error('Error fetching leagues:', error)
+        setPopularLeaguesData([])
+      }
+    }
+
+    fetchLeagues()
+  }, [])
+
   const responsive = {
     mobile: {
       breakpoint: { max: 4000, min: 0 },

@@ -2,6 +2,7 @@ import { notification } from 'antd'
 import { attachToken, privateDRAFTAPI,privateAPI } from '../../config/constants'
 import store from '../store'
 import { getUser } from './authActions'
+import { getLeagueDetails } from './leagueActions'
 
 
 export const setDraftRound = (payload) => {
@@ -23,7 +24,6 @@ export const setDraftTableLoading = (payload) => {
   }
 }
 export const setSearch = (payload) => {
-  console.log('search paylaod',payload);
   return {
     type: 'SET_DRAFT_PLAYER_SEARCH',
     payload,
@@ -37,7 +37,6 @@ export const setPosition = (payload) => {
 }
 
 export const setRookieplayers = (payload) => {
-  console.log('in the rooke action',payload);
   return {
     type: 'SET_DRAFT_PLAYER_ROOKIE_SEARCH',
     payload,
@@ -127,8 +126,6 @@ export const setCompleted = (payload) => {
 }
 
 export const getAllPlayers = async (payload) => {
-  // console.log('payload',payload);
-  // console.log('payloadposition',payload.position);
   try {
     store.dispatch(setDraftTableLoading(true))
     attachToken()
@@ -188,7 +185,7 @@ export const createRandomizedDraftRound = async (payload) => {
     attachToken()
     const res = await privateDRAFTAPI.post('/draft/create-randomized-draft-round', payload)
     if (res) {
-      getDraftRound()
+      await getDraftRound()
     }
     return res.data.data
   } catch (err) {
@@ -204,7 +201,7 @@ export const generateAllRound = async (payload) => {
     attachToken()
     const res = await privateDRAFTAPI.post('/draft/generate-all-draft-round', payload)
     if (res) {
-      getDraftRound()
+      await getDraftRound()
     }
     return res.data.data
   } catch (err) {
@@ -364,7 +361,6 @@ export const getBlackListQueue = async () => {
 
 
 export const deleteBlacklistQueue = async (id) => {
-  console.log('inside id here',id);
   try {
     attachToken()
     const res = await privateDRAFTAPI.delete(`/draft/delete-black-list?id=${id}`)
@@ -384,9 +380,8 @@ export const deleteBlacklistQueue = async (id) => {
 // DRAFT HISTORY
 export const addPlayerToDraft = async (payload) => {
   try {
-    console.log('payload',payload);
     attachToken()
-    const res = await privateDRAFTAPI.post('/draft/add-player-to-draft', payload)
+    const res = await privateDRAFTAPI.post('/draft/add-player-to-draft-socket', payload)
     if (res) {
       // const draftState = store.getState().draft
       // // getDraftCounter()
@@ -399,7 +394,6 @@ export const addPlayerToDraft = async (payload) => {
       // // getDraftQueue()
       // // getDraftRound()
       store.dispatch(getUser())
-      console.log('add draft',res.data.data);
       return res.data.data
     
 
@@ -433,23 +427,110 @@ export const getDraftCounter = async () => {
 
 // DRAFT BIDDING
 export const makeBid = async (payload) => {
-  setDraftLoading(true)
+  store.dispatch(setDraftLoading(true))
   try {
-    console.log('payload in bid ',payload);
     attachToken()
-    const res = await privateDRAFTAPI.post('/draft/make-bidding', payload)
+
+    // Build the full payload the backend expects
+    const state = store.getState()
+    const team = state.user?.userDetails?.team
+    const league = state.league?.currentLeague
+
+    const fullPayload = {
+      leagueid: league?._id,
+      teamid: team?._id,
+      bidamount: payload.amount || payload.bidamount,
+      spotAuctionEnd: league?.spotAuctionEnd || null,
+    }
+
+    const res = await privateDRAFTAPI.post('/draft/make-bidding', fullPayload)
     if (res) {
       getDraftRound()
       store.dispatch(getUser())
+      store.dispatch(setDraftLoading(false))
       return res.data.data
     }
-   
+
   } catch (err) {
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
-      
     })
-    setDraftLoading(false)
+    store.dispatch(setDraftLoading(false))
+  }
+}
+
+// ── Toggle Autodraft ──
+export const toggleAutoDraft = async (enabled) => {
+  try {
+    attachToken()
+    const res = await privateDRAFTAPI.post('/draft/toggle-autodraft', { enabled })
+    if (res) {
+      notification.success({
+        message: enabled ? 'Autodraft ON' : 'Autodraft OFF',
+        description: enabled ? 'Auto-picks best available when on the clock.' : 'You pick manually.',
+        duration: 3,
+      })
+      return res.data?.data
+    }
+  } catch (err) {
+    console.warn('Autodraft toggle:', err?.response?.data?.message || err.message)
+  }
+}
+
+// ── Smart Autodraft, Analyze squad and pick best player by position need ──
+export const getSmartAutoDraftPick = async () => {
+  try {
+    attachToken()
+    const res = await privateDRAFTAPI.get('/draft/smart-autodraft')
+    if (res?.data?.data) {
+      const { player, position, analysis } = res.data.data
+      if (player) {
+        notification.info({
+          message: `🤖 Smart Pick: ${player.Name}`,
+          description: `Position: ${player.Position} | Need: ${position} (${analysis?.positionNeeds?.[0]?.need || 0} slots) | Proj: ${player.FantasyPoints24?.toFixed(1) || '?'} pts`,
+          duration: 5,
+        })
+      }
+      return res.data.data
+    }
+    return null
+  } catch (err) {
+    console.warn('Smart autodraft error:', err?.response?.data?.message || err.message)
+    return null
+  }
+}
+
+// ── Get Squad Analysis (position needs breakdown) ──
+export const getSquadAnalysis = async () => {
+  try {
+    attachToken()
+    const res = await privateDRAFTAPI.get('/draft/squad-analysis')
+    return res?.data?.data || null
+  } catch (err) {
+    console.warn('Squad analysis error:', err?.response?.data?.message || err.message)
+    return null
+  }
+}
+
+// ── Toggle Draft Pause (Commissioner) ──
+export const toggleDraftPause = async (paused) => {
+  try {
+    attachToken()
+    const res = await privateDRAFTAPI.post('/draft/toggle-pause', { paused })
+    if (res) {
+      // Refresh league details to get updated draftPaused state
+      await getLeagueDetails()
+      notification.success({
+        message: paused ? 'Draft paused' : 'Draft resumed',
+        duration: 3,
+      })
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
   }
 }

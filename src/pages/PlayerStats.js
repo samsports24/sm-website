@@ -1,16 +1,39 @@
 import { Button, Select } from 'antd'
+import { useState, useEffect } from 'react'
 
 // Component
 import StandingHeader from '../components/StandingHeader'
 import StatsCard from '../components/StatsCard'
 import FilterBox from '../components/FilterComponent'
 
-// Mock Data
-import { playerStatsData } from './mockData'
+// API
+import { privateAPI, attachToken } from '../config/constants'
 
 const PlayerStats = () => {
+  const [playerStatsData, setPlayerStatsData] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    fetchPlayerStats()
+  }, [])
+
+  const fetchPlayerStats = async () => {
+    try {
+      setLoading(true)
+      const config = attachToken()
+      const response = await privateAPI.post('/player/get-all', {}, config)
+      if (response?.data) {
+        setPlayerStatsData(response.data)
+      }
+    } catch (error) {
+      console.error('Error fetching player stats:', error)
+      setPlayerStatsData([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleFilter = (value) => {
-    console.log('value :>> ', value)
   }
 
   return (
@@ -126,9 +149,15 @@ const PlayerStats = () => {
 
       {/* STATS */}
       <section className='stats_container'>
-        {playerStatsData?.map((v, i) => {
-          return <StatsCard key={i} data={v} index={i} />
-        })}
+        {loading ? (
+          <p style={{ color: '#fff' }}>Loading player stats...</p>
+        ) : playerStatsData?.length > 0 ? (
+          playerStatsData.map((v, i) => {
+            return <StatsCard key={i} data={v} index={i} />
+          })
+        ) : (
+          <p style={{ color: '#fff' }}>No player stats available</p>
+        )}
       </section>
     </div>
   )

@@ -12,8 +12,8 @@ const DraftTeamSection = () => {
       description: `Draft, buy, sell, auction, or trade your assets in SAM Marketplace, featuring all free agents and players based on real-life transfers and trade windows. Improve your lineups by poaching a top performer for an immediate roster boost or draft the next-generation stars for long-term development.`,
     },
     {
-      title: 'EARN REWARDS AND COMPETE FOR THE ULTIMATE PRIZE POOLS',
-      description: `Each move made in your league is feeding up your league prize pool, making it bigger along the season.  Earn ultimate rewards to attend some of the most exciting games, earn jerseys from your favorite players and much more`,
+      title: 'EARN REWARDS AND COMPETE FOR SFL PRIZE POOLS',
+      description: `Each move made in your league is feeding up your league prize pool, making it bigger along the season. Earn SFL rewards to attend some of the most exciting games, earn jerseys from your favorite players and much more`,
     },
   ]
   return (

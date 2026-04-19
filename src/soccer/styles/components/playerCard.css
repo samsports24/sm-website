@@ -1,0 +1,595 @@
+/* ============================================
+   PLAYER CARD COMPONENT STYLES
+   ============================================ */
+
+.player-card {
+  position: relative;
+  background: linear-gradient(135deg, var(--color-bg-secondary), var(--color-bg-tertiary));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all var(--transition-base);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.player-card:hover {
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 8px 24px rgba(76, 175, 80, 0.2);
+  transform: translateY(-4px);
+}
+
+.player-card.compact {
+  width: 100%;
+  max-width: 160px;
+  height: 220px;
+}
+
+.player-card.full {
+  width: 100%;
+  height: auto;
+}
+
+/* ============================================
+   PLAYER IMAGE & HEADER SECTION
+   ============================================ */
+
+.card-image-container {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(135deg, var(--color-pitch-dark), var(--color-pitch-mid));
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.player-card.compact .card-image-container {
+  height: 120px;
+}
+
+.player-card.full .card-image-container {
+  height: 300px;
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-base);
+}
+
+.player-card:hover .card-image {
+  transform: scale(1.05);
+}
+
+.card-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  color: rgba(255, 255, 255, 0.1);
+  background: radial-gradient(circle, rgba(76, 175, 80, 0.05), transparent);
+}
+
+/* Rating Badge (Top-Left) */
+.card-rating {
+  position: absolute;
+  top: var(--space-md);
+  left: var(--space-md);
+  background: linear-gradient(135deg, #FCD34D, #F59E0B);
+  border: 2px solid var(--color-bg-primary);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  color: #1F2937;
+  font-weight: var(--font-bold);
+  font-size: var(--text-lg);
+  font-family: var(--font-stats);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 10;
+  min-width: 48px;
+  text-align: center;
+}
+
+.card-rating-label {
+  font-size: 8px;
+  font-weight: var(--font-semibold);
+  display: block;
+  color: #92400E;
+  margin-top: 2px;
+}
+
+/* Position Badge (Top-Right) */
+.card-position {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  background: var(--color-bg-secondary);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  color: white;
+  font-weight: var(--font-bold);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 10;
+  min-width: 50px;
+  text-align: center;
+}
+
+.card-position.gk {
+  background: var(--color-position-gk);
+  border-color: var(--color-position-gk);
+  color: #1F2937;
+}
+
+.card-position.def {
+  background: var(--color-position-def);
+  border-color: var(--color-position-def);
+}
+
+.card-position.mid {
+  background: var(--color-position-mid);
+  border-color: var(--color-position-mid);
+  color: #1F2937;
+}
+
+.card-position.fwd {
+  background: var(--color-position-fwd);
+  border-color: var(--color-position-fwd);
+}
+
+/* Nationality Flag (Bottom-Left of Image) */
+.card-flag {
+  position: absolute;
+  bottom: var(--space-md);
+  left: var(--space-md);
+  width: 32px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--color-bg-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  z-index: 9;
+  background-size: cover;
+  background-position: center;
+}
+
+.card-flag.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+/* ============================================
+   PLAYER INFO SECTION
+   ============================================ */
+
+.card-body {
+  padding: var(--space-md);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-player-info {
+  margin-bottom: var(--space-md);
+}
+
+.card-player-name {
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  line-height: 1.3;
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  word-break: break-word;
+}
+
+.player-card.compact .card-player-name {
+  font-size: 11px;
+}
+
+.player-card.full .card-player-name {
+  font-size: var(--text-base);
+}
+
+.card-player-meta {
+  display: flex;
+  gap: var(--space-sm);
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+  flex-wrap: wrap;
+}
+
+.card-player-club {
+  font-weight: var(--font-semibold);
+  color: var(--color-text-secondary);
+}
+
+.card-player-age {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* Jersey Number */
+.card-jersey-number {
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 2px 4px;
+  font-weight: var(--font-bold);
+  font-size: 10px;
+  color: var(--color-accent-primary);
+  min-width: 28px;
+  text-align: center;
+}
+
+/* ============================================
+   PLAYER STATS BAR
+   ============================================ */
+
+.card-stats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.stat-label {
+  font-size: 9px;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  font-weight: var(--font-semibold);
+  min-width: 45px;
+  letter-spacing: 0.5px;
+}
+
+.stat-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.stat-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-highlight));
+  border-radius: var(--radius-full);
+  transition: width var(--transition-base);
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.4);
+}
+
+.stat-value {
+  font-size: 9px;
+  font-weight: var(--font-bold);
+  color: var(--color-text-secondary);
+  min-width: 24px;
+  text-align: right;
+  font-family: var(--font-stats);
+}
+
+/* ============================================
+   PLAYER SKILLS/ATTRIBUTES
+   ============================================ */
+
+.card-attributes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.player-card.full .card-attributes {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.attribute {
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm);
+  text-align: center;
+  transition: all var(--transition-fast);
+}
+
+.attribute:hover {
+  border-color: var(--color-accent-primary);
+  background: rgba(76, 175, 80, 0.05);
+}
+
+.attribute-label {
+  font-size: 8px;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  font-weight: var(--font-bold);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.attribute-value {
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  color: var(--color-accent-primary);
+  font-family: var(--font-stats);
+}
+
+/* ============================================
+   ACTION BUTTONS
+   ============================================ */
+
+.card-actions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+}
+
+.card-action-btn {
+  flex: 1;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-md);
+  font-size: 10px;
+  font-weight: var(--font-semibold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card-action-btn:hover {
+  background: var(--color-accent-primary);
+  border-color: var(--color-accent-primary);
+  color: var(--color-bg-primary);
+}
+
+.card-action-btn.primary {
+  background: var(--color-accent-primary);
+  border-color: var(--color-accent-primary);
+  color: var(--color-bg-primary);
+}
+
+.card-action-btn.primary:hover {
+  background: var(--color-accent-highlight);
+  border-color: var(--color-accent-highlight);
+}
+
+/* ============================================
+   SPECIAL STATES
+   ============================================ */
+
+/* Team Captain */
+.player-card.captain {
+  border: 2px solid var(--color-position-gk);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+}
+
+/* In Squad */
+.player-card.in-squad {
+  border-color: var(--color-accent-primary);
+}
+
+.player-card.in-squad .card-image-container::after {
+  content: '✓';
+  position: absolute;
+  bottom: var(--space-md);
+  right: var(--space-md);
+  width: 28px;
+  height: 28px;
+  background: var(--color-accent-primary);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: var(--font-bold);
+  font-size: 16px;
+}
+
+/* Injury Status */
+.player-card.injured {
+  opacity: 0.6;
+  border-color: var(--color-position-fwd);
+}
+
+.player-card.injured::before {
+  content: 'INJURED';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--color-position-fwd);
+  color: white;
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-bold);
+  font-size: var(--text-sm);
+  z-index: 20;
+}
+
+/* Loading State */
+.player-card.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.player-card.loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  animation: shimmer 2s infinite;
+  z-index: 5;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ============================================
+   CARD VARIANTS & SIZES
+   ============================================ */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-lg);
+}
+
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.card-list .player-card {
+  flex-direction: row;
+  height: auto;
+}
+
+.card-list .card-image-container {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+  border-radius: 0;
+}
+
+.card-list .card-body {
+  flex: 1;
+}
+
+.card-list .card-stats {
+  display: none;
+}
+
+.card-list .card-actions {
+  flex-direction: row-reverse;
+  gap: var(--space-md);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--space-md);
+  }
+
+  .player-card.compact {
+    max-width: 100%;
+  }
+
+  .card-image-container {
+    height: 100px;
+  }
+
+  .card-rating {
+    font-size: var(--text-base);
+    padding: var(--space-sm);
+  }
+
+  .card-position {
+    font-size: 9px;
+    padding: var(--space-sm);
+  }
+
+  .card-flag {
+    width: 28px;
+    height: 20px;
+  }
+
+  .card-body {
+    padding: var(--space-sm);
+  }
+
+  .stat-label {
+    font-size: 8px;
+    min-width: 40px;
+  }
+
+  .stat-value {
+    font-size: 8px;
+  }
+
+  .card-action-btn {
+    font-size: 9px;
+    padding: var(--space-xs) var(--space-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+  }
+
+  .player-card.compact {
+    max-width: 100%;
+    height: 200px;
+  }
+
+  .card-image-container {
+    height: 100px;
+  }
+
+  .card-rating {
+    font-size: var(--text-sm);
+    min-width: 40px;
+  }
+
+  .card-player-name {
+    font-size: 10px;
+  }
+
+  .card-player-meta {
+    font-size: 9px;
+  }
+
+  .card-attributes {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .attribute {
+    padding: var(--space-xs);
+  }
+
+  .card-list {
+    gap: var(--space-sm);
+  }
+
+  .card-list .card-image-container {
+    width: 100px;
+    height: 100px;
+  }
+
+  .card-actions {
+    flex-direction: column;
+  }
+
+  .card-action-btn {
+    width: 100%;
+  }
+}

@@ -6,13 +6,13 @@
   width: 100%;
   overflow: auto;
   margin-top: 10px 20px;
-  background-color: #1e1436;
+  background: #0A0F1A;
 }
 .game_details .gd_body {
-  min-width: 1450px;
+  min-width: 1100px;
   max-height: 1000px;
-  padding: 30px;
-  background-color: #1e1436;
+  padding: 20px;
+  background: #0A0F1A;
 }
 
 /* GAME HEADER */
@@ -59,7 +59,7 @@
   font-size: 45px;
   font-weight: 900;
   position: absolute;
-  color: #1e1436;
+  color: #22C55E;
   z-index: 999;
   left: 27px;
   top: 15px;
@@ -70,8 +70,8 @@
 .game_details .game_header .gh_right .bg_right {
   height: 200px;
   width: 350px;
-  background: var(--secondaryPurple);
-  border: 1px solid var(--border);
+  background: rgba(20, 28, 45, 0.6); backdrop-filter: blur(12px);
+  border: 1px solid rgba(110, 105, 128, 0.15);
 }
 .game_details .game_header .gh_left .bg_left {
   border-top-left-radius: 25px;
@@ -110,6 +110,7 @@
   text-align: right !important;
 }
 .game_details .game_header .wrapper .stats .points_text {
+  font-family: var(--font-stats), sans-serif;
   font-size: 26px;
   font-style: italic;
 }
@@ -167,6 +168,7 @@
   width: 120px;
 }
 .game_details .game_header .wrapper .points_box p:nth-child(1) {
+  font-family: var(--font-stats), sans-serif;
   font-size: 44px;
   font-weight: 700;
   font-style: italic;
@@ -206,10 +208,10 @@
 }
 
 .game_details .game_header .green {
-  color: #7ed957 !important;
+  color: #22C55E !important;
 }
 .game_details .game_header .red {
-  color: #ff3131 !important;
+  color: #EF4444 !important;
 }
 
 .game_details .heading_box_top {
@@ -220,6 +222,7 @@
   margin-bottom: 20px;
 }
 .game_details .heading_box_top h2 {
+  font-family: var(--font-heading), sans-serif;
   font-size: 22px;
   font-weight: 700;
 }
@@ -247,24 +250,26 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: var(--primaryPurple);
+  background: rgba(20, 28, 45, 0.8); backdrop-filter: blur(8px); border: 1px solid rgba(110, 105, 128, 0.15);
   clip-path: polygon(0 0, 77% 0, 100% 100%, 0% 100%);
   border-top-left-radius: 16px;
   border-bottom-left-radius: 16px;
   padding: 0px 10px;
   gap: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2), inset 0 1px 1px rgba(255,255,255,0.05);
 }
 .game_details .gd_card_box .gdc_right .gdc_content {
   flex: 1;
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
-  background-color: var(--primaryPurple);
+  background: rgba(20, 28, 45, 0.8); backdrop-filter: blur(8px); border: 1px solid rgba(110, 105, 128, 0.15);
   clip-path: polygon(23% 0, 100% 0, 100% 100%, 0% 100%);
   border-top-right-radius: 16px;
   border-bottom-right-radius: 16px;
   padding: 0px 10px;
   gap: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2), inset 0 1px 1px rgba(255,255,255,0.05);
 }
 .game_details .gd_card_box .gdc_content .p_img_box {
   width: 50px;
@@ -348,6 +353,7 @@
   align-items: center;
 }
 .game_details .gd_card_box .gdc_points p {
+  font-family: var(--font-stats), sans-serif;
   text-align: center;
   font-size: 20px;
   font-weight: 500;
@@ -361,8 +367,8 @@
   height: 50px;
   font-size: 14px;
   border-radius: 50%;
-  border: 1px solid #6e698066;
-  background-color: #30215d;
+  border: 1px solid #64748B66;
+  background-color: #1A2332;
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -388,6 +394,7 @@
 }
 .gd_score_box .gdsb_left p,
 .gd_score_box .gdsb_right p {
+  font-family: var(--font-stats), sans-serif;
   font-size: 28px;
   font-weight: 700;
   font-style: italic;
@@ -400,9 +407,243 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  background: rgba(20, 28, 45, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(110, 105, 128, 0.15);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2), inset 0 1px 1px rgba(255,255,255,0.05);
 }
 .gd_score_box .gdsb_center h2 {
+  font-family: var(--font-heading), sans-serif;
   text-align: center;
   font-weight: 700;
   font-size: 20px;
+}
+
+/* MOBILE RESPONSIVENESS - TABLET (768px and below) */
+/* ----------------------------------------------------- */
+@media (max-width: 768px) {
+  .game_details .gd_body {
+    min-width: auto;
+    max-height: none;
+    padding: 15px;
+  }
+
+  .game_details .game_header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .game_details .game_header .gh_left,
+  .game_details .game_header .gh_right {
+    width: 100%;
+    min-height: 150px;
+  }
+
+  .game_details .game_header .gh_left .bg_left,
+  .game_details .game_header .gh_right .bg_right {
+    width: 100%;
+    height: 150px;
+  }
+
+  .game_details .game_header .gh_left .played_text {
+    left: 0;
+    right: 0;
+    text-align: center;
+  }
+
+  .game_details .game_header .gh_right .played_text {
+    right: 0;
+    left: 0;
+    text-align: center;
+  }
+
+  .game_details .game_header .gh_center .vs_box {
+    width: 80px;
+  }
+
+  .game_details .game_header .gh_center .vs_box .vs_text {
+    font-size: 32px;
+    left: 20px;
+    top: 8px;
+  }
+
+  .game_details .game_header .wrapper .stats {
+    width: auto;
+    flex: 1;
+  }
+
+  .game_details .game_header .wrapper .logo_box {
+    width: auto;
+    min-width: 80px;
+  }
+
+  .game_details .game_header .wrapper .points_box {
+    width: auto;
+  }
+
+  .game_details .gd_card_box {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .game_details .gd_card_box .gdc_left,
+  .game_details .gd_card_box .gdc_right {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .game_details .gd_card_box .gdc_content,
+  .game_details .gd_card_box .gdc_right .gdc_content {
+    flex-direction: column;
+    clip-path: none;
+    border-radius: 12px !important;
+    padding: 12px;
+  }
+
+  .game_details .gd_card_box .gdc_points {
+    width: 100%;
+    padding: 10px 0;
+  }
+
+  .gd_score_box {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .gd_score_box .gdsb_left,
+  .gd_score_box .gdsb_right {
+    justify-content: center;
+  }
+
+  .gd_score_box .gdsb_center {
+    width: 100%;
+    margin-inline: 0;
+  }
+
+  .game_details .gd_card_box .gdc_content .breakdown_box p {
+    margin-right: 0;
+  }
+
+  .game_details .gd_card_box .gdc_right .gdc_content .breakdown_box p {
+    margin-left: 0;
+  }
+}
+
+/* MOBILE RESPONSIVENESS - MOBILE (480px and below) */
+/* ----------------------------------------------------- */
+@media (max-width: 480px) {
+  .game_details .gd_body {
+    min-width: auto;
+    padding: 10px;
+  }
+
+  .game_details .gd-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .game_details .game_header {
+    gap: 10px;
+  }
+
+  .game_details .game_header .gh_left,
+  .game_details .game_header .gh_right {
+    min-height: 120px;
+  }
+
+  .game_details .game_header .gh_left .bg_left,
+  .game_details .game_header .gh_right .bg_right {
+    height: 120px;
+  }
+
+  .game_details .game_header .gh_center .vs_box {
+    width: 60px;
+  }
+
+  .game_details .game_header .gh_center .vs_box .vs_text {
+    font-size: 24px;
+    left: 15px;
+    top: 5px;
+  }
+
+  .game_details .game_header .gh_center {
+    padding: 0px 15px 15px 15px;
+  }
+
+  .game_details .game_header .wrapper {
+    flex-direction: column !important;
+    gap: 8px;
+  }
+
+  .game_details .game_header .gh_right .wrapper {
+    flex-direction: column !important;
+  }
+
+  .game_details .game_header .wrapper .stats {
+    font-size: 12px;
+  }
+
+  .game_details .game_header .wrapper .stats .points_text {
+    font-size: 18px;
+  }
+
+  .game_details .game_header .wrapper .stats .text1,
+  .game_details .game_header .wrapper .stats .text2,
+  .game_details .game_header .wrapper .stats .text3 {
+    font-size: 12px;
+  }
+
+  .game_details .game_header .wrapper .logo_box {
+    min-width: 60px;
+  }
+
+  .game_details .game_header .wrapper .name_box p:nth-child(1) {
+    font-size: 14px;
+  }
+
+  .game_details .game_header .wrapper .name_box p:nth-child(2) {
+    font-size: 12px;
+    margin-left: 10px;
+  }
+
+  .game_details .game_header .wrapper .points_box p:nth-child(1) {
+    font-size: 28px;
+  }
+
+  .game_details .game_header .wrapper .points_box p:nth-child(2) {
+    font-size: 14px;
+  }
+
+  .game_details .heading_box_top h2 {
+    font-size: 18px;
+  }
+
+  .game_details .gd_card_box .gdc_content .p_img_box,
+  .game_details .gd_card_box .gdc_content .p_img_box img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .game_details .gd_card_box .gdc_content .name_box > div p {
+    font-size: 14px;
+  }
+
+  .game_details .gd_card_box .gdc_content .name_box > div span {
+    font-size: 11px;
+  }
+
+  .gd_score_box .gdsb_left p,
+  .gd_score_box .gdsb_right p {
+    font-size: 20px;
+  }
+
+  .gd_score_box .gdsb_center {
+    padding: 10px;
+  }
+
+  .gd_score_box .gdsb_center h2 {
+    font-size: 16px;
+  }
 }

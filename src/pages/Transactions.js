@@ -1,10 +1,36 @@
-import { Button, Select, Table } from 'antd'
+import { Button, Select, Table, Spin, Empty } from 'antd'
+import { useState, useEffect } from 'react'
 import StandingHeader from '../components/StandingHeader'
 import moment from 'moment'
 
-import { transactionData } from './mockData'
+// API
+import { privateAPI, attachToken } from '../config/constants'
 
 const Transactions = () => {
+  const [transactionData, setTransactionData] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        setLoading(true)
+        const token = attachToken()
+        const response = await privateAPI.post('/transaction/get-all-transactions')
+        setTransactionData(response.data || [])
+        setError(null)
+      } catch (err) {
+        console.error('Error fetching transactions:', err)
+        setError(err.message)
+        setTransactionData([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchTransactions()
+  }, [])
+
   const columns = [
     {
       title: '#',
@@ -108,14 +134,30 @@ const Transactions = () => {
           <h3>RECENT TRANSACTIONS</h3>
         </div>
         <div className='main_table'>
-          <Table
-            dataSource={transactionData}
-            columns={columns}
-            bordered={false}
-            pagination={false}
-            scroll={{ x: 1000 }}
-            rowClassName={(_, index) => (index % 2 === 0 ? 'odd-row' : 'even-row')}
-          />
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '50px' }}>
+              <Spin size='large' />
+            </div>
+          ) : error ? (
+            <Empty
+              description={`Error: ${error}`}
+              style={{ padding: '50px' }}
+            />
+          ) : transactionData.length === 0 ? (
+            <Empty
+              description='No transactions found'
+              style={{ padding: '50px' }}
+            />
+          ) : (
+            <Table
+              dataSource={transactionData}
+              columns={columns}
+              bordered={false}
+              pagination={false}
+              scroll={{ x: 1000 }}
+              rowClassName={(_, index) => (index % 2 === 0 ? 'odd-row' : 'even-row')}
+            />
+          )}
         </div>
       </section>
     </div>

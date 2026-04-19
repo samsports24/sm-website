@@ -15,9 +15,9 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    /* background: linear-gradient(180deg, #291c4a, #080611); */
+    /* background: linear-gradient(180deg, #0F1726, #0A0F1A); */
     background:
-      #302060 !important;
+      #0F1726 !important;
       opacity: 0.9 !important;
   
     border:5px solid  rgb(12, 192, 223) !important;

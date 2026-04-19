@@ -168,7 +168,7 @@
   padding: 8px 12px 8px 8px;
   gap: 12px;
   border-radius: 6px;
-  background: #30215d;
+  background: #1A2332;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -249,7 +249,7 @@
   flex-direction: row;
   gap: 12px;
   padding: 12px;
-  background: rgba(48, 33, 93, 0.4);
+  background: rgba(17, 24, 39, 0.4);
   align-items: center;
 }
 .round_box .rb_body .rb_card .rb_card_left p {
@@ -297,7 +297,7 @@
 }
 .draft_comp_box .draft_header {
   padding: 11px 17px 11px 17px;
-  background: rgba(48, 33, 93, 0.4);
+  background: rgba(17, 24, 39, 0.4);
   border-top-right-radius: 16px;
   border-top-left-radius: 16px;
 }
@@ -322,7 +322,7 @@
   align-items: center;
   padding: 8px 12px;
   gap: 12px;
-  background: rgba(48, 33, 93, 0.4);
+  background: rgba(17, 24, 39, 0.4);
 }
 .draft_comp_box .draft_body .draft_card .index_number {
   font-size: 18px;
@@ -509,7 +509,7 @@
   padding: 6px 12px;
   width: max-content;
   border-radius: 8px;
-  background: #30215d;
+  background: #1A2332;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -758,7 +758,7 @@
 }
 
 .table_com_box .table-row-light {
-  background-color: rgba(48, 33, 93, 0.4) !important;
+  background-color: rgba(17, 24, 39, 0.4) !important;
 }
 
 @media (max-width: 767px) {

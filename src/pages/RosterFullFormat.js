@@ -1,13 +1,34 @@
 import { Col, Row, Table } from 'antd'
+import { useState, useEffect } from 'react'
 
 // Components
 import FilterBox from '../components/FilterComponent'
 import StandingHeader from '../components/StandingHeader'
 
-// Mock Data
-import { rosterData } from './mockData'
+// API
+import { privateAPI } from '../config/constants'
 
 const RosterFullFormat = () => {
+  const [rosterData, setRosterData] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchRosterData()
+  }, [])
+
+  const fetchRosterData = async () => {
+    try {
+      setLoading(true)
+      const response = await privateAPI.get('/team/get-roster/1')
+      setRosterData(response.data)
+    } catch (error) {
+      console.error('Error fetching roster data:', error)
+      setRosterData(null)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleFilter = () => {}
 
   const columns = [
@@ -47,7 +68,14 @@ const RosterFullFormat = () => {
 
       <div style={{ height: '55px' }}></div>
 
+      {/* LOADING STATE */}
+      {loading && <div style={{ textAlign: 'center', padding: '40px' }}>Loading roster data...</div>}
+
+      {/* EMPTY STATE */}
+      {!loading && !rosterData && <div style={{ textAlign: 'center', padding: '40px' }}>No roster data available</div>}
+
       {/* TABLE */}
+      {!loading && rosterData && (<>
       <Row gutter={[30, 30]}>
         <Col xs={24} xxl={12}>
           <section className='main_table_container'>
@@ -209,6 +237,7 @@ const RosterFullFormat = () => {
           </section>
         </Col>
       </Row>
+      </>)}
     </div>
   )
 }

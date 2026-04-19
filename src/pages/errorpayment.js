@@ -1,108 +1,52 @@
 import { useEffect, useState } from 'react'
-import { getSession } from '../redux'
-import { Button, Spin } from 'antd'
-import { LoadingOutlined } from '@ant-design/icons'
-
+import { Button } from 'antd'
+import { ArrowLeftOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
-import failed from '../assets/failed.png'
-import { sendpayment, sendpaymentforsampoints } from '../redux/actions/paymentAction'
+import '../styles/pages/errorpayment.css'
 
 const Error = () => {
   const navigate = useNavigate()
-const [newamount,setNewamount]=useState(null)
+  const [isSamPoints, setIsSamPoints] = useState(false)
 
-  const token = localStorage.getItem('token')
-  console.log('token',token);
-
-  const handleNavigate = () => {
-
-    if(newamount){
-      navigate('/professional-league');
-      setNewamount('')
-      // Navigate to '/' route on click
-    }
-    else {
-      navigate('/'); // Navigate to '/' route on click
-    }
-    
-  };
   useEffect(() => {
-    // Remove email and AssignLeague from local storage
-  
-    // const queryParameters = new URLSearchParams(window.location.search)
-    // const sessionId = queryParameters.get('session_id')
-    // console.log('queryParameters',queryParameters);
-    // console.log('sessionId',sessionId);
-    // getSession({ sessionId }, navigate)
-    // sendpayment({ sessionId }, navigate)
-
-
-    console.log('in the error payment effect');
-    const email = localStorage.getItem('email');
-    const leagueid = localStorage.getItem('AssignLeague');
     const queryParameters = new URLSearchParams(window.location.search)
-    const sessionId = queryParameters.get('session_id')
-
-    const amount = queryParameters.get('amount');
-    setNewamount(amount)
-    if (amount) {
-     
-      sendpaymentforsampoints({ sessionId }, navigate);
-    } else {
-    
-      sendpayment({ sessionId, email, leagueid }, navigate);
-    }
-
-
-    // console.log('queryParameters',queryParameters);
-    // console.log('sessionId',sessionId);
-   // getSession({ sessionId }, navigate)
-    // sendpayment({ sessionId,email,leagueid}, navigate)
-
-    // localStorage.removeItem('email');
-    // localStorage.removeItem('AssignLeague');
-
-
-
-  }, []);
-
-
-
+    const amount = queryParameters.get('amount')
+    if (amount) setIsSamPoints(true)
+  }, [])
 
   return (
-    <>
-    <div style={{ flexDirection:'column-reverse' }} className='signin signup'>
-    <Button style={{ cursor: 'pointer', marginBottom: '20px',width:'15%',borderRadius:'20px',height:'71px',
+    <div className="error-payment-container">
+      <div className="error-payment-card">
+        <div className="error-icon-wrapper">
+          <CloseCircleOutlined className="error-icon" />
+        </div>
 
-border: '2px solid #00a7e5',
-    background: '#00a7e5',
-   fontSize: '27px',
-    fontWeight: 600,
-    color: 'var(--text)'
+        <h1 className="error-title">Payment Failed</h1>
 
-     }} onClick={handleNavigate}>Back to Home</Button>
+        <p className="error-subtitle">
+          Your payment could not be processed at this time.
+        </p>
 
-{/* const amount = queryParameters.get('amount'); */}
-{newamount ? null : (
-        <h2 style={{ marginBottom: '20px', color: '#FF0000' }}>
-          Kindly Click On The Invitation Link From Your Email
-        </h2>
-      )}
-       {/* <h2 style={{ marginBottom: '20px', color: '#FF0000' }}> Kindly Click On The Invitation Link From Your Email</h2> */}
-      <h2 style={{ marginBottom: '20px', color: '#FF0000' }}> Payment Failed/cancelled</h2>
-    
- 
-      {/* Replace Spin component with the imported image */}
-      <img
-        src={failed}
-        alt="Failed"
-        style={{
-          width: '80px',
-          margin: '15px 0',
-        }}
-      />
+        <div className="error-description">
+          <p>Please try again or contact support if the problem persists.</p>
+        </div>
+
+        <div className="error-actions">
+          <Button className="btn-retry" onClick={() => navigate('/dashboard')} type="primary">
+            Try Again
+          </Button>
+          <Button className="btn-back" onClick={() => navigate('/')}>
+            <ArrowLeftOutlined /> Back to Home
+          </Button>
+        </div>
+
+        <div className="error-support">
+          <p>
+            Need help? <span className="support-link">Contact Support</span>
+          </p>
+        </div>
+      </div>
     </div>
-  </>
   )
 }
 

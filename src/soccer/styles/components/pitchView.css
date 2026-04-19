@@ -1,0 +1,705 @@
+/* ============================================
+   PITCH VIEW COMPONENT STYLES
+   ============================================ */
+
+.pitch-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--space-lg);
+}
+
+/* ---- PITCH FIELD ---- */
+
+.pitch {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 100 / 68;
+  background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 25%, #4CAF50 50%, #2E7D32 75%, #1B5E20 100%);
+  background-size: 200% 200%;
+  border: 3px solid var(--color-pitch-line-bright);
+  border-radius: var(--radius-lg);
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.4), 0 10px 30px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+/* Grass texture overlay */
+.pitch::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.02) 2px,
+      rgba(255, 255, 255, 0.02) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.02) 2px,
+      rgba(255, 255, 255, 0.02) 4px
+    ),
+    radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    radial-gradient(circle at 60% 70%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 50px 50px, 70px 70px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ---- PITCH MARKINGS (SVG/CSS approach) ---- */
+
+.pitch-markings {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Center Line */
+.pitch-marking.center-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-pitch-line-bright);
+  transform: translateX(-50%);
+}
+
+/* Center Circle */
+.pitch-marking.center-circle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 18%;
+  aspect-ratio: 1;
+  border: 2px solid var(--color-pitch-line-bright);
+  border-radius: var(--radius-full);
+}
+
+/* Center Spot */
+.pitch-marking.center-spot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  background: var(--color-pitch-line-bright);
+  border-radius: var(--radius-full);
+  z-index: 3;
+}
+
+/* Goal Areas (small penalty boxes) */
+.pitch-marking.goal-area {
+  position: absolute;
+  top: 50%;
+  width: 32%;
+  height: 30%;
+  border: 2px solid var(--color-pitch-line-bright);
+  transform: translateY(-50%);
+}
+
+.pitch-marking.goal-area.left {
+  left: 0;
+}
+
+.pitch-marking.goal-area.right {
+  right: 0;
+}
+
+/* Penalty Areas (large penalty boxes) */
+.pitch-marking.penalty-area {
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 50%;
+  border: 2px solid var(--color-pitch-line-bright);
+  transform: translateY(-50%);
+}
+
+.pitch-marking.penalty-area.left {
+  left: 0;
+}
+
+.pitch-marking.penalty-area.right {
+  right: 0;
+}
+
+/* Penalty Spots */
+.pitch-marking.penalty-spot {
+  position: absolute;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  background: var(--color-pitch-line-bright);
+  border-radius: var(--radius-full);
+  transform: translateY(-50%);
+}
+
+.pitch-marking.penalty-spot.left {
+  left: 12%;
+}
+
+.pitch-marking.penalty-spot.right {
+  right: 12%;
+}
+
+/* Corner Arcs */
+.pitch-marking.corner-arc {
+  position: absolute;
+  width: 12%;
+  height: 12%;
+  border: 2px solid var(--color-pitch-line-bright);
+  border-radius: var(--radius-full);
+  background: transparent;
+}
+
+.pitch-marking.corner-arc.top-left {
+  top: 0;
+  left: 0;
+  border-right: none;
+  border-bottom: none;
+}
+
+.pitch-marking.corner-arc.top-right {
+  top: 0;
+  right: 0;
+  border-left: none;
+  border-bottom: none;
+}
+
+.pitch-marking.corner-arc.bottom-left {
+  bottom: 0;
+  left: 0;
+  border-right: none;
+  border-top: none;
+}
+
+.pitch-marking.corner-arc.bottom-right {
+  bottom: 0;
+  right: 0;
+  border-left: none;
+  border-top: none;
+}
+
+/* Halfway Line Spots (optional enhancement) */
+.pitch-marking.halfway-spot {
+  position: absolute;
+  left: 50%;
+  top: 2%;
+  width: 3px;
+  height: 3px;
+  background: var(--color-pitch-line-bright);
+  border-radius: var(--radius-full);
+  transform: translateX(-50%);
+}
+
+.pitch-marking.halfway-spot.bottom {
+  top: auto;
+  bottom: 2%;
+}
+
+/* ---- PLAYER POSITIONS ON PITCH ---- */
+
+.pitch-players {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+}
+
+.player-slot {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  group: 'playerSlot';
+}
+
+.player-slot:hover {
+  transform: scale(1.15);
+  z-index: 5;
+}
+
+.player-slot.dragging {
+  z-index: 20;
+  opacity: 0.9;
+}
+
+/* Player Dot/Avatar */
+.player-dot {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-bold);
+  font-size: 12px;
+  color: white;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all var(--transition-fast);
+  background-size: cover;
+  background-position: center;
+}
+
+.player-dot.has-image {
+  background-size: cover;
+  color: transparent;
+  font-size: 0;
+}
+
+.player-dot::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+  pointer-events: none;
+}
+
+/* Position-based colors */
+.player-dot.gk {
+  background: linear-gradient(135deg, var(--color-position-gk), #DC2626);
+}
+
+.player-dot.def {
+  background: linear-gradient(135deg, var(--color-position-def), #1E40AF);
+}
+
+.player-dot.mid {
+  background: linear-gradient(135deg, var(--color-position-mid), #15803D);
+}
+
+.player-dot.fwd {
+  background: linear-gradient(135deg, var(--color-position-fwd), #7F1D1D);
+}
+
+/* Hover glow effect */
+.player-slot:hover .player-dot {
+  box-shadow: 0 0 20px var(--glow-green);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Jersey Number Label */
+.player-number {
+  position: absolute;
+  bottom: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: var(--font-bold);
+  color: var(--color-accent-primary);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-fast);
+}
+
+.player-slot:hover .player-number {
+  opacity: 1;
+}
+
+/* Player Name Label */
+.player-name {
+  position: absolute;
+  bottom: -42px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 4px 8px;
+  font-size: 10px;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-fast);
+  font-weight: var(--font-semibold);
+  z-index: 10;
+}
+
+.player-slot:hover .player-name {
+  opacity: 1;
+}
+
+/* Captain Armband */
+.captain-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, #FCD34D, #F59E0B);
+  border: 2px solid var(--color-bg-primary);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: var(--font-bold);
+  color: #1F2937;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 3;
+}
+
+.captain-badge::before {
+  content: 'C';
+}
+
+/* Substitutes Indicator */
+.player-dot.substitute {
+  opacity: 0.6;
+  filter: grayscale(0.3);
+}
+
+.player-dot.substitute::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-full);
+  border: 2px dashed rgba(255, 255, 255, 0.4);
+}
+
+/* ============================================
+   SUBSTITUTES BENCH AREA
+   ============================================ */
+
+.pitch-bench {
+  margin-top: var(--space-2xl);
+  padding: var(--space-lg);
+  background: var(--color-bg-secondary);
+  border: 2px dashed var(--color-border-light);
+  border-radius: var(--radius-lg);
+}
+
+.bench-title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-md);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bench-players {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  align-items: center;
+  min-height: 50px;
+}
+
+.bench-player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.bench-player:hover {
+  transform: translateY(-4px);
+}
+
+.bench-player-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-bold);
+  font-size: 14px;
+  color: white;
+  box-shadow: var(--shadow-md);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all var(--transition-fast);
+}
+
+.bench-player:hover .bench-player-dot {
+  box-shadow: var(--glow-green);
+}
+
+.bench-player-dot.gk {
+  background: linear-gradient(135deg, var(--color-position-gk), #DC2626);
+}
+
+.bench-player-dot.def {
+  background: linear-gradient(135deg, var(--color-position-def), #1E40AF);
+}
+
+.bench-player-dot.mid {
+  background: linear-gradient(135deg, var(--color-position-mid), #15803D);
+}
+
+.bench-player-dot.fwd {
+  background: linear-gradient(135deg, var(--color-position-fwd), #7F1D1D);
+}
+
+.bench-player-info {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  max-width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bench-empty-state {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-sm);
+  text-align: center;
+  width: 100%;
+  padding: var(--space-lg);
+}
+
+/* ============================================
+   FORMATIONS & POSITIONS LEGEND
+   ============================================ */
+
+.pitch-legend {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-xl);
+  margin-top: var(--space-lg);
+  padding: var(--space-md);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.legend-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.legend-dot.gk {
+  background: var(--color-position-gk);
+}
+
+.legend-dot.def {
+  background: var(--color-position-def);
+}
+
+.legend-dot.mid {
+  background: var(--color-position-mid);
+}
+
+.legend-dot.fwd {
+  background: var(--color-position-fwd);
+}
+
+/* ============================================
+   FORMATION SELECTOR
+   ============================================ */
+
+.pitch-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+  padding: var(--space-md);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.pitch-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+}
+
+.pitch-formation-selector {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+.formation-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  font-weight: var(--font-semibold);
+  margin-right: var(--space-sm);
+}
+
+.formation-btn {
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  transition: all var(--transition-fast);
+}
+
+.formation-btn:hover {
+  border-color: var(--color-accent-primary);
+  color: var(--color-accent-primary);
+}
+
+.formation-btn.active {
+  background: var(--color-accent-primary);
+  color: var(--color-bg-primary);
+  border-color: var(--color-accent-primary);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+  .pitch-container {
+    padding: var(--space-md);
+  }
+
+  .player-dot {
+    width: 32px;
+    height: 32px;
+    font-size: 11px;
+  }
+
+  .pitch-header {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .pitch-title {
+    font-size: var(--text-base);
+  }
+
+  .pitch-formation-selector {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .bench-players {
+    gap: var(--space-sm);
+  }
+
+  .bench-player-dot {
+    width: 36px;
+    height: 36px;
+    font-size: 12px;
+  }
+
+  .pitch-legend {
+    gap: var(--space-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .pitch-container {
+    padding: var(--space-sm);
+  }
+
+  .pitch {
+    border-width: 2px;
+  }
+
+  .player-dot {
+    width: 28px;
+    height: 28px;
+    font-size: 10px;
+  }
+
+  .player-number,
+  .player-name {
+    font-size: 9px;
+    padding: 2px 4px;
+  }
+
+  .captain-badge {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+
+  .bench-player-dot {
+    width: 32px;
+    height: 32px;
+    font-size: 10px;
+  }
+
+  .bench-player-info {
+    font-size: 9px;
+  }
+
+  .pitch-title {
+    font-size: var(--text-sm);
+  }
+
+  .formation-btn {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 10px;
+  }
+
+  .legend-item {
+    font-size: 9px;
+  }
+
+  .legend-dot {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* ============================================
+   DRAG & DROP STATES
+   ============================================ */
+
+.pitch.drag-over {
+  box-shadow: inset 0 0 30px rgba(76, 175, 80, 0.3), 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.player-slot.drag-over {
+  transform: scale(1.2);
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes playerPulse {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+  }
+  50% {
+    box-shadow: var(--glow-green);
+  }
+}
+
+.player-dot.selected {
+  animation: playerPulse 1.5s ease-in-out infinite;
+}

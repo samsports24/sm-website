@@ -1,50 +1,525 @@
-.depth_chart_container {
-  width: 100%;
+/* ============================================
+   SAMSPORTS DEPTH CHART - REDESIGNED CSS
+   New Design Palette & Modern Styling
+   ============================================ */
+
+:root {
+  --primary-green: #22C55E;
+  --dark-navy-bg: #0A0F1A;
+  --card-bg: #111827;
+  --surface: #1A2332;
+  --secondary-blue: #3B82F6;
+  --text: #F1F5F9;
+  --muted-text: #94A3B8;
+  --border: #1E293B;
+  --sidebar: #0D1220;
 }
 
+/* ============================================
+   FORMATION PICKER - NEW dc- CLASSES
+   ============================================ */
 
+.dc-formation-picker {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
 
+.dc-formation-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #94A3B8;
+  text-transform: uppercase;
+}
+
+.dc-formation-pills {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dc-formation-pill {
+  padding: 10px 22px;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid #1E293B;
+  color: #94A3B8;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.dc-formation-pill::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.dc-formation-pill:hover {
+  transform: translateY(-2px);
+  border-color: #22C55E;
+  background: rgba(34, 197, 94, 0.08);
+  color: #F1F5F9;
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.12);
+}
+
+.dc-formation-pill:hover::before {
+  left: 100%;
+}
+
+.dc-pill-active {
+  background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%) !important;
+  border-color: #22C55E !important;
+  color: #0A0F1A !important;
+  font-weight: 700 !important;
+  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ============================================
+   PURE CSS FOOTBALL FIELD (dc-field) - VERTICAL
+   ============================================ */
+
+.dc-field {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1100px;
+  height: 850px;
+  background: linear-gradient(to bottom,
+    #1a4d2e 0%, #1f5a35 8%, #1a4d2e 16%, #1f5a35 24%, #1a4d2e 32%,
+    #1f5a35 40%, #1a4d2e 48%, #1f5a35 56%, #1a4d2e 64%, #1f5a35 72%,
+    #1a4d2e 80%, #1f5a35 88%, #1a4d2e 100%
+  );
+  overflow: hidden;
+  box-shadow: inset 0 0 80px rgba(0,0,0,0.4);
+  z-index: 0;
+}
+
+/* Atmospheric glow effects */
+.dc-field::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, transparent 50%, rgba(10,15,26,0.5) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.dc-field::after {
+  content: '';
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  height: 250px;
+  background: radial-gradient(ellipse, rgba(34,197,94,0.06) 0%, transparent 70%);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Yard lines - HORIZONTAL */
+.dc-field-yardline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255,255,255,0.16);
+  z-index: 4;
+}
+
+.dc-field-yardline span {
+  position: absolute;
+  left: 20px;
+  top: -8px;
+  color: rgba(255,255,255,0.2);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* Midline at top */
+.dc-field-midline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 3px;
+  background: rgba(255,255,255,0.35);
+  z-index: 4;
+}
+
+/* End zone at BOTTOM */
+.dc-field-endzone {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 80px;
+  z-index: 3;
+  background: linear-gradient(0deg, rgba(34,197,94,0.18), rgba(34,197,94,0.04));
+  border-top: 3px solid rgba(255,255,255,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dc-field-endzone::after {
+  content: 'SAMSPORTS';
+  color: rgba(255,255,255,0.1);
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: 14px;
+  text-transform: uppercase;
+}
+
+/* Hash marks - VERTICAL */
+.dc-field-hash {
+  position: absolute;
+  top: 0;
+  bottom: 80px;
+  width: 1px;
+  background: repeating-linear-gradient(to bottom,
+    transparent 0px, transparent 18px,
+    rgba(255,255,255,0.1) 18px, rgba(255,255,255,0.1) 22px);
+  z-index: 4;
+}
+
+.dc-field-hash-left {
+  left: 33%;
+}
+
+.dc-field-hash-right {
+  right: 33%;
+}
+
+/* SAMSPORTS center logo */
+.dc-field-logo {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 52px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.035);
+  letter-spacing: 14px;
+  z-index: 5;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+/* ============================================
+   MAIN CONTAINER
+   ============================================ */
+
+.depth_chart_container {
+  width: 100%;
+  background: linear-gradient(135deg, var(--dark-navy-bg) 0%, #0E1622 100%);
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+/* ============================================
+   FORMATION PICKER - PILL BUTTONS
+   ============================================ */
 
 .depth_chart_container .image-row {
   display: flex;
   flex-direction: row;
-  gap: 20px;
-  padding: 10px;
-  width: 50%;
+  gap: 16px;
+  padding: 24px 20px;
+  width: 100%;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 .depth_chart_container .image-row .image-item {
   cursor: pointer;
-  transition: transform 0.3s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  padding: 12px 24px;
+  border-radius: 50px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 2px solid var(--border);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted-text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.depth_chart_container .image-row .image-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.3), transparent);
+  transition: left 0.5s;
 }
 
 .depth_chart_container .image-row .image-item:hover {
-  transform: scale(1.1);
+  transform: translateY(-3px);
+  border-color: var(--primary-green);
+  background-color: rgba(34, 197, 94, 0.1);
+  color: var(--text);
+  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.15);
 }
 
-.depth_chart_container  .image-row .image-item.selected {
-  border: 5px solid #007bff; 
- 
+.depth_chart_container .image-row .image-item:hover::before {
+  left: 100%;
 }
 
-.depth_chart_container  .image-row .image-item img {
-  width: 150px; 
-  height: auto;
+.depth_chart_container .image-row .image-item.selected {
+  background: linear-gradient(135deg, var(--primary-green) 0%, #16a34a 100%);
+  border-color: var(--primary-green);
+  color: var(--dark-navy-bg);
+  font-weight: 700;
+  box-shadow: 0 12px 32px rgba(34, 197, 94, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
+.depth_chart_container .image-row .image-item img {
+  display: none;
+}
 
+/* ============================================
+   OFFENSE/DEFENSE TOGGLE - SEGMENTED CONTROL
+   ============================================ */
 
+.depth_chart_container .filter_chart_box {
+  display: flex;
+  flex-direction: row;
+  margin-top: 0;
+  gap: 8px;
+  background-color: rgba(255, 255, 255, 0.03);
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  width: fit-content;
+  position: relative;
+}
 
+.depth_chart_container .filter_chart_box button,
+.depth_chart_container .filter_chart_box button.ant-btn-primary {
+  padding: 12px 28px;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1;
+  border: 1px solid rgba(34, 197, 94, 0.2) !important;
+  background: rgba(34, 197, 94, 0.06) !important;
+  color: var(--muted-text) !important;
+  text-transform: uppercase;
+  border-radius: 10px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  letter-spacing: 0.5px;
+  box-shadow: none !important;
+}
+
+.depth_chart_container .filter_chart_box button:hover,
+.depth_chart_container .filter_chart_box button.ant-btn-primary:hover {
+  color: var(--text) !important;
+  background: rgba(34, 197, 94, 0.12) !important;
+  border-color: rgba(34, 197, 94, 0.35) !important;
+}
+
+.depth_chart_container .filter_chart_box .active_filter,
+.depth_chart_container .filter_chart_box .active_filter.ant-btn-primary {
+  background: linear-gradient(135deg, var(--primary-green) 0%, #16a34a 100%) !important;
+  color: var(--dark-navy-bg) !important;
+  font-weight: 700;
+  border-color: transparent !important;
+  box-shadow: 0 8px 16px rgba(34, 197, 94, 0.25) !important;
+}
+
+@media (max-width: 600px) {
+  .depth_chart_container .filter_chart_box button {
+    padding: 10px 16px;
+    flex: 1;
+    font-size: 13px;
+  }
+
+  .depth_chart_container .image-row {
+    gap: 12px;
+    padding: 16px 12px;
+  }
+
+  .depth_chart_container .image-row .image-item {
+    padding: 10px 18px;
+    font-size: 12px;
+  }
+}
+
+/* ============================================
+   DEPTH CHART FIELD CONTAINER
+   ============================================ */
 
 .depth_chart_container .depth_chart_wrapper {
-  overflow: auto;
+  overflow: visible;
   display: flex;
   justify-content: center;
+  padding: 0;
+  max-width: 1100px;
+  margin: 0 auto;
+  border-radius: 16px 16px 0 0;
+  border: 2px solid rgba(34,197,94,0.2);
+  border-bottom: none;
+  box-shadow: 0 0 60px rgba(34,197,94,0.1), 0 20px 40px rgba(0,0,0,0.4);
 }
+
+.depth_chart_container .depth_chart_wrapper .depth_chart_cards {
+  width: 1100px;
+  height: 850px;
+  position: relative;
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+}
+
+/* Hide legacy background image */
+.depth_chart_container .depth_chart_wrapper .depth_chart_cards > img {
+  display: none !important;
+}
+
+/* Ensure player cards sit above field */
+.depth_chart_container .depth_chart_wrapper .depth_chart_cards .new_depth_card_box,
+.depth_chart_container .depth_chart_wrapper .depth_chart_cards .depth_card_player_locked {
+  z-index: 10;
+}
+
+.depth_chart_container .depth_chart_wrapper .offense_container,
+.depth_chart_container .depth_chart_wrapper .defense_container {
+  height: 850px;
+  position: relative;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+.depth_chart_container .depth_chart_wrapper .offense_container > img,
+.depth_chart_container .depth_chart_wrapper .defense_container > img {
+  display: none;
+}
+
+.depth_chart_container .depth_chart_wrapper .special_team_container {
+  height: 400px;
+  position: relative;
+  background: linear-gradient(135deg, rgba(26, 77, 46, 0.6), rgba(34, 44, 69, 0.6));
+  border-top: 2px solid var(--border);
+  margin-top: 20px;
+}
+
+/* ============================================
+   CLEAR BUTTON - DANGER OUTLINE STYLE
+   ============================================ */
+
+.depth_chart_container .clear_button_box {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.clear_button_box {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+  margin-bottom: 20px;
+  padding: 0 20px;
+}
+
+.clear_button_box button {
+  text-transform: uppercase;
+  padding: 12px 32px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border: 2px solid #ef4444;
+  background-color: transparent;
+  color: #ef4444;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.clear_button_box button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(239, 68, 68, 0.1);
+  transition: left 0.3s;
+  z-index: -1;
+}
+
+.clear_button_box button:hover {
+  border-color: #dc2626;
+  color: #dc2626;
+  background-color: rgba(239, 68, 68, 0.15);
+  box-shadow: 0 8px 16px rgba(239, 68, 68, 0.2);
+  transform: translateY(-2px);
+}
+
+.clear_button_box button:hover::before {
+  left: 100%;
+}
+
+/* ============================================
+   VIEWING OTHER TEAM ROSTER BANNER
+   ============================================ */
+
+.viewing_roster_heading {
+  padding: 12px 20px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 10px;
+  margin-top: 16px;
+}
+
+.viewing_roster_heading h2 {
+  color: #3B82F6;
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* ============================================
+   OVERLAY - GLASSMORPHISM EFFECT
+   ============================================ */
+
 .depth_chart_container .overlay {
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background-color: rgba(10, 15, 26, 0.7);
   position: absolute;
   top: 0;
   right: 0;
@@ -55,91 +530,512 @@
   border-radius: 16px;
   flex-direction: column;
   gap: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
 .depth_chart_container .overlay h2 {
-  color: var(--primary) !important;
-  font-size: 30px;
+  color: var(--primary-green) !important;
+  font-size: 32px;
   text-align: center;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin: 0;
 }
+
 .depth_chart_container .overlay h4 {
-  color: var(--primary) !important;
-  font-size: 20px;
+  color: var(--muted-text) !important;
+  font-size: 18px;
   text-align: center;
-}
-.depth_chart_container .depth_chart_wrapper .depth_chart_cards {
-  width: 1900px;
-  height: 800px;
-  position: relative;
+  font-weight: 500;
+  margin: 0;
+  max-width: 400px;
+  line-height: 1.6;
 }
 
-.depth_chart_container .depth_chart_wrapper .offense_container {
-  height: 800px;
-  position: relative;
-}
-.depth_chart_container .depth_chart_wrapper .offense_container > img,
-.depth_chart_container .depth_chart_wrapper .defense_container > img {
-  height: 800px;
-  width: 1900px;
+/* ============================================
+   DEPTH CARDS - PLAYER CARDS
+   ============================================ */
+
+.depth_card_box {
+  width: 180px;
+  height: 260px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  cursor: pointer;
   position: absolute;
-  opacity: 0.7;
-}
-.depth_chart_container .depth_chart_wrapper .defense_container {
-  height: 800px;
-}
-.depth_chart_container .depth_chart_wrapper .special_team_container {
-  height: 400px;
+  background-color: var(--card-bg);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 10;
 }
 
-
-.depth_chart_container.depart-chart-filter_select_box{
-  width: 190px;
+.depth_card_box:hover {
+  transform: translateY(-8px);
+  border-color: var(--primary-green);
+  box-shadow: 0 12px 28px rgba(34, 197, 94, 0.2), 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-
-.clear_button_box {
+.depth_card_box .image_box {
   width: 100%;
+  height: 184px;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(59, 130, 246, 0.1));
   display: flex;
   justify-content: flex-end;
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-.clear_button_box button {
-  text-transform: uppercase;
+  border-radius: 12px 12px 0px 0px;
+  position: relative;
+  overflow: hidden;
 }
 
-.depth_chart_container .filter_chart_box {
-  display: flex;
-  flex-direction: row;
-  margin-top: 20px;
-  /* margin-top: -35px; */
+.depth_card_box .image_box::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(255, 255, 255, 0.03) 10px,
+    rgba(255, 255, 255, 0.03) 20px
+  );
+  pointer-events: none;
 }
-.depth_chart_container .filter_chart_box button {
-  padding: 10px 28px;
-  font-size: 15px;
+
+.depth_card_box .image_box img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  z-index: 2;
+}
+
+.depth_card_box .name {
+  width: 100%;
+  background: linear-gradient(135deg, var(--card-bg) 0%, rgba(26, 40, 50, 0.8) 100%);
+  padding-block: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.depth_card_box .name p {
+  width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  color: var(--text);
+  font-size: 14px;
   font-style: normal;
   font-weight: 600;
   line-height: 1;
-  border: 1px solid var(--border) !important;
-  background-color: transparent !important;
+  margin: 0;
+}
+
+.depth_card_box .text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 66px;
+}
+
+.depth_card_box .text h2 {
+  color: var(--primary-green);
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 28px;
+  text-align: center;
   text-transform: uppercase;
-  border-radius: 0px;
-}
-.depth_chart_container .filter_chart_box button:hover {
-  background-color: var(--primary) !important;
-}
-.depth_chart_container .filter_chart_box .active_filter {
-  background-color: var(--primary) !important;
+  padding: 6px 0px;
+  letter-spacing: 1px;
+  margin: 0;
 }
 
-/* @media (max-width: 1430px) {
-  .depth_chart_container .filter_chart_box {
-    margin-top: 20px;
+
+/* ============================================
+   NOTE: Card styles (.new_depth_card_box) and all
+   formation positions are defined in depthCard.css
+   ============================================ */
+
+/* ============================================
+   BENCH STRIP - QB2, K, P SECTION
+   ============================================ */
+
+.bench-strip {
+  max-width: 1100px;
+  margin: 0 auto;
+  border-radius: 0 0 16px 16px;
+  border: 2px solid rgba(34,197,94,0.2);
+  border-top: 1px solid #1E293B;
+  background: linear-gradient(180deg, #111827, #0D1220);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.bench-strip-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  writing-mode: vertical-lr;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  flex-shrink: 0;
+}
+
+.bench-strip-divider {
+  width: 1px;
+  height: 80px;
+  background: #1E293B;
+  flex-shrink: 0;
+}
+
+.bench-strip-cards {
+  display: flex;
+  gap: 24px;
+  flex: 1;
+  justify-content: center;
+}
+
+/* Bench card (QB2, K, P) */
+.bench-card {
+  width: 100px;
+  height: 140px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.bench-card:hover {
+  transform: translateY(-4px);
+}
+
+.bench-card:hover .bc-wrapper {
+  border-color: rgba(59,130,246,0.5);
+  box-shadow: 0 0 16px rgba(59,130,246,0.3);
+}
+
+.bc-wrapper {
+  width: 100px;
+  height: 140px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(59,130,246,0.2);
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.bc-band {
+  width: 100%;
+  height: 4px;
+  flex-shrink: 0;
+  background: linear-gradient(90deg, #3B82F6, #2563EB);
+}
+
+.bc-pos-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 7px;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+  padding: 2px 6px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 2;
+}
+
+.bc-headshot {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid rgba(59,130,246,0.4);
+  background: linear-gradient(135deg, rgba(10,15,26,0.9), rgba(17,30,50,0.8));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  box-shadow: 0 0 0 2px rgba(17,24,39,0.8), 0 0 10px rgba(59,130,246,0.2);
+  flex-shrink: 0;
+}
+
+.bc-headshot .initials {
+  font-size: 16px;
+  font-weight: 800;
+  color: #3B82F6;
+}
+
+.bc-headshot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.bc-name {
+  font-size: 9px;
+  font-weight: 700;
+  color: #94A3B8;
+  text-align: center;
+  margin-top: 6px;
+  padding: 0 4px;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.bc-stat {
+  font-size: 8px;
+  color: #64748B;
+  font-weight: 600;
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================
+   MOBILE RESPONSIVE - TABLET (768px)
+   ============================================ */
+
+@media (max-width: 768px) {
+  .depth_chart_wrapper {
+    max-width: 100% !important;
+    border-radius: 0 !important;
   }
-} */
 
-@media (max-width: 600px) {
+  .depth_chart_wrapper .depth_chart_cards {
+    width: 100%;
+    height: auto;
+    min-height: 600px;
+  }
+
+  .depth_chart_wrapper .offense_container,
+  .depth_chart_wrapper .defense_container {
+    height: auto;
+    min-height: 600px;
+  }
+
+  .dc-field {
+    width: 100%;
+    height: 600px;
+    max-width: 100%;
+  }
+
+  .depth_card_box {
+    width: 140px;
+    height: 200px;
+  }
+
+  .depth_card_box .image_box {
+    height: 130px;
+  }
+
+  .depth_card_box .name p {
+    width: 130px;
+    font-size: 12px;
+  }
+
+  .depth_card_box .text h2 {
+    font-size: 20px;
+  }
+
+  .bench-strip {
+    flex-wrap: wrap;
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  .bench-card {
+    width: 80px;
+    height: 110px;
+  }
+
+  .bc-wrapper {
+    width: 80px;
+    height: 110px;
+  }
+
+  .bc-headshot {
+    width: 50px;
+    height: 50px;
+    margin-top: 8px;
+  }
+
+  .bc-headshot .initials {
+    font-size: 14px;
+  }
+
+  .bc-name {
+    font-size: 8px;
+    margin-top: 4px;
+  }
+
+  .bench-strip-divider {
+    height: 60px;
+  }
+
+  .overlay h2 {
+    font-size: 24px;
+  }
+
+  .overlay h4 {
+    font-size: 16px;
+  }
+}
+
+/* ============================================
+   MOBILE RESPONSIVE - SMALL MOBILE (480px)
+   ============================================ */
+
+@media (max-width: 480px) {
+  .depth_chart_container {
+    padding-bottom: 20px;
+  }
+
+  .clear_button_box {
+    padding: 0 12px;
+  }
+
+  .clear_button_box button {
+    padding: 10px 20px;
+    font-size: 12px;
+  }
+
+  .depth_chart_container .image-row {
+    gap: 8px;
+    padding: 12px 8px;
+  }
+
+  .depth_chart_container .image-row .image-item {
+    padding: 8px 14px;
+    font-size: 11px;
+  }
+
+  .depth_chart_container .filter_chart_box {
+    width: 100%;
+    justify-content: center;
+  }
+
   .depth_chart_container .filter_chart_box button {
-    padding: 10px 10px;
+    padding: 9px 12px;
+    font-size: 12px;
     flex: 1;
+    min-width: 100px;
+  }
+
+  .depth_chart_wrapper .depth_chart_cards {
+    min-height: 500px;
+  }
+
+  .depth_chart_wrapper .offense_container,
+  .depth_chart_wrapper .defense_container {
+    min-height: 500px;
+  }
+
+  .dc-field {
+    height: 500px;
+  }
+
+  .depth_card_box {
+    width: 110px;
+    height: 160px;
+  }
+
+  .depth_card_box .image_box {
+    height: 95px;
+  }
+
+  .depth_card_box .name p {
+    width: 100px;
+    font-size: 11px;
+  }
+
+  .depth_card_box .text h2 {
+    font-size: 18px;
+    line-height: 20px;
+  }
+
+  .bench-strip {
+    flex-direction: column;
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .bench-strip-label {
+    writing-mode: horizontal-tb;
+    transform: none;
+    font-size: 9px;
+  }
+
+  .bench-strip-divider {
+    display: none;
+  }
+
+  .bench-strip-cards {
+    width: 100%;
+    gap: 12px;
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+
+  .bench-card {
+    width: 70px;
+    height: 95px;
+    flex-shrink: 0;
+  }
+
+  .bc-wrapper {
+    width: 70px;
+    height: 95px;
+  }
+
+  .bc-headshot {
+    width: 40px;
+    height: 40px;
+    margin-top: 6px;
+  }
+
+  .bc-headshot .initials {
+    font-size: 12px;
+  }
+
+  .bc-name {
+    font-size: 7px;
+    margin-top: 2px;
+  }
+
+  .bc-pos-badge {
+    font-size: 6px;
+    padding: 1px 4px;
+  }
+
+  .viewing_roster_heading {
+    margin-top: 10px;
+    padding: 10px 12px;
+  }
+
+  .viewing_roster_heading h2 {
+    font-size: 14px;
+  }
+
+  .overlay h2 {
+    font-size: 20px;
+  }
+
+  .overlay h4 {
+    font-size: 14px;
+    max-width: 80%;
   }
 }

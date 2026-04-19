@@ -1,0 +1,941 @@
+/* ============================================
+   YOUR EMPIRE — Hybrid Front Office (NFL)
+   Gold Empire branding + Bloomberg ticker
+   + Intel Feed sidebar + 3-panel layouts
+
+   Palette:
+     Gold:       #D4AF37
+     Gold Dim:   #8a7a44
+     Gold BG:    #1a1400
+     Gold Border:#2a2200
+     Dark:       #0a0a00
+     Card:       #0d0d00
+     Green:      #00ff87
+     Red:        #ff4444
+     Cyan:       #00ccff
+     Purple:     #aa44ff
+   ============================================ */
+
+/* ── Page Container ── */
+.empire-page {
+  width: 100%;
+  min-height: 100vh;
+  background: #050505;
+  color: #fff;
+}
+
+/* ══════════════════════════════════
+   TICKER STRIP
+══════════════════════════════════ */
+.empire-ticker {
+  background: linear-gradient(90deg, #060600, #0a0a00, #060600);
+  border-bottom: 1px solid #2a2200;
+  padding: 10px 0;
+  overflow-x: auto;
+}
+.empire-ticker::-webkit-scrollbar { display: none; }
+.empire-ticker-inner {
+  display: flex;
+  gap: 0;
+  padding: 0 32px;
+  min-width: min-content;
+}
+.empire-ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 20px;
+  white-space: nowrap;
+}
+.empire-ticker-divider {
+  width: 1px;
+  background: #2a2200;
+  align-self: stretch;
+  margin: -2px 0;
+}
+.empire-ticker-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #8a7a44;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.empire-ticker-val { font-size: 13px; font-weight: 700; color: #fff; }
+.empire-ticker-up { font-size: 13px; font-weight: 700; color: #00ff87; }
+.empire-ticker-down { font-size: 13px; font-weight: 700; color: #ff4444; }
+
+/* ══════════════════════════════════
+   HEADER
+══════════════════════════════════ */
+.empire-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 32px 16px;
+  background: linear-gradient(135deg, #1a1400 0%, #0a0a00 50%, #0d0800 100%);
+  border-bottom: 1px solid #2a2200;
+}
+.empire-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.empire-crown { font-size: 40px; }
+.empire-title {
+  font-size: 28px;
+  font-weight: 900;
+  margin: 0;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+.empire-title span { color: #D4AF37; }
+.empire-subtitle {
+  font-size: 13px;
+  color: #8a7a44;
+  margin: 2px 0 0;
+}
+.empire-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.empire-sp-badge {
+  padding: 8px 18px;
+  border-radius: 8px;
+  background: #1a1400;
+  border: 1px solid #2a2200;
+  font-size: 14px;
+  font-weight: 800;
+  color: #D4AF37;
+}
+.empire-intel-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: #1a1400;
+  border: 1px solid #2a2200;
+  color: #D4AF37;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.empire-intel-btn:hover {
+  background: #D4AF37;
+  color: #0a0a0a;
+}
+
+/* ══════════════════════════════════
+   TAB BAR
+══════════════════════════════════ */
+.empire-tab-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid #2a2200;
+  padding: 0 32px;
+  background: #0a0a00;
+}
+.empire-tab {
+  padding: 14px 28px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: #555;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.empire-tab:hover { color: #8a7a44; }
+.empire-tab.active {
+  color: #D4AF37;
+  border-bottom-color: #D4AF37;
+}
+
+/* ══════════════════════════════════
+   CONTENT LAYOUT + INTEL SIDEBAR
+══════════════════════════════════ */
+.empire-content {
+  display: flex;
+  min-height: calc(100vh - 200px);
+}
+.empire-main {
+  flex: 1;
+  min-width: 0;
+  transition: margin-right 0.3s;
+}
+.empire-leagues {
+  padding: 0;
+}
+
+/* ── Intel Sidebar ── */
+.empire-intel-sidebar {
+  width: 300px;
+  flex-shrink: 0;
+  background: #060600;
+  border-left: 1px solid #2a2200;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.empire-intel-header {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #D4AF37;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border-bottom: 1px solid #2a2200;
+  background: #0a0a00;
+}
+.empire-intel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #D4AF37;
+  animation: intelPulse 2s infinite;
+}
+@keyframes intelPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+.empire-intel-close {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: #8a7a44;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+}
+.empire-intel-feed {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+}
+.empire-intel-item {
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  background: #0d0d00;
+  border: 1px solid #2a2200;
+  border-radius: 8px;
+  border-left: 3px solid;
+  transition: border-color 0.2s;
+}
+.empire-intel-item:hover { border-color: #D4AF37; }
+.empire-intel-item.trade { border-left-color: #00ccff; }
+.empire-intel-item.injury { border-left-color: #ff4444; }
+.empire-intel-item.auction { border-left-color: #D4AF37; }
+.empire-intel-item.gov { border-left-color: #aa44ff; }
+.empire-intel-item.earn { border-left-color: #00ff87; }
+.empire-intel-item.scout { border-left-color: #ff8800; }
+.empire-intel-cat {
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 3px;
+  color: #8a7a44;
+}
+.empire-intel-text {
+  color: #aaa;
+  font-size: 11px;
+  line-height: 1.4;
+}
+.empire-intel-time {
+  color: #444;
+  font-size: 9px;
+  margin-top: 3px;
+}
+
+/* ══════════════════════════════════
+   KPI CARDS
+══════════════════════════════════ */
+.empire-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 24px 32px;
+}
+.empire-kpi {
+  background: linear-gradient(180deg, #141000 0%, #0d0d00 100%);
+  border: 1px solid #2a2200;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+.empire-kpi-label {
+  font-size: 10px;
+  color: #8a7a44;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+}
+.empire-kpi-value {
+  font-size: 28px;
+  font-weight: 900;
+  margin-top: 6px;
+  color: #fff;
+}
+.empire-kpi-value.gold { color: #D4AF37; }
+.empire-kpi-value.green { color: #00ff87; }
+.empire-kpi-value.red { color: #ff4444; }
+.empire-kpi-delta {
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 600;
+}
+.empire-kpi-delta.up { color: #D4AF37; }
+.empire-kpi-delta.muted { color: #666; }
+
+/* ══════════════════════════════════
+   FILTERS
+══════════════════════════════════ */
+.empire-filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px 12px;
+}
+.empire-filters-label {
+  font-size: 18px;
+  font-weight: 900;
+  color: #fff;
+}
+.empire-sport-pills {
+  display: flex;
+  gap: 6px;
+}
+.empire-sport-pill {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #2a2200;
+  background: #0d0d00;
+  color: #8a7a44;
+  transition: all 0.2s;
+}
+.empire-sport-pill.active {
+  background: #D4AF37;
+  color: #0a0a0a;
+  border-color: #D4AF37;
+}
+.empire-sport-pill:hover:not(.active) {
+  border-color: #D4AF37;
+  color: #D4AF37;
+}
+
+/* ══════════════════════════════════
+   ACTIVE EMPIRE SALE BANNER (NFL)
+══════════════════════════════════ */
+.empire-sale-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  margin: 0 32px 16px;
+  background: linear-gradient(135deg, rgba(212,175,55,0.12), rgba(212,175,55,0.04));
+  border: 1px solid rgba(212,175,55,0.35);
+  border-radius: 10px;
+}
+.empire-sale-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  background: #D4AF37;
+  color: #0a0a0a;
+  margin-right: 10px;
+}
+.empire-sale-info {
+  font-size: 13px;
+  color: #D4AF37;
+}
+.empire-sale-cancel {
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid #ff4444;
+  color: #ff4444;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.empire-sale-cancel:hover {
+  background: #ff4444;
+  color: #fff;
+}
+
+/* ══════════════════════════════════
+   FRANCHISE CARDS
+══════════════════════════════════ */
+.empire-franchise-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 16px;
+  padding: 0 32px 24px;
+}
+.franchise-card {
+  background: #0d0d00;
+  border: 1px solid #2a2200;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.25s;
+}
+.franchise-card.hovered,
+.franchise-card:hover {
+  border-color: #D4AF37;
+  box-shadow: 0 8px 40px rgba(212,175,55,0.08);
+  transform: translateY(-2px);
+}
+.franchise-card.active {
+  border-color: #D4AF37;
+  box-shadow: 0 0 0 1px #D4AF37;
+}
+.franchise-accent-bar {
+  height: 4px;
+  background: linear-gradient(90deg, #D4AF37, transparent);
+}
+.franchise-body { padding: 20px; }
+.franchise-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+.franchise-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.franchise-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.franchise-name {
+  font-size: 16px;
+  font-weight: 800;
+}
+.franchise-league {
+  font-size: 11px;
+  color: #8a7a44;
+  margin-top: 2px;
+}
+.franchise-pos-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  background: #1a1400;
+  color: #D4AF37;
+  border: 1px solid #2a2200;
+}
+.franchise-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 14px 0;
+}
+.franchise-stat-label {
+  font-size: 9px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.franchise-stat-value {
+  font-size: 15px;
+  font-weight: 800;
+  margin-top: 2px;
+}
+.franchise-stat-value.gold { color: #D4AF37; }
+.franchise-stat-value.green { color: #00ff87; }
+.franchise-form-dots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin-top: 4px;
+}
+.franchise-form-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.franchise-form-dot.win { background: #00ff87; }
+.franchise-form-dot.loss { background: #ff4444; }
+.franchise-form-dot.draw { background: #ffaa00; }
+
+.franchise-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #2a2200;
+}
+.franchise-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  text-align: center;
+  transition: all 0.2s;
+}
+.franchise-btn.gold {
+  background: #D4AF37;
+  color: #0a0a0a;
+}
+.franchise-btn.gold:hover { background: #e6c04a; }
+.franchise-btn.outline {
+  background: transparent;
+  border: 1px solid #D4AF37;
+  color: #D4AF37;
+}
+.franchise-btn.outline:hover {
+  background: #D4AF37;
+  color: #0a0a0a;
+}
+.franchise-btn.red-outline {
+  background: transparent;
+  border: 1px solid #ff4444;
+  color: #ff4444;
+}
+.franchise-btn.red-outline:hover {
+  background: #ff4444;
+  color: #fff;
+}
+
+/* ── Expand CTA ── */
+.empire-expand-cta {
+  text-align: center;
+  padding: 24px 32px 40px;
+}
+.empire-expand-btn {
+  padding: 16px 48px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  border: 2px solid #D4AF37;
+  background: transparent;
+  color: #D4AF37;
+  transition: all 0.3s;
+  letter-spacing: 0.5px;
+}
+.empire-expand-btn:hover {
+  background: #D4AF37;
+  color: #0a0a0a;
+  box-shadow: 0 0 40px rgba(212,175,55,0.2);
+}
+.empire-expand-links {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.empire-expand-links span {
+  font-size: 13px;
+  color: #8a7a44;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.empire-expand-links span:hover { color: #D4AF37; }
+.empire-expand-links span.disabled {
+  color: #555;
+  cursor: not-allowed;
+}
+.empire-expand-links span.disabled:hover { color: #555; }
+
+/* ── Empty state ── */
+.empire-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-size: 14px;
+}
+
+/* ══════════════════════════════════
+   SELL MODAL
+══════════════════════════════════ */
+.empire-sell-modal {
+  background: linear-gradient(145deg, #141000 0%, #0d0d00 100%);
+  border-radius: 16px;
+  padding: 28px;
+  color: #fff;
+  border: 1px solid #2a2200;
+}
+.empire-sell-title {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+}
+.empire-sell-subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: #8a7a44;
+}
+.empire-sell-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.empire-sell-option {
+  padding: 14px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  background: rgba(255,255,255,0.03);
+  border: 2px solid #2a2200;
+  transition: all 0.2s;
+}
+.empire-sell-option.selected {
+  background: rgba(var(--opt-rgba), 0.12);
+  border-color: var(--opt-color);
+}
+.empire-sell-option-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+.empire-sell-option.selected .empire-sell-option-label {
+  color: var(--opt-color);
+}
+.empire-sell-option-desc {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: #666;
+}
+.empire-sell-mv {
+  padding: 14px 16px;
+  background: #1a1400;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #2a2200;
+}
+.empire-sell-mv-label {
+  font-size: 10px;
+  color: #8a7a44;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+.empire-sell-mv-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: #D4AF37;
+}
+.empire-sell-price-section { margin-bottom: 12px; }
+.empire-sell-price-label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+  font-size: 11px;
+  color: #8a7a44;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.empire-sell-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 18px;
+  font-weight: 700;
+  background: #0a0a00;
+  border: 1px solid #2a2200;
+  border-radius: 10px;
+  color: #fff;
+  outline: none;
+  box-sizing: border-box;
+}
+.empire-sell-input:focus { border-color: #D4AF37; }
+.empire-sell-multipliers {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.empire-sell-mult {
+  flex: 1;
+  padding: 8px 4px;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #0a0a00;
+  border: 1px solid #2a2200;
+  color: #8a7a44;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  transition: all 0.2s;
+}
+.empire-sell-mult.selected {
+  background: rgba(212,175,55,0.15);
+  border-color: #D4AF37;
+  color: #D4AF37;
+}
+.empire-sell-mult-val {
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+.empire-sell-actions {
+  display: flex;
+  gap: 12px;
+}
+.empire-sell-cancel {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #0a0a00;
+  border: 1px solid #2a2200;
+  color: #8a7a44;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.empire-sell-confirm {
+  flex: 2;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #D4AF37 0%, #B8962E 100%);
+  border: none;
+  color: #0a0a0a;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 16px rgba(212,175,55,0.3);
+}
+.empire-sell-confirm:hover {
+  background: linear-gradient(135deg, #e6c04a 0%, #D4AF37 100%);
+}
+
+/* ══════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════ */
+@media (max-width: 1200px) {
+  .empire-intel-sidebar { width: 260px; }
+}
+@media (max-width: 900px) {
+  .empire-kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .empire-franchise-grid { grid-template-columns: 1fr; }
+  .empire-header { flex-direction: column; gap: 12px; align-items: flex-start; }
+  .empire-intel-sidebar { display: none; }
+}
+@media (max-width: 600px) {
+  .empire-ticker-inner { padding: 0 16px; }
+  .empire-header { padding: 16px; }
+  .empire-tab-bar { padding: 0 16px; overflow-x: auto; }
+  .empire-tab { padding: 12px 16px; font-size: 11px; }
+  .empire-kpi-row { padding: 16px; gap: 10px; }
+  .empire-franchise-grid { padding: 0 16px 16px; }
+  .franchise-stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ══════════════════════════════════
+   LEGACY COMPATIBILITY — Keep old names
+   working for ExchangeSection /
+   GovernanceSection / TrophyRoom
+══════════════════════════════════ */
+.wr-sleeper-page { /* alias */ }
+.wr-s-header { display: none; }
+.wr-s-tabs { display: none; }
+.wr-s-empire { padding: 0; }
+.wr-s-kpi-row { display: none; }
+.wr-s-sport-pills { display: none; }
+.wr-s-empty { text-align: center; padding: 40px; color: #666; }
+.wr-s-empire button:focus { outline: none; }
+
+/* Dark confirm modal override */
+.wr-dark-confirm .ant-modal-content {
+  background: #0d0d00 !important;
+  border: 1px solid #2a2200 !important;
+}
+
+/* ══════════════════════════════════
+   GOVERNANCE SECTION — Gold Empire Theme
+══════════════════════════════════ */
+.wr-gov {
+  padding: 20px 0;
+}
+.wr-gov-league-banner {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px; margin-bottom: 20px;
+  background: #0d0d00; border: 1px solid #2a2200; border-radius: 10px;
+}
+.wr-gov-league-sport-icon { font-size: 24px; }
+.wr-gov-league-info { flex: 1; }
+.wr-gov-league-name { font-size: 15px; font-weight: 700; }
+.wr-gov-league-sport { font-size: 11px; color: #8a7a44; }
+
+.wr-gov-ai-banner {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px; margin-bottom: 16px;
+  background: rgba(212,175,55,0.08); border: 1px solid rgba(212,175,55,0.2);
+  border-radius: 10px;
+}
+.wr-gov-ai-icon { font-size: 24px; color: #D4AF37; }
+.wr-gov-ai-title { font-size: 12px; font-weight: 800; color: #D4AF37; text-transform: uppercase; letter-spacing: 1px; }
+.wr-gov-ai-sub { font-size: 11px; color: #8a7a44; margin-top: 2px; }
+
+.wr-gov-card {
+  background: #0d0d00; border: 1px solid #2a2200;
+  border-radius: 12px; padding: 18px; margin-bottom: 14px;
+}
+.wr-gov-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 14px; font-weight: 700; margin-bottom: 12px;
+}
+.wr-gov-card-icon { font-size: 16px; margin-right: 8px; }
+
+.wr-gov-commissioner-info { margin-top: 8px; }
+.wr-gov-commissioner-name { font-size: 16px; font-weight: 800; }
+.wr-gov-commissioner-ai { font-size: 11px; color: #D4AF37; margin-bottom: 4px; }
+.wr-gov-text-dim { color: #666; }
+
+.wr-gov-action-btn {
+  padding: 8px 16px; border-radius: 8px; font-size: 12px;
+  font-weight: 700; cursor: pointer; border: 1px solid #2a2200;
+  background: #1a1400; color: #D4AF37; margin-top: 8px; transition: all 0.2s;
+}
+.wr-gov-action-btn:hover { border-color: #D4AF37; }
+.wr-gov-transfer-form {
+  display: flex; gap: 8px; margin-top: 10px;
+}
+.wr-gov-input {
+  flex: 1; padding: 8px 12px; border-radius: 6px;
+  border: 1px solid #2a2200; background: #0a0a00;
+  color: #fff; font-size: 13px; outline: none;
+}
+.wr-gov-input:focus { border-color: #D4AF37; }
+.wr-gov-submit-btn {
+  padding: 8px 16px; border-radius: 6px; border: none;
+  background: #D4AF37; color: #0a0a0a; font-size: 12px;
+  font-weight: 700; cursor: pointer;
+}
+
+.wr-gov-vote-timer { font-size: 12px; color: #ffaa00; font-weight: 600; }
+.wr-gov-vote-bar {
+  height: 10px; border-radius: 5px; overflow: hidden;
+  background: #1a1a1a; display: flex; margin-bottom: 8px;
+}
+.wr-gov-vote-bar-fill { transition: width 0.3s; }
+.wr-gov-yes { background: #00ff87; }
+.wr-gov-no { background: #ff4444; }
+.wr-gov-vote-stats {
+  display: flex; gap: 14px; font-size: 12px; color: #888; flex-wrap: wrap;
+}
+.wr-gov-stat-yes { color: #00ff87; }
+.wr-gov-stat-no { color: #ff4444; }
+.wr-gov-stat-abstain { color: #888; }
+.wr-gov-stat-total { color: #666; }
+.wr-gov-vote-threshold { font-size: 11px; color: #666; margin-top: 6px; }
+.wr-gov-vote-actions {
+  display: flex; gap: 8px; margin-top: 12px;
+}
+.wr-gov-vote-btn {
+  padding: 8px 20px; border-radius: 8px; font-size: 12px;
+  font-weight: 700; cursor: pointer; border: none; transition: all 0.2s;
+}
+.wr-gov-vote-yes { background: #00ff87; color: #0a0a0a; }
+.wr-gov-vote-no { background: #ff4444; color: #fff; }
+.wr-gov-vote-abstain { background: #333; color: #888; }
+.wr-gov-vote-candidate { background: transparent; border: 1px solid #D4AF37; color: #D4AF37; }
+.wr-gov-vote-candidate:hover { background: #D4AF37; color: #0a0a0a; }
+.wr-gov-voted-badge {
+  display: inline-block; padding: 6px 14px; border-radius: 6px;
+  font-size: 11px; font-weight: 700; margin-top: 8px;
+  background: rgba(212,175,55,0.1); color: #D4AF37; border: 1px solid rgba(212,175,55,0.2);
+}
+
+.wr-gov-election-phase {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+  font-size: 13px; font-weight: 600;
+}
+.wr-gov-phase-arrow { color: #D4AF37; }
+.wr-gov-candidates { margin-top: 12px; }
+.wr-gov-candidates-title { font-size: 12px; font-weight: 700; color: #8a7a44; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.wr-gov-no-candidates { font-size: 13px; color: #666; padding: 12px; }
+.wr-gov-candidate-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; background: #1a1400; border: 1px solid #2a2200;
+  border-radius: 8px; margin-bottom: 6px;
+}
+.wr-gov-candidate-info { display: flex; align-items: center; gap: 10px; flex: 1; }
+.wr-gov-candidate-rank { font-size: 14px; font-weight: 900; color: #D4AF37; }
+.wr-gov-candidate-name { font-size: 13px; font-weight: 600; }
+.wr-gov-candidate-statement { font-size: 11px; color: #888; margin-top: 2px; }
+.wr-gov-candidate-votes { font-size: 12px; color: #D4AF37; font-weight: 700; }
+
+.wr-gov-nominate-form { margin-top: 12px; }
+.wr-gov-textarea {
+  width: 100%; padding: 10px 14px; border-radius: 8px;
+  border: 1px solid #2a2200; background: #0a0a00;
+  color: #fff; font-size: 13px; outline: none;
+  resize: vertical; min-height: 60px; font-family: inherit;
+  box-sizing: border-box;
+}
+.wr-gov-textarea:focus { border-color: #D4AF37; }
+.wr-gov-nominate-btn { margin-top: 8px; }
+
+.wr-gov-actions-row {
+  display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.wr-gov-action-card {
+  flex: 1; min-width: 200px; padding: 16px;
+  background: #0d0d00; border: 1px solid #2a2200; border-radius: 12px;
+  cursor: pointer; transition: all 0.2s; text-align: left;
+}
+.wr-gov-action-card:hover { border-color: #D4AF37; }
+.wr-gov-action-icon { font-size: 20px; margin-bottom: 8px; display: block; }
+.wr-gov-action-label { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.wr-gov-action-desc { font-size: 11px; color: #8a7a44; line-height: 1.3; }
+
+.wr-gov-section { margin-bottom: 20px; }
+.wr-gov-section-title {
+  font-size: 16px; font-weight: 800; margin-bottom: 12px;
+  color: #D4AF37;
+}
+
+.wr-gov-history-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 12px; background: #0d0d00; border: 1px solid #2a2200;
+  border-radius: 8px; margin-bottom: 8px;
+}
+.wr-gov-history-info { flex: 1; }
+.wr-gov-history-type { font-size: 12px; font-weight: 700; }
+.wr-gov-history-detail { font-size: 11px; color: #888; margin-top: 2px; }
+.wr-gov-history-date { font-size: 10px; color: #555; white-space: nowrap; }
+
+.wr-gov-empty {
+  text-align: center; padding: 40px 20px;
+}
+.wr-gov-empty-icon { font-size: 40px; color: #2a2200; display: block; margin-bottom: 12px; }
+.wr-gov-empty-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.wr-gov-empty-sub { font-size: 13px; color: #666; }
+.wr-gov-empty-activity {
+  text-align: center; padding: 20px; color: #666; font-size: 13px;
+}
+
+.wr-gov .ant-modal-content { background: transparent !important; }
+.wr-gov button:focus { outline: none; }

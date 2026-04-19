@@ -1,9 +1,17 @@
 import { Button, Typography, Dropdown } from 'antd'
 import WeekPagination from '../WeekPagination'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import { isLocked } from '../../config/constants'
-const ButtonsAndPagination = ({ noWeek, isLink = false, goLive = true }) => {
+import { removeLeague } from '../../redux'
+const ButtonsAndPagination = ({ noWeek, isLink = true, goLive = true }) => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const handleLeaveLeague = () => {
+    dispatch(removeLeague())
+    navigate('/hub')
+  }
 
   const playerItems = [
     {
@@ -231,9 +239,16 @@ const ButtonsAndPagination = ({ noWeek, isLink = false, goLive = true }) => {
         {isLink ? (
           <div className='_buttons_group'>
             <Button
+              type='default'
+              onClick={handleLeaveLeague}
+              style={{ marginRight: 4 }}
+            >
+              Back to Hub
+            </Button>
+            <Button
               type='primary'
               onClick={() => {
-                navigate('/professional-league')
+                navigate('/dashboard')
               }}
             >
               Home

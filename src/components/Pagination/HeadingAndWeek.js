@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 const HeadingAndWeek = ({ heading, week = true, goLive = true }) => {
   const user = useSelector((state) => state.user.userDetails)
   const location = useLocation();
-  const isProfessionalLeague = location.pathname === '/professional-league'
+  const isProfessionalLeague = location.pathname === '/dashboard'
   const leagueType = user?.team?.currentLeague?.leagueType
   const draftCompleted = user?.team?.currentLeague?.draftCompleted
   const draftstarttime = user?.team?.currentLeague?.draftStart
@@ -61,11 +61,8 @@ const HeadingAndWeek = ({ heading, week = true, goLive = true }) => {
   }, [draftstarttime])
 
   // ?.filter(value => value.leagueType === 'professional' && value._id !== '64fc5edaf8f2513bd263845a')
-  // console.log('isTimeComplete',isTimeComplete);
-  // console.log('leagueType',leagueType);
 
   // useEffect(() => {
-  //   console.log('isTimeComplete', isTimeComplete)
   // },[isTimeComplete])
 
   return (

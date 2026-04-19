@@ -18,61 +18,11 @@ const SignIn = () => {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  // const [showPaymentModal, setShowPaymentModal] = useState(false)
-
-  // const connectEthereumWallet = async (values) => {
-  //   setLoading(true)
-
-  //   if (!window?.ethereum) {
-  //     notification.error('Ethereum provider not detected')
-  //     setLoading(false)
-  //     return
-  //   }
-
-  //   const provider = new ethers.BrowserProvider(window?.ethereum)
-
-  //   try {
-  //     // This will request the user to grant permission to access their Ethereum wallet
-  //     const accounts = await provider.send('eth_requestAccounts', [])
-  //     // console.log(accounts)
-  //     if (accounts.length) {
-  //       // notification.success(`Connected to ${accounts[0]}`)
-  //       // navigate('/connect-wallet') // Navigate after successful connection
-  //       // document.getElementById('walletStatus').textContent = 'Connected'
-  //       const connectedAddress = accounts[0]
-  //       const walletBalance = await provider.getBalance(connectedAddress)
-
-  //       console.log('connectedAddress', connectedAddress)
-  //       console.log('walletBalance', ethers.formatEther(walletBalance))
-  //       if (connectedAddress) {
-  //         await dispatch(authLogin(values, navigate, connectedAddress))
-  //       } else {
-  //         notification.error({
-  //           description: 'Wallet Not Connected.',
-  //           duration: 5,
-  //         })
-  //       }
-  //       // context.setAddress(connectedAddress)
-  //       // context.setBalance(ethers.formatEther(walletBalance))
-  //       // document.getElementById('walletStatus').textContent = 'Connected'
-  //       // setWalletStatus(true)
-  //     } else {
-  //       notification.warn('No account connected')
-  //     }
-  //   } catch (err) {
-  //     notification.error('Failed to connect to wallet')
-  //     console.error(err)
-  //   }
-
-  //   setLoading(false)
-  // }
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
 
   const onFinish = async (values) => {
-    console.log('values',values);
     if (values.userName && values.password) {
       setLoading(true)
-      // console.log('values',values);
-      // await connectEthereumWallet(values)
       await dispatch(authLogin(values, navigate, setShowPaymentModal))
       setLoading(false)
     } else {
@@ -81,7 +31,6 @@ const SignIn = () => {
   }
 
   const onChange = (e) => {
-    console.log(`checked = ${e.target.checked}`)
   }
   // if (localStorage.hasOwnProperty("token")) {
   //   // return <Navigate replace to="/home" />;
@@ -92,7 +41,7 @@ const SignIn = () => {
       <div className='width90'>
         <Row>
           <Col xs={24} md={24} lg={10} xl={11}>
-            <div className='form-div' style={{ background: '#080611' }}>
+            <div className='form-div' style={{ background: '#0A0F1A' }}>
               <Form name='login' className='login-form' layout='vertical' onFinish={onFinish}>
                 <div onClick={() => {navigate("/")}} className='title'>
                   <h1>
@@ -159,7 +108,7 @@ const SignIn = () => {
                   Don{"'"}t have an account?{' '}
                   
                   {/* <span className='highlight' onClick={() => navigate('/select-game')}> */}
-                  <span className='highlight' onClick={() => navigate('/sign-up')}>
+                  <span className='highlight' onClick={() => navigate('/select-game')}>
                     CREATE ACCOUNT
                   </span>
                 </p>

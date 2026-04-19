@@ -1,8 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Checkbox, Image, Input, Select, notification } from 'antd'
+import { Button, Checkbox, Image, Input, notification, Tag, Spin, Empty } from 'antd'
+import {
+  SendOutlined,
+  MailOutlined,
+  CheckCircleOutlined,
+  CrownOutlined,
+  ReloadOutlined,
+  DollarOutlined,
+  UserAddOutlined,
+  TrophyOutlined,
+} from '@ant-design/icons'
 import Header from '../../components/Header'
 import HeadingAndWeek from '../../components/Pagination/HeadingAndWeek'
-import sampointslogo from '../../assets/stadiumsampoints.webp'
+import sampointslogo from '../../assets/samcoinlogo.png'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   createClubhouse,
@@ -10,19 +20,13 @@ import {
   resendInvitation,
   setAllclubhouse,
 } from '../../redux/actions/clubhouse'
-import refresh from '../../assets/refresh-icon.jpg'
-import { IoMdRefresh } from 'react-icons/io'
 import Loader from '../../components/Loader'
 import ClubhouseModal from '../../components/modal/ClubhouseModal'
 
 const Clubhouse = () => {
   const dispatch = useDispatch()
-
   const user = useSelector((state) => state?.user?.userDetails)
-
   const clubhouse = useSelector((state) => state.clubhouse.clubhouse.Clubhouse)
-  console.log('user', user)
-  console.log('clubhouse', clubhouse)
 
   const [referralemail, setReferralemail] = useState('')
   const [loading, setLoading] = useState(false)
@@ -30,46 +34,18 @@ const Clubhouse = () => {
   const [invitationType, setInvitationType] = useState('')
   const [modalshow, setModalshow] = useState(false)
 
-  const emails = ['James@gmail.com', 'Maddog@gmail.com', 'Fakeemail@gmail.com', '0900-786-01']
-
-  // useEffect(()=>{
-  //   getClubhouse()
-  // },[clubhouse])
-
-  // useEffect(() => {
-    
-  //     setModalshow(true)
-    
-  // }, [])
-
   useEffect(() => {
-    // Check if the modal has already been shown
-    const hasModalBeenShown = localStorage.getItem('modalShown');
-
+    const hasModalBeenShown = localStorage.getItem('modalShown')
     if (!hasModalBeenShown) {
-      // If not, show the modal and set the flag in local storage
-      setModalshow(true);
-      localStorage.setItem('modalShown', 'true');
+      setModalshow(true)
+      localStorage.setItem('modalShown', 'true')
     }
-  }, []);
+  }, [])
 
-
-
-  
   const handleConfirm = async () => {
     setModalshow(false)
-    localStorage.removeItem('modalShown');
+    localStorage.removeItem('modalShown')
   }
-
-
-
-  // useEffect(() => {
-  //   console.log('useEffect triggered');
-  //     setModalshow(true)
-  // }, [])
-
-
-  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -84,7 +60,6 @@ const Clubhouse = () => {
       }
       setLoading(false)
     }
-
     if (user) {
       fetchData()
     }
@@ -94,58 +69,20 @@ const Clubhouse = () => {
     setReferralemail(e.target.value)
   }
 
-  
-  // const handleConfirm = async () => {
-  //   setModalShow(false)
-  // }
-
-
   const handleCheckboxChange = (type) => {
-    // Toggle the checkbox
     if (invitationType === type) {
-      setInvitationType(null) // Uncheck the checkbox if it's already checked
+      setInvitationType(null)
     } else {
-      setInvitationType(type) // Check the checkbox if it's unchecked
+      setInvitationType(type)
     }
   }
-  // const handlecreatereferral = async () => {
-  //   setBtnLoading(true)
-  //   setLoading(true)
-  //   try {
-  //     const payload = {
-  //       league: user?.team?.currentLeague._id,
-  //       user: user?._id,
-  //       emailsent: referralemail,
-  //       season: user?.team?.currentLeague?.season,
-  //     }
-
-  //     console.log('payload', payload)
-  //     const data = await createClubhouse(payload)
-
-  //     console.log('refereaal successfully sent:', data)
-  //     setReferralemail('')
-  //     // const res = await getData()
-  //     // if (res) {
-  //     // }
-  //     setBtnLoading(false)
-  //     setLoading(false)
-  //   } catch (error) {
-  //     console.error('Error making bid:', error)
-  //   }
-  // }
 
   const handlecreatereferral = async () => {
     if (!invitationType) {
-      notification.warning({
-        message: `Please select a league type.`,
-        duration: 4,
-      })
+      notification.warning({ message: 'Please select a league type.', duration: 4 })
       return
     }
-
-    setBtnLoading(true) // Set button loading state
-    // setLoading(true) // Set main loading state
-
+    setBtnLoading(true)
     try {
       const payload = {
         league: user?.team?.currentLeague._id,
@@ -154,293 +91,325 @@ const Clubhouse = () => {
         season: user?.team?.currentLeague?.season,
         invitation_Type: invitationType,
       }
-
-      console.log('payload', payload)
-      const data = await createClubhouse(payload) // Call API
-
-      // console.log('Referral successfully sent:', data)
-      setReferralemail('') // Clear input after successful API call
+      await createClubhouse(payload)
+      setReferralemail('')
       setInvitationType('')
-      // Additional logic can be added here if needed
     } catch (error) {
       console.error('Error making referral:', error)
-      // Handle error cases as needed
     } finally {
-      setBtnLoading(false) // Reset button loading state
-      // setLoading(false) // Reset main loading state
+      setBtnLoading(false)
     }
   }
 
-  const getEarningValue = (referralLevel) => {
-    switch (referralLevel) {
-      case 'Ultimate':
-        return 12500000
-      case 'Freemium':
-        return 3250000
-      case 'Referral Level 1':
-        return 7500000
-      case 'Referral Level 2':
-        return 7500000
-      case 'Referral Level 3':
-        return 7500000
-      default:
-        return 0
-    }
-  }
-
-  const getEarningValueFromInvitationType = (invitationType) => {
-    switch (invitationType) {
-      case 'Professional':
-        return 7500000
-      case 'Freemium':
-        return 3250000
-
-      default:
-        return 0
-    }
+  const getEarningValue = () => {
+    return 2500000  // 2.5M per referral regardless of level
   }
 
   const handleRefreshClick = (email) => async () => {
     setLoading(true)
     try {
-      if (!user?._id || !email) {
-        console.warn('User or email is undefined')
-        return
-      }
-
-      console.log('email', email)
-
-      // Call resendInvitation with email directly
+      if (!user?._id || !email) return
       await resendInvitation(email)
-
-      const payload = {
-        user: user?._id,
-        emailsent: email,
-      }
-
-      console.log('payload', payload)
-
-      // Assuming resendInvitation also returns data upon success
-      const data = await resendInvitation(payload)
-      console.log('Invitation sent successfully:', data)
-
+      const payload = { user: user?._id, emailsent: email }
+      await resendInvitation(payload)
       setLoading(false)
     } catch (error) {
       console.error('Error resending invitation:', error)
-      // Handle error
     }
   }
-
-  // const determineEarningValue = (obj) => {
-  //   return getEarningValue(user?.referralLevel) || getEarningValueFromInvitationType(user?.invitation_Type);
-  // };
-
-  // Calculate the total earnings
-  // const totalEarnings = clubhouse?.filter((obj) => obj.isRegistered)
-  //   .reduce((accumulator, obj) => accumulator + determineEarningValue(obj), 0)
-
-  // const totalEarnings = Array.isArray(clubhouse)
-  //   ? clubhouse.length * getEarningValue(user?.referralLevel)
-  //   : 0
-
-  // const totalEarnings = clubhouse?.filter((obj) => obj.isRegistered)
-  // .reduce((accumulator, obj) => accumulator + getEarningValue(user?.referralLevel), 0);
-
-  // console.log('totalEarnings:', totalEarnings)
-
-  // const totalEarnings =
-  //   clubhouse?.filter((obj) => obj.isRegistered)?.length * getEarningValue(user?.referralLevel) // Filter objects where isRegistered is true
-
-  // console.log('totalEarnings:', totalEarnings)
 
   const totalEarnings = clubhouse
     ?.filter((obj) => obj.isRegistered)
     .reduce((accumulator, obj) => {
-      // Use sampoints if it exists; otherwise, use the fallback value
-      const points =
-        obj.sampoints !== undefined ? obj.sampoints : getEarningValue(user?.referralLevel)
+      const points = obj.sampoints !== undefined ? obj.sampoints : getEarningValue(user?.referralLevel)
       return accumulator + points
     }, 0)
 
-  // const totalEarnings = clubhouse
-  //   ?.filter((obj) => obj.isRegistered)
-  //   .reduce((accumulator, obj) => accumulator + obj.sampoints, 0)
+  const emailsSent = Array.isArray(clubhouse) ? clubhouse : []
+  const registeredEmails = emailsSent.filter((item) => item?.isRegistered)
+  const pendingEmails = emailsSent.filter((item) => !item?.isRegistered)
 
-  // console.log('totalEarnings:', totalEarnings)
+  // Referral level config
+  const getLevelConfig = (level) => {
+    switch (level) {
+      case 'Private': return { color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.3)' }
+      case 'Referral Level 1': return { color: '#22c55e', bg: 'rgba(34,197,94,0.12)', border: 'rgba(34,197,94,0.3)' }
+      case 'Referral Level 2': return { color: '#3b82f6', bg: 'rgba(59,130,246,0.12)', border: 'rgba(59,130,246,0.3)' }
+      case 'Referral Level 3': return { color: '#8b5cf6', bg: 'rgba(139,92,246,0.12)', border: 'rgba(139,92,246,0.3)' }
+      case 'Public': return { color: '#a5b4fc', bg: 'rgba(165,180,252,0.12)', border: 'rgba(165,180,252,0.3)' }
+      default: return { color: 'rgba(255,255,255,0.4)', bg: 'rgba(255,255,255,0.04)', border: 'rgba(110,105,128,0.2)' }
+    }
+  }
 
-  // const totalEarnings = Array.isArray(clubhouse) && clubhouse?.isRegistered
-  // ? clubhouse.length * getEarningValue(user?.referralLevel)
-  // : 0;
+  const levelCfg = getLevelConfig(user?.referralLevel)
 
-  // console.log('totalEarnings', totalEarnings);
-
-  // console.log('totalEarnings',totalEarnings);
+  const getPointsDisplay = (item) => {
+    if (item?.sampoints) return item.sampoints.toLocaleString()
+    return '2,500,000'
+  }
 
   return (
     <>
       <div className='clubhouse-main'>
         <Header />
         <HeadingAndWeek />
-      <ClubhouseModal key={'modal'} visible={modalshow} onClose={handleConfirm} />
+        <ClubhouseModal key={'modal'} visible={modalshow} onClose={handleConfirm} />
 
-        <div className='clubhouse'>
-          <h1>CLUBHOUSE</h1>
-          <div className='clubhouse_first_div'>
-            <div className='clubhouseinput'>
+        <div className='ch-page'>
+          {/* ── Page Header ── */}
+          <div className='ch-page-header'>
+            <div className='ch-page-header-left'>
+              <h1 className='ch-title'>CLUBHOUSE</h1>
+              <span className='ch-subtitle'>Invite friends, earn SAM Points</span>
+            </div>
+            <div className='ch-referral-badge' style={{ background: levelCfg.bg, borderColor: levelCfg.border }}>
+              <CrownOutlined style={{ color: levelCfg.color, fontSize: 16 }} />
+              <div className='ch-referral-badge-text'>
+                <span className='ch-referral-badge-label'>Referral Level</span>
+                <span className='ch-referral-badge-value' style={{ color: levelCfg.color }}>
+                  {user?.referralLevel || 'None'}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Invite Bar ── */}
+          <div className='ch-invite-bar'>
+            <div className='ch-invite-input-wrap'>
+              <MailOutlined className='ch-invite-input-icon' />
               <Input
-                disabled={false}
-                placeholder='TYPE EMAIL ADDRESS'
+                placeholder='Enter email address...'
                 value={referralemail}
                 onChange={handleInputChange}
+                className='ch-invite-input'
+                onPressEnter={handlecreatereferral}
               />
-
-              <div>
-                <Checkbox
-                  style={{ color: 'white', fontSize: '18px' }}
-                  checked={invitationType === 'Professional'}
-                  onChange={() => handleCheckboxChange('Professional')}
-                >
-                  Professional
-                </Checkbox>
-                <Checkbox
-                  style={{ color: 'white', fontSize: '18px' }}
-                  checked={invitationType === 'Freemium'}
-                  onChange={() => handleCheckboxChange('Freemium')}
-                >
-                  Freemium
-                </Checkbox>
-              </div>
-
-              <Button
-                loading={btnloading}
-                onClick={handlecreatereferral}
-                className='submitbtn'
-                key='save'
-                type='primary'
-
-                // disabled={isTimerFinished}
-              >
-                Submit
-              </Button>
             </div>
-            <h2>
-              My Referral Level
-              <p>{user?.referralLevel}</p>
-            </h2>
+            <div className='ch-invite-types'>
+              <div
+                className={`ch-type-chip ${invitationType === 'Private' ? 'ch-type-chip-active' : ''}`}
+                onClick={() => handleCheckboxChange('Private')}
+              >
+                <TrophyOutlined /> Private
+              </div>
+              <div
+                className={`ch-type-chip ${invitationType === 'Public' ? 'ch-type-chip-active' : ''}`}
+                onClick={() => handleCheckboxChange('Public')}
+              >
+                <UserAddOutlined /> Public
+              </div>
+            </div>
+            <Button
+              loading={btnloading}
+              onClick={handlecreatereferral}
+              className='ch-invite-btn'
+              type='primary'
+              icon={<SendOutlined />}
+            >
+              SEND INVITE
+            </Button>
+
+            {/* Social Sharing Buttons, include League ID in share text */}
+            <div style={{ display: 'flex', gap: '8px', marginLeft: '8px' }}>
+              <button
+                onClick={() => {
+                  const lgId = user?.team?.currentLeague?.leagueId || user?.team?.currentLeague?.name || ''
+                  const lgLabel = lgId ? ` League ID: ${lgId}.` : ''
+                  const text = `Join me on SamSports A.Football!${lgLabel} The best fantasy football platform with SAM Metric scoring. Build your empire!`
+                  const url = lgId ? `https://samsports.io/sign-up?league=${lgId}` : 'https://samsports.io'
+                  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank')
+                }}
+                style={{
+                  padding: '8px 16px', borderRadius: '8px', border: 'none',
+                  background: '#000000', color: '#fff', cursor: 'pointer',
+                  fontSize: '12px', fontWeight: 700, fontFamily: "'Rajdhani', sans-serif",
+                  display: 'flex', alignItems: 'center', gap: '6px',
+                }}
+              >
+                X Share
+              </button>
+              <button
+                onClick={() => {
+                  const lgId = user?.team?.currentLeague?.leagueId || user?.team?.currentLeague?.name || ''
+                  const lgLabel = lgId ? ` League ID: ${lgId}.` : ''
+                  const text = `Join me on SamSports A.Football!${lgLabel} Build your fantasy football empire!`
+                  const url = lgId ? `https://samsports.io/sign-up?league=${lgId}` : 'https://samsports.io'
+                  window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`, '_blank')
+                }}
+                style={{
+                  padding: '8px 16px', borderRadius: '8px', border: 'none',
+                  background: '#1877F2', color: '#fff', cursor: 'pointer',
+                  fontSize: '12px', fontWeight: 700, fontFamily: "'Rajdhani', sans-serif",
+                  display: 'flex', alignItems: 'center', gap: '6px',
+                }}
+              >
+                Facebook
+              </button>
+              <button
+                onClick={() => {
+                  const lgId = user?.team?.currentLeague?.leagueId || user?.team?.currentLeague?.name || ''
+                  const lgLabel = lgId ? ` League ID: ${lgId}.` : ''
+                  const url = lgId ? `https://samsports.io/sign-up?league=${lgId}` : 'https://samsports.io'
+                  const text = `Join me on SamSports A.Football!${lgLabel} ${url}`
+                  navigator.clipboard.writeText(text)
+                  notification.success({ message: 'Copied!', description: 'Invite link with League ID copied to clipboard!' })
+                }}
+                style={{
+                  padding: '8px 16px', borderRadius: '8px', border: '1px solid rgba(110,105,128,0.3)',
+                  background: 'rgba(255,255,255,0.06)', color: '#fff', cursor: 'pointer',
+                  fontSize: '12px', fontWeight: 700, fontFamily: "'Rajdhani', sans-serif",
+                  display: 'flex', alignItems: 'center', gap: '6px',
+                }}
+              >
+                Copy Link
+              </button>
+            </div>
           </div>
 
-          <div className='email-registration'>
-            {loading || btnloading ? (
-              <Loader />
-            ) : (
-              <>
-                <p>
-                  EMAILS SENTS
-                  <div className='email-box'>
-                    {Array.isArray(clubhouse) ? (
-                      clubhouse.map((item, index) => (
-                        <div style={{ display: 'flex', gap: '20px' }} key={index}>
-                          <p style={{ marginLeft: '-29px' }}>
-                            {/* {index + 1}. {item.emailsent} - {item?.invitation_Type} */}
-                            {index + 1}. {item.emailsent} - (
-                            {item?.invitation_Type?.charAt(0)?.toUpperCase()})
-                          </p>
-                          {!item.isRegistered && (
-                            <IoMdRefresh
-                              onClick={handleRefreshClick(item.emailsent)}
-                              className='icon'
-                              size={35}
-                              color='#ffffff'
-                            />
+          {/* ── Stats Row ── */}
+          <div className='ch-stats-row'>
+            <div className='ch-stat-card'>
+              <div className='ch-stat-icon-wrap ch-stat-icon-sent'>
+                <MailOutlined />
+              </div>
+              <div className='ch-stat-info'>
+                <span className='ch-stat-value'>{emailsSent.length}</span>
+                <span className='ch-stat-label'>Invites Sent</span>
+              </div>
+            </div>
+            <div className='ch-stat-card'>
+              <div className='ch-stat-icon-wrap ch-stat-icon-reg'>
+                <CheckCircleOutlined />
+              </div>
+              <div className='ch-stat-info'>
+                <span className='ch-stat-value'>{registeredEmails.length}</span>
+                <span className='ch-stat-label'>Registered</span>
+              </div>
+            </div>
+            <div className='ch-stat-card'>
+              <div className='ch-stat-icon-wrap ch-stat-icon-earn'>
+                <DollarOutlined />
+              </div>
+              <div className='ch-stat-info'>
+                <span className='ch-stat-value'>
+                  <Image preview={false} width={20} src={sampointslogo} alt='sam' style={{ marginRight: 6 }} />
+                  {totalEarnings?.toLocaleString() || '0'}
+                </span>
+                <span className='ch-stat-label'>Total Earnings</span>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Content Panels ── */}
+          {loading || btnloading ? (
+            <Loader />
+          ) : (
+            <div className='ch-panels'>
+              {/* Left Panel: Emails Sent */}
+              <div className='ch-panel'>
+                <div className='ch-panel-header'>
+                  <MailOutlined className='ch-panel-header-icon' />
+                  <span>INVITATIONS SENT</span>
+                  <span className='ch-panel-count'>{emailsSent.length}</span>
+                </div>
+                <div className='ch-panel-body'>
+                  {emailsSent.length > 0 ? (
+                    emailsSent.map((item, index) => (
+                      <div key={index} className='ch-email-row'>
+                        <div className='ch-email-row-left'>
+                          <span className='ch-email-num'>{index + 1}</span>
+                          <div className='ch-email-info'>
+                            <span className='ch-email-address'>{item.emailsent}</span>
+                            <Tag
+                              className='ch-email-type-tag'
+                              style={{
+                                background: item?.invitation_Type === 'Private'
+                                  ? 'rgba(245,158,11,0.1)' : 'rgba(165,180,252,0.1)',
+                                borderColor: item?.invitation_Type === 'Private'
+                                  ? 'rgba(245,158,11,0.25)' : 'rgba(165,180,252,0.25)',
+                                color: item?.invitation_Type === 'Private'
+                                  ? '#f59e0b' : '#a5b4fc',
+                              }}
+                            >
+                              {item?.invitation_Type?.charAt(0)?.toUpperCase()}
+                            </Tag>
+                          </div>
+                        </div>
+                        <div className='ch-email-row-right'>
+                          {item.isRegistered ? (
+                            <Tag
+                              icon={<CheckCircleOutlined />}
+                              style={{ background: 'rgba(34,197,94,0.1)', borderColor: 'rgba(34,197,94,0.25)', color: '#22c55e', fontWeight: 700, fontSize: 10 }}
+                            >
+                              REGISTERED
+                            </Tag>
+                          ) : (
+                            <>
+                              <Tag style={{ background: 'rgba(245,158,11,0.1)', borderColor: 'rgba(245,158,11,0.25)', color: '#f59e0b', fontWeight: 700, fontSize: 10 }}>
+                                PENDING
+                              </Tag>
+                              <ReloadOutlined
+                                className='ch-resend-icon'
+                                onClick={handleRefreshClick(item.emailsent)}
+                              />
+                            </>
                           )}
                         </div>
-                      ))
-                    ) : (
-                      <p>No emails found</p>
-                    )}
-                  </div>
-                </p>
-
-                <p>
-                  SUCCESSFUL REGISTRATION
-                  <div className='email-box'>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        paddingRight: '60px',
-                      }}
-                    >
-                      {/* <div>
-                    {Array.isArray(clubhouse) ? (
-                      clubhouse
-                        ?.filter((item) => item.isRegistered)
-                        .map((item, index) => (
-                          <p style={{ marginLeft: '-29px' }} key={index}>
-                            {index + 1}. {item.emailsent}
-                          </p>
-                        ))
-                    ) : (
-                      <p>No emails found</p>
-                    )}
-                  </div> */}
-                      {/* <div style={{ display: 'flex' }}>
-                    <Image preview={false} width={35} src={sampointslogo} alt='samlogo' />
-                    <p>12,500,000</p>
-                  </div> */}
-
-                      <div>
-                        {Array.isArray(clubhouse) ? (
-                          clubhouse
-                            ?.filter((item) => item?.isRegistered)
-                            .map((item, index) => (
-                              <div
-                                style={{ display: 'flex', justifyContent: 'space-between' }}
-                                key={index}
-                              >
-                                <p style={{ marginLeft: '-29px' }}>
-                                  {index + 1}. {item.emailsent}
-                                </p>
-                                <div style={{ display: 'flex' }}>
-                                  <Image
-                                    preview={false}
-                                    width={35}
-                                    src={sampointslogo}
-                                    alt='samlogo'
-                                  />
-                                  <p>
-                                    {item?.sampoints ||
-                                      (user?.referralLevel === 'Ultimate'
-                                        ? '12,500,000'
-                                        : user?.referralLevel === 'Freemium'
-                                        ? '32,500,00'
-                                        : user?.referralLevel === 'Referral Level 1'
-                                        ? '7,500,000'
-                                        : user?.referralLevel === 'Referral Level 2'
-                                        ? '7,500,000'
-                                        : user?.referralLevel === 'Referral Level 3'
-                                        ? '7,500,000'
-                                        : '')}
-                                  </p>
-                                </div>
-                              </div>
-                            ))
-                        ) : (
-                          <p>No emails found</p>
-                        )}
                       </div>
+                    ))
+                  ) : (
+                    <div className='ch-panel-empty'>
+                      <Empty
+                        description={<span style={{ color: 'rgba(255,255,255,0.3)' }}>No invitations sent yet</span>}
+                        image={Empty.PRESENTED_IMAGE_SIMPLE}
+                      />
                     </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Right Panel: Successful Registrations */}
+              <div className='ch-panel'>
+                <div className='ch-panel-header ch-panel-header-success'>
+                  <CheckCircleOutlined className='ch-panel-header-icon' />
+                  <span>SUCCESSFUL REGISTRATIONS</span>
+                  <span className='ch-panel-count'>{registeredEmails.length}</span>
+                </div>
+                <div className='ch-panel-body'>
+                  {registeredEmails.length > 0 ? (
+                    registeredEmails.map((item, index) => (
+                      <div key={index} className='ch-reg-row'>
+                        <div className='ch-reg-row-left'>
+                          <span className='ch-email-num'>{index + 1}</span>
+                          <span className='ch-email-address'>{item.emailsent}</span>
+                        </div>
+                        <div className='ch-reg-row-right'>
+                          <Image preview={false} width={18} src={sampointslogo} alt='sam' />
+                          <span className='ch-reg-points'>{getPointsDisplay(item)}</span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className='ch-panel-empty'>
+                      <Empty
+                        description={<span style={{ color: 'rgba(255,255,255,0.3)' }}>No registrations yet</span>}
+                        image={Empty.PRESENTED_IMAGE_SIMPLE}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Total Earnings Footer */}
+                <div className='ch-panel-footer'>
+                  <span className='ch-footer-label'>TOTAL EARNINGS</span>
+                  <div className='ch-footer-value'>
+                    <Image preview={false} width={22} src={sampointslogo} alt='sam' />
+                    <span>{totalEarnings?.toLocaleString() || '0'}</span>
                   </div>
-                  <div className='total-earnings'>
-                    <h3>TOTAL EARNINGS</h3>
-                    <Image width={35} src={sampointslogo} alt='samlogo' />
-                    {/* <h4>12,500,000</h4> */}
-                    <h4>{totalEarnings?.toLocaleString() || 0}</h4>
-                  </div>
-                </p>
-              </>
-            )}
-          </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>

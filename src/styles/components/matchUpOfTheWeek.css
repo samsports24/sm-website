@@ -1,201 +1,310 @@
-/* MATCH UP */
-.match_up_box {
+/* ═══════════════════════════════════════════════════════════════
+   MATCH-UP OF THE WEEK — Modern Redesign
+   Prefix: motw-
+   ═══════════════════════════════════════════════════════════════ */
+.motw-card {
   width: 100%;
-  background-color: var(--primaryPurple);
-  border-radius: 16px;
-  border: 1px solid var(--border);
+  border-radius: 12px;
+  border: 1px solid rgba(110, 105, 128, 0.2);
+  background: rgba(255, 255, 255, 0.015);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.15s;
 }
-.match_up_box .header {
-  width: 100%;
-  padding: 14px 20px 6px 20px;
-}
-.match_up_box .header h1 {
-  color: var(--text);
-  font-size: 34px;
-  font-style: normal;
-  font-weight: 800;
-  line-height: normal;
-  text-align: center;
+.motw-card:hover {
+  border-color: rgba(40, 159, 201, 0.25);
 }
 
-.match_up_box .date_and_time {
-  width: 100%;
-  background-color: #30215d;
-}
-.match_up_box .date_and_time h3 {
-  text-align: center;
-  color: var(--text);
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 28px;
-  padding: 2px 20px;
-}
-
-.match_up_box .teams {
+/* ── Top bar — badge + date ── */
+.motw-top {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 16px;
   align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(110, 105, 128, 0.1);
+}
+.motw-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: #22C55E;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  background: rgba(40, 159, 201, 0.1);
+  border: 1px solid rgba(40, 159, 201, 0.15);
+  padding: 3px 10px;
+  border-radius: 4px;
+}
+.motw-date {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.35);
 }
 
-.match_up_box .team1 {
+/* ── Matchup area ── */
+.motw-matchup {
+  display: flex;
+  align-items: center;
+  padding: 20px 16px;
+  gap: 0;
+}
+
+/* Team side */
+.motw-side {
   flex: 1;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  gap: 16px;
-}
-.match_up_box .team1 .image_div {
-  width: 100px;
-  height: 100px;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.match_up_box .team1 .image_div img {
-  width: 100%;
-  height: auto;
+  gap: 8px;
+  min-width: 0;
 }
 
-.match_up_box .team1 .content h3 {
-  color: var(--text);
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 28px;
-  /* width: 100px;
+.motw-logo-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(110, 105, 128, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.motw-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+.motw-logo-ph {
+  font-size: 20px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.motw-team-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; */
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
-.match_up_box .team1 .content p {
-  color: var(--text);
-  font-size: 16px;
-  font-size: 16px;
-  font-style: normal;
+.motw-record {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.3);
+  text-align: center;
+  letter-spacing: 0.2px;
+}
+
+/* Center — scores + VS */
+.motw-center {
+  flex-shrink: 0;
+  padding: 0 12px;
+}
+.motw-scores {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.motw-score {
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+  min-width: 36px;
+  text-align: center;
+  letter-spacing: -1px;
+}
+.motw-vs {
+  font-size: 10px;
   font-weight: 700;
-  line-height: normal;
-}
-.match_up_box .team1 .content span {
-  color: var(--text);
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 28px;
-  opacity: 0.5;
+  color: rgba(255, 255, 255, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.match_up_box .team2 .content {
-  flex: 1;
-}
-.match_up_box .team2 .content h3,
-.match_up_box .team2 .content p {
-  text-align: right;
-}
-
-.match_up_box .versus {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
+/* ── Footer CTA ── */
+.motw-footer {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #fff;
-}
-
-.match_up_box .footer {
-  background-color: var(--primary);
-  border-radius: 0px 0px 16px 16px;
-  padding: 10px 28px;
+  gap: 6px;
+  padding: 9px 16px;
+  background: rgba(40, 159, 201, 0.08);
+  border-top: 1px solid rgba(40, 159, 201, 0.12);
   cursor: pointer;
+  transition: background 0.15s;
 }
-.match_up_box .footer h3 {
-  color: var(--text);
+.motw-footer:hover {
+  background: rgba(40, 159, 201, 0.14);
+}
+.motw-footer span {
+  font-size: 12px;
+  font-weight: 700;
+  color: #22C55E;
+}
+.motw-footer svg {
+  color: #22C55E;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .motw-matchup { padding: 16px 10px; }
+  .motw-logo-wrap { width: 44px; height: 44px; border-radius: 10px; }
+  .motw-logo { width: 32px; height: 32px; }
+  .motw-score { font-size: 22px; min-width: 28px; }
+  .motw-team-name { font-size: 11px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LOBBY MATCHUP WIDGET — lmw- prefix
+   ═══════════════════════════════════════════════════════════════ */
+.lmw-matchup {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* ── Team side ── */
+.lmw-team {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  transition: opacity 0.2s;
+}
+
+.lmw-logo-ring {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid rgba(110, 105, 128, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.lmw-team-leading .lmw-logo-ring {
+  border-color: rgba(40, 159, 201, 0.5);
+  box-shadow: 0 0 12px rgba(40, 159, 201, 0.15);
+}
+
+.lmw-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.lmw-logo-fallback {
   font-size: 18px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 28px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.lmw-team-name {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90px;
 }
 
-@media (max-width: 768px) {
-  .match_up_box .teams {
-    flex-direction: column;
-    gap: 20px;
-  }
-  .match_up_box .header {
-    padding-block: 20px;
-  }
-  .match_up_box .header h1 {
-    font-size: 22px;
-  }
-  .match_up_box .date_and_time h3 {
-    font-size: 15px;
-  }
-  .match_up_box .team1 .image_div {
-    width: 80px;
-    height: 80px;
-  }
-  .match_up_box .footer {
-    padding: 10px 10px;
-  }
-  .match_up_box .footer h3 {
-    font-size: 15px;
-  }
+.lmw-team-leading .lmw-team-name {
+  color: #fff;
 }
 
+/* ── Score block ── */
+.lmw-score-block {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0 10px;
+}
 
+.lmw-scores {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
 
-/*  for lobby match up box */
+.lmw-score {
+  font-size: 22px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: -0.5px;
+  min-width: 48px;
+  text-align: center;
+  transition: color 0.2s;
+}
 
+.lmw-score-win {
+  color: #fff;
+  text-shadow: 0 0 12px rgba(40, 159, 201, 0.3);
+}
 
+.lmw-score-divider {
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(110, 105, 128, 0.4);
+}
 
+.lmw-status {
+  font-size: 9px;
+  font-weight: 700;
+  color: #22C55E;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .lmw-logo-ring { width: 40px; height: 40px; }
+  .lmw-logo { width: 28px; height: 28px; }
+  .lmw-score { font-size: 18px; min-width: 38px; }
+  .lmw-team-name { font-size: 9px; max-width: 70px; }
+}
+
+/* ═══ Legacy lobby matchup (keep for compat) ═══ */
 .lobbymatchupbox {
-  margin-top: 30px;
-  /* width: 50%; */
+  margin-top: 20px;
   display: flex;
   justify-content: space-between;
   flex-direction: row;
   width: 100%;
-  gap: 30px;
+  gap: 16px;
 }
-
-
-
 .lobbymatchupbox .opponentonebox {
-
-
   background-color: var(--primaryPurple);
-justify-content: center;
-align-items:center;
-  border: 1px solid var(--border);
-  /* padding: 20px; */
-}
-
-.lobbymatchupbox .opponentonebox >img {
-  width: 76px;
-  margin: auto;
   justify-content: center;
-  align-items:center;
-  justify-items: center;  
-  display: flex;
-
+  align-items: center;
+  border: 1px solid var(--border);
 }
-
-
+.lobbymatchupbox .opponentonebox > img {
+  width: 60px;
+  margin: auto;
+  display: flex;
+}
 .lobbymatchupbox .scores {
   display: flex;
-  gap: 30px;
+  gap: 20px;
   background-color: var(--primaryPurple);
   justify-content: center;
-  align-items:center;
+  align-items: center;
   border: 1px solid var(--border);
-  padding: 20px;
+  padding: 14px;
 }
-
-
-
-/*  for lobby match up box */

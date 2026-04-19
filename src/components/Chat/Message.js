@@ -1,196 +1,121 @@
-
-// import moment from "moment";
-// // import { imageUrl } from "../../Util";
-// import { Image } from "antd";
-
-
-// const Message = ({ chat,teamid }) => {
-//   const id = localStorage.getItem("userId");
-//   console.log('in the chat',teamid);
-  
-//   // useEffect(() => {}, [chat]);
-
-//   return (
-//     <div style={{ width: "100%" }}>
-//       {chat &&
-//         chat.map((message, i) => {
-//           // const imageFinal = `${imageUrl}/${message?.media_url}`;
-
-//           return (
-//             <div key={i} className={message.from !== teamid ? "chats-sender" : "chats-my"}>
-//               <div
-//                 key={i}
-//                 className={
-//                   message.from !== teamid ? "sender-messages" : "my-messages"
-//                 }
-//               >
-//                 <span>
-//                   {message.media_url ? (
-//                     <Image
-//                       width={"150px"}
-//                       // src={`${imageUrl}/${message?.media_url}`}
-//                       src={`${message?.media_url}`}
-//                       // src={`https://env-backend.herokuapp.com/uploads/chatImage-1637093118170.png`}
-//                     />
-//                   ) : (
-//                     // <img
-//                     //   src={`https://env-backend.herokuapp.com/uploads/chatImage-1637093118170.png`}
-//                     //   width="150px"
-//                     // />
-//                     // <img
-//                     //   src={`${imageUrl}/${message.media_url}`}
-//                     //   width="150px"
-//                     // />
-//                     message.message
-//                   )}
-//                   <br />
-//                   <span
-//                     style={{
-//                       color: "#d6d6d6",
-//                       fontSize: "0.8em",
-//                       display: "flex",
-//                       float: "right",
-//                     }}
-//                   >
-//                     {moment(message.createdAt).format("D MMM YY:h:mm a")}
-//                   </span>
-//                 </span>
-//               </div>
-//             </div>
-//           );
-//         })}
-//     </div>
-//   );
-// };
-
-
-
-// export default Message;
-
-import React, { useState } from 'react';
-import moment from 'moment';
-import { Button, Image, Input, Spin } from 'antd';
-import { FaCaretDown } from 'react-icons/fa';
-import { AiOutlineCloudUpload } from 'react-icons/ai';
-import { IoMdSend } from 'react-icons/io';
+import React, { useRef, useEffect } from 'react'
+import moment from 'moment'
+import { Image, Spin } from 'antd'
+import { AiOutlineCloudUpload } from 'react-icons/ai'
+import { IoMdSend } from 'react-icons/io'
 import { LoadingOutlined } from '@ant-design/icons'
 
-
 const antIcon = <LoadingOutlined style={{ fontSize: 40, color: 'white' }} spin />
-const Message = ({ chat, teamid,loader,myMessage,setMyMessage,onSendMessage,onimagesend,image,setImage }) => {
-  // Ensure chat is an array and is not null or undefined
- 
 
-  // Sort messages by creation date in ascending order
-  const sortedChat = chat?.slice()?.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-  const handleInputChange = (e) => {
-    setMyMessage(e.target.value);
-  };
+const Message = ({ chat, teamid, loader, myMessage, setMyMessage, onSendMessage, onimagesend }) => {
+  const messagesEndRef = useRef(null)
+  const sortedChat = chat?.slice()?.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
 
-  // console.log('sortedChat',sortedChat);
-  
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [sortedChat?.length])
 
+  const isMine = (message) => message?.from?._id === teamid
 
-  const handleimageInputChange = (e) => {
-    console.log('here chekc');
-    
-    setImage (e.target.files[0])
-    onimagesend(setImage)
-  };
+  // Group consecutive messages from same sender
+  const getPosition = (messages, index) => {
+    if (!messages) return 'single'
+    const curr = messages[index]
+    const prev = messages[index - 1]
+    const next = messages[index + 1]
+    const samePrev = prev && isMine(prev) === isMine(curr)
+    const sameNext = next && isMine(next) === isMine(curr)
+    if (samePrev && sameNext) return 'middle'
+    if (samePrev) return 'last'
+    if (sameNext) return 'first'
+    return 'single'
+  }
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      onSendMessage()
+    }
+  }
 
   return (
-    <>
-   
-      {sortedChat?.map((message, i) => (
-        <>
-        <div
-          key={i}
-          className={message.from._id !== teamid ? 'chats-sender' : 'chats-my'}
-        >
-          <div
-            className={
-              message.from._id !== teamid ? 'sender-messages' : 'my-messages'
-            }
-          >
+    <div className='dmc-container'>
+      {/* Messages area */}
+      <div className='dmc-messages-area'>
+        <Spin spinning={loader} size='large' indicator={antIcon} className='dmc-spinner' />
 
-
-            <span>
-              {message.media_url ? (
-                <Image
-                  width={150}
-                  src={message.media_url}
-                  alt="Message Media"
-                />
-              ) : (
-                message.message
-              )}
-              <br />
-              <span
-                style={{
-                  color: '#d6d6d6',
-                  fontSize: '0.8em',
-                  display: 'flex',
-                  float: 'right',
-                }}
-              >
-                {moment(message.createdAt).format('D MMM YY:h:mm a')}
-              </span>
-            </span>
+        {(!sortedChat || sortedChat.length === 0) && !loader && (
+          <div className='dmc-empty-state'>
+            <div className='dmc-empty-icon'>
+              <svg width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='rgba(40,159,201,0.4)' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round'>
+                <path d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z' />
+              </svg>
+            </div>
+            <p>No messages yet. Start the conversation!</p>
           </div>
-        </div>
-        </>
-      ))}
+        )}
 
-   
-<div className='dm-main-chat'>  
+        {sortedChat?.map((message, i) => {
+          const mine = isMine(message)
+          const position = getPosition(sortedChat, i)
+          const showTime = position === 'last' || position === 'single'
 
-<div className={loader ? 'messages shade' : 'messages'}>
-          <Spin spinning={loader} size='large' indicator={antIcon} className='spinner' />
-          {/* <div ref={chatRef} className='chat-container'>
-            <Leaguechat chat={messages} teamid={teamid} />
-          </div> */}
-          {/* <div className='bottom-button'>
-            <Button
-              icon={<FaCaretDown />}
-              shape='circle'
-              // onClick={() => chatRef.current.scrollTop = chatRef?.current?.scrollHeight}
-              style={{ color: '#fff', background: '#323739', marginLeft: '5px' }}
-            />
-          </div> */}
-          <div className='send-message'>
-            <div className='send-message-container'>
-              <Input
-                placeholder='send message...'
-                value={myMessage}
-                 onChange={(e) => setMyMessage(e.target.value)}
-               // onChange={handleInputChange}
-                onPressEnter={handleInputChange}
-              />
-              <div className='action-icons'>
-                <input
-                  type='file'
-                  id='newfileInp'
-                  className='upload-img'
-                //  onChange={handleimageInputChange}
-                    onChange={onimagesend}
-                  // onChange={(e) => setimage(e.target.value)}
-                />
-
-
-                <label htmlFor='newfileInp'>
-                  <AiOutlineCloudUpload style={{ marginRight: '10px' }} />
-                </label>
-                <IoMdSend onClick={onSendMessage} />
+          return (
+            <div
+              key={i}
+              className={`dmc-bubble-row ${mine ? 'dmc-mine' : 'dmc-theirs'}`}
+            >
+              <div className={`dmc-bubble dmc-${position} ${mine ? 'dmc-bubble-mine' : 'dmc-bubble-theirs'}`}>
+                {message.media_url ? (
+                  <div className='dmc-media'>
+                    <Image width={200} src={message.media_url} alt='Media' style={{ borderRadius: '8px' }} />
+                  </div>
+                ) : (
+                  <span className='dmc-text'>{message.message}</span>
+                )}
+                {showTime && (
+                  <span className='dmc-time'>
+                    {moment(message.createdAt).format('h:mm A')}
+                  </span>
+                )}
               </div>
             </div>
-          </div>
-        </div>
-        </div>
-        </>
-    
-  );
-};
+          )
+        })}
+        <div ref={messagesEndRef} />
+      </div>
 
-export default Message;
+      {/* Input area */}
+      <div className='dmc-input-area'>
+        <div className='dmc-input-wrapper'>
+          <input
+            type='file'
+            id='dmc-file-input'
+            className='dmc-file-hidden'
+            onChange={onimagesend}
+          />
+          <label htmlFor='dmc-file-input' className='dmc-attach-btn'>
+            <AiOutlineCloudUpload />
+          </label>
+          <input
+            type='text'
+            className='dmc-text-input'
+            placeholder='Type a message...'
+            value={myMessage}
+            onChange={(e) => setMyMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+          <button
+            className={`dmc-send-btn ${myMessage?.trim() ? 'dmc-send-active' : ''}`}
+            onClick={onSendMessage}
+            disabled={!myMessage?.trim()}
+          >
+            <IoMdSend />
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
 
+export default Message

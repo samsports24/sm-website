@@ -24,7 +24,6 @@ const setRosterDraftData = (payload) => {
 }
 
 const setRosterDataForpick = (payload) => {
-  console.log('inside paylaod', payload)
   return {
     type: 'SET_ROSTERS_PICK_ROUND',
     payload: payload,
@@ -64,14 +63,11 @@ export const getRoster = async (week) => {
 }
 
 export const getDraftTeamRoster = async (week) => {
-  console.log('in the date', week)
   try {
     store.dispatch(setRosterLoading(true))
     attachToken()
     const res = await privateAPI.get(`/team/get-roster-draft/${week}`)
     if (res) {
-      console.log('res.data.data', res.data.data)
-      console.log('in res', res)
       store.dispatch(setRosterDraftData(res.data.data))
     }
     return res.data.data
@@ -86,13 +82,11 @@ export const getDraftTeamRoster = async (week) => {
 }
 
 export const getRosterForDraftPick = async (week) => {
-  console.log('in the date', week)
   try {
     store.dispatch(setRosterLoading(true))
     attachToken()
     const res = await privateAPI.get(`/team/get-pick-round-roster-draft/${week}`)
     if (res) {
-      console.log('in pick res', res)
       store.dispatch(setRosterDataForpick(res?.data?.data))
     }
     return res.data.data
@@ -304,11 +298,12 @@ export const getAllIr = async () => {
   }
 }
 
-export const moveToIr = async (id) => {
+export const moveToIr = async (payload) => {
   try {
     attachToken()
-    const res = await privateAPI.post('/player/move-to-ir', id)
+    const res = await privateAPI.post('/player/move-to-ir', payload)
     if (res) {
+      await getRoster(payload?.week)
       notification.success({
         message: res.data.data,
         duration: 3,
@@ -394,7 +389,6 @@ export const requestIsPicked = async (paylaod) => {
     attachToken()
     const res = await privateAPI.post('/player/request-pick', paylaod)
     if (res) {
-      console.log('res', res)
       notification.success({
         message: res?.data?.data?.message,
         duration: 3,
@@ -445,29 +439,25 @@ export const addBid = async (payload, customnotification) => {
     attachToken()
     const res = await privateAPI.post('/auction/add-bid', payload)
 
-    console.log('response off add bid', res)
-
     if (res) {
-      console.log('inside if clause of add bid')
       getAuctionPlayer()
-      // store?.dispatch(setAuctionPlayer(res?.data?.data?.auction))
-      customnotification.success({
-        message: res?.data?.data?.message,
-        duration: 3,
-      })
-       
-      console.log('after get auction player')
-      // dispatch(getUser())
-      console.log('after get user')
+      getUser() // Refresh wallet/user data after placing bid
+      if (customnotification?.success) {
+        customnotification.success({
+          message: res?.data?.data?.message,
+          duration: 3,
+        })
+      }
+
       return res?.data?.data?.auction
     }
   } catch (err) {
-    console.log('err', err)
-    customnotification.error({
-      message: err?.response?.data?.data?.message || 'Server Error',
-      duration: 3,
-    })
-    // navigate('/player-auction')
+    if (customnotification?.error) {
+      customnotification.error({
+        message: err?.response?.data?.data?.message || err?.response?.data?.message || 'Server Error',
+        duration: 3,
+      })
+    }
   }
 }
 
@@ -513,13 +503,11 @@ export const approveAndRejectAuction = async (payload) => {
 }
 
 // export const approveAndRejectAuction = (payload) => {
-//   console.log('inide teh ',payload);
 //   return async () => {
 //     try {
 //       attachToken()
 //       const res = await privateAPI.post(`/auction/approve-auction`, payload)
 //       if (res) {
-//         console.log('res:', res)
 //         notification.success({
 //           description: res?.data?.data?.message,
 //           duration: 3,
@@ -549,6 +537,26 @@ export const auctionEnded = async (payload) => {
 }
 
 
+
+export const cancelAuction = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/auction/cancel-auction', payload)
+    if (res) {
+      notification.success({
+        message: 'Auction cancelled successfully',
+        duration: 3,
+      })
+    }
+    return true
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Failed to cancel auction',
+      duration: 3,
+    })
+    return false
+  }
+}
 
 export const PlayerPoached = async (payload) => {
   try {

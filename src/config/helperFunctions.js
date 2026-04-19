@@ -28,9 +28,8 @@ export const positionOrder = {
 }
 
 // export const sortedArray = (arr) => {
- 
+
 //   return arr?.sort((a, b) => {
-//     console.log('a.players.Position',a.players.Position);
 //     const nameA = a.players.Name !== undefined ? a.players.Name : null;
 //     const nameB = b.players?.Name !== undefined ? b.players.Name : null;
 // const nameComparison = nameA !== null && nameB !== null ? nameA.localeCompare(nameB) : 0;
@@ -42,7 +41,6 @@ export const positionOrder = {
 
 
 export const sortedArray = (arr) => {
-  // console.log('arr', arr);
   return arr?.sort((a, b) => {
     const positionA = a?.players?.Position || '';
     const positionB = b?.players?.Position || '';
@@ -130,10 +128,6 @@ export const getRemainingSeconds = (timeString) => {
 
 export const getPf = (arr) => {
   if (arr && arr?.length > 0) {
-    // console.log('arr',arr);
-    //  console.log('arr?.length',arr?.length);
-    // const week = store?.getState()?.user?.setting?.week
-    // console.log('week',week);
     
     
     const setting = store?.getState()?.user?.setting

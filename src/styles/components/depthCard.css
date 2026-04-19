@@ -1,20 +1,42 @@
+/* ============================================
+   DEPTH CARD REDESIGN - VERTICAL HALF-FIELD
+   Card dimensions: 100×140px with translateX centering
+   Field dimensions: 1100×850px vertical half-field
+   ============================================ */
+
+:root {
+  --primary-green: #22C55E;
+  --dark-navy-bg: #0A0F1A;
+  --card-bg: #111827;
+  --surface: #1A2332;
+  --border: #1E293B;
+  --text: #F1F5F9;
+  --muted: #94A3B8;
+}
+
+/* ============================================
+   LEGACY CARD STYLES (kept for backward compat)
+   ============================================ */
+
 .depth_card_box {
-  width: 180px;
-  height: 260px;
+  width: 100px;
+  height: 140px;
   border-radius: 10px;
   border: 1px solid var(--border);
   cursor: pointer;
   position: absolute;
+  transform: translateX(-50%);
 }
 
 .depth_card_box .image_box {
   width: 100%;
-  height: 184px;
-  background-color: var(--primaryPurple);
+  height: 80px;
+  background-color: var(--card-bg);
   display: flex;
   justify-content: flex-end;
-  border-radius: 10px 10px 0px 0px;
+  border-radius: 10px 10px 0 0;
 }
+
 .depth_card_box .image_box img {
   width: 100%;
   height: auto;
@@ -22,21 +44,21 @@
 
 .depth_card_box .name {
   width: 100%;
-  background-color: #30215d;
-  padding-block: 10px;
+  background-color: #1A2332;
+  padding-block: 6px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 .depth_card_box .name p {
-  width: 160px;
+  width: 90px;
   white-space: nowrap;
   overflow: hidden;
   text-align: center;
   text-overflow: ellipsis;
   color: var(--text);
-  font-size: 14px;
-  font-style: normal;
+  font-size: 9px;
   font-weight: 600;
   line-height: 1;
 }
@@ -46,996 +68,722 @@
   justify-content: center;
   align-items: center;
 }
+
 .depth_card_box .text h2 {
   color: var(--text);
-  font-size: 22px;
-  font-style: normal;
+  font-size: 14px;
   font-weight: 700;
-  line-height: 28px;
+  line-height: 18px;
   text-align: center;
   text-transform: uppercase;
-  padding: 6px 0px 6px 0px;
+  padding: 4px 0;
 }
 
-/* -------------------------------------- */
+/* ============================================
+   NEW MODERN DEPTH CARD - 100×140px
+   ============================================ */
+
 .new_depth_card_box {
-  width: 143px;
-  height: 200px;
-  border-radius: 30px;
-  /* cursor: pointer; */
+  width: 100px;
+  height: 140px;
   position: absolute;
+  cursor: pointer;
+  transform: translateX(-50%);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10;
 }
+
+.new_depth_card_box:hover {
+  transform: translateX(-50%) translateY(-10px) scale(1.08);
+  z-index: 20;
+  filter: drop-shadow(0 20px 40px rgba(34, 197, 94, 0.3));
+}
+
 .new_depth_card_box .wrapper {
-  width: 143px;
-  height: 200px;
-  border-radius: 30px;
-  /* cursor: pointer; */
+  width: 100px;
+  height: 140px;
   position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(34, 197, 94, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
+/* Green band at top */
+.new_depth_card_box .wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #22C55E, #16A34A);
+  z-index: 5;
+}
+
+/* Hover glow effect */
+.new_depth_card_box:hover .wrapper {
+  border: 1.5px solid rgba(34, 197, 94, 0.6);
+  box-shadow: 0 0 25px rgba(34, 197, 94, 0.4), inset 0 0 15px rgba(34, 197, 94, 0.1);
+  background: rgba(17, 24, 39, 0.8);
+}
+
+/* Card Background Image */
 .new_depth_card_box .wrapper .card_bg_img {
   position: absolute;
   top: 0;
   left: 0;
-  width: 143px;
-  height: 200px;
+  width: 100px;
+  height: 140px;
+  border-radius: 14px;
+  object-fit: cover;
+  opacity: 0.4;
+  z-index: 1;
+  transition: opacity 0.3s ease;
 }
+
+.new_depth_card_box:hover .wrapper .card_bg_img {
+  opacity: 0.6;
+}
+
+/* Image Box Container */
 .new_depth_card_box .wrapper .image_box {
   position: absolute;
   top: 0;
   left: 0;
-  width: 143px;
-  height: 120px;
+  width: 100px;
+  height: 90px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   z-index: 5;
+  padding-bottom: 4px;
 }
+
+/* Player Headshot */
 .new_depth_card_box .wrapper .image_box img {
-  width: 100px;
-  height: 100px;
+  width: 60px;
+  height: 60px;
   object-fit: cover;
   border-radius: 50%;
+  border: 2px solid rgba(34, 197, 94, 0.5);
+  box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.8),
+              0 0 12px rgba(34, 197, 94, 0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 6;
 }
+
+.new_depth_card_box:hover .wrapper .image_box img {
+  border: 2px solid rgba(34, 197, 94, 0.8);
+  box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.8),
+              0 0 20px rgba(34, 197, 94, 0.5);
+  transform: scale(1.08);
+}
+
+/* Player Name */
 .new_depth_card_box .wrapper .player_name {
-  width: 100%;
   position: absolute;
-  top: 141px;
-  padding-left: 20px;
+  top: 88px;
+  left: 0;
+  right: 0;
+  padding: 4px 6px;
+  z-index: 10;
+  text-align: center;
 }
+
 .new_depth_card_box .wrapper .player_name h2 {
-  font-size: 11px;
-  width: 100px;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.2;
+  white-space: nowrap;
   overflow: hidden;
-  height: 13px;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
+
+/* Stats Container */
 .new_depth_card_box .wrapper .opponent_text,
 .new_depth_card_box .wrapper .team_text,
 .new_depth_card_box .wrapper .injury_text {
   position: absolute;
-  top: 160px;
-  font-size: 11px;
-  width: 25px;
+  bottom: 6px;
+  font-size: 8px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
   overflow: hidden;
-  height: 13px;
-  font-weight: 500;
+  text-overflow: ellipsis;
+  z-index: 10;
+  transition: color 0.3s ease;
 }
+
+.new_depth_card_box:hover .wrapper .opponent_text,
+.new_depth_card_box:hover .wrapper .team_text,
+.new_depth_card_box:hover .wrapper .injury_text {
+  color: rgba(34, 197, 94, 0.8);
+}
+
 .new_depth_card_box .wrapper .opponent_text {
-  left: 25px;
+  left: 6px;
+  max-width: 28px;
 }
+
 .new_depth_card_box .wrapper .team_text {
-  left: 53px;
+  left: 38px;
+  max-width: 28px;
 }
+
 .new_depth_card_box .wrapper .injury_text {
-  left: 85px;
+  right: 6px;
+  max-width: 35px;
 }
 
-/* DEFENSE */
-.defense_s {
-  top: 100px !important;
-  left: 1300px !important;
-}
-.defense_cbs {
-  top: 100px !important;
-  left: 550px !important;
-}
-.defense_lb-1 {
-  top: 200px !important;
-  left: 730px !important;
-}
-.defense_lb-2 {
-  top: 200px !important;
-  left: 900px !important;
-}
-.defense_lbcbs {
-  top: 200px !important;
-  left: 1070px !important;
-}
-.defense_cb-1 {
-  top: 380px !important;
-  left: 400px !important;
-}
-.defense_cb-2 {
-  top: 380px !important;
-  left: 1440px !important;
-}
-.defense_de {
-  top: 440px !important;
-  left: 640px !important;
-}
-.defense_dt {
-  top: 440px !important;
-  left: 815px !important;
-}
-.defense_dtde {
-  top: 440px !important;
-  left: 990px !important;
-}
-.defense_dtlb {
-  top: 440px !important;
-  left: 1165px !important;
-}
-
-
-
-
-/* DEFENSE 3-4 FORMATION */
-
-
-
-
-
-.formation_34 .defense_s {
-  top: 150px !important;
-  left: 1150px !important;
-}
-.formation_34 .defense_cbs {
-  /* top: 100px !important;
-  left: 550px !important; */
-  display: none !important;
-}
-.formation_34 .defense_s-2 {
-  top: 150px !important;
-  left: 600px !important;
-
-}
-.formation_34 .defense_lb-1 {
-  top: 330px !important;
-  left: 780px !important;
-}
-.formation_34 .defense_lb-2 {
-  top: 330px !important;
-  left: 1010px !important;
-
-
-}
-.formation_34 .defense_lbcbs {
-  /* top: 200px !important;
-  left: 1070px !important; */
-  display: none !important;
-}
-
-
-.formation_34 .defense_lb-3 {
-  /* top: 430px !important;
-  left: 500px !important; */
-  display: none;
-}
-
-
-.formation_34 .defense34_old-1 {
-  top: 430px !important;
-  left: 500px !important;
-}
-
-.formation_34 .defense_lb-4 {
-  /* top: 430px !important;
-  left: 1280px !important; */
-  display: none;
-}
-
-.formation_34 .defense34_old-2 {
-  top: 430px !important;
-  left: 1280px !important;
-}
-
-.formation_34 .defense_cb-1 {
-  top: 580px !important;
-  left: 230px !important;
-}
-.formation_34 .defense_cb-2 {
-  top: 580px !important;
-  left: 1580px !important;
-}
-
-.formation_34 .defense_cb-3 {
-  /* top: 380px !important;
-  left: 1320px !important; */
-  display: none !important;
-}
-
-.formation_34 .defense_cb-4 {
-  /* top: 380px !important;
-  left: 1320px !important; */
-  display: none !important;
-}
-.formation_34 .defense_de {
-  /* top: 580px !important;
-  left: 690px !important; */
-  display: none;
-}
-
-.formation_34 .defense34_dl {
-  top: 580px !important;
-  left: 690px !important;
- 
-}
-
-.formation_34 .defense_dt {
-  top: 580px !important;
-  left: 900px !important;
-}
-.formation_34 .defense_dtde {
-  /* top: 440px !important;
-  left: 990px !important; */
-  display: none !important;
-}
-
-.formation_34 .defense_dt-2 {
-  /* top: 440px !important;
-  left: 990px !important; */
-  display: none !important;
- 
-}
-
-.formation_34 .defense_dtlb {
-  /* top: 440px !important;
-  left: 1165px !important; */
-  display: none !important;
-}
-.formation_34 .defense_de-2 {
-  /* top: 580px !important;
-  left: 1105px !important; */
-  display: none;
-}
-
-.formation_34 .defense34_dt {
-  top: 580px !important;
-  left: 1105px !important;
-
-}
-
-
-
-/* DEFENSE 4-3 FORMATION */
-
-
-.formation_43 .defense_s {
-  top: 100px !important;
-  left: 1150px !important;
-}
-.formation_43 .defense_cbs {
-  /* top: 100px !important;
-  left: 550px !important; */
-  display: none !important;
-}
-.formation_43 .defense_s-2 {
-  top: 100px !important;
-  left: 600px !important;
-
-}
-.formation_43 .defense_lb-1 {
-  top: 280px !important;
-  left: 730px !important;
-}
-.formation_43 .defense_lb-2 {
-  top: 280px !important;
-  left: 900px !important;
-}
-.formation_43 .defense_lbcbs {
-  /* top: 200px !important;
-  left: 1070px !important; */
-  display: none !important;
-}
-
-.formation_43 .defense_lb-3 {
-  top: 280px !important;
-  left: 1070px !important;
- 
-}
-
-.formation_43 .defense_cb-1 {
-  top: 480px !important;
-  left: 310px !important;
-}
-.formation_43 .defense_cb-2 {
-  top: 480px !important;
-  left: 1540px !important;
-}
-.formation_43 .defense_de {
-  top: 480px !important;
-  left: 600px !important;
-}
-.formation_43 .defense_dt {
-  top: 480px !important;
-  left: 815px !important;
-}
-.formation_43 .defense_dtde {
-  /* top: 440px !important;
-  left: 990px !important; */
-  display: none !important;
-}
-
-.formation_43 .defense_dt-2 {
-  top: 480px !important;
-  left: 990px !important;
- 
-}
-
-.formation_43 .defense_dtlb {
-  /* top: 440px !important;
-  left: 1165px !important; */
-  display: none !important;
-}
-.formation_43 .defense_de-2 {
-  top: 480px !important;
-  left: 1165px !important;
-}
-
-
-
-.formation_43 .defense_cb-3 {
-  /* top: 380px !important;
-  left: 1320px !important; */
-  display: none !important;
-}
-
-.formation_43 .defense_cb-4{
-  /* top: 380px !important;
-  left: 1320px !important; */
-  display: none !important;
-}
-
-.formation_43 .defense_lb-4 {
-  display: none !important;
-}
-
-.formation_43 .defense34_old-1{
-  /* top: 380px !important;
-  left: 1320px !important; */
-  display: none !important;
-}
-.formation_43 .defense34_old-2{
-  /* top: 380px !important;
-  left: 1320px !important; */
-  display: none !important;
-}
-
-.formation_43 .defense34_dt {
-  /* top: 380px !important;
-  left: 1320px !important; */
-  display: none !important;
-}
-
-.formation_43 .defense34_dl {
-  /* top: 380px !important;
-  left: 1320px !important; */
-  display: none !important;
-}
-
-
-
-
-
-/* DEFENSE 4-2-5 NICKEL FORMATION */
-
-
-
-
-
-
-.formation_425 .defense_s {
-  top: 100px !important;
-  left: 1150px !important;
-}
-.formation_425 .defense_cbs {
-  /* top: 100px !important;
-  left: 550px !important; */
-  display: none !important;
-}
-.formation_425 .defense_s-2 {
-  top: 100px !important;
-  left: 650px !important;
-
-}
-.formation_425 .defense_lb-1 {
-  top: 265px !important;
-  left: 830px !important;
-}
-.formation_425 .defense_lb-2 {
-  top: 265px !important;
-  left: 1000px !important;
-
-
-}
-.formation_425 .defense_lbcbs {
-  /* top: 200px !important;
-  left: 1070px !important; */
-  display: none !important;
-}
-
-.formation_425 .defense_lb-3 {
-  /* top: 200px !important;
-  left: 1070px !important; */
-  display: none !important;
-}
-
-.formation_425 .defense_cb-1 {
-  top: 480px !important;
-  left: 310px !important;
-}
-.formation_425 .defense_cb-2 {
-  top: 480px !important;
-  left: 1540px !important;
-}
-
-.formation_425 .defense_cb-3 {
-  top: 380px !important;
-  left: 1350px !important;
-}
-.formation_425 .defense_de {
-  top: 480px !important;
-  left: 640px !important;
-}
-.formation_425 .defense_dt {
-  top: 480px !important;
-  left: 805px !important;
-}
-.formation_425 .defense_dtde {
-  /* top: 440px !important;
-  left: 990px !important; */
-  display: none !important;
-}
-
-.formation_425 .defense_dt-2 {
-  top: 480px !important;
-  left: 990px !important;
- 
-}
-
-.formation_425 .defense_dtlb {
-  /* top: 440px !important;
-  left: 1165px !important; */
-  display: none !important;
-}
-.formation_425 .defense_de-2 {
-  top: 480px !important;
-  left: 1165px !important;
-}
-
-.formation_425 .defense_cb-4 {
-  /* top: 380px !important;
-  left: 1320px !important; */
-  display: none !important;
-}
-
-
-
-
-.formation_425 .defense34_old-1{
-  /* top: 380px !important;
-  left: 1320px !important; */
-  display: none !important;
-}
-.formation_425 .defense34_old-2{
-  /* top: 380px !important;
-  left: 1320px !important; */
-  display: none !important;
-}
-
-.formation_425 .defense34_dt {
-  /* top: 380px !important;
-  left: 1320px !important; */
-  display: none !important;
-}
-
-.formation_425 .defense34_dl {
-  /* top: 380px !important;
-  left: 1320px !important; */
-  display: none !important;
-}
-
-.formation_425 .defense_lb-4 {
-  display: none !important;
-}
-
-
-/* DEFENSE DIME  FORMATION */
-
-
-
-.dime .defense_s {
-  top: 100px !important;
-  left: 1160px !important;
-}
-.dime .defense_cbs {
-  /* top: 100px !important;
-  left: 550px !important; */
-  display: none !important;
-}
-.dime .defense_s-2 {
-  top: 100px !important;
-  left: 640px !important;
-
-}
-.dime .defense_lb-1 {
-  top: 300px !important;
-  left: 930px !important;
-}
-.dime .defense_lb-2 {
-  /* top: 200px !important;
-  left: 1000px !important; */
-  display: none !important;
-
-
-}
-.dime .defense_lbcbs {
-  /* top: 200px !important;
-  left: 1070px !important; */
-  display: none !important;
-}
-
-.dime .defense_lb-3 {
-  /* top: 200px !important;
-  left: 1070px !important; */
-  display: none !important;
-}
-
-.dime .defense_cb-1 {
-  top: 500px !important;
-  left: 310px !important;
-}
-.dime .defense_cb-2 {
-  top: 500px !important;
-  left: 1540px !important;
-}
-
-.dime .defense_cb-3 {
-  top: 410px !important;
-  left: 1350px !important;
-}
-.dime .defense_cb-4 {
-  top: 410px !important;
-  right: 1290px !important;
-}
-.dime .defense_de {
-  top: 500px !important;
-  left: 640px !important;
-}
-.dime .defense_dt {
-  top: 500px !important;
-  left: 815px !important;
-}
-.dime .defense_dtde {
-  /* top: 440px !important;
-  left: 990px !important; */
-  display: none !important;
-}
-
-.dime .defense_dt-2 {
-  top: 500px !important;
-  left: 990px !important;
- 
-}
-
-.dime .defense_dtlb {
-  /* top: 440px !important;
-  left: 1165px !important; */
-  display: none !important;
-}
-.dime .defense_de-2 {
-  top: 500px !important;
-  left: 1165px !important;
-}
-
-
-
-
-.dime .defense34_old-1{
-  /* top: 380px !important;
-  left: 1320px !important; */
-  display: none !important;
-}
-.dime .defense34_old-2{
-  /* top: 380px !important;
-  left: 1320px !important; */
-  display: none !important;
-}
-
-.dime .defense34_dt {
-  /* top: 380px !important;
-  left: 1320px !important; */
-  display: none !important;
-}
-
-.dime .defense34_dl {
-  /* top: 380px !important;
-  left: 1320px !important; */
-  display: none !important;
-}
-
-.dime .defense_lb-4 {
-  display: none !important;
-}
-
-
-
-
-/* OFFENSE */
-.offense_te {
-  top: 280px !important;
-  left: 1300px !important;
-}
-.offense_ol-1 {
-  top: 270px !important;
-  left: 600px !important;
-}
-.offense_ol-2 {
-  top: 265px !important;
-  left: 740px !important;
-}
-.offense_ol-3 {
-  top: 260px !important;
-  left: 880px !important;
-}
-.offense_ol-4 {
-  top: 265px !important;
-  left: 1020px !important;
-}
-.offense_ol-5 {
-  top: 270px !important;
-  left: 1160px !important;
-}
-.offense_wr-1 {
-  top: 270px !important;
-  left: 330px !important;
-}
-.offense_rbwrte {
-  top: 390px !important;
-  left: 460px !important;
-}
-.offense_qb-1 {
-  top: 430px !important;
-  left: 880px !important;
-}
-.offense_rb {
-  top: 435px !important;
-  left: 680px !important;
-}
-
-.offense_rb-2 {
-  display: none !important;
-}
-.offense_wr-2 {
-  top: 320px !important;
-  left: 1470px !important;
-}
-.offense_qb-2 {
-  top: 20px !important;
-  left: 260px !important;
-}
-
-
-
-
-/* OFFENSE SHOTGUN NORMAL FORMATION */
-
-
-.shortgunnormal .offense_te {
-  top: 280px !important;
-  left: 1300px !important;
-}
-
-.shortgunnormal .offense_te-2 {
-  display: none !important;
-}
-.shortgunnormal .offense_ol-1 {
-  top: 270px !important;
-  left: 600px !important;
-}
-.shortgunnormal .offense_ol-2 {
-  top: 265px !important;
-  left: 740px !important;
-}
-.shortgunnormal .offense_ol-3 {
-  top: 260px !important;
-  left: 880px !important;
-}
-.shortgunnormal .offense_ol-4 {
-  top: 265px !important;
-  left: 1020px !important;
-}
-.shortgunnormal .offense_ol-5 {
-  top: 270px !important;
-  left: 1160px !important;
-}
-.shortgunnormal .offense_wr-1 {
-  top: 270px !important;
-  left: 330px !important;
-}
-.shortgunnormal .offense_rbwrte {
-  /* top: 390px !important;
-  left: 460px !important; */
-  display: none !important;
-}
-
-
-.shortgunnormal .offense_wr-3 {
-  top: 390px !important;
-  left: 460px !important;
- 
-}
-.shortgunnormal .offense_qb-1 {
-  top: 480px !important;
-  left: 880px !important;
-}
-.shortgunnormal .offense_rb {
-  top: 480px !important;
-  left: 680px !important;
-}
-
-.shortgunnormal .offense_rb-2 {
-  display: none !important;
-}
-.shortgunnormal .offense_wr-2 {
-  top: 320px !important;
-  left: 1470px !important;
-}
-.shortgunnormal .offense_qb-2 {
-  top: 20px !important;
-  left: 260px !important;
-}
-
-
-
-/* OFFENSE PISTOL FORMATION */
-
-.pistol .offense_te {
-  top: 300px !important;
-  left: 1300px !important;
-}
-.pistol .offense_ol-1 {
-  top: 270px !important;
-  left: 600px !important;
-}
-.pistol .offense_ol-2 {
-  top: 265px !important;
-  left: 740px !important;
-}
-.pistol .offense_ol-3 {
- 
-  top: 260px !important;
-  left: 880px !important;
-}
-.pistol .offense_ol-4 {
-  top: 265px !important;
-  left: 1020px !important;
-}
-.pistol .offense_ol-5 {
-  top: 270px !important;
-  left: 1160px !important;
-}
-.pistol .offense_wr-1 {
-  top: 270px !important;
-  left: 330px !important;
-}
-.pistol .offense_rbwrte {
-  /* top: 390px !important;
-  left: 460px !important; */
-  display: none !important;
-}
-.pistol .offense_qb-1 {
-  top: 470px !important;
-  left: 880px !important;
-}
-
-.pistol .offense_rb-2 {
-  display: block !important;
-  top: 690px !important;
-  left: 880px !important;
-}
-.pistol .offense_rb {
-  top: 470px !important;
-  left: 680px !important;
-}
-.pistol .offense_wr-2 {
-  top: 270px !important;
-  left: 1470px !important;
-}
-
-.pistol .offense_te-2 {
-display: none !important;
-}
-.pistol .offense_wr-3 {
-  display: none !important;
-  }
-.pistol .offense_qb-2 {
-  top: 20px !important;
-  left: 260px !important;
-}
-
-
-/* OFFENSE SINGLE BACK  FORMATION */
-
-.singleback .offense_te {
-  top: 280px !important;
-  left: 1300px !important;
-}
-.singleback .offense_ol-1 {
-  top: 270px !important;
-  left: 600px !important;
-}
-.singleback .offense_ol-2 {
-  top: 265px !important;
-  left: 740px !important;
-}
-.singleback .offense_ol-3 {
- 
-  top: 260px !important;
-  left: 880px !important;
-}
-.singleback .offense_ol-4 {
-  top: 265px !important;
-  left: 1020px !important;
-}
-.singleback .offense_ol-5 {
-  top: 270px !important;
-  left: 1160px !important;
-}
-.singleback .offense_wr-1 {
-  top: 270px !important;
-  left: 330px !important;
-}
-.singleback .offense_rbwrte {
-  /* top: 390px !important;
-  left: 460px !important; */
-  display: none !important;
-}
-
-
-.singleback .offense_te-2 {
-  top: 400px !important;
-  left: 460px !important;
- 
-
-}
-
-.singleback .offense_qb-1 {
-  top: 430px !important;
-  left: 880px !important;
-}
-
-/* .singleback .offense_rb-2 {
-  display: block !important;
-  top: 430px !important;
-  left: 1050px !important;
-} */
-.singleback .offense_rb {
-  top: 650px !important;
-  left: 880px !important;
-}
-.singleback .offense_wr-2 {
-  top: 270px !important;
-  left: 1470px !important;
-  
-}
-
-.singleback .offense_wr-3 {
-display: none !important;
-  
-}
-
-.singleback .offense_qb-2 {
-  top: 20px !important;
-  left: 260px !important;
-}
-
-
-
-
-/* OFFENSE SHOTGUN BUNCH FORMATION */
-
-
-.shotgunbunch .offense_te {
-  top: 280px !important;
-  left: 1300px !important;
-}
-
-.shotgunbunch .offense_ol-1 {
-  top: 270px !important;
-  left: 600px !important;
-}
-.shotgunbunch .offense_ol-2 {
-  top: 265px !important;
-  left: 740px !important;
-}
-.shotgunbunch .offense_ol-3 {
- 
-  top: 260px !important;
-  left: 880px !important;
-}
-.shotgunbunch .offense_ol-4 {
-  top: 265px !important;
-  left: 1020px !important;
-}
-.shotgunbunch .offense_ol-5 {
-  top: 270px !important;
-  left: 1160px !important;
-}
-.shotgunbunch .offense_wr-1 {
-  top: 270px !important;
-  left: 330px !important;
-}
-
-.shotgunbunch .offense_rbwrte {
-  /* top: 390px !important;
-  left: 460px !important; */
-  display: none !important;
-}
-.shotgunbunch .offense_qb-1 {
-  top: 490px !important;
-  left: 880px !important;
-}
-
-.shotgunbunch .offense_rb-2 {
-  display: block !important;
-  top: 490px !important;
-  left: 1050px !important;
-}
-.shotgunbunch .offense_rb {
-  top: 490px !important;
-  left: 720px !important;
-}
-.shotgunbunch .offense_wr-2 {
-  /* top: 320px !important;
-  left: 1470px !important; */
-  display: none !important;
-}
-
-.shotgunbunch .offense_wr-3 {
-  /* top: 320px !important;
-  left: 1470px !important; */
-  display: none !important;
-}
-
-.shotgunbunch .offense_te-2{
-    top: 330px !important;
-  left: 1470px !important;
-}
-.shotgunbunch .offense_qb-2 {
-  top: 20px !important;
-  left: 260px !important;
-}
-
-
-/* SPECIAL TEAM */
-.special_team_pk {
-  top: 200px;
-  left: 150px;
-}
-.special_team_pn {
-  top: 380px;
-  left: 50px;
-}
+/* ============================================
+   LOCKED PLAYER OVERLAY
+   ============================================ */
 
 .depth_card_player_locked {
-  z-index: 999 !important;
-  width: 143px;
-  height: 200px;
-  /* border: 1px solid var(--border); */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px;
+  height: 140px;
+  z-index: 999;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: linear-gradient(135deg, rgba(20, 20, 30, 0.85) 0%, rgba(15, 15, 25, 0.95) 100%);
+  border-radius: 14px;
+  border: 1.5px solid rgba(239, 68, 68, 0.4);
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.new_depth_card_box:hover .depth_card_player_locked {
+  border: 1.5px solid rgba(239, 68, 68, 0.7);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+.depth_card_player_locked::before {
+  content: "\01F512";
+  font-size: 24px;
+  filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));
+}
+
+/* ============================================
+   EMPTY/UNFILLED POSITION PULSE ANIMATION
+   ============================================ */
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7),
+                0 0 20px rgba(34, 197, 94, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(34, 197, 94, 0),
+                0 0 30px rgba(34, 197, 94, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0),
+                0 0 20px rgba(34, 197, 94, 0.3);
+  }
+}
+
+.new_depth_card_box.empty .wrapper {
+  animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  border: 1.5px solid rgba(34, 197, 94, 0.4);
+}
+
+.new_depth_card_box.empty .wrapper .card_bg_img {
+  display: none;
+}
+
+/* ============================================
+   POSITION BADGE STYLING
+   ============================================ */
+
+.position-badge {
   position: absolute;
-  border-radius: 3px;
+  top: 6px;
+  right: 6px;
+  background: linear-gradient(135deg, #22C55E, #16A34A);
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 7px;
+  font-weight: 800;
+  color: #0A0F1A;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 20;
+}
+
+.new_depth_card_box:hover .position-badge {
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+}
+
+/* ============================================
+   OFFENSE BASE POSITIONING (default / fallback)
+   ============================================ */
+
+.offense_te { top: 129px !important; left: 961px !important; }
+.offense_te-2 { display: none !important; }
+.offense_ol-1 { top: 117px !important; left: 274px !important; }
+.offense_ol-2 { top: 110px !important; left: 412px !important; }
+.offense_ol-3 { top: 104px !important; left: 550px !important; }
+.offense_ol-4 { top: 110px !important; left: 688px !important; }
+.offense_ol-5 { top: 117px !important; left: 826px !important; }
+.offense_wr-1 { top: 117px !important; left: 87px !important; }
+.offense_wr-2 { top: 351px !important; left: 1013px !important; }
+.offense_wr-3 { display: none !important; }
+.offense_rbwrte { top: 265px !important; left: 162px !important; }
+.offense_qb-1 { top: 376px !important; left: 550px !important; }
+.offense_rb { top: 389px !important; left: 405px !important; }
+.offense_rb-2 { display: none !important; }
+/* offense_qb-2 (Backup QB), K, and P are rendered in the bench-strip below the field */
+
+/* ============================================
+   OFFENSE SHOTGUN NORMAL
+   ============================================ */
+
+.shortgunnormal .offense_qb-1 { top: 376px !important; left: 550px !important; }
+.shortgunnormal .offense_rb { top: 389px !important; left: 405px !important; }
+.shortgunnormal .offense_wr-1 { top: 117px !important; left: 87px !important; }
+.shortgunnormal .offense_wr-2 { top: 351px !important; left: 1013px !important; }
+.shortgunnormal .offense_wr-3 {
+  display: block !important;
+  top: 265px !important;
+  left: 162px !important;
+}
+.shortgunnormal .offense_te { top: 129px !important; left: 961px !important; }
+.shortgunnormal .offense_te-2 { display: none !important; }
+.shortgunnormal .offense_rbwrte { display: none !important; }
+.shortgunnormal .offense_rb-2 { display: none !important; }
+.shortgunnormal .offense_ol-1 { top: 117px !important; left: 274px !important; }
+.shortgunnormal .offense_ol-2 { top: 110px !important; left: 412px !important; }
+.shortgunnormal .offense_ol-3 { top: 104px !important; left: 550px !important; }
+.shortgunnormal .offense_ol-4 { top: 110px !important; left: 688px !important; }
+.shortgunnormal .offense_ol-5 { top: 117px !important; left: 826px !important; }
+
+/* ============================================
+   OFFENSE PISTOL
+   ============================================ */
+
+.pistol .offense_qb-1 { top: 351px !important; left: 550px !important; }
+.pistol .offense_rb { top: 351px !important; left: 405px !important; }
+.pistol .offense_wr-1 { top: 117px !important; left: 87px !important; }
+.pistol .offense_wr-2 { top: 351px !important; left: 1013px !important; }
+.pistol .offense_rb-2 {
+  display: block !important;
+  top: 623px !important;
+  left: 550px !important;
+}
+.pistol .offense_te { top: 154px !important; left: 961px !important; }
+.pistol .offense_te-2 { display: none !important; }
+.pistol .offense_wr-3 { display: none !important; }
+.pistol .offense_rbwrte { display: none !important; }
+.pistol .offense_ol-1 { top: 117px !important; left: 274px !important; }
+.pistol .offense_ol-2 { top: 110px !important; left: 412px !important; }
+.pistol .offense_ol-3 { top: 104px !important; left: 550px !important; }
+.pistol .offense_ol-4 { top: 110px !important; left: 688px !important; }
+.pistol .offense_ol-5 { top: 117px !important; left: 826px !important; }
+
+/* ============================================
+   OFFENSE SINGLEBACK
+   ============================================ */
+
+.singleback .offense_qb-1 { top: 314px !important; left: 550px !important; }
+.singleback .offense_rb { top: 586px !important; left: 550px !important; }
+.singleback .offense_wr-1 { top: 117px !important; left: 87px !important; }
+.singleback .offense_wr-2 { top: 351px !important; left: 1013px !important; }
+.singleback .offense_te { top: 129px !important; left: 961px !important; }
+.singleback .offense_te-2 {
+  display: block !important;
+  top: 277px !important;
+  left: 162px !important;
+}
+.singleback .offense_wr-3 { display: none !important; }
+.singleback .offense_rbwrte { display: none !important; }
+.singleback .offense_rb-2 { display: none !important; }
+.singleback .offense_ol-1 { top: 117px !important; left: 274px !important; }
+.singleback .offense_ol-2 { top: 110px !important; left: 412px !important; }
+.singleback .offense_ol-3 { top: 104px !important; left: 550px !important; }
+.singleback .offense_ol-4 { top: 110px !important; left: 688px !important; }
+.singleback .offense_ol-5 { top: 117px !important; left: 826px !important; }
+
+/* ============================================
+   OFFENSE SHOTGUN BUNCH
+   ============================================ */
+
+.shotgunbunch .offense_qb-1 { top: 389px !important; left: 550px !important; }
+.shotgunbunch .offense_rb { top: 389px !important; left: 405px !important; }
+.shotgunbunch .offense_rb-2 {
+  display: block !important;
+  top: 389px !important;
+  left: 695px !important;
+}
+.shotgunbunch .offense_wr-1 { top: 117px !important; left: 87px !important; }
+.shotgunbunch .offense_wr-2 { display: none !important; }
+.shotgunbunch .offense_wr-3 { display: none !important; }
+.shotgunbunch .offense_te { top: 129px !important; left: 961px !important; }
+.shotgunbunch .offense_te-2 {
+  display: block !important;
+  top: 401px !important;
+  left: 1042px !important;
+}
+.shotgunbunch .offense_rbwrte { display: none !important; }
+.shotgunbunch .offense_ol-1 { top: 117px !important; left: 274px !important; }
+.shotgunbunch .offense_ol-2 { top: 110px !important; left: 412px !important; }
+.shotgunbunch .offense_ol-3 { top: 104px !important; left: 550px !important; }
+.shotgunbunch .offense_ol-4 { top: 110px !important; left: 688px !important; }
+.shotgunbunch .offense_ol-5 { top: 117px !important; left: 826px !important; }
+
+/* ============================================
+   OFFENSE SPREAD
+   ============================================ */
+
+.spread .offense_qb-1 { top: 389px !important; left: 550px !important; }
+.spread .offense_rb { top: 549px !important; left: 550px !important; }
+.spread .offense_wr-1 { top: 104px !important; left: 46px !important; }
+.spread .offense_wr-2 { top: 104px !important; left: 1054px !important; }
+.spread .offense_wr-3 {
+  display: block !important;
+  top: 154px !important;
+  left: 151px !important;
+}
+.spread .offense_rbwrte { top: 154px !important; left: 949px !important; }
+.spread .offense_te { display: none !important; }
+.spread .offense_te-2 { display: none !important; }
+.spread .offense_rb-2 { display: none !important; }
+.spread .offense_ol-1 { top: 240px !important; left: 274px !important; }
+.spread .offense_ol-2 { top: 234px !important; left: 412px !important; }
+.spread .offense_ol-3 { top: 228px !important; left: 550px !important; }
+.spread .offense_ol-4 { top: 234px !important; left: 688px !important; }
+.spread .offense_ol-5 { top: 240px !important; left: 826px !important; }
+
+/* ============================================
+   OFFENSE I-FORMATION
+   ============================================ */
+
+.iformaton .offense_qb-1 { top: 302px !important; left: 550px !important; }
+.iformaton .offense_rbwrte { top: 475px !important; left: 550px !important; }
+.iformaton .offense_rb { top: 648px !important; left: 550px !important; }
+.iformaton .offense_wr-1 { top: 129px !important; left: 87px !important; }
+.iformaton .offense_wr-2 { top: 351px !important; left: 1013px !important; }
+.iformaton .offense_te { top: 129px !important; left: 961px !important; }
+.iformaton .offense_te-2 { display: none !important; }
+.iformaton .offense_wr-3 { display: none !important; }
+.iformaton .offense_rb-2 { display: none !important; }
+.iformaton .offense_ol-1 { top: 129px !important; left: 274px !important; }
+.iformaton .offense_ol-2 { top: 123px !important; left: 412px !important; }
+.iformaton .offense_ol-3 { top: 117px !important; left: 550px !important; }
+.iformaton .offense_ol-4 { top: 123px !important; left: 688px !important; }
+.iformaton .offense_ol-5 { top: 129px !important; left: 826px !important; }
+
+/* ============================================
+   DEFENSE 4-3 FORMATION
+   Field: 1100px wide, center = 550px
+   Cards: 100px wide with translateX(-50%)
+   Min safe left: ~60px, Max safe left: ~1040px
+   ============================================ */
+
+.formation_43 .defense_s { top: 59px !important; left: 700px !important; }
+.formation_43 .defense_s-2 { top: 59px !important; left: 400px !important; }
+.formation_43 .defense_cbs { display: none !important; }
+.formation_43 .defense_lb-1 { top: 280px !important; left: 405px !important; }
+.formation_43 .defense_lb-2 { top: 280px !important; left: 550px !important; }
+.formation_43 .defense_lb-3 {
+  display: block !important;
+  top: 280px !important;
+  left: 695px !important;
+}
+.formation_43 .defense_lb-4 { display: none !important; }
+.formation_43 .defense_lbcbs { display: none !important; }
+.formation_43 .defense_cb-1 { top: 500px !important; left: 120px !important; }
+.formation_43 .defense_cb-2 { top: 500px !important; left: 980px !important; }
+.formation_43 .defense_cb-3 { display: none !important; }
+.formation_43 .defense_cb-4 { display: none !important; }
+.formation_43 .defense_de { top: 530px !important; left: 350px !important; }
+.formation_43 .defense_dt { top: 530px !important; left: 480px !important; }
+.formation_43 .defense_dt-2 { top: 530px !important; left: 620px !important; }
+.formation_43 .defense_de-2 { top: 530px !important; left: 750px !important; }
+.formation_43 .defense_dtde { display: none !important; }
+.formation_43 .defense_dtlb { display: none !important; }
+.formation_43 .defense34_dl { display: none !important; }
+.formation_43 .defense34_dt { display: none !important; }
+.formation_43 .defense34_old-1 { display: none !important; }
+.formation_43 .defense34_old-2 { display: none !important; }
+
+/* ============================================
+   DEFENSE 3-4 FORMATION
+   ============================================ */
+
+.formation_34 .defense_s { top: 100px !important; left: 700px !important; }
+.formation_34 .defense_s-2 { top: 100px !important; left: 400px !important; }
+.formation_34 .defense_cbs { display: none !important; }
+.formation_34 .defense_lb-1 { top: 300px !important; left: 440px !important; }
+.formation_34 .defense_lb-2 { top: 300px !important; left: 660px !important; }
+.formation_34 .defense_lb-3 { display: none !important; }
+.formation_34 .defense_lb-4 { display: none !important; }
+.formation_34 .defense_lbcbs { display: none !important; }
+.formation_34 .defense34_old-1 {
+  display: block !important;
+  top: 440px !important;
+  left: 260px !important;
+}
+.formation_34 .defense34_old-2 {
+  display: block !important;
+  top: 440px !important;
+  left: 840px !important;
+}
+.formation_34 .defense_cb-1 { top: 600px !important; left: 110px !important; }
+.formation_34 .defense_cb-2 { top: 600px !important; left: 990px !important; }
+.formation_34 .defense_cb-3 { display: none !important; }
+.formation_34 .defense_cb-4 { display: none !important; }
+.formation_34 .defense34_dl {
+  display: block !important;
+  top: 600px !important;
+  left: 412px !important;
+}
+.formation_34 .defense_dt { top: 600px !important; left: 550px !important; }
+.formation_34 .defense34_dt {
+  display: block !important;
+  top: 600px !important;
+  left: 688px !important;
+}
+.formation_34 .defense_de { display: none !important; }
+.formation_34 .defense_de-2 { display: none !important; }
+.formation_34 .defense_dtde { display: none !important; }
+.formation_34 .defense_dtlb { display: none !important; }
+.formation_34 .defense_dt-2 { display: none !important; }
+
+/* ============================================
+   DEFENSE NICKEL (4-2-5)
+   ============================================ */
+
+.formation_425 .defense_s { top: 59px !important; left: 700px !important; }
+.formation_425 .defense_s-2 { top: 59px !important; left: 400px !important; }
+.formation_425 .defense_cbs { display: none !important; }
+.formation_425 .defense_lb-1 { top: 260px !important; left: 470px !important; }
+.formation_425 .defense_lb-2 { top: 260px !important; left: 630px !important; }
+.formation_425 .defense_lb-3 { display: none !important; }
+.formation_425 .defense_lb-4 { display: none !important; }
+.formation_425 .defense_lbcbs { display: none !important; }
+.formation_425 .defense_cb-1 { top: 500px !important; left: 120px !important; }
+.formation_425 .defense_cb-2 { top: 500px !important; left: 980px !important; }
+.formation_425 .defense_cb-3 {
+  display: block !important;
+  top: 380px !important;
+  left: 840px !important;
+}
+.formation_425 .defense_cb-4 { display: none !important; }
+.formation_425 .defense_de { top: 530px !important; left: 350px !important; }
+.formation_425 .defense_dt { top: 530px !important; left: 480px !important; }
+.formation_425 .defense_dt-2 { top: 530px !important; left: 620px !important; }
+.formation_425 .defense_de-2 { top: 530px !important; left: 750px !important; }
+.formation_425 .defense_dtde { display: none !important; }
+.formation_425 .defense_dtlb { display: none !important; }
+.formation_425 .defense34_dl { display: none !important; }
+.formation_425 .defense34_dt { display: none !important; }
+.formation_425 .defense34_old-1 { display: none !important; }
+.formation_425 .defense34_old-2 { display: none !important; }
+
+/* ============================================
+   DEFENSE DIME
+   ============================================ */
+
+.dime .defense_s { top: 59px !important; left: 700px !important; }
+.dime .defense_s-2 { top: 59px !important; left: 400px !important; }
+.dime .defense_cbs { display: none !important; }
+.dime .defense_lb-1 { top: 270px !important; left: 550px !important; }
+.dime .defense_lb-2 { display: none !important; }
+.dime .defense_lb-3 { display: none !important; }
+.dime .defense_lb-4 { display: none !important; }
+.dime .defense_lbcbs { display: none !important; }
+.dime .defense_cb-1 { top: 400px !important; left: 110px !important; }
+.dime .defense_cb-2 { top: 400px !important; left: 990px !important; }
+.dime .defense_cb-3 {
+  display: block !important;
+  top: 290px !important;
+  left: 230px !important;
+}
+.dime .defense_cb-4 {
+  display: block !important;
+  top: 290px !important;
+  left: 870px !important;
+}
+.dime .defense_de { top: 550px !important; left: 350px !important; }
+.dime .defense_dt { top: 550px !important; left: 480px !important; }
+.dime .defense_dt-2 { top: 550px !important; left: 620px !important; }
+.dime .defense_de-2 { top: 550px !important; left: 750px !important; }
+.dime .defense_dtde { display: none !important; }
+.dime .defense_dtlb { display: none !important; }
+.dime .defense34_dl { display: none !important; }
+.dime .defense34_dt { display: none !important; }
+.dime .defense34_old-1 { display: none !important; }
+.dime .defense34_old-2 { display: none !important; }
+
+/* ============================================
+   DEFENSE 3-3-5
+   ============================================ */
+
+.nickel .defense_s { top: 33px !important; left: 690px !important; }
+.nickel .defense_s-2 { top: 33px !important; left: 410px !important; }
+.nickel .defense_cbs { display: none !important; }
+.nickel .defense_lb-1 { top: 270px !important; left: 400px !important; }
+.nickel .defense_lb-2 { top: 270px !important; left: 550px !important; }
+.nickel .defense_lb-3 {
+  display: block !important;
+  top: 270px !important;
+  left: 700px !important;
+}
+.nickel .defense_lb-4 { display: none !important; }
+.nickel .defense_lbcbs { display: none !important; }
+.nickel .defense_cb-1 { top: 370px !important; left: 120px !important; }
+.nickel .defense_cb-2 { top: 370px !important; left: 980px !important; }
+.nickel .defense_cb-3 {
+  display: block !important;
+  top: 170px !important;
+  left: 230px !important;
+}
+.nickel .defense_cb-4 { display: none !important; }
+.nickel .defense34_dl {
+  display: block !important;
+  top: 550px !important;
+  left: 412px !important;
+}
+.nickel .defense_dt { top: 550px !important; left: 550px !important; }
+.nickel .defense34_dt {
+  display: block !important;
+  top: 550px !important;
+  left: 688px !important;
+}
+.nickel .defense_de { display: none !important; }
+.nickel .defense_de-2 { display: none !important; }
+.nickel .defense_dt-2 { display: none !important; }
+.nickel .defense_dtde { display: none !important; }
+.nickel .defense_dtlb { display: none !important; }
+.nickel .defense34_old-1 { display: none !important; }
+.nickel .defense34_old-2 { display: none !important; }
+
+/* ============================================
+   DEFENSE COVER 2
+   ============================================ */
+
+.cover2 .defense_s { top: 20px !important; left: 730px !important; }
+.cover2 .defense_s-2 { top: 20px !important; left: 370px !important; }
+.cover2 .defense_cbs { display: none !important; }
+.cover2 .defense_lb-1 { top: 260px !important; left: 400px !important; }
+.cover2 .defense_lb-2 { top: 260px !important; left: 550px !important; }
+.cover2 .defense_lb-3 {
+  display: block !important;
+  top: 260px !important;
+  left: 700px !important;
+}
+.cover2 .defense_lb-4 { display: none !important; }
+.cover2 .defense_lbcbs { display: none !important; }
+.cover2 .defense_cb-1 { top: 450px !important; left: 120px !important; }
+.cover2 .defense_cb-2 { top: 450px !important; left: 980px !important; }
+.cover2 .defense_cb-3 { display: none !important; }
+.cover2 .defense_cb-4 { display: none !important; }
+.cover2 .defense_de { top: 530px !important; left: 350px !important; }
+.cover2 .defense_dt { top: 530px !important; left: 480px !important; }
+.cover2 .defense_dt-2 { top: 530px !important; left: 620px !important; }
+.cover2 .defense_de-2 { top: 530px !important; left: 750px !important; }
+.cover2 .defense_dtde { display: none !important; }
+.cover2 .defense_dtlb { display: none !important; }
+.cover2 .defense34_dl { display: none !important; }
+.cover2 .defense34_dt { display: none !important; }
+.cover2 .defense34_old-1 { display: none !important; }
+.cover2 .defense34_old-2 { display: none !important; }
+
+/* ============================================
+   KICKER, PUNTER & BACKUP QB — always at
+   the bottom of the field on offense
+   ============================================ */
+
+/* BQB, K, P are rendered in the bench-strip below the field (not on it) */
+/* Override absolute positioning when inside bench-strip */
+.bench-strip .new_depth_card_box,
+.bench-strip .depth_card_player_locked {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+}
+
+.bench-strip .new_depth_card_box {
+  width: 100px;
+  height: 140px;
+  display: block !important;
+}
+
+.bench-strip .new_depth_card_box .image_box {
+  height: 80px;
+}
+
+.bench-strip .new_depth_card_box .image_box img {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+}
+
+.bench-strip .new_depth_card_box .name p {
+  font-size: 10px;
+  width: 90px;
+}
+
+.bench-strip .new_depth_card_box .text h2 {
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.bench-strip .new_depth_card_box .text {
+  height: 34px;
+}
+
+/* ============================================
+   RESPONSIVE AND ACCESSIBILITY
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .new_depth_card_box,
+  .new_depth_card_box .wrapper,
+  .new_depth_card_box .wrapper .image_box img,
+  .new_depth_card_box .wrapper .opponent_text,
+  .new_depth_card_box .wrapper .team_text,
+  .new_depth_card_box .wrapper .injury_text,
+  .depth_card_player_locked {
+    transition: none;
+    animation: none;
+  }
+}
+
+@media (hover: none) {
+  .new_depth_card_box:hover {
+    transform: translateX(-50%);
+    filter: none;
+  }
+
+  .new_depth_card_box:hover .wrapper {
+    border: 1.5px solid rgba(34, 197, 94, 0.2);
+    box-shadow: none;
+  }
+
+  .new_depth_card_box:hover .wrapper .image_box img {
+    border: 2px solid rgba(34, 197, 94, 0.5);
+    box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.8),
+                0 0 12px rgba(34, 197, 94, 0.25);
+    transform: none;
+  }
 }

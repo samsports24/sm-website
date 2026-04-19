@@ -393,7 +393,7 @@
 .player_interface_container .player_info_box_new {
   border-radius: 1rem;
   /* opacity: 0.2; */
-  background: url('../../assets/trans-league-banner.png'), #30215d 50% / cover no-repeat;
+  background: url('../../assets/trans-league-banner.png'), #1A2332 50% / cover no-repeat;
   background-repeat: no-repeat;
   /* background-blend-mode: multiply; */
   width: 100%;

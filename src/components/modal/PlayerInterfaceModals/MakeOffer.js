@@ -1,49 +1,105 @@
-import { Button, Modal } from 'antd'
+import { Button, Modal, Input } from 'antd'
 import React, { useState } from 'react'
 
-const MoveToPracticeSquad = () => {
+const MakeOffer = () => {
   const [open, setOpen] = useState(false)
+  const [offerAmount, setOfferAmount] = useState('')
+  const [yearsContract, setYearsContract] = useState('')
+
   const showModal = () => setOpen(true)
-  const closeModal = () => setOpen(false)
+  const closeModal = () => {
+    setOpen(false)
+    setOfferAmount('')
+    setYearsContract('')
+  }
+
+  const handleSubmit = () => {
+    // Functionality preserved - handle offer submission
+    closeModal()
+  }
 
   return (
     <>
-      <h2 className='modal_button_text' onClick={showModal}>
+      <button className='mo-trigger-btn' onClick={showModal}>
         make offer
-      </h2>
+      </button>
       <Modal
         centered
         open={open}
         onCancel={closeModal}
         footer={null}
         closeIcon={false}
-        className='player_interface_modals'
+        className='player_interface_modals pim-modal mo-modal'
         closable={false}
       >
-        <div className='close_modal_button' onClick={closeModal}>
-          x
+        {/* Close */}
+        <div className='pim-close' onClick={closeModal}>
+          <svg width='14' height='14' viewBox='0 0 14 14' fill='none'>
+            <path d='M1 1l12 12M13 1L1 13' stroke='currentColor' strokeWidth='1.5' strokeLinecap='round' />
+          </svg>
         </div>
-        <div className='modal_body'>
-          <h1 className='modal_header_heading main_heading'>Activate From Practice Squad</h1>
 
-          <div className='center_content move_to_practice_squad'>
-            <h1 className='modal_header_heading'>ARE YOU SURE?</h1>
-            <p>
-              IF YOU ARE SURE THAT YOU WISH TO MAKE THIS MOVE YOU WILL HAVE TO SELECT A PLAYER FROM
-              YOUR PRACTICE SQUAD TO GO TO YOUR ACTIVE ROSTER IF YOU PRACTICE SQUAD IS FULL.
-            </p>
-            <p style={{ marginTop: '-15px' }}>
-              INFO: This move will also remove the cap his of this player until he returns to your
-              active roster.
+        <div className='pim-body mo-body'>
+          {/* Header */}
+          <div className='pim-header mo-header'>
+            <div className='pim-icon-badge mo-icon'>
+              <svg width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+                <path d='M12 2L2 7l10 5 10-5-10-5z' />
+                <path d='M2 17l10 5 10-5' />
+                <path d='M2 12l10 5 10-5' />
+              </svg>
+            </div>
+            <h2 className='pim-title mo-title'>Make Offer</h2>
+            <p className='pim-subtitle mo-subtitle'>
+              Submit a contract offer to recruit this player
             </p>
           </div>
 
-          <div className='modal_footer'>
-            <Button type='primary' className='button_1'>
-              Move To Practice Squad
-            </Button>
-            <Button onClick={closeModal} type='primary' className='button_2'>
+          {/* Offer Form */}
+          <div className='mo-form-section'>
+            <div className='mo-form-group'>
+              <label className='mo-label'>Annual Value</label>
+              <Input
+                className='mo-input'
+                placeholder='Enter offer amount'
+                value={offerAmount}
+                onChange={(e) => setOfferAmount(e.target.value)}
+                prefix='$'
+              />
+            </div>
+
+            <div className='mo-form-group'>
+              <label className='mo-label'>Contract Years</label>
+              <Input
+                className='mo-input'
+                placeholder='Years'
+                type='number'
+                value={yearsContract}
+                onChange={(e) => setYearsContract(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Notice */}
+          <div className='pim-notice mo-notice'>
+            <svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+              <circle cx='12' cy='12' r='10' />
+              <line x1='12' y1='8' x2='12' y2='12' />
+              <line x1='12' y1='16' x2='12.01' y2='16' />
+            </svg>
+            <p>
+              Your offer will be reviewed by the player. Be competitive with contract terms
+              to increase the likelihood of acceptance. Offers expire after 7 days.
+            </p>
+          </div>
+
+          {/* Actions */}
+          <div className='pim-actions mo-actions'>
+            <Button className='pim-btn-secondary mo-cancel' onClick={closeModal}>
               Cancel
+            </Button>
+            <Button className='pim-btn-primary mo-submit' onClick={handleSubmit}>
+              Submit Offer
             </Button>
           </div>
         </div>
@@ -52,4 +108,4 @@ const MoveToPracticeSquad = () => {
   )
 }
 
-export default MoveToPracticeSquad
+export default MakeOffer

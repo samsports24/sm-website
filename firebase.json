@@ -8,6 +8,10 @@
     ],
     "rewrites": [
       {
+        "source": "/livescore.html",
+        "destination": "/livescore.html"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }

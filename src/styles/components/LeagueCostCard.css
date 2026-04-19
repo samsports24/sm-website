@@ -17,7 +17,7 @@
 }
 
 .cost-container .top-div p {
-  font-family: Poppins;
+  font-family: var(--font-body);
   font-size: 16px;
   font-style: normal;
   font-weight: 700;
@@ -32,7 +32,7 @@
 }
 
 .cost-container .top-div .details h4 {
-  font-family: Poppins;
+  font-family: var(--font-body);
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
@@ -40,7 +40,7 @@
 }
 
 .cost-container .top-div .details h3 {
-  font-family: Poppins;
+  font-family: var(--font-body);
   font-size: 22px;
   font-style: normal;
   font-weight: 700;
@@ -57,7 +57,7 @@
 }
 
 .cost-container .card-body .widgets-text p {
-  font-family: Poppins;
+  font-family: var(--font-body);
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
@@ -72,7 +72,7 @@
 }
 
 .cost-container .card-body .draft-order h3 {
-  font-family: Poppins;
+  font-family: var(--font-body);
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
@@ -88,7 +88,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: Poppins;
+  font-family: var(--font-body);
   font-size: 16px;
   font-style: normal;
   font-weight: 700;
@@ -114,7 +114,7 @@
 }
 
 .cost-container .card-body .draft-table .table-head h3 {
-  font-family: Poppins;
+  font-family: var(--font-body);
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
@@ -130,7 +130,7 @@
 }
 
 .cost-container .card-body .draft-table .table-row p {
-  font-family: Poppins;
+  font-family: var(--font-body);
   font-size: 16px;
   font-style: normal;
   font-weight: 400;
@@ -139,7 +139,7 @@
 
 .cost-container .card-body .draft-table .table-row span {
   width: 10%;
-  font-family: Poppins;
+  font-family: var(--font-body);
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
@@ -149,4 +149,61 @@
 
 .cost-container .card-body .draft-table .table-row .total {
   color: var(--greenText) !important;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .cost-container .card-body .draft-order Input {
+    width: 100%;
+    padding: 10px 20px;
+    margin-top: 10px;
+  }
+
+  .cost-container .card-body .draft-order {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cost-container .card-body .widgets-text p,
+  .cost-container .card-body .draft-order h3 {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cost-container {
+    border-radius: 12px;
+  }
+
+  .cost-container .top-div {
+    padding: 15px 10px;
+  }
+
+  .cost-container .card-body {
+    padding: 15px 10px;
+  }
+
+  .cost-container .card-body .draft-order Input {
+    width: 100%;
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  .cost-container .card-body .draft-table .table-head h3,
+  .cost-container .card-body .draft-order h3 {
+    font-size: 16px;
+  }
+
+  .cost-container .card-body .widgets-text p {
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  .cost-container .top-div .details h3 {
+    font-size: 18px;
+  }
+
+  .cost-container .top-div .details h4 {
+    font-size: 16px;
+  }
 }

@@ -3,6 +3,7 @@ import { Button, Dropdown, Input, Form, notification } from 'antd'
 import { authLogin } from '../redux'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
+import { useLanguage } from '../i18n/LanguageContext'
 
 import R from '../assets/r.svg'
 import UserIcon from '../assets/user-icon.svg'
@@ -14,7 +15,6 @@ const LoginDropdown = ({ loginFromSideMenu, loginFromNavbar, drawerVisible }) =>
 //  const [showPaymentModal, setShowPaymentModal] = useState(false)
   // const  {showPaymentModal}  = useSelector((state) => state?.user)
   const showPaymentModal = useSelector((state) => state?.user)
-  // console.log('showPaymentModal', showPaymentModal?.showPaymentModal?.modal)
 
   useEffect(() => {
     if (loginFromSideMenu && !drawerVisible) {
@@ -54,20 +54,20 @@ const LoginDropdown = ({ loginFromSideMenu, loginFromNavbar, drawerVisible }) =>
 }
 
 const LoginForm = ({ setOpen }) => {
+  const { t } = useLanguage()
   const [loading, setLoading] = useState(false)
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
   const onFinish = async (values) => {
-    console.log('values',values);
     if (values.userName && values.password) {
       setLoading(true)
       const res = await dispatch(authLogin(values, navigate))
       if (res) setOpen(false)
       setLoading(false)
     } else {
-      notification.error({ message: 'username or password is missing.', duration: 7 })
+      notification.error({ message: t('usernameOrPasswordMissing'), duration: 7 })
       // setOpen(false)
     }
   }
@@ -90,7 +90,7 @@ const LoginForm = ({ setOpen }) => {
           rules={[
             {
               required: true,
-              message: 'The entered user name is not valid!',
+              message: t('enterUsername'),
             },
           ]}
           requiredMark='optional'

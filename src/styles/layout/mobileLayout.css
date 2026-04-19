@@ -25,7 +25,7 @@
   width: 100%;
   align-items: center;
   justify-content: center;
-  background: #140f26;
+  background: #0D1220;
 }
 
 .v-layout .company-title {
@@ -45,7 +45,7 @@
 }
 .v-layout div .header_title {
   color: var(--text);
-  font-size: 30px;
+  font-size: 22px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -195,7 +195,7 @@
 }
 
 .m-children {
-  background: linear-gradient(180deg, #291c4a 0%, #080611 100%);
+  background: linear-gradient(180deg, #0F1726 0%, #0A0F1A 100%);
   padding: 0.6rem 1.4rem;
 }
 

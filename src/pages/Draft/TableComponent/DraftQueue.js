@@ -47,8 +47,6 @@ const DraftQueue = ({ tableScroll }) => {
 
   const handleQueueorder = async (id,direction) => {
 
-    // console.log('id',id);
-    // console.log('direction',direction);
     setOrderLoading(id)
     //  setLoading(id)
      await changeDraftQueueOrder(id,direction)
@@ -87,12 +85,12 @@ const DraftQueue = ({ tableScroll }) => {
     //     <>
     //       <TiArrowSortedUp
     //         size={18}
-    //         style={{ color: '#00A7E5', cursor: 'pointer' }}
+    //         style={{ color: '#22C55E', cursor: 'pointer' }}
     //         onClick={() => handleQueueorder(obj?._id,'up')}
     //       />
     //       <TiArrowSortedDown 
     //         size={18}
-    //         style={{ color: '#00A7E5', cursor: 'pointer' }}
+    //         style={{ color: '#22C55E', cursor: 'pointer' }}
     //         onClick={() => handleQueueorder(obj?._id,'down')}
     //       />
     //     </>
@@ -162,31 +160,44 @@ const DraftQueue = ({ tableScroll }) => {
 
 
     {
-      width: 150,
-      title: ' ',
+      width: 60,
+      title: 'PRIORITY',
+      dataIndex: 'Queue_order',
+      key: 'Queue_order',
+      render: (t) => (
+        <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, color: 'rgba(255,255,255,0.4)', fontSize: 14 }}>
+          {t || '-'}
+        </span>
+      ),
+    },
+    {
+      width: 80,
+      title: 'REORDER',
       dataIndex: 'order-icon',
       key: 'order-icon',
-      render: (_, obj) => (
+      render: (_, obj, index) => (
         <>
           {orderloading === obj?._id ? (
-            <Spin />
+            <Spin size="small" />
           ) : (
-            <>
-            <div style={{display:'flex',flexDirection:'column',gap:'10px'}}>
-               {obj?.Queue_order > 1 && (
-            <BsFillArrowUpCircleFill
-              size={18}
-              style={{ color: '#00A7E5', cursor: 'pointer' }}
-              onClick={() => handleQueueorder(obj?._id, 'up')}
-            />
-          )}
-              <BsFillArrowDownCircleFill 
-                size={18}
-                style={{ color: '#00A7E5', cursor: 'pointer' }}
-            onClick={() => handleQueueorder(obj?._id,'down')}
-              />
-              </div>
-            </>
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+              {obj?.Queue_order > 1 && (
+                <BsFillArrowUpCircleFill
+                  size={20}
+                  style={{ color: '#22C55E', cursor: 'pointer', transition: 'transform 0.15s' }}
+                  onClick={() => handleQueueorder(obj?._id, 'up')}
+                  title="Move up"
+                />
+              )}
+              {index < (draftQueues?.length || 0) - 1 && (
+                <BsFillArrowDownCircleFill
+                  size={20}
+                  style={{ color: '#22C55E', cursor: 'pointer', transition: 'transform 0.15s' }}
+                  onClick={() => handleQueueorder(obj?._id, 'down')}
+                  title="Move down"
+                />
+              )}
+            </div>
           )}
         </>
       ),
@@ -202,7 +213,7 @@ const DraftQueue = ({ tableScroll }) => {
         return (
           <div className='table_player_name_box nrc_container'>
             <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-              {mapPosition(obj?.player?.Position) || '-'}
+              {mapPosition(obj?.player?.otcPosition || obj?.player?.Position) || '-'}
             </p>
           </div>
         )
@@ -229,12 +240,13 @@ const DraftQueue = ({ tableScroll }) => {
       dataIndex: 'caphit',
       key: 'caphit',
       render: (_, obj) => {
+        const otcHit = obj?.player?.otcCapHit
         return (
           <div className='table_player_name_box nrc_container'>
             <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-              {/* {obj?.player?.PlayerCap || '-'} */}
-              {/* {`$${(obj?.player?.currentYearSalaryCap || '-').toLocaleString()}`} */}
-              {`$${obj?.player?.currentYearSalaryCap || '-'}`}
+              {otcHit && otcHit > 0
+                ? `$${(otcHit / 1_000_000).toFixed(1)}M`
+                : `${obj?.player?.currentYearSalaryCap || '-'} SP`}
             </p>
           </div>
         )

@@ -1,7 +1,8 @@
-import { Checkbox } from 'antd'
+import { Checkbox, Tooltip } from 'antd'
 import React from 'react'
-import { isLocked,positions } from '../../config/constants'
+import { isLocked, positions } from '../../config/constants'
 import { MdLock } from 'react-icons/md'
+import { ArrowDownOutlined, ArrowUpOutlined, MedicineBoxOutlined } from '@ant-design/icons'
 import PlayerDetailsModal from '../modal/PlayerDetailsModal'
 import { useParams } from 'react-router-dom'
 import { getPf, getPositionColor, getRankAndPosition } from '../../config/helperFunctions'
@@ -14,17 +15,19 @@ const NewRosterCard = (props) => {
     state,
     handleClick,
     isPractice = false,
-    playerCaps,
     currentYearSalaryCap,
     checkBox = true,
     averagePf,
-    // currentYearSalaryCap,
+    onMovePlayer,
+    moveDirection,
+    moveLoading,
+    onMoveToIR,
   } = props
+
   const {
     players: {
       PlayerID,
       Name,
-      pts,
       Age,
       Team,
       ByeWeek,
@@ -32,118 +35,154 @@ const NewRosterCard = (props) => {
       UpcomingGameOpponent,
       isPlayerLocked,
       FantasyPosition,
-      // currentYearSalaryCap,
     },
-    playerDetails:{
-      InjuryStatus,
-    },
+    playerDetails: { InjuryStatus },
     team,
   } = data
+
   const { id } = useParams()
 
   function mapPosition(position) {
-  return positions[position] || position;
-}
+    return positions[position] || position
+  }
 
-  // console.log('leaguesalarycap',currentYearSalaryCap);
+  const posColor = getPositionColor(FantasyPosition === 'OL' ? 'OL' : Position)
+  const tpf = averagePf[PlayerID] ? getPf(averagePf[PlayerID])?.tpf : '0.00'
+  const ppg = averagePf[PlayerID]
+    ? getPf(averagePf[PlayerID].filter((item) => item.season === 2024))?.apf || '0.00'
+    : '0.00'
+  const pRank = getRankAndPosition(averagePf[PlayerID])?.playerOverallRank || 'N/A'
+  const capHit = currentYearSalaryCap[PlayerID]
+    ? `${currentYearSalaryCap[PlayerID]?.toLocaleString()} SP`
+    : '-'
 
-  // console.log('averagePf', averagePf)
+  // SAMetric = PPG as the primary score displayed
+  const sametricScore = ppg
+
+  const injuryTag =
+    InjuryStatus === 'Out' ? { text: 'OUT', cls: 'rc-inj-out' }
+    : InjuryStatus === 'Questionable' ? { text: 'Q', cls: 'rc-inj-q' }
+    : InjuryStatus === 'Doubtful' ? { text: 'D', cls: 'rc-inj-d' }
+    : InjuryStatus === 'Suspended' ? { text: 'SSPD', cls: 'rc-inj-sspd' }
+    : InjuryStatus === 'Injured Reserve' ? { text: 'IR', cls: 'rc-inj-ir' }
+    : null
+
+  const isChecked = checkBoxIds?.includes(PlayerID)
 
   return (
-    <div className='nrc_container'>
-      <div className='serial_number'>
-        <p>{index + 1}</p>
-      </div>
-      <div className='content_box'>
-        <div className='content_box_left'>
-          <span style={{ color: getPositionColor(FantasyPosition === 'OL' ? 'OL' : Position) }}>
-            {/* {Position} */}
-            {mapPosition(Position)}
-          </span>
+    <div className={`rc-row ${isChecked ? 'rc-row--selected' : ''}`}>
+      {/* Rank */}
+      <div className="rc-cell rc-cell-rank">{index + 1}</div>
+
+      {/* Player Name + Team + Injury */}
+      <div className="rc-cell rc-cell-player">
+        <div className="rc-player-main">
+          <PlayerDetailsModal
+            button={Name}
+            state={{
+              ...state,
+              playerID: PlayerID,
+              teamId: id ? id : null,
+              teamName: team?.name ? team?.name : '',
+              teamLogo: team?.logo ? team?.logo : null,
+            }}
+          />
+          {isPlayerLocked && <MdLock size={12} className="rc-lock" />}
+          {injuryTag && <span className={`rc-inj ${injuryTag.cls}`}>{injuryTag.text}</span>}
         </div>
-        <div className='content_box_center'>
-          <div className='top'>
-            {/* PLAYER DETAILS MODAL */}
-            <PlayerDetailsModal
-              button={Name}
-              state={{
-                ...state,
-                playerID: PlayerID,
-                teamId: id ? id : null,
-                teamName: team?.name ? team?.name : '',
-                teamLogo: team?.logo ? team?.logo : null,
-              }}
-            />
-
-            <p style={{ marginLeft: '-10px' }}>-{Team}</p>
-            {isPlayerLocked && <MdLock size={18} color={'#fff'} style={{ marginBottom: '-3px' }} />}
-            {InjuryStatus === 'Out' ? (
-              <>
-                <img src={require('../../assets/plus-icon.png')} width={20} height={20} />
-                <p className='injury_plus_text'>O</p>
-              </>
-            ) : InjuryStatus === 'Questionable' ? (
-              <p className='injury_status'>Q</p>
-            ) : InjuryStatus === 'Doubtful' ? (
-              <p className='injury_status'>D</p>
-            ) : InjuryStatus === 'Suspended' ? (
-              <p className='injury_status'>SSPD</p>
-            ) : InjuryStatus === 'Injured Reserve' ? (
-              <p className='injury_status'>IR</p>
-            ) : (
-              ''
-            )}
-            <p>AGE:{Age || '-'}</p>
-            <p>BYE:{ByeWeek || '-'}</p>
-          </div>
-          <div className='bottom'>
-            <p>TPF:{averagePf[PlayerID] ? getPf(averagePf[PlayerID])?.tpf : '-'}</p>
-            <p></p>
-
-            <p>
-              PPG:{' '}
-              {averagePf[PlayerID]
-                ? getPf(averagePf[PlayerID].filter((item) => item.season === 2024))?.apf || '-'
-                : '-'}
-            </p>
-
-            {/* <p>PPG:{getPf(data?.playerContract?.weeklyScoring?.filter(item => item.season === 2024))?.apf}</p> */}
-            <p>P-RANK:{getRankAndPosition(averagePf[PlayerID])?.playerOverallRank}</p>
-            <p>OPP:{UpcomingGameOpponent || '-'}</p>
-            <p>
-              CAPHIT:
-              {currentYearSalaryCap[PlayerID]
-                ? `$${currentYearSalaryCap[PlayerID]?.toLocaleString()}`
-                : '-'}
-              {/* CAPHIT:{currentYearSalaryCap}  */}
-              {/* CAPHIT:${currentYearSalaryCap?.toLocaleString() || '-'}  */}
-            </p>
-          </div>
-        </div>
-        <div className='content_box_right'>
-          {checkBox && (
+        <div className="rc-player-meta">
+          <span className="rc-team-abbr">{Team}</span>
+          <span className="rc-meta-sep">·</span>
+          <span>Age {Age || '-'}</span>
+          <span className="rc-meta-sep">·</span>
+          <span>Bye {ByeWeek || '-'}</span>
+          {UpcomingGameOpponent && (
             <>
-              {isPractice ? (
-                <Checkbox
-                  onChange={(event) => handleClick(event.target.checked, PlayerID)}
-                  checked={checkBoxIds?.includes(PlayerID)}
-                  disabled={isLocked() || isPlayerLocked}
-                >
-                  Protected
-                </Checkbox>
-              ) : (
-                <Checkbox
-                  onChange={(event) => handleClick(event.target.checked, PlayerID)}
-                  checked={checkBoxIds?.includes(PlayerID)}
-                  disabled={isLocked() || isPlayerLocked}
-                >
-                  Non-Active
-                </Checkbox>
-              )}
+              <span className="rc-meta-sep">·</span>
+              <span>vs {UpcomingGameOpponent}</span>
             </>
           )}
         </div>
       </div>
+
+      {/* Position Badge */}
+      <div className="rc-cell rc-cell-pos">
+        <span className="rc-pos-badge" style={{ color: posColor, borderColor: `${posColor}40`, background: `${posColor}12` }}>
+          {mapPosition(Position)}
+        </span>
+      </div>
+
+      {/* SAMetric Score */}
+      <div className="rc-cell rc-cell-sametric">
+        <span className="rc-sametric-val">{sametricScore}</span>
+      </div>
+
+      {/* TPF */}
+      <div className="rc-cell rc-cell-stat">
+        <span className="rc-stat-val">{tpf}</span>
+      </div>
+
+      {/* PPG */}
+      <div className="rc-cell rc-cell-stat">
+        <span className="rc-stat-val">{ppg}</span>
+      </div>
+
+      {/* Cap Hit */}
+      <div className="rc-cell rc-cell-cap">
+        <span className="rc-cap-val">{capHit}</span>
+      </div>
+
+      {/* Move Button */}
+      {onMovePlayer && !isLocked() && (
+        <div className="rc-cell rc-cell-move" style={{ display: 'flex', gap: 4 }}>
+          <Tooltip title={moveDirection === 'down' ? 'Move to Practice Squad' : 'Move to Active Roster'}>
+            <button
+              className={`rc-move-btn ${moveDirection === 'down' ? 'rc-move-btn--down' : 'rc-move-btn--up'}`}
+              onClick={(e) => { e.stopPropagation(); onMovePlayer(PlayerID) }}
+              disabled={moveLoading}
+            >
+              {moveDirection === 'down' ? <ArrowDownOutlined /> : <ArrowUpOutlined />}
+              <span>{moveDirection === 'down' ? 'PS' : 'Active'}</span>
+            </button>
+          </Tooltip>
+          {onMoveToIR && InjuryStatus === 'Injured Reserve' && (
+            <Tooltip title="Move to Injured Reserve">
+              <button
+                className="rc-move-btn rc-move-btn--ir"
+                onClick={(e) => { e.stopPropagation(); onMoveToIR(PlayerID) }}
+                disabled={moveLoading}
+                style={{
+                  background: 'rgba(239,68,68,0.15)',
+                  border: '1px solid rgba(239,68,68,0.4)',
+                  color: '#ef4444',
+                  borderRadius: 6,
+                  padding: '2px 8px',
+                  fontSize: 12,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 3,
+                }}
+              >
+                <MedicineBoxOutlined />
+                <span>IR</span>
+              </button>
+            </Tooltip>
+          )}
+        </div>
+      )}
+
+      {/* Checkbox */}
+      {checkBox && (
+        <div className="rc-cell rc-cell-check">
+          <Checkbox
+            onChange={(event) => handleClick(event.target.checked, PlayerID)}
+            checked={isChecked}
+            disabled={isLocked() || isPlayerLocked}
+          />
+        </div>
+      )}
     </div>
   )
 }

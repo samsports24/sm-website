@@ -1,0 +1,224 @@
+/* ═══════════════════════════════════════════════
+   WORLD CUP 2026 — Tournament UI
+   ═══════════════════════════════════════════════ */
+
+.wc-page { min-height: 100vh; background: #0a0e17; }
+.wc-container { max-width: 1400px; margin: 0 auto; padding: 24px 20px; }
+
+/* ── Setup Screen ── */
+.wc-setup {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 60vh; gap: 16px; text-align: center;
+}
+.wc-setup h1 { color: #D4AF37; font-size: 32px; margin: 0; }
+.wc-setup p { color: rgba(255,255,255,0.5); font-size: 14px; }
+.wc-init-btn {
+  background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+  border: none; color: #000; font-weight: 700; font-size: 15px;
+  padding: 12px 32px; border-radius: 8px; cursor: pointer;
+  transition: opacity .2s;
+}
+.wc-init-btn:hover { opacity: 0.85; }
+.wc-init-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.wc-waiting { color: rgba(255,255,255,0.35); font-style: italic; }
+
+/* ── Phase Banner ── */
+.wc-phase-banner {
+  display: flex; align-items: center; gap: 16px;
+  background: linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(0,0,0,0) 100%);
+  border: 1px solid rgba(212,175,55,0.2); border-radius: 12px;
+  padding: 20px 24px; margin-bottom: 20px;
+}
+.wc-trophy { font-size: 32px; color: #D4AF37; }
+.wc-phase-banner h1 { color: #fff; font-size: 22px; margin: 0; }
+.wc-phase-sub { color: rgba(255,255,255,0.4); font-size: 12px; margin: 4px 0 0; }
+.wc-champion-tag { margin-left: auto; font-size: 14px; font-weight: 700; }
+
+/* ── Tabs ── */
+.wc-tabs {
+  display: flex; gap: 4px; margin-bottom: 20px;
+  background: rgba(255,255,255,0.04); border-radius: 10px; padding: 4px;
+}
+.wc-tab {
+  flex: 1; padding: 10px 16px; border: none; background: transparent;
+  color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 600;
+  border-radius: 8px; cursor: pointer; transition: all .2s;
+}
+.wc-tab-active {
+  background: rgba(212,175,55,0.15); color: #D4AF37;
+}
+
+/* ── Group Cards Grid ── */
+.wc-groups-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+.wc-group-card {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px; padding: 16px; cursor: pointer; transition: border-color .2s;
+}
+.wc-group-card:hover { border-color: rgba(212,175,55,0.3); }
+.wc-group-selected { border-color: rgba(212,175,55,0.5); }
+.wc-group-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+}
+.wc-group-letter { color: #D4AF37; font-size: 16px; font-weight: 700; }
+.wc-group-done { font-size: 10px; }
+
+/* ── Group Table ── */
+.wc-group-table {
+  width: 100%; border-collapse: collapse; font-size: 12px;
+}
+.wc-group-table th {
+  color: rgba(255,255,255,0.35); font-weight: 600; text-align: center;
+  padding: 6px 4px; border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.wc-group-table th:nth-child(2) { text-align: left; }
+.wc-group-table td {
+  color: rgba(255,255,255,0.7); text-align: center; padding: 8px 4px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.wc-group-table td:nth-child(2) { text-align: left; }
+.wc-team-cell { display: flex; align-items: center; gap: 6px; }
+.wc-team-logo { width: 18px; height: 18px; border-radius: 2px; object-fit: contain; }
+.wc-pts { font-weight: 700; color: #fff; }
+.wc-row-qualify td:first-child {
+  border-left: 3px solid #22c55e;
+}
+.wc-row-third td:first-child {
+  border-left: 3px solid #D4AF37;
+}
+.wc-row-elim td:first-child {
+  border-left: 3px solid rgba(255,255,255,0.08);
+}
+
+/* ── Group Fixtures (expanded) ── */
+.wc-group-fixtures {
+  margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08);
+}
+.wc-matchday-block { margin-bottom: 10px; }
+.wc-matchday-label { color: rgba(255,255,255,0.35); font-size: 11px; font-weight: 600; text-transform: uppercase; }
+.wc-fixture {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  padding: 6px 0; font-size: 12px; color: rgba(255,255,255,0.6);
+}
+.wc-fixture-done { color: rgba(255,255,255,0.8); }
+.wc-fix-team { min-width: 100px; }
+.wc-fix-team:first-child { text-align: right; }
+.wc-fix-team:last-child { text-align: left; }
+.wc-fix-score {
+  font-weight: 700; color: #D4AF37; min-width: 50px; text-align: center;
+}
+
+/* ── Knockout Bracket ── */
+.wc-bracket { overflow-x: auto; }
+.wc-bracket-rounds {
+  display: flex; gap: 24px; min-width: 1200px; align-items: flex-start;
+}
+.wc-bracket-round { flex: 1; min-width: 180px; }
+.wc-round-title {
+  color: rgba(255,255,255,0.45); font-size: 12px; font-weight: 700;
+  text-transform: uppercase; text-align: center; margin-bottom: 12px;
+  padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.wc-round-matches { display: flex; flex-direction: column; gap: 8px; }
+
+/* ── Match Card ── */
+.wc-match-card {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px; overflow: hidden;
+}
+.wc-match-done { border-color: rgba(34,197,94,0.2); }
+.wc-match-compact { font-size: 11px; }
+.wc-match-team {
+  display: flex; align-items: center; gap: 6px; padding: 8px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.6); font-size: 12px;
+}
+.wc-match-team:last-of-type { border-bottom: none; }
+.wc-match-winner { color: #22c55e; font-weight: 600; }
+.wc-match-logo { width: 16px; height: 16px; border-radius: 2px; object-fit: contain; }
+.wc-match-score { margin-left: auto; font-weight: 700; color: #fff; }
+.wc-pen-tag {
+  display: block; text-align: center; font-size: 10px;
+  color: #D4AF37; padding: 2px 0; background: rgba(212,175,55,0.08);
+}
+
+/* ── Third Place Section ── */
+.wc-third-place-section {
+  min-width: 180px; margin-top: 20px;
+}
+.wc-third-place-section h3 {
+  color: rgba(255,255,255,0.45); font-size: 12px; font-weight: 700;
+  text-transform: uppercase; text-align: center; margin-bottom: 8px;
+}
+
+/* ── All Fixtures Tab ── */
+.wc-all-fixtures { max-width: 700px; margin: 0 auto; }
+.wc-matchday-section { margin-bottom: 24px; }
+.wc-md-title {
+  color: #D4AF37; font-size: 14px; font-weight: 700; margin-bottom: 10px;
+  padding-bottom: 6px; border-bottom: 1px solid rgba(212,175,55,0.15);
+}
+.wc-fixtures-list { display: flex; flex-direction: column; gap: 8px; }
+
+/* ── Commissioner Tab ── */
+.wc-commissioner { max-width: 800px; margin: 0 auto; }
+.wc-comm-header {
+  display: flex; align-items: center; gap: 16px;
+  background: rgba(212,175,55,0.06); border: 1px solid rgba(212,175,55,0.15);
+  border-radius: 10px; padding: 16px 20px; margin-bottom: 20px;
+}
+.wc-comm-header h2 { color: #fff; font-size: 18px; margin: 0; }
+.wc-comm-header p { color: rgba(255,255,255,0.5); font-size: 12px; margin: 4px 0 0; }
+.wc-comm-section {
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px; padding: 20px; margin-bottom: 16px;
+}
+.wc-comm-section h3 { color: #fff; font-size: 16px; margin: 0 0 8px; }
+.wc-comm-hint { color: rgba(255,255,255,0.35); font-size: 12px; margin-bottom: 16px; }
+.wc-comm-group { margin-bottom: 16px; }
+.wc-comm-group h4 { color: #D4AF37; font-size: 13px; font-weight: 700; margin: 0 0 8px; }
+.wc-comm-fixture {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06); border-radius: 6px;
+  cursor: pointer; margin-bottom: 6px; font-size: 13px; color: rgba(255,255,255,0.7);
+  transition: all .2s;
+}
+.wc-comm-fixture:hover { border-color: rgba(212,175,55,0.3); background: rgba(212,175,55,0.05); }
+.wc-comm-vs { color: rgba(255,255,255,0.3); font-size: 11px; }
+.wc-comm-md { margin-left: auto; color: rgba(255,255,255,0.25); font-size: 10px; }
+
+/* ── Score Modal ── */
+.wc-score-modal { text-align: center; }
+.wc-score-teams {
+  display: flex; justify-content: center; align-items: center; gap: 16px;
+  font-size: 16px; font-weight: 600; margin-bottom: 20px;
+}
+.wc-score-inputs {
+  display: flex; justify-content: center; gap: 24px; margin-bottom: 16px;
+}
+.wc-score-inputs > div { text-align: center; }
+.wc-score-inputs label {
+  display: block; font-size: 12px; color: rgba(0,0,0,0.5); margin-bottom: 6px;
+}
+.wc-pen-inputs {
+  border-top: 1px solid rgba(0,0,0,0.1); padding-top: 12px; margin-top: 8px;
+}
+
+/* ── Predictor Tab ── */
+.wc-predictor { width: 100%; }
+.wc-predictor-iframe {
+  width: 100%; height: calc(100vh - 180px); min-height: 900px;
+  border: 0; display: block; background: #020617;
+  border-radius: 12px; overflow: hidden;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .wc-groups-grid { grid-template-columns: 1fr; }
+  .wc-bracket-rounds { min-width: auto; flex-wrap: wrap; }
+  .wc-bracket-round { min-width: 100%; }
+  .wc-phase-banner { flex-direction: column; text-align: center; }
+}

@@ -6,8 +6,7 @@ import LoaderIcon from '../../assets/loaderIcon.svg'
 import AuctionIcon from '../../assets/auctionIcon.svg'
 import DynastyIcon from '../../assets/dynasty.svg'
 import TrophyIcon from '../../assets/trophy.svg'
-import DollorIcon from '../../assets/dollor-icon.svg'
-import DollorIcon1 from '../../assets/dollor-icon-white.svg'
+import SampointsCoin from '../../assets/sampoints-coin.svg'
 
 const PopularLeagueCard = ({ data }) => {
   return (
@@ -68,16 +67,16 @@ const PopularLeagueCard = ({ data }) => {
           <p>League Bid Increments Min.</p>
           <div className='price m-b-24 flex-wrap'>
             <div className='lead'>
-              <img src={DollorIcon} />
-              <p> $0.25</p>
+              <img src={SampointsCoin} />
+              <p> 0.25 SP</p>
             </div>
             <div className='lead'>
-              <img src={DollorIcon1} />
-              <p> $5.00</p>
+              <img src={SampointsCoin} />
+              <p> 5.00 SP</p>
             </div>
             <div className='lead'>
-              <img src={DollorIcon1} />
-              <p> $25.00</p>
+              <img src={SampointsCoin} />
+              <p> 25.00 SP</p>
             </div>
           </div>
         </div>

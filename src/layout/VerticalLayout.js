@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Layout, Dropdown } from 'antd'
 import account from '../assets/account.svg'
 import MainMenu from './MainMenu'
-import Logo from '../assets/sam-football.png'
+import Logo from '../assets/Logo.svg'
 import Insta from '../assets/insta.svg'
 import Fb from '../assets/fb.svg'
 import Twitter from '../assets/twitter.svg'
@@ -16,35 +16,44 @@ import LoginDropdown from './LoginDropdown'
 import { landingSignup } from '../config/constants'
 import { removeLeague } from '../redux'
 import { useDispatch } from 'react-redux'
+import LanguageSwitcher from '../i18n/LanguageSwitcher'
+import { useLanguage } from '../i18n/LanguageContext'
 // import { isAuthenticated } from '../functions/auth'
 
 const VerticalLayout = ({ children, active }) => {
   const { Sider, Content } = Layout
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const { t } = useLanguage()
   // const { pathname } = useLocation()
 
   const logout = () => {
-    navigate('/fantasy-league')
+    navigate('/homepage')
     dispatch(removeLeague())
     localStorage.removeItem('token')
+    localStorage.removeItem('userName')
+    localStorage.removeItem('userId')
+    localStorage.removeItem('week')
     localStorage.removeItem('leagueroom')
     localStorage.removeItem('roomId')
+    // Clear stale league/invitation data so next login starts fresh
+    ;['AssignLeague','paid','myinvitationtype','selectedGame','imagePath',
+      'lrTeamId','modalShown','email','onboardingComplete','selectedSports','authToken'].forEach(k => localStorage.removeItem(k))
   }
   const login = () => navigate('/login')
 
-  const signup = () => navigate('/sign-up')
+  const signup = () => navigate('/select-game')
 
   const goToProfile = () => navigate('/edit-profile')
 
   const items = [
     {
       key: '1',
-      label: <p onClick={goToProfile}>Profile</p>,
+      label: <p onClick={goToProfile}>{t('profile')}</p>,
     },
     {
       key: '2',
-      label: <p onClick={logout}>Logout</p>,
+      label: <p onClick={logout}>{t('logout')}</p>,
     },
   ]
 
@@ -54,7 +63,7 @@ const VerticalLayout = ({ children, active }) => {
         <Sider
           trigger={null}
           collapsible
-          width={256}
+          width={185}
           style={{
             overflow: 'auto',
             height: '100vh',
@@ -76,6 +85,9 @@ const VerticalLayout = ({ children, active }) => {
           </div>
           <MainMenu active={active} />
           <div className='sider-bottom'>
+            <div style={{ padding: '8px 16px 12px', display: 'flex', justifyContent: 'center' }}>
+              <LanguageSwitcher />
+            </div>
             <div className='icons'>
               <img src={Insta} />
               <img src={Fb} />
@@ -83,19 +95,19 @@ const VerticalLayout = ({ children, active }) => {
               <img src={YouTube} />
             </div>
             <div className='caution'>
-              <p style={{ lineHeight: 1.5 }}>Jobs • Responsible Play</p>
+              <p style={{ lineHeight: 1.5 }}>{t('jobsResponsiblePlay')}</p>
             </div>
           </div>
         </Sider>
-        <Layout className='site-layout' style={{ marginLeft: 256 }}>
+        <Layout className='site-layout' style={{ marginLeft: 185 }}>
           <div className='mainHeader'>
             <div>
-              {/* {pathname === '/fantasy-league' && (
+              {/* {pathname === '/homepage' && (
                 <h1 className='header_title'>
                   Fantasy <b>Leagues</b>
                 </h1>
               )}
-              {pathname === '/professional-league' && (
+              {pathname === '/dashboard' && (
                 <h1 className='header_title'>
                   Professional <b>Leagues</b>
                 </h1>
@@ -161,17 +173,7 @@ const VerticalLayout = ({ children, active }) => {
             )}
           </div>
           <Content className='main-content'>{children}</Content>
-          <Footer className='mainFooter'>
-            <p>© Sam Sports, Inc. All rights reserved.</p>
-            {/* <a href='https://sportsdata.io' target='_blank' rel='noreferrer'> */}
-            <a href='' target='_blank' rel='noreferrer'>
-              {/* <img
-                style={{ height: '50px', width: 'auto' }}
-                src='https://sportsdata.io/assets/images/badges/sportsdataio_light_ss_300.png'
-                alt='Powered by SportsDataIO'
-              /> */}
-            </a>
-          </Footer>
+{/* Footer removed */}
         </Layout>
       </Layout>
     </div>

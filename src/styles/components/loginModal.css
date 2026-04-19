@@ -1,0 +1,414 @@
+/* ═══════════════════════════════════════════════════════════════
+   LOGIN MODAL
+   Prefix: lm-
+   Palette: #0A0F1A bg, #111827 surface, #22C55E green
+   Fonts: Rajdhani (headings), Barlow Condensed (labels), Inter (body)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Overlay ─────────────────────────────────────────────────── */
+.lm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: lmFadeIn 0.2s ease-out;
+}
+
+@keyframes lmFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes lmSlideUp {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Modal Card ──────────────────────────────────────────────── */
+.lm-modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  margin: 16px;
+  background: #111827;
+  border-radius: 20px;
+  border: 1px solid rgba(34, 197, 94, 0.12);
+  padding: 36px 32px 28px;
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+  overflow: hidden;
+  animation: lmSlideUp 0.3s ease-out;
+}
+
+/* ── Decorative top glow ─────────────────────────────────────── */
+.lm-glow {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 120px;
+  background: radial-gradient(ellipse, rgba(34, 197, 94, 0.15), transparent 70%);
+  pointer-events: none;
+  filter: blur(20px);
+}
+
+/* ── Close Button ────────────────────────────────────────────── */
+.lm-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.04);
+  color: #64748B;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 2;
+}
+.lm-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #F1F5F9;
+}
+
+/* ── Header ──────────────────────────────────────────────────── */
+.lm-header {
+  text-align: center;
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+.lm-logo {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: #22C55E;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.lm-title {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: #F1F5F9;
+  letter-spacing: 1px;
+  margin: 0 0 4px;
+}
+
+.lm-subtitle {
+  font-family: var(--font-stats), sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #64748B;
+  letter-spacing: 0.3px;
+  margin: 0;
+}
+
+/* ── Social Sign-In Section ─────────────────────────────────── */
+.lm-social-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.lm-google-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Fallback button when GSI hasn't loaded */
+.lm-google-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: #CBD5E1;
+  font-family: var(--font-body), sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.lm-google-fallback:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* Shared social button base */
+.lm-social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: #CBD5E1;
+  font-family: var(--font-body), sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.lm-social-btn:hover {
+  transform: translateY(-1px);
+}
+.lm-social-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Facebook */
+.lm-social-fb {
+  border-color: rgba(24, 119, 242, 0.25);
+  background: rgba(24, 119, 242, 0.06);
+}
+.lm-social-fb:hover {
+  background: rgba(24, 119, 242, 0.12);
+  border-color: rgba(24, 119, 242, 0.4);
+  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.15);
+}
+
+/* ── Divider ─────────────────────────────────────────────────── */
+.lm-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.lm-divider-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+}
+.lm-divider-text {
+  font-family: var(--font-stats), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ── Form ────────────────────────────────────────────────────── */
+.lm-form {
+  position: relative;
+  z-index: 2;
+}
+
+.lm-form .ant-form-item {
+  margin-bottom: 14px;
+}
+
+/* Input styling */
+.lm-form .ant-input,
+.lm-form .ant-input-password,
+.lm-form .ant-input-affix-wrapper {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 10px !important;
+  color: #F1F5F9 !important;
+  font-family: var(--font-body), sans-serif !important;
+  font-size: 14px !important;
+  height: 46px !important;
+  padding: 0 14px !important;
+  transition: border-color 0.2s !important;
+}
+.lm-form .ant-input-affix-wrapper {
+  padding: 0 14px !important;
+  display: flex;
+  align-items: center;
+}
+.lm-form .ant-input-affix-wrapper > input.ant-input {
+  height: auto !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+}
+.lm-form .ant-input:hover,
+.lm-form .ant-input:focus,
+.lm-form .ant-input-affix-wrapper:hover,
+.lm-form .ant-input-affix-wrapper-focused {
+  border-color: rgba(34, 197, 94, 0.4) !important;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.08) !important;
+}
+.lm-form .ant-input::placeholder {
+  color: #475569 !important;
+}
+
+.lm-input-icon {
+  color: #475569 !important;
+  font-size: 16px !important;
+  margin-right: 4px;
+}
+
+/* Password toggle eye icon */
+.lm-form .ant-input-password-icon {
+  color: #64748B !important;
+}
+
+/* Error messages */
+.lm-form .ant-form-item-explain-error {
+  font-family: var(--font-body), sans-serif;
+  font-size: 11px;
+  color: #EF4444;
+  margin-top: 4px;
+}
+
+/* ── Options Row ─────────────────────────────────────────────── */
+.lm-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.lm-remember {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.lm-remember span {
+  font-family: var(--font-body), sans-serif;
+  font-size: 12px;
+  color: #94A3B8;
+}
+
+.lm-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: #22C55E;
+  cursor: pointer;
+}
+
+.lm-forgot {
+  background: none;
+  border: none;
+  font-family: var(--font-body), sans-serif;
+  font-size: 12px;
+  color: #22C55E;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 0;
+}
+.lm-forgot:hover {
+  color: #4ADE80;
+  text-decoration: underline;
+}
+
+/* ── Submit Button ───────────────────────────────────────────── */
+.lm-submit {
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 12px;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #000;
+  background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.lm-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(34, 197, 94, 0.4);
+}
+.lm-submit:active {
+  transform: translateY(0);
+}
+.lm-submit:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+.lm-submit--loading {
+  background: linear-gradient(135deg, #16A34A 0%, #15803D 100%);
+}
+
+/* ── Footer ──────────────────────────────────────────────────── */
+.lm-footer {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+.lm-footer p {
+  font-family: var(--font-body), sans-serif;
+  font-size: 13px;
+  color: #64748B;
+  margin: 0;
+}
+
+.lm-create {
+  background: none;
+  border: none;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #22C55E;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 0;
+}
+.lm-create:hover {
+  color: #4ADE80;
+  text-decoration: underline;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .lm-modal {
+    margin: 8px;
+    padding: 28px 20px 24px;
+    border-radius: 16px;
+  }
+  .lm-title {
+    font-size: 24px;
+  }
+  .lm-form .ant-input,
+  .lm-form .ant-input-password,
+  .lm-form .ant-input-affix-wrapper {
+    height: 42px !important;
+    font-size: 13px !important;
+  }
+  .lm-submit {
+    height: 44px;
+    font-size: 14px;
+  }
+}

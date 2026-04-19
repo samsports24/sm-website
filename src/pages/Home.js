@@ -9,8 +9,7 @@ import LandingBanner from '../components/banners/LandingBanner'
 
 import FeedbackCard from '../components/cards/feedbackCard'
 // import HomeMainBanner from '../components/banners/homeMainBanner'
-// Mock Data
-import { popularSportsData, clientFeedbacksData } from './mockData'
+// Mock Data - Will be wired to real endpoints when available
 // import DashboardBannerOne from '../components/banners/DashboardBannerOne'
 // import UpcomingMatchCard from '../components/cards/upcomingMatchCard'
 // import { Col, Row } from 'antd'
@@ -18,14 +17,16 @@ import { useSelector } from 'react-redux'
 import SportsButtonMenu from '../components/SportsButtonMenu'
 import { useEffect, useState } from 'react'
 import { getLandingLeagues, getUserLeagues } from '../redux'
-import CreateLeague from '../components/modal/CreateLeague'
-
-import LeagueEmptyCard from '../components/NewPopularLeagueCard/EmptyCard'
+// GmRankingsWidget removed from Home, only shown on Landing Page
 
 const Home = () => {
   const isAuthenticated = localStorage.getItem('token')
   const user = useSelector((state) => state.user.userDetails)
   const leagues = useSelector((state) => state.league)
+
+  // TODO: Wire these to real API endpoints when available
+  const [popularSportsData, setPopularSportsData] = useState([])
+  const [clientFeedbacksData, setClientFeedbacksData] = useState([])
 
   const responsive = {
     largeDesktop: {
@@ -84,9 +85,10 @@ const Home = () => {
   }, [])
 
   return (
-    <div className='home-page'>
+    <div className='home-page' style={{ display: 'flex', gap: 20 }}>
+      <div style={{ flex: 1, minWidth: 0 }}>
       {/* FANTASY LEAGUE */}
-      {window.location.pathname == '/fantasy-league' && isAuthenticated && <SportsButtonMenu />}
+      {window.location.pathname == '/homepage' && isAuthenticated && <SportsButtonMenu />}
 
       {/* {!!user && window.location.pathname == '/' && (
         <>
@@ -140,83 +142,63 @@ const Home = () => {
       ) : (
         <div></div>
       )}
-      <div style={{ height: '81px' }}></div>
-
-      <h2 style={{ marginBottom: '24px', color: '#fff' }}>Popular Leagues</h2>
-      <Carousel
-        swipeable={true}
-        draggable={true}
-        showDots={false}
-        responsive={responsive}
-        arrows={false}
-        infinite={true}
-        autoPlay={true}
-        autoPlaySpeed={3000}
-        keyBoardControl={true}
-      >
-        <div>
-          <CreateLeague button={<LeagueEmptyCard />} />
-        </div>
-        {leagues ? (
-          leagues?.nonUserLeagues
-            ?.filter((v) => v?.leagueType !== 'professional')
-            ?.map((value, index) => (
-              <div className='carousel-card' key={index}>
-                <PopularLeagueCard data={value} active={false} yourLeague={false} />
-              </div>
-            ))
-        ) : (
-          <div></div>
-        )}
-      </Carousel>
-
       <AmericalFootballBanner />
 
       {/* popular sport */}
       <h2 style={{ marginTop: '80px', marginBottom: '24px', color: '#fff' }}>Popular Sports</h2>
-      <Carousel
-        swipeable={true}
-        draggable={true}
-        showDots={false}
-        user
-        responsive={responsive}
-        arrows={false}
-        infinite={true}
-        autoPlay={true}
-        autoPlaySpeed={3000}
-        keyBoardControl={true}
-      >
-        {popularSportsData?.map((value, index) => (
-          <div className='carousel-card' key={index}>
-            <PopularSportCard data={{ ...value, index }} />
-          </div>
-        ))}
-      </Carousel>
+      {popularSportsData?.length > 0 ? (
+        <Carousel
+          swipeable={true}
+          draggable={true}
+          showDots={false}
+          responsive={responsive}
+          arrows={false}
+          infinite={true}
+          autoPlay={true}
+          autoPlaySpeed={3000}
+          keyBoardControl={true}
+        >
+          {popularSportsData.map((value, index) => (
+            <div className='carousel-card' key={index}>
+              <PopularSportCard data={{ ...value, index }} />
+            </div>
+          ))}
+        </Carousel>
+      ) : (
+        <div style={{ color: '#fff', padding: '20px' }}>No popular sports data available</div>
+      )}
 
       {/* CLIENT FEEDBACK */}
       <h2 style={{ marginTop: '80px', marginBottom: '54px', color: '#fff' }}>Client Feedback</h2>
       {/* <h4 style={{ marginTop: '20px', marginBottom: '54px', color: '#fff' }}>
         See what millions of users say about us
       </h4> */}
-      <Carousel
-        swipeable={true}
-        draggable={true}
-        showDots={false}
-        responsive={responsiveNewsFeed}
-        arrows={false}
-        infinite={true}
-        autoPlay={true}
-        autoPlaySpeed={3000}
-        keyBoardControl={true}
-      >
-        {clientFeedbacksData?.map((value, index) => (
-          <div className='carousel-card' key={index}>
-            <FeedbackCard data={{ ...value, index }} />
-          </div>
-        ))}
-      </Carousel>
+      {clientFeedbacksData?.length > 0 ? (
+        <Carousel
+          swipeable={true}
+          draggable={true}
+          showDots={false}
+          responsive={responsiveNewsFeed}
+          arrows={false}
+          infinite={true}
+          autoPlay={true}
+          autoPlaySpeed={3000}
+          keyBoardControl={true}
+        >
+          {clientFeedbacksData.map((value, index) => (
+            <div className='carousel-card' key={index}>
+              <FeedbackCard data={{ ...value, index }} />
+            </div>
+          ))}
+        </Carousel>
+      ) : (
+        <div style={{ color: '#fff', padding: '20px' }}>No client feedback available</div>
+      )}
 
       <div style={{ height: '80px' }}></div>
+      </div>
+
+      {/* GM Rankings removed, only on Landing Page */}
     </div>
   )
 }

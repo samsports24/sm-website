@@ -1,13 +1,35 @@
 import { Button, Select, Table } from 'antd'
+import { useState, useEffect } from 'react'
 
 // Components
 import StandingHeader from '../components/StandingHeader'
 import Pagination from '../components/Pagination'
 
-// Mock Data
-import { adpReportData } from './mockData'
+// API
+import { privateAPI } from '../config/constants'
 
 const AdpReport = () => {
+  const [adpReportData, setAdpReportData] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchAdpReport()
+  }, [])
+
+  const fetchAdpReport = async () => {
+    try {
+      setLoading(true)
+      const response = await privateAPI.post('/player/get-all', {})
+      // Filter and sort for ADP report
+      const data = response.data || []
+      setAdpReportData(data)
+    } catch (error) {
+      console.error('Error fetching ADP report:', error)
+      setAdpReportData([])
+    } finally {
+      setLoading(false)
+    }
+  }
   const columns = [
     {
       title: 'RANK',
@@ -234,8 +256,14 @@ const AdpReport = () => {
         filters above.
       </p>
 
+      {/* LOADING STATE */}
+      {loading && <div style={{ textAlign: 'center', padding: '40px' }}>Loading ADP report...</div>}
+
+      {/* EMPTY STATE */}
+      {!loading && adpReportData.length === 0 && <div style={{ textAlign: 'center', padding: '40px' }}>No ADP data available</div>}
+
       {/* TABLE */}
-      {/* GENERAL CSS */}
+      {!loading && adpReportData.length > 0 && (
       <section className='main_table_container adp_report_table'>
         <div className='header'>
           <h3>ADP REPORT</h3>
@@ -251,6 +279,7 @@ const AdpReport = () => {
           />
         </div>
       </section>
+      )}
 
       <section className='footer_section'>
         <Pagination

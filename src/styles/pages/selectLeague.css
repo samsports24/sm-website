@@ -57,7 +57,7 @@
   display: flex;
   flex-direction: column;
   border-radius: 20px;
-  background-color: #59486b;
+  background-color: #1A2332;
 }
 .league_joining_card .header {
   width: 100%;
@@ -150,7 +150,7 @@
   /* display: flex;
   flex-direction: column; */
   /* border-radius: 20px;
-  background-color: #59486b; */ 
+  background-color: #1A2332; */ 
   display: block;
 }
 

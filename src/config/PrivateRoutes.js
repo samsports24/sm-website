@@ -21,7 +21,7 @@ const PrivateWrapper = () => {
       localStorage.setItem('version', version)
       dispatch(removeLeague())
       setTimeout(() => {
-        navigate('/fantasy-league')
+        navigate('/homepage')
         notification.error({
           message: `Try Login Again!`,
           duration: 6,
@@ -41,21 +41,8 @@ const PrivateWrapper = () => {
       </Layout>
     )
   } else {
-    return <Navigate to='/fantasy-league' />
+    return <Navigate to='/homepage' />
   }
-
-  // if (isAuthenticated && user?.team?.currentLeague) {
-  //   return (
-  //     <Layout>
-  //       <Outlet />
-  //     </Layout>
-  //   )
-  // } else if(!user?.team?.currentLeague){
-  //   return <Navigate to='/my-league' />
-
-  // } else {
-  //   return <Navigate to='/login' />
-  // }
 }
 
 export default PrivateWrapper

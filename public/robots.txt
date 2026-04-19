@@ -1,3 +1,85 @@
-# https://www.robotstxt.org/robotstxt.html
+# SAM Sports — Fantasy NFL
+# https://samsports.com
+
 User-agent: *
-Disallow:
+Allow: /
+Allow: /homepage
+Allow: /faq
+Allow: /terms
+Allow: /privacy
+Allow: /rule-book
+Allow: /rule-book/roasterinfo
+Allow: /rule-book/gm-rating
+Allow: /rule-book/sampoints-breakdown
+Allow: /rule-book/reward-info
+Allow: /rule-book/regularseason-and-playoff
+Allow: /rule-book/sammetric
+Allow: /rule-book/samposition
+Allow: /rule-book/franchisetag
+Allow: /rule-book/exchange
+Allow: /rule-book/empire-sales
+Allow: /rule-book/governance
+Allow: /popular-league
+Allow: /public-league
+Allow: /hub
+Allow: /glossary
+
+# Block authenticated / private pages from crawlers
+Disallow: /dashboard
+Disallow: /leagueScore
+Disallow: /game-details
+Disallow: /team-setting
+Disallow: /edit-profile
+Disallow: /team-schedule
+Disallow: /injured-reserve
+Disallow: /league-notification
+Disallow: /player-live-auction
+Disallow: /player-interface
+Disallow: /player-roster
+Disallow: /team-roster
+Disallow: /depth-chart
+Disallow: /team-starters
+Disallow: /league-standings
+Disallow: /comissioner
+Disallow: /player-auction
+Disallow: /player-winning-bid
+Disallow: /agent-player-interface
+Disallow: /team-trade
+Disallow: /counter-trade
+Disallow: /team-financials
+Disallow: /league-rosters
+Disallow: /professional-draft
+Disallow: /public-draft
+Disallow: /all-transaction
+Disallow: /live-draft
+Disallow: /search-player
+Disallow: /draft-spot-auction
+Disallow: /stadium
+Disallow: /clubhouse
+Disallow: /chat
+Disallow: /playoff-bracket
+Disallow: /playoff-standings
+Disallow: /supplemental-draft
+Disallow: /playoff-draft
+Disallow: /roster-board
+Disallow: /rookie-draft
+Disallow: /war-room
+Disallow: /gm-challenge
+Disallow: /buy-sam-points
+Disallow: /select-buy-options
+Disallow: /scout-report
+Disallow: /livescore
+Disallow: /live-score
+Disallow: /authentication
+Disallow: /sign-up
+Disallow: /forgot-password
+
+# Block API and static assets
+Disallow: /static/
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://samsports.com/sitemap.xml
+
+# Crawl-delay (be polite)
+Crawl-delay: 2

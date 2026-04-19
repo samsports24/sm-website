@@ -24,7 +24,6 @@ const TeamRoster = () => {
   const [protectedCheck, setProtectedCheck] = useState([])
   const [playerCaps, setPlayerCaps] = useState(null)
   const [averagePf, setAveragePf] = useState(null)
-  const [drafts, setDrafts] = useState([])
   const [loading, setLoading] = useState(true)
   const { id } = useParams()
 
@@ -40,8 +39,6 @@ const TeamRoster = () => {
   }, [SETTING?.week, id])
 
 
-  // console.log('res?.active',res?.active);
-  console.log('activePlayerData',activePlayerData);
   const getData = async () => {
     
     setLoading(true)
@@ -61,7 +58,6 @@ const TeamRoster = () => {
       })
 
       setPlayerCaps(res?.currentyearsalarycap)
-      setDrafts(res?.drafts)
       setAveragePf(res?.averagePf)
       setActivePlayerData(res?.active)
       setPractiveSquadData(res?.practice)
@@ -78,7 +74,6 @@ const TeamRoster = () => {
   }
 
 
-  // console.log('filterData',filterData?.filterActiveRoster);
 
   return (
     <div className='player_roster_container team_roster_container'>
@@ -220,26 +215,7 @@ const TeamRoster = () => {
                     <Empty text={'Protected Squad IS EMPTY'} />
                   )}
                 </section>
-                {/* -------------------------------------------------- */}
-                <hr style={{ marginBlock: '20px' }} />
-                <div className='practice_squad_header'>
-                  <p className='heading'>
-                    Draft<b>Picks</b>
-                  </p>
-                </div>
-                <section className='draft_pick_box'>
-                  {drafts?.length > 0 ? (
-                    drafts?.map((v, i) => {
-                      return (
-                        <div key={i} className='draft_pick_row'>
-                          <p>{`${v?.season}' ${v?.team?.name} ${v?.round} Round Pick`}</p>
-                        </div>
-                      )
-                    })
-                  ) : (
-                    <Empty text={'DRAFT PICK IS EMPTY'} />
-                  )}
-                </section>
+                {/* Draft picks section removed, managed via Trade page */}
               </div>
             </div>
           </Col>

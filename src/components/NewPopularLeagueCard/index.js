@@ -1,5 +1,4 @@
 import moment from 'moment'
-import { IoStar } from 'react-icons/io5'
 import JoinLeague from '../modal/JoinLeague'
 import { useNavigate } from 'react-router-dom'
 import Logo from '../../assets/sam-football.png'
@@ -7,107 +6,80 @@ import Logo from '../../assets/sam-football.png'
 const NewPopularLeagueCard = ({ data, yourLeague, active, fromHome }) => {
   const navigate = useNavigate()
   const { name, draftStart, leagueType, leagueLevel, entryFee, leagueLogo, totalPlayers } = data
+
+  const teamCount = data?.teams?.length || totalPlayers || 0
+  const maxTeams = data?.numberOfTeams || 32
+  const fillPercent = Math.min((teamCount / maxTeams) * 100, 100)
+
+  const typeColor =
+    leagueType === 'private' ? '#4ADE80'
+    : leagueType === 'public' ? '#34d399'
+    : '#60a5fa'
+
+  const borderAccent =
+    active ? 'rgba(120, 80, 255, 0.6)'
+    : leagueType === 'private' ? 'rgba(167, 139, 250, 0.25)'
+    : 'rgba(255, 255, 255, 0.06)'
+
   return (
-    <div className='p_league_card_wrapper'>
-      <div
-        className={`p_league_card ${
-          // active ? 'active' : leagueType === 'professional' ? 'pro_league_border' : ''
-          active
-          ? 'active'
-          : leagueType === 'professional'
-          ? 'pro_league_border'
-          : leagueType === 'Ultimate'
-          ? 'ultimate_league_border'
-          : ''
-        }`}
-      >
-        <div className='top'>
-          {/* <div className='row_1'>
-            <div>
-              <p className='text_title'>League Name:</p>
-              <p className='text_value'>{name}</p>
-            </div>
-            <div className='image_box' style={{ backgroundImage: `url(${leagueLogo})` }} />
-          </div> */}
-          <div className='row_1'>
-          {/* <div className='image_box' style={{ backgroundImage: `url(${leagueLogo} || Logo)` }} /> */}
-          <div  className='image_box' style={{ backgroundImage: `url(${leagueLogo ? leagueLogo : Logo})` }} />
-
-            <div>
-              <p className='text_title'>League Name:</p>
-              <p className='text_value'>{name}</p>
-
-              <p style={{marginTop:'30px'}} className='text_title'>Users:</p>
-              <p  className='color_text_value'>{data?.teams?.length || totalPlayers || 0}  /32</p>
-            </div>
-            
-          </div>
-          {/* <div className='row_2'>
-            <div>
-              <p className='text_title'>Draft Starts:</p>
-              <p className='text_value'>{moment(draftStart).format('DD/MM/YY')}</p>
-            </div>
-            <div>
-              <p className='text_title'>Players:</p>
-              <p className='text_value'>{data?.teams?.length || totalPlayers}</p>
-            </div>
-          </div> */}
-          <div className='row_2'>
-            <div>
-              <p className='text_title'>Draft Starts:</p>
-              <p className='text_value'>{moment.tz(draftStart , moment.tz.guess()).tz("CST6CDT").format('MM/DD/YY')}</p>
-              <p style={{marginTop:'5px'}} className='text_value'>{moment.tz(draftStart , moment.tz.guess()).tz("CST6CDT").format('h A')}   CST</p>
-
-            </div>
-            <div>
-     
-              <p style={{marginTop:'5px'}}  className='text_title'>League Type:</p>
-            <p className='color_text_value'>{leagueType}</p>
-            </div>
-          </div>
-          {/* <div className='row_3'>
-            <p className='text_title'>League Type:</p>
-            <p className='text_value'>{leagueType}</p>
-          </div>
-          <div className='row_4'>
-            <p className='text_title'>League Level:</p>
-            <div>
-              {Array(Number(leagueLevel))
-                .fill()
-                // .slice(0, 5)
-                .map((_, i) => {
-                  return <IoStar key={i} color={'#fff'} size={18} />
-                })}
-            </div>
-          </div>
-          <div className='row_5'>
-            <p className='text_title'>Entry Fee:</p>
-            <p className='text_value'>{entryFee}</p>
-          </div>
-          <div className='row_5'>
-            <p className='text_title'>Prize pool wallet:</p>
-            <p className='text_value'>{data?.prizePool || '-'}</p>
-          </div> */}
+    <div
+      className={`ulc-card ${active ? 'ulc-active' : ''}`}
+      style={{ borderColor: borderAccent }}
+    >
+      {/* Top section: Logo + Info */}
+      <div className="ulc-top">
+        <div className="ulc-logo-wrap">
+          <img
+            src={leagueLogo || Logo}
+            alt={name}
+            className="ulc-logo"
+            onError={(e) => { e.target.src = Logo }}
+          />
         </div>
-        <>
-          {yourLeague ? (
-            <div className='button_row'>
-              <p>Joined</p>
-            </div>
-          ) : fromHome ? (
-            <div
-              className='button_row'
-              onClick={() => {
-                navigate('/select-game')
-              }}
-              style={{ cursor: 'pointer' }}
-            >
-              <p className='join-now'>Join Now</p>
-            </div>
-          ) : (
-            <JoinLeague data={data} />
-          )}
-        </>
+        <div className="ulc-info">
+          <div className="ulc-type-badge" style={{ color: typeColor, borderColor: typeColor }}>
+            {leagueType || 'League'}
+          </div>
+          <h3 className="ulc-name">{name}</h3>
+        </div>
+      </div>
+
+      {/* Stats row */}
+      <div className="ulc-stats">
+        <div className="ulc-stat">
+          <span className="ulc-stat-label">Players</span>
+          <span className="ulc-stat-value">{teamCount}<span className="ulc-stat-dim">/{maxTeams}</span></span>
+          <div className="ulc-bar">
+            <div className="ulc-bar-fill" style={{ width: `${fillPercent}%`, background: typeColor }} />
+          </div>
+        </div>
+        <div className="ulc-stat">
+          <span className="ulc-stat-label">Draft</span>
+          <span className="ulc-stat-value">
+            {moment.tz ? moment.tz(draftStart, moment.tz.guess()).tz('CST6CDT').format('MMM D, YY') : moment(draftStart).format('MMM D, YY')}
+          </span>
+          <span className="ulc-stat-sub">
+            {moment.tz ? moment.tz(draftStart, moment.tz.guess()).tz('CST6CDT').format('h A') : moment(draftStart).format('h A')} CST
+          </span>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="ulc-actions">
+        {yourLeague ? (
+          <button className={`ulc-btn ${active ? 'ulc-btn-active' : 'ulc-btn-joined'}`}>
+            {active ? 'Active' : 'Joined'}
+          </button>
+        ) : fromHome ? (
+          <button
+            className="ulc-btn ulc-btn-join"
+            onClick={() => navigate('/select-game')}
+          >
+            Join Now
+          </button>
+        ) : (
+          <JoinLeague data={data} />
+        )}
       </div>
     </div>
   )

@@ -1,0 +1,322 @@
+/* ============================================
+   SOCCER DASHBOARD — Bold, sporty, feed-style
+   ============================================ */
+
+.sd-page { padding: 0; }
+
+/* ── Hero Banner ── */
+.sd-hero {
+  position: relative;
+  padding: 32px 28px;
+  border-radius: 0 0 20px 20px;
+  background: linear-gradient(170deg, #111827 0%, #0a0f1a 100%);
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.sd-hero-stripe {
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  pointer-events: none;
+}
+.sd-hero-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.sd-hero-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.sd-hero-badge {
+  width: 68px; height: 68px;
+  border-radius: 50%;
+  border: 3px solid var(--sd-accent, var(--league-color, #4CAF50));
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.4);
+  flex-shrink: 0;
+}
+.sd-hero-badge-icon { font-size: 22px; line-height: 1; }
+.sd-hero-badge-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px; font-weight: 800;
+  letter-spacing: 0.5px;
+}
+.sd-hero-identity { display: flex; flex-direction: column; gap: 2px; }
+.sd-hero-team-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 22px; font-weight: 800;
+  color: #f1f5f9; text-transform: uppercase;
+  letter-spacing: 1px; line-height: 1.1;
+  margin: 0;
+}
+.sd-hero-league {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px; font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 0;
+}
+.sd-hero-tags {
+  display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap;
+}
+.sd-hero-tag {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px; font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.04);
+  padding: 2px 10px; border-radius: 20px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.sd-hero-stats {
+  display: flex; gap: 24px;
+}
+.sd-hero-stat {
+  display: flex; flex-direction: column; align-items: center;
+}
+.sd-hero-stat-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 28px; font-weight: 800; color: #f1f5f9;
+  line-height: 1;
+}
+.sd-hero-stat-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 10px; font-weight: 700;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase; letter-spacing: 1px;
+  margin-top: 2px;
+}
+
+/* ── Quick Action Bar ── */
+.sd-quick-bar {
+  display: flex; gap: 8px;
+  padding: 14px 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.sd-quick-bar::-webkit-scrollbar { display: none; }
+.sd-quick-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 10px 18px; border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.6);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  cursor: pointer; white-space: nowrap;
+  transition: all 0.2s;
+}
+.sd-quick-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: #f1f5f9;
+  border-color: rgba(255,255,255,0.12);
+}
+.sd-quick-primary {
+  background: linear-gradient(135deg, var(--league-color, #4CAF50), color-mix(in srgb, var(--league-color, #4CAF50) 75%, #000));
+  border-color: transparent;
+  color: #fff;
+}
+.sd-quick-primary:hover {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--league-color, #4CAF50) 85%, #fff), var(--league-color, #4CAF50));
+  color: #fff;
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--league-color, #4CAF50) 25%, transparent);
+}
+
+/* ── Feed Layout ── */
+.sd-feed {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+  padding: 20px;
+}
+.sd-feed-main { display: flex; flex-direction: column; gap: 20px; }
+.sd-feed-side { display: flex; flex-direction: column; gap: 16px; }
+
+/* ── Widget (card container) ── */
+.sd-widget {
+  background: rgba(15,20,35,0.7);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 16px;
+  padding: 18px;
+}
+.sd-widget-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.sd-widget-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px; font-weight: 700;
+  color: rgba(255,255,255,0.55);
+  text-transform: uppercase; letter-spacing: 1px;
+}
+.sd-widget-badge {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px; font-weight: 700;
+  color: var(--league-color, #4CAF50);
+  background: color-mix(in srgb, var(--league-color, #4CAF50) 10%, transparent);
+  padding: 2px 10px; border-radius: 20px;
+}
+.sd-empty {
+  text-align: center;
+  padding: 20px 0;
+  color: rgba(255,255,255,0.2);
+  font-size: 13px;
+}
+
+/* ── Action Grid ── */
+.sd-action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.sd-action-card {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 6px; padding: 16px 10px;
+  border-radius: 14px;
+  background: rgba(15,20,35,0.7);
+  border: 1px solid rgba(255,255,255,0.05);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.sd-action-card:hover {
+  border-color: rgba(255,255,255,0.12);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+.sd-action-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 16px;
+}
+.sd-action-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px; font-weight: 700;
+  color: #e2e8f0; text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.sd-action-sub {
+  font-size: 11px; color: rgba(255,255,255,0.3);
+}
+
+/* ── Wallet Widget ── */
+.sd-widget-wallet {
+  background: linear-gradient(165deg, rgba(76,175,80,0.08), rgba(15,20,35,0.7));
+  border-color: rgba(76,175,80,0.12);
+}
+.sd-wallet-balance {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 34px; font-weight: 800;
+  color: #4ade80; line-height: 1;
+  margin-bottom: 10px;
+}
+.sd-wallet-unit {
+  font-size: 16px; color: rgba(74,222,128,0.5);
+}
+.sd-wallet-btn {
+  width: 100%; padding: 8px;
+  border-radius: 10px;
+  background: rgba(76,175,80,0.15);
+  border: 1px solid rgba(76,175,80,0.2);
+  color: #4ade80;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1px;
+  cursor: pointer; transition: all 0.2s;
+}
+.sd-wallet-btn:hover {
+  background: rgba(76,175,80,0.25);
+  border-color: rgba(76,175,80,0.35);
+}
+
+/* ── Performer List ── */
+.sd-performer-list { display: flex; flex-direction: column; gap: 6px; }
+.sd-performer-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 10px;
+  background: rgba(255,255,255,0.02);
+  transition: background 0.15s;
+}
+.sd-performer-row:hover { background: rgba(255,255,255,0.04); }
+.sd-performer-rank {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px; font-weight: 800; color: var(--league-color, #4CAF50);
+  width: 22px; text-align: center;
+}
+.sd-performer-name {
+  flex: 1;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px; font-weight: 600;
+  color: #e2e8f0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sd-performer-pts {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px; font-weight: 700; color: #fbbf24;
+}
+
+/* ── Fixture List ── */
+.sd-fixture-list { display: flex; flex-direction: column; gap: 8px; }
+.sd-fixture-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px; border-radius: 12px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.03);
+}
+.sd-fixture-teams {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px; font-weight: 700;
+  color: #e2e8f0;
+}
+.sd-fixture-vs {
+  font-size: 11px; font-weight: 600;
+  color: rgba(255,255,255,0.25);
+  margin: 0 6px;
+  text-transform: uppercase;
+}
+.sd-fixture-date {
+  font-size: 12px; color: rgba(255,255,255,0.35);
+  white-space: nowrap;
+}
+
+/* ── Activity Feed ── */
+.sd-activity-list { display: flex; flex-direction: column; gap: 4px; }
+.sd-activity-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.02);
+}
+.sd-activity-text {
+  font-size: 12px; color: #cbd5e1;
+  flex: 1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin-right: 10px;
+}
+.sd-activity-time {
+  font-size: 11px; color: rgba(255,255,255,0.2);
+  white-space: nowrap;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .sd-feed { grid-template-columns: 1fr; }
+  .sd-hero-content { flex-direction: column; align-items: flex-start; }
+  .sd-hero-stats { align-self: flex-start; }
+}
+@media (max-width: 480px) {
+  .sd-hero { padding: 20px 16px; }
+  .sd-hero-team-name { font-size: 18px; }
+  .sd-hero-stat-num { font-size: 22px; }
+  .sd-quick-bar { padding: 10px 12px; }
+  .sd-feed { padding: 12px; gap: 12px; }
+  .sd-action-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+}

@@ -11,11 +11,11 @@ const SportsButtonMenu = () => {
       <div className='button_menu_box'>
         <ButtonMenu
           data={{
-            buttonName: 'Football',
+            buttonName: 'A.Football',
             item: [
               {
-                name: 'Professional Leagues',
-                navigate: '/professional-league',
+                name: 'SFL Leagues',
+                navigate: '/dashboard',
                 link: '',
               },
               {
@@ -43,9 +43,9 @@ const SportsButtonMenu = () => {
             buttonName: 'Hockey',
             item: [
               {
-                name: 'Professional Leagues',
+                name: 'SFL Leagues',
                 navigate: '',
-                link: 'https://hockey.samsports.io/professional-league',
+                link: 'https://hockey.samsports.io/dashboard',
               },
               {
                 name: 'Public Leagues',

@@ -1,199 +1,483 @@
-.clubhouse-main{
-    width: 100%;
-    height: auto;
-    margin: auto;
+/* ═══════════════════════════════════════════════════════════════
+   CLUBHOUSE — REDESIGN
+   ═══════════════════════════════════════════════════════════════ */
+.clubhouse-main {
+  width: 100%;
+  height: auto;
+  margin: auto;
 }
 
-
-.clubhouse-main .clubhouse h1 {
-    color: var(--text);
-    font-size: 34px;
-    font-style: normal;
-    font-weight: bold;
-    line-height: normal;
-    margin-bottom: 20px;
-  }
-
-
-  .clubhouse-main .clubhouse .clubhouse_first_div {
-    display:flex;
-    flex-direction: row;
-    gap:240px;
-  }
-
-  .clubhouse-main .clubhouse .clubhouse_first_div .clubhouseinput  {
-    background:rgb(88, 77, 116);
-    width: 64%;
-border-radius:30px;
-position: relative;
-left: 3%;
-display:flex;
-flex-direction: row;
-justify-content: space-between;
-height: fit-content;
-    
-  }
-
-  .clubhouse-main .clubhouse .clubhouse_first_div  h2 {
-    color: var(--text);
-    font-size: 24px;
-    font-style: italic;
-    font-weight: 700;
-    line-height: normal;
-    margin-bottom: 20px;
-
-  }
-
-  .clubhouse-main .clubhouse .clubhouse_first_div  h2 p {
-    color: var(--text);
-    font-size: 24px;
-    font-style: italic;
-    font-weight: 400;
-    line-height: normal;
-    margin-bottom: 20px;
-    text-align: right;
-
-  }
-
-
-  .clubhouse-main .clubhouse .clubhouse_first_div  .clubhouseinput .ant-input {
-  
-        background-color: #080611 !important;
-        border: 2px solid rgb(88, 77, 116) !important;
-        border-radius: 34px;
-        color: var(--text) !important;
-    width: 50%;
-    height: 37px;
-    margin-top: 7px;
-    margin-bottom: 4px;
-    margin-left: 4px;
-    font-size: 18px;
-    font-weight: 400;
-    font-style: italic;
-  }
-
-
-  .clubhouse-main .clubhouse .clubhouse_first_div  .clubhouseinput > div {
-    /* style={{display:'flex',justifyContent:'flex-start',marginTop:'5px'}} */
-    display: flex;
-    justify-content: flex-start;
-    margin-top: 5px;
-    flex-direction: row;
-  }
-
-  .clubhouse-main .clubhouse .clubhouse_first_div .clubhouseinput .ant-btn-primary { 
-        width: 21%;
-        font-size: 27px;
-        margin-top: 7px;
-        margin-bottom: 7px;
-        margin-right: 0px
-  }
-
-
-
- .clubhouse-main .clubhouse .email-registration{
-    display: flex;
-    margin: auto;
-    /* justify-content: space-between; */
-    gap: 20px;
-   
- }
-  .clubhouse-main .clubhouse .email-registration p{
-    color: var(--text);
-    font-size: 17px;
-    font-style: normal;
-    font-weight: bold;
-    line-height: normal;
-    margin-right: 40px;
-    width: 46%;
-    position: relative;
-    left: 4%
-  }
-
-.clubhouse-main .clubhouse .email-registration .email-box{
-    border: 8px solid rgb(88, 77, 116) !important;
-    border-radius: 34px;
-    height: 80vh;
-    padding-top: 30px;
-    padding-left: 30px;
-    position: relative;
-    left: -9%;
-    overflow-x: scroll;
-}
-.clubhouse-main .clubhouse .email-registration  p .total-earnings {
-    display: flex;
-    flex-direction: row;
-    gap:20px;
-    margin-top: 20px;
+/* ── Page Header ── */
+.ch-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
-.clubhouse-main .clubhouse .email-registration  p .total-earnings h3 {
-    color: var(--text);
-    font-size: 27px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
+.ch-page-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.clubhouse-main .clubhouse .email-registration  p .total-earnings h4 {
-    color: var(--text);
-    font-size: 24px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
+.ch-title {
+  color: var(--text);
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin: 0;
 }
 
-.clubhouse-main .clubhouse .email-registration .email-box p {
-    color: var(--text);
-    font-size: 27px;
-    margin-bottom: 20px;
-    font-style: italic;
-    font-weight: 400;
-    line-height: normal;
-    width: max-content;
-
+.ch-subtitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.35);
 }
 
-
-.clubhouse-main .clubhouse .email-registration .email-box .icon {
-  /* color: white !important;
-width: 35px !important;
-height: 35px !important; */
-cursor: pointer;
+/* ── Referral Badge ── */
+.ch-referral-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(110, 105, 128, 0.2);
+  background: rgba(255, 255, 255, 0.04);
 }
 
-
-
-.clubhouse-main .clubhouse .email-registration .email-box h2 {
-    color: rgb(12, 192, 223) !important;
-    font-size: 27px;
-    margin-bottom: 20px;
-    font-style: italic;
-    font-weight: 400;
-    line-height: normal;
-    width: max-content;
+.ch-referral-badge-text {
+  display: flex;
+  flex-direction: column;
 }
 
-@media (max-width: 1500px) {
-  .clubhouse-main .clubhouse .email-registration{
+.ch-referral-badge-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ch-referral-badge-value {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+/* ── Invite Bar ── */
+.ch-invite-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.35), rgba(17, 24, 39, 0.15));
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.ch-invite-input-wrap {
+  flex: 1;
+  min-width: 200px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ch-invite-input-icon {
+  position: absolute;
+  left: 12px;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 14px;
+}
+
+.ch-invite-input {
+  padding-left: 36px !important;
+  background: rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid rgba(110, 105, 128, 0.25) !important;
+  border-radius: 10px !important;
+  height: 40px !important;
+  color: var(--text) !important;
+  font-size: 13px !important;
+}
+.ch-invite-input::placeholder {
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+.ch-invite-input:focus {
+  border-color: rgba(99, 102, 241, 0.4) !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.08) !important;
+}
+
+/* Type Chips */
+.ch-invite-types {
+  display: flex;
+  gap: 8px;
+}
+
+.ch-type-chip {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(110, 105, 128, 0.25);
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.ch-type-chip:hover {
+  background: rgba(99, 102, 241, 0.08);
+  border-color: rgba(99, 102, 241, 0.25);
+  color: rgba(255, 255, 255, 0.7);
+}
+.ch-type-chip-active {
+  background: rgba(99, 102, 241, 0.15) !important;
+  border-color: rgba(99, 102, 241, 0.4) !important;
+  color: #a5b4fc !important;
+}
+
+/* Send Button */
+.ch-invite-btn {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+  border: none !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  letter-spacing: 0.5px;
+  height: 40px !important;
+  padding: 0 24px !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2) !important;
+  white-space: nowrap;
+}
+.ch-invite-btn:hover {
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35) !important;
+}
+
+/* ── Stats Row ── */
+.ch-stats-row {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.ch-stat-card {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  border: 1px solid rgba(110, 105, 128, 0.2);
+  background: rgba(255, 255, 255, 0.02);
+  transition: border-color 0.15s;
+}
+.ch-stat-card:hover {
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+.ch-stat-icon-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.ch-stat-icon-sent {
+  background: rgba(59, 130, 246, 0.12);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+.ch-stat-icon-reg {
+  background: rgba(34, 197, 94, 0.12);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+.ch-stat-icon-earn {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.ch-stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.ch-stat-value {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+}
+
+.ch-stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* ── Content Panels ── */
+.ch-panels {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.ch-panel {
+  flex: 1;
+  min-width: 0;
+  border-radius: 14px;
+  border: 1px solid rgba(110, 105, 128, 0.2);
+  background: rgba(255, 255, 255, 0.02);
+  overflow: hidden;
+}
+
+/* Panel Header */
+.ch-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.5), rgba(17, 24, 39, 0.25));
+  border-bottom: 1px solid rgba(110, 105, 128, 0.15);
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ch-panel-header-icon {
+  font-size: 14px;
+  color: #a5b4fc;
+}
+
+.ch-panel-header-success .ch-panel-header-icon {
+  color: #22c55e;
+}
+
+.ch-panel-count {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 700;
+  color: #a5b4fc;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+/* Panel Body */
+.ch-panel-body {
+  max-height: 420px;
+  overflow-y: auto;
+  padding: 8px 12px;
+}
+
+.ch-panel-body::-webkit-scrollbar {
+  width: 4px;
+}
+.ch-panel-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.ch-panel-body::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.2);
+  border-radius: 4px;
+}
+
+.ch-panel-empty {
+  padding: 50px 20px;
+  text-align: center;
+}
+
+/* ── Email Row (Invitations Sent) ── */
+.ch-email-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+}
+.ch-email-row:hover {
+  background: rgba(99, 102, 241, 0.04);
+  border-color: rgba(99, 102, 241, 0.1);
+}
+
+.ch-email-row-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.ch-email-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.2);
+  min-width: 20px;
+  text-align: center;
+}
+
+.ch-email-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.ch-email-address {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ch-email-type-tag {
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  border-radius: 4px !important;
+  padding: 1px 6px !important;
+  line-height: 1.4 !important;
+}
+
+.ch-email-row-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.ch-resend-icon {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.15s;
+  padding: 4px;
+  border-radius: 4px;
+}
+.ch-resend-icon:hover {
+  color: #a5b4fc;
+  background: rgba(99, 102, 241, 0.1);
+}
+
+/* ── Registration Row ── */
+.ch-reg-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+}
+.ch-reg-row:hover {
+  background: rgba(34, 197, 94, 0.04);
+  border-color: rgba(34, 197, 94, 0.1);
+}
+
+.ch-reg-row-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.ch-reg-row-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.ch-reg-points {
+  font-size: 13px;
+  font-weight: 700;
+  color: #22c55e;
+}
+
+/* ── Panel Footer (Total Earnings) ── */
+.ch-panel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-top: 1px solid rgba(110, 105, 128, 0.15);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.ch-footer-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ch-footer-value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #22c55e;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .ch-panels {
     flex-direction: column;
   }
-
-  .clubhouse-main .clubhouse .email-registration .email-box{
-    height: 20vh;
-    left: auto;
-  }
-
-  
-  .clubhouse-main .clubhouse .clubhouse_first_div  .clubhouseinput > div {
+  .ch-stats-row {
     flex-direction: column;
   }
-
-  .clubhouse-main .clubhouse .email-registration p {
-    width: auto;
+  .ch-invite-bar {
+    flex-direction: column;
+    align-items: stretch;
   }
-
+  .ch-invite-types {
+    justify-content: center;
+  }
+  .ch-invite-btn {
+    width: 100% !important;
+  }
 }
 
-
-
+@media (max-width: 600px) {
+  .ch-title {
+    font-size: 24px;
+  }
+  .ch-invite-types {
+    flex-direction: column;
+  }
+  .ch-type-chip {
+    justify-content: center;
+  }
+  .ch-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

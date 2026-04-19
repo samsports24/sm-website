@@ -43,8 +43,6 @@ export const setAllstadium = (payload) => {
       attachToken()
       const res = await privateAPI.post(`/stadium/createstadium`, payload)
       if (res) {
-        // console.log('res',res);
-        // console.log('res.data.data',res.data.data);
         // store.dispatch(getClubhouse(payload))
         // store.dispatch(setAllclubhouse(res.data.data))
       
@@ -55,7 +53,6 @@ export const setAllstadium = (payload) => {
           teamId:payload?.teamId
         }
 
-        // console.log('tempPayload',tempPayload);
         await getstadium(tempPayload)
            store.dispatch(getUser())
         // store.dispatch(setAllclubhouse(res.data.data))
@@ -68,7 +65,6 @@ export const setAllstadium = (payload) => {
         // getLeagueDetails()
       }
     } catch (err) {
-      console.log('err', err)
       notification.error({
         message: err?.response?.data?.message || 'Server Error',
         duration: 3,
@@ -78,7 +74,6 @@ export const setAllstadium = (payload) => {
 
 
   export const getstadium = async (payload) => {  
-    console.log('get payload',payload);
     try {
       attachToken()
       const res = await privateAPI.post('/stadium/getstadium', payload)

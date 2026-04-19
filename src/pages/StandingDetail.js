@@ -9,7 +9,6 @@ import StandingDetailChart from '../components/Charts/StandingDetailChart'
 
 const StandingDetail = () => {
   const handleFilter = (value) => {
-    console.log('value :>> ', value)
   }
 
   return (
@@ -61,7 +60,7 @@ const StandingDetail = () => {
             </div>
             <div className='detail_row'>
               <p className='text1'>Accounting Balance:</p>
-              <p className='text2'>$0.00</p>
+              <p className='text2'>0.00 SP</p>
             </div>
             <div className='detail_row'>
               <p className='text1'>Record (W-L-T):</p>

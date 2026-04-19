@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react'
 
-import { Button, Col, Row, notification } from 'antd'
+import { Button, notification, Tooltip } from 'antd'
+import {
+  SafetyCertificateFilled,
+  PauseCircleOutlined,
+  TeamOutlined,
+  LockOutlined,
+  InfoCircleOutlined,
+  CheckCircleFilled,
+  ThunderboltFilled,
+} from '@ant-design/icons'
 
 // Component
 import Header from '../components/Header'
@@ -8,19 +17,32 @@ import Loader from '../components/Loader'
 import Empty from '../components/Empty'
 import NewRosterCard from '../components/NewRosterCard'
 import HeadingAndWeek from '../components/Pagination/HeadingAndWeek'
+import OnboardingGuide from '../components/OnboardingGuide'
 
 import { useSelector } from 'react-redux'
 import { isLocked } from '../config/constants'
-import { getRoster, setNonActivePlayer, setProtectedPlayer } from '../redux/actions/rosterAction'
+import { getRoster, setNonActivePlayer, setProtectedPlayer, moveToPractice, moveFromPractice, moveToIr } from '../redux/actions/rosterAction'
 import { sortedArray } from '../config/helperFunctions'
+
+import '../styles/pages/playerRoster.css'
+
+const MAX_ACTIVE_ROSTER = 53
+const MAX_PRACTICE_SQUAD = 16
 
 const PlayerRoster = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
+  const currentLeagueId = useSelector((state) => state?.user?.userDetails?.team?.currentLeague?._id)
   const { isLoading, data } = useSelector((state) => state?.roster)
-  console.log('🚀 ~ PlayerRoster ~ data:', data)
   const [nonActive, setNonActive] = useState([])
   const [protectedCheck, setProtectedCheck] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
+  const [moveLoading, setMoveLoading] = useState(false)
+  const [expandedSections, setExpandedSections] = useState({
+    active: true,
+    nonActive: true,
+    practice: true,
+    protected: true,
+  })
 
   const handleNonActive = (event, id) => {
     if (event) {
@@ -34,15 +56,12 @@ const PlayerRoster = () => {
       }
     }
   }
+
   const handleSubmit = async () => {
-    // const lineupId = activePlayerData[0]?._id
     if (nonActive?.length === 7) {
       setSubmitLoading(true)
       await setNonActivePlayer(
-        {
-          // lineupId,
-          ids: nonActive,
-        },
+        { ids: nonActive },
         SETTING.week,
       )
       setSubmitLoading(false)
@@ -66,13 +85,12 @@ const PlayerRoster = () => {
       }
     }
   }
+
   const handleProtectedSubmit = async () => {
     if (protectedCheck?.length === 4) {
       setSubmitLoading(true)
       await setProtectedPlayer(
-        {
-          ids: protectedCheck,
-        },
+        { ids: protectedCheck },
         SETTING.week,
       )
       setSubmitLoading(false)
@@ -84,9 +102,45 @@ const PlayerRoster = () => {
     }
   }
 
+  const handleMoveToPractice = async (playerId) => {
+    const practiceCount = (data?.filterPracticeRoster?.length || 0) + (data?.filterProtectedRoster?.length || 0)
+    if (practiceCount >= MAX_PRACTICE_SQUAD) {
+      notification.error({
+        message: 'Practice Squad Full',
+        description: `Practice squad is at full capacity (${MAX_PRACTICE_SQUAD}). Move another player to active roster first.`,
+        duration: 5,
+      })
+      return
+    }
+    setMoveLoading(true)
+    await moveToPractice({ id: playerId, week: SETTING?.week })
+    setMoveLoading(false)
+  }
+
+  const handleMoveToActive = async (playerId) => {
+    const activeCount = (data?.filterActiveRoster?.length || 0) + (data?.filterNonActiveRoster?.length || 0)
+    if (activeCount >= MAX_ACTIVE_ROSTER) {
+      notification.error({
+        message: 'Active Roster Full',
+        description: `Active roster is at full capacity (${MAX_ACTIVE_ROSTER}). Move another player to practice squad first.`,
+        duration: 5,
+      })
+      return
+    }
+    setMoveLoading(true)
+    await moveFromPractice({ id: playerId, week: SETTING?.week })
+    setMoveLoading(false)
+  }
+
+  const handleMoveToIR = async (playerId) => {
+    setMoveLoading(true)
+    await moveToIr({ id: playerId, week: SETTING?.week })
+    setMoveLoading(false)
+  }
+
   useEffect(() => {
     SETTING?.week !== 0 && getData()
-  }, [SETTING?.week])
+  }, [SETTING?.week, currentLeagueId])
 
   useEffect(() => {
     setNonActive(data?.nonActivePlayer)
@@ -97,206 +151,229 @@ const PlayerRoster = () => {
     await getRoster(SETTING?.week)
   }
 
-  // console.log('data?.filterActiveRoster',data?.filterActiveRoster);
-  // console.log('sortedArray',sortedArray);
+  const toggleSection = (key) => {
+    setExpandedSections(prev => ({ ...prev, [key]: !prev[key] }))
+  }
+
+  const SECTIONS = [
+    {
+      key: 'active',
+      title: 'Active Squad Management',
+      badge: 'ROSTER',
+      badgeClass: 'sqd-badge--green',
+      icon: <SafetyCertificateFilled />,
+      data: data?.filterActiveRoster || [],
+      onSubmit: handleSubmit,
+      handleCheck: handleNonActive,
+      checkIds: nonActive,
+      isSubmittable: true,
+      checkLabel: 'Non-Active',
+      infoText: 'Select 7 non-active players each week',
+      requiredCount: 7,
+      currentCount: nonActive?.length || 0,
+      onMovePlayer: handleMoveToPractice,
+      moveDirection: 'down',
+      onMoveToIR: handleMoveToIR,
+    },
+    {
+      key: 'nonActive',
+      title: 'Non-Active Players',
+      badge: 'BENCH',
+      badgeClass: 'sqd-badge--amber',
+      icon: <PauseCircleOutlined />,
+      data: data?.filterNonActiveRoster || [],
+      onSubmit: null,
+      handleCheck: handleNonActive,
+      checkIds: nonActive,
+      isSubmittable: false,
+      checkLabel: 'Non-Active',
+      infoText: null,
+      onMovePlayer: handleMoveToPractice,
+      moveDirection: 'down',
+      onMoveToIR: handleMoveToIR,
+    },
+    {
+      key: 'practice',
+      title: 'Practice Squad',
+      badge: 'PRACTICE',
+      badgeClass: 'sqd-badge--blue',
+      icon: <TeamOutlined />,
+      data: data?.filterPracticeRoster || [],
+      onSubmit: handleProtectedSubmit,
+      handleCheck: handleProtectedCheckbox,
+      checkIds: protectedCheck,
+      isSubmittable: true,
+      checkLabel: 'Protected',
+      infoText: 'Select 4 players to protect from poaching',
+      requiredCount: 4,
+      currentCount: protectedCheck?.length || 0,
+      onMovePlayer: handleMoveToActive,
+      moveDirection: 'up',
+    },
+    {
+      key: 'protected',
+      title: 'Protected Players',
+      badge: 'LOCKED',
+      badgeClass: 'sqd-badge--purple',
+      icon: <LockOutlined />,
+      data: data?.filterProtectedRoster || [],
+      onSubmit: null,
+      handleCheck: handleProtectedCheckbox,
+      checkIds: protectedCheck,
+      isSubmittable: false,
+      checkLabel: 'Protected',
+      infoText: null,
+    },
+  ]
 
   return (
     <div className='player_roster_container'>
       <Header />
+      <OnboardingGuide tabKey="roster" />
       <HeadingAndWeek />
       <hr className='divider' />
 
       {isLoading ? (
         <Loader />
       ) : (
-        <>
-          <Row>
-            <Col xs={24} lg={16}>
-              <div style={{ overflowX: 'auto' }}>
-                <div style={{ minWidth: '800px' }}>
-                  {/* ---------------------------------------------------- */}
-                  <div className='practice_squad_header'>
-                    <p className='heading'>
-                      Active<b>Squad</b>
-                    </p>
-                    {!isLocked() && (
-                      <Button loading={submitLoading} onClick={handleSubmit} type='primary'>
-                        Submit
-                      </Button>
-                    )}
-                  </div>
-                  <section className='stats_container'>
-                    {data?.filterActiveRoster?.length > 0 ? (
-                      sortedArray(data?.filterActiveRoster)?.map((v, i) => {
-                        console.log('data?.filterActiveRoster', data?.filterActiveRoster)
-                        return (
-                          <NewRosterCard
-                            key={i}
-                            data={v}
-                            index={i}
-                            state={{
-                              isOwnRoster: {
-                                status: true,
-                              },
-                            }}
-                            checkBoxIds={nonActive}
-                            handleClick={handleNonActive}
-                            playerCaps={data?.playerCaps}
-                            averagePf={data?.averagePf}
-                            currentYearSalaryCap={data?.currentyearsalarycap}
-                            // currentYearSalaryCap={data?.currentYearSalaryCap}
-                          />
-                        )
-                      })
-                    ) : (
-                      <Empty text={'Active Squad IS EMPTY'} />
-                    )}
-                  </section>
-                  {/* ---------------------------------------------------- */}
-                  <div className='practice_squad_header' style={{ marginTop: '20px' }}>
-                    <p className='heading'>
-                      Non-Active<b>Squad</b>
-                    </p>
-                  </div>
-                  <section className='stats_container'>
-                    {data?.filterNonActiveRoster?.length > 0 ? (
-                      sortedArray(data?.filterNonActiveRoster)?.map((v, i) => {
-                        return (
-                          <NewRosterCard
-                            key={i}
-                            data={v}
-                            index={i}
-                            state={{
-                              isOwnRoster: {
-                                status: true,
-                              },
-                            }}
-                            checkBoxIds={nonActive}
-                            handleClick={handleNonActive}
-                            playerCaps={data?.playerCaps}
-                            averagePf={data?.averagePf}
-                            currentYearSalaryCap={data?.currentyearsalarycap}
-                           // currentYearSalaryCap={data?.currentYearSalaryCap}
-                          />
-                        )
-                      })
-                    ) : (
-                      <Empty text={'Non-Active Squad IS EMPTY'} />
-                    )}
-                  </section>
-                  {/* ---------------------------------------------------- */}
-                  <hr style={{ marginBlock: '20px' }} />
-                  <div className='practice_squad_header'>
-                    <p className='heading'>
-                      Practice<b>Squad</b>
-                    </p>
-                    {!isLocked() && (
-                      <Button
-                        loading={submitLoading}
-                        onClick={handleProtectedSubmit}
-                        type='primary'
-                      >
-                        Submit
-                      </Button>
-                    )}
-                  </div>
-                  <section className='stats_container'>
-                    {data?.filterPracticeRoster?.length > 0 ? (
-                      sortedArray(data?.filterPracticeRoster)?.map((v, i) => {
-                        return (
-                          <NewRosterCard
-                            key={i}
-                            data={v}
-                            index={i}
-                            state={{
-                              isOwnRoster: {
-                                status: true,
-                              },
-                            }}
-                            checkBoxIds={protectedCheck}
-                            handleClick={handleProtectedCheckbox}
-                            isPractice={true}
-                            playerCaps={data?.playerCaps}
-                            averagePf={data?.averagePf}
-                            currentYearSalaryCap={data?.currentyearsalarycap}
-                           // currentYearSalaryCap={data?.currentYearSalaryCap}
-                          />
-                        )
-                      })
-                    ) : (
-                      <Empty text={'PRACTICE Squad IS EMPTY'} />
-                    )}
-                  </section>
-                  {/* ---------------------------------------------------- */}
-                  <div className='practice_squad_header' style={{ marginTop: '20px' }}>
-                    <p className='heading'>
-                      Protected<b>Squad</b>
-                    </p>
-                  </div>
-                  <section className='stats_container'>
-                    {data?.filterProtectedRoster?.length > 0 ? (
-                      sortedArray(data?.filterProtectedRoster)?.map((v, i) => {
-                        return (
-                          <NewRosterCard
-                            key={i}
-                            data={v}
-                            index={i}
-                            state={{
-                              isOwnRoster: {
-                                status: true,
-                              },
-                            }}
-                            checkBoxIds={protectedCheck}
-                            handleClick={handleProtectedCheckbox}
-                            isPractice={true}
-                            playerCaps={data?.playerCaps}
-                            averagePf={data?.averagePf}
-                            currentYearSalaryCap={data?.currentyearsalarycap}
-                           // currentYearSalaryCap={data?.currentYearSalaryCap}
-                          />
-                        )
-                      })
-                    ) : (
-                      <Empty text={'Protected Squad IS EMPTY'} />
-                    )}
-                  </section>
-                  {/* ---------------------------------------------------- */}
-                  <hr style={{ marginBlock: '20px' }} />
-                  <div className='practice_squad_header'>
-                    <p className='heading'>
-                      Draft<b>Picks</b>
-                    </p>
-                  </div>
-                  <section className='draft_pick_box'>
-                    {data?.drafts?.length > 0 ? (
-                      data?.drafts?.map((v, i) => {
-                        return (
-                          // <div key={i} className='draft_pick_row'>
-                          //   <p>{`${v?.season}' ${v?.team?.name} ${v?.round} Round Pick`}</p>
-                          // </div>
-                          <div key={i} className='draft_pick_row'>
-                          <p>
-                            {`${v?.season}' ${v?.team?.name} ${v?.round} Round Pick`}
-                            {/* Show mainTeam name within brackets if team and mainTeam IDs are different */}
-                            {v?.team?._id !== v?.mainTeam?._id && (
-                              <span> via ({v?.mainTeam?.name})</span>
-                            )}
-                          </p>
-                        </div>
-                        
-                        )
-                      })
-                    ) : (
-                      <Empty text={'DRAFT PICK IS EMPTY'} />
-                    )}
-                  </section>
-                  {/* ---------------------------------------------------- */}
-                </div>
+        <div className='sqd-page'>
+          {/* Page title bar */}
+          <div className='sqd-page-header'>
+            <div className='sqd-page-title-group'>
+              <ThunderboltFilled className='sqd-page-icon' />
+              <div>
+                <h1 className='sqd-page-title'>Squad Management</h1>
+                <p className='sqd-page-subtitle'>Manage your active roster, bench, and practice squad</p>
               </div>
-            </Col>
-            <Col xs={24} lg={8}></Col>
-          </Row>
-        </>
+            </div>
+            <div className='sqd-page-week'>
+              Week {SETTING?.week || '-'}
+            </div>
+          </div>
+
+          {/* Quick Stats Bar */}
+          <div className='sqd-stats-bar'>
+            <div className='sqd-stat'>
+              <span className='sqd-stat-num'>{data?.filterActiveRoster?.length || 0}</span>
+              <span className='sqd-stat-label'>Active</span>
+            </div>
+            <div className='sqd-stat-divider' />
+            <div className='sqd-stat'>
+              <span className='sqd-stat-num sqd-stat-num--amber'>{data?.filterNonActiveRoster?.length || 0}</span>
+              <span className='sqd-stat-label'>Bench</span>
+            </div>
+            <div className='sqd-stat-divider' />
+            <div className='sqd-stat'>
+              <span className='sqd-stat-num sqd-stat-num--blue'>{data?.filterPracticeRoster?.length || 0}</span>
+              <span className='sqd-stat-label'>Practice</span>
+            </div>
+            <div className='sqd-stat-divider' />
+            <div className='sqd-stat'>
+              <span className='sqd-stat-num sqd-stat-num--purple'>{data?.filterProtectedRoster?.length || 0}</span>
+              <span className='sqd-stat-label'>Protected</span>
+            </div>
+          </div>
+
+          {/* Sections */}
+          {SECTIONS.map((section) => {
+            const isEmpty = (section.data?.length || 0) === 0
+            const isExpanded = expandedSections[section.key]
+
+            return (
+              <div className={`sqd-section ${isExpanded ? 'sqd-section--open' : ''}`} key={section.key}>
+                {/* Section Header */}
+                <div className='sqd-section-hd' onClick={() => toggleSection(section.key)}>
+                  <div className='sqd-section-left'>
+                    <span className={`sqd-badge ${section.badgeClass}`}>{section.badge}</span>
+                    <h2 className='sqd-section-title'>{section.title}</h2>
+                    <span className='sqd-section-count'>{section.data?.length || 0}</span>
+                  </div>
+                  <div className='sqd-section-right'>
+                    {section.isSubmittable && section.requiredCount && (
+                      <div className='sqd-selection-tracker'>
+                        <span className={`sqd-tracker-num ${section.currentCount === section.requiredCount ? 'sqd-tracker-num--done' : ''}`}>
+                          {section.currentCount}/{section.requiredCount}
+                        </span>
+                        {section.currentCount === section.requiredCount && <CheckCircleFilled className='sqd-tracker-check' />}
+                      </div>
+                    )}
+                    <span className={`sqd-chevron ${isExpanded ? 'sqd-chevron--open' : ''}`}>›</span>
+                  </div>
+                </div>
+
+                {/* Table */}
+                {isExpanded && (
+                  <div className='sqd-section-body'>
+                    {!isEmpty ? (
+                      <>
+                        {/* Table header */}
+                        <div className='sqd-table-hd'>
+                          <span className='sqd-th sqd-th-rank'>#</span>
+                          <span className='sqd-th sqd-th-player'>PLAYER</span>
+                          <span className='sqd-th sqd-th-pos'>POS</span>
+                          <span className='sqd-th sqd-th-sametric'>SAM METRIC</span>
+                          <span className='sqd-th sqd-th-stats'>TPF</span>
+                          <span className='sqd-th sqd-th-stats'>PPG</span>
+                          <span className='sqd-th sqd-th-cap'>VALUE</span>
+                          {section.onMovePlayer && <span className='sqd-th sqd-th-move'>MOVE</span>}
+                          <span className='sqd-th sqd-th-check'>{section.checkLabel?.toUpperCase()}</span>
+                        </div>
+
+                        {/* Player rows */}
+                        <div className='sqd-table-body'>
+                          {sortedArray(section.data)?.map((v, i) => (
+                            <NewRosterCard
+                              key={i}
+                              data={v}
+                              index={i}
+                              state={{
+                                isOwnRoster: { status: true },
+                              }}
+                              checkBoxIds={section.checkIds}
+                              handleClick={section.handleCheck}
+                              playerCaps={data?.playerCaps}
+                              averagePf={data?.averagePf}
+                              currentYearSalaryCap={data?.currentyearsalarycap}
+                              isPractice={section.key === 'practice' || section.key === 'protected'}
+                              onMovePlayer={section.onMovePlayer}
+                              moveDirection={section.moveDirection}
+                              moveLoading={moveLoading}
+                              onMoveToIR={section.onMoveToIR}
+                            />
+                          ))}
+                        </div>
+                      </>
+                    ) : (
+                      <div className='sqd-empty'>
+                        <span className='sqd-empty-icon'>{section.icon}</span>
+                        <span>{section.title} is empty</span>
+                      </div>
+                    )}
+
+                    {/* Footer bar */}
+                    {section.isSubmittable && !isEmpty && (
+                      <div className='sqd-section-footer'>
+                        <div className='sqd-footer-info'>
+                          <InfoCircleOutlined />
+                          <span>{section.infoText}</span>
+                        </div>
+                        {!isLocked() && (
+                          <Button
+                            loading={submitLoading}
+                            onClick={(e) => { e.stopPropagation(); section.onSubmit() }}
+                            className='sqd-submit-btn'
+                          >
+                            SUBMIT
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
       )}
     </div>
   )

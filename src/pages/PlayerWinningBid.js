@@ -88,7 +88,7 @@ const PlayerWinningBid = () => {
                 <div className='bid_card'>
                   <img src={Image} />
                   <Typography.Title level={2}>
-                    Winning Bid {`$${state?.highestCurrentBid?.toLocaleString()}`}
+                    Winning Bid {`${state?.highestCurrentBid?.toLocaleString()} SP`}
                   </Typography.Title>
                 </div>
               </Col>
@@ -127,7 +127,7 @@ const PlayerWinningBid = () => {
                       </div>
                       <div style={{ minWidth: '100px' }}>
                         <p className='squad_text2'>bid</p>
-                        <p className='squad_text1'>{`$${v?.bid?.toLocaleString()}` || '-'}</p>
+                        <p className='squad_text1'>{`${v?.bid?.toLocaleString()} SP` || '-'}</p>
                       </div>
                     </div>
                   )

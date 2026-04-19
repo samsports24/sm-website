@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Button, Input, Pagination as AntPagination, Table, Select, notification } from 'antd'
+import { Button, Input, Pagination as AntPagination, Table, Select, notification, Tooltip } from 'antd'
 
 import { SearchOutlined } from '@ant-design/icons'
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
@@ -17,6 +17,8 @@ import { getRankAndPosition } from '../config/helperFunctions'
 
 const FreeAgent = () => {
   const SETTING = useSelector((state) => state.user.setting)
+  const currentLeague = useSelector((state) => state.league?.currentLeague)
+  const draftNotCompleted = currentLeague && currentLeague.draftCompleted !== true
   const [freeAgents, setFreeAgents] = useState({
     total: 0,
     players: [],
@@ -85,7 +87,6 @@ const FreeAgent = () => {
 
 
   const handleCreateAuction = async (playerID, player_id,CapHit) => {
-    // console.log('CapHit',CapHit);
 // let CapHit=5;
 
     if (sampoints < CapHit) {
@@ -223,20 +224,25 @@ const FreeAgent = () => {
       dataIndex: 'auction',
       key: 'auction',
       render: (_, obj) => {
-        return (
-          <Button
-            disabled={false}
-            loading={playerID == obj?.PlayerID}
-            type='primary'
-            className='_button'
-            onClick={() => {
-              // handleCreateAuction(obj?.PlayerID, obj?._id,obj?.currentYearSalaryCap)
-              handleCreateAuction(obj?.PlayerID, obj?._id,obj?.currentYearSalaryCap)
-            }}
-          >
-            Auction
-          </Button>
-        )
+        return draftNotCompleted ? (
+            <span style={{
+              padding: '1px 8px', borderRadius: 3,
+              background: 'rgba(110,105,128,0.1)',
+              color: 'rgba(255,255,255,0.2)', fontSize: 10, fontWeight: 600,
+              letterSpacing: 0.5, textTransform: 'uppercase',
+            }}>locked</span>
+          ) : (
+            <Button
+              loading={playerID == obj?.PlayerID}
+              type='primary'
+              className='_button'
+              onClick={() => {
+                handleCreateAuction(obj?.PlayerID, obj?._id,obj?.currentYearSalaryCap)
+              }}
+            >
+              Auction
+            </Button>
+          )
       },
     },
   ]

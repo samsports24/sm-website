@@ -65,8 +65,12 @@ const initialState = {
           search: payload,
         }
       }
-
-
+      case 'SET_ALL_PLAYERS_stats': {
+        return {
+          ...state,
+          allStats: payload,
+        }
+      }
 
 
       case 'SET_DRAFT_PLAYER_LIMIT': {

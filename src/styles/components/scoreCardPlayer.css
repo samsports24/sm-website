@@ -37,8 +37,8 @@
   display: flex;
   flex-direction: column;
   column-gap: 14px;
-  background-color: #30215d66;
-  border: 1px solid #6e698066;
+  background-color: #1A233266;
+  border: 1px solid #64748B66;
   border-radius: 16px;
 }
 .sc-player .bottom div {

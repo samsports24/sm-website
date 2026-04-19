@@ -30,7 +30,7 @@
 }
 
 .league-container .top-div .details h3 {
-  font-family: Poppins;
+  font-family: var(--font-body);
   font-size: 14px;
   font-style: normal;
   font-weight: 600;
@@ -38,7 +38,7 @@
 }
 
 .league-container .top-div .details p {
-  font-family: Poppins;
+  font-family: var(--font-body);
   font-size: 16px;
   font-style: normal;
   font-weight: 700;
@@ -71,7 +71,7 @@
 }
 
 .league-container .card-body p {
-  font-family: Poppins;
+  font-family: var(--font-body);
   font-size: 16px;
   font-style: normal;
   font-weight: 700;
@@ -119,7 +119,7 @@
 }
 
 .league-container .card-bottom p {
-  font-family: Poppins;
+  font-family: var(--font-body);
   font-size: 12px;
   font-style: normal;
   font-weight: 500;
@@ -136,4 +136,40 @@
 
 .m-b-20 {
   margin-bottom: 20px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .league-container .top-div {
+    flex-direction: column;
+    padding: 15px;
+  }
+
+  .league-container .top-div img {
+    width: 100px;
+    height: 90px;
+    margin-right: 0;
+    margin-bottom: 12px;
+  }
+
+  .league-container .top-div .details {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .league-container .top-div img {
+    width: 80px;
+    height: 70px;
+  }
+
+  .league-container .card-bottom {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .league-container .card-bottom img {
+    width: 80px;
+    height: 20px;
+  }
 }

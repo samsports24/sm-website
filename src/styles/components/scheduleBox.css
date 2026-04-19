@@ -77,3 +77,50 @@
 .week_pagination_ul .go_live_button:hover {
   opacity: 1;
 }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .schedule_box1 {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .week_pagination_ul {
+    width: 100%;
+    gap: 10px;
+  }
+
+  .week_pagination_ul li {
+    font-size: 14px;
+    min-width: auto;
+  }
+
+  .week_pagination_ul .pre_next_box .previous,
+  .week_pagination_ul .pre_next_box .next {
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .schedule_box1 h2 {
+    font-size: 16px;
+  }
+
+  .week_pagination_ul {
+    gap: 8px;
+  }
+
+  .week_pagination_ul li {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  .week_pagination_ul .pre_next_box .previous,
+  .week_pagination_ul .pre_next_box .next {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+  }
+}

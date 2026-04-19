@@ -106,6 +106,79 @@ export const payTrade = async (payload) => {
   }
 }
 
+export const analyzeTrade = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/trade/analyze`, payload)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const initializeDraftPicks = async () => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/trade/draft-picks/initialize`, {})
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    // Silent fail, picks may already be initialized
+    console.error('Draft pick init:', err?.response?.data?.message || err.message)
+  }
+}
+
+export const getCommissionerPendingTrades = async () => {
+  try {
+    attachToken()
+    const res = await privateAPI.get(`/trade/commissioner-pending`)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const approveTradeAdmin = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/trade/approve-admin`, payload)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
+export const vetoTradeAdmin = async (payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/trade/veto`, payload)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+  }
+}
+
 export const getPendingTrade = async (payload) => {
   try {
     attachToken()

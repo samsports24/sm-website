@@ -1,84 +1,63 @@
 import { useEffect, useRef } from 'react'
+import { PlayerImagesProvider } from '../components/PlayerAvatar'
 import { useDispatch, useSelector } from 'react-redux'
 import 'antd/dist/reset.css'
 
 import '../styles/style.css'
 import Routes from './Routes'
+import FloatingChat from '../components/FloatingChat'
+import PasswordChangeModal from '../components/PasswordChangeModal'
 import { light, dark } from './theme'
 import { getUser } from '../redux'
-import { ethers } from 'ethers'
-import { version,base_url } from './constants'
-// import { version } from './constants'
-// import { notification } from 'antd'
-
- import io from 'socket.io-client'
- 
-
+import { version, base_url } from './constants'
+import { notification } from 'antd'
+import io from 'socket.io-client'
 import { setSocket } from '../redux/actions/socketAction'
+import { initErrorReporting } from '../utils/errorReporter'
+import { trackPageView } from '../utils/analytics'
+import { getUserLeagues } from '../redux/actions/leagueActions'
+// AnnouncementBanner moved inside Routes.js (must be inside BrowserRouter)
+
+// Initialize global error listeners (window.onerror, unhandledrejection)
+initErrorReporting()
 
 const App = () => {
   const theme = useSelector((state) => state.theme.theme)
   const dispatch = useDispatch()
   const socketRef = useRef(null);
   const authenticatedID = localStorage.getItem('userId')
-  const socket = io(base_url, { transports: ['websocket'] })
-  // const socket = io(base_url, {
-  //   transports: ['websocket'],
-  // })
 
-
-  // for the use if first connect
-  // useEffect(() => {
-  //   if (authenticatedID) {
-  //     socket.emit('join', authenticatedID)
-  //     dispatch(setSocket(socket))
-  //   }
-  // }, [authenticatedID])
-
-  // // for the use if reconnect
-  // useEffect(() => {
-  //   socket.on('reconnect', () => {
-  //     if (authenticatedID) {
-  //       socket.emit('join', authenticatedID)
-  //     }
-  //   })
-  // }, [])
-
-
+  // Socket.io, single connection lifecycle
   useEffect(() => {
-    // Only create a single socket connection if it's not already created
+    if (!authenticatedID) return
+
+    // Create socket only once per authenticated session
     if (!socketRef.current) {
-      socketRef.current = io(base_url);
+      socketRef.current = io(base_url, {
+        auth: { token: localStorage.getItem('token') },
+        reconnection: true,
+        reconnectionAttempts: Infinity, // Dynasty drafts can last 2+ days — never give up
+        reconnectionDelay: 2000,
+        reconnectionDelayMax: 30000,    // Back off to max 30s between attempts
+      })
     }
 
-    if (authenticatedID) {
-      socketRef.current.emit('join', authenticatedID); // Emit join on first connection
-      dispatch(setSocket(socketRef.current)); // Store socket in Redux
+    const socket = socketRef.current
+    socket.emit('join', authenticatedID)
+    dispatch(setSocket(socket))
+
+    // Re-join on reconnect
+    const handleReconnect = () => {
+      socket.emit('join', authenticatedID)
     }
+    socket.on('reconnect', handleReconnect)
 
     return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect(); // Cleanup socket connection on unmount
-        socketRef.current = null;
-      }
-    };
-  }, [authenticatedID, base_url, dispatch]);
-
-  useEffect(() => {
-    if (socketRef.current) {
-      socketRef.current.on('reconnect', () => {
-        if (authenticatedID) {
-          socketRef.current.emit('join', authenticatedID); // Emit join on reconnect
-        }
-      });
+      socket.off('reconnect', handleReconnect)
+      socket.disconnect()
+      socketRef.current = null
     }
-
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.off('reconnect'); // Clean up the reconnect listener
-      }
-    };
-  }, [authenticatedID]);
+  }, [authenticatedID, dispatch]);
 
   useEffect(() => {
     if (theme === 'light') {
@@ -92,56 +71,24 @@ const App = () => {
     }
   }, [theme])
 
-  // const connectWallet = async () => {
-  //   if (window?.ethereum) {
-  //     window?.ethereum
-  //       .request({ method: 'eth_accounts' })
-  //       .then(async (accounts) => {
-  //         if (accounts.length === 0) {
-  //           console.log("You're not connected to MetaMask")
-  //         } else {
-  //           let currentAccount = accounts[0]
-  //           const provider = new ethers.BrowserProvider(window?.ethereum)
-  //           const walletBalance = await provider.getBalance(currentAccount)
-  //           console.log('currentAccount', currentAccount, walletBalance)
-
-  //           dispatch({
-  //             type: 'SET_ADDRESS_AND_BALANCE',
-  //             payload: {
-  //               address: currentAccount,
-  //               balance: ethers.formatEther(walletBalance),
-  //             },
-  //           })
-  //         }
-  //       })
-  //       .catch(console.error)
-
-  //     // const provider = new ethers.BrowserProvider(window?.ethereum)
-
-  //     // try {
-  //     //   const accounts = await provider.send('eth_requestAccounts', [])
-  //     //   if (accounts.length) {
-  //     //     const connectedAddress = accounts[0]
-  //     //     const walletBalance = await provider.getBalance(connectedAddress)
-  //     //     dispatch({
-  //     //       type: 'SET_ADDRESS_AND_BALANCE',
-  //     //       payload: {
-  //     //         address: connectedAddress,
-  //     //         balance: ethers.formatEther(walletBalance),
-  //     //       },
-  //     //     })
-  //     //   }
-  //     // } catch (err) {
-  //     //   console.error("error connecting wallet : " , err)
-  //     // }
-  //   }
-  // }
+  // Pick up cross-sport auth token from URL (e.g., ?token=xxx from soccer app)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const tokenFromUrl = params.get('token')
+    if (tokenFromUrl) {
+      // TODO: Migrate to httpOnly cookies (requires backend cookie support)
+      // This should be replaced with a backend-set httpOnly cookie for better security
+      localStorage.setItem('token', tokenFromUrl)
+      // Clean the URL so token isn't visible in browser bar
+      const cleanUrl = window.location.pathname + (window.location.hash || '')
+      window.history.replaceState({}, '', cleanUrl)
+    }
+  }, [])
 
   useEffect(() => {
-    // connectWallet()
     const _version = localStorage.getItem('version')
     if (_version && _version !== version) {
-      window.location.href = '/fantasy-league'
+      window.location.href = '/homepage'
       localStorage.clear()
       localStorage.setItem('version', version)
       notification.error({
@@ -151,12 +98,16 @@ const App = () => {
     }
     if (localStorage.getItem('token')) {
       dispatch(getUser())
+      // Fetch user leagues on app initialization
+      try {
+        getUserLeagues().catch(() => {
+          // Silently fail - leagues are optional for app startup
+        })
+      } catch (err) {
+        console.error('[App.js] Failed to fetch leagues on init:', err?.message)
+      }
     }
-    // socket.emit('join', 'yolooooooooooooooooo')
-    // socket.on('test', (data) => {
-    //   console.log(data)
-    // })
-  }, [])
+  }, [dispatch])
 
   const handleExit = () => {
     const originalToken = localStorage.getItem("originalToken");
@@ -168,14 +119,18 @@ const App = () => {
   };
 
   return (
+  <PlayerImagesProvider>
   <div>
     {localStorage.getItem("originalToken") &&
      <div style={{height: '50px', background: 'orange', position: 'fixed', top: 0, width: '100%', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold'}}>
-      <span>Logged in as Comissioner.</span>
+      <span>Logged in as Commissioner.</span>
       <button style={{marginLeft: '10px', padding: '5px 10px', cursor: 'pointer', position: 'fixed', right: '10px'}} onClick={handleExit}>Exit</button>
     </div>}
     <Routes />
-    </div>)
+    <FloatingChat />
+    <PasswordChangeModal />
+    </div>
+  </PlayerImagesProvider>)
 }
 
 export default App

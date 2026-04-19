@@ -1,0 +1,434 @@
+/* ═══ Predictor Page Styles ═══ */
+
+.predictor-page {
+  padding: 16px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Header */
+.predictor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 16px;
+  border-left: 4px solid var(--league-color, #4CAF50);
+  margin-bottom: 16px;
+}
+
+.predictor-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.predictor-league-flag {
+  font-size: 36px;
+}
+
+.predictor-title {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0;
+  font-family: 'Rajdhani', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.predictor-title-accent {
+  background: linear-gradient(90deg, var(--league-color, #4CAF50), #00BCD4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.predictor-subtitle {
+  color: #94a3b8;
+  font-size: 13px;
+  margin: 2px 0 0;
+}
+
+.predictor-stats-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Matchweek nav */
+.predictor-week-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 12px;
+  background: #1e293b;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.predictor-week-btn {
+  background: #334155 !important;
+  border-color: #475569 !important;
+  color: #e2e8f0 !important;
+}
+
+.predictor-week-btn:hover {
+  background: #475569 !important;
+}
+
+.predictor-week-label {
+  color: #f1f5f9;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.predictor-current-badge .ant-badge-status-text {
+  color: var(--league-color, #4CAF50) !important;
+  font-size: 11px;
+}
+
+/* Loading */
+.predictor-loading {
+  display: flex;
+  justify-content: center;
+  padding: 60px 0;
+}
+
+/* Fixture cards */
+.predictor-fixtures {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 80px;
+}
+
+.predictor-fixture-card {
+  background: #1e293b;
+  border-radius: 14px;
+  padding: 14px 18px;
+  border: 1px solid #334155;
+  transition: all 0.2s ease;
+}
+
+.predictor-fixture-card:hover:not(.locked) {
+  border-color: var(--league-color, #4CAF50);
+  box-shadow: 0 0 20px rgba(76, 175, 80, 0.1);
+}
+
+.predictor-fixture-card.locked {
+  opacity: 0.85;
+}
+
+.predictor-fixture-card.correct {
+  border-color: #22C55E;
+  background: linear-gradient(135deg, #1e293b 0%, #14532d22 100%);
+}
+
+.predictor-fixture-card.incorrect {
+  border-color: #EF4444;
+  background: linear-gradient(135deg, #1e293b 0%, #7f1d1d22 100%);
+}
+
+/* Meta bar */
+.predictor-fixture-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.predictor-live-tag {
+  animation: pulse-live 1.5s ease infinite;
+}
+
+@keyframes pulse-live {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Matchup row */
+.predictor-matchup {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.predictor-team {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  background: #0f172a;
+}
+
+.predictor-team:hover:not(.locked .predictor-team) {
+  border-color: #475569;
+}
+
+.predictor-team.selected {
+  border-color: var(--league-color, #4CAF50);
+  background: linear-gradient(135deg, #14532d33 0%, #0f172a 100%);
+  box-shadow: 0 0 16px rgba(76, 175, 80, 0.2);
+}
+
+.predictor-team:last-child {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+.predictor-team-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.predictor-team-name {
+  color: #e2e8f0;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.predictor-actual-score {
+  font-size: 20px;
+  font-weight: 800;
+  color: #f1f5f9;
+  margin-left: auto;
+}
+
+.predictor-team:last-child .predictor-actual-score {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+/* VS / Draw */
+.predictor-vs-container {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 70px;
+}
+
+.predictor-draw-btn {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 2px solid #475569;
+  background: #0f172a;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.predictor-draw-btn:hover {
+  border-color: #64748b;
+}
+
+.predictor-draw-btn.selected {
+  border-color: #f59e0b;
+  color: #fbbf24;
+  background: linear-gradient(135deg, #78350f33 0%, #0f172a 100%);
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.2);
+}
+
+.predictor-final-score {
+  color: #f1f5f9;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+/* Score inputs */
+.predictor-score-inputs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #334155;
+}
+
+.predictor-bonus-icon {
+  color: #f59e0b;
+  font-size: 14px;
+}
+
+.predictor-score-input {
+  width: 48px;
+  text-align: center;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid #475569;
+  background: #0f172a;
+  color: #f1f5f9;
+  font-size: 16px;
+  font-weight: 700;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.predictor-score-input:focus {
+  border-color: #f59e0b;
+}
+
+.predictor-score-dash {
+  color: #64748b;
+  font-weight: 700;
+}
+
+.predictor-score-label {
+  color: #64748b;
+  font-size: 11px;
+  margin-left: 4px;
+}
+
+/* Points indicator */
+.predictor-points-indicator {
+  text-align: center;
+  color: var(--league-color, #4CAF50);
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+/* Save bar */
+.predictor-save-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 24px;
+  background: linear-gradient(180deg, transparent 0%, #0f172a 20%);
+  display: flex;
+  justify-content: center;
+  z-index: 100;
+}
+
+.predictor-save-btn {
+  border-radius: 12px !important;
+  height: 48px !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  padding: 0 32px !important;
+  box-shadow: 0 4px 20px rgba(76, 175, 80, 0.3) !important;
+}
+
+/* Cards */
+.predictor-card {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  border-radius: 14px !important;
+  margin-bottom: 16px;
+}
+
+.predictor-card .ant-card-head {
+  color: #f1f5f9 !important;
+  border-color: #334155 !important;
+}
+
+.predictor-card .ant-card-body {
+  color: #e2e8f0;
+}
+
+/* Leaderboard */
+.predictor-leaderboard-card {
+  margin-top: 16px;
+}
+
+.predictor-leaderboard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.predictor-lb-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #0f172a;
+}
+
+.predictor-lb-row:nth-child(-n+3) {
+  background: linear-gradient(90deg, #14532d22, #0f172a);
+}
+
+.predictor-lb-rank {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #334155;
+  color: #f1f5f9;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.predictor-lb-row:nth-child(1) .predictor-lb-rank { background: #D4AF37; color: #000; }
+.predictor-lb-row:nth-child(2) .predictor-lb-rank { background: #C0C0C0; color: #000; }
+.predictor-lb-row:nth-child(3) .predictor-lb-rank { background: #CD7F32; color: #000; }
+
+.predictor-lb-name {
+  flex: 1;
+  color: #e2e8f0;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.predictor-lb-correct {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.predictor-lb-points {
+  color: var(--league-color, #4CAF50);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .predictor-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .predictor-team-name {
+    font-size: 12px;
+    max-width: 80px;
+  }
+  .predictor-team-logo {
+    width: 24px;
+    height: 24px;
+  }
+  .predictor-matchup {
+    gap: 4px;
+  }
+  .predictor-team {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+}

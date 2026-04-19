@@ -1,79 +1,122 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Modal, Button } from 'antd'
 import '../../styles/modals/pointstransfermessage.css'
-import { useSelector } from 'react-redux'
-import sammdglogo from '../../assets/samlogomessage.png'
+import sammdglogo from '../../assets/samcoinlogo.png'
+import {
+  TrophyOutlined,
+  RiseOutlined,
+  CalendarOutlined,
+  ArrowUpOutlined,
+  DollarOutlined,
+  CheckCircleOutlined,
+} from '@ant-design/icons'
 
 const StadiumModal = ({ visible, onClose }) => {
-  console.log('🚀 ~ MessageModal ~ visible:', visible)
-  //  console.log('user',user?.team?.currentLeague?.name);
-
-  // const cancel = () => {
-  //   // setPlayerInfo({})
-  //   onClose()
-  // }
-
   return (
     <Modal
-      className='stadiummodal'
-      title=''
+      className="stadiummodal"
+      title=""
       open={visible}
       onCancel={onClose}
       centered
-      footer={[
-        <Button onClick={onClose} className='customBTN' key='save' type='primary'>
-          GOT IT!
-        </Button>,
-      ]}
+      width={580}
+      footer={null}
     >
-      <img src={sammdglogo} className='msgimg' alt='samlogo' />
-
-      <div className='clubhousetext'>
-        <span>
-
-        By effectively managing your stadium, you can create a thriving, profitable environment for your team, ensure a steady flow of SamPoints, and enhance your overall gameplay experience by engaging more virtual fans
-        <br>
-        </br>
-        <h2>Getting Started:</h2>
-          
-          <br />
-          When joining the SFL, each user is given a stadium with a 100% attendance rate to start
-          the season and a ticket price of 85 SamPoints
-          <br />
-          Each week, 30% of the SamPoints generated will go to the leaguea&apos;s SamPoints Prize
-          Pool. The remaining 70% is split into two pots
-          <br />
-          <h2>Weekly Earnings</h2>
-          <br></br>
-          <ul>
-            <li>75% goes to the winning team of each matchup.</li>
-            <li>25% goes to the losing team..</li>
-          </ul>
-          <br />
-          <h2>Attendance Variations:</h2>
-          <p> Attendance will vary during the season depending on your weekly performance:</p>
-          <ul>
-            <li>Winning a Game: Increases your attendance by 3%</li>
-            <li>Losing a Game: Decreases your attendance by 3%.</li>
-          </ul>
-          <h2>Daily Login Impact:</h2>
-          <p>
-            Your daily login from Sunday to Wednesday will also impact your attendance. Users who
-            log in daily during this period will improve their attendance by 1.5%.
+      <div className="stm-modal-content">
+        {/* Header */}
+        <div className="stm-modal-header">
+          <img src={sammdglogo} className="stm-modal-logo" alt="SamPoints" />
+          <h2 className="stm-modal-title">Stadium Management</h2>
+          <p className="stm-modal-subtitle">
+            Manage your stadium to create a thriving environment, earn SamPoints,
+            and engage virtual fans.
           </p>
-          <h2>Upgrading Your Stadium:</h2>
-          <p> Upgrading your stadium is crucial for long-term success in the SFL</p>
+        </div>
 
-          <ul>
-  <li>A larger, well-maintained stadium attracts more virtual fans</li>
-  <li>Increases revenue as your ticket price increases</li>
-  <li>Allows users to earn more SamPoints</li>
-</ul>
+        {/* Sections */}
+        <div className="stm-modal-sections">
+          {/* Getting Started */}
+          <div className="stm-modal-section">
+            <div className="stm-modal-section-header">
+              <TrophyOutlined className="stm-modal-section-icon" />
+              <h3>Getting Started</h3>
+            </div>
+            <p>
+              Each user starts with a stadium at <strong>100% attendance</strong> and
+              a ticket price of <strong>85 SamPoints</strong>. Each week, <strong>90%</strong> of
+              generated SamPoints goes to the home team owner, while <strong>10%</strong> goes to the away team.
+            </p>
+          </div>
 
-          By leveraging these features, you can maximize your team&apos;s success and ensure a
-          robust engagement with your virtual fans, driving up your earnings and overall performance
-          in the league
-        </span>
+          {/* Weekly Earnings */}
+          <div className="stm-modal-section">
+            <div className="stm-modal-section-header">
+              <DollarOutlined className="stm-modal-section-icon stm-icon-green" />
+              <h3>Weekly Earnings</h3>
+            </div>
+            <div className="stm-modal-chips">
+              <div className="stm-modal-chip stm-chip-green">
+                <CheckCircleOutlined /> 90% to home owner
+              </div>
+              <div className="stm-modal-chip stm-chip-blue">
+                <CheckCircleOutlined /> 10% to away team
+              </div>
+            </div>
+          </div>
+
+          {/* Attendance */}
+          <div className="stm-modal-section">
+            <div className="stm-modal-section-header">
+              <RiseOutlined className="stm-modal-section-icon stm-icon-amber" />
+              <h3>Attendance Variations</h3>
+            </div>
+            <p>
+              Attendance changes based on weekly performance:
+            </p>
+            <div className="stm-modal-chips">
+              <div className="stm-modal-chip stm-chip-green">
+                Win: +3% attendance
+              </div>
+              <div className="stm-modal-chip stm-chip-red">
+                Loss: -3% attendance
+              </div>
+            </div>
+          </div>
+
+          {/* Daily Login */}
+          <div className="stm-modal-section">
+            <div className="stm-modal-section-header">
+              <CalendarOutlined className="stm-modal-section-icon stm-icon-green" />
+              <h3>Daily Login Impact</h3>
+            </div>
+            <p>
+              Logging in daily from <strong>Sunday to Wednesday</strong> improves
+              your attendance by <strong>1.5%</strong>.
+            </p>
+          </div>
+
+          {/* Upgrading */}
+          <div className="stm-modal-section">
+            <div className="stm-modal-section-header">
+              <ArrowUpOutlined className="stm-modal-section-icon stm-icon-emerald" />
+              <h3>Upgrading Your Stadium</h3>
+            </div>
+            <p>
+              Larger stadiums attract more fans, increase ticket revenue, and let
+              you earn more SamPoints. Upgrade to maximize long-term success.
+            </p>
+          </div>
+        </div>
+
+        {/* Footer Button */}
+        <Button
+          onClick={onClose}
+          className="stm-modal-btn"
+          type="primary"
+          block
+        >
+          GOT IT!
+        </Button>
       </div>
     </Modal>
   )

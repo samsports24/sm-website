@@ -2,11 +2,9 @@ import React, { useState } from 'react'
 import { Modal, Button } from 'antd'
 import '../../styles/modals/pointstransfermessage.css'
 import { useSelector } from 'react-redux'
-import sammdglogo from '../../assets/samlogomessage.png'
+import sammdglogo from '../../assets/samcoinlogo.png'
 
 const MessageModal = ({ visible, onClose }) => {
-  console.log("🚀 ~ MessageModal ~ visible:", visible)
-  //  console.log('user',user?.team?.currentLeague?.name);
 
   // const cancel = () => {
   //   // setPlayerInfo({})
@@ -34,13 +32,13 @@ const MessageModal = ({ visible, onClose }) => {
           <br />
           for joining us. Your first task is to
           <br />
-          participate in the draft spot auction.
+          participate in the Draft Pick Auction.
           <br />
-          Weve added 1,000,000 SP (SamPoints) to
+          We&apos;ve added 1,000,000 SP (SamPoints)
           <br />
-          your user wallet, which you can use to
+          to your wallet for the auction. Use them
           <br />
-          move up the draft board.
+          to bid for your preferred draft position.
         </span>
       </div>
     </Modal>

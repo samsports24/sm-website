@@ -81,10 +81,6 @@ const LeagueStandingCard = ({ data, index, teams }) => {
     }
   }
 
-  // console.log('data?.standing',data?.standing);
-
-  // console.log('data?.conference',data?.conference);
-  // console.log('data?._id',data?._id);
 
   return (
     <div className='league_standing_card' style={{ marginTop: index === 0 && '0px' }}>
@@ -103,8 +99,6 @@ const LeagueStandingCard = ({ data, index, teams }) => {
         })
 
         ?.map((v) => {
-          // console.log('v',v);
-
           let separatedObjects = {}
           let divisionName = v.team.division.name
 
@@ -114,8 +108,6 @@ const LeagueStandingCard = ({ data, index, teams }) => {
 
           separatedObjects[divisionName].push(data)
 
-          // console.log('separatedObjects',separatedObjects);
-
           const firstKey = Object.keys(separatedObjects)[0]
 
           // Extracting teams from the dynamic key
@@ -124,8 +116,6 @@ const LeagueStandingCard = ({ data, index, teams }) => {
           // Find the highest number of wins
           let highestWins = Math.max(...teams.map((team) => team.teamScore.win))
           let lowestWins = Math.min(...teams.map((team) => team.teamScore.lose))
-          // console.log('highestWins',highestWins);
-          // console.log('lowestWins',lowestWins);
 
           // Calculate gb for each team
           let gbResults = teams.map((team) => {
@@ -140,13 +130,7 @@ const LeagueStandingCard = ({ data, index, teams }) => {
             }
           })
 
-          // Log the results
-          // console.log('gbResults',gbResults);
-
-          //   console.log('v',v);
-
           const getGbValue = (teamId) => {
-            // console.log('inside teamId',teamId);
 
             const found = gbResults.find((item) => String(item.teamId) === String(teamId))
             return found ? found.gb : '-' // Return gb or '-' if not found

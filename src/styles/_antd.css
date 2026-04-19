@@ -35,7 +35,7 @@
 .ant-divider-vertical {
   height: auto;
   /* border-left: 2px solid rgba(0, 0, 0, 0.06); */
-  border-left: 1px solid rgba(138, 27, 106, 0.5);
+  border-left: 1px solid rgba(34, 197, 94, 0.15);
 }
 
 .ant-pagination-total-text {
@@ -212,7 +212,7 @@ tr.ant-table-expanded-row:hover > td {
   line-height: 28px;
 }
 .ant-breadcrumb-separator {
-  /* color: #6e698066; */
+  /* color: #64748B66; */
   color: var(--primary) !important;
   font-size: 16px;
 }
@@ -228,7 +228,7 @@ tr.ant-table-expanded-row:hover > td {
   display: none;
 }
 .ant-picker-calendar .ant-picker-content thead tr {
-  background: rgba(48, 33, 93, 0.1) !important;
+  background: rgba(17, 24, 39, 0.1) !important;
   height: 60px;
 }
 .ant-picker-calendar .ant-picker-content thead th {
@@ -237,7 +237,7 @@ tr.ant-table-expanded-row:hover > td {
 }
 .ant-picker-calendar .ant-picker-content thead th,
 .ant-picker-calendar .ant-picker-content .ant-picker-cell {
-  border: 1px solid #443a61;
+  border: 1px solid #1E293B;
 }
 
 .ant-picker-calendar .ant-picker-content tbody tr:nth-child(odd) {
@@ -245,14 +245,14 @@ tr.ant-table-expanded-row:hover > td {
 }
 .ant-picker-calendar .ant-picker-content tbody tr:nth-child(even) {
   /* background-color: transparent !important; */
-  background: rgba(48, 33, 93, 0.1) !important;
+  background: rgba(17, 24, 39, 0.1) !important;
 }
 
 .ant-dropdown-menu.ant-dropdown-menu {
   border-radius: 1rem;
   padding: 15px;
-  border: 1px solid #289fc9;
-  background: rgba(48, 33, 93, 0.4);
+  border: 1px solid #22C55E;
+  background: rgba(17, 24, 39, 0.4);
   backdrop-filter: blur(20px);
 }
 .ant-radio-wrapper,
@@ -262,4 +262,106 @@ tr.ant-table-expanded-row:hover > td {
 
 .ant-rate .ant-rate-star-full .anticon {
   color: #fadb14 !important;
+}
+
+/* ═══════════════════════════════════════════════════════
+   NOTIFICATION & MESSAGE — Modern Dark Theme Overrides
+   ═══════════════════════════════════════════════════════ */
+
+/* Notification Toast — Dark glassmorphic card */
+.ant-notification-notice {
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(10, 14, 23, 0.98)) !important;
+  border: 1px solid rgba(34, 197, 94, 0.15) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(34, 197, 94, 0.05) !important;
+  backdrop-filter: blur(20px) !important;
+  padding: 20px 24px !important;
+}
+
+.ant-notification-notice-message {
+  color: #FFFFFF !important;
+  font-family: var(--font-heading) !important;
+  font-weight: 700 !important;
+  font-size: 15px !important;
+  letter-spacing: 0.3px !important;
+}
+
+.ant-notification-notice-description {
+  color: rgba(255, 255, 255, 0.65) !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+
+.ant-notification-notice-close {
+  color: rgba(255, 255, 255, 0.35) !important;
+  transition: color 0.2s ease !important;
+}
+
+.ant-notification-notice-close:hover {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Notification icons — match NFL green theme */
+.ant-notification-notice-icon-success {
+  color: #22C55E !important;
+}
+
+.ant-notification-notice-icon-info {
+  color: #3B82F6 !important;
+}
+
+.ant-notification-notice-icon-warning {
+  color: #F59E0B !important;
+}
+
+.ant-notification-notice-icon-error {
+  color: #EF4444 !important;
+}
+
+/* Success notification — green left accent */
+.ant-notification-notice-success {
+  border-left: 3px solid #22C55E !important;
+}
+
+/* Error notification — red left accent */
+.ant-notification-notice-error {
+  border-left: 3px solid #EF4444 !important;
+}
+
+/* Warning notification — amber left accent */
+.ant-notification-notice-warning {
+  border-left: 3px solid #F59E0B !important;
+}
+
+/* Info notification — blue left accent */
+.ant-notification-notice-info {
+  border-left: 3px solid #3B82F6 !important;
+}
+
+/* Message Toast Bar — appears at top */
+.ant-message-notice-content {
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(10, 14, 23, 0.98)) !important;
+  border: 1px solid rgba(34, 197, 94, 0.15) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 14px !important;
+  padding: 12px 20px !important;
+  backdrop-filter: blur(16px) !important;
+}
+
+.ant-message-success .anticon {
+  color: #22C55E !important;
+}
+
+.ant-message-error .anticon {
+  color: #EF4444 !important;
+}
+
+.ant-message-warning .anticon {
+  color: #F59E0B !important;
+}
+
+.ant-message-info .anticon {
+  color: #3B82F6 !important;
 }
