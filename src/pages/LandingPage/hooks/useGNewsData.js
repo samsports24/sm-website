@@ -201,13 +201,16 @@ export const useGNews = () => {
       try {
         let result = null;
 
-        // Try GNews first (if key present and not blocked)
+        // Fetch GNews and ESPN in parallel — use GNews if available, ESPN as fallback
         if (apiKey && !gnewsBlocked) {
-          result = await fetchFromGNews(apiKey);
-        }
-
-        // Fallback to ESPN free news
-        if (!result || result.length === 0) {
+          const [gnewsResult, espnResult] = await Promise.allSettled([
+            fetchFromGNews(apiKey),
+            fetchFromESPN()
+          ]);
+          result = gnewsResult.status === 'fulfilled' && gnewsResult.value?.length > 0
+            ? gnewsResult.value
+            : (espnResult.status === 'fulfilled' ? espnResult.value : null);
+        } else {
           result = await fetchFromESPN();
         }
 

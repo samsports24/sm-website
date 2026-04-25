@@ -266,9 +266,9 @@ export const useSoccerFixtures = (selectedDate = undefined, leagues = AF_LEAGUES
       const active = allResults.filter(r => r.events.length > 0).length
       setData({ leagues: [...allResults], loading: false, totalMatches: total, activeLeagues: active })
 
-      // Small delay between batches to respect rate limits
+      // Minimal delay between batches to respect rate limits
       if (i + BATCH_SIZE < otherLeagues.length) {
-        await new Promise((r) => setTimeout(r, 200))
+        await new Promise((r) => setTimeout(r, 50))
       }
     }
   }, [selectedDate, leagues, disabled])

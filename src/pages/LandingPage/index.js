@@ -339,7 +339,7 @@ const LandingPage = () => {
   // Leaders (top scorers) — defer to avoid blocking initial render
   const [leadersReady, setLeadersReady] = useState(false)
   useEffect(() => {
-    const timer = setTimeout(() => setLeadersReady(true), 3000)
+    const timer = setTimeout(() => setLeadersReady(true), 500)
     return () => clearTimeout(timer)
   }, [])
   const { leaders: topScorers } = useESPNLeaders(
@@ -431,19 +431,24 @@ const LandingPage = () => {
       }
     }
 
-    // Fetch US sports (these use ESPN's cached responses when available)
-    for (const [sport, league, tag] of [
+    // Fetch US sports in parallel (only 4 calls — safe for ESPN rate limits)
+    const usSports = [
       ['football', 'nfl', 'A.Football'], ['basketball', 'nba', 'NBA'],
       ['hockey', 'nhl', 'NHL'], ['baseball', 'mlb', 'MLB']
-    ]) {
-      try {
-        const data = await espnGet(`${ESPN_API_BASE}/${sport}/${league}/scoreboard`)
-        for (const ev of (data?.events || [])) {
-          const item = parseEvent(ev, tag)
+    ]
+    const usSportsResults = await Promise.allSettled(
+      usSports.map(([sport, league]) =>
+        espnGet(`${ESPN_API_BASE}/${sport}/${league}/scoreboard`)
+      )
+    )
+    usSportsResults.forEach((result, idx) => {
+      if (result.status === 'fulfilled') {
+        for (const ev of (result.value?.events || [])) {
+          const item = parseEvent(ev, usSports[idx][2])
           if (item) items.push(item)
         }
-      } catch (e) { /* skip */ }
-    }
+      }
+    })
 
     // Sort: live first (recent), upcoming (soonest), finished (most recent)
     items.sort((a, b) => {
@@ -457,8 +462,8 @@ const LandingPage = () => {
     }
     }
 
-    // Defer initial ticker build to not compete with primary data loading
-    const timer = setTimeout(buildTicker, 2000)
+    // Short defer to let React render first frame, then build ticker
+    const timer = setTimeout(buildTicker, 500)
     const interval = setInterval(buildTicker, 60000) // was 30s
     return () => { clearTimeout(timer); clearInterval(interval) }
   }, [soccerData, leagueData, currentTab])
