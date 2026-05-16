@@ -193,6 +193,15 @@ const DateNavBar = ({ selectedDate, onDateChange }) => {
 }
 
 const LandingPage = () => {
+  // Live clock for status bar (updates every 30s)
+  const [clockTime, setClockTime] = useState(() => new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'}))
+  useEffect(() => {
+    const id = setInterval(() => {
+      setClockTime(new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'}))
+    }, 30000)
+    return () => clearInterval(id)
+  }, [])
+
   // Global state
   const [activeSport, setActiveSport] = useState('soccer')
   const [activeStanding, setActiveStanding] = useState('epl')
@@ -255,7 +264,7 @@ const LandingPage = () => {
           type: 'wcp:auth',
           user: { id: uid, displayName: name, country: localStorage.getItem('userCountry') || '' },
           token: localStorage.getItem('token') || null, // JWT for backend API calls
-        }, '*')
+        }, 'https://predictor.samsports.io')
       }
     } catch (_) { /* silent */ }
   }, [isAuthenticated])
@@ -342,10 +351,8 @@ const LandingPage = () => {
     const timer = setTimeout(() => setLeadersReady(true), 500)
     return () => clearTimeout(timer)
   }, [])
-  const { leaders: topScorers } = useESPNLeaders(
-    leadersReady ? 'soccer' : null,
-    leadersReady ? 'eng.1' : null
-  )
+  // ESPN leaders endpoint doesn't exist for soccer — disabled to avoid 404 spam
+  const topScorers = []
 
   // Build ticker items, live games, next 24h upcoming, and recent results
   const [tickerItems, setTickerItems] = useState([])
@@ -438,7 +445,7 @@ const LandingPage = () => {
     ]
     const usSportsResults = await Promise.allSettled(
       usSports.map(([sport, league]) =>
-        espnGet(`${ESPN_API_BASE}/${sport}/${league}/scoreboard`)
+        espnGet(sport, league, 'scoreboard')
       )
     )
     usSportsResults.forEach((result, idx) => {
@@ -540,16 +547,7 @@ const LandingPage = () => {
     )
   }
 
-  // Load Google Fonts once (not on every render)
-  useEffect(() => {
-    if (!document.getElementById('ls-gfonts')) {
-      const link = document.createElement('link')
-      link.id = 'ls-gfonts'
-      link.rel = 'stylesheet'
-      link.href = 'https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Barlow+Condensed:wght@300;400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap'
-      document.head.appendChild(link)
-    }
-  }, [])
+  // Google Fonts now loaded via public/index.html <link> for no FOUT
 
   return (
     <div className="ls-page">
@@ -677,7 +675,7 @@ const LandingPage = () => {
       <div className="ls-status-bar">
         <div className="ls-sb-left">
           <span><span className="ls-sb-dot g" /> Live Data, Updates every 60s</span>
-          <span>Last refresh: {new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'})}</span>
+          <span>Last refresh: {clockTime}</span>
         </div>
         <span style={{color:'var(--ls-cyan)',fontFamily:'var(--ls-font-cd)',fontSize:9}}>Auto-refresh active</span>
         <span>SAMSports © 2026</span>

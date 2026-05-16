@@ -48,6 +48,17 @@ export const getDashboardStats = async () => {
 
 export const getLeagueProgress = () => soccer().get("/api/v1/admin/league-progress");
 
+export const getSystemHealth = async () => {
+  const [nflRes, soccerRes] = await Promise.allSettled([
+    nfl().get("/admin-panel/health"),
+    soccer().get("/api/v1/admin-panel/health"),
+  ]);
+  return {
+    nfl: nflRes.status === "fulfilled" ? nflRes.value.data?.data || nflRes.value.data : null,
+    soccer: soccerRes.status === "fulfilled" ? soccerRes.value.data?.data || soccerRes.value.data : null,
+  };
+};
+
 /* ══════════════════════════════════════════
    USERS  (both backends share the same User collection,
            but we query NFL as the primary source)
@@ -268,16 +279,16 @@ export const triggerSoccerSync = (action) =>
 
 // Per-league player seeding (API-Football + TransferMarkt)
 export const seedLeaguePlayers = (league) =>
-  soccer().get(`/api/v1/admin/seed-players/${league}`);
+  soccer().post(`/api/v1/admin/seed-players/${league}`);
 
 export const fullSeedLeague = (league) =>
-  soccer().get(`/api/v1/admin/full-seed/${league}`);
+  soccer().post(`/api/v1/admin/full-seed/${league}`);
 
 export const scrapeLeagueValues = (league) =>
-  soccer().get(`/api/v1/admin/scrape-values/${league}`);
+  soccer().post(`/api/v1/admin/scrape-values/${league}`);
 
 export const updateValuations = (league) =>
-  soccer().get(`/api/v1/admin/update-valuations${league ? `?league=${league}` : ""}`);
+  soccer().post("/api/v1/admin/update-valuations", { league: league || null });
 
 /* ══════════════════════════════════════════
    FRANCHISE TAGS (SamMetric)
@@ -536,7 +547,7 @@ export const removeCLClub = (clubName) =>
    CROSS-LEAGUE STATS SYNC (CL + WC)
    ══════════════════════════════════════════ */
 export const syncCrossLeagueStats = () =>
-  soccer().get("/api/v1/admin/sync-cross-league");
+  soccer().post("/api/v1/admin/sync-cross-league");
 
 // Generic player search (any realLeague)
 export const searchPlayers = (q, realLeague) => {
@@ -558,7 +569,7 @@ export const getWCActiveNations = () =>
   soccer().get("/api/v1/admin/wc-eliminate");
 
 export const wcEliminateNations = (remaining) =>
-  soccer().get(`/api/v1/admin/wc-eliminate?remaining=${encodeURIComponent(remaining)}`);
+  soccer().post("/api/v1/admin/wc-eliminate", { remaining });
 
 /* ══════════════════════════════════════════
    AI ARTICLE GENERATOR
@@ -575,11 +586,21 @@ export const updateArticle = (id, updates) =>
 export const deleteArticle = (id) =>
   soccer().delete(`/api/v1/admin-panel/articles/${id}`);
 
-export const generateMatchArticle = (fixtureId, type) =>
-  soccer().post("/api/v1/admin-panel/articles/generate-match", { fixtureId, type });
+export const generateMatchArticle = (fixtureId, type, includeSAM = true) =>
+  soccer().post("/api/v1/admin-panel/articles/generate-match", { fixtureId, type, includeSAM });
 
-export const generateCustomArticle = (topic, topicType, realLeague, tone) =>
-  soccer().post("/api/v1/admin-panel/articles/generate-custom", { topic, topicType, realLeague, tone });
+export const generateCustomArticle = (topic, topicType, realLeague, tone, includeSAM = true, coverImageFile = null) => {
+  const fd = new FormData();
+  fd.append("topic", topic);
+  fd.append("topicType", topicType);
+  fd.append("realLeague", realLeague);
+  fd.append("tone", tone);
+  fd.append("includeSAM", String(includeSAM));
+  if (coverImageFile) fd.append("coverImage", coverImageFile);
+  return soccer().post("/api/v1/admin-panel/articles/generate-custom", fd, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+};
 
 export const generateBatchArticles = (type) =>
   soccer().post("/api/v1/admin-panel/articles/generate-batch", { type });
@@ -589,6 +610,46 @@ export const getArticleStats = () =>
 
 export const getArticleFixtures = (params) =>
   soccer().get("/api/v1/admin-panel/articles/fixtures", { params });
+
+// NFL-specific article endpoints (Tank01 data)
+export const getNFLFixtures = (params) =>
+  soccer().get("/api/v1/admin-panel/articles/nfl-fixtures", { params });
+
+export const generateNFLArticle = (game, type) =>
+  soccer().post("/api/v1/admin-panel/articles/generate-nfl", { game, type });
+
+export const uploadArticleImage = (articleId, formData) =>
+  soccer().post(`/api/v1/admin-panel/articles/${articleId}/upload-image`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+// ═══ Infographics ═══
+export const getInfographics = (params) =>
+  soccer().get("/api/v1/admin-panel/infographics", { params });
+
+export const generateSoccerInfographic = (fixture, league) =>
+  soccer().post("/api/v1/admin-panel/infographics/generate-soccer", { fixture, league });
+
+export const generateSoccerPostMatch = (fixture, league) =>
+  soccer().post("/api/v1/admin-panel/infographics/generate-soccer-post", { fixture, league });
+
+export const generateSoccerLive = (fixture, league) =>
+  soccer().post("/api/v1/admin-panel/infographics/generate-soccer-live", { fixture, league });
+
+export const generateNFLInfographic = (game) =>
+  soccer().post("/api/v1/admin-panel/infographics/generate-nfl", { game });
+
+export const getNFLInfographicFixtures = (params) =>
+  soccer().get("/api/v1/admin-panel/infographics/nfl-fixtures", { params });
+
+export const generateMatchEvent = (eventData) =>
+  soccer().post("/api/v1/admin-panel/infographics/generate-event", eventData);
+
+export const getEventTypes = () =>
+  soccer().get("/api/v1/admin-panel/infographics/event-types");
+
+export const deleteInfographic = (id) =>
+  soccer().delete(`/api/v1/admin-panel/infographics/${id}`);
 
 // ═══ Deployment — trigger server deploy from admin panel ═══
 export const triggerDeploy = () =>
@@ -600,3 +661,18 @@ export const getServerStatus = () =>
 // ═══ Analytics Report ═══
 export const getAnalyticsReport = (range = "30d") =>
   soccer().get("/api/v1/admin-panel/analytics/report", { params: { range } });
+
+/* ══════════════════════════════════════════
+   FINANCE TRACKER
+   ══════════════════════════════════════════ */
+export const getFinanceSummary = (period = "month") =>
+  nfl().get(`/admin-panel/finance/summary?period=${period}`);
+
+export const getFinanceTransactions = (params) =>
+  nfl().get("/admin-panel/finance/transactions", { params });
+
+export const getFinanceMonthly = () =>
+  nfl().get("/admin-panel/finance/monthly");
+
+export const getFinanceByProduct = (period = "month") =>
+  nfl().get(`/admin-panel/finance/by-product?period=${period}`);

@@ -1,72 +1,63 @@
-.timemaindiv {
-    width: 568px !important;
-    border-radius:63px;
-    background-color:rgb(56, 53, 53);
-    padding: 10px 30px;
-    border:5px solid gray;
-    display: flex;
-  gap: 10px;
-    margin-top: 20px;
-    overflow-x: scroll;
-    scrollbar-width: none;
-  }
-  
+/* ═══════════════════════════════════════════════════════════════
+   SPOT AUCTION TIMER — Glass Redesign
+   ═══════════════════════════════════════════════════════════════ */
 
-/* .timemaindiv  ::-webkit-scrollbar {
-  width: 0px !important;
-  height: 0px !important;
-} */
-
-
-
-
-/* Define custom scrollbar styles for Webkit browsers */
-.timemaindiv ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-  background-color: #f1f1f1;
+.sat-timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 0;
 }
 
-.timemaindiv ::-webkit-scrollbar-thumb {
-  background-color: #888;
-  border-radius: 4px;
+.sat-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 56px;
+  padding: 10px 8px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(110, 105, 128, 0.15);
+  border-radius: 12px;
 }
 
- .timemaindiv .timeheading {
-  
-    color: var(--text);
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-    text-align: center;
-    width: max-content;
-  
+.sat-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: #22C55E;
+  font-family: 'Rajdhani', sans-serif;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.sat-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'Inter', sans-serif;
+}
+
+.sat-colon {
+  font-size: 28px;
+  font-weight: 800;
+  color: rgba(34, 197, 94, 0.4);
+  font-family: 'Rajdhani', sans-serif;
+  margin-top: -14px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 576px) {
+  .sat-unit {
+    min-width: 44px;
+    padding: 8px 6px;
   }
-  
- .timemaindiv .timeheading .timepara {
-    color: rgb(255, 222, 89);
-    font-size: 100px;
-    font-style: italic;
-    font-weight: 600;
-    line-height: normal;
-    width: max-content;
+  .sat-value {
+    font-size: 24px;
   }
-
-
-  /* media */
-
-
-  @media (max-width: 1500px) {
-
-    .timemaindiv .timeheading .timepara { 
-      font-size: 70px;
-    }
-
-    .timemaindiv{
-      gap:40px;
-
-    }
-   
+  .sat-colon {
+    font-size: 22px;
   }
-  
+}

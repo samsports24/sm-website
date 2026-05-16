@@ -112,21 +112,29 @@ const PlayerAuction = () => {
         {/* Draft Not Complete Banner */}
         {draftNotCompleted && (
           <div style={{
-            background: 'rgba(245, 158, 11, 0.08)',
-            border: '1px solid rgba(245, 158, 11, 0.25)',
-            borderRadius: 10,
-            padding: '16px 20px',
-            marginBottom: 16,
+            background: 'rgba(20, 28, 45, 0.6)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(245, 158, 11, 0.2)',
+            borderRadius: 16,
+            padding: '18px 22px',
+            marginBottom: 20,
             display: 'flex',
             alignItems: 'center',
-            gap: 12,
+            gap: 14,
+            boxShadow: '0 4px 16px rgba(0,0,0,0.2), inset 0 1px 1px rgba(255,255,255,0.05)',
           }}>
-            <span style={{ fontSize: 22 }}>🏈</span>
+            <div style={{
+              width: 40, height: 40, borderRadius: 10,
+              background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.2)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0,
+            }}>
+              🏈
+            </div>
             <div>
-              <div style={{ color: '#F59E0B', fontSize: 14, fontWeight: 700, fontFamily: "'Rajdhani', sans-serif", marginBottom: 2 }}>
+              <div style={{ color: '#F59E0B', fontSize: 14, fontWeight: 800, fontFamily: "'Rajdhani', sans-serif", marginBottom: 3, letterSpacing: '0.3px' }}>
                 Draft In Progress
               </div>
-              <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, fontFamily: "'Inter', sans-serif" }}>
+              <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, fontFamily: "'Inter', sans-serif", lineHeight: '1.5' }}>
                 Auctions will become available once the league draft has been completed. Finish all draft rounds first.
               </div>
             </div>
@@ -136,17 +144,25 @@ const PlayerAuction = () => {
         {/* League Feature Banners */}
         {!draftNotCompleted && (freeAgentAuctionsOff || ownerAuctionsOff) && (
           <div style={{
-            background: 'rgba(239, 68, 68, 0.08)',
-            border: '1px solid rgba(239, 68, 68, 0.2)',
-            borderRadius: 10,
-            padding: '12px 18px',
-            marginBottom: 16,
+            background: 'rgba(20, 28, 45, 0.6)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(239, 68, 68, 0.18)',
+            borderRadius: 16,
+            padding: '14px 20px',
+            marginBottom: 20,
             display: 'flex',
             alignItems: 'center',
-            gap: 10,
+            gap: 12,
+            boxShadow: '0 4px 16px rgba(0,0,0,0.2), inset 0 1px 1px rgba(255,255,255,0.05)',
           }}>
-            <span style={{ fontSize: 18 }}>&#x1F6AB;</span>
-            <span style={{ color: '#f87171', fontSize: 13, fontFamily: 'Inter, sans-serif' }}>
+            <div style={{
+              width: 34, height: 34, borderRadius: 8,
+              background: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.18)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, flexShrink: 0,
+            }}>
+              &#x1F6AB;
+            </div>
+            <span style={{ color: '#f87171', fontSize: 13, fontFamily: "'Inter', sans-serif", lineHeight: '1.5' }}>
               {freeAgentAuctionsOff && ownerAuctionsOff
                 ? 'All auctions are disabled in this league by the commissioner.'
                 : freeAgentAuctionsOff
@@ -160,7 +176,7 @@ const PlayerAuction = () => {
         <div className='auc-page-header'>
           <div className='auc-header-left'>
             <div className='auc-header-icon-wrap'>
-              <svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='#a5b4fc' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+              <svg width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='#22C55E' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
                 <path d='M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z' />
               </svg>
             </div>
@@ -193,7 +209,7 @@ const PlayerAuction = () => {
           <div className='auc-loading'><Spin size='large' /></div>
         ) : !currentData || currentData.length === 0 ? (
           <div className='auc-empty'>
-            <svg width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.15)' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round'>
+            <svg width='52' height='52' viewBox='0 0 24 24' fill='none' stroke='rgba(34,197,94,0.15)' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round'>
               <path d='M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z' />
             </svg>
             <p>No {tab === 'live' ? 'live' : 'past'} auctions</p>

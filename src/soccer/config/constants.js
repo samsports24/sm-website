@@ -23,6 +23,18 @@ soccerAPI.interceptors.request.use((cfg) => {
   return cfg
 })
 
+// Silently handle 401/403 from soccer backend — do NOT clear main NFL auth state
+// (clearing 'token' here was nuking the NFL session after every login)
+soccerAPI.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (err?.response?.status === 401 || err?.response?.status === 403) {
+      console.warn('[Soccer API] 401/403 received — ignoring (NFL token preserved)')
+    }
+    return Promise.reject(err)
+  }
+)
+
 export const version = '1.0.0'
 
 // ── Squad Rules ──

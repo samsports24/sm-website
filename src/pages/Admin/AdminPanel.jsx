@@ -6,7 +6,7 @@ import {
   Settings, RefreshCw, Eye, Trash2, Send, Bell, Database,
   Zap, TrendingUp, Award, Flag, MessageSquare, FileText, Lock,
   Globe, Server, Cpu, LayoutDashboard, Workflow, Play,
-  Pause, Loader2, ImagePlus, LogOut, UserPlus, Calendar, DollarSign
+  Pause, Loader2, ImagePlus, LogOut, UserPlus, Calendar, DollarSign, Image, Download
 } from "lucide-react";
 import * as adminAPI from "../../services/adminService";
 
@@ -235,6 +235,32 @@ const DashboardSection = ({ toast }) => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [leagueProgress, setLeagueProgress] = useState([]);
+  const [health, setHealth] = useState({ nflBackend:"unknown", soccerBackend:"unknown", nflMongo:"unknown", soccerMongo:"unknown", socketIO:"unknown", nflSocketClients:0, soccerSocketClients:0, nflUptime:0, soccerUptime:0, nflMemMB:0, soccerMemMB:0 });
+
+  // Fetch real health data
+  useEffect(() => {
+    let c = false;
+    (async () => {
+      try {
+        const h = await adminAPI.getSystemHealth();
+        if (c) return;
+        setHealth({
+          nflBackend: h.nfl ? "healthy" : "down",
+          soccerBackend: h.soccer ? "healthy" : "down",
+          nflMongo: h.nfl?.mongo?.status || "unknown",
+          soccerMongo: h.soccer?.mongo?.status || "unknown",
+          socketIO: h.nfl?.socket?.status || h.soccer?.socket?.status || "unknown",
+          nflSocketClients: h.nfl?.socket?.connectedClients || 0,
+          soccerSocketClients: h.soccer?.socket?.connectedClients || 0,
+          nflUptime: h.nfl?.server?.uptimeSeconds || 0,
+          soccerUptime: h.soccer?.server?.uptimeSeconds || 0,
+          nflMemMB: h.nfl?.server?.memoryMB?.rss || 0,
+          soccerMemMB: h.soccer?.server?.memoryMB?.rss || 0,
+        });
+      } catch { /* health fetch failed — leave defaults */ }
+    })();
+    return () => { c = true; };
+  }, []);
 
   useEffect(() => {
     let c = false;
@@ -251,7 +277,7 @@ const DashboardSection = ({ toast }) => {
         setStats({
           totalUsers: (n.totalUsers||0)+(s.totalUsers||0), soccerLeagues: s.soccerLeagues??s.totalLeagues??0, nflLeagues: n.nflLeagues??n.totalLeagues??0,
           rivalsSoccer: s.rivalsSoccerEntries??0, rivalsNFL: n.rivalsNFLEntries??0, online: n.onlineNow??s.onlineNow??0,
-          nflBackend: n?"healthy":"down", soccerBackend: s?"healthy":"down", database:"healthy", socketIO:"unknown",
+          nflBackend: health.nflBackend, soccerBackend: health.soccerBackend, nflMongo: health.nflMongo, soccerMongo: health.soccerMongo, socketIO: health.socketIO, nflSocketClients: health.nflSocketClients, soccerSocketClients: health.soccerSocketClients, nflUptime: health.nflUptime, soccerUptime: health.soccerUptime, nflMemMB: health.nflMemMB, soccerMemMB: health.soccerMemMB,
           recentActions: [...(n.recentActions||[]),...(s.recentActions||[])].sort((a,b)=>new Date(b.timestamp||b.createdAt)-new Date(a.timestamp||a.createdAt)).slice(0,8),
         });
         if (lpRes?.data?.data?.progress) setLeagueProgress(lpRes.data.data.progress);
@@ -331,10 +357,22 @@ const DashboardSection = ({ toast }) => {
         <div style={card}>
           <div style={{ ...labelStyle, marginBottom:14 }}>System Health</div>
           <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-            {[{label:"A.Football Backend",status:stats.nflBackend},{label:"Soccer Backend",status:stats.soccerBackend},{label:"Database (MongoDB)",status:stats.database},{label:"Socket.IO",status:stats.socketIO}].map(s=>(
+            {[
+              {label:"A.Football Backend",status:stats.nflBackend,sub:stats.nflUptime?`Up ${Math.floor(stats.nflUptime/3600)}h ${Math.floor((stats.nflUptime%3600)/60)}m · ${stats.nflMemMB}MB RAM`:null},
+              {label:"Soccer Backend",status:stats.soccerBackend,sub:stats.soccerUptime?`Up ${Math.floor(stats.soccerUptime/3600)}h ${Math.floor((stats.soccerUptime%3600)/60)}m · ${stats.soccerMemMB}MB RAM`:null},
+              {label:"NFL MongoDB",status:stats.nflMongo},
+              {label:"Soccer MongoDB",status:stats.soccerMongo},
+              {label:"Socket.IO",status:stats.socketIO,sub:(stats.nflSocketClients||stats.soccerSocketClients)?`${(stats.nflSocketClients||0)+(stats.soccerSocketClients||0)} connected clients`:null},
+            ].map(s=>(
               <div key={s.label} style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-                <div style={{ display:"flex", alignItems:"center", gap:8 }}><Server size={13} color={C.textMuted}/><span style={{ fontSize:13, color:C.text }}>{s.label}</span></div>
-                <Badge color={s.status==="healthy"?"green":s.status==="degraded"?"amber":"red"}>{"● "+( s.status==="healthy"?"Healthy":s.status==="degraded"?"Degraded":"Unknown")}</Badge>
+                <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                  <Server size={13} color={C.textMuted}/>
+                  <div>
+                    <span style={{ fontSize:13, color:C.text }}>{s.label}</span>
+                    {s.sub && <div style={{ fontSize:10, color:C.textMuted, marginTop:1 }}>{s.sub}</div>}
+                  </div>
+                </div>
+                <Badge color={s.status==="healthy"?"green":s.status==="degraded"?"amber":"red"}>{"● "+(s.status==="healthy"?"Healthy":s.status==="degraded"?"Degraded":s.status==="down"?"Down":"Unknown")}</Badge>
               </div>
             ))}
           </div>
@@ -763,7 +801,7 @@ const UsersSection = ({ toast }) => {
                       </div>
                       <div style={{padding:10,borderRadius:8,background:C.bg}}>
                         <span style={labelStyle}>Last Login</span>
-                        <div style={{fontSize:13,color:C.white,fontWeight:600,marginTop:2}}>{u.lastLogin?new Date(u.lastLogin).toLocaleDateString():"Never"}</div>
+                        <div style={{fontSize:13,color:C.white,fontWeight:600,marginTop:2}}>{(u.lastLoginDate||u.lastLogin)?new Date(u.lastLoginDate||u.lastLogin).toLocaleDateString():"Never"}</div>
                       </div>
                       <div style={{padding:10,borderRadius:8,background:C.bg}}>
                         <span style={labelStyle}>Commissioner</span>
@@ -926,7 +964,7 @@ const UsersListTab = ({ sport, toast }) => {
                       <td style={{padding:"10px 14px",color:C.text}}>{u.leagueCount||0}</td>
                       <td style={{padding:"10px 14px"}}>{u.hasRivalsEntry ? <Badge color="purple">Yes</Badge> : <span style={{color:C.textMuted}}>No</span>}</td>
                       <td style={{padding:"10px 14px",color:C.text}}>{fmt(u.earnedSamPoints)}</td>
-                      <td style={{padding:"10px 14px",color:C.textDim,fontSize:11}}>{u.lastLogin?new Date(u.lastLogin).toLocaleDateString():"Never"}</td>
+                      <td style={{padding:"10px 14px",color:C.textDim,fontSize:11}}>{(u.lastLoginDate||u.lastLogin)?new Date(u.lastLoginDate||u.lastLogin).toLocaleDateString():"Never"}</td>
                       <td style={{padding:"10px 14px",color:C.textDim,fontSize:11}}>{u.createdAt?new Date(u.createdAt).toLocaleDateString():"—"}</td>
                     </tr>
                     {expandedId===u._id&&(
@@ -3215,7 +3253,7 @@ const EmployeesSection = ({ toast }) => {
                   <td style={{padding:"10px 14px",fontSize:13,color:C.textDim}}>{emp.email}</td>
                   <td style={{padding:"10px 14px"}}><span style={{fontSize:11,fontWeight:700,color:emp.role==="superadmin"?C.purple:C.blue,background:emp.role==="superadmin"?C.purpleLight:C.blueLight,padding:"3px 8px",borderRadius:6,textTransform:"uppercase"}}>{emp.role}</span></td>
                   <td style={{padding:"10px 14px"}}><span style={{fontSize:11,fontWeight:700,color:emp.isActive?C.green:C.red,background:emp.isActive?C.greenLight:C.redLight,padding:"3px 8px",borderRadius:6}}>{emp.isActive?"Active":"Inactive"}</span></td>
-                  <td style={{padding:"10px 14px",fontSize:12,color:C.textMuted}}>{emp.lastLogin?new Date(emp.lastLogin).toLocaleString():"Never"}</td>
+                  <td style={{padding:"10px 14px",fontSize:12,color:C.textMuted}}>{(emp.lastLoginDate||emp.lastLogin)?new Date(emp.lastLoginDate||emp.lastLogin).toLocaleString():"Never"}</td>
                   <td style={{padding:"10px 14px"}}>
                     {emp.role!=="superadmin"&&<button onClick={()=>handleToggle(emp)} style={{padding:"4px 10px",background:emp.isActive?C.redLight:C.greenLight,color:emp.isActive?C.red:C.green,border:"none",borderRadius:6,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>{emp.isActive?"Deactivate":"Activate"}</button>}
                   </td>
@@ -4994,6 +5032,7 @@ const ARTICLE_LEAGUES = [
   { value: "champions_league", label: "European Cup" },
   { value: "mls", label: "MLS" },
   { value: "liga_portugal", label: "Liga Portugal" },
+  { value: "nfl", label: "NFL" },
 ];
 
 const PUBLISH_LOCATIONS = [
@@ -5029,6 +5068,7 @@ const ArticlesSection = ({ toast }) => {
   // Detail / edit drawer
   const [detailArticle, setDetailArticle] = useState(null);
   const [editPublishTo, setEditPublishTo] = useState([]);
+  const [editWidgets, setEditWidgets] = useState([]);
   const [editSeoTitle, setEditSeoTitle] = useState("");
   const [editSeoDesc, setEditSeoDesc] = useState("");
   const [editSeoKeywords, setEditSeoKeywords] = useState("");
@@ -5039,12 +5079,33 @@ const ArticlesSection = ({ toast }) => {
   const [genFixtureStatus, setGenFixtureStatus] = useState("NS");
   const [fixtures, setFixtures] = useState([]);
   const [loadingFixtures, setLoadingFixtures] = useState(false);
+  // NFL-specific generate controls
+  const [nflWeek, setNflWeek] = useState("1");
+  const [nflSeason, setNflSeason] = useState(String(new Date().getMonth() < 8 ? new Date().getFullYear() - 1 : new Date().getFullYear()));
 
   // Custom tab
   const [customTopic, setCustomTopic] = useState("");
   const [customType, setCustomType] = useState("team");
   const [customLeague, setCustomLeague] = useState("premier_league");
   const [customTone, setCustomTone] = useState("professional");
+  const [includeSAM, setIncludeSAM] = useState(true);
+  const [customCoverImage, setCustomCoverImage] = useState(null);
+  const [coverImagePreview, setCoverImagePreview] = useState(null);
+
+  const handleCoverImageSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const allowed = ["image/png", "image/jpeg", "image/webp"];
+    if (!allowed.includes(file.type)) { toast("Only PNG, JPG, or WebP images allowed", "error"); return; }
+    if (file.size > 5 * 1024 * 1024) { toast("Image must be under 5MB", "error"); return; }
+    setCustomCoverImage(file);
+    setCoverImagePreview(URL.createObjectURL(file));
+  };
+  const clearCoverImage = () => {
+    setCustomCoverImage(null);
+    if (coverImagePreview) URL.revokeObjectURL(coverImagePreview);
+    setCoverImagePreview(null);
+  };
 
   const fetchArticles = useCallback(async () => {
     setLoading(true);
@@ -5074,20 +5135,32 @@ const ArticlesSection = ({ toast }) => {
   const fetchFixtures = async () => {
     setLoadingFixtures(true);
     try {
-      const params = { status: genFixtureStatus };
-      if (genLeague) params.league = genLeague;
-      const res = await adminAPI.getArticleFixtures(params);
-      setFixtures(res.data?.data?.fixtures || []);
+      if (genLeague === "nfl") {
+        // NFL: fetch from Tank01 via our backend
+        const nflStatus = genFixtureStatus === "NS" ? "upcoming" : "completed";
+        const res = await adminAPI.getNFLFixtures({ week: nflWeek, season: nflSeason, status: nflStatus });
+        setFixtures(res.data?.data?.fixtures || []);
+      } else {
+        const params = { status: genFixtureStatus };
+        if (genLeague) params.realLeague = genLeague;
+        const res = await adminAPI.getArticleFixtures(params);
+        setFixtures(res.data?.data || []);
+      }
     } catch (err) {
       toast("Failed to load fixtures", "error");
     }
     setLoadingFixtures(false);
   };
 
-  const handleGenerateMatch = async (fixtureId, type) => {
+  const handleGenerateMatch = async (fixtureOrGame, type) => {
     setGenerating(true);
     try {
-      await adminAPI.generateMatchArticle(fixtureId, type);
+      if (genLeague === "nfl") {
+        // NFL: pass the full game object
+        await adminAPI.generateNFLArticle(fixtureOrGame, type);
+      } else {
+        await adminAPI.generateMatchArticle(fixtureOrGame, type, includeSAM);
+      }
       toast("SAM Report generated & published!", "success");
       fetchArticles();
       fetchStats();
@@ -5102,9 +5175,10 @@ const ArticlesSection = ({ toast }) => {
     if (!customTopic.trim()) { toast("Enter a topic", "error"); return; }
     setGenerating(true);
     try {
-      await adminAPI.generateCustomArticle(customTopic, customType, customLeague, customTone);
+      await adminAPI.generateCustomArticle(customTopic, customType, customLeague, customTone, includeSAM, customCoverImage);
       toast("Custom SAM Report generated as draft!", "success");
       setCustomTopic("");
+      clearCoverImage();
       setFilterStatus("draft");
       setTab("list");
       fetchArticles();
@@ -5178,9 +5252,10 @@ const ArticlesSection = ({ toast }) => {
         seoDescription: editSeoDesc,
         seoKeywords: editSeoKeywords.split(",").map((k) => k.trim()).filter(Boolean),
         publishTo: editPublishTo,
+        widgets: editWidgets,
       };
       await adminAPI.updateArticle(id, updates);
-      toast("SEO & publish settings saved", "success");
+      toast("SEO, widgets & publish settings saved", "success");
       fetchArticles();
     } catch {
       toast("Save failed", "error");
@@ -5194,6 +5269,7 @@ const ArticlesSection = ({ toast }) => {
       const a = res.data?.data?.article || res.data?.data;
       setDetailArticle(a);
       setEditPublishTo(a.publishTo || ["landing_page", "articles_page", "match_drawer"]);
+      setEditWidgets(a.widgets || []);
       setEditSeoTitle(a.seoTitle || "");
       setEditSeoDesc(a.seoDescription || "");
       setEditSeoKeywords((a.seoKeywords || []).join(", "));
@@ -5303,6 +5379,87 @@ const ArticlesSection = ({ toast }) => {
                   {loc.label}
                 </label>
               ))}
+            </div>
+          </div>
+
+          {/* ── WIDGET ENRICHMENTS ── */}
+          {editWidgets.length > 0 && (
+            <div style={{ ...card, background: C.bgHover }}>
+              <h4 style={{ color: C.white, fontSize: 14, marginBottom: 10 }}>Article Widgets</h4>
+              <p style={{ color: C.textMuted, fontSize: 12, marginBottom: 10 }}>Toggle which data widgets appear alongside this article</p>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                {editWidgets.map((w, idx) => {
+                  const labels = { h2h: "H2H Stats", rankings: "League Standings", photos: "Team/Player Photos", sources: "Data Sources" };
+                  const icons = { h2h: "⚔️", rankings: "📊", photos: "📸", sources: "📎" };
+                  const counts = {
+                    h2h: w.h2h?.matches?.length ? `${w.h2h.matches.length} matches` : "",
+                    rankings: w.rankings?.table?.length ? `${w.rankings.table.length} teams` : "",
+                    photos: w.photos?.length ? `${w.photos.length} images` : "",
+                    sources: w.sources?.length ? `${w.sources.length} sources` : "",
+                  };
+                  return (
+                    <label key={w.type} style={{ ...checkRow, opacity: w.enabled ? 1 : 0.5 }}>
+                      <input type="checkbox" checked={w.enabled} onChange={() => {
+                        const updated = [...editWidgets];
+                        updated[idx] = { ...updated[idx], enabled: !updated[idx].enabled };
+                        setEditWidgets(updated);
+                      }} />
+                      <span>{icons[w.type] || ""} {labels[w.type] || w.type}</span>
+                      {counts[w.type] && <span style={{ color: C.textMuted, fontSize: 11, marginLeft: 4 }}>({counts[w.type]})</span>}
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* ── UPLOAD IMAGES ── */}
+          <div style={{ ...card, background: C.bgHover }}>
+            <h4 style={{ color: C.white, fontSize: 14, marginBottom: 10 }}>Upload Images</h4>
+            <p style={{ color: C.textMuted, fontSize: 12, marginBottom: 10 }}>Add match photos, action shots, or custom images to this article</p>
+            <div style={{ display: "grid", gap: 10 }}>
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/gif"
+                id="article-image-upload"
+                style={{ display: "none" }}
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  setSaving(true);
+                  try {
+                    const fd = new FormData();
+                    fd.append("image", file);
+                    fd.append("caption", file.name.replace(/\.[^.]+$/, ""));
+                    fd.append("photoType", "player");
+                    const res = await adminAPI.uploadArticleImage(a._id, fd);
+                    const updated = res.data?.data?.article;
+                    if (updated) {
+                      setDetailArticle(updated);
+                      setEditWidgets(updated.widgets || []);
+                    }
+                    toast("Image uploaded", "success");
+                  } catch (err) {
+                    toast(err?.response?.data?.message || "Upload failed", "error");
+                  }
+                  setSaving(false);
+                  e.target.value = "";
+                }}
+              />
+              <button onClick={() => document.getElementById("article-image-upload")?.click()} disabled={saving} style={btn(C.blue)}>
+                {saving ? "Uploading..." : "Choose Image"}
+              </button>
+              {/* Show existing uploaded images */}
+              {editWidgets.find((w) => w.type === "photos")?.photos?.length > 0 && (
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 8 }}>
+                  {editWidgets.find((w) => w.type === "photos").photos.map((p, i) => (
+                    <div key={i} style={{ position: "relative" }}>
+                      <img src={p.url} alt={p.caption || ""} style={{ width: 56, height: 56, objectFit: "cover", borderRadius: 8, background: C.bgHover }} onError={(e) => { e.target.style.display = "none"; }} />
+                      <div style={{ color: C.textMuted, fontSize: 10, maxWidth: 56, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginTop: 2 }}>{p.caption || p.type}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
@@ -5479,8 +5636,8 @@ const ArticlesSection = ({ toast }) => {
         <div style={card}>
           <h3 style={{ color: C.white, fontSize: 16, marginBottom: 12 }}>Generate Match SAM Report</h3>
           <p style={{ color: C.textDim, fontSize: 13, marginBottom: 12 }}>Pre-match and post-match reports are published automatically to all locations.</p>
-          <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
-            <select value={genLeague} onChange={(e) => setGenLeague(e.target.value)} style={{ ...select, maxWidth: 200 }}>
+          <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap", alignItems: "flex-end" }}>
+            <select value={genLeague} onChange={(e) => { setGenLeague(e.target.value); setFixtures([]); }} style={{ ...select, maxWidth: 200 }}>
               <option value="">All Leagues</option>
               {ARTICLE_LEAGUES.map((l) => <option key={l.value} value={l.value}>{l.label}</option>)}
             </select>
@@ -5488,7 +5645,31 @@ const ArticlesSection = ({ toast }) => {
               <option value="NS">Upcoming (Pre-Match)</option>
               <option value="FT">Finished (Post-Match)</option>
             </select>
+            {genLeague === "nfl" && (
+              <>
+                <div>
+                  <label style={{ color: C.textDim, fontSize: 11, display: "block", marginBottom: 2 }}>Season</label>
+                  <select value={nflSeason} onChange={(e) => setNflSeason(e.target.value)} style={{ ...select, maxWidth: 100 }}>
+                    {[2026, 2025, 2024, 2023].map((y) => <option key={y} value={String(y)}>{y}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={{ color: C.textDim, fontSize: 11, display: "block", marginBottom: 2 }}>Week</label>
+                  <select value={nflWeek} onChange={(e) => setNflWeek(e.target.value)} style={{ ...select, maxWidth: 80 }}>
+                    {Array.from({ length: 18 }, (_, i) => i + 1).map((w) => <option key={w} value={String(w)}>Wk {w}</option>)}
+                    <option value="19">Wild Card</option>
+                    <option value="20">Divisional</option>
+                    <option value="21">Conf Champ</option>
+                    <option value="22">Super Bowl</option>
+                  </select>
+                </div>
+              </>
+            )}
             <button onClick={fetchFixtures} style={btn(C.blue)}><Search size={14}/> Load Fixtures</button>
+            <label style={{ display: "flex", alignItems: "center", gap: 6, color: C.textDim, fontSize: 13, cursor: "pointer" }}>
+              <input type="checkbox" checked={includeSAM} onChange={(e) => setIncludeSAM(e.target.checked)} />
+              Include SAM Metrics
+            </label>
           </div>
 
           {loadingFixtures ? <Spinner /> : fixtures.length === 0 ? (
@@ -5496,23 +5677,29 @@ const ArticlesSection = ({ toast }) => {
           ) : (
             <div>
               {fixtures.map((f) => {
-                const articleType = f.status === "FT" ? "post_match" : "pre_match";
+                const isNfl = genLeague === "nfl" || f.realLeague === "nfl";
+                const articleType = isNfl
+                  ? (genFixtureStatus === "NS" ? "pre_match" : "post_match")
+                  : (f.status === "FT" ? "post_match" : "pre_match");
                 const hasArticle = articleType === "pre_match" ? f.hasPreMatch : f.hasPostMatch;
+                const fixtureKey = isNfl ? f.gameID : f.apiFixtureId;
+                const score = (f.homeScore != null && f.awayScore != null) ? `${f.homeScore}-${f.awayScore}` : null;
                 return (
-                  <div key={f.apiFixtureId} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderBottom: `1px solid ${C.borderLight}` }}>
+                  <div key={fixtureKey} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderBottom: `1px solid ${C.borderLight}` }}>
                     <div style={{ flex: 1 }}>
                       <div style={{ color: C.white, fontSize: 13, fontWeight: 600 }}>
-                        {f.homeTeam} {f.status === "FT" ? `${f.homeScore}-${f.awayScore}` : "vs"} {f.awayTeam}
+                        {isNfl && <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4, background: "#7c3aed22", color: "#a78bfa", marginRight: 6 }}>NFL</span>}
+                        {f.homeTeam} {score || "vs"} {f.awayTeam}
                       </div>
                       <div style={{ color: C.textMuted, fontSize: 11 }}>
-                        MW{f.matchweek} | {new Date(f.date).toLocaleDateString()} | {ARTICLE_LEAGUES.find((l) => l.value === f.realLeague)?.label}
+                        {isNfl ? `Week ${f.week || f.matchweek}` : `MW${f.matchweek}`} | {f.date ? new Date(f.date).toLocaleDateString() : "TBD"} | {ARTICLE_LEAGUES.find((l) => l.value === (f.realLeague || genLeague))?.label || ""}
                       </div>
                     </div>
                     {hasArticle ? (
                       <span style={badge(C.greenLight || "#d1fae5", C.green)}>Report exists</span>
                     ) : (
                       <button
-                        onClick={() => handleGenerateMatch(f.apiFixtureId, articleType)}
+                        onClick={() => isNfl ? handleGenerateMatch(f, articleType) : handleGenerateMatch(f.apiFixtureId, articleType)}
                         disabled={generating}
                         style={btn(C.purple)}
                       >
@@ -5569,9 +5756,33 @@ const ArticlesSection = ({ toast }) => {
               />
             </div>
           </div>
-          <button onClick={handleGenerateCustom} disabled={generating} style={btn(C.purple)}>
-            {generating ? <><Spinner size={14}/> Generating...</> : <><Zap size={14}/> Generate SAM Report</>}
-          </button>
+
+          {/* Cover Image Upload */}
+          <div style={{ marginBottom: 16 }}>
+            <label style={labelSt}>Cover Image (optional)</label>
+            {coverImagePreview ? (
+              <div style={{ position: "relative", display: "inline-block", marginTop: 6 }}>
+                <img src={coverImagePreview} alt="Cover preview" style={{ maxWidth: 280, maxHeight: 140, objectFit: "cover", borderRadius: 8, display: "block" }} />
+                <button onClick={clearCoverImage} style={{ position: "absolute", top: 4, right: 4, background: "rgba(0,0,0,0.7)", color: "#fff", border: "none", borderRadius: 6, padding: "2px 6px", cursor: "pointer", fontSize: 11 }}>Remove</button>
+              </div>
+            ) : (
+              <label style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 14px", border: `1px dashed ${C.borderLight}`, borderRadius: 8, cursor: "pointer", color: C.textMuted, fontSize: 13, marginTop: 6, width: "fit-content" }}>
+                <ImagePlus size={16} />
+                <span>Click to upload cover image</span>
+                <input type="file" accept="image/png,image/jpeg,image/webp" onChange={handleCoverImageSelect} style={{ display: "none" }} />
+              </label>
+            )}
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 0 }}>
+            <button onClick={handleGenerateCustom} disabled={generating} style={btn(C.purple)}>
+              {generating ? <><Spinner size={14}/> Generating...</> : <><Zap size={14}/> Generate SAM Report</>}
+            </button>
+            <label style={{ display: "flex", alignItems: "center", gap: 6, color: C.textDim, fontSize: 13, cursor: "pointer" }}>
+              <input type="checkbox" checked={includeSAM} onChange={(e) => setIncludeSAM(e.target.checked)} />
+              Include SAM Metrics
+            </label>
+          </div>
         </div>
       )}
 
@@ -5594,6 +5805,387 @@ const ArticlesSection = ({ toast }) => {
               {generating ? <Spinner size={14}/> : <Zap size={14}/>} Generate All
             </button>
           </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════
+//  INFOGRAPHICS SECTION — Generate social media graphics
+// ═══════════════════════════════════════════════════════════════
+const INFOGRAPHIC_LEAGUES = [
+  { value: "premier_league", label: "Premier League" },
+  { value: "la_liga", label: "La Liga" },
+  { value: "serie_a", label: "Serie A" },
+  { value: "bundesliga", label: "Bundesliga" },
+  { value: "ligue_1", label: "Ligue 1" },
+  { value: "ekstraklasa", label: "Ekstraklasa" },
+  { value: "champions_league", label: "Champions League" },
+  { value: "mls", label: "MLS" },
+  { value: "liga_portugal", label: "Liga Portugal" },
+  { value: "nfl", label: "NFL" },
+];
+
+const InfographicsSection = ({ toast }) => {
+  const card = { background: C.bgCard, borderRadius: 14, padding: 20, border: `1px solid ${C.borderLight}`, marginBottom: 16 };
+  const btn = (color) => ({ padding: "8px 16px", borderRadius: 8, border: "none", background: color, color: C.white, cursor: "pointer", fontSize: 13, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 6 });
+  const select = { padding: "8px 12px", borderRadius: 8, border: `1px solid ${C.border}`, background: C.bgInput, color: C.text, fontSize: 13, cursor: "pointer" };
+
+  const [tab, setTab] = useState("generate");
+  const [infographics, setInfographics] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const [genLeague, setGenLeague] = useState("");
+  const [genType, setGenType] = useState("pregame"); // pregame | postmatch | live | event
+  const [fixtures, setFixtures] = useState([]);
+  const [loadingFixtures, setLoadingFixtures] = useState(false);
+  const [nflWeek, setNflWeek] = useState("1");
+  const [nflSeason, setNflSeason] = useState(String(new Date().getMonth() < 8 ? new Date().getFullYear() - 1 : new Date().getFullYear()));
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [page, setPage] = useState(1);
+
+  // ── Match Event state ──
+  const [eventType, setEventType] = useState("goal");
+  const [eventSport, setEventSport] = useState("soccer");
+  const [eventHomeTeam, setEventHomeTeam] = useState("");
+  const [eventAwayTeam, setEventAwayTeam] = useState("");
+  const [eventHomeScore, setEventHomeScore] = useState("");
+  const [eventAwayScore, setEventAwayScore] = useState("");
+  const [eventPlayer, setEventPlayer] = useState("");
+  const [eventPlayerDetail, setEventPlayerDetail] = useState("");
+  const [eventMinute, setEventMinute] = useState("");
+  const [eventExtraMinute, setEventExtraMinute] = useState("");
+  const [eventLeague, setEventLeague] = useState("");
+  const [eventVenue, setEventVenue] = useState("");
+  const [eventBigText, setEventBigText] = useState("");
+
+  const EVENT_TYPES = {
+    soccer: [
+      { value: "goal", label: "Goal", icon: "⚽" },
+      { value: "penalty", label: "Penalty Goal", icon: "🎯" },
+      { value: "own_goal", label: "Own Goal", icon: "😬" },
+      { value: "red_card", label: "Red Card", icon: "🟥" },
+    ],
+    nfl: [
+      { value: "touchdown", label: "Touchdown", icon: "🏈" },
+      { value: "interception", label: "Interception", icon: "🛡️" },
+      { value: "fumble", label: "Fumble", icon: "💥" },
+    ],
+  };
+
+  const isNfl = genLeague === "nfl";
+  const SOCCER_API_URL = "https://foot.samsports.io";
+
+  const fetchInfographics = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await adminAPI.getInfographics({ page, sport: isNfl ? "nfl" : genLeague ? "soccer" : undefined, league: genLeague || undefined });
+      setInfographics(res.data?.infographics || []);
+    } catch { toast("Failed to load infographics", "error"); }
+    setLoading(false);
+  }, [page, genLeague]);
+
+  useEffect(() => { fetchInfographics(); }, [fetchInfographics]);
+
+  const fetchFixtures = async () => {
+    if (!genLeague) return toast("Select a league first", "error");
+    setLoadingFixtures(true);
+    setFixtures([]);
+    try {
+      if (isNfl) {
+        const res = await adminAPI.getNFLInfographicFixtures({ week: nflWeek, season: nflSeason });
+        const games = res.data?.games || [];
+        setFixtures(games.map(g => ({ ...g, _isNfl: true, _display: `${g.away || "?"} @ ${g.home || "?"}`, _sub: g.gameDate || "", _id: g.gameID })));
+      } else {
+        const fixtureStatus = genType === "pregame" ? "NS" : genType === "postmatch" ? "FT" : undefined;
+        const params = { realLeague: genLeague };
+        if (fixtureStatus) params.status = fixtureStatus;
+        const res = await adminAPI.getArticleFixtures(params);
+        const fxs = res.data?.data || [];
+        setFixtures(fxs.map(f => ({ ...f, _isNfl: false, _display: `${f.homeTeam} vs ${f.awayTeam}`, _sub: `${f.date ? new Date(f.date).toLocaleDateString() : ""}${f.homeScore != null ? ` · ${f.homeScore}-${f.awayScore}` : ""}`, _id: f._id || f.apiFixtureId })));
+      }
+    } catch (err) { toast("Failed to load fixtures: " + err.message, "error"); }
+    setLoadingFixtures(false);
+  };
+
+  const handleGenerate = async (fixtureOrGame) => {
+    setGenerating(true);
+    try {
+      let res;
+      if (fixtureOrGame._isNfl) {
+        res = await adminAPI.generateNFLInfographic(fixtureOrGame);
+      } else if (genType === "postmatch") {
+        res = await adminAPI.generateSoccerPostMatch(fixtureOrGame, genLeague);
+      } else if (genType === "live") {
+        res = await adminAPI.generateSoccerLive(fixtureOrGame, genLeague);
+      } else {
+        res = await adminAPI.generateSoccerInfographic(fixtureOrGame, genLeague);
+      }
+      const infographic = res.data?.infographic;
+      if (infographic?.files?.instagram?.url) {
+        setPreviewUrl(SOCCER_API_URL + infographic.files.instagram.url);
+      }
+      toast("Infographic generated!", "success");
+      fetchInfographics();
+    } catch (err) {
+      toast("Generation failed: " + (err.response?.data?.message || err.message), "error");
+    }
+    setGenerating(false);
+  };
+
+  const handleGenerateEvent = async () => {
+    if (!eventType || !eventHomeTeam || !eventAwayTeam) {
+      return toast("Event type, home team, and away team are required", "error");
+    }
+    setGenerating(true);
+    try {
+      const res = await adminAPI.generateMatchEvent({
+        eventType,
+        sport: eventSport,
+        league: eventLeague,
+        playerName: eventPlayer,
+        playerDetail: eventPlayerDetail,
+        minute: eventMinute ? parseInt(eventMinute) : undefined,
+        extraMinute: eventExtraMinute ? parseInt(eventExtraMinute) : undefined,
+        homeTeam: eventHomeTeam,
+        awayTeam: eventAwayTeam,
+        homeScore: eventHomeScore,
+        awayScore: eventAwayScore,
+        venue: eventVenue,
+        bigText: eventBigText || undefined,
+      });
+      const infographic = res.data?.infographic;
+      if (infographic?.files?.instagram?.url) {
+        setPreviewUrl(SOCCER_API_URL + infographic.files.instagram.url);
+      }
+      toast(`${eventType.replace("_", " ")} infographic generated!`, "success");
+      fetchInfographics();
+    } catch (err) {
+      toast("Generation failed: " + (err.response?.data?.message || err.message), "error");
+    }
+    setGenerating(false);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await adminAPI.deleteInfographic(id);
+      toast("Deleted", "success");
+      fetchInfographics();
+    } catch { toast("Delete failed", "error"); }
+  };
+
+  const tabBtn = (id, label) => (
+    <button onClick={() => setTab(id)} style={{ padding: "6px 14px", borderRadius: 8, border: "none", background: tab === id ? C.purple : "transparent", color: tab === id ? "#fff" : C.textDim, cursor: "pointer", fontSize: 13, fontWeight: 600 }}>{label}</button>
+  );
+
+  return (
+    <div>
+      <h2 style={{ color: C.white, fontSize: 22, marginBottom: 16, display: "flex", alignItems: "center", gap: 8 }}>
+        <Image size={22} /> Infographics
+      </h2>
+
+      <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+        {tabBtn("generate", "Generate")}
+        {tabBtn("gallery", "Gallery")}
+      </div>
+
+      {tab === "generate" && (
+        <div style={card}>
+          <h3 style={{ color: C.white, fontSize: 16, marginBottom: 12 }}>
+            {genType === "pregame" ? "Generate Pre-Game Matchup Card" : genType === "postmatch" ? "Generate Post-Match Result Card" : genType === "live" ? "Generate Live Score Card" : "Generate Match Event Card"}
+          </h3>
+
+          <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+            {["pregame", "postmatch", "live", "event"].map(t => (
+              <button key={t} onClick={() => { setGenType(t); setFixtures([]); setPreviewUrl(null); }} style={{ padding: "6px 14px", borderRadius: 8, border: `1px solid ${genType === t ? C.purple : C.border}`, background: genType === t ? "rgba(124,58,237,0.15)" : "transparent", color: genType === t ? C.purple : C.textDim, cursor: "pointer", fontSize: 12, fontWeight: 600 }}>
+                {t === "pregame" ? "Pre-Game" : t === "postmatch" ? "Post-Match" : t === "live" ? "Live" : "Match Event"}
+              </button>
+            ))}
+          </div>
+
+          <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap", alignItems: "flex-end" }}>
+            <div>
+              <label style={{ color: C.textDim, fontSize: 12, display: "block", marginBottom: 4 }}>League</label>
+              <select value={genLeague} onChange={e => { setGenLeague(e.target.value); setFixtures([]); }} style={{ ...select, width: 180 }}>
+                <option value="">— Select —</option>
+                {INFOGRAPHIC_LEAGUES.map(l => <option key={l.value} value={l.value}>{l.label}</option>)}
+              </select>
+            </div>
+
+            {isNfl && genType !== "event" && (
+              <>
+                <div>
+                  <label style={{ color: C.textDim, fontSize: 12, display: "block", marginBottom: 4 }}>NFL Week</label>
+                  <select value={nflWeek} onChange={e => setNflWeek(e.target.value)} style={{ ...select, width: 80 }}>
+                    {Array.from({ length: 18 }, (_, i) => <option key={i + 1} value={i + 1}>{i + 1}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={{ color: C.textDim, fontSize: 12, display: "block", marginBottom: 4 }}>Season</label>
+                  <select value={nflSeason} onChange={e => setNflSeason(e.target.value)} style={{ ...select, width: 100 }}>
+                    {[2026, 2025, 2024, 2023].map(y => <option key={y} value={y}>{y}</option>)}
+                  </select>
+                </div>
+              </>
+            )}
+
+            {genType !== "event" && (
+              <button onClick={fetchFixtures} disabled={loadingFixtures || !genLeague} style={btn(C.purple)}>
+                {loadingFixtures ? <><Loader2 size={14} className="spin" /> Loading...</> : <><Search size={14} /> Load Fixtures</>}
+              </button>
+            )}
+          </div>
+
+          {/* ── Match Event Form ── */}
+          {genType === "event" && (
+            <div style={{ marginBottom: 20 }}>
+              {/* Sport + Event Type */}
+              <div style={{ display: "flex", gap: 12, marginBottom: 14 }}>
+                <div>
+                  <label style={{ color: C.textDim, fontSize: 12, display: "block", marginBottom: 4 }}>Sport</label>
+                  <div style={{ display: "flex", gap: 6 }}>
+                    {["soccer", "nfl"].map(s => (
+                      <button key={s} onClick={() => { setEventSport(s); setEventType(s === "soccer" ? "goal" : "touchdown"); }}
+                        style={{ padding: "6px 14px", borderRadius: 8, border: `1px solid ${eventSport === s ? C.purple : C.border}`, background: eventSport === s ? "rgba(124,58,237,0.15)" : "transparent", color: eventSport === s ? C.purple : C.textDim, cursor: "pointer", fontSize: 12, fontWeight: 600 }}>
+                        {s === "soccer" ? "⚽ Soccer" : "🏈 NFL"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label style={{ color: C.textDim, fontSize: 12, display: "block", marginBottom: 4 }}>Event Type</label>
+                  <div style={{ display: "flex", gap: 6 }}>
+                    {(EVENT_TYPES[eventSport] || []).map(et => (
+                      <button key={et.value} onClick={() => setEventType(et.value)}
+                        style={{ padding: "6px 12px", borderRadius: 8, border: `1px solid ${eventType === et.value ? C.green : C.border}`, background: eventType === et.value ? "rgba(16,185,129,0.15)" : "transparent", color: eventType === et.value ? C.green : C.textDim, cursor: "pointer", fontSize: 12, fontWeight: 600 }}>
+                        {et.icon} {et.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Teams + Score */}
+              <div style={{ display: "flex", gap: 12, marginBottom: 14, flexWrap: "wrap" }}>
+                <div style={{ flex: 1, minWidth: 160 }}>
+                  <label style={{ color: C.textDim, fontSize: 12, display: "block", marginBottom: 4 }}>Home Team *</label>
+                  <input value={eventHomeTeam} onChange={e => setEventHomeTeam(e.target.value)} placeholder="e.g. Arsenal" style={{ ...select, width: "100%", boxSizing: "border-box" }} />
+                </div>
+                <div style={{ width: 60 }}>
+                  <label style={{ color: C.textDim, fontSize: 12, display: "block", marginBottom: 4 }}>H Score</label>
+                  <input value={eventHomeScore} onChange={e => setEventHomeScore(e.target.value)} placeholder="2" style={{ ...select, width: "100%", boxSizing: "border-box", textAlign: "center" }} />
+                </div>
+                <div style={{ display: "flex", alignItems: "flex-end", paddingBottom: 4, color: C.textDim, fontWeight: 700, fontSize: 16 }}>—</div>
+                <div style={{ width: 60 }}>
+                  <label style={{ color: C.textDim, fontSize: 12, display: "block", marginBottom: 4 }}>A Score</label>
+                  <input value={eventAwayScore} onChange={e => setEventAwayScore(e.target.value)} placeholder="1" style={{ ...select, width: "100%", boxSizing: "border-box", textAlign: "center" }} />
+                </div>
+                <div style={{ flex: 1, minWidth: 160 }}>
+                  <label style={{ color: C.textDim, fontSize: 12, display: "block", marginBottom: 4 }}>Away Team *</label>
+                  <input value={eventAwayTeam} onChange={e => setEventAwayTeam(e.target.value)} placeholder="e.g. Chelsea" style={{ ...select, width: "100%", boxSizing: "border-box" }} />
+                </div>
+              </div>
+
+              {/* Player + Minute */}
+              <div style={{ display: "flex", gap: 12, marginBottom: 14, flexWrap: "wrap" }}>
+                <div style={{ flex: 1, minWidth: 180 }}>
+                  <label style={{ color: C.textDim, fontSize: 12, display: "block", marginBottom: 4 }}>Player Name</label>
+                  <input value={eventPlayer} onChange={e => setEventPlayer(e.target.value)} placeholder="e.g. Bukayo Saka" style={{ ...select, width: "100%", boxSizing: "border-box" }} />
+                </div>
+                <div style={{ flex: 1, minWidth: 180 }}>
+                  <label style={{ color: C.textDim, fontSize: 12, display: "block", marginBottom: 4 }}>Player Detail (assist, position, etc.)</label>
+                  <input value={eventPlayerDetail} onChange={e => setEventPlayerDetail(e.target.value)} placeholder="e.g. Assist: Odegaard" style={{ ...select, width: "100%", boxSizing: "border-box" }} />
+                </div>
+                <div style={{ width: 70 }}>
+                  <label style={{ color: C.textDim, fontSize: 12, display: "block", marginBottom: 4 }}>Minute</label>
+                  <input value={eventMinute} onChange={e => setEventMinute(e.target.value)} placeholder="73" style={{ ...select, width: "100%", boxSizing: "border-box", textAlign: "center" }} />
+                </div>
+                <div style={{ width: 50 }}>
+                  <label style={{ color: C.textDim, fontSize: 12, display: "block", marginBottom: 4 }}>+</label>
+                  <input value={eventExtraMinute} onChange={e => setEventExtraMinute(e.target.value)} placeholder="" style={{ ...select, width: "100%", boxSizing: "border-box", textAlign: "center" }} />
+                </div>
+              </div>
+
+              {/* League + Venue + Big Text */}
+              <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+                <div style={{ flex: 1, minWidth: 160 }}>
+                  <label style={{ color: C.textDim, fontSize: 12, display: "block", marginBottom: 4 }}>League / Competition</label>
+                  <input value={eventLeague} onChange={e => setEventLeague(e.target.value)} placeholder="e.g. Premier League" style={{ ...select, width: "100%", boxSizing: "border-box" }} />
+                </div>
+                <div style={{ flex: 1, minWidth: 160 }}>
+                  <label style={{ color: C.textDim, fontSize: 12, display: "block", marginBottom: 4 }}>Venue</label>
+                  <input value={eventVenue} onChange={e => setEventVenue(e.target.value)} placeholder="e.g. Emirates Stadium" style={{ ...select, width: "100%", boxSizing: "border-box" }} />
+                </div>
+                <div style={{ flex: 1, minWidth: 120 }}>
+                  <label style={{ color: C.textDim, fontSize: 12, display: "block", marginBottom: 4 }}>Big Text (optional override)</label>
+                  <input value={eventBigText} onChange={e => setEventBigText(e.target.value)} placeholder="e.g. HAT-TRICK" style={{ ...select, width: "100%", boxSizing: "border-box" }} />
+                </div>
+              </div>
+
+              <button onClick={handleGenerateEvent} disabled={generating || !eventHomeTeam || !eventAwayTeam} style={btn(C.green)}>
+                {generating ? <><Loader2 size={14} className="spin" /> Generating...</> : <><Zap size={14} /> Generate {eventType.replace("_", " ").toUpperCase()} Card</>}
+              </button>
+            </div>
+          )}
+
+          {genType !== "event" && fixtures.length > 0 && (
+            <div style={{ maxHeight: 400, overflowY: "auto" }}>
+              {fixtures.map((f, i) => (
+                <div key={f._id || i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", borderRadius: 10, background: i % 2 === 0 ? C.bgCard : C.bgInput, border: `1px solid ${C.borderLight}`, marginBottom: 6 }}>
+                  <div>
+                    <div style={{ color: C.white, fontWeight: 600, fontSize: 14 }}>{f._display}</div>
+                    <div style={{ color: C.textDim, fontSize: 11 }}>{f._sub}</div>
+                  </div>
+                  <button onClick={() => handleGenerate(f)} disabled={generating} style={btn(C.purple)}>
+                    {generating ? <><Loader2 size={14} className="spin" /> Generating...</> : <><Image size={14} /> Generate</>}
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {previewUrl && (
+            <div style={{ marginTop: 20 }}>
+              <h4 style={{ color: C.white, fontSize: 14, marginBottom: 8 }}>Latest Preview</h4>
+              <img src={previewUrl} alt="Infographic preview" style={{ maxWidth: "100%", borderRadius: 12, border: `1px solid ${C.border}` }} />
+              <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
+                <a href={previewUrl} target="_blank" rel="noreferrer" style={{ ...btn(C.green), textDecoration: "none" }}><Download size={14} /> Download Instagram</a>
+                <a href={previewUrl.replace("_instagram", "_twitter")} target="_blank" rel="noreferrer" style={{ ...btn(C.blue || "#3b82f6"), textDecoration: "none" }}><Download size={14} /> Download X/Twitter</a>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {tab === "gallery" && (
+        <div style={card}>
+          <h3 style={{ color: C.white, fontSize: 16, marginBottom: 12 }}>Generated Infographics</h3>
+          {loading ? <Spinner size={20} /> : infographics.length === 0 ? (
+            <p style={{ color: C.textDim }}>No infographics yet. Generate some from the Generate tab!</p>
+          ) : (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
+              {infographics.map(ig => (
+                <div key={ig._id} style={{ background: C.bgInput, borderRadius: 12, overflow: "hidden", border: `1px solid ${C.borderLight}` }}>
+                  {ig.files?.instagram?.url && (
+                    <img src={SOCCER_API_URL + ig.files.instagram.url} alt={`${ig.homeTeam} vs ${ig.awayTeam}`} style={{ width: "100%", height: 200, objectFit: "cover" }} />
+                  )}
+                  <div style={{ padding: 12 }}>
+                    <div style={{ color: C.white, fontWeight: 600, fontSize: 13 }}>{ig.homeTeam} vs {ig.awayTeam}</div>
+                    <div style={{ color: C.textDim, fontSize: 11, marginTop: 2 }}>
+                      {ig.league?.toUpperCase()} · {ig.type?.replace("_", " ")} · {new Date(ig.createdAt).toLocaleDateString()}
+                    </div>
+                    <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
+                      <span style={{ padding: "2px 8px", borderRadius: 6, fontSize: 10, fontWeight: 600, background: ig.status === "ready" ? "rgba(34,197,94,.15)" : ig.status === "failed" ? "rgba(239,68,68,.15)" : "rgba(245,158,11,.15)", color: ig.status === "ready" ? C.green : ig.status === "failed" ? C.red : C.amber }}>{ig.status}</span>
+                      {ig.files?.instagram?.url && <a href={SOCCER_API_URL + ig.files.instagram.url} target="_blank" rel="noreferrer" style={{ color: C.purple, fontSize: 11, fontWeight: 600 }}>IG</a>}
+                      {ig.files?.twitter?.url && <a href={SOCCER_API_URL + ig.files.twitter.url} target="_blank" rel="noreferrer" style={{ color: C.blue || "#3b82f6", fontSize: 11, fontWeight: 600 }}>X</a>}
+                      <button onClick={() => handleDelete(ig._id)} style={{ marginLeft: "auto", background: "none", border: "none", color: C.red, cursor: "pointer", fontSize: 11 }}><Trash2 size={12} /></button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -5772,6 +6364,386 @@ const DeploySection = ({ toast }) => {
           ))}
         </div>
       </div>
+    </div>
+  );
+};
+
+/* ══════════════════════════════════════════
+   SECTION: Finance Tracker
+   Revenue, VAT, and transaction analytics
+   ══════════════════════════════════════════ */
+const FinanceTrackerSection = ({ toast }) => {
+  const [period, setPeriod] = useState("month");
+  const [productFilter, setProductFilter] = useState("all");
+  const [tab, setTab] = useState("overview");
+  const [summary, setSummary] = useState(null);
+  const [transactions, setTransactions] = useState([]);
+  const [monthly, setMonthly] = useState([]);
+  const [byProduct, setByProduct] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [txnPage, setTxnPage] = useState(1);
+  const [txnTotal, setTxnTotal] = useState(0);
+
+  const fmt = (n) => "$" + (n || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  // Fetch all finance data
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [sumRes, txnRes, monthRes, prodRes] = await Promise.allSettled([
+        adminAPI.getFinanceSummary(period),
+        adminAPI.getFinanceTransactions({ period, type: productFilter, page: txnPage, limit: 15 }),
+        adminAPI.getFinanceMonthly(),
+        adminAPI.getFinanceByProduct(period),
+      ]);
+      if (sumRes.status === "fulfilled") setSummary(sumRes.value.data?.data || sumRes.value.data);
+      if (txnRes.status === "fulfilled") {
+        const d = txnRes.value.data?.data || txnRes.value.data;
+        setTransactions(d?.transactions || []);
+        setTxnTotal(d?.total || 0);
+      }
+      if (monthRes.status === "fulfilled") setMonthly(monthRes.value.data?.data?.months || monthRes.value.data?.months || []);
+      if (prodRes.status === "fulfilled") setByProduct(prodRes.value.data?.data?.products || prodRes.value.data?.products || []);
+    } catch (e) {
+      toast("error", "Failed to load finance data: " + (e.message || "Unknown error"));
+    }
+    setLoading(false);
+  }, [period, productFilter, txnPage, toast]);
+
+  useEffect(() => { fetchData(); }, [fetchData]);
+
+  const tabs = [
+    { id: "overview", label: "Overview", icon: BarChart2 },
+    { id: "transactions", label: "Transactions", icon: Activity },
+    { id: "vat", label: "VAT Report", icon: FileText },
+  ];
+
+  const periodPills = [
+    { key: "today", label: "Today" },
+    { key: "week", label: "7 Days" },
+    { key: "month", label: "This Month" },
+    { key: "year", label: "This Year" },
+    { key: "all", label: "All Time" },
+  ];
+
+  const productPills = [
+    { key: "all", label: "All Products" },
+    { key: "sampoints", label: "SAM Points" },
+    { key: "coach", label: "AI Coach" },
+  ];
+
+  const pillStyle = (active) => ({
+    ...btn,
+    background: active ? C.blue : "transparent",
+    color: active ? C.white : C.textMuted,
+    padding: "6px 14px",
+    fontSize: 12,
+    borderRadius: 8,
+    border: active ? "none" : `1px solid ${C.border}`,
+  });
+
+  const typeBadge = (type) => ({
+    display: "inline-block",
+    padding: "2px 8px",
+    borderRadius: 10,
+    fontSize: 11,
+    fontWeight: 700,
+    background: type === "sampoints" ? C.blueLight : C.amberLight,
+    color: type === "sampoints" ? C.blue : C.amber,
+  });
+
+  const statusBadge = (status) => ({
+    display: "inline-block",
+    padding: "2px 8px",
+    borderRadius: 10,
+    fontSize: 11,
+    fontWeight: 700,
+    background: status === "succeeded" || status === "paid" ? C.greenLight : C.redLight,
+    color: status === "succeeded" || status === "paid" ? C.green : C.red,
+  });
+
+  // ─── KPI Cards ───
+  const KPICards = () => (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12, marginBottom: 20 }}>
+      {[
+        { label: "GROSS REVENUE", value: fmt(summary?.totalGross), color: C.green, sub: `${summary?.transactionCount || 0} transactions` },
+        { label: "NET REVENUE", value: fmt(summary?.totalNet), color: C.blue, sub: "After VAT deduction" },
+        { label: "VAT COLLECTED (23%)", value: fmt(summary?.totalVat), color: C.red, sub: "Payable to Polish tax office" },
+        { label: "AVG ORDER VALUE", value: fmt(summary?.avgOrderValue), color: C.amber, sub: "Per transaction" },
+        { label: "ACTIVE SUBS", value: summary?.activeCoachSubs || "0", color: C.purple, sub: "AI Coach subscribers" },
+      ].map((card, i) => (
+        <div key={i} style={{ background: C.bgCard, borderRadius: 12, padding: "16px 20px", borderLeft: `4px solid ${card.color}` }}>
+          <div style={{ fontSize: 11, color: C.textMuted, fontWeight: 700, letterSpacing: 0.5, marginBottom: 8 }}>{card.label}</div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: card.color, lineHeight: 1 }}>{loading ? "—" : card.value}</div>
+          <div style={{ fontSize: 11, color: C.textMuted, marginTop: 6 }}>{card.sub}</div>
+        </div>
+      ))}
+    </div>
+  );
+
+  // ─── Revenue by Product Pie (simple inline) ───
+  const RevenueSplit = () => {
+    const sp = summary?.byType?.sampoints || 0;
+    const co = summary?.byType?.coach || 0;
+    const total = sp + co || 1;
+    const spPct = Math.round((sp / total) * 100);
+    const coPct = 100 - spPct;
+    return (
+      <div style={{ background: C.bgCard, borderRadius: 12, padding: 20 }}>
+        <h3 style={{ fontSize: 14, fontWeight: 700, color: C.white, marginBottom: 16, marginTop: 0 }}>Revenue Split</h3>
+        {/* Simple bar */}
+        <div style={{ display: "flex", borderRadius: 8, overflow: "hidden", height: 32, marginBottom: 16 }}>
+          {sp > 0 && <div style={{ width: spPct + "%", background: C.blue, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: C.white }}>{spPct}%</div>}
+          {co > 0 && <div style={{ width: coPct + "%", background: C.amber, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: C.white }}>{coPct}%</div>}
+        </div>
+        <div style={{ display: "flex", gap: 24 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ width: 10, height: 10, borderRadius: "50%", background: C.blue }} />
+            <span style={{ color: C.textDim, fontSize: 13 }}>SAM Points</span>
+            <span style={{ fontWeight: 700, color: C.white, fontSize: 13 }}>{fmt(sp)}</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ width: 10, height: 10, borderRadius: "50%", background: C.amber }} />
+            <span style={{ color: C.textDim, fontSize: 13 }}>AI Coach</span>
+            <span style={{ fontWeight: 700, color: C.white, fontSize: 13 }}>{fmt(co)}</span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // ─── Monthly Revenue Bars (inline CSS bars) ───
+  const MonthlyChart = () => {
+    const maxVal = Math.max(...monthly.map(m => m.gross || 0), 1);
+    return (
+      <div style={{ background: C.bgCard, borderRadius: 12, padding: 20 }}>
+        <h3 style={{ fontSize: 14, fontWeight: 700, color: C.white, marginBottom: 16, marginTop: 0 }}>Monthly Revenue & VAT (6 Months)</h3>
+        <div style={{ display: "flex", gap: 12, alignItems: "flex-end", height: 180 }}>
+          {monthly.map((m, i) => (
+            <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+              <div style={{ fontSize: 11, color: C.green, fontWeight: 700 }}>{fmt(m.gross)}</div>
+              <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 1, justifyContent: "flex-end", height: 140 }}>
+                <div style={{ background: C.blue, borderRadius: "4px 4px 0 0", height: Math.max(4, ((m.net || 0) / maxVal) * 140), transition: "height 0.3s" }} />
+                <div style={{ background: C.red, borderRadius: "0 0 4px 4px", height: Math.max(2, ((m.vat || 0) / maxVal) * 140), transition: "height 0.3s" }} />
+              </div>
+              <div style={{ fontSize: 11, color: C.textMuted, fontWeight: 600 }}>{m.month}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ display: "flex", gap: 16, marginTop: 12, justifyContent: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: C.textDim }}>
+            <div style={{ width: 10, height: 10, borderRadius: 2, background: C.blue }} /> Net Revenue
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: C.textDim }}>
+            <div style={{ width: 10, height: 10, borderRadius: 2, background: C.red }} /> VAT
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // ─── Per-Product Breakdown Table ───
+  const ProductBreakdown = () => (
+    <div style={{ background: C.bgCard, borderRadius: 12, padding: 20 }}>
+      <h3 style={{ fontSize: 14, fontWeight: 700, color: C.white, marginBottom: 16, marginTop: 0 }}>Revenue by Product</h3>
+      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+        <thead>
+          <tr>
+            {["Product", "Type", "Gross", "Net", "VAT", "Count"].map(h => (
+              <th key={h} style={{ textAlign: h === "Product" || h === "Type" ? "left" : "right", padding: "8px 10px", color: C.textMuted, fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: 0.5, borderBottom: `1px solid ${C.border}` }}>{h}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {byProduct.length === 0 && (
+            <tr><td colSpan={6} style={{ padding: 20, textAlign: "center", color: C.textMuted }}>No data for this period</td></tr>
+          )}
+          {byProduct.map((p, i) => (
+            <tr key={i} style={{ borderBottom: `1px solid ${C.border}22` }}>
+              <td style={{ padding: "8px 10px", color: C.text, fontWeight: 600 }}>{p.product}</td>
+              <td style={{ padding: "8px 10px" }}><span style={typeBadge(p.type)}>{p.type === "sampoints" ? "SP" : "AI"}</span></td>
+              <td style={{ padding: "8px 10px", textAlign: "right", fontWeight: 700, color: C.green }}>{fmt(p.gross)}</td>
+              <td style={{ padding: "8px 10px", textAlign: "right", color: C.text }}>{fmt(p.net)}</td>
+              <td style={{ padding: "8px 10px", textAlign: "right", color: C.red }}>{fmt(p.vat)}</td>
+              <td style={{ padding: "8px 10px", textAlign: "right", color: C.textDim }}>{p.count}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  // ─── Transaction Log ───
+  const TransactionLog = () => (
+    <div style={{ background: C.bgCard, borderRadius: 12, padding: 20 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+        <h3 style={{ fontSize: 14, fontWeight: 700, color: C.white, margin: 0 }}>Transaction Log</h3>
+        <span style={{ fontSize: 12, color: C.textMuted }}>{txnTotal} total</span>
+      </div>
+      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+        <thead>
+          <tr>
+            {["Date", "User", "Product", "Gross", "Net", "VAT", "Status", "Stripe ID"].map(h => (
+              <th key={h} style={{ textAlign: ["Gross", "Net", "VAT"].includes(h) ? "right" : h === "Status" ? "center" : "left", padding: "8px 10px", color: C.textMuted, fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: 0.5, borderBottom: `1px solid ${C.border}` }}>{h}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {transactions.length === 0 && (
+            <tr><td colSpan={8} style={{ padding: 30, textAlign: "center", color: C.textMuted }}>No transactions for this period</td></tr>
+          )}
+          {transactions.map((t, i) => (
+            <tr key={i} style={{ opacity: t.status === "refunded" ? 0.5 : 1 }}>
+              <td style={{ padding: "8px 10px", whiteSpace: "nowrap", fontSize: 12, color: C.text }}>
+                {new Date(t.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
+                <span style={{ color: C.textMuted, marginLeft: 6 }}>{new Date(t.date).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}</span>
+              </td>
+              <td style={{ padding: "8px 10px", fontWeight: 600, color: C.text }}>{t.email || t.user || "—"}</td>
+              <td style={{ padding: "8px 10px" }}>
+                <span style={typeBadge(t.type)}>{t.type === "sampoints" ? "SP" : "AI"}</span>
+                <span style={{ marginLeft: 8, fontSize: 12, color: C.textDim }}>{t.product}</span>
+              </td>
+              <td style={{ padding: "8px 10px", textAlign: "right", fontWeight: 700, color: t.status === "refunded" ? C.red : C.green }}>{t.status === "refunded" ? "-" : ""}{fmt(t.gross)}</td>
+              <td style={{ padding: "8px 10px", textAlign: "right", fontSize: 12, color: C.text }}>{fmt(t.net)}</td>
+              <td style={{ padding: "8px 10px", textAlign: "right", fontSize: 12, color: C.red }}>{fmt(t.vat)}</td>
+              <td style={{ padding: "8px 10px", textAlign: "center" }}><span style={statusBadge(t.status)}>{t.status === "succeeded" ? "Paid" : t.status}</span></td>
+              <td style={{ padding: "8px 10px", fontSize: 11, fontFamily: "monospace", color: C.textMuted }}>{(t.stripeId || "—").slice(0, 20)}...</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {/* Pagination */}
+      {txnTotal > 15 && (
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 16, fontSize: 12, color: C.textMuted }}>
+          <span>Page {txnPage} of {Math.ceil(txnTotal / 15)}</span>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button style={{ ...btn, background: txnPage <= 1 ? C.bgCard : C.bgHover, color: txnPage <= 1 ? C.textMuted : C.text, padding: "6px 12px", fontSize: 12 }} disabled={txnPage <= 1} onClick={() => setTxnPage(p => Math.max(1, p - 1))}>Prev</button>
+            <button style={{ ...btn, background: txnPage >= Math.ceil(txnTotal / 15) ? C.bgCard : C.bgHover, color: txnPage >= Math.ceil(txnTotal / 15) ? C.textMuted : C.text, padding: "6px 12px", fontSize: 12 }} disabled={txnPage >= Math.ceil(txnTotal / 15)} onClick={() => setTxnPage(p => p + 1)}>Next</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  // ─── VAT Report ───
+  const VATReport = () => {
+    const projGross = (summary?.totalGross || 0) * (period === "month" ? 12 : period === "year" ? 1 : 365);
+    const projNet = (summary?.totalNet || 0) * (period === "month" ? 12 : period === "year" ? 1 : 365);
+    const projVat = (summary?.totalVat || 0) * (period === "month" ? 12 : period === "year" ? 1 : 365);
+    return (
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        <div style={{ background: C.bgCard, borderRadius: 12, padding: 20 }}>
+          <h3 style={{ fontSize: 14, fontWeight: 700, color: C.white, marginBottom: 16, marginTop: 0 }}>VAT Summary — {period === "today" ? "Today" : period === "week" ? "Last 7 Days" : period === "month" ? "This Month" : period === "year" ? "This Year" : "All Time"}</h3>
+          <div style={{ background: C.bg, borderRadius: 10, padding: 16 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0" }}>
+              <span style={{ color: C.textDim }}>Gross Revenue (incl. VAT)</span>
+              <span style={{ fontWeight: 700, color: C.green }}>{fmt(summary?.totalGross)}</span>
+            </div>
+            <div style={{ borderTop: `1px solid ${C.border}`, margin: "4px 0" }} />
+            <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0" }}>
+              <span style={{ color: C.textDim }}>Net Revenue (excl. VAT)</span>
+              <span style={{ fontWeight: 700, color: C.blue }}>{fmt(summary?.totalNet)}</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0" }}>
+              <span style={{ color: C.textDim }}>VAT Collected (23%)</span>
+              <span style={{ fontWeight: 700, color: C.red }}>{fmt(summary?.totalVat)}</span>
+            </div>
+            <div style={{ borderTop: `1px solid ${C.border}`, margin: "4px 0" }} />
+            <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0" }}>
+              <span style={{ color: C.textMuted, fontSize: 12 }}>VAT Rate</span>
+              <span style={{ fontWeight: 700, color: C.white }}>23% (Polish VAT)</span>
+            </div>
+          </div>
+
+          {/* Per-type VAT */}
+          <h4 style={{ fontSize: 13, fontWeight: 700, color: C.white, marginTop: 20, marginBottom: 12 }}>VAT by Product Type</h4>
+          {byProduct.map((p, i) => (
+            <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: `1px solid ${C.border}22` }}>
+              <span style={{ color: C.textDim, fontSize: 13 }}>{p.product}</span>
+              <span style={{ fontWeight: 600, color: C.red, fontSize: 13 }}>{fmt(p.vat)}</span>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ background: C.bgCard, borderRadius: 12, padding: 20 }}>
+          <h3 style={{ fontSize: 14, fontWeight: 700, color: C.white, marginBottom: 16, marginTop: 0 }}>Projected Annual</h3>
+          <p style={{ color: C.textMuted, fontSize: 12, marginBottom: 16 }}>Based on {period === "month" ? "this month's" : "current"} run rate</p>
+          <div style={{ background: C.bg, borderRadius: 10, padding: 16 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0" }}>
+              <span style={{ color: C.textDim }}>Annual Gross (est.)</span>
+              <span style={{ fontWeight: 700, color: C.green }}>{fmt(projGross)}</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0" }}>
+              <span style={{ color: C.textDim }}>Annual Net (est.)</span>
+              <span style={{ fontWeight: 700, color: C.blue }}>{fmt(projNet)}</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0" }}>
+              <span style={{ color: C.textDim }}>Annual VAT (est.)</span>
+              <span style={{ fontWeight: 700, color: C.red }}>{fmt(projVat)}</span>
+            </div>
+          </div>
+
+          <MonthlyChart />
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+        <h2 style={{ fontSize: 20, fontWeight: 800, color: C.white, margin: 0 }}>
+          <DollarSign size={20} style={{ marginRight: 8, verticalAlign: "middle" }} />
+          Finance Tracker
+        </h2>
+        <button style={{ ...btn, background: C.blue, color: C.white, padding: "8px 16px" }} onClick={fetchData}>
+          <RefreshCw size={13} /> Refresh
+        </button>
+      </div>
+
+      <TabBar tabs={tabs} active={tab} onChange={setTab} accent={C.green} />
+
+      {/* Period + Product Filters */}
+      <div style={{ display: "flex", gap: 6, marginBottom: 20, flexWrap: "wrap" }}>
+        {periodPills.map(p => (
+          <button key={p.key} style={pillStyle(period === p.key)} onClick={() => { setPeriod(p.key); setTxnPage(1); }}>{p.label}</button>
+        ))}
+        <div style={{ width: 1, background: C.border, margin: "0 6px" }} />
+        {productPills.map(f => (
+          <button key={f.key} style={pillStyle(productFilter === f.key)} onClick={() => { setProductFilter(f.key); setTxnPage(1); }}>{f.label}</button>
+        ))}
+      </div>
+
+      {loading && (
+        <div style={{ display: "flex", justifyContent: "center", padding: 60 }}>
+          <Loader2 size={32} style={{ animation: "spin 1s linear infinite", color: C.blue }} />
+        </div>
+      )}
+
+      {!loading && tab === "overview" && (
+        <>
+          <KPICards />
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
+            <RevenueSplit />
+            <MonthlyChart />
+          </div>
+          <ProductBreakdown />
+        </>
+      )}
+
+      {!loading && tab === "transactions" && (
+        <>
+          <KPICards />
+          <TransactionLog />
+        </>
+      )}
+
+      {!loading && tab === "vat" && (
+        <>
+          <KPICards />
+          <VATReport />
+        </>
+      )}
     </div>
   );
 };
@@ -5987,6 +6959,8 @@ const AdminPanel = () => {
     {id:"cl_fantasy",label:"CL Fantasy",icon:Trophy},
     {divider:true,label:"WORLD CUP"},
     {id:"world_cup",label:"World Cup 2026",icon:Globe},
+    {divider:true,label:"FINANCE"},
+    {id:"finance",label:"Finance Tracker",icon:DollarSign},
     {divider:true,label:"OPERATIONS"},
     {id:"pipeline",label:"Data Pipeline",icon:Workflow},
     {id:"megaphone",label:"Megaphone",icon:Megaphone},
@@ -5996,6 +6970,7 @@ const AdminPanel = () => {
     {id:"audit",label:"Audit Logs",icon:FileText},
     {divider:true,label:"CONTENT"},
     {id:"articles",label:"SAM Reports",icon:FileText},
+    {id:"infographics",label:"Infographics",icon:Image},
     {divider:true,label:"DEPLOY"},
     {id:"deploy",label:"Deploy & Server",icon:Server},
     {divider:true,label:"SEASONS"},
@@ -6015,6 +6990,7 @@ const AdminPanel = () => {
     case "predictor": return <PredictorSection toast={toast}/>;
     case "cl_fantasy": return <CLFantasySection toast={toast}/>;
     case "world_cup": return <WorldCupSection toast={toast}/>;
+    case "finance": return <FinanceTrackerSection toast={toast}/>;
     case "pipeline": return <DataPipelineSection toast={toast}/>;
     case "megaphone": return <MegaphoneSection toast={toast}/>;
     // case "correction": return <CorrectionSection toast={toast}/>; // disabled until backend is built
@@ -6022,6 +6998,7 @@ const AdminPanel = () => {
     case "vault": return <VaultSection toast={toast}/>;
     case "audit": return <AuditSection toast={toast}/>;
     case "articles": return <ArticlesSection toast={toast}/>;
+    case "infographics": return <InfographicsSection toast={toast}/>;
     case "deploy": return <DeploySection toast={toast}/>;
     case "seasons": return <SeasonManagementSection toast={toast}/>;
     case "compliance": return <ComplianceSection toast={toast}/>;

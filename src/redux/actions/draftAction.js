@@ -479,10 +479,11 @@ export const toggleAutoDraft = async (enabled) => {
 }
 
 // ── Smart Autodraft, Analyze squad and pick best player by position need ──
-export const getSmartAutoDraftPick = async () => {
+export const getSmartAutoDraftPick = async (teamId) => {
   try {
     attachToken()
-    const res = await privateDRAFTAPI.get('/draft/smart-autodraft')
+    const url = teamId ? `/draft/smart-autodraft?teamId=${teamId}` : '/draft/smart-autodraft'
+    const res = await privateDRAFTAPI.get(url)
     if (res?.data?.data) {
       const { player, position, analysis } = res.data.data
       if (player) {

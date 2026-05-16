@@ -47,7 +47,13 @@ const GmRankingWidget = () => {
     setExpanded(false)
     const data = await getGlobalGmRankings(sport || null)
     if (data) {
-      setRankings(data.rankings || [])
+      // Filter out entries with no real username (broken user refs)
+      const filtered = (data.rankings || []).filter(gm =>
+        gm.userName && gm.userName !== 'Unknown' && gm.userName !== 'undefined'
+      )
+      // Re-number ranks after filtering
+      filtered.forEach((gm, i) => { gm.rank = i + 1 })
+      setRankings(filtered)
       setMyRank(data.myRank || null)
     } else {
       setRankings([])

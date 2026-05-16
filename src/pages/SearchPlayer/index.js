@@ -54,6 +54,26 @@ const getContractYrsColor = (yrs) => {
   return '#EF4444'
 }
 
+// NFL season runs Sep–Feb. Before September → most recent season is previous year.
+const getCurrentNFLSeason = () => {
+  const now = new Date()
+  return now.getMonth() < 8 ? now.getFullYear() - 1 : now.getFullYear()
+}
+
+// Build year dropdown: always include current calendar year (for rookies/upcoming season)
+// plus NFL seasons back to 2023 (earliest with data)
+const buildSeasonOptions = () => {
+  const current = getCurrentNFLSeason()
+  const calendarYear = new Date().getFullYear()
+  const top = Math.max(current, calendarYear) // Always show current year for rookies
+  const options = []
+  for (let yr = top; yr >= 2023; yr--) {
+    options.push({ value: yr, label: String(yr) })
+  }
+  return options
+}
+const SEASON_OPTIONS = buildSeasonOptions()
+
 const SearchPlayer = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
   const userDetails = useSelector((state) => state?.user?.userDetails)
@@ -69,7 +89,8 @@ const SearchPlayer = () => {
   const [search, setSearch] = useState('')
   const [position, setPosition] = useState('ALL')
   const [playerType, setPlayerType] = useState('ALL')
-  const [year, setYear] = useState(Number(moment().format('YYYY')))
+  // NFL season: Sep–Feb = that year, Mar–Aug = previous year
+  const [year, setYear] = useState(getCurrentNFLSeason)
   const [week, setWeek] = useState(SETTING?.week)
   const [checkweek, setCheckWeek] = useState(SETTING?.week)
   const [totalCount, setTotalCount] = useState(0)
@@ -2723,12 +2744,7 @@ if (week <=8){
           value={year}
           style={{ width: 110 }}
           onChange={(val) => setYear(val)}
-          options={[
-            { value: 2026, label: '2026' },
-            { value: 2025, label: '2025' },
-            { value: 2024, label: '2024' },
-            { value: 2023, label: '2023' },
-          ]}
+          options={SEASON_OPTIONS}
         />
         {position !== 'ALL' && (
           <Select

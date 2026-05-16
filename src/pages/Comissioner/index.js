@@ -68,7 +68,7 @@ const TABS = [
   { key: 'scoring', labelKey: 'scoring', icon: <TrophyOutlined /> },
   { key: 'teams', labelKey: 'teamsAndOwners', icon: <TeamOutlined /> },
   { key: 'trades', labelKey: 'trades', icon: <SwapOutlined /> },
-  { key: 'draft', labelKey: 'draftOrder', icon: <OrderedListOutlined /> },
+  { key: 'draft', labelKey: 'draft', icon: <OrderedListOutlined /> },
   { key: 'integrity', labelKey: 'teamControl', icon: <SafetyCertificateOutlined /> },
   { key: 'admins', labelKey: 'commissioners', icon: <UserSwitchOutlined /> },
   { key: 'season', labelKey: 'season', icon: <CalendarOutlined /> },
@@ -318,18 +318,39 @@ const GameRulesTab = ({ currentLeague }) => {
   const [auctionApprovalRequired, setAuctionApprovalRequired] = useState(currentLeague?.commissionerAuctionApproval ?? false)
   const [poachingEnabled, setPoachingEnabled] = useState(currentLeague?.practiceSquadPoachingEnabled ?? true)
 
-  // Sync roster from currentLeague when it loads (rosterSettings may be a JSON string)
+  // Sync ALL fields from currentLeague when it loads asynchronously
+  // (useState initializers only run once — if currentLeague was null on mount,
+  //  fields would be stuck on defaults forever without this effect)
   useEffect(() => {
-    if (currentLeague?.rosterSettings) {
-      let settings = currentLeague.rosterSettings
-      if (typeof settings === 'string') {
-        try { settings = JSON.parse(settings) } catch { settings = {} }
-      }
-      if (typeof settings === 'object' && !Array.isArray(settings)) {
-        setRoster({ ...DEFAULT_ROSTER, ...settings })
-      }
+    if (!currentLeague) return
+    setLeagueId(currentLeague.leagueId || '')
+    setLeagueMode(currentLeague.leagueMode ?? 'full')
+    setScoringMode(currentLeague.scoringMode ?? 'sam_metric')
+    setDraftPositionMode(currentLeague.draftPositionMode ?? 'auction')
+    setDraftPickTimer(currentLeague.draftPickTimer ?? 2)
+    setAuctionDuration(currentLeague.auctionDuration ?? 24)
+    setStartingSamPoints(currentLeague.startingSamPoints ?? 300000000)
+    if (currentLeague.salaryCap != null) setSalaryCap(currentLeague.salaryCap)
+    setCommissionFee(currentLeague.commissionFee ?? 15)
+    setPreAuctionDate(currentLeague.computedAuctionDate || currentLeague.spotAuctionEnd || null)
+    setDraftDate(currentLeague.draftStart || null)
+    setTradeReviewEnabled(currentLeague.tradeReviewEnabled ?? true)
+    setCommissionerApproval(currentLeague.commissionerApproval ?? true)
+    setAllowDraftPickTrading(currentLeague.allowDraftPickTrading ?? true)
+    setTradeDeadlineEnabled(currentLeague.tradeDeadlineEnabled ?? false)
+    setFreeAgentAuctionsEnabled(currentLeague.freeAgentAuctionsEnabled ?? true)
+    setOwnerAuctionsEnabled(currentLeague.ownerToOwnerAuctionsEnabled ?? true)
+    setAuctionApprovalRequired(currentLeague.commissionerAuctionApproval ?? false)
+    setPoachingEnabled(currentLeague.practiceSquadPoachingEnabled ?? true)
+    // Sync roster
+    let settings = currentLeague.rosterSettings || {}
+    if (typeof settings === 'string') {
+      try { settings = JSON.parse(settings) } catch { settings = {} }
     }
-  }, [currentLeague?.rosterSettings])
+    if (typeof settings === 'object' && !Array.isArray(settings)) {
+      setRoster({ ...DEFAULT_ROSTER, ...settings })
+    }
+  }, [currentLeague?._id])
 
   // Auto-save toggle changes
   const handleToggleSave = async (field, value) => {
@@ -1379,13 +1400,93 @@ const DEFAULT_CUSTOM_STATS = {
   ],
 }
 
+// ── Preset scoring rules (mirrored from backend scoringPresets.js) ──
+const PRESET_SCORING = {
+  ppr: {
+    label: 'PPR (Points Per Reception)',
+    desc: '1 point per reception — the most popular scoring format',
+    rules: [
+      { cat: 'Passing', stats: [{ label: 'Passing Yards', value: '0.04 (1 pt per 25 yds)' }, { label: 'Passing TDs', value: '+4' }, { label: 'Interceptions Thrown', value: '-2' }] },
+      { cat: 'Rushing', stats: [{ label: 'Rushing Yards', value: '0.1 (1 pt per 10 yds)' }, { label: 'Rushing TDs', value: '+6' }] },
+      { cat: 'Receiving', stats: [{ label: 'Receptions', value: '+1' }, { label: 'Receiving Yards', value: '0.1 (1 pt per 10 yds)' }, { label: 'Receiving TDs', value: '+6' }] },
+      { cat: 'Turnovers', stats: [{ label: 'Fumble Lost', value: '-2' }] },
+      { cat: '2-Point Conversions', stats: [{ label: 'Rush/Rec/Pass', value: '+2' }] },
+      { cat: 'Kicking', stats: [{ label: 'FG 0-39 yds', value: '+3' }, { label: 'FG 40-49 yds', value: '+4' }, { label: 'FG 50+ yds', value: '+5' }, { label: 'Extra Point Made', value: '+1' }, { label: 'Extra Point Missed', value: '-1' }] },
+      { cat: 'Special Teams', stats: [{ label: 'Kick/Punt Return TD', value: '+6' }] },
+    ],
+  },
+  half_ppr: {
+    label: 'Half-PPR',
+    desc: '0.5 points per reception — the most balanced format',
+    rules: [
+      { cat: 'Passing', stats: [{ label: 'Passing Yards', value: '0.04 (1 pt per 25 yds)' }, { label: 'Passing TDs', value: '+4' }, { label: 'Interceptions Thrown', value: '-2' }] },
+      { cat: 'Rushing', stats: [{ label: 'Rushing Yards', value: '0.1 (1 pt per 10 yds)' }, { label: 'Rushing TDs', value: '+6' }] },
+      { cat: 'Receiving', stats: [{ label: 'Receptions', value: '+0.5' }, { label: 'Receiving Yards', value: '0.1 (1 pt per 10 yds)' }, { label: 'Receiving TDs', value: '+6' }] },
+      { cat: 'Turnovers', stats: [{ label: 'Fumble Lost', value: '-2' }] },
+      { cat: '2-Point Conversions', stats: [{ label: 'Rush/Rec/Pass', value: '+2' }] },
+      { cat: 'Kicking', stats: [{ label: 'FG 0-39 yds', value: '+3' }, { label: 'FG 40-49 yds', value: '+4' }, { label: 'FG 50+ yds', value: '+5' }, { label: 'Extra Point Made', value: '+1' }, { label: 'Extra Point Missed', value: '-1' }] },
+      { cat: 'Special Teams', stats: [{ label: 'Kick/Punt Return TD', value: '+6' }] },
+    ],
+  },
+  standard: {
+    label: 'Standard (Non-PPR)',
+    desc: 'No points for receptions — pure yardage and touchdown scoring',
+    rules: [
+      { cat: 'Passing', stats: [{ label: 'Passing Yards', value: '0.04 (1 pt per 25 yds)' }, { label: 'Passing TDs', value: '+4' }, { label: 'Interceptions Thrown', value: '-2' }] },
+      { cat: 'Rushing', stats: [{ label: 'Rushing Yards', value: '0.1 (1 pt per 10 yds)' }, { label: 'Rushing TDs', value: '+6' }] },
+      { cat: 'Receiving', stats: [{ label: 'Receptions', value: '0' }, { label: 'Receiving Yards', value: '0.1 (1 pt per 10 yds)' }, { label: 'Receiving TDs', value: '+6' }] },
+      { cat: 'Turnovers', stats: [{ label: 'Fumble Lost', value: '-2' }] },
+      { cat: '2-Point Conversions', stats: [{ label: 'Rush/Rec/Pass', value: '+2' }] },
+      { cat: 'Kicking', stats: [{ label: 'FG 0-39 yds', value: '+3' }, { label: 'FG 40-49 yds', value: '+4' }, { label: 'FG 50+ yds', value: '+5' }, { label: 'Extra Point Made', value: '+1' }, { label: 'Extra Point Missed', value: '-1' }] },
+      { cat: 'Special Teams', stats: [{ label: 'Kick/Punt Return TD', value: '+6' }] },
+    ],
+  },
+  superflex: {
+    label: 'Superflex / 2QB',
+    desc: 'PPR with boosted QB scoring (6pt passing TDs, 300yd bonus)',
+    rules: [
+      { cat: 'Passing', stats: [{ label: 'Passing Yards', value: '0.04 (1 pt per 25 yds)' }, { label: 'Passing TDs', value: '+6' }, { label: 'Interceptions Thrown', value: '-3' }, { label: '300 Yard Bonus', value: '+3' }, { label: '400 Yard Bonus', value: '+3' }] },
+      { cat: 'Rushing', stats: [{ label: 'Rushing Yards', value: '0.1 (1 pt per 10 yds)' }, { label: 'Rushing TDs', value: '+6' }, { label: '100 Yard Bonus', value: '+2' }] },
+      { cat: 'Receiving', stats: [{ label: 'Receptions', value: '+1' }, { label: 'Receiving Yards', value: '0.1 (1 pt per 10 yds)' }, { label: 'Receiving TDs', value: '+6' }, { label: '100 Yard Bonus', value: '+2' }] },
+      { cat: 'Turnovers', stats: [{ label: 'Fumble Lost', value: '-2' }] },
+      { cat: '2-Point Conversions', stats: [{ label: 'Rush/Rec/Pass', value: '+2' }] },
+      { cat: 'Kicking', stats: [{ label: 'FG 0-39 yds', value: '+3' }, { label: 'FG 40-49 yds', value: '+4' }, { label: 'FG 50+ yds', value: '+5' }, { label: 'Extra Point Made', value: '+1' }, { label: 'Extra Point Missed', value: '-1' }] },
+      { cat: 'Special Teams', stats: [{ label: 'Kick/Punt Return TD', value: '+6' }] },
+    ],
+  },
+  te_premium: {
+    label: 'TE Premium (TEP)',
+    desc: '1.5 PPR for Tight Ends, 1.0 for all others',
+    rules: [
+      { cat: 'Passing', stats: [{ label: 'Passing Yards', value: '0.04 (1 pt per 25 yds)' }, { label: 'Passing TDs', value: '+4' }, { label: 'Interceptions Thrown', value: '-2' }] },
+      { cat: 'Rushing', stats: [{ label: 'Rushing Yards', value: '0.1 (1 pt per 10 yds)' }, { label: 'Rushing TDs', value: '+6' }] },
+      { cat: 'Receiving', stats: [{ label: 'Receptions (non-TE)', value: '+1' }, { label: 'Receptions (TE)', value: '+1.5' }, { label: 'Receiving Yards', value: '0.1 (1 pt per 10 yds)' }, { label: 'Receiving TDs', value: '+6' }] },
+      { cat: 'Turnovers', stats: [{ label: 'Fumble Lost', value: '-2' }] },
+      { cat: '2-Point Conversions', stats: [{ label: 'Rush/Rec/Pass', value: '+2' }] },
+      { cat: 'Kicking', stats: [{ label: 'FG 0-39 yds', value: '+3' }, { label: 'FG 40-49 yds', value: '+4' }, { label: 'FG 50+ yds', value: '+5' }, { label: 'Extra Point Made', value: '+1' }, { label: 'Extra Point Missed', value: '-1' }] },
+      { cat: 'Special Teams', stats: [{ label: 'Kick/Punt Return TD', value: '+6' }] },
+    ],
+  },
+}
+
 const ScoringTab = ({ currentLeague }) => {
   const { allSamMetric } = useSelector((state) => state?.league)
   const [selectedPos, setSelectedPos] = useState('QB')
   const [loading, setLoading] = useState(false)
-  const [useSamMetric, setUseSamMetric] = useState(currentLeague?.useSamMetric ?? true)
+  const leagueScoringMode = currentLeague?.scoringMode || 'sam_metric'
+  const isPresetMode = ['ppr', 'half_ppr', 'standard', 'superflex', 'te_premium'].includes(leagueScoringMode)
+  const [useSamMetric, setUseSamMetric] = useState(isPresetMode ? false : (currentLeague?.useSamMetric ?? true))
   const [customScoring, setCustomScoring] = useState(currentLeague?.customScoring || DEFAULT_CUSTOM_STATS)
   const [customSelectedPos, setCustomSelectedPos] = useState('QB')
+
+  // Sync scoring state when currentLeague loads async
+  useEffect(() => {
+    if (!currentLeague) return
+    const mode = currentLeague.scoringMode || 'sam_metric'
+    const preset = ['ppr', 'half_ppr', 'standard', 'superflex', 'te_premium'].includes(mode)
+    setUseSamMetric(preset ? false : (currentLeague.useSamMetric ?? true))
+    if (currentLeague.customScoring) setCustomScoring(currentLeague.customScoring)
+  }, [currentLeague?._id])
 
   useEffect(() => {
     const fetch = async () => {
@@ -1458,22 +1559,54 @@ const ScoringTab = ({ currentLeague }) => {
             <TrophyOutlined />
           </div>
           <h3 className='cm-section-title'>Scoring System</h3>
-          <span className='cm-section-desc'>Choose between SAM Metric or custom scoring rules</span>
+          <span className='cm-section-desc'>
+            {isPresetMode
+              ? `This league uses ${PRESET_SCORING[leagueScoringMode]?.label || leagueScoringMode} scoring`
+              : 'Choose between SAM Metric or custom scoring rules'}
+          </span>
         </div>
-        <div className='cm-toggle-row' style={{ marginBottom: 20 }}>
-          <div className='cm-toggle-info'>
-            <span className='cm-toggle-title'>Use SAM Metric Scoring</span>
-            <span className='cm-toggle-desc'>
-              {useSamMetric
-                ? 'Position-based scoring derived from NFL franchise tag valuations, the SamSports standard'
-                : 'SAM Metric is off, configure your own points per stat below'}
-            </span>
+        {!isPresetMode && (
+          <div className='cm-toggle-row' style={{ marginBottom: 20 }}>
+            <div className='cm-toggle-info'>
+              <span className='cm-toggle-title'>Use SAM Metric Scoring</span>
+              <span className='cm-toggle-desc'>
+                {useSamMetric
+                  ? 'Position-based scoring derived from NFL franchise tag valuations, the SamSports standard'
+                  : 'SAM Metric is off, configure your own points per stat below'}
+              </span>
+            </div>
+            <Switch checked={useSamMetric} onChange={(val) => setUseSamMetric(val)} />
           </div>
-          <Switch checked={useSamMetric} onChange={(val) => setUseSamMetric(val)} />
-        </div>
+        )}
       </div>
 
-      {useSamMetric ? (
+      {isPresetMode ? (
+        /* ── Preset Scoring View (PPR, Half-PPR, Standard, etc.) ── */
+        <div className='cm-section'>
+          <div className='cm-section-header'>
+            <div className='cm-section-icon cm-section-icon-green'>
+              <TrophyOutlined />
+            </div>
+            <h3 className='cm-section-title'>{PRESET_SCORING[leagueScoringMode]?.label}</h3>
+            <span className='cm-section-desc'>{PRESET_SCORING[leagueScoringMode]?.desc}</span>
+          </div>
+          {PRESET_SCORING[leagueScoringMode]?.rules?.map((cat, ci) => (
+            <div key={ci} style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.8, color: '#22C55E', marginBottom: 8, paddingLeft: 4 }}>
+                {cat.cat}
+              </div>
+              {cat.stats.map((stat, si) => (
+                <div key={si} className='cm-rule-row' style={{ marginBottom: 4 }}>
+                  <span className='cm-rule-name' style={{ flex: 3, fontSize: 13 }}>{stat.label}</span>
+                  <span style={{ flex: 1, fontSize: 14, fontWeight: 700, color: stat.value.startsWith('-') ? '#EF4444' : '#22C55E', textAlign: 'right' }}>
+                    {stat.value}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      ) : useSamMetric ? (
         /* ── SAM Metric View ── */
         <div className='cm-section'>
           <div className='cm-section-header'>
@@ -2176,9 +2309,15 @@ const TradesTab = () => {
    ═══════════════════════════════════════════════════════════ */
 const AuctionScheduleSection = ({ currentLeague, draftDate }) => {
   const [timingOption, setTimingOption] = useState(currentLeague?.auctionTimingOption || 'just-before')
-  const [auctionTime, setAuctionTime] = useState(
-    currentLeague?.auctionScheduleTime ? dayjs(currentLeague.auctionScheduleTime, 'HH:mm') : dayjs('14:00', 'HH:mm')
-  )
+  const [auctionTime, setAuctionTime] = useState(() => {
+    // If there's a computed auction date saved, use it as a full datetime
+    if (currentLeague?.computedAuctionDate) return dayjs(currentLeague.computedAuctionDate)
+    // Otherwise build a valid date from the time string + draft date
+    const timeStr = currentLeague?.auctionScheduleTime || '14:00'
+    const [h, m] = timeStr.split(':').map(Number)
+    const base = draftDate ? dayjs(draftDate) : dayjs()
+    return base.hour(h || 14).minute(m || 0).second(0)
+  })
   const [saving, setSaving] = useState(false)
   const [scheduleComputed, setScheduleComputed] = useState(null)
 
@@ -2187,9 +2326,11 @@ const AuctionScheduleSection = ({ currentLeague, draftDate }) => {
   }, [timingOption, auctionTime, draftDate])
 
   const computeAuctionDate = () => {
-    if (!draftDate) return
+    if (!draftDate) { setScheduleComputed(null); return }
 
     const draftDateObj = dayjs(draftDate)
+    if (!draftDateObj.isValid()) { setScheduleComputed(null); return }
+
     let auctionDateObj
 
     switch (timingOption) {
@@ -2205,23 +2346,26 @@ const AuctionScheduleSection = ({ currentLeague, draftDate }) => {
         break
     }
 
-    auctionDateObj = auctionDateObj.set('hour', auctionTime.hour()).set('minute', auctionTime.minute())
-    setScheduleComputed(auctionDateObj)
+    const hr = auctionTime && auctionTime.isValid() ? auctionTime.hour() : 14
+    const mn = auctionTime && auctionTime.isValid() ? auctionTime.minute() : 0
+    auctionDateObj = auctionDateObj.set('hour', hr).set('minute', mn)
+    setScheduleComputed(auctionDateObj.isValid() ? auctionDateObj : null)
   }
 
   const handleSave = async () => {
     setSaving(true)
     try {
-      attachToken()
-      await privateAPI.post('/commissioner/auction-schedule', {
-        leagueId: currentLeague?._id,
+      await updateLeagueCommissioner({
+        _id: currentLeague?._id,
         auctionTimingOption: timingOption,
-        auctionScheduleTime: auctionTime.format('HH:mm'),
-        computedAuctionDate: scheduleComputed?.toISOString(),
+        auctionScheduleTime: auctionTime?.isValid() ? auctionTime.format('HH:mm') : '14:00',
+        computedAuctionDate: scheduleComputed?.isValid() ? scheduleComputed.toISOString() : null,
+        spotAuctionEnd: scheduleComputed?.isValid() ? scheduleComputed.toISOString() : null,
+        auctionReminderSent: false,
       })
       notification.success({
         message: 'Auction schedule saved successfully',
-        description: `Auction scheduled for ${scheduleComputed?.format('MMMM DD, YYYY [at] hh:mm A')}`,
+        description: scheduleComputed?.isValid() ? `Auction scheduled for ${scheduleComputed.format('MMMM DD, YYYY [at] hh:mm A')}` : 'Schedule updated',
         duration: 3,
       })
     } catch (err) {
@@ -2280,20 +2424,21 @@ const AuctionScheduleSection = ({ currentLeague, draftDate }) => {
       </div>
 
       {/* Time Picker */}
-      <div className='cm-field' style={{ marginTop: 24, maxWidth: 260 }}>
-        <label className='cm-field-label'>Auction Start Time</label>
+      <div className='cm-field' style={{ marginTop: 24, maxWidth: 300 }}>
+        <label className='cm-field-label'>Auction Start Date &amp; Time</label>
         <SamDatePicker
-          timeOnly
+          showTime
           value={auctionTime}
-          onChange={setAuctionTime}
-          placeholder='Select time'
+          onChange={(val) => setAuctionTime(val || dayjs('14:00', 'HH:mm'))}
+          disabledDate={(date) => date && date.isBefore(dayjs().startOf('day'))}
+          placeholder='Select date &amp; time'
           style={{ width: '100%' }}
         />
-        <span className='cm-field-hint'>The exact time the auction opens for bidding</span>
+        <span className='cm-field-hint'>The exact date and time the auction opens for bidding</span>
       </div>
 
       {/* Computed Date Display */}
-      {scheduleComputed && (
+      {scheduleComputed && scheduleComputed.isValid() && (
         <div className='cm-auction-preview'>
           <div className='cm-auction-preview-label'>Auction Opens</div>
           <div className='cm-auction-preview-date'>
@@ -2318,6 +2463,25 @@ const AuctionScheduleSection = ({ currentLeague, draftDate }) => {
 /* ═══════════════════════════════════════════════════════════
    TAB: Draft Order
    ═══════════════════════════════════════════════════════════ */
+const TIMEZONES = [
+  { value: 'America/New_York', label: 'Eastern (ET)' },
+  { value: 'America/Chicago', label: 'Central (CT)' },
+  { value: 'America/Denver', label: 'Mountain (MT)' },
+  { value: 'America/Los_Angeles', label: 'Pacific (PT)' },
+  { value: 'America/Anchorage', label: 'Alaska (AKT)' },
+  { value: 'Pacific/Honolulu', label: 'Hawaii (HT)' },
+  { value: 'Europe/London', label: 'London (GMT/BST)' },
+  { value: 'Europe/Paris', label: 'Central Europe (CET)' },
+  { value: 'Europe/Warsaw', label: 'Warsaw (CET)' },
+]
+
+const PICK_DURATIONS = [
+  { value: 120, label: '2 Minutes' },
+  { value: 300, label: '5 Minutes' },
+  { value: 28800, label: '8 Hours' },
+  { value: 86400, label: '24 Hours' },
+]
+
 const DraftTab = ({ currentLeague }) => {
   const { t } = useLanguage()
   // Use actual league team count, falls back to 32 only if no league data
@@ -2333,6 +2497,62 @@ const DraftTab = ({ currentLeague }) => {
   )
   const [btnLoading, setBtnLoading] = useState(false)
   const [draftType, setDraftType] = useState(currentLeague?.draftType || 'snake')
+
+  // ── Draft Speed Mode (Fast vs Slow) ──
+  const [draftSpeed, setDraftSpeed] = useState(currentLeague?.draftSpeed || 'fast')
+  const [slowDraftStartTime, setSlowDraftStartTime] = useState(
+    currentLeague?.slowDraft?.startTime ? dayjs(currentLeague.slowDraft.startTime) : null
+  )
+  const [slowDraftEndTime, setSlowDraftEndTime] = useState(
+    currentLeague?.slowDraft?.endTime ? dayjs(currentLeague.slowDraft.endTime) : null
+  )
+  const [slowDraftTimezone, setSlowDraftTimezone] = useState(
+    currentLeague?.slowDraft?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York'
+  )
+  const [slowDraftPickDuration, setSlowDraftPickDuration] = useState(
+    currentLeague?.slowDraft?.pickDuration || 86400
+  )
+  const [slowDraftTimeExpire, setSlowDraftTimeExpire] = useState(
+    currentLeague?.slowDraft?.timeExpireBehavior || 'auto_draft'
+  )
+  const [slowDraftSaving, setSlowDraftSaving] = useState(false)
+
+  // Sync draft state when currentLeague loads async
+  useEffect(() => {
+    if (!currentLeague) return
+    setDraftType(currentLeague.draftType || 'snake')
+    setDraftSpeed(currentLeague.draftSpeed || 'fast')
+    if (currentLeague.slowDraft?.startTime) setSlowDraftStartTime(dayjs(currentLeague.slowDraft.startTime))
+    if (currentLeague.slowDraft?.endTime) setSlowDraftEndTime(dayjs(currentLeague.slowDraft.endTime))
+    if (currentLeague.slowDraft?.timezone) setSlowDraftTimezone(currentLeague.slowDraft.timezone)
+    if (currentLeague.slowDraft?.pickDuration) setSlowDraftPickDuration(currentLeague.slowDraft.pickDuration)
+    if (currentLeague.slowDraft?.timeExpireBehavior) setSlowDraftTimeExpire(currentLeague.slowDraft.timeExpireBehavior)
+  }, [currentLeague?._id])
+
+  const handleUpdateLeague = async (updates) => {
+    await updateLeagueCommissioner({ _id: currentLeague?._id, ...updates })
+  }
+
+  const handleSaveSlowDraft = async () => {
+    setSlowDraftSaving(true)
+    try {
+      await updateLeagueCommissioner({
+        _id: currentLeague?._id,
+        draftSpeed,
+        slowDraft: {
+          startTime: slowDraftStartTime?.toISOString() || null,
+          endTime: slowDraftEndTime?.toISOString() || null,
+          timezone: slowDraftTimezone,
+          pickDuration: slowDraftPickDuration,
+          timeExpireBehavior: slowDraftTimeExpire,
+        },
+      })
+      notification.success({ message: 'Draft settings saved', duration: 2 })
+    } catch (err) {
+      notification.error({ message: err?.response?.data?.message || 'Failed to save draft settings', duration: 3 })
+    }
+    setSlowDraftSaving(false)
+  }
 
   const getMock = () => {
     const _data = []
@@ -2521,6 +2741,160 @@ const DraftTab = ({ currentLeague }) => {
             <span className='cm-draft-stat-label'>{t('complete')}</span>
           </div>
         </div>
+      </div>
+
+      {/* ── Draft Speed: Fast vs Slow ── */}
+      <div style={{ marginBottom: '16px' }}>
+        <div style={{ fontSize: '11px', fontWeight: 700, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '12px' }}>
+          Draft Speed
+        </div>
+        <div className='cm-draft-pick-cards' style={{ gridTemplateColumns: 'repeat(2, 1fr)', marginBottom: 0 }}>
+          <div
+            className={`cm-draft-pick-card ${draftSpeed === 'fast' ? 'cm-draft-pick-card--active' : ''}`}
+            onClick={() => setDraftSpeed('fast')}
+          >
+            <div className='cm-draft-pick-card-top'>
+              <span className='cm-draft-pick-card-emoji'>⚡</span>
+              {draftSpeed === 'fast' && <span className='cm-draft-pick-card-check'>✓</span>}
+            </div>
+            <h4 className='cm-draft-pick-card-title'>Fast Draft</h4>
+            <p className='cm-draft-pick-card-desc'>
+              Live real-time draft. All owners pick in a single session with a short clock per pick.
+            </p>
+            <span className='cm-draft-pick-card-tag' style={{ '--tag-color': '#22C55E' }}>Standard</span>
+          </div>
+          <div
+            className={`cm-draft-pick-card ${draftSpeed === 'slow' ? 'cm-draft-pick-card--active' : ''}`}
+            onClick={() => setDraftSpeed('slow')}
+          >
+            <div className='cm-draft-pick-card-top'>
+              <span className='cm-draft-pick-card-emoji'>🕐</span>
+              {draftSpeed === 'slow' && <span className='cm-draft-pick-card-check'>✓</span>}
+            </div>
+            <h4 className='cm-draft-pick-card-title'>Slow Draft</h4>
+            <p className='cm-draft-pick-card-desc'>
+              Asynchronous draft over hours or days. Each owner picks when it&apos;s their turn within a time window.
+            </p>
+            <span className='cm-draft-pick-card-tag' style={{ '--tag-color': '#a5b4fc' }}>Async</span>
+          </div>
+        </div>
+
+        {/* ── Slow Draft Configuration ── */}
+        {draftSpeed === 'slow' && (
+          <div style={{ marginTop: '16px', padding: '20px', background: 'rgba(34, 197, 94, 0.04)', border: '1px solid rgba(34, 197, 94, 0.15)', borderRadius: '12px' }}>
+            <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '16px' }}>Slow Draft Configuration</div>
+
+            {/* Start / End Time */}
+            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '16px' }}>
+              <div style={{ flex: 1, minWidth: 180 }}>
+                <div style={{ fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Draft Start</div>
+                <SamDatePicker
+                  showTime
+                  value={slowDraftStartTime}
+                  onChange={(val) => setSlowDraftStartTime(val)}
+                  disabledDate={(date) => date && date.isBefore(dayjs().startOf('day'))}
+                  style={{ width: '100%', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px' }}
+                  placeholder='Select start date & time'
+                />
+              </div>
+              <div style={{ flex: 1, minWidth: 180 }}>
+                <div style={{ fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Draft End</div>
+                <SamDatePicker
+                  showTime
+                  value={slowDraftEndTime}
+                  onChange={(val) => setSlowDraftEndTime(val)}
+                  disabledDate={(date) => date && date.isBefore(slowDraftStartTime || dayjs().startOf('day'))}
+                  style={{ width: '100%', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px' }}
+                  placeholder='Select end date & time'
+                />
+              </div>
+            </div>
+
+            {/* Timezone + Pick Duration */}
+            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '16px' }}>
+              <div style={{ flex: 1, minWidth: 180 }}>
+                <div style={{ fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Time Zone</div>
+                <select
+                  value={slowDraftTimezone}
+                  onChange={(e) => setSlowDraftTimezone(e.target.value)}
+                  style={{ width: '100%', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', color: '#fff', padding: '8px 12px', fontSize: '13px' }}
+                >
+                  {TIMEZONES.map((tz) => (
+                    <option key={tz.value} value={tz.value}>{tz.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div style={{ flex: 1, minWidth: 180 }}>
+                <div style={{ fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Time Per Pick</div>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {PICK_DURATIONS.map((pd) => (
+                    <button
+                      key={pd.value}
+                      onClick={() => setSlowDraftPickDuration(pd.value)}
+                      style={{
+                        padding: '6px 14px',
+                        borderRadius: '8px',
+                        fontSize: '12px',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        border: slowDraftPickDuration === pd.value ? '1px solid #22C55E' : '1px solid rgba(255,255,255,0.12)',
+                        background: slowDraftPickDuration === pd.value ? 'rgba(34,197,94,0.15)' : 'rgba(255,255,255,0.04)',
+                        color: slowDraftPickDuration === pd.value ? '#22C55E' : 'rgba(255,255,255,0.6)',
+                      }}
+                    >
+                      {pd.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Time Expire Behavior */}
+            <div style={{ marginBottom: '16px' }}>
+              <div style={{ fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '8px' }}>When Time Expires</div>
+              <div className='cm-draft-pick-cards' style={{ gridTemplateColumns: 'repeat(2, 1fr)', marginBottom: 0 }}>
+                <div
+                  className={`cm-draft-pick-card ${slowDraftTimeExpire === 'auto_draft' ? 'cm-draft-pick-card--active' : ''}`}
+                  onClick={() => setSlowDraftTimeExpire('auto_draft')}
+                  style={{ padding: '12px 16px' }}
+                >
+                  <div className='cm-draft-pick-card-top' style={{ marginBottom: 4 }}>
+                    <span style={{ fontSize: 18 }}>🤖</span>
+                    {slowDraftTimeExpire === 'auto_draft' && <span className='cm-draft-pick-card-check'>✓</span>}
+                  </div>
+                  <h4 className='cm-draft-pick-card-title' style={{ fontSize: 13 }}>Auto-Draft</h4>
+                  <p className='cm-draft-pick-card-desc' style={{ fontSize: 11 }}>
+                    Automatically draft the best available player when time runs out
+                  </p>
+                </div>
+                <div
+                  className={`cm-draft-pick-card ${slowDraftTimeExpire === 'pause' ? 'cm-draft-pick-card--active' : ''}`}
+                  onClick={() => setSlowDraftTimeExpire('pause')}
+                  style={{ padding: '12px 16px' }}
+                >
+                  <div className='cm-draft-pick-card-top' style={{ marginBottom: 4 }}>
+                    <span style={{ fontSize: 18 }}>⏸️</span>
+                    {slowDraftTimeExpire === 'pause' && <span className='cm-draft-pick-card-check'>✓</span>}
+                  </div>
+                  <h4 className='cm-draft-pick-card-title' style={{ fontSize: 13 }}>Pause Draft</h4>
+                  <p className='cm-draft-pick-card-desc' style={{ fontSize: 11 }}>
+                    Pause the draft until the owner makes their selection
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Save Button */}
+            <button
+              className='cm-save-btn'
+              onClick={handleSaveSlowDraft}
+              disabled={slowDraftSaving}
+              style={{ width: '100%', marginTop: 4 }}
+            >
+              {slowDraftSaving ? 'Saving...' : 'Save Slow Draft Settings'}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Draft Type Selector with Explanations */}
@@ -2818,6 +3192,19 @@ const TeamControlTab = ({ teams, currentLeague }) => {
 
   // AI Autopilot
   const [aiAutopilotEnabled, setAiAutopilotEnabled] = useState(currentLeague?.aiAutopilotEnabled ?? true)
+
+  // Sync team control state when currentLeague loads async
+  useEffect(() => {
+    if (!currentLeague) return
+    setTankingThresholdHigh(currentLeague.tankingThresholdHigh ?? 50)
+    setTankingThresholdMed(currentLeague.tankingThresholdMed ?? 30)
+    setTankingAutoBlock(currentLeague.tankingAutoBlock ?? true)
+    setTankingNotifyCommissioner(currentLeague.tankingNotifyCommissioner ?? true)
+    setInactivityDays(currentLeague.inactivityDays ?? 14)
+    setInactivityWarningDays(currentLeague.inactivityWarningDays ?? 7)
+    setAutoTransferOnInactivity(currentLeague.autoTransferOnInactivity ?? false)
+    setAiAutopilotEnabled(currentLeague.aiAutopilotEnabled ?? true)
+  }, [currentLeague?._id])
 
   // Team takeover state
   const [selectedTeam, setSelectedTeam] = useState(null)
@@ -3560,6 +3947,16 @@ const SeasonTab = ({ teams, user, currentLeague }) => {
   const [scheduleMethod, setScheduleMethod] = useState(currentLeague?.scheduleMethod || 'ai_random')
   const [regularSeasonWeeks, setRegularSeasonWeeks] = useState(currentLeague?.regularSeasonWeeks || (isSmallLeague ? 14 : 18))
   const [matchupsPerWeek, setMatchupsPerWeek] = useState(Math.floor(leagueSize / 2))
+
+  // Sync season state when currentLeague loads async
+  useEffect(() => {
+    if (!currentLeague) return
+    setScheduleMethod(currentLeague.scheduleMethod || 'ai_random')
+    const size = currentLeague.numberOfTeams || 32
+    const small = size >= 10 && size <= 24
+    setRegularSeasonWeeks(currentLeague.regularSeasonWeeks || (small ? 14 : 18))
+    setMatchupsPerWeek(Math.floor(size / 2))
+  }, [currentLeague?._id])
   const [scheduleGenerating, setScheduleGenerating] = useState(false)
   const [showTransferModal, setShowTransferModal] = useState(false)
 

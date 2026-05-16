@@ -145,8 +145,12 @@ const LeagueCarousel = ({ league, articles, showLogos = true }) => {
                 }}
                 style={{ cursor: 'pointer', textDecoration: 'none' }}
               >
-                {/* League gradient background */}
-                <div className="ls-nc-slide-fallback" style={{ background: gradient }} />
+                {/* Cover image or league gradient background */}
+                {article.coverImage ? (
+                  <img src={article.coverImage} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <div className="ls-nc-slide-fallback" style={{ background: gradient }} />
+                )}
 
                 {/* Team watermark (logos or names) */}
                 <div style={{

@@ -37,16 +37,34 @@ export const handlePaymentIntent = async (payload) => {
 };
 
 
-export const authSignup = async (payload, navigate) => {
+export const authSignup = async (payload, navigate, setVerificationState) => {
   try {
-    const res = await publicAPI.post('/auth/register', { ...payload, skipVerification: true })
+    const res = await publicAPI.post('/auth/register', { ...payload, skipVerification: false })
     if (res) {
       clearStaleSessionData()
       localStorage.setItem('version', version)
       localStorage.setItem('email', payload.email)
       const resData = res.data?.data || res.data
+
+      // ── New flow: email verification required ──
+      if (resData?.requiresVerification) {
+        localStorage.setItem('pendingUserId', resData.userId)
+        notification.success({
+          description: resData.message || 'Check your email for a verification code!',
+          duration: 4,
+        })
+        // Tell the registration component to show code input
+        if (setVerificationState) {
+          setVerificationState({ userId: resData.userId, email: payload.email })
+        } else {
+          navigate('/verify-email')
+        }
+        return
+      }
+
+      // ── Legacy flow: direct token (shouldn't happen anymore, but fallback) ──
       if (resData?.token) {
-        localStorage.setItem('token', resData.token)
+        // Token now set as httpOnly cookie by backend (XSS-safe)
         localStorage.setItem('userName', resData.user?.userName || resData.user?.name || '')
         localStorage.setItem('userId', resData.user?._id || '')
         attachToken()
@@ -65,23 +83,109 @@ export const authSignup = async (payload, navigate) => {
   }
 }
 
-export const authSignupAdvanced = async (payload, navigate) => {
+// ── Verify email with 6-digit code ──
+export const verifyEmailCode = async (userId, code, navigate, sport) => {
+  try {
+    // Determine which backend to call
+    const isSoccer = sport === 'eleven_fc' || sport === 'soccer'
+    const res = isSoccer
+      ? await axios.post(`${process.env.REACT_APP_SOCCER_API_URL || 'https://soccerbackend.samsports.io'}/api/v1/users/verify-email`, { userId, code })
+      : await publicAPI.post('/auth/verify-email', { userId, code })
+
+    const resData = res.data?.data || res.data
+
+    if (resData?.token) {
+      // Token now set as httpOnly cookie by backend (XSS-safe)
+      localStorage.setItem('userName', resData.user?.userName || resData.user?.name || '')
+      localStorage.setItem('userId', resData.user?._id || '')
+      localStorage.removeItem('pendingUserId')
+      attachToken()
+      if (isSoccer) attachSoccerToken()
+    }
+
+    notification.success({
+      description: 'Email verified! Welcome to SamSports!',
+      duration: 3,
+    })
+
+    // Fetch user data
+    try { await store.dispatch(getUser()) } catch (e) { /* noop */ }
+    try { await getUserLeagues() } catch (e) { /* noop */ }
+
+    navigate('/onboarding')
+    return true
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Invalid verification code',
+      duration: 3,
+    })
+    return false
+  }
+}
+
+// ── Resend verification code ──
+export const resendVerificationCode = async (userId, email, sport) => {
+  try {
+    const isSoccer = sport === 'eleven_fc' || sport === 'soccer'
+    const payload = userId ? { userId } : { email }
+
+    if (isSoccer) {
+      await axios.post(`${process.env.REACT_APP_SOCCER_API_URL || 'https://soccerbackend.samsports.io'}/api/v1/users/resend-verification`, payload)
+    } else {
+      await publicAPI.post('/auth/resend-verification', payload)
+    }
+
+    notification.success({
+      description: 'New verification code sent to your email!',
+      duration: 3,
+    })
+    return true
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Failed to resend code',
+      duration: 3,
+    })
+    return false
+  }
+}
+
+export const authSignupAdvanced = async (payload, navigate, setVerificationState) => {
   try {
     // Each sport backend may use a different register path (NFL: /auth/register, Soccer: /api/v1/users/register)
     const registerUrl = payload.registerPath
       ? `${payload.url}${payload.registerPath}`
       : `${payload.url}/auth/register`
-    const res = await axios.post(registerUrl, payload)
+    const res = await axios.post(registerUrl, { ...payload, skipVerification: false })
     if (res) {
       clearStaleSessionData()
       localStorage.setItem('version', version)
       localStorage.setItem('email', payload.email)
       const resData = res.data?.data || res.data
 
-      // Skip verification: token returned directly, log in and go to onboarding
-      if (payload.skipVerification && resData?.token) {
-        // TODO: Migrate to httpOnly cookies (requires backend cookie support)
-        localStorage.setItem('token', resData.token)
+      // ── New flow: email verification required ──
+      if (resData?.requiresVerification) {
+        localStorage.setItem('pendingUserId', resData.userId)
+        localStorage.setItem('pendingSport', payload.key || 'football')
+        notification.success({
+          description: resData.message || 'Check your email for a verification code!',
+          duration: 4,
+        })
+        if (setVerificationState) {
+          setVerificationState({
+            userId: resData.userId,
+            email: payload.email,
+            sport: payload.key || 'football',
+            frontEndUrl: payload.frontEndUrl,
+          })
+        } else {
+          navigate('/verify-email')
+        }
+        return
+      }
+
+      // ── Legacy/fallback: direct token ──
+      if (resData?.token) {
+        // Token now set as httpOnly cookie by backend (XSS-safe)
         localStorage.setItem('userName', resData.user?.userName || resData.user?.name || '')
         localStorage.setItem('userId', resData.user?._id || '')
         attachToken()
@@ -90,18 +194,10 @@ export const authSignupAdvanced = async (payload, navigate) => {
           duration: 2,
         })
 
-        // Fetch user leagues after registration succeeds
-        try {
-          await getUserLeagues()
-        } catch (leagueErr) {
-          console.error('[authSignupAdvanced] Failed to fetch leagues:', leagueErr?.message)
-          // Don't block registration if league fetch fails
-        }
+        try { await getUserLeagues() } catch (e) { /* noop */ }
+        try { await store.dispatch(getUser()) } catch (e) { /* noop */ }
 
-        // If the selected sport has its own frontend (e.g. Soccer → localhost:3001),
-        // redirect there instead of staying on the NFL app
         if (payload.frontEndUrl) {
-          // Pass auth token so the other app can pick it up
           const authToken = resData.token
           window.location.href = `${payload.frontEndUrl}/onboarding?token=${encodeURIComponent(authToken)}`
           return
@@ -131,9 +227,11 @@ export const otpVerification = (otp, navigate) => {
       let email = localStorage.getItem('email')
       const res = await publicAPI.post('/auth/verifyAccount', { email, otp })
       if (res) {
+        // Store token in localStorage so Authorization header is sent on every request
+        if (res.data?.data?.token || res.data?.data?.authToken) {
+          localStorage.setItem('token', res.data.data.token || res.data.data.authToken)
+        }
         localStorage.setItem('version', version)
-        // TODO: Migrate to httpOnly cookies (requires backend cookie support)
-        localStorage.setItem('token', res.data.data.token)
         localStorage.setItem('userName', res.data.data.user.name)
         localStorage.setItem('userId', res.data.data.user._id)
         attachToken()
@@ -176,10 +274,12 @@ let username=userName
       const res = await publicAPI.post('/auth/login', payload)
       if (res) {
           clearStaleSessionData()
+          // Store token in localStorage so PrivateWrapper auth guard works
+          if (res.data?.data?.token) {
+            localStorage.setItem('token', res.data.data.token)
+          }
           attachToken()
           localStorage.setItem('version', version)
-          // TODO: Migrate to httpOnly cookies (requires backend cookie support)
-          localStorage.setItem('token', res.data.data.token)
           localStorage.setItem('userName', res.data.data.user.name || res.data.data.user.userName || '')
           localStorage.setItem('userId', res.data.data.user._id)
           dispatch(getUser())
@@ -193,6 +293,28 @@ let username=userName
             description: res.data.data.message,
             duration: 2,
           })
+
+          // Show SP login reward toast if daily reward was earned
+          const loginReward = res.data.data.loginReward;
+          if (loginReward && loginReward.points) {
+            const streakEmoji = loginReward.streak >= 7 ? '🔥' : loginReward.streak >= 3 ? '⚡' : '✨';
+            const spFormatted = loginReward.points >= 1000000
+              ? `${(loginReward.points / 1000000).toFixed(1)}M`
+              : loginReward.points >= 1000
+                ? `${(loginReward.points / 1000).toFixed(0)}K`
+                : loginReward.points;
+            setTimeout(() => {
+              notification.info({
+                message: `${streakEmoji} +${spFormatted} SP earned!`,
+                description: loginReward.streak === 7
+                  ? `Day ${loginReward.streak} — Streak bonus unlocked!`
+                  : `Day ${loginReward.streak} streak — keep it going!`,
+                duration: 5,
+                placement: 'topRight',
+                style: { backgroundColor: '#1a1a0a', borderLeft: '3px solid #f59e0b', color: '#fff' },
+              });
+            }, 1500);
+          }
 
           // Fetch user leagues after login succeeds
           try {
@@ -249,7 +371,7 @@ export const getUser = () => {
               payload.soccerFinancials = finRes.data.data
             }
           } catch (finErr) {
-            console.error('[getUser] Soccer financials fetch error:', finErr?.message)
+            // Silently ignore — 404 means league not found in soccer DB (expected for some users)
           }
         }
 
@@ -260,9 +382,12 @@ export const getUser = () => {
         localStorage.setItem('week', payload?.setting?.week)
       }
     } catch (err) {
-      // If token is invalid/expired, clear auth state so user sees LOG IN / SIGN UP
+      // 401/403 during getUser should NOT nuke the token — the login flow
+      // fires getUser immediately and downstream calls (soccer, rivals) may
+      // 401 before the user has data there.  Clearing the token here was the
+      // root cause of the "Not logged in" loop.
       if (err?.response?.status === 401 || err?.response?.status === 403) {
-        localStorage.removeItem('token')
+        console.warn('[getUser] 401/403 received — keeping token, clearing UI state only')
         localStorage.removeItem('userName')
         localStorage.removeItem('userId')
         dispatch({
@@ -369,7 +494,7 @@ export const googleLogin = (credential, navigate) => {
       if (res) {
         attachToken()
         localStorage.setItem('version', version)
-        localStorage.setItem('token', res.data.data.token)
+        // Token now set as httpOnly cookie by backend (XSS-safe)
         localStorage.setItem('userName', res.data.data.user.name || res.data.data.user.userName)
         localStorage.setItem('userId', res.data.data.user._id)
         dispatch(getUser())
@@ -422,7 +547,7 @@ export const facebookLogin = (accessToken, navigate) => {
       if (res) {
         attachToken()
         localStorage.setItem('version', version)
-        localStorage.setItem('token', res.data.data.token)
+        // Token now set as httpOnly cookie by backend (XSS-safe)
         localStorage.setItem('userName', res.data.data.user.name || res.data.data.user.userName)
         localStorage.setItem('userId', res.data.data.user._id)
         dispatch(getUser())

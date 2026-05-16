@@ -103,8 +103,8 @@ export const createNewLeagueFromDashboard = async (payload) => {
         attachToken()
       }
       // Update user state so team/currentLeague are available for navigation
-      store.dispatch(getUser())
-      getUserLeagues()
+      await store.dispatch(getUser())
+      await getUserLeagues()
       notification.success({
         description: res.data.data.message || 'League created successfully!',
         duration: 2,
@@ -298,27 +298,11 @@ export const resetLeagueCommissioner = async (payload) => {
 
 export const selectLeague = async (payload, navigate) => {
   try {
-    attachToken()
-    const oldToken = localStorage.getItem('token')
     const res = await privateAPI.post(`/league/select-league`, payload)
     if (res) {
-      const newToken = res.data.data.token
       console.log('[selectLeague] Switching league:', payload.leagueId)
-      console.log('[selectLeague] Token changed:', oldToken !== newToken)
-
-      // Decode JWT payload to verify it has the right league (base64 middle segment)
-      try {
-        const jwtPayload = JSON.parse(atob(newToken.split('.')[1]))
-        console.log('[selectLeague] New JWT payload:', jwtPayload)
-      } catch (e) { /* ignore */ }
-
-      // Set the new JWT which embeds the target league + team context
-      // TODO: Migrate to httpOnly cookies (requires backend cookie support)
-      localStorage.setItem('token', newToken)
-      // Force a full page reload, this ensures:
-      // 1. All Redux state is re-initialised from scratch
-      // 2. App.js calls getUser() with the new JWT on mount
-      // 3. Header, SamPoints, salary cap, team name all reflect the new league
+      // Backend sets updated httpOnly cookie with new league context
+      // Force a full page reload so Redux state re-initializes from the new cookie
       window.location.replace('/dashboard')
     }
   } catch (err) {
@@ -405,6 +389,8 @@ export const getUserLeagues = async (params) => {
       })
     }
   } catch (err) {
+    // 401 = session expired — silently clear, don't toast "Not logged in"
+    if (err?.response?.status === 401) return
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,

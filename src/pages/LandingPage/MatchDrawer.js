@@ -685,10 +685,9 @@ const MatchDrawer = ({ isOpen, onClose, eventId, sport, league, leagueName }) =>
   const hasAFPrefix = typeof eventId === 'string' && eventId.startsWith('af-')
   const afFixtureId = hasAFPrefix ? eventId.replace('af-', '') : null
 
-  // Soccer → always use API-Football widget (even ESPN-sourced soccer events
-  // won't get here because the merge in index.js puts AF leagues first)
-  const isSoccer = sport === 'soccer'
-  const useAF = isSoccer || hasAFPrefix
+  // Use API-Football only if we have a valid AF fixture ID
+  // ESPN soccer events (no af- prefix) fall through to ESPN path
+  const useAF = hasAFPrefix && afFixtureId
   const useESPN = !useAF
 
   const espnResult = useMatchDetail(useESPN ? eventId : null, sport, league, isOpen && useESPN)

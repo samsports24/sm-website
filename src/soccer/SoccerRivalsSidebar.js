@@ -16,6 +16,7 @@ import {
   MessageOutlined,
   SettingOutlined,
   AimOutlined,
+  ThunderboltOutlined,
 } from '@ant-design/icons'
 
 const NAV_ITEMS = [
@@ -28,6 +29,7 @@ const NAV_ITEMS = [
   { key: '/soccer/trades', label: 'Trades', icon: <SwapOutlined /> },
   { key: '/soccer/predictor', label: 'Predictor', icon: <AimOutlined /> },
   { key: '/soccer/cl-fantasy', label: 'CL Fantasy', icon: <TrophyOutlined /> },
+  { key: '/soccer/quiz', label: 'Weekly Quiz', icon: <ThunderboltOutlined /> },
   { key: '/soccer/profile', label: 'Profile', icon: <UserOutlined /> },
   { key: '/soccer/commissioner', label: 'Commissioner', icon: <SettingOutlined /> },
   { key: '/soccer/chat', label: 'Chat', icon: <MessageOutlined /> },

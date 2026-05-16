@@ -6,6 +6,7 @@ import 'antd/dist/reset.css'
 import '../styles/style.css'
 import Routes from './Routes'
 import FloatingChat from '../components/FloatingChat'
+import SamAIChat from '../components/SamAIChat'
 import PasswordChangeModal from '../components/PasswordChangeModal'
 import { light, dark } from './theme'
 import { getUser } from '../redux'
@@ -86,16 +87,7 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    const _version = localStorage.getItem('version')
-    if (_version && _version !== version) {
-      window.location.href = '/homepage'
-      localStorage.clear()
-      localStorage.setItem('version', version)
-      notification.error({
-        message: `Try Login Again!`,
-        duration: 6,
-      })
-    }
+    // Version check is handled in Routes.js — only fetch user data here
     if (localStorage.getItem('token')) {
       dispatch(getUser())
       // Fetch user leagues on app initialization
@@ -128,6 +120,7 @@ const App = () => {
     </div>}
     <Routes />
     <FloatingChat />
+    <SamAIChat />
     <PasswordChangeModal />
     </div>
   </PlayerImagesProvider>)

@@ -7,7 +7,8 @@ import { useState, useEffect, useRef } from 'react';
    ═══════════════════════════════════════════════════════════ */
 
 const GNEWS_BASE = 'https://gnews.io/api/v4';
-const ESPN_BASE = 'https://site.api.espn.com/apis/site/v2/sports';
+const BACKEND_URL = process.env.REACT_APP_API_URL || 'https://backend.samsports.io';
+const ESPN_BASE = `${BACKEND_URL}/espn-proxy`;
 
 const CACHE_TTL = 1800000; // 30 minutes, saves API quota
 const REFRESH_INTERVAL = 1800000; // 30 minutes

@@ -16,6 +16,7 @@ import Exchange from './pages/Exchange';
 import Governance from './pages/Governance';
 import Predictor from './pages/Predictor';
 import CLFantasy from './pages/CLFantasy';
+import Quiz from './pages/Quiz';
 
 const SoccerRoutes = () => {
   return (
@@ -32,6 +33,7 @@ const SoccerRoutes = () => {
       <Route path="/league" element={<League />} />
       <Route path="/predictor" element={<Predictor />} />
       <Route path="/cl-fantasy" element={<CLFantasy />} />
+      <Route path="/quiz" element={<Quiz />} />
       <Route path="/chat" element={<Chat />} />
       <Route path="/commissioner" element={<Commissioner />} />
       <Route path="/profile" element={<Profile />} />

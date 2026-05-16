@@ -135,6 +135,219 @@ const TRANSLATION_LANGUAGES = [
   { code: "zh", label: "\u4e2d\u6587", flag: "ZH" },
 ];
 
+/* ── Widget Renderers ── */
+const widgetCard = {
+  marginTop: 24,
+  background: "rgba(30,41,59,0.8)",
+  borderRadius: 12,
+  padding: 20,
+  border: "1px solid rgba(71,85,105,0.4)",
+};
+
+const H2HWidget = ({ data }) => {
+  if (!data?.matches?.length) return null;
+  const s = data.summary || {};
+  return (
+    <div style={widgetCard}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+        <span style={{ fontSize: 18 }}>&#9876;&#65039;</span>
+        <h3 style={{ color: "#fff", fontSize: 16, margin: 0, fontWeight: 700 }}>Head-to-Head</h3>
+      </div>
+      {/* Summary bar */}
+      {s.team1 && (
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+            <span style={{ color: "#e2e8f0", fontSize: 13, fontWeight: 600 }}>{s.team1}</span>
+            <span style={{ color: "#e2e8f0", fontSize: 13, fontWeight: 600 }}>{s.team2}</span>
+          </div>
+          <div style={{ display: "flex", height: 8, borderRadius: 4, overflow: "hidden", background: "rgba(71,85,105,0.3)" }}>
+            {s.team1Wins > 0 && <div style={{ flex: s.team1Wins, background: "#3b82f6", transition: "flex 0.3s" }} />}
+            {s.draws > 0 && <div style={{ flex: s.draws, background: "#64748b", transition: "flex 0.3s" }} />}
+            {s.team2Wins > 0 && <div style={{ flex: s.team2Wins, background: "#ef4444", transition: "flex 0.3s" }} />}
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
+            <span style={{ color: "#3b82f6", fontSize: 12, fontWeight: 600 }}>{s.team1Wins}W</span>
+            <span style={{ color: "#64748b", fontSize: 12 }}>{s.draws}D</span>
+            <span style={{ color: "#ef4444", fontSize: 12, fontWeight: 600 }}>{s.team2Wins}W</span>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
+            <span style={{ color: "#94a3b8", fontSize: 11 }}>{s.team1Goals} goals</span>
+            <span style={{ color: "#94a3b8", fontSize: 11 }}>{s.team2Goals} goals</span>
+          </div>
+        </div>
+      )}
+      {/* Recent matches */}
+      {data.matches.map((m, i) => (
+        <div key={i} style={{
+          display: "flex", justifyContent: "space-between", alignItems: "center",
+          padding: "8px 0",
+          borderBottom: i < data.matches.length - 1 ? "1px solid rgba(71,85,105,0.3)" : "none",
+        }}>
+          <span style={{ color: "#94a3b8", fontSize: 11, width: 70 }}>
+            {m.date ? new Date(m.date).toLocaleDateString("en-GB", { month: "short", year: "2-digit" }) : ""}
+          </span>
+          <span style={{ color: "#e2e8f0", fontSize: 13, flex: 1, textAlign: "right", fontWeight: m.homeScore > m.awayScore ? 700 : 400 }}>{m.homeTeam}</span>
+          <span style={{ color: "#fff", fontSize: 14, fontWeight: 700, padding: "0 12px", minWidth: 44, textAlign: "center" }}>
+            {m.homeScore} - {m.awayScore}
+          </span>
+          <span style={{ color: "#e2e8f0", fontSize: 13, flex: 1, fontWeight: m.awayScore > m.homeScore ? 700 : 400 }}>{m.awayTeam}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const RankingsWidget = ({ data }) => {
+  if (!data?.table?.length) return null;
+  return (
+    <div style={widgetCard}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+        <span style={{ fontSize: 18 }}>&#128200;</span>
+        <h3 style={{ color: "#fff", fontSize: 16, margin: 0, fontWeight: 700 }}>{data.leagueName || "Standings"}</h3>
+      </div>
+      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+        <thead>
+          <tr style={{ color: "#64748b", borderBottom: "1px solid rgba(71,85,105,0.4)" }}>
+            <th style={{ textAlign: "left", padding: "6px 4px", fontWeight: 600 }}>#</th>
+            <th style={{ textAlign: "left", padding: "6px 4px", fontWeight: 600 }}>Team</th>
+            <th style={{ textAlign: "center", padding: "6px 4px", fontWeight: 600 }}>P</th>
+            <th style={{ textAlign: "center", padding: "6px 4px", fontWeight: 600 }}>W</th>
+            <th style={{ textAlign: "center", padding: "6px 4px", fontWeight: 600 }}>D</th>
+            <th style={{ textAlign: "center", padding: "6px 4px", fontWeight: 600 }}>L</th>
+            <th style={{ textAlign: "center", padding: "6px 4px", fontWeight: 600 }}>GD</th>
+            <th style={{ textAlign: "center", padding: "6px 4px", fontWeight: 600 }}>Pts</th>
+            <th style={{ textAlign: "center", padding: "6px 4px", fontWeight: 600 }}>Form</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.table.map((t, i) => {
+            const isFocus = data.focusTeams?.some((f) => t.teamName?.toLowerCase().includes(f?.toLowerCase().split(" ")[0]));
+            return (
+              <tr key={i} style={{
+                background: isFocus ? "rgba(59,130,246,0.1)" : "transparent",
+                borderBottom: "1px solid rgba(71,85,105,0.2)",
+              }}>
+                <td style={{ padding: "8px 4px", color: "#94a3b8", fontWeight: isFocus ? 700 : 400 }}>{t.rank}</td>
+                <td style={{ padding: "8px 4px", display: "flex", alignItems: "center", gap: 6 }}>
+                  {t.teamLogo && <img src={t.teamLogo} alt="" style={{ width: 16, height: 16, objectFit: "contain" }} />}
+                  <span style={{ color: isFocus ? "#3b82f6" : "#e2e8f0", fontWeight: isFocus ? 700 : 400, fontSize: 12 }}>{t.teamName}</span>
+                </td>
+                <td style={{ textAlign: "center", color: "#94a3b8", padding: "8px 4px" }}>{t.played}</td>
+                <td style={{ textAlign: "center", color: "#94a3b8", padding: "8px 4px" }}>{t.wins}</td>
+                <td style={{ textAlign: "center", color: "#94a3b8", padding: "8px 4px" }}>{t.draws}</td>
+                <td style={{ textAlign: "center", color: "#94a3b8", padding: "8px 4px" }}>{t.losses}</td>
+                <td style={{ textAlign: "center", color: t.goalDifference > 0 ? "#10b981" : t.goalDifference < 0 ? "#ef4444" : "#94a3b8", padding: "8px 4px", fontWeight: 600 }}>
+                  {t.goalDifference > 0 ? "+" : ""}{t.goalDifference}
+                </td>
+                <td style={{ textAlign: "center", color: "#fff", padding: "8px 4px", fontWeight: 700 }}>{t.points}</td>
+                <td style={{ textAlign: "center", padding: "8px 4px" }}>
+                  {t.form && (
+                    <div style={{ display: "flex", gap: 2, justifyContent: "center" }}>
+                      {t.form.split("").slice(-5).map((r, ri) => (
+                        <span key={ri} style={{
+                          width: 14, height: 14, borderRadius: 3, fontSize: 8, fontWeight: 700,
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          background: r === "W" ? "#10b981" : r === "D" ? "#f59e0b" : "#ef4444",
+                          color: "#fff",
+                        }}>{r}</span>
+                      ))}
+                    </div>
+                  )}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+const PhotosWidget = ({ data }) => {
+  if (!data?.length) return null;
+  return (
+    <div style={widgetCard}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+        <span style={{ fontSize: 18 }}>&#128248;</span>
+        <h3 style={{ color: "#fff", fontSize: 16, margin: 0, fontWeight: 700 }}>Photos</h3>
+      </div>
+      <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+        {data.map((photo, i) => (
+          <div key={i} style={{ textAlign: "center" }}>
+            <img
+              src={photo.url}
+              alt={photo.caption || ""}
+              style={{
+                width: photo.type === "team_logo" ? 56 : 72,
+                height: photo.type === "team_logo" ? 56 : 72,
+                objectFit: "contain",
+                borderRadius: photo.type === "player" ? "50%" : 8,
+                background: "rgba(71,85,105,0.2)",
+                padding: 4,
+              }}
+              onError={(e) => { e.target.style.display = "none"; }}
+            />
+            {photo.caption && (
+              <div style={{ color: "#94a3b8", fontSize: 10, marginTop: 4, maxWidth: 80, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {photo.caption}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const SourcesWidget = ({ data }) => {
+  if (!data?.length) return null;
+  return (
+    <div style={{
+      marginTop: 24,
+      padding: "12px 16px",
+      borderRadius: 8,
+      background: "rgba(59,130,246,0.08)",
+      borderLeft: "3px solid #3b82f6",
+    }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+        <span style={{ fontSize: 14 }}>&#128206;</span>
+        <span style={{ color: "#94a3b8", fontSize: 12, fontWeight: 600 }}>Data Sources</span>
+      </div>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        {data.map((src, i) => (
+          <span key={i} style={{
+            padding: "3px 10px",
+            borderRadius: 12,
+            fontSize: 11,
+            background: "rgba(71,85,105,0.3)",
+            color: "#94a3b8",
+          }} title={src.description}>
+            {src.name}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const ArticleWidgets = ({ widgets }) => {
+  if (!widgets?.length) return null;
+  const enabled = widgets.filter((w) => w.enabled !== false);
+  if (enabled.length === 0) return null;
+
+  return (
+    <>
+      {enabled.map((w, i) => {
+        if (w.type === "h2h") return <H2HWidget key={i} data={w.h2h} />;
+        if (w.type === "rankings") return <RankingsWidget key={i} data={w.rankings} />;
+        if (w.type === "photos") return <PhotosWidget key={i} data={w.photos} />;
+        if (w.type === "sources") return <SourcesWidget key={i} data={w.sources} />;
+        return null;
+      })}
+    </>
+  );
+};
+
 /* ── Article Detail View ── */
 const ArticleDetail = ({ slug, onBack, showLogos = true }) => {
   const [article, setArticle] = useState(null);
@@ -144,7 +357,7 @@ const ArticleDetail = ({ slug, onBack, showLogos = true }) => {
   const [originalArticle, setOriginalArticle] = useState(null);
 
   useEffect(() => {
-    const fetch = async () => {
+    const loadArticle = async () => {
       try {
         const res = await getArticleBySlug(slug);
         const art = res.data?.data?.article || null;
@@ -155,7 +368,7 @@ const ArticleDetail = ({ slug, onBack, showLogos = true }) => {
       }
       setLoading(false);
     };
-    fetch();
+    loadArticle();
     setSelectedLang("en");
   }, [slug]);
 
@@ -341,6 +554,9 @@ const ArticleDetail = ({ slug, onBack, showLogos = true }) => {
         </div>
       )}
 
+      {/* ── Rich Widgets (H2H, Rankings, Photos, Sources) ── */}
+      <ArticleWidgets widgets={article.widgets} />
+
       {/* Tags */}
       {article.tags?.length > 0 && (
         <div style={{ marginTop: 20, display: "flex", gap: 6, flexWrap: "wrap" }}>
@@ -358,10 +574,12 @@ const ArticleDetail = ({ slug, onBack, showLogos = true }) => {
         </div>
       )}
 
-      {/* AI attribution */}
-      <div style={{ marginTop: 32, padding: "12px 16px", borderRadius: 8, background: "rgba(59,130,246,0.08)", borderLeft: "3px solid #3b82f6", color: "#64748b", fontSize: 12 }}>
-        This SAM Report was generated using real match data and SAM ratings.
-      </div>
+      {/* AI attribution (fallback if no sources widget) */}
+      {(!article.widgets?.some((w) => w.type === "sources" && w.enabled !== false)) && (
+        <div style={{ marginTop: 32, padding: "12px 16px", borderRadius: 8, background: "rgba(59,130,246,0.08)", borderLeft: "3px solid #3b82f6", color: "#64748b", fontSize: 12 }}>
+          This SAM Report was generated using real match data and SAM ratings.
+        </div>
+      )}
     </div>
   );
 };
@@ -487,33 +705,38 @@ const ArticlesLeagueCarousel = ({ league, articles, onArticleClick, showLogos = 
                   boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
                 }}
               >
-                {/* Gradient bg */}
-                <div style={{ position: "absolute", inset: 0, background: gradient }} />
-
-                {/* Team watermark (logos or names) */}
-                <div style={{
-                  position: "absolute",
-                  inset: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 12,
-                  zIndex: 1,
-                  opacity: showLogos ? 0.15 : 0.08,
-                  pointerEvents: "none",
-                }}>
-                  {showLogos && article.homeTeamLogo ? (
-                    <img src={article.homeTeamLogo} alt="" style={{ width: 64, height: 64, objectFit: "contain", filter: "brightness(2) grayscale(0.5)" }} />
-                  ) : (
-                    <span style={{ fontSize: 28, fontWeight: 900, color: "#fff", textTransform: "uppercase" }}>{article.homeTeam}</span>
-                  )}
-                  <span style={{ fontSize: 20, fontWeight: 700, color: "#fff" }}>vs</span>
-                  {showLogos && article.awayTeamLogo ? (
-                    <img src={article.awayTeamLogo} alt="" style={{ width: 64, height: 64, objectFit: "contain", filter: "brightness(2) grayscale(0.5)" }} />
-                  ) : (
-                    <span style={{ fontSize: 28, fontWeight: 900, color: "#fff", textTransform: "uppercase" }}>{article.awayTeam}</span>
-                  )}
-                </div>
+                {/* Cover image or gradient bg */}
+                {article.coverImage ? (
+                  <img src={article.coverImage} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                ) : (
+                  <>
+                    <div style={{ position: "absolute", inset: 0, background: gradient }} />
+                    {/* Team watermark (logos or names) */}
+                    <div style={{
+                      position: "absolute",
+                      inset: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 12,
+                      zIndex: 1,
+                      opacity: showLogos ? 0.15 : 0.08,
+                      pointerEvents: "none",
+                    }}>
+                      {showLogos && article.homeTeamLogo ? (
+                        <img src={article.homeTeamLogo} alt="" style={{ width: 64, height: 64, objectFit: "contain", filter: "brightness(2) grayscale(0.5)" }} />
+                      ) : (
+                        <span style={{ fontSize: 28, fontWeight: 900, color: "#fff", textTransform: "uppercase" }}>{article.homeTeam}</span>
+                      )}
+                      <span style={{ fontSize: 20, fontWeight: 700, color: "#fff" }}>vs</span>
+                      {showLogos && article.awayTeamLogo ? (
+                        <img src={article.awayTeamLogo} alt="" style={{ width: 64, height: 64, objectFit: "contain", filter: "brightness(2) grayscale(0.5)" }} />
+                      ) : (
+                        <span style={{ fontSize: 28, fontWeight: 900, color: "#fff", textTransform: "uppercase" }}>{article.awayTeam}</span>
+                      )}
+                    </div>
+                  </>
+                )}
 
                 {/* Dark overlay */}
                 <div style={{

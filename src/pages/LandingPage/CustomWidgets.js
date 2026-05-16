@@ -1401,13 +1401,24 @@ const LEAGUE_ZONES = {
   'fra.1': { cl: [1, 3], el: [4, 4], rel: [16, 18] },
 }
 
-// Map ESPN league IDs to soccer server leagueKey for API-Football proxy
+// Map ESPN league IDs AND API-Football IDs to soccer server leagueKey
 const ESPN_TO_SOCCER_KEY = {
   'eng.1': 'premier_league',
   'esp.1': 'la_liga',
   'ger.1': 'bundesliga',
   'ita.1': 'serie_a',
   'fra.1': 'ligue_1',
+  // API-Football numeric IDs (when matches come from AF data)
+  39: 'premier_league',
+  140: 'la_liga',
+  78: 'bundesliga',
+  135: 'serie_a',
+  61: 'ligue_1',
+  '39': 'premier_league',
+  '140': 'la_liga',
+  '78': 'bundesliga',
+  '135': 'serie_a',
+  '61': 'ligue_1',
 }
 
 const SOCCER_API_URL = process.env.REACT_APP_SOCCER_API_URL || 'https://soccerbackend.samsports.io'
@@ -1475,14 +1486,15 @@ const StandingsPopup = ({ league, onClose }) => {
         }
       }
 
-      // Fallback: ESPN direct fetch (works for US sports, CORS-blocked for soccer)
+      // Fallback: ESPN via backend proxy (avoids CORS)
       const espnSport = sportType === 'soccer' ? 'soccer' : sportType
-      const url = `https://site.api.espn.com/apis/site/v2/sports/${espnSport}/${league.league}/standings`
+      const BACKEND_URL = process.env.REACT_APP_API_URL || 'https://backend.samsports.io'
+      const url = `${BACKEND_URL}/espn-proxy/${espnSport}/${league.league}/standings`
       let data = null
       try {
         const res = await fetch(url)
         if (res.ok) data = await res.json()
-        else console.warn('[Standings] ESPN returned', res.status, 'for', url)
+        else console.warn('[Standings] ESPN proxy returned', res.status, 'for', url)
       } catch (err) {
         console.warn('[Standings] Failed to fetch standings:', err.message)
       }

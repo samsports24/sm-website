@@ -16,13 +16,12 @@ export const privateAPI = Axios.create({ baseURL: base_url, withCredentials: tru
 export const privateDRAFTAPI = Axios.create({ baseURL: draft_base_url, withCredentials: true })
 
 export const attachToken = async () => {
-  // TODO: Migrate to httpOnly cookies (requires backend cookie support)
-  // httpOnly cookies are sent automatically via withCredentials: true
-  // Fall back to localStorage token for backward compatibility during migration
-  const jwt = localStorage.getItem('token')
-  if (jwt) {
-    privateAPI.defaults.headers.common.Authorization = `Bearer ${jwt}`
-    privateDRAFTAPI.defaults.headers.common.Authorization = `Bearer ${jwt}`
+  // Set Authorization header from localStorage as primary auth method.
+  // httpOnly cookie serves as fallback via withCredentials: true.
+  const token = localStorage.getItem('token')
+  if (token) {
+    privateAPI.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    privateDRAFTAPI.defaults.headers.common['Authorization'] = `Bearer ${token}`
   }
 }
 
@@ -46,14 +45,32 @@ const debouncedNotiCount = () => {
   }, 5000) // 5 seconds, only fires once after all API calls settle
 }
 
-// Inject league & team context headers on every authenticated request
+// Helper to read a cookie value by name
+const getCookie = (name) => {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'))
+  return match ? match[2] : null
+}
+
+// Inject auth token + league & team context on every authenticated request
 privateAPI.interceptors.request.use((config) => {
+  // Always attach Authorization header from localStorage
+  const token = localStorage.getItem('token')
+  if (token) config.headers['Authorization'] = `Bearer ${token}`
+
   if (_switchingLeague) return config
   const state = store?.getState()
   const league = state?.league?.currentLeague?._id || state?.user?.userDetails?.team?.currentLeague?._id
   const team = state?.user?.userDetails?.team?._id
   if (league) config.headers['x-league-id'] = league
   if (team) config.headers['x-team-id'] = team
+
+  // Attach CSRF token for mutation requests
+  const method = (config.method || '').toUpperCase()
+  if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
+    const csrfToken = getCookie('csrf-token')
+    if (csrfToken) config.headers['x-csrf-token'] = csrfToken
+  }
+
   return config
 })
 
@@ -73,10 +90,9 @@ privateAPI.interceptors.response.use(
     return response
   },
   (error) => {
-    // Clear token on 401 (unauthorized/token expired)
+    // Clear session on 401 (cookie expired or invalid)
     if (error?.response?.status === 401) {
-      console.warn('[Auth] 401 received, token expired or invalid, clearing session')
-      localStorage.removeItem('token')
+      console.warn('[Auth] 401 received, cookie expired or invalid, clearing session')
       localStorage.removeItem('userName')
       localStorage.removeItem('userId')
     }
@@ -95,10 +111,9 @@ privateDRAFTAPI.interceptors.response.use(
     return response
   },
   (error) => {
-    // Clear token on 401 (unauthorized/token expired)
+    // Clear session on 401 (cookie expired or invalid)
     if (error?.response?.status === 401) {
-      console.warn('[Auth] 401 received, token expired or invalid, clearing session')
-      localStorage.removeItem('token')
+      console.warn('[Auth] 401 received, cookie expired or invalid, clearing session')
       localStorage.removeItem('userName')
       localStorage.removeItem('userId')
     }

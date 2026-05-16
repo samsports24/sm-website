@@ -50,6 +50,17 @@ const DraftPool = ({ tableScroll }) => {
   const [age, setAge] = useState('')
   const dispatch = useDispatch()
 
+  // Track whether we've done the initial load — only show the built-in
+  // Ant Design loading spinner on the very first fetch.  Subsequent
+  // refetches use a lightweight CSS overlay so the Table's scroll
+  // container is never unmounted / reset to the top.
+  const [initialLoaded, setInitialLoaded] = useState(false)
+  useEffect(() => {
+    if (!initialLoaded && !tableLoading && allPlayers?.players?.length) {
+      setInitialLoaded(true)
+    }
+  }, [tableLoading, allPlayers, initialLoaded])
+
   useEffect(() => {
     if (activeTab == 1)
       getData({
@@ -335,28 +346,28 @@ const DraftPool = ({ tableScroll }) => {
     const offenseStats = [
       ...projCols,
       { width: 55, title: 'P.YRD', dataIndex: 'pyd', key: 'pyd',
-        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.PassingYards?.toFixed(0)),
+        render: (_, obj) => statCell(obj?.stats?.stats?.PassingYards?.toFixed?.(0) ?? obj?.stats?.stats?.PassingYards),
       },
       { width: 45, title: 'P.TD', dataIndex: 'ptd', key: 'ptd',
-        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.PassingTouchdowns),
+        render: (_, obj) => statCell(obj?.stats?.stats?.PassingTouchdowns),
       },
       { width: 50, title: 'TAR', dataIndex: 'tar', key: 'tar',
-        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.ReceivingTargets),
+        render: (_, obj) => statCell(obj?.stats?.stats?.ReceivingTargets),
       },
       { width: 55, title: 'R.YRD', dataIndex: 'ryd', key: 'ryd',
-        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.ReceivingYards),
+        render: (_, obj) => statCell(obj?.stats?.stats?.ReceivingYards),
       },
       { width: 45, title: 'R.TD', dataIndex: 'rtd', key: 'rtd',
-        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.ReceivingTouchdowns),
+        render: (_, obj) => statCell(obj?.stats?.stats?.ReceivingTouchdowns),
       },
       { width: 50, title: 'RSH', dataIndex: 'rsh', key: 'rsh',
-        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.RushingAttempts),
+        render: (_, obj) => statCell(obj?.stats?.stats?.RushingAttempts),
       },
       { width: 55, title: 'RS.YD', dataIndex: 'rsyd', key: 'rsyd',
-        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.RushingYards),
+        render: (_, obj) => statCell(obj?.stats?.stats?.RushingYards),
       },
       { width: 45, title: 'RS.TD', dataIndex: 'rstd', key: 'rstd',
-        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.RushingTouchdowns),
+        render: (_, obj) => statCell(obj?.stats?.stats?.RushingTouchdowns),
       },
     ]
 
@@ -364,25 +375,25 @@ const DraftPool = ({ tableScroll }) => {
     const defenseStats = [
       ...projCols,
       { width: 55, title: 'TKLS', dataIndex: 'tkls', key: 'tkls',
-        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.TotalTackles),
+        render: (_, obj) => statCell(obj?.stats?.stats?.TKLS),
       },
       { width: 50, title: 'SCKS', dataIndex: 'scks', key: 'scks',
-        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.Sacks),
+        render: (_, obj) => statCell(obj?.stats?.stats?.SCKS),
       },
       { width: 50, title: 'QBH', dataIndex: 'qbh', key: 'qbh',
-        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.QuarterbackHits),
+        render: (_, obj) => statCell(obj?.stats?.stats?.QBH),
       },
       { width: 45, title: 'TFL', dataIndex: 'tfl', key: 'tfl',
-        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.TacklesForLoss),
+        render: (_, obj) => statCell(obj?.stats?.stats?.TFL),
       },
       { width: 40, title: 'FF', dataIndex: 'ff', key: 'ff',
-        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.FumblesForced),
+        render: (_, obj) => statCell(obj?.stats?.stats?.FF),
       },
       { width: 45, title: 'INT', dataIndex: 'ints', key: 'ints',
-        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.Interceptions),
+        render: (_, obj) => statCell(obj?.stats?.stats?.INTS),
       },
       { width: 40, title: 'PD', dataIndex: 'pd', key: 'pd',
-        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.PassesDefended),
+        render: (_, obj) => statCell(obj?.stats?.stats?.PD),
       },
       { width: 50, title: 'IDP', dataIndex: 'idp', key: 'idp',
         render: (_, obj) => statCell(obj?.stats?.stats?.IDP),
@@ -393,16 +404,16 @@ const DraftPool = ({ tableScroll }) => {
     const kickerStats = [
       ...projCols,
       { width: 60, title: 'FG MD', dataIndex: 'fgmade', key: 'fgmade',
-        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.FieldGoalsMade),
+        render: (_, obj) => statCell(obj?.stats?.stats?.FieldGoalsMade),
       },
       { width: 65, title: 'FG MIS', dataIndex: 'fgmiss', key: 'fgmiss',
-        render: (_, obj) => statCell(obj?.stats?.stats?.FGMissed?.toFixed(1)),
+        render: (_, obj) => statCell(obj?.stats?.stats?.FGMissed?.toFixed?.(1) ?? obj?.stats?.stats?.FGMissed),
       },
       { width: 55, title: 'PUNTS', dataIndex: 'punts', key: 'punts',
-        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.Punts),
+        render: (_, obj) => statCell(obj?.stats?.stats?.Punts),
       },
       { width: 55, title: 'P i20', dataIndex: 'pi20', key: 'pi20',
-        render: (_, obj) => statCell(obj?.stats?.stats2024?.weeklyStats?.PuntInside20),
+        render: (_, obj) => statCell(obj?.stats?.stats?.PuntInside20),
       },
     ]
 
@@ -414,25 +425,38 @@ const DraftPool = ({ tableScroll }) => {
   }
 
   return (
-    <Table
-      loading={tableLoading}
-      dataSource={allPlayers?.players}
-      columns={getColumns(position)}
-      scroll={tableScroll}
-      bordered={false}
-      rowKey='_id'
-      rowClassName={(_, index) => (index % 2 === 1 ? 'table-row-light' : 'table-row-dark')}
-      pagination={{
-        pageSize: limit,
-        current: page,
-        total: allPlayers?.total,
-        showSizeChanger: false,
-        size: 'default',
-        onChange: (page) => {
-          dispatch(setPage(page))
-        },
-      }}
-    />
+    <div style={{ position: 'relative' }}>
+      {/* After initial load, show a lightweight overlay instead of Ant Design's
+          built-in loading prop so the scroll container is never remounted */}
+      {initialLoaded && tableLoading && (
+        <div style={{
+          position: 'absolute', inset: 0, zIndex: 10,
+          background: 'rgba(0,0,0,0.25)', display: 'flex',
+          alignItems: 'center', justifyContent: 'center', borderRadius: 8,
+        }}>
+          <Spin />
+        </div>
+      )}
+      <Table
+        loading={!initialLoaded && tableLoading}
+        dataSource={allPlayers?.players}
+        columns={getColumns(position)}
+        scroll={tableScroll}
+        bordered={false}
+        rowKey='_id'
+        rowClassName={(_, index) => (index % 2 === 1 ? 'table-row-light' : 'table-row-dark')}
+        pagination={{
+          pageSize: limit,
+          current: page,
+          total: allPlayers?.total,
+          showSizeChanger: false,
+          size: 'default',
+          onChange: (page) => {
+            dispatch(setPage(page))
+          },
+        }}
+      />
+    </div>
   )
 }
 

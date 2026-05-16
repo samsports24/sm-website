@@ -29,6 +29,7 @@ export const SOCCER_LEAGUES = [
 export const SPORT_TABS = [
   { key: 'worldcup', emoji: '🏆', label: 'World Cup 2026', sport: 'soccer', league: null, special: 'worldcup' },
   { key: 'soccer', emoji: '⚽', label: 'Soccer', sport: 'soccer', league: null },
+  { key: 'standings', emoji: '📊', label: 'Standings', sport: null, league: null, special: 'standings' },
   { key: 'nfl', emoji: '🏈', label: 'A.Football', sport: 'football', league: 'nfl' },
   { key: 'nba', emoji: '🏀', label: 'NBA', sport: 'basketball', league: 'nba' },
   { key: 'nhl', emoji: '🏒', label: 'NHL', sport: 'hockey', league: 'nhl' },

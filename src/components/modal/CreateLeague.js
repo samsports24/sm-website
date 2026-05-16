@@ -235,6 +235,7 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
         onCancel={handleCancel}
         closeIcon={false}
         closable={false}
+        maskClosable={false}
         className="cl-modal"
         width={520}
         destroyOnClose
@@ -468,6 +469,7 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
                       size="large"
                       showTime={{ format: 'HH:mm' }}
                       format="MMM D, YYYY h:mm A"
+                      disabledDate={(date) => date && date.isBefore(dayjs().startOf('day'))}
                     />
                   </Form.Item>
                 </>
@@ -484,6 +486,7 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
                   size="large"
                   showTime={{ format: 'HH:mm' }}
                   format="MMM D, YYYY h:mm A"
+                  disabledDate={(date) => date && date.isBefore(dayjs().startOf('day'))}
                 />
               </Form.Item>
             </div>

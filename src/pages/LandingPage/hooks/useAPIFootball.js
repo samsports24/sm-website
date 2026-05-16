@@ -1,25 +1,37 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 
 /* ═══════════════════════════════════════════════════════════
-   API-Football v3 Integration Hook
-   Provides: fixtures, events (key incidents), auto-commentary
-   Docs: https://www.api-football.com/documentation-v3
-   Host: v3.football.api-sports.io
+   API-Football v3 Integration Hook  (v4 — FULLY PROXIED)
+
+   ALL API-Football calls now go through the soccer backend proxy
+   at /api/v1/match-detail/*. The browser NEVER calls
+   v3.football.api-sports.io directly (CORS blocks it).
+
+   Proxy endpoints:
+     GET /api/v1/match-detail/fixtures-by-date?date=...&leagues=...
+     GET /api/v1/match-detail/fixtures-live
+     GET /api/v1/match-detail/:fixtureId   (full match detail)
    ═══════════════════════════════════════════════════════════ */
 
-const API_HOST = 'https://v3.football.api-sports.io'
-const API_KEY = process.env.REACT_APP_API_FOOTBALL_KEY || ''
+const SOCCER_BACKEND_URL = process.env.REACT_APP_SOCCER_API_URL || 'https://soccerbackend.samsports.io'
+const PROXY_BASE = `${SOCCER_BACKEND_URL}/api/v1/match-detail`
 
-const CACHE_TTL = 5 * 60 * 1000 // 5 min cache — reduces API-Football rate limit pressure
-const REFRESH_INTERVAL = 60000 // 60s auto-refresh (was 30s — reduced to prevent page freeze)
+const CACHE_TTL = 3 * 60 * 1000 // 3 min client-side cache
+const REFRESH_INTERVAL = 60000  // 60s auto-refresh
 
-// Module-level cache
-const apiCache = {}
-let apiFetchFailedUntil = 0 // timestamp: skip fetches until this time (cooldown after network/CORS failure)
-const API_COOLDOWN = 30000 // 30s cooldown after a network failure before retrying
+// Module-level client-side cache
+const clientCache = {}
+function getCached(key) {
+  const c = clientCache[key]
+  if (c && Date.now() - c.ts < CACHE_TTL) return c.data
+  return null
+}
+function setClientCache(key, data) {
+  clientCache[key] = { data, ts: Date.now() }
+}
 
 /* ── League mapping: API-Football league IDs ──
-   type: 'euro-club'  = Aug-May season (season = year season started, e.g. 2025 for 2025-26)
+   type: 'euro-club'  = Aug-May season (season = year season started)
    type: 'calendar'   = Jan-Dec season (season = current year)
    type: 'intl'       = International (season = current year)
    ── */
@@ -65,60 +77,8 @@ const getSeasonYear = (league) => {
   return month <= 7 ? year - 1 : year
 }
 
-/* ── Generic fetcher with caching ── */
-const apiFetch = async (endpoint, params = {}) => {
-  if (!API_KEY) {
-    return null
-  }
-
-  // After a network/CORS failure, wait for cooldown before retrying
-  if (Date.now() < apiFetchFailedUntil) return null
-
-  const qs = new URLSearchParams(params).toString()
-  const url = `${API_HOST}${endpoint}${qs ? '?' + qs : ''}`
-  const now = Date.now()
-
-  // Check cache
-  if (apiCache[url] && now - apiCache[url].ts < CACHE_TTL) {
-    return apiCache[url].data
-  }
-
-  try {
-    const res = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'x-apisports-key': API_KEY,
-      },
-    })
-
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    const json = await res.json()
-
-    if (json.errors && Object.keys(json.errors).length > 0) {
-      console.warn('[API-Football] API errors:', json.errors)
-      return null
-    }
-
-    const data = json.response || []
-    apiCache[url] = { data, ts: now }
-    return data
-  } catch (err) {
-    // Network or CORS failure — back off for cooldown period, then retry
-    if (err.message === 'Failed to fetch') {
-      const wasAlreadyCooling = Date.now() < apiFetchFailedUntil
-      apiFetchFailedUntil = Date.now() + API_COOLDOWN
-      if (!wasAlreadyCooling) {
-        console.warn(`[API-Football] Network/CORS error — pausing requests for ${API_COOLDOWN / 1000}s before retrying.`)
-      }
-    } else {
-      console.warn(`[API-Football] Fetch error ${endpoint}:`, err.message)
-    }
-    return null
-  }
-}
-
 /* ═══════════════════════════════════════════════════════════
-   Fixture Normalizer, Converts API-Football format to
+   Fixture Normalizer — Converts API-Football format to
    ESPN-compatible shape so existing MatchCard + SportPanel
    can render without changes
    ═══════════════════════════════════════════════════════════ */
@@ -128,7 +88,6 @@ const normalizeFixture = (f) => {
   const goals = f.goals || {}
   const status = f.fixture?.status || {}
 
-  // Map API-Football status to our state system
   let state = 'scheduled'
   let label = ''
   const short = (status.short || '').toUpperCase()
@@ -153,7 +112,7 @@ const normalizeFixture = (f) => {
 
   return {
     id: `af-${f.fixture?.id}`,
-    _afId: f.fixture?.id, // Keep original ID for event/detail fetching
+    _afId: f.fixture?.id,
     date: f.fixture?.date,
     competitions: [
       {
@@ -188,88 +147,84 @@ const normalizeFixture = (f) => {
         },
       },
     ],
-    // Attach status info for getStatus() compatibility
     status: { type: { state, shortDetail: label } },
     _status: { state, label },
   }
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Hook: useSoccerFixtures
-   Fetches all soccer fixtures across configured leagues
-   for a given date. Outputs same shape as useSoccerScoreboards.
+   Hook: useSoccerFixtures  (v4 — proxied)
+   Fetches all soccer fixtures via backend proxy in 2 batch calls
+   instead of 20+ individual browser→API-Football calls.
    ═══════════════════════════════════════════════════════════ */
 export const useSoccerFixtures = (selectedDate = undefined, leagues = AF_LEAGUES) => {
-  const disabled = selectedDate === null // null = explicitly disabled
+  const disabled = selectedDate === null
   const [data, setData] = useState({ leagues: [], loading: !disabled, totalMatches: 0, activeLeagues: 0 })
   const intervalRef = useRef(null)
 
-  // Prioritize top 5 leagues so they load first (users see matches in <3s)
-  const PRIORITY_IDS = new Set([39, 140, 78, 135, 61, 2, 3]) // PL, La Liga, Bundesliga, Serie A, Ligue 1, CL, EL
+  const PRIORITY_IDS = new Set([39, 140, 78, 135, 61, 2, 3])
   const priorityLeagues = leagues.filter(lg => PRIORITY_IDS.has(lg.id))
   const otherLeagues = leagues.filter(lg => !PRIORITY_IDS.has(lg.id))
-  const orderedLeagues = [...priorityLeagues, ...otherLeagues]
 
   const fetchAll = useCallback(async () => {
     if (disabled) return
     const d = selectedDate || new Date()
     const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 
-    const allResults = []
+    // Build league param: "leagueId:season,leagueId:season,..."
+    const buildLeagueParam = (lgList) =>
+      lgList.map(lg => `${lg.id}:${getSeasonYear(lg)}`).join(',')
 
-    // Helper to fetch one league
-    const fetchLeague = async (lg) => {
-      const season = getSeasonYear(lg)
-      let fixtures = await apiFetch('/fixtures', {
-        league: lg.id,
-        season,
-        date: dateStr,
-      })
-      // For international competitions, try previous year if no results
-      if ((!fixtures || fixtures.length === 0) && lg.type === 'intl') {
-        fixtures = await apiFetch('/fixtures', {
-          league: lg.id,
-          season: season - 1,
-          date: dateStr,
-        })
+    // Helper: fetch a batch of leagues from proxy, return per-league results
+    const fetchBatch = async (lgList) => {
+      const leagueParam = buildLeagueParam(lgList)
+      const cacheKey = `fix_${dateStr}_${leagueParam}`
+      const cached = getCached(cacheKey)
+
+      let leagueResults
+      if (cached) {
+        leagueResults = cached.leagues || []
+      } else {
+        try {
+          const res = await fetch(`${PROXY_BASE}/fixtures-by-date?date=${dateStr}&leagues=${encodeURIComponent(leagueParam)}`)
+          if (!res.ok) throw new Error(`HTTP ${res.status}`)
+          const json = await res.json()
+          leagueResults = json.data?.leagues || []
+          setClientCache(cacheKey, { leagues: leagueResults })
+        } catch (err) {
+          console.warn('[Fixtures Proxy] Error:', err.message)
+          leagueResults = []
+        }
       }
-      return { lg, events: (fixtures || []).map(normalizeFixture) }
+
+      // Map proxy results back to per-league format
+      const byId = {}
+      for (const lr of leagueResults) {
+        byId[lr.leagueId] = lr.fixtures || []
+      }
+
+      return lgList.map(lg => ({
+        lg,
+        events: (byId[lg.id] || []).map(normalizeFixture),
+      }))
     }
 
-    // ── PHASE 1: Priority leagues (top 5 + CL/EL) — fetch all at once ──
-    // These ~7 calls fire in parallel → results in ~1-2 seconds
-    const priorityResults = await Promise.allSettled(priorityLeagues.map(fetchLeague))
-    priorityResults.forEach(r => {
-      allResults.push(r.status === 'fulfilled' ? r.value : { lg: priorityLeagues[0], events: [] })
-    })
+    // ── PHASE 1: Priority leagues (1 batch call) ──
+    const priorityResults = await fetchBatch(priorityLeagues)
+    const allResults = [...priorityResults]
 
-    // Show priority leagues immediately — don't wait for the rest
     const pTotal = allResults.reduce((s, r) => s + r.events.length, 0)
     const pActive = allResults.filter(r => r.events.length > 0).length
-    if (pTotal > 0) {
-      setData({ leagues: [...allResults], loading: false, totalMatches: pTotal, activeLeagues: pActive })
-    } else {
-      setData(prev => ({ ...prev, loading: false }))
-    }
+    setData({ leagues: [...allResults], loading: false, totalMatches: pTotal, activeLeagues: pActive })
 
-    // ── PHASE 2: Remaining leagues in background batches ──
-    const BATCH_SIZE = 6
-    for (let i = 0; i < otherLeagues.length; i += BATCH_SIZE) {
-      const batch = otherLeagues.slice(i, i + BATCH_SIZE)
-      const batchResults = await Promise.allSettled(batch.map(fetchLeague))
-      batchResults.forEach(r => {
-        allResults.push(r.status === 'fulfilled' ? r.value : { lg: batch[0], events: [] })
-      })
+    // ── PHASE 2: Remaining leagues (1 batch call) ──
+    if (otherLeagues.length > 0) {
+      const otherResults = await fetchBatch(otherLeagues)
+      allResults.push(...otherResults)
 
-      // Update UI after each batch so new leagues appear progressively
       const total = allResults.reduce((s, r) => s + r.events.length, 0)
       const active = allResults.filter(r => r.events.length > 0).length
       setData({ leagues: [...allResults], loading: false, totalMatches: total, activeLeagues: active })
-
-      // Minimal delay between batches to respect rate limits
-      if (i + BATCH_SIZE < otherLeagues.length) {
-        await new Promise((r) => setTimeout(r, 50))
-      }
     }
   }, [selectedDate, leagues, disabled])
 
@@ -284,8 +239,7 @@ export const useSoccerFixtures = (selectedDate = undefined, leagues = AF_LEAGUES
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Hook: useFixtureLive
-   Fetches currently live fixtures across all leagues.
+   Hook: useLiveFixtures  (v4 — proxied)
    ═══════════════════════════════════════════════════════════ */
 export const useLiveFixtures = () => {
   const [fixtures, setFixtures] = useState([])
@@ -293,15 +247,28 @@ export const useLiveFixtures = () => {
 
   useEffect(() => {
     const fetchLive = async () => {
-      const data = await apiFetch('/fixtures', { live: 'all' })
-      if (data) {
+      try {
+        const cached = getCached('live_fixtures')
+        if (cached) {
+          setFixtures(cached.map(normalizeFixture))
+          setLoading(false)
+          return
+        }
+
+        const res = await fetch(`${PROXY_BASE}/fixtures-live`)
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        const json = await res.json()
+        const data = json.data || []
+        setClientCache('live_fixtures', data)
         setFixtures(data.map(normalizeFixture))
+      } catch (err) {
+        console.warn('[Live Fixtures Proxy] Error:', err.message)
       }
       setLoading(false)
     }
 
     fetchLive()
-    const interval = setInterval(fetchLive, 60000) // 60s for live (was 15s)
+    const interval = setInterval(fetchLive, 60000)
     return () => clearInterval(interval)
   }, [])
 
@@ -309,44 +276,33 @@ export const useLiveFixtures = () => {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Fetch: getFixtureEvents
-   Returns key incidents for a specific match
-   (goals, cards, substitutions, VAR)
+   Standalone fetchers (kept for backward compatibility)
+   These are no longer called by the main hooks but other
+   components may import them directly.
    ═══════════════════════════════════════════════════════════ */
 export const getFixtureEvents = async (fixtureId) => {
   if (!fixtureId) return []
-  const data = await apiFetch('/fixtures/events', { fixture: fixtureId })
-  return data || []
+  // Use the full match detail proxy (events are included)
+  const detail = await fetchFromProxy(fixtureId)
+  return detail?.events || []
 }
 
-/* ═══════════════════════════════════════════════════════════
-   Fetch: getFixtureLineups
-   Returns starting XIs, formations, coaches
-   ═══════════════════════════════════════════════════════════ */
 export const getFixtureLineups = async (fixtureId) => {
   if (!fixtureId) return []
-  const data = await apiFetch('/fixtures/lineups', { fixture: fixtureId })
-  return data || []
+  const detail = await fetchFromProxy(fixtureId)
+  return detail?.lineups || []
 }
 
-/* ═══════════════════════════════════════════════════════════
-   Fetch: getFixtureStatistics
-   Returns match stats (possession, shots, corners, etc.)
-   ═══════════════════════════════════════════════════════════ */
 export const getFixtureStatistics = async (fixtureId) => {
   if (!fixtureId) return []
-  const data = await apiFetch('/fixtures/statistics', { fixture: fixtureId })
-  return data || []
+  const detail = await fetchFromProxy(fixtureId)
+  return detail?.statistics || []
 }
 
-/* ═══════════════════════════════════════════════════════════
-   Fetch: getFixturePlayers
-   Returns per-player detailed statistics for a fixture
-   ═══════════════════════════════════════════════════════════ */
 export const getFixturePlayers = async (fixtureId) => {
   if (!fixtureId) return []
-  const data = await apiFetch('/fixtures/players', { fixture: fixtureId })
-  return data || []
+  const detail = await fetchFromProxy(fixtureId)
+  return detail?.players || []
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -455,37 +411,42 @@ export const generateCommentary = (events = [], homeTeam = '', awayTeam = '') =>
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Hook: useAFMatchDetail
-   Fetches full match detail: events + stats + lineups
-   for the match drawer.
-
-   OPTIMISED (v2): Progressive loading
-   Phase 1 (instant): fixture header + events → drawer opens
-   Phase 2 (background): stats + lineups + players → tabs fill in
-   Also supports pre-fetching on hover via prefetchMatchDetail()
+   Hook: useAFMatchDetail  (v4 — proxied)
+   Single backend call returns fixture + events + stats +
+   lineups + players, all server-side cached.
    ═══════════════════════════════════════════════════════════ */
 
-// Module-level prefetch cache — survives re-renders
 const _prefetchCache = {}
+const _proxyCache = {}
+const PROXY_CACHE_TTL = 60 * 1000
 
-/**
- * Call this on mouseEnter/touchStart to warm the cache
- * before the user actually clicks. Fire-and-forget.
- */
+const fetchFromProxy = async (fixtureId) => {
+  const cached = _proxyCache[fixtureId]
+  if (cached && Date.now() - cached.ts < PROXY_CACHE_TTL) {
+    return cached.data
+  }
+
+  try {
+    const res = await fetch(`${PROXY_BASE}/${fixtureId}`)
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    const json = await res.json()
+    if (json.success && json.data) {
+      _proxyCache[fixtureId] = { data: json.data, ts: Date.now() }
+      return json.data
+    }
+    return null
+  } catch (err) {
+    console.warn('[MatchDetail] Proxy error:', err.message)
+    return null
+  }
+}
+
 export const prefetchMatchDetail = (eventId) => {
   if (!eventId) return
   const id = String(eventId).replace('af-', '')
   if (!id || _prefetchCache[id]) return
-  _prefetchCache[id] = true // mark started
-
-  // Kick off all 5 fetches — they'll land in apiCache
-  Promise.all([
-    apiFetch('/fixtures', { id }),
-    apiFetch('/fixtures/events', { fixture: id }),
-    apiFetch('/fixtures/statistics', { fixture: id }),
-    apiFetch('/fixtures/lineups', { fixture: id }),
-    apiFetch('/fixtures/players', { fixture: id }),
-  ]).catch(() => {}) // swallow errors — it's just prefetch
+  _prefetchCache[id] = true
+  fetchFromProxy(id).catch(() => {})
 }
 
 export const useAFMatchDetail = (fixtureId) => {
@@ -502,75 +463,54 @@ export const useAFMatchDetail = (fixtureId) => {
     let cancelled = false
 
     const fetchDetail = async () => {
-      // ── PHASE 1: fixture + events (fastest, most important) ──
-      // These two calls give us the score header and match events
-      // which is what the user sees first in the Events tab.
-      const [fixtureData, events] = await Promise.all([
-        apiFetch('/fixtures', { id: fixtureId }),
-        getFixtureEvents(fixtureId),
-      ])
+      const result = await fetchFromProxy(fixtureId)
       if (cancelled) return
 
-      const fixture = fixtureData?.[0] || null
+      if (!result) {
+        setLoading(false)
+        return
+      }
+
+      const fixture = result.fixture || null
+      const events = result.events || []
       const homeTeam = fixture?.teams?.home?.name || ''
       const awayTeam = fixture?.teams?.away?.name || ''
 
-      // Show drawer immediately with events + commentary
       setData({
         fixture,
         events,
-        statistics: null,
-        lineups: null,
-        playerStats: null,
+        statistics: result.statistics || null,
+        lineups: result.lineups || null,
+        playerStats: result.players || null,
         commentary: generateCommentary(events, homeTeam, awayTeam),
       })
-      setLoading(false) // ← Drawer opens NOW (Phase 1 done)
-
-      // ── PHASE 2: stats + lineups + players (background) ──
-      // These fill in the Stats/Lineups tabs silently
-      const [stats, lineups, playerStats] = await Promise.all([
-        getFixtureStatistics(fixtureId),
-        getFixtureLineups(fixtureId),
-        getFixturePlayers(fixtureId),
-      ])
-      if (cancelled) return
-
-      setData(prev => ({
-        ...prev,
-        statistics: stats,
-        lineups,
-        playerStats,
-      }))
+      setLoading(false)
     }
 
     fetchDetail()
 
-    // Auto-refresh only for live matches (45s) — skip for finished/scheduled
+    // Auto-refresh only for live matches (45s)
     const interval = setInterval(async () => {
-      // Check if match is live before refreshing
       const currentStatus = data?.fixture?.fixture?.status?.short || ''
       const isLive = ['1H', '2H', 'HT', 'ET', 'BT', 'P', 'INT'].includes(currentStatus)
-      if (!isLive) return // Don't waste API calls on finished/scheduled matches
+      if (!isLive) return
 
-      const [fixtureData, events, stats, lineups, playerStats] = await Promise.all([
-        apiFetch('/fixtures', { id: fixtureId }),
-        getFixtureEvents(fixtureId),
-        getFixtureStatistics(fixtureId),
-        getFixtureLineups(fixtureId),
-        getFixturePlayers(fixtureId),
-      ])
+      delete _proxyCache[fixtureId]
+      const result = await fetchFromProxy(fixtureId)
       if (cancelled) return
+      if (!result) return
 
-      const fixture = fixtureData?.[0] || null
+      const fixture = result.fixture || null
+      const events = result.events || []
       const homeTeam = fixture?.teams?.home?.name || ''
       const awayTeam = fixture?.teams?.away?.name || ''
 
       setData({
         fixture,
         events,
-        statistics: stats,
-        lineups,
-        playerStats,
+        statistics: result.statistics || null,
+        lineups: result.lineups || null,
+        playerStats: result.players || null,
         commentary: generateCommentary(events, homeTeam, awayTeam),
       })
     }, 45000)
@@ -583,13 +523,9 @@ export const useAFMatchDetail = (fixtureId) => {
 
 /* ═══════════════════════════════════════════════════════════
    Hook: useAPIFootballStandings
-   Fetches real-world league standings via our backend proxy
-   (avoids CORS — server calls API-Football, not the browser).
-   Returns data in the same shape as ESPN standings so
-   StandingsPanel can render it without changes.
+   Already proxied via soccer backend (no change needed).
    ═══════════════════════════════════════════════════════════ */
 
-// Mapping from API-Football league IDs to soccer-server leagueKey format
 const AF_ID_TO_KEY = {
   39: 'premier_league',
   140: 'la_liga',
@@ -600,7 +536,6 @@ const AF_ID_TO_KEY = {
   2: 'champions_league',
 }
 
-// League display names for table headers
 const AF_ID_TO_NAME = {
   39: 'Premier League',
   140: 'La Liga',
@@ -611,10 +546,8 @@ const AF_ID_TO_NAME = {
   2: 'Champions League',
 }
 
-// Soccer server has the working API-Football connection
-const SOCCER_BACKEND_URL = process.env.REACT_APP_SOCCER_API_URL || 'https://soccerbackend.samsports.io'
 const standingsCache = {}
-const STANDINGS_CACHE_TTL = 4 * 60 * 60 * 1000 // 4 hours
+const STANDINGS_CACHE_TTL = 4 * 60 * 60 * 1000
 
 export const useAPIFootballStandings = (leagueId) => {
   const [tables, setTables] = useState([])
@@ -632,7 +565,6 @@ export const useAPIFootballStandings = (leagueId) => {
       return
     }
 
-    // Check client-side cache
     const cached = standingsCache[leagueKey]
     if (cached && Date.now() - cached.ts < STANDINGS_CACHE_TTL) {
       setTables(cached.data)
@@ -648,7 +580,6 @@ export const useAPIFootballStandings = (leagueId) => {
         const json = await res.json()
 
         if (json.success && json.data && json.data.length > 0) {
-          // Transform soccer server format into ESPN-compatible format for StandingsTable
           const now = new Date()
           const year = now.getFullYear()
           const season = now.getMonth() < 7 ? year - 1 : year

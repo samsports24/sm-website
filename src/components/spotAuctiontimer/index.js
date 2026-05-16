@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import './spotauction.css';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react'
+import './spotauction.css'
+import { useSelector } from 'react-redux'
 
 const SpotAuctionTimer = ({ spotAuctionEnd, onTimerFinish }) => {
   const { socket } = useSelector((state) => state.socket)
@@ -9,74 +9,60 @@ const SpotAuctionTimer = ({ spotAuctionEnd, onTimerFinish }) => {
     hours: '00',
     minutes: '00',
     seconds: '00',
-  });
-
-
-
-
-
-
+  })
 
   useEffect(() => {
     const calculateTimeRemaining = () => {
-      if (!spotAuctionEnd) return;
+      if (!spotAuctionEnd) return
 
-      const now = new Date().getTime();
-      const draftStartTime = new Date(spotAuctionEnd).getTime()  
-      const distance = draftStartTime - now;
+      const now = new Date().getTime()
+      const draftStartTime = new Date(spotAuctionEnd).getTime()
+      const distance = draftStartTime - now
 
       if (distance < 0) {
-        setTimeRemaining({
-          days: '00',
-          hours: '00',
-          minutes: '00',
-          seconds: '00',
-        });
-        onTimerFinish(true);
-        return;
+        setTimeRemaining({ days: '00', hours: '00', minutes: '00', seconds: '00' })
+        onTimerFinish(true)
+        return
       }
 
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24))
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000)
 
-      const formatTime = (time) => (time < 10 ? `0${time}` : `${time}`);
+      const fmt = (t) => (t < 10 ? `0${t}` : `${t}`)
+      setTimeRemaining({ days: fmt(days), hours: fmt(hours), minutes: fmt(minutes), seconds: fmt(seconds) })
+      onTimerFinish(false)
+    }
 
-      setTimeRemaining({
-        days: formatTime(days),
-        hours: formatTime(hours),
-        minutes: formatTime(minutes),
-        seconds: formatTime(seconds),
-      });
-
-      onTimerFinish(false);
-    };
-
-    const timer = setInterval(calculateTimeRemaining, 1000);
-    return () => clearInterval(timer);
-  }, [spotAuctionEnd, onTimerFinish]);
+    const timer = setInterval(calculateTimeRemaining, 1000)
+    calculateTimeRemaining()
+    return () => clearInterval(timer)
+  }, [spotAuctionEnd, onTimerFinish])
 
   return (
-    <div className='timemaindiv'>
-      <div className='timeheading'>
-        DAYS
-        <div className='timepara'>{timeRemaining.days}</div>
+    <div className='sat-timer'>
+      <div className='sat-unit'>
+        <span className='sat-value'>{timeRemaining.days}</span>
+        <span className='sat-label'>Days</span>
       </div>
-      <div className='timeheading'>
-        HOURS
-        <div className='timepara'>{timeRemaining.hours}:</div>
+      <span className='sat-colon'>:</span>
+      <div className='sat-unit'>
+        <span className='sat-value'>{timeRemaining.hours}</span>
+        <span className='sat-label'>Hrs</span>
       </div>
-      <div className='timeheading'>
-        MINUTES
-        <div className='timepara'>{timeRemaining.minutes}:</div>
+      <span className='sat-colon'>:</span>
+      <div className='sat-unit'>
+        <span className='sat-value'>{timeRemaining.minutes}</span>
+        <span className='sat-label'>Min</span>
       </div>
-      <div className='timeheading'>
-        SECONDS
-        <div className='timepara'>{timeRemaining.seconds}</div>
+      <span className='sat-colon'>:</span>
+      <div className='sat-unit'>
+        <span className='sat-value'>{timeRemaining.seconds}</span>
+        <span className='sat-label'>Sec</span>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SpotAuctionTimer;
+export default SpotAuctionTimer

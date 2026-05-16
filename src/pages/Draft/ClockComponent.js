@@ -6,8 +6,8 @@ import {
   PauseCircleOutlined,
   PlayCircleOutlined,
 } from '@ant-design/icons'
-import { Tag, Button } from 'antd'
-import { toggleDraftPause } from '../../redux/actions/draftAction'
+import { Tag, Button, notification } from 'antd'
+import { toggleDraftPause, getSmartAutoDraftPick, addPlayerToDraft } from '../../redux/actions/draftAction'
 
 // ── Countdown Hook (same as supplemental/rookie drafts) ──
 const useCountdown = (deadline) => {
@@ -38,6 +38,7 @@ const ClockComponent = () => {
   } = useSelector((state) => state.draft)
   const user = useSelector((state) => state.user)
   const [pauseLoading, setPauseLoading] = useState(false)
+  const [autoPickLoading, setAutoPickLoading] = useState(false)
 
   const isLive = !!currentLeague?.isDraftLive
   const isCompleted = !!currentLeague?.draftCompleted
@@ -63,6 +64,35 @@ const ClockComponent = () => {
     setPauseLoading(true)
     await toggleDraftPause(!isPaused)
     setPauseLoading(false)
+  }
+
+  // Commissioner: auto-pick for the team currently on the clock
+  const handleCommissionerAutoPick = async () => {
+    if (!onTheClock?.team?._id || !draftCounter) return
+    setAutoPickLoading(true)
+    try {
+      const result = await getSmartAutoDraftPick(onTheClock.team._id)
+      if (result?.player?._id) {
+        await addPlayerToDraft({
+          playerId: result.player._id,
+          position: draftCounter?.position,
+          round: draftCounter?.round,
+          remainingTime: 0,
+          teamId: onTheClock.team._id,
+          teamName: onTheClock.team.name,
+        })
+        notification.success({
+          message: `Auto-drafted for ${onTheClock.team.name}`,
+          description: `${result.player.Name} (${result.player.Position})`,
+          duration: 4,
+        })
+      } else {
+        notification.error({ message: 'No available player found for auto-pick', duration: 3 })
+      }
+    } catch (err) {
+      notification.error({ message: err?.response?.data?.message || 'Auto-pick failed', duration: 3 })
+    }
+    setAutoPickLoading(false)
   }
 
   return (
@@ -136,6 +166,25 @@ const ClockComponent = () => {
               <div style={{ color: '#faad14', fontSize: 11, textAlign: 'center', marginTop: 6 }}>
                 Auto-resumes in 5 minutes
               </div>
+            )}
+            {/* Commissioner: Make pick on behalf of team on clock */}
+            {isCommissioner && isLive && onTheClock && !isPaused && (
+              <Button
+                type="default"
+                icon={<ThunderboltOutlined />}
+                onClick={handleCommissionerAutoPick}
+                loading={autoPickLoading}
+                block
+                style={{
+                  marginTop: 8,
+                  background: 'rgba(34,197,94,0.1)',
+                  borderColor: 'rgba(34,197,94,0.3)',
+                  color: '#22C55E',
+                  fontWeight: 600,
+                }}
+              >
+                Auto-Pick for {onTheClock?.team?.abbreviation || onTheClock?.team?.name || 'Team'}
+              </Button>
             )}
           </div>
         </div>

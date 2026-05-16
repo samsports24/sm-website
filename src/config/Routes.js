@@ -17,15 +17,17 @@ const PageTracker = () => {
   return null
 }
 
-// ── Eagerly load critical first-paint pages ──
-import LandingPage from '../pages/LandingPage'
-import Home from '../pages/Home'
+// ── Eagerly load only the 404/fallback page ──
 import ComingSoon from '../pages/CommingSoon'
+
+// ── Lazy-load LandingPage (heavy component with many sub-widgets) ──
+const LandingPage = lazy(() => import('../pages/LandingPage'))
 
 // ── Lazy-load everything else ──
 const Login = lazy(() => import('../pages/Login'))
 const ForgotPassword = lazy(() => import('../pages/ForgotPassword'))
 const Authentication = lazy(() => import('../pages/Authentication'))
+const EmailVerification = lazy(() => import('../components/EmailVerification'))
 const NewSignUp = lazy(() => import('../pages/NewSignUp'))
 const NewHomePage = lazy(() => import('../pages/NewHomePage'))
 const FantasyLeague = lazy(() => import('../pages/FantasyLeague'))
@@ -306,6 +308,7 @@ const Routers = () => {
         <Route path='/sign-up' element={<Navigate to='/select-game' replace />} />
         <Route path='/forgot-password' element={<L><ForgotPassword /></L>} />
         <Route path='/authentication' element={<L><Authentication /></L>} />
+        <Route path='/verify-email' element={<L><EmailVerification /></L>} />
         <Route path='/about' element={<L><Marketing /></L>} />
         <Route path='/products/rivals' element={<L><RivalsPage /></L>} />
         <Route path='/products/cl-fantasy' element={<L><CLFantasyPage /></L>} />
@@ -314,7 +317,7 @@ const Routers = () => {
         <Route path='/products/sam-metric' element={<L><SAMMetricPage /></L>} />
         <Route path='/products/sampoints' element={<L><SamPointsPage /></L>} />
         <Route path='/products/how-it-works' element={<L><HowItWorksPage /></L>} />
-        <Route path='/' element={<LandingPage />} />
+        <Route path='/' element={<L><LandingPage /></L>} />
         <Route path='/articles' element={<L><ArticlesPage /></L>} />
 
         <Route path='/terms' element={<L><TermsOfService /></L>} />
@@ -341,7 +344,7 @@ const Routers = () => {
 
       </Routes>
       </Suspense>
-      {localStorage.getItem('userId') && <Suspense fallback={null}><AICoachWidget /></Suspense>}
+      {localStorage.getItem('userId') && localStorage.getItem('token') && <Suspense fallback={null}><AICoachWidget /></Suspense>}
       <DraftCountdownPopup />
       </React.StrictMode>
     </BrowserRouter>

@@ -8,6 +8,13 @@ import { getPlayerForWeeklyScoring } from '../redux'
 import Header from '../components/Header'
 import PlayerDetailsModal from '../components/modal/PlayerDetailsModal'
 
+// NFL season: Sep–Feb = that year, Mar–Aug = previous year
+const getNflSeason = () => {
+  const now = new Date()
+  const month = now.getMonth() // 0-indexed
+  return month < 8 ? now.getFullYear() - 1 : now.getFullYear()
+}
+
 const PlayerStandingWeekly = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
   const [data, setData] = useState([])
@@ -15,9 +22,10 @@ const PlayerStandingWeekly = () => {
   const [page, setPage] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [year, setYear] = useState(getNflSeason())
 
   const getData = async () => {
-    const res = await getPlayerForWeeklyScoring({ page })
+    const res = await getPlayerForWeeklyScoring({ page, year })
     setTotalCount(res?.total)
     return res?.players
   }
@@ -39,7 +47,7 @@ const PlayerStandingWeekly = () => {
 
       tempWeeks?.map((week) => {
         const filteredObj = item?.weeklyScoring?.filter(
-          (wScore) => Number(wScore?.week) == Number(week),
+          (wScore) => Number(wScore?.week) == Number(week) && Number(wScore?.season) == Number(year),
         )?.[0]
         tempObj = {
           ...tempObj,
@@ -68,7 +76,7 @@ const PlayerStandingWeekly = () => {
 
   useEffect(() => {
     getWeeklyScoring()
-  }, [page])
+  }, [page, year])
 
   const handlePagination = (val) => setPage(val)
 
@@ -80,7 +88,7 @@ const PlayerStandingWeekly = () => {
 
       <section className='squad_card_container transparent player_standing_page'>
         <div className='header'>
-          <h2>PLAYER STANDING WEEKLY</h2>
+          <h2>PLAYER STANDING WEEKLY — {year} Season</h2>
 
           {/* <div className='player_standing_filter_button'>
             {['ALL', 'QB', 'RB', 'WR', 'TE', 'OL', 'PK', 'DT', 'DE', 'LB', 'CB', 'S', 'PN'].map(

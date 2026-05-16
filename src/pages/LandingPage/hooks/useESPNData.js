@@ -1,15 +1,14 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 
-const BASE = 'https://site.api.espn.com/apis/site/v2/sports';
+// ── All ESPN calls go through our backend proxy to avoid CORS ──
+const BACKEND_URL = process.env.REACT_APP_API_URL || 'https://backend.samsports.io'
+const PROXY_BASE = `${BACKEND_URL}/espn-proxy`
+
 const CACHE_TTL = 60000; // 60 seconds
-const REFRESH_INTERVAL = 60000; // 60 seconds (was 20s — reduced to prevent page freeze)
-let espnFetchFailedUntil = 0; // timestamp: skip fetches until this time (cooldown after network/CORS failure)
-const ESPN_COOLDOWN = 10000; // 10s cooldown after a network failure (was 30s)
+const REFRESH_INTERVAL = 60000; // 60 seconds
 
 /**
  * Convert a Date (or date string) to ESPN's YYYYMMDD format
- * @param {Date|string|null} date
- * @returns {string} e.g. '20260313'
  */
 const toESPNDate = (date) => {
   if (!date) return '';
@@ -24,59 +23,57 @@ const toESPNDate = (date) => {
 const espnCache = {};
 
 /**
- * Fetch from ESPN API with caching
- * @param {string} url - The API endpoint URL
- * @returns {Promise<Object|null>} - Parsed JSON or null if error
+ * Fetch from ESPN via our backend proxy — no CORS issues
  */
-export const espnGet = async (url) => {
+export const espnGet = async (sport, league, endpoint, params = {}) => {
+  const qs = new URLSearchParams(params).toString();
+  const url = `${PROXY_BASE}/${sport}/${league}/${endpoint}${qs ? '?' + qs : ''}`;
+  const cacheKey = url;
   const now = Date.now();
 
-  // Check cache first — always return cached data if fresh
-  if (espnCache[url]) {
-    const { data, ts } = espnCache[url];
-    if (now - ts < CACHE_TTL) {
-      return data;
-    }
-  }
-
-  // After a network/CORS failure, return stale cache if available, else null
-  if (Date.now() < espnFetchFailedUntil) {
-    if (espnCache[url]) return espnCache[url].data; // stale cache better than nothing
-    return null;
+  // Check cache
+  if (espnCache[cacheKey]) {
+    const { data, ts } = espnCache[cacheKey];
+    if (now - ts < CACHE_TTL) return data;
   }
 
   try {
     const response = await fetch(url);
     if (!response.ok) {
-      // HTTP errors (400, 404, etc.) — don't trigger global cooldown
-      // just skip this one URL
-      console.warn(`[ESPN] HTTP ${response.status} for ${url.split('/').slice(-2).join('/')}`);
-      return espnCache[url]?.data || null; // return stale cache if available
+      console.warn(`[ESPN Proxy] HTTP ${response.status} for ${sport}/${league}/${endpoint}`);
+      return espnCache[cacheKey]?.data || null;
     }
-
     const data = await response.json();
-    espnCache[url] = { data, ts: now };
+    espnCache[cacheKey] = { data, ts: now };
     return data;
   } catch (error) {
-    // Only trigger global cooldown on true network/CORS failures
-    if (error.message === 'Failed to fetch') {
-      const wasAlreadyCooling = Date.now() < espnFetchFailedUntil;
-      espnFetchFailedUntil = Date.now() + ESPN_COOLDOWN;
-      if (!wasAlreadyCooling) {
-        console.warn(`[ESPN] Network/CORS error — pausing requests for ${ESPN_COOLDOWN / 1000}s before retrying.`);
-      }
-    } else {
-      console.warn(`[ESPN] Fetch error:`, error.message);
-    }
-    return espnCache[url]?.data || null; // return stale cache if available
+    console.warn(`[ESPN Proxy] Fetch error:`, error.message);
+    return espnCache[cacheKey]?.data || null;
+  }
+};
+
+/**
+ * Batch fetch multiple ESPN endpoints in a single request
+ */
+const espnBatch = async (urlPaths) => {
+  const url = `${PROXY_BASE}/batch`;
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ urls: urlPaths }),
+    });
+    if (!response.ok) return null;
+    const { results } = await response.json();
+    return results; // [{ url, data, error }, ...]
+  } catch (error) {
+    console.warn('[ESPN Proxy] Batch error:', error.message);
+    return null;
   }
 };
 
 /**
  * Custom hook to fetch ESPN scoreboard data
- * @param {string} sport - Sport identifier (e.g., 'soccer', 'football')
- * @param {string} league - League identifier (e.g., 'eng.1', 'nfl')
- * @returns {Object} - { events, loading, error, lastUpdated }
  */
 export const useESPNScoreboard = (sport, league, selectedDate = null) => {
   const [events, setEvents] = useState([]);
@@ -89,9 +86,8 @@ export const useESPNScoreboard = (sport, league, selectedDate = null) => {
     if (!sport || !league) return;
 
     setLoading(true);
-    const dateParam = selectedDate ? `?dates=${toESPNDate(selectedDate)}` : '';
-    const url = `${BASE}/${sport}/${league}/scoreboard${dateParam}`;
-    const data = await espnGet(url);
+    const params = selectedDate ? { dates: toESPNDate(selectedDate) } : {};
+    const data = await espnGet(sport, league, 'scoreboard', params);
 
     if (data && data.events) {
       setEvents(data.events);
@@ -107,17 +103,11 @@ export const useESPNScoreboard = (sport, league, selectedDate = null) => {
   useEffect(() => {
     if (!sport || !league) return;
 
-    // Initial fetch
     fetchScoreboard();
-
-    // Set up auto-refresh interval
     intervalRef.current = setInterval(fetchScoreboard, REFRESH_INTERVAL);
 
-    // Cleanup
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [sport, league, selectedDate, fetchScoreboard]);
 
@@ -125,8 +115,7 @@ export const useESPNScoreboard = (sport, league, selectedDate = null) => {
 };
 
 /**
- * Custom hook to fetch all soccer league scoreboards
- * @returns {Object} - { leagues, loading, totalMatches, activeLeagues }
+ * Custom hook to fetch all soccer league scoreboards via batch endpoint
  */
 export const useSoccerScoreboards = (selectedDate = null, enabled = true) => {
   const [leagues, setLeagues] = useState([]);
@@ -140,7 +129,6 @@ export const useSoccerScoreboards = (selectedDate = null, enabled = true) => {
 
     const fetchAllLeagues = async () => {
       try {
-        // Import SOCCER_LEAGUES from constants
         let SOCCER_LEAGUES = [];
         try {
           const constantsModule = await import('../constants');
@@ -157,36 +145,27 @@ export const useSoccerScoreboards = (selectedDate = null, enabled = true) => {
         }
 
         setLoading(true);
-
         const dateParam = selectedDate ? `?dates=${toESPNDate(selectedDate)}` : '';
 
-        // Progressive loading: update state as each batch completes
-        // so users see scores within ~1s instead of waiting for all 15+ leagues
-        const BATCH_SIZE = 5;
-        const allResults = [];
-        for (let i = 0; i < SOCCER_LEAGUES.length; i += BATCH_SIZE) {
-          if (cancelled) return;
-          const batch = SOCCER_LEAGUES.slice(i, i + BATCH_SIZE);
-          const batchResults = await Promise.all(
-            batch.map(async (league) => {
-              const data = await espnGet(`${BASE}/soccer/${league.id}/scoreboard${dateParam}`);
-              return { lg: league, events: data?.events || [] };
-            })
-          );
-          allResults.push(...batchResults);
+        // Use batch endpoint — 1 request instead of 15+
+        const urlPaths = SOCCER_LEAGUES.map(
+          (lg) => `soccer/${lg.id}/scoreboard${dateParam}`
+        );
 
-          // Update state after each batch so UI renders progressively
-          if (!cancelled) {
-            const snapshot = [...allResults];
-            const total = snapshot.reduce((sum, l) => sum + l.events.length, 0);
-            const active = snapshot.filter(l => l.events.length > 0).length;
-            // Always update leagues so the UI shows something
-            setLeagues(snapshot);
-            setTotalMatches(total);
-            setActiveLeagues(active);
-            // After first batch, stop showing loading spinner
-            setLoading(false);
-          }
+        const results = await espnBatch(urlPaths);
+
+        if (cancelled) return;
+
+        if (results) {
+          const mapped = results.map((r, idx) => ({
+            lg: SOCCER_LEAGUES[idx],
+            events: r.data?.events || [],
+          }));
+          const total = mapped.reduce((sum, l) => sum + l.events.length, 0);
+          const active = mapped.filter(l => l.events.length > 0).length;
+          setLeagues(mapped);
+          setTotalMatches(total);
+          setActiveLeagues(active);
         }
       } catch (error) {
         console.error('Error fetching soccer scoreboards:', error);
@@ -203,9 +182,7 @@ export const useSoccerScoreboards = (selectedDate = null, enabled = true) => {
 };
 
 /**
- * Custom hook to fetch news from multiple ESPN sources
- * @param {Array} sources - Array of { sport, label, icon, espn } objects
- * @returns {Object} - { articles, loading }
+ * Custom hook to fetch news from multiple ESPN sources via batch
  */
 export const useESPNNews = (sources) => {
   const [articles, setArticles] = useState([]);
@@ -220,19 +197,18 @@ export const useESPNNews = (sources) => {
     const fetchNews = async () => {
       setLoading(true);
       try {
-        const promises = sources.map(src =>
-          espnGet(`https://site.api.espn.com/apis/site/v2/sports/${src.espn}/news?limit=10`)
+        const urlPaths = sources.map(
+          (src) => `${src.espn}/news?limit=10`
         );
+        const results = await espnBatch(urlPaths);
 
-        const results = await Promise.all(promises);
-
-        // Combine and deduplicate by headline
         const combined = [];
         const seenHeadlines = new Set();
 
-        results.forEach((result, idx) => {
-          if (result && result.articles) {
-            result.articles.forEach(article => {
+        if (results) {
+          results.forEach((result, idx) => {
+            const articles = result.data?.articles || [];
+            articles.forEach(article => {
               if (!seenHeadlines.has(article.headline)) {
                 seenHeadlines.add(article.headline);
                 combined.push({
@@ -244,10 +220,9 @@ export const useESPNNews = (sources) => {
                 });
               }
             });
-          }
-        });
+          });
+        }
 
-        // Sort by published date descending
         combined.sort((a, b) => {
           const dateA = new Date(a.published || 0);
           const dateB = new Date(b.published || 0);
@@ -271,9 +246,6 @@ export const useESPNNews = (sources) => {
 
 /**
  * Custom hook to fetch league leaders/top scorers
- * @param {string} sport - Sport identifier
- * @param {string} league - League identifier
- * @returns {Object} - { leaders, loading }
  */
 export const useESPNLeaders = (sport, league) => {
   const [leaders, setLeaders] = useState([]);
@@ -284,11 +256,9 @@ export const useESPNLeaders = (sport, league) => {
 
     const fetchLeaders = async () => {
       setLoading(true);
-      const url = `${BASE}/${sport}/${league}/leaders`;
-      const data = await espnGet(url);
+      const data = await espnGet(sport, league, 'leaders');
 
       if (data && data.leaders) {
-        // Extract goals/top scorers
         const goalLeaders = data.leaders.filter(leader =>
           leader.displayName && leader.displayName.toLowerCase().includes('goal')
         );
@@ -308,9 +278,6 @@ export const useESPNLeaders = (sport, league) => {
 
 /**
  * Custom hook to fetch league standings
- * @param {string} sport - Sport identifier
- * @param {string} league - League identifier
- * @returns {Object} - { tables, loading }
  */
 export const useESPNStandings = (sport, league) => {
   const [tables, setTables] = useState([]);
@@ -321,29 +288,20 @@ export const useESPNStandings = (sport, league) => {
 
     const fetchStandings = async () => {
       setLoading(true);
-      const url = `${BASE}/${sport}/${league}/standings`;
-      const data = await espnGet(url);
+      const data = await espnGet(sport, league, 'standings');
 
       if (data) {
-        // Extract tables via recursive tree walk
         const extractTables = (node) => {
           const result = [];
-
-          if (node.standings) {
-            result.push(...node.standings);
-          }
-
+          if (node.standings) result.push(...node.standings);
           if (node.children && Array.isArray(node.children)) {
             node.children.forEach(child => {
               result.push(...extractTables(child));
             });
           }
-
           return result;
         };
-
-        const extractedTables = extractTables(data);
-        setTables(extractedTables);
+        setTables(extractTables(data));
       } else {
         setTables([]);
       }
@@ -359,10 +317,6 @@ export const useESPNStandings = (sport, league) => {
 
 /**
  * Custom hook to fetch match detail
- * @param {string} eventId - The event/match ID
- * @param {string} sport - Sport identifier
- * @param {string} league - League identifier
- * @returns {Object} - { data, loading }
  */
 export const useMatchDetail = (eventId, sport, league, enabled = true) => {
   const [data, setData] = useState(null);
@@ -379,16 +333,11 @@ export const useMatchDetail = (eventId, sport, league, enabled = true) => {
     const fetchDetail = async () => {
       setLoading(true);
       setError(null);
-      const url = `${BASE}/${sport}/${league}/summary?event=${eventId}`;
-      // Direct fetch — bypass espnGet cooldown so match clicks are never blocked
-      try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const result = await response.json();
+      const result = await espnGet(sport, league, 'summary', { event: eventId });
+      if (result) {
         setData(result);
-      } catch (err) {
-        console.warn('[MatchDetail] Fetch error:', err.message);
-        setError(err.message);
+      } else {
+        setError('Failed to fetch match detail');
         setData(null);
       }
       setLoading(false);
@@ -401,11 +350,7 @@ export const useMatchDetail = (eventId, sport, league, enabled = true) => {
 };
 
 /**
- * Generic multi-league scoreboard hook (works for tennis, or any sport with sub-leagues)
- * @param {string} sport - Sport identifier (e.g., 'tennis')
- * @param {Array} leagues - Array of { id, name, emoji, ... } objects
- * @param {Date|string|null} selectedDate
- * @returns {Object} - { leagues, loading, totalMatches, activeLeagues }
+ * Generic multi-league scoreboard hook via batch
  */
 export const useMultiLeagueScoreboards = (sport, leagues, selectedDate = null) => {
   const [leagueResults, setLeagueResults] = useState([]);
@@ -426,32 +371,26 @@ export const useMultiLeagueScoreboards = (sport, leagues, selectedDate = null) =
         setLoading(true);
         const dateParam = selectedDate ? `?dates=${toESPNDate(selectedDate)}` : '';
 
-        // Progressive loading: update state per batch
-        const BATCH_SIZE = 5;
-        const allResults = [];
-        for (let i = 0; i < leagues.length; i += BATCH_SIZE) {
-          if (cancelled) return;
-          const batch = leagues.slice(i, i + BATCH_SIZE);
-          const batchResults = await Promise.all(
-            batch.map(async (league) => {
-              const sportPath = league.sport || sport;
-              const data = await espnGet(`${BASE}/${sportPath}/${league.id}/scoreboard${dateParam}`);
-              return { lg: league, events: data?.events || [] };
-            })
-          );
-          allResults.push(...batchResults);
+        // Batch all leagues in 1 request
+        const urlPaths = leagues.map((lg) => {
+          const sportPath = lg.sport || sport;
+          return `${sportPath}/${lg.id}/scoreboard${dateParam}`;
+        });
 
-          if (!cancelled) {
-            const snapshot = [...allResults];
-            const total = snapshot.reduce((sum, l) => sum + l.events.length, 0);
-            const active = snapshot.filter(l => l.events.length > 0).length;
-            if (total > 0) {
-              setLeagueResults(snapshot);
-              setTotalMatches(total);
-              setActiveLeagues(active);
-              setLoading(false);
-            }
-          }
+        const results = await espnBatch(urlPaths);
+
+        if (cancelled) return;
+
+        if (results) {
+          const mapped = results.map((r, idx) => ({
+            lg: leagues[idx],
+            events: r.data?.events || [],
+          }));
+          const total = mapped.reduce((sum, l) => sum + l.events.length, 0);
+          const active = mapped.filter(l => l.events.length > 0).length;
+          setLeagueResults(mapped);
+          setTotalMatches(total);
+          setActiveLeagues(active);
         }
       } catch (error) {
         console.error(`Error fetching ${sport} scoreboards:`, error);
@@ -471,35 +410,26 @@ export const useMultiLeagueScoreboards = (sport, leagues, selectedDate = null) =
 const scorerCache = {};
 
 /**
- * Fetch scoring plays from ESPN summary endpoint
- * @param {string} eventId - The event/match ID
- * @param {string} sport - Sport identifier
- * @param {string} league - League identifier
- * @returns {Promise<Object>} - { hScorers, aScorers } arrays
+ * Fetch scoring plays via proxy
  */
 export const fetchScorers = async (eventId, sport, league) => {
   const cacheKey = `${eventId}-${sport}-${league}`;
 
-  if (scorerCache[cacheKey]) {
-    return scorerCache[cacheKey];
-  }
+  if (scorerCache[cacheKey]) return scorerCache[cacheKey];
 
   try {
-    const url = `${BASE}/${sport}/${league}/summary?event=${eventId}`;
-    const data = await espnGet(url);
+    const data = await espnGet(sport, league, 'summary', { event: eventId });
 
     if (!data || !data.article) {
       return { hScorers: [], aScorers: [] };
     }
 
-    // Extract scorers from article or boxscore
     const hScorers = [];
     const aScorers = [];
 
     if (data.boxscore && data.boxscore.teams) {
       data.boxscore.teams.forEach((team, idx) => {
         const scorerList = idx === 0 ? hScorers : aScorers;
-
         if (team.players) {
           team.players.forEach(player => {
             if (player.stats && player.stats.goals) {
