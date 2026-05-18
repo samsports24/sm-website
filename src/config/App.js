@@ -5,7 +5,8 @@ import 'antd/dist/reset.css'
 
 import '../styles/style.css'
 import Routes from './Routes'
-import FloatingChat from '../components/FloatingChat'
+// FloatingChat removed – chat notifications now shown in sidebar badge
+// import FloatingChat from '../components/FloatingChat'
 import SamAIChat from '../components/SamAIChat'
 import PasswordChangeModal from '../components/PasswordChangeModal'
 import { light, dark } from './theme'
@@ -119,7 +120,7 @@ const App = () => {
       <button style={{marginLeft: '10px', padding: '5px 10px', cursor: 'pointer', position: 'fixed', right: '10px'}} onClick={handleExit}>Exit</button>
     </div>}
     <Routes />
-    <FloatingChat />
+    {/* FloatingChat removed – notifications handled by sidebar badge */}
     <SamAIChat />
     <PasswordChangeModal />
     </div>
