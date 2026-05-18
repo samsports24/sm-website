@@ -263,37 +263,80 @@ const RankingsWidget = ({ data }) => {
   );
 };
 
-const PhotosWidget = ({ data }) => {
+// Club color map for gradient badges (primary, secondary)
+const CLUB_COLORS = {
+  "manchester city":["#6CABDD","#1C2C5B"],"manchester united":["#DA291C","#FBE122"],"liverpool":["#C8102E","#00B2A9"],
+  "arsenal":["#EF0107","#063672"],"chelsea":["#034694","#DBA111"],"tottenham":["#132257","#FFFFFF"],
+  "newcastle":["#241F20","#FFFFFF"],"aston villa":["#670E36","#95BFE5"],"brighton":["#0057B8","#FFFFFF"],
+  "west ham":["#7A263A","#1BB1E7"],"nottingham forest":["#DD0000","#FFFFFF"],"bournemouth":["#DA291C","#000000"],
+  "fulham":["#000000","#CC0000"],"wolves":["#FDB913","#231F20"],"crystal palace":["#1B458F","#C4122E"],
+  "everton":["#003399","#FFFFFF"],"brentford":["#E30613","#FBB800"],"leicester":["#003090","#FDBE11"],
+  "ipswich":["#0033A0","#FFFFFF"],"southampton":["#D71920","#FFFFFF"],
+  "real madrid":["#FEBE10","#00529F"],"barcelona":["#A50044","#004D98"],"atletico madrid":["#CB3524","#272E61"],
+  "bayern munich":["#DC052D","#0066B2"],"borussia dortmund":["#FDE100","#000000"],
+  "paris saint-germain":["#004170","#DA291C"],"psg":["#004170","#DA291C"],
+  "juventus":["#000000","#FFFFFF"],"inter milan":["#009CDE","#000000"],"ac milan":["#FB090B","#000000"],
+  "napoli":["#12A0D7","#FFFFFF"],"roma":["#8E1F2F","#F0BC42"],"lazio":["#87D8F7","#FFFFFF"],
+  "benfica":["#FF0000","#FFFFFF"],"porto":["#003893","#FFFFFF"],"sporting cp":["#008848","#FFFFFF"],
+};
+const getClubGradient = (teamName) => {
+  const key = (teamName || "").toLowerCase().trim();
+  for (const [club, colors] of Object.entries(CLUB_COLORS)) {
+    if (key.includes(club) || club.includes(key)) return colors;
+  }
+  return ["#4f46e5", "#7c3aed"]; // default purple gradient
+};
+
+const PhotosWidget = ({ data, displayMode = "photos" }) => {
   if (!data?.length) return null;
   return (
     <div style={widgetCard}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
         <span style={{ fontSize: 18 }}>&#128248;</span>
-        <h3 style={{ color: "#fff", fontSize: 16, margin: 0, fontWeight: 700 }}>Photos</h3>
+        <h3 style={{ color: "#fff", fontSize: 16, margin: 0, fontWeight: 700 }}>
+          {displayMode === "gradient" ? "Players" : "Photos"}
+        </h3>
       </div>
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-        {data.map((photo, i) => (
-          <div key={i} style={{ textAlign: "center" }}>
-            <img
-              src={photo.url}
-              alt={photo.caption || ""}
-              style={{
-                width: photo.type === "team_logo" ? 56 : 72,
-                height: photo.type === "team_logo" ? 56 : 72,
-                objectFit: "contain",
-                borderRadius: photo.type === "player" ? "50%" : 8,
-                background: "rgba(71,85,105,0.2)",
-                padding: 4,
-              }}
-              onError={(e) => { e.target.style.display = "none"; }}
-            />
-            {photo.caption && (
-              <div style={{ color: "#94a3b8", fontSize: 10, marginTop: 4, maxWidth: 80, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {photo.caption}
+        {data.map((photo, i) => {
+          // Team logos always render as images
+          if (photo.type === "team_logo") {
+            return (
+              <div key={i} style={{ textAlign: "center" }}>
+                <img src={photo.url} alt={photo.caption || ""} style={{ width: 56, height: 56, objectFit: "contain", borderRadius: 8, background: "rgba(71,85,105,0.2)", padding: 4 }}
+                  onError={(e) => { e.target.style.display = "none"; }} />
+                {photo.caption && <div style={{ color: "#94a3b8", fontSize: 10, marginTop: 4, maxWidth: 80, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{photo.caption}</div>}
               </div>
-            )}
-          </div>
-        ))}
+            );
+          }
+          // Gradient badge mode for players
+          if (displayMode === "gradient") {
+            const [c1, c2] = getClubGradient(photo.teamName);
+            const initials = (photo.playerName || photo.caption || "?").split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
+            return (
+              <div key={i} style={{ textAlign: "center" }}>
+                <div style={{
+                  width: 72, height: 72, borderRadius: "50%",
+                  background: `linear-gradient(135deg, ${c1}, ${c2})`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  border: `2px solid ${c1}88`,
+                  boxShadow: `0 4px 12px ${c1}44`,
+                }}>
+                  <span style={{ color: "#fff", fontSize: 20, fontWeight: 800, textShadow: "0 1px 3px rgba(0,0,0,0.4)" }}>{initials}</span>
+                </div>
+                {photo.caption && <div style={{ color: "#94a3b8", fontSize: 10, marginTop: 4, maxWidth: 80, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{photo.caption}</div>}
+              </div>
+            );
+          }
+          // Default: photo mode
+          return (
+            <div key={i} style={{ textAlign: "center" }}>
+              <img src={photo.url} alt={photo.caption || ""} style={{ width: 72, height: 72, objectFit: "contain", borderRadius: "50%", background: "rgba(71,85,105,0.2)", padding: 4 }}
+                onError={(e) => { e.target.style.display = "none"; }} />
+              {photo.caption && <div style={{ color: "#94a3b8", fontSize: 10, marginTop: 4, maxWidth: 80, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{photo.caption}</div>}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -340,7 +383,7 @@ const ArticleWidgets = ({ widgets }) => {
       {enabled.map((w, i) => {
         if (w.type === "h2h") return <H2HWidget key={i} data={w.h2h} />;
         if (w.type === "rankings") return <RankingsWidget key={i} data={w.rankings} />;
-        if (w.type === "photos") return <PhotosWidget key={i} data={w.photos} />;
+        if (w.type === "photos") return <PhotosWidget key={i} data={w.photos} displayMode={playerDisplay} />;
         if (w.type === "sources") return <SourcesWidget key={i} data={w.sources} />;
         return null;
       })}
@@ -349,7 +392,7 @@ const ArticleWidgets = ({ widgets }) => {
 };
 
 /* ── Article Detail View ── */
-const ArticleDetail = ({ slug, onBack, showLogos = true }) => {
+const ArticleDetail = ({ slug, onBack, showLogos = true, playerDisplay = "photos" }) => {
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedLang, setSelectedLang] = useState("en");
@@ -838,6 +881,7 @@ const ArticlesPage = () => {
   const [loading, setLoading] = useState(true);
   const [leagueGroups, setLeagueGroups] = useState([]);
   const [showLogos, setShowLogos] = useState(true);
+  const [playerDisplay, setPlayerDisplay] = useState("photos"); // "photos" or "gradient"
 
   const fetchArticles = useCallback(async () => {
     setLoading(true);
@@ -863,6 +907,7 @@ const ArticlesPage = () => {
         const res = await getPlatformSettings();
         const d = res?.data?.data || res?.data || {};
         setShowLogos(d.articleTeamLogosEnabled !== false);
+        if (d.articlePlayerDisplay) setPlayerDisplay(d.articlePlayerDisplay);
       } catch { /* default true */ }
     })();
   }, []);
@@ -887,6 +932,7 @@ const ArticlesPage = () => {
         <ArticleDetail
           slug={selectedSlug}
           showLogos={showLogos}
+          playerDisplay={playerDisplay}
           onBack={() => {
             searchParams.delete("article");
             setSearchParams(searchParams);
