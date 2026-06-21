@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Modal, Button, Input, Form, Avatar, Rate, Select } from 'antd'
 import SamDatePicker from '../SamDatePicker'
 import { createNewLeagueFromDashboard } from '../../redux'
@@ -137,6 +138,7 @@ const CardSelect = ({ options, value, onChange }) => (
 )
 
 const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen, onExternalClose }) => {
+  const navigate = useNavigate()
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
@@ -195,6 +197,8 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
     setLoading(false)
     if (onSuccess) onSuccess()
     handleCancel()
+    // Redirect commissioner to setup page so they configure draft date, rules, etc.
+    navigate('/commissioner')
   }
 
   const handleFile = (file) => {

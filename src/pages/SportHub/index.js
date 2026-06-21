@@ -18,7 +18,7 @@ const PRODUCTS = [
     badge: 'RIVALS', badgeColor: '#10B981', accentColor: '#10B981',
     icon: '⚽', features: ['H2H Matchups', 'Promotion & Relegation', 'SamPoints Rewards'],
     cta: 'Enter Rivals', active: true, group: 'rivals',
-    frontEndUrl: process.env.REACT_APP_SOCCER_URL || 'https://soccer.samsports.io',
+    frontEndUrl: process.env.REACT_APP_SOCCER_URL || 'https://football.samsports.io',
     rivalsPath: '/rivals',
   },
   {
@@ -44,7 +44,7 @@ const PRODUCTS = [
     icon: '⚽', features: ['Live Scoring', 'Auction Drafts', 'Loan & Buyout Market'],
     cta: 'Play Soccer', active: true, group: 'fantasy',
     sportField: 'soccer',
-    frontEndUrl: process.env.REACT_APP_SOCCER_URL || 'https://soccer.samsports.io',
+    frontEndUrl: process.env.REACT_APP_SOCCER_URL || 'https://football.samsports.io',
     dashboardPath: '/dashboard',
   },
   {
@@ -126,7 +126,7 @@ const SportHub = () => {
 
   const goToFullEmpire = () => {
     const token = localStorage.getItem('token')
-    const soccerUrl = process.env.REACT_APP_SOCCER_URL || 'https://soccer.samsports.io'
+    const soccerUrl = process.env.REACT_APP_SOCCER_URL || 'https://football.samsports.io'
     window.location.href = `${soccerUrl}/war-room?token=${token}`
   }
 

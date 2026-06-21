@@ -1848,11 +1848,11 @@ const TopPerformersPopup = ({ league, sport, onClose }) => {
           borderBottom: `1px solid ${T.border}`, background: 'rgba(255,255,255,0.02)',
           position: 'sticky', top: 0, zIndex: 1,
         }}>
-          <span style={{ fontFamily: T.fontCd, fontSize: 9, fontWeight: 700, color: T.textDim, width: 26, textAlign: 'center' }}>#</span>
-          <span style={{ fontFamily: T.fontCd, fontSize: 9, fontWeight: 700, color: T.textDim, flex: 1, paddingLeft: 6 }}>PLAYER</span>
-          <span style={{ fontFamily: T.fontCd, fontSize: 9, fontWeight: 700, color: T.textDim, width: 36, textAlign: 'center' }}>POS</span>
+          <span style={{ fontFamily: T.fontCd, fontSize: 10, fontWeight: 700, color: T.textDim, width: 28, textAlign: 'center', letterSpacing: 0.5 }}>#</span>
+          <span style={{ fontFamily: T.fontCd, fontSize: 10, fontWeight: 700, color: T.textDim, flex: 1, paddingLeft: 8, letterSpacing: 0.5 }}>PLAYER</span>
+          <span style={{ fontFamily: T.fontCd, fontSize: 10, fontWeight: 700, color: T.textDim, width: 40, textAlign: 'center', letterSpacing: 0.5 }}>POS</span>
           {players[0] && ['stat1Label', 'stat2Label', 'stat3Label', 'stat4Label'].map((key, i) => (
-            <span key={i} style={{ fontFamily: T.fontCd, fontSize: 9, fontWeight: 700, color: T.textDim, width: 48, textAlign: 'center' }}>
+            <span key={i} style={{ fontFamily: T.fontCd, fontSize: 10, fontWeight: 700, color: T.textDim, width: 52, textAlign: 'center', letterSpacing: 0.5 }}>
               {players[0][key]}
             </span>
           ))}
@@ -1885,7 +1885,7 @@ const TopPerformersPopup = ({ league, sport, onClose }) => {
               const medalColors = ['#FFD700', '#C0C0C0', '#CD7F32']
               return (
                 <div key={idx} style={{
-                  display: 'flex', alignItems: 'center', padding: '10px 14px',
+                  display: 'flex', alignItems: 'center', padding: '12px 16px',
                   borderBottom: `1px solid ${T.borderLight}`,
                   borderLeft: isTop3 ? `3px solid ${medalColors[idx]}` : '3px solid transparent',
                   transition: 'background 0.12s',
@@ -1895,34 +1895,34 @@ const TopPerformersPopup = ({ league, sport, onClose }) => {
                 >
                   {/* Rank */}
                   <span style={{
-                    fontFamily: T.fontCd, fontSize: 12, fontWeight: 800,
+                    fontFamily: T.fontCd, fontSize: 13, fontWeight: 800,
                     color: isTop3 ? medalColors[idx] : T.textDim,
-                    width: 26, textAlign: 'center',
+                    width: 28, textAlign: 'center',
                   }}>{p.rank}</span>
 
                   {/* Photo + Name + Team */}
-                  <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 2, minWidth: 0 }}>
+                  <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, paddingLeft: 4, minWidth: 0 }}>
                     {p.photo ? (
                       <img src={p.photo} alt="" style={{
-                        width: 30, height: 30, borderRadius: '50%', objectFit: 'cover',
+                        width: 34, height: 34, borderRadius: '50%', objectFit: 'cover',
                         background: T.surface2, border: `1px solid ${T.borderLight}`,
+                        flexShrink: 0,
                       }} onError={(e) => { e.target.style.display = 'none' }} />
                     ) : (
                       <div style={{
-                        width: 30, height: 30, borderRadius: '50%',
+                        width: 34, height: 34, borderRadius: '50%',
                         background: T.surface2, border: `1px solid ${T.borderLight}`,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontFamily: T.fontCd, fontSize: 10, color: T.textDim,
+                        fontFamily: T.fontCd, fontSize: 11, color: T.textDim, flexShrink: 0,
                       }}>{(p.name || '?')[0]}</div>
                     )}
-                    <div style={{ minWidth: 0 }}>
+                    <div style={{ minWidth: 0, flex: 1 }}>
                       <div style={{
-                        fontFamily: T.fontBd, fontSize: 12, fontWeight: 700, color: T.white,
+                        fontFamily: T.fontBd, fontSize: 13, fontWeight: 700, color: T.white,
                         whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-                        maxWidth: 160,
                       }}>{p.name}</div>
                       <div style={{
-                        fontFamily: T.fontCd, fontSize: 9, color: T.textDim,
+                        fontFamily: T.fontCd, fontSize: 10, color: T.textDim,
                       }}>{p.team}</div>
                     </div>
                   </div>
@@ -1930,17 +1930,17 @@ const TopPerformersPopup = ({ league, sport, onClose }) => {
                   {/* Position */}
                   <span style={{
                     fontFamily: T.fontCd, fontSize: 10, fontWeight: 700,
-                    color: T.accent, width: 36, textAlign: 'center',
-                    background: 'rgba(34,197,94,0.1)', borderRadius: 4, padding: '2px 0',
+                    color: T.accent, width: 40, textAlign: 'center',
+                    background: 'rgba(34,197,94,0.1)', borderRadius: 4, padding: '3px 0',
                   }}>{p.position}</span>
 
                   {/* Stats */}
                   {[p.stat1, p.stat2, p.stat3, p.stat4].map((val, i) => (
                     <span key={i} style={{
-                      fontFamily: T.fontCd, fontSize: 11,
+                      fontFamily: T.fontCd, fontSize: 12,
                       fontWeight: i === 0 ? 800 : 600,
                       color: i === 0 ? T.accent : T.white,
-                      width: 48, textAlign: 'center',
+                      width: 52, textAlign: 'center',
                     }}>{typeof val === 'number' ? (val % 1 === 0 ? val : val.toFixed(1)) : val}</span>
                   ))}
                 </div>

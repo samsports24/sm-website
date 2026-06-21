@@ -147,8 +147,9 @@ const SamAIChat = () => {
     setShowHistory(false)
   }
 
-  // Don't render for unauthenticated users
+  // Don't render for unauthenticated users or on partner dashboard
   if (!isAuthenticated) return null
+  if (window.location.pathname.startsWith('/partner-dashboard')) return null
 
   return (
     <div className="sam-ai-container">

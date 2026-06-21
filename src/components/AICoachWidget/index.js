@@ -7,7 +7,7 @@ import { attachToken, privateAPI } from '../../config/constants'
 import './styles.css'
 
 // ═══ Public routes where AI Coaches should NOT appear ═══
-const PUBLIC_ROUTES = ['/', '/login', '/sign-up', '/signup', '/forgot-password', '/authentication', '/select-game', '/select-league', '/proleague', '/create-join-league', '/onboarding', '/hub', '/terms-condition', '/success', '/error']
+const PUBLIC_ROUTES = ['/', '/login', '/sign-up', '/signup', '/forgot-password', '/authentication', '/select-game', '/select-league', '/proleague', '/create-join-league', '/onboarding', '/hub', '/terms-condition', '/success', '/error', '/partner-dashboard']
 
 const antIcon = <LoadingOutlined style={{ fontSize: 20, color: '#f97316' }} spin />
 
@@ -352,8 +352,8 @@ const AICoachWidget = () => {
 
   const latestRec = recommendations[0]
 
-  // ═══ Hide AI Coaches on public/landing pages, only available inside the platform ═══
-  const isPublicRoute = PUBLIC_ROUTES.includes(location.pathname)
+  // ═══ Hide AI Coaches on public/landing pages and partner dashboard ═══
+  const isPublicRoute = PUBLIC_ROUTES.includes(location.pathname) || location.pathname.startsWith('/partner-dashboard')
   if (isPublicRoute) return null
 
   return (

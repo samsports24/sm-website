@@ -373,7 +373,12 @@ const SourcesWidget = ({ data }) => {
   );
 };
 
-const ArticleWidgets = ({ widgets }) => {
+const ArticleWidgets = ({ widgets, playerDisplay = "photos" }) => {
+  // `playerDisplay` used to be referenced here without being declared as a
+  // prop — that caused a ReferenceError the moment any article contained a
+  // PhotosWidget (e.g. the WC power-rankings piece), which the ErrorBoundary
+  // surfaced as "Something went wrong". It's now a proper prop with a sane
+  // default, and `ArticleDetail` passes its own setting through.
   if (!widgets?.length) return null;
   const enabled = widgets.filter((w) => w.enabled !== false);
   if (enabled.length === 0) return null;
@@ -598,7 +603,7 @@ const ArticleDetail = ({ slug, onBack, showLogos = true, playerDisplay = "photos
       )}
 
       {/* ── Rich Widgets (H2H, Rankings, Photos, Sources) ── */}
-      <ArticleWidgets widgets={article.widgets} />
+      <ArticleWidgets widgets={article.widgets} playerDisplay={playerDisplay} />
 
       {/* Tags */}
       {article.tags?.length > 0 && (

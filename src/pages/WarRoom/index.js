@@ -147,29 +147,43 @@ const WarRoom = () => {
         })
         const soccerData = await soccerRes.json()
         const rawTeams = soccerData?.data || []
-        soccerTeams = (Array.isArray(rawTeams) ? rawTeams : []).map((ttm) => ({
-          ...ttm,
-          league: { ...ttm.league, sport: 'soccer' },
-        }))
+        soccerTeams = (Array.isArray(rawTeams) ? rawTeams : [])
       } catch (soccerErr) {
         console.warn('Soccer teams fetch failed:', soccerErr.message)
       }
 
-      // Merge earned balances + annual earnings from cross-sport endpoint
+      // Merge earned balances + the AUTHORITATIVE sport per team from the
+      // cross-sport endpoint (it knows each team's real sport from its own DB).
+      const sportMap = {}
       try {
         const earnedRes = await privateAPI.get('/league/my-teams-all-sports')
         const earnedData = earnedRes?.data?.data || {}
         const earnedMap = {}
         const earningsMap = {}
-        ;(earnedData.nflTeams || []).forEach((ttm) => { earnedMap[String(ttm._id)] = ttm.earnedBalance || 0; earningsMap[String(ttm._id)] = ttm.annualEarnings || 0 })
-        ;(earnedData.soccerTeams || []).forEach((ttm) => { earnedMap[String(ttm._id)] = ttm.earnedBalance || 0; earningsMap[String(ttm._id)] = ttm.annualEarnings || 0 })
+        ;(earnedData.nflTeams || []).forEach((ttm) => { earnedMap[String(ttm._id)] = ttm.earnedBalance || 0; earningsMap[String(ttm._id)] = ttm.annualEarnings || 0; sportMap[String(ttm._id)] = 'nfl' })
+        ;(earnedData.soccerTeams || []).forEach((ttm) => { earnedMap[String(ttm._id)] = ttm.earnedBalance || 0; earningsMap[String(ttm._id)] = ttm.annualEarnings || 0; sportMap[String(ttm._id)] = 'soccer' })
         teams = teams.map((ttm) => ({ ...ttm, earnedBalance: earnedMap[String(ttm._id)] || ttm.earnedBalance || 0, annualEarnings: earningsMap[String(ttm._id)] || ttm.annualEarnings || 0 }))
         soccerTeams = soccerTeams.map((ttm) => ({ ...ttm, earnedBalance: earnedMap[String(ttm._id)] || ttm.earnedBalance || 0, annualEarnings: earningsMap[String(ttm._id)] || ttm.annualEarnings || 0 }))
       } catch (earnedErr) {
         console.warn('Could not fetch earned balances:', earnedErr.message)
       }
 
+      // Combine both sources, set each team's sport from the authoritative map
+      // (falling back to the team's own sport), then de-duplicate by _id.
+      const seenTeam = new Set()
       const allTeams = [...teams, ...soccerTeams]
+        .map((ttm) => {
+          const id = String(ttm._id)
+          const sp = (sportMap[id] || String(ttm.sport || ttm.league?.sport || '').toLowerCase())
+          const norm = sp === 'soccer' ? 'soccer' : 'nfl'
+          return { ...ttm, league: { ...ttm.league, sport: norm } }
+        })
+        .filter((ttm) => {
+          const id = String(ttm._id)
+          if (seenTeam.has(id)) return false
+          seenTeam.add(id)
+          return true
+        })
       setUserTeams(allTeams)
       buildIntelFeed(allTeams)
 
@@ -383,7 +397,7 @@ const WarRoom = () => {
 
   const soccerSiteUrl = () => {
     const authToken = localStorage.getItem('token')
-    const soccerUrl = process.env.REACT_APP_SOCCER_URL || 'https://soccer.samsports.io'
+    const soccerUrl = process.env.REACT_APP_SOCCER_URL || 'https://football.samsports.io'
     return authToken ? `${soccerUrl}?token=${encodeURIComponent(authToken)}` : soccerUrl
   }
 
@@ -391,24 +405,33 @@ const WarRoom = () => {
     <div className="empire-page">
       <OnboardingGuide tabKey="front-office" />
 
-      {/* ══════════════ TICKER STRIP ══════════════ */}
+      {/* ══════════════ LIVE TICKER (moving) ══════════════
+          Bloomberg-style scrolling strip. Two duplicate sequences let the CSS
+          animation translate the track left without leaving a gap when the
+          first sequence reaches the end. Matches today's soccer redesign. */}
       <div className="empire-ticker">
-        <div className="empire-ticker-inner">
-          {[
-            { label: 'PORTFOLIO', val: fmtMoney(portfolioValue), cls: 'val' },
-            { label: 'EARNINGS', val: `+${fmtMoney(annualEarnings)}`, cls: 'up' },
-            { label: 'SPENDING', val: `-${fmtMoney(annualSpending)}`, cls: 'down' },
-            { label: 'NET P&L', val: `${netProfit >= 0 ? '+' : ''}${fmtMoney(netProfit)}`, cls: netProfit >= 0 ? 'up' : 'down' },
-            { label: 'FRANCHISES', val: String(userTeams.length), cls: 'val' },
-            { label: 'WIN RATE', val: `${winRate}%`, cls: 'up' },
-          ].map((tt, i) => (
-            <React.Fragment key={i}>
-              {i > 0 && <div className="empire-ticker-divider" />}
-              <div className="empire-ticker-item">
-                <span className="empire-ticker-label">{tt.label}</span>
-                <span className={`empire-ticker-${tt.cls}`}>{tt.val}</span>
-              </div>
-            </React.Fragment>
+        <div className="empire-ticker-track">
+          {[0, 1].map((dup) => (
+            <div className="empire-ticker-seq" key={dup} aria-hidden={dup === 1}>
+              {[
+                { label: 'PORTFOLIO',  val: fmtMoney(portfolioValue), cls: 'val' },
+                { label: 'EARNINGS',   val: `+${fmtMoney(annualEarnings)}`, cls: 'up' },
+                { label: 'SPENDING',   val: `-${fmtMoney(annualSpending)}`, cls: 'down' },
+                { label: 'NET P&L',    val: `${netProfit >= 0 ? '+' : ''}${fmtMoney(netProfit)}`, cls: netProfit >= 0 ? 'up' : 'down' },
+                { label: 'FRANCHISES', val: String(userTeams.length), cls: 'val' },
+                { label: 'WIN RATE',   val: `${winRate}%`, cls: 'up' },
+                ...userTeams.slice(0, 4).map((ttm) => ({
+                  label: (ttm.name || '').slice(0, 14).toUpperCase(),
+                  val: fmtMoney(ttm.marketValue || 0),
+                  cls: (ttm.annualEarnings || 0) >= 0 ? 'up' : 'down',
+                })),
+              ].map((tt, i) => (
+                <div className="empire-ticker-item" key={i}>
+                  <span className="empire-ticker-label">{tt.label}</span>
+                  <span className={`empire-ticker-${tt.cls}`}>{tt.val}</span>
+                </div>
+              ))}
+            </div>
           ))}
         </div>
       </div>
@@ -451,29 +474,36 @@ const WarRoom = () => {
           {/* ══════════════ MY LEAGUES TAB ══════════════ */}
           {activeTab === 'empire' && (
             <div className="empire-leagues">
-              {/* KPI Cards */}
+              {/* KPI Strip — terminal tiles with sparklines (matches today's soccer redesign) */}
               <div className="empire-kpi-row">
                 <div className="empire-kpi">
                   <span className="empire-kpi-label">Empire Valuation</span>
                   <span className="empire-kpi-value gold">{fmtMoney(portfolioValue)}</span>
                   <span className="empire-kpi-delta up">▲ Portfolio total</span>
+                  <svg className="empire-spark" viewBox="0 0 120 26" preserveAspectRatio="none"><polyline points="0,20 18,18 36,21 54,14 72,15 90,9 108,7 120,4" fill="none" stroke="#5FD08A" strokeWidth="1.5" /></svg>
                 </div>
                 <div className="empire-kpi">
                   <span className="empire-kpi-label">Season Revenue</span>
                   <span className="empire-kpi-value green">+{fmtMoney(annualEarnings)}</span>
                   <span className="empire-kpi-delta up">Across all franchises</span>
+                  <svg className="empire-spark" viewBox="0 0 120 26" preserveAspectRatio="none"><polyline points="0,22 20,20 40,17 60,16 80,11 100,8 120,6" fill="none" stroke="#5FD08A" strokeWidth="1.5" /></svg>
                 </div>
                 <div className="empire-kpi">
-                  <span className="empire-kpi-label">Acquisitions</span>
-                  <span className="empire-kpi-value">{fmtMoney(annualSpending)}</span>
-                  <span className="empire-kpi-delta muted">This season</span>
+                  <span className="empire-kpi-label">Net P&amp;L · Season</span>
+                  <span className={`empire-kpi-value ${netProfit >= 0 ? 'green' : 'red'}`}>{netProfit >= 0 ? '+' : ''}{fmtMoney(netProfit)}</span>
+                  <span className={`empire-kpi-delta ${netProfit >= 0 ? 'up' : 'muted'}`}>{netProfit >= 0 ? '▲' : '▼'} revenue − spending</span>
+                  <svg className="empire-spark" viewBox="0 0 120 26" preserveAspectRatio="none"><polyline points="0,16 18,19 36,12 54,15 72,10 90,12 108,7 120,8" fill="none" stroke={netProfit >= 0 ? '#5FD08A' : '#E8786C'} strokeWidth="1.5" /></svg>
                 </div>
                 <div className="empire-kpi">
                   <span className="empire-kpi-label">Franchises Owned</span>
-                  <span className="empire-kpi-value gold">{userTeams.length}</span>
+                  <span className="empire-kpi-value">{userTeams.length}</span>
                   <span className="empire-kpi-delta muted">
                     {userTeams.filter((ttm) => (ttm.league?.sport) === 'nfl').length} NFL · {userTeams.filter((ttm) => (ttm.league?.sport) === 'soccer').length} Soccer
                   </span>
+                  <div className="empire-kpi-allocrow">
+                    <span style={{ flex: userTeams.filter((ttm) => (ttm.league?.sport) === 'nfl').length || 1, background: 'rgba(143,180,240,0.5)' }} />
+                    <span style={{ flex: userTeams.filter((ttm) => (ttm.league?.sport) === 'soccer').length || 1, background: '#C9A86A' }} />
+                  </div>
                 </div>
               </div>
 
@@ -504,39 +534,98 @@ const WarRoom = () => {
                 </div>
               </div>
 
-              {/* Franchise Cards */}
-              <div className="empire-franchise-grid">
-                {filteredTeams.length > 0 ? filteredTeams.map((ttm) => {
-                  const listing = getTeamListing(ttm._id)
-                  return (
-                    <TeamCard
-                      key={ttm._id}
-                      team={ttm}
-                      sportColors={accent}
-                      isActive={String(ttm._id) === String(activeTeamId)}
-                      onEnterLeague={() => {
-                        const sport = (ttm.league?.sport || ttm.sport || 'nfl').toLowerCase()
-                        if (sport === 'soccer') {
-                          window.location.href = soccerSiteUrl()
-                        } else {
-                          navigate('/league')
-                        }
-                      }}
-                      onListForSale={listing ? null : () => setSellModal({
-                        visible: true, team: ttm,
-                        askingPrice: String(ttm.marketValue || 1000000),
-                        marketValue: ttm.marketValue || 1000000, saleType: 'individual',
-                      })}
-                      onCancelSale={listing ? () => handleCancelTeamListing(listing._id, ttm.name, listing._sport || ttm.league?.sport?.toLowerCase() || 'nfl') : null}
-                      isListed={!!listing}
-                      listingPrice={listing?.askingPrice}
-                    />
-                  )
-                }) : (
-                  <div className="empire-empty">
-                    No franchises found{sportFilter !== 'all' ? ` for ${sportFilter.toUpperCase()}` : ''}.
+              {/* Franchise holdings + right rail (allocation donut) — matches today's soccer redesign */}
+              <div className="empire-hold-layout">
+                <div className="empire-holdings">
+                  <table className="holdings-table">
+                    <thead>
+                      <tr>
+                        <th className="th-left">Asset</th>
+                        <th>Sport</th>
+                        <th>Record</th>
+                        <th>Value</th>
+                        <th>Revenue</th>
+                        <th>Alloc.</th>
+                        <th className="th-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredTeams.length > 0 ? (() => {
+                        const totalVal = filteredTeams.reduce((s, t) => s + (t.marketValue || 0), 0) || 1
+                        return filteredTeams.map((ttm) => {
+                          const sport = (ttm.league?.sport || ttm.sport || 'nfl').toLowerCase()
+                          const leagueName = typeof ttm.league === 'object' ? (ttm.league?.name || 'League') : (ttm.league || 'League')
+                          const record = ttm.record || `${ttm.wins || 0}-${ttm.draws ?? ttm.ties ?? 0}-${ttm.losses || 0}`
+                          const rev = ttm.annualEarnings || 0
+                          const alloc = Math.round(((ttm.marketValue || 0) / totalVal) * 100)
+                          const listing = getTeamListing(ttm._id)
+                          return (
+                            <tr key={ttm._id} className={String(ttm._id) === String(activeTeamId) ? 'hold-active' : ''}>
+                              <td className="td-left hold-asset">
+                                <div className="hold-crest" style={{ color: accent.primary, background: `${accent.primary}22` }}>{(ttm.name || '?').charAt(0).toUpperCase()}</div>
+                                <div>
+                                  <div className="hold-name">{ttm.name}</div>
+                                  <div className="hold-league">{leagueName}</div>
+                                </div>
+                              </td>
+                              <td><span className={`hold-dot ${sport}`} />{sport === 'nfl' ? 'NFL' : 'Soccer'}</td>
+                              <td className="num">{record}</td>
+                              <td className="num">{fmtMoney(ttm.marketValue || 0)}</td>
+                              <td className={`num ${rev >= 0 ? 'pl-up' : 'pl-down'}`}>{rev >= 0 ? '+' : ''}{fmtMoney(rev)}</td>
+                              <td className="num"><span className="hold-alloc">{alloc}%<i className="hold-alloc-bar"><b style={{ width: `${alloc}%` }} /></i></span></td>
+                              <td className="td-right">
+                                <button className="hold-btn" onClick={() => {
+                                  if (sport === 'soccer') { window.location.href = soccerSiteUrl() } else { navigate('/league') }
+                                }}>Manage</button>
+                                {listing
+                                  ? <button className="hold-btn" onClick={() => handleCancelTeamListing(listing._id, ttm.name, listing._sport || ttm.league?.sport?.toLowerCase() || 'nfl')}>Unlist</button>
+                                  : <button className="hold-btn gold" onClick={() => setSellModal({ visible: true, team: ttm, askingPrice: String(ttm.marketValue || 1000000), marketValue: ttm.marketValue || 1000000, saleType: 'individual' })}>List</button>}
+                              </td>
+                            </tr>
+                          )
+                        })
+                      })() : (
+                        <tr><td colSpan={7} className="empire-empty">No franchises found{sportFilter !== 'all' ? ` for ${sportFilter.toUpperCase()}` : ''}.</td></tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                <aside className="empire-hold-rail">
+                  <div className="empire-panel">
+                    <div className="empire-panel-head"><h3>Allocation</h3><span className="empire-micro">By value</span></div>
+                    <div className="empire-donut-wrap">
+                      {(() => {
+                        const total = userTeams.reduce((s, t) => s + (t.marketValue || 0), 0) || 1
+                        const palette = ['#C9A86A', '#8FB4F0', '#5C7BB0', '#3A4D70', '#5FD08A', '#69748B']
+                        let off = 25
+                        const segs = [...userTeams].sort((a, b) => (b.marketValue || 0) - (a.marketValue || 0)).map((t, i) => {
+                          const pct = Math.round(((t.marketValue || 0) / total) * 100)
+                          const s = { name: t.name, pct, color: palette[i % palette.length], dash: `${pct} ${100 - pct}`, off }
+                          off -= pct
+                          return s
+                        })
+                        return (
+                          <>
+                            <svg width="118" height="118" viewBox="0 0 42 42" style={{ flexShrink: 0 }}>
+                              <circle cx="21" cy="21" r="15.9" fill="none" stroke="rgba(174,182,196,0.12)" strokeWidth="6" />
+                              {segs.map((s, i) => (
+                                <circle key={i} cx="21" cy="21" r="15.9" fill="none" stroke={s.color} strokeWidth="6" strokeDasharray={s.dash} strokeDashoffset={s.off} />
+                              ))}
+                              <text x="21" y="20.5" textAnchor="middle" fill="#ECEAE3" fontSize="6" fontWeight="600" fontFamily="Inter">{fmtMoney(portfolioValue)}</text>
+                              <text x="21" y="25.5" textAnchor="middle" fill="#69748B" fontSize="2.6" letterSpacing="0.3" fontFamily="Inter">TOTAL SP</text>
+                            </svg>
+                            <div className="empire-donut-legend">
+                              {segs.map((s, i) => (
+                                <div key={i}><span><span className="empire-dot" style={{ background: s.color }} />{(s.name || '').slice(0, 14)}</span><span className="num">{s.pct}%</span></div>
+                              ))}
+                            </div>
+                          </>
+                        )
+                      })()}
+                    </div>
                   </div>
-                )}
+                </aside>
               </div>
 
               {/* Expand CTA */}

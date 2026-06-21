@@ -95,7 +95,10 @@ export const verifyEmailCode = async (userId, code, navigate, sport) => {
     const resData = res.data?.data || res.data
 
     if (resData?.token) {
-      // Token now set as httpOnly cookie by backend (XSS-safe)
+      // Persist the token the same way login does — attachToken()/the API read
+      // it from localStorage['token'] (Bearer auth). Without this the next page
+      // has no token and shows "not logged in" despite a successful verify.
+      localStorage.setItem('token', resData.token)
       localStorage.setItem('userName', resData.user?.userName || resData.user?.name || '')
       localStorage.setItem('userId', resData.user?._id || '')
       localStorage.removeItem('pendingUserId')

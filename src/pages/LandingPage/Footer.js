@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom'
+import { usePartner } from '../../contexts/PartnerContext'
 
 const YEAR = new Date().getFullYear()
 
 const Footer = () => {
   const navigate = useNavigate()
+  const { isPartnerSite, businessName } = usePartner()
 
   const go = (path) => (e) => {
     e.preventDefault()
@@ -18,10 +20,18 @@ const Footer = () => {
         {/* ── Column 1: Brand ── */}
         <div className="ls-footer-col ls-footer-brand-col">
           <div className="ls-footer-logo" onClick={go('/')}>
-            <span className="ls-footer-logo-sam">SAM</span>
-            <span className="ls-footer-logo-sports">SPORTS</span>
+            {isPartnerSite ? (
+              <>
+                <span className="ls-footer-logo-sam">{businessName}</span>
+              </>
+            ) : (
+              <>
+                <span className="ls-footer-logo-sam">SAM</span>
+                <span className="ls-footer-logo-sports">SPORTS</span>
+              </>
+            )}
           </div>
-          <p className="ls-footer-tagline">Fantasy Sports Reimagined</p>
+          <p className="ls-footer-tagline">{isPartnerSite ? `Powered by SamSports` : 'Fantasy Sports Reimagined'}</p>
         </div>
 
         {/* ── Column 2: Fantasy ── */}
@@ -90,22 +100,39 @@ const Footer = () => {
       <div className="ls-footer-bottom">
         <div className="ls-footer-bottom-inner">
           <div className="ls-footer-legal-links">
-            <a href="/terms" onClick={go('/terms')}>Terms of Use</a>
-            <span className="ls-footer-dot" />
-            <a href="/privacy" onClick={go('/privacy')}>Privacy Policy</a>
-            <span className="ls-footer-dot" />
-            <a href="/eu-privacy" onClick={go('/eu-privacy')}>EU Privacy Rights</a>
-            <span className="ls-footer-dot" />
-            <a href="/cookies" onClick={go('/cookies')}>Cookie Policy</a>
-            <span className="ls-footer-dot" />
-            <a href="/gdpr" onClick={go('/gdpr')}>GDPR Compliance</a>
-            <span className="ls-footer-dot" />
-            <a href="/data-rights" onClick={go('/data-rights')}>Data Rights</a>
-            <span className="ls-footer-dot" />
-            <a href="/contact" onClick={go('/contact')}>Contact Us</a>
+            {isPartnerSite ? (
+              <>
+                <a href="/partner-terms" onClick={go('/partner-terms')}>Terms of Service</a>
+                <span className="ls-footer-dot" />
+                <a href="/partner-privacy" onClick={go('/partner-privacy')}>Privacy Policy</a>
+                <span className="ls-footer-dot" />
+                <a href="/partner-rules" onClick={go('/partner-rules')}>House Rules</a>
+                <span className="ls-footer-dot" />
+                <a href="/contact" onClick={go('/contact')}>Contact</a>
+              </>
+            ) : (
+              <>
+                <a href="/terms" onClick={go('/terms')}>Terms of Use</a>
+                <span className="ls-footer-dot" />
+                <a href="/privacy" onClick={go('/privacy')}>Privacy Policy</a>
+                <span className="ls-footer-dot" />
+                <a href="/eu-privacy" onClick={go('/eu-privacy')}>EU Privacy Rights</a>
+                <span className="ls-footer-dot" />
+                <a href="/cookies" onClick={go('/cookies')}>Cookie Policy</a>
+                <span className="ls-footer-dot" />
+                <a href="/gdpr" onClick={go('/gdpr')}>GDPR Compliance</a>
+                <span className="ls-footer-dot" />
+                <a href="/data-rights" onClick={go('/data-rights')}>Data Rights</a>
+                <span className="ls-footer-dot" />
+                <a href="/contact" onClick={go('/contact')}>Contact Us</a>
+              </>
+            )}
           </div>
           <p className="ls-footer-copy">
-            &copy; {YEAR} SamSports.io &mdash; All rights reserved. SamSports is not affiliated with the NFL, UEFA, or any sports league.
+            {isPartnerSite
+              ? <>&copy; {YEAR} {businessName} &mdash; Powered by SamSports.io</>
+              : <>&copy; {YEAR} SamSports.io &mdash; All rights reserved. SamSports is not affiliated with the NFL, UEFA, or any sports league.</>
+            }
           </p>
         </div>
       </div>

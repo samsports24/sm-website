@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Checkbox, Image, Input, notification, Tag, Spin, Empty } from 'antd'
+import { Button, Image, Input, notification, Tag, Spin, Empty } from 'antd'
 import {
   SendOutlined,
   MailOutlined,
@@ -7,8 +7,6 @@ import {
   CrownOutlined,
   ReloadOutlined,
   DollarOutlined,
-  UserAddOutlined,
-  TrophyOutlined,
 } from '@ant-design/icons'
 import Header from '../../components/Header'
 import HeadingAndWeek from '../../components/Pagination/HeadingAndWeek'
@@ -31,7 +29,9 @@ const Clubhouse = () => {
   const [referralemail, setReferralemail] = useState('')
   const [loading, setLoading] = useState(false)
   const [btnloading, setBtnLoading] = useState(false)
-  const [invitationType, setInvitationType] = useState('')
+  // Auto-set invite type from league visibility — no extra click needed
+  const currentLeague = user?.team?.currentLeague
+  const invitationType = currentLeague?.isPublic === false ? 'Private' : 'Public'
   const [modalshow, setModalshow] = useState(false)
 
   useEffect(() => {
@@ -69,17 +69,9 @@ const Clubhouse = () => {
     setReferralemail(e.target.value)
   }
 
-  const handleCheckboxChange = (type) => {
-    if (invitationType === type) {
-      setInvitationType(null)
-    } else {
-      setInvitationType(type)
-    }
-  }
-
   const handlecreatereferral = async () => {
-    if (!invitationType) {
-      notification.warning({ message: 'Please select a league type.', duration: 4 })
+    if (!referralemail) {
+      notification.warning({ message: 'Please enter an email address.', duration: 4 })
       return
     }
     setBtnLoading(true)
@@ -93,7 +85,6 @@ const Clubhouse = () => {
       }
       await createClubhouse(payload)
       setReferralemail('')
-      setInvitationType('')
     } catch (error) {
       console.error('Error making referral:', error)
     } finally {
@@ -184,20 +175,6 @@ const Clubhouse = () => {
                 className='ch-invite-input'
                 onPressEnter={handlecreatereferral}
               />
-            </div>
-            <div className='ch-invite-types'>
-              <div
-                className={`ch-type-chip ${invitationType === 'Private' ? 'ch-type-chip-active' : ''}`}
-                onClick={() => handleCheckboxChange('Private')}
-              >
-                <TrophyOutlined /> Private
-              </div>
-              <div
-                className={`ch-type-chip ${invitationType === 'Public' ? 'ch-type-chip-active' : ''}`}
-                onClick={() => handleCheckboxChange('Public')}
-              >
-                <UserAddOutlined /> Public
-              </div>
             </div>
             <Button
               loading={btnloading}

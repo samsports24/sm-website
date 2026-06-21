@@ -72,12 +72,17 @@ export const revokeCancellation = async () => {
  * POST /season-renewal/transfer-commissioner
  * Transfer commissioner rights to another user.
  * @param {string} newCommissionerId - The user ID of the new commissioner
+ * @param {string} [leagueId] - Explicit league id. The backend middleware
+ *   normally derives the league from the caller's team, but head
+ *   commissioners may not have a team in their own league, so we pass
+ *   the id directly to be safe.
  */
-export const transferCommissioner = async (newCommissionerId) => {
+export const transferCommissioner = async (newCommissionerId, leagueId) => {
   try {
     attachToken()
     const res = await privateAPI.post('/season-renewal/transfer-commissioner', {
       newCommissionerId,
+      ...(leagueId ? { leagueId } : {}),
     })
     if (res) {
       notification.success({

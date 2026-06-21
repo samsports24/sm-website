@@ -70,7 +70,7 @@ const PodStandings = () => {
               }}>
                 <span style={{ width: 32, fontWeight: 700, color: '#A78BFA' }}>{idx + 1}</span>
                 <span style={{ flex: 1, fontWeight: 500, color: '#e2e8f0' }}>
-                  {(m.user && m.user.username) || m.username || 'Manager'}
+                  {(m.user && (m.user.userName || m.user.username)) || (m.entry && m.entry.teamName) || m.username || 'Manager'}
                   {isMe && <span style={{ color: '#A78BFA', fontSize: 11, marginLeft: 6 }}>(You)</span>}
                 </span>
                 <span style={{ width: 60, textAlign: 'center', color: '#4ade80', fontWeight: 600 }}>{m.wins || 0}</span>

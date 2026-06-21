@@ -15,6 +15,23 @@ export const publicAPI = Axios.create({ baseURL: base_url, withCredentials: true
 export const privateAPI = Axios.create({ baseURL: base_url, withCredentials: true })
 export const privateDRAFTAPI = Axios.create({ baseURL: draft_base_url, withCredentials: true })
 
+// ── White-label: attach partner subdomain header so backend can identify partner context ──
+;(() => {
+  const host = window.location.hostname
+  const parts = host.split('.')
+  const skip = ['www', 'api', 'office', 'football', 'admin', 'staging', 'dev']
+  let subdomain = null
+  if (parts.length >= 3) {
+    const candidate = parts[0].toLowerCase()
+    if (!skip.includes(candidate)) subdomain = candidate
+  }
+  if (subdomain) {
+    publicAPI.defaults.headers.common['X-Partner-Subdomain'] = subdomain
+    privateAPI.defaults.headers.common['X-Partner-Subdomain'] = subdomain
+    privateDRAFTAPI.defaults.headers.common['X-Partner-Subdomain'] = subdomain
+  }
+})()
+
 export const attachToken = async () => {
   // Set Authorization header from localStorage as primary auth method.
   // httpOnly cookie serves as fallback via withCredentials: true.
@@ -189,7 +206,7 @@ export const serverUrls = [
     key: 'eleven_fc',
     name: 'Eleven F.C',
     url: process.env.REACT_APP_SOCCER_API_URL || 'https://soccerbackend.samsports.io',
-    frontEndUrl: process.env.REACT_APP_SOCCER_URL || 'https://soccer.samsports.io',
+    frontEndUrl: process.env.REACT_APP_SOCCER_URL || 'https://football.samsports.io',
     registerPath: '/api/v1/users/register', // Soccer backend uses a different route path
     disabled: false,
     image: soccer,

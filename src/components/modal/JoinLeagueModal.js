@@ -2,10 +2,17 @@ import React, { useState, useEffect } from 'react'
 import { Modal, Input, notification, Spin } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { useSelector } from 'react-redux'
-import { attachToken, privateAPI } from '../../config/constants'
+import axios from 'axios'
+import { attachToken, privateAPI, serverUrls } from '../../config/constants'
 import { joinLeagueFromPlatform, getUserLeagues } from '../../redux/actions/leagueActions'
 import { getUser } from '../../redux/actions/authActions'
 import store from '../../redux/store'
+
+// Soccer backend base (shared `token` works as Bearer, same as SportHub does)
+const SOCCER_API =
+  (serverUrls.find((s) => s.key === 'eleven_fc') || {}).url ||
+  process.env.REACT_APP_SOCCER_API_URL ||
+  'https://soccerbackend.samsports.io'
 
 const formatCurrency = (val) => {
   if (!val && val !== 0) return '0 SP'
@@ -23,7 +30,10 @@ const formatSamPoints = (val) => {
   return `${val}`
 }
 
-const JoinLeagueModal = ({ button }) => {
+const JoinLeagueModal = ({ button, sport, frontEndUrl }) => {
+  // Soccer onboarding must browse/join on the soccer backend — not the football
+  // platform. Without this the modal always listed NFL leagues for soccer users.
+  const isSoccer = sport === 'eleven_fc' || sport === 'soccer'
   const [visible, setVisible] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [leagues, setLeagues] = useState([])
@@ -45,14 +55,24 @@ const JoinLeagueModal = ({ button }) => {
   const fetchLeagues = async () => {
     setLoading(true)
     try {
-      attachToken()
-      const res = await privateAPI.get('/league/get', { params: { allleagues: true } })
-      const data = res?.data?.data
-      const available = [
-        ...(data?.nonUserLeagues || []),
-        ...(data?.futureLeagues || []),
-      ]
-      setLeagues(available)
+      if (isSoccer) {
+        // Soccer backend: list all public/joinable leagues
+        const token = localStorage.getItem('token')
+        const res = await axios.get(`${SOCCER_API}/api/v1/leagues/public`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        })
+        const list = res?.data?.data
+        setLeagues(Array.isArray(list) ? list : [])
+      } else {
+        attachToken()
+        const res = await privateAPI.get('/league/get', { params: { allleagues: true } })
+        const data = res?.data?.data
+        const available = [
+          ...(data?.nonUserLeagues || []),
+          ...(data?.futureLeagues || []),
+        ]
+        setLeagues(available)
+      }
     } catch (err) {
       console.error('Failed to load leagues:', err)
     }
@@ -60,6 +80,7 @@ const JoinLeagueModal = ({ button }) => {
   }
 
   const isAlreadyJoined = (league) => {
+    if (league.isJoined) return true // soccer backend supplies this directly
     return userLeagues.some((ul) => String(ul._id) === String(league._id))
       || (league.users && league.users.some((uid) => String(uid) === String(userId)))
   }
@@ -89,6 +110,27 @@ const JoinLeagueModal = ({ button }) => {
     setJoining(league._id)
     setTeamNamePrompt(null)
     try {
+      if (isSoccer) {
+        // Join on the soccer backend so the team is created in the right sport.
+        const token = localStorage.getItem('token')
+        const res = await axios.post(
+          `${SOCCER_API}/api/v1/leagues/join`,
+          { leagueId: league._id, teamName: trimmedName },
+          { headers: token ? { Authorization: `Bearer ${token}` } : {} }
+        )
+        const rd = res?.data?.data || {}
+        store.dispatch(getUser())
+        getUserLeagues()
+        setJoinedData({
+          isSoccer: true,
+          leagueName: rd.leagueName || league.name,
+          teamName: rd.teamName || trimmedName,
+          samPoints: rd.startingSamPoints || league.startingSamPoints || 0,
+        })
+        setJoining(null)
+        return
+      }
+
       const res = await joinLeagueFromPlatform({ leagueId: league._id, teamName: trimmedName })
       const responseData = res?.data?.data
       store.dispatch(getUser())
@@ -123,6 +165,12 @@ const JoinLeagueModal = ({ button }) => {
   const handleEnterLeague = () => {
     setVisible(false)
     setJoinedData(null)
+    if (isSoccer) {
+      const token = localStorage.getItem('token')
+      const dest = frontEndUrl || process.env.REACT_APP_SOCCER_URL || 'https://football.samsports.io'
+      window.location.href = token ? `${dest}/war-room?token=${encodeURIComponent(token)}` : dest
+      return
+    }
     window.location.href = '/dashboard'
   }
 
@@ -224,7 +272,7 @@ const JoinLeagueModal = ({ button }) => {
               margin: '0 auto 16px',
               border: '2px solid rgba(59,130,246,0.3)',
             }}>
-              <span style={{ fontSize: 28 }}>🏈</span>
+              <span style={{ fontSize: 28 }}>{isSoccer ? '⚽' : '🏈'}</span>
             </div>
 
             <h2 style={{
@@ -308,6 +356,8 @@ const JoinLeagueModal = ({ button }) => {
               Your team <span style={{ color: '#22C55E', fontWeight: 600 }}>{joinedData.teamName}</span> is ready to compete
             </p>
 
+            {!joinedData.isSoccer && (
+            <>
             {/* Economy Info Cards */}
             <div style={{
               display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10,
@@ -413,6 +463,8 @@ const JoinLeagueModal = ({ button }) => {
               <br />
               If your 1M runs out, you can buy extra SamPoints, but the 300M draft budget stays locked.
             </div>
+            </>
+            )}
 
             <button
               onClick={handleEnterLeague}

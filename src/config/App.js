@@ -107,7 +107,7 @@ const App = () => {
     if (originalToken) {
       localStorage.setItem("token", originalToken);
       localStorage.removeItem("originalToken");
-      window.location.href = "/comissioner"; // redirect back
+      window.location.href = "/commissioner"; // redirect back
     }
   };
 

@@ -676,3 +676,10 @@ export const getFinanceMonthly = () =>
 
 export const getFinanceByProduct = (period = "month") =>
   nfl().get(`/admin-panel/finance/by-product?period=${period}`);
+
+/* ══════════════════════════════════════════
+   PARTNER MANAGEMENT (White-Label)
+   ══════════════════════════════════════════ */
+export const get = (url) => nfl().get(url).then(r => r.data);
+export const post = (url, data) => nfl().post(url, data).then(r => r.data);
+export const put = (url, data) => nfl().put(url, data).then(r => r.data);

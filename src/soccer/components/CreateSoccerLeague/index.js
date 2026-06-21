@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Modal, Button, Input, Form, Avatar, Select, notification } from 'antd'
 import { soccerAPI, attachSoccerToken } from '../../config/constants'
 
@@ -203,6 +204,7 @@ const getCurrentSeason = (leagueKey) => {
 // ═══════════════════════════════════════════════════════════════
 
 const CreateSoccerLeague = ({ button, onSuccess, externalOpen, onExternalClose }) => {
+  const navigate = useNavigate()
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
@@ -279,10 +281,12 @@ const CreateSoccerLeague = ({ button, onSuccess, externalOpen, onExternalClose }
       if (res.data?.success) {
         notification.success({
           message: 'League Created!',
-          description: `Your ${REAL_LEAGUES.find(l => l.key === selectedLeague)?.name} fantasy league is ready.`,
+          description: `Now set up your league — configure draft date, rules, and invite players.`,
         })
         if (onSuccess) onSuccess(selectedLeague)
         handleCancel()
+        // Redirect commissioner to setup page so they configure draft date, rules, etc.
+        navigate('/commissioner')
       } else {
         notification.error({
           message: 'Creation Failed',

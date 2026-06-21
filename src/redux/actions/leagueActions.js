@@ -263,17 +263,22 @@ export const deleteLeagueCommissioner = async (payload) => {
     attachToken()
     const res = await privateAPI.post(`/league/delete-league-commissioner`, payload)
     if (res) {
-      notification.success({
-        description: res.data.data.message,
-        duration: 2,
-      })
+      // Don't show a redundant notification here — the caller (e.g. the
+      // Commissioner Danger Zone) already shows its own success message and
+      // then navigates the user away. Just refresh the league list and return
+      // the response so the caller can confirm it succeeded before navigating.
       getUserLeagues()
+      return res.data?.data || res.data || true
     }
+    return false
   } catch (err) {
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
     })
+    // Re-throw so the caller's try/catch fires and we don't navigate the
+    // user away from a league that wasn't actually deleted.
+    throw err
   }
 }
 
@@ -301,8 +306,13 @@ export const selectLeague = async (payload, navigate) => {
     const res = await privateAPI.post(`/league/select-league`, payload)
     if (res) {
       console.log('[selectLeague] Switching league:', payload.leagueId)
-      // Backend sets updated httpOnly cookie with new league context
-      // Force a full page reload so Redux state re-initializes from the new cookie
+      // Save the new JWT to localStorage so the Authorization header
+      // matches the updated httpOnly cookie on next page load
+      const newToken = res?.data?.data?.token
+      if (newToken) {
+        localStorage.setItem('token', newToken)
+      }
+      // Force a full page reload so Redux state re-initializes
       window.location.replace('/dashboard')
     }
   } catch (err) {

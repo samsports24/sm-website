@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import { ConfigProvider, theme as antTheme } from 'antd'
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary'
 import { LanguageProvider } from './i18n/LanguageContext'
+import { PartnerProvider } from './contexts/PartnerContext'
 
 import store from './redux/store'
 
@@ -52,9 +53,11 @@ root.render(
       }}
     >
       <ErrorBoundary>
-        <LanguageProvider>
-          <App />
-        </LanguageProvider>
+        <PartnerProvider>
+          <LanguageProvider>
+            <App />
+          </LanguageProvider>
+        </PartnerProvider>
       </ErrorBoundary>
     </ConfigProvider>
   </Provider>,

@@ -3821,3 +3821,510 @@
   .ls-article-headline { font-size: 18px; }
   .ls-article-summary-text { font-size: 13px; }
 }
+
+/* ════════════════════════════════════════════════
+   Partner Adverts
+   ════════════════════════════════════════════════ */
+
+/* ── Landing Banner ── */
+.pa-banner-wrap {
+  max-width: 1200px;
+  margin: 0 auto 12px;
+  padding: 0 16px;
+  position: relative;
+}
+
+.pa-banner {
+  display: block;
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  background: rgba(20, 28, 45, 0.6);
+  border: 1px solid rgba(110, 105, 128, 0.15);
+  transition: border-color 0.3s;
+  text-decoration: none;
+}
+
+.pa-banner:hover {
+  border-color: rgba(212, 168, 67, 0.3);
+}
+
+.pa-banner-img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+
+.pa-banner-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 16px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+}
+
+.pa-banner-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.pa-banner-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.pa-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.15);
+  transition: all 0.3s;
+  padding: 0;
+}
+
+.pa-dot-active {
+  width: 18px;
+  background: var(--partner-primary, #D4A843);
+}
+
+.pa-sponsored {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.25);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-align: right;
+  margin-top: 4px;
+}
+
+/* ── Sidebar ── */
+.pa-sidebar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.pa-sidebar-ad {
+  display: block;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(110, 105, 128, 0.12);
+  background: rgba(20, 28, 45, 0.5);
+  transition: border-color 0.3s;
+  text-decoration: none;
+}
+
+.pa-sidebar-ad:hover {
+  border-color: rgba(212, 168, 67, 0.3);
+}
+
+.pa-sidebar-img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  display: block;
+}
+
+.pa-sidebar-title {
+  display: block;
+  padding: 8px 10px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.5px;
+}
+
+/* ── In-Feed ── */
+.pa-infeed-wrap {
+  max-width: 1200px;
+  margin: 16px auto;
+  padding: 0 16px;
+}
+
+.pa-infeed-ad {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(20, 28, 45, 0.5);
+  border: 1px solid rgba(110, 105, 128, 0.12);
+  text-decoration: none;
+  transition: border-color 0.3s;
+}
+
+.pa-infeed-ad:hover {
+  border-color: rgba(212, 168, 67, 0.3);
+}
+
+.pa-infeed-img {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.pa-infeed-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pa-infeed-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #E2E8F0;
+}
+
+@media (max-width: 768px) {
+  .pa-banner-img {
+    height: 80px;
+  }
+  .pa-sidebar-wrap {
+    display: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PARTNER SIMPLE LANDING PAGE (psl-*)
+   Branded venue page with hero, features, adverts
+   ═══════════════════════════════════════════════════════════════ */
+
+.psl-page {
+  min-height: 100vh;
+  background: var(--partner-secondary, #141C2D);
+  color: var(--partner-text, #E2E8F0);
+  font-family: var(--partner-font, 'Rajdhani'), sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Background gradient overlay */
+.psl-bg {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(212, 168, 67, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 100%, rgba(34, 197, 94, 0.06) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Header ── */
+.psl-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--partner-header-bg, #0A0F1C);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(12px);
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+}
+
+.psl-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.psl-header-logo {
+  height: 36px;
+  width: 36px;
+  border-radius: 6px;
+  object-fit: contain;
+}
+
+.psl-header-name {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--partner-primary, #D4A843);
+}
+
+/* ── Hero Section ── */
+.psl-hero {
+  position: relative;
+  z-index: 1;
+  padding: 80px 24px 60px;
+  text-align: center;
+}
+
+.psl-hero-inner {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.psl-hero-logo-wrap {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 24px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.05);
+  border: 2px solid rgba(212,168,67,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.psl-hero-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.psl-hero-title {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #fff;
+  margin: 0 0 12px;
+  line-height: 1.1;
+}
+
+.psl-hero-sub {
+  font-size: 16px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.6;
+  margin: 0 0 32px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* CTA Buttons */
+.psl-hero-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.psl-btn-primary {
+  padding: 14px 36px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: var(--partner-primary, #D4A843);
+  color: #0A0F1C;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  font-family: inherit;
+}
+.psl-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(212,168,67,0.3);
+}
+
+.psl-btn-secondary {
+  padding: 14px 36px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  background: transparent;
+  color: #fff;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  font-family: inherit;
+}
+.psl-btn-secondary:hover {
+  border-color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.05);
+}
+
+.psl-powered {
+  margin-top: 32px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 1px;
+}
+.psl-powered span {
+  color: var(--partner-primary, #D4A843);
+  font-weight: 600;
+}
+
+/* ── Advert Banner ── */
+.psl-adverts {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  margin: 0 auto 48px;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.psl-advert-banner {
+  display: block;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.2s;
+}
+.psl-advert-banner:hover {
+  transform: scale(1.01);
+}
+
+.psl-advert-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.psl-advert-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 16px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.7));
+  border-radius: 0 0 12px 12px;
+}
+.psl-advert-overlay span {
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.psl-advert-dots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.psl-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.2);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s;
+}
+.psl-dot-active {
+  background: var(--partner-primary, #D4A843);
+  transform: scale(1.3);
+}
+
+.psl-sponsored {
+  font-size: 10px;
+  color: rgba(255,255,255,0.25);
+  margin-top: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ── Features Grid ── */
+.psl-features {
+  position: relative;
+  z-index: 1;
+  padding: 0 24px 48px;
+}
+
+.psl-features-grid {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.psl-feature-card {
+  background: var(--partner-card-bg, rgba(20, 28, 45, 0.85));
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 32px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.psl-feature-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--partner-primary, #D4A843);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+}
+
+.psl-feature-icon {
+  font-size: 40px;
+  margin-bottom: 16px;
+}
+
+.psl-feature-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.psl-feature-card p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .psl-hero {
+    padding: 48px 16px 40px;
+  }
+  .psl-hero-title {
+    font-size: 28px;
+  }
+  .psl-hero-logo-wrap {
+    width: 80px;
+    height: 80px;
+  }
+  .psl-hero-logo {
+    width: 56px;
+    height: 56px;
+  }
+  .psl-features-grid {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+  }
+  .psl-advert-img {
+    height: 120px;
+  }
+  .psl-hero-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  .psl-btn-primary,
+  .psl-btn-secondary {
+    width: 100%;
+    max-width: 280px;
+  }
+}

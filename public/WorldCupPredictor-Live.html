@@ -59,7 +59,7 @@
       });
 
       // Save picks to backend (bulk)
-      const apiSavePicks = async (token, picks, data) => {
+      const apiSavePicks = async (token, picks, data, scores = {}) => {
         const body = [];
         const rankings = data?.fifaRankings || {};
         for (const [key, value] of Object.entries(picks)) {
@@ -81,10 +81,15 @@
               const rW = rankings[winnerId], rL = rankings[loserId];
               if (rW && rL && rW > rL) multiplier = 2;
             }
+            // Exact score predictions (bonus 50K SP)
+            const sh = scores[`sh:${fixtureId}`];
+            const sa = scores[`sa:${fixtureId}`];
             body.push({
               competition: "worldcup", leagueId: 1, season: 2026,
               pickType: "match", fixtureId: Number(fixtureId),
               pickResult: resultMap[value] || null,
+              pickHomeScore: sh != null ? Number(sh) : null,
+              pickAwayScore: sa != null ? Number(sa) : null,
               homeTeamId: homeTeam?.id || null, homeTeamName: homeTeam?.name || null,
               awayTeamId: awayTeam?.id || null, awayTeamName: awayTeam?.name || null,
               basePoints: 20000, multiplier,
@@ -112,10 +117,15 @@
               const rW = rankings[value], rL = rankings[loserId];
               if (rW && rL && rW > rL) multiplier = 2;
             }
+            // Exact score predictions for knockout matches
+            const ksh = scores[`sh:${matchId}`];
+            const ksa = scores[`sa:${matchId}`];
             body.push({
               competition: "worldcup", leagueId: 1, season: 2026,
               pickType: "knockout", fixtureId: Number(matchId),
               pickTeamId: Number(value), round,
+              pickHomeScore: ksh != null ? Number(ksh) : null,
+              pickAwayScore: ksa != null ? Number(ksa) : null,
               homeTeamId: homeTeam?.id || null, homeTeamName: homeTeam?.name || null,
               awayTeamId: awayTeam?.id || null, awayTeamName: awayTeam?.name || null,
               basePoints, multiplier,
@@ -143,15 +153,19 @@
         const { data } = await resp.json();
         // Convert backend picks back to frontend format { "g:{fixtureId}": "A"|"B"|"D", "k:{matchId}": teamId }
         const picks = {};
+        const scores = {};
         for (const p of (data?.picks || [])) {
           if (p.pickType === "match" && p.fixtureId) {
             const resultMap = { home: "A", away: "B", draw: "D" };
             picks[`g:${p.fixtureId}`] = resultMap[p.pickResult] || null;
+            // Restore exact score predictions
+            if (p.pickHomeScore != null) scores[`sh:${p.fixtureId}`] = p.pickHomeScore;
+            if (p.pickAwayScore != null) scores[`sa:${p.fixtureId}`] = p.pickAwayScore;
           } else if (p.pickType === "knockout" && p.fixtureId) {
             picks[`k:${p.fixtureId}`] = p.pickTeamId;
           }
         }
-        return { picks, stats: data?.stats || null };
+        return { picks, scores, stats: data?.stats || null };
       };
 
       // Load leaderboard from backend
@@ -163,6 +177,45 @@
         const { data } = await resp.json();
         return data?.leaderboard || [];
       };
+      // Private groups API helpers
+      const apiLoadMyGroups = async (token) => {
+        const resp = await fetch(`${API_BASE}/predictor/groups`, { headers: apiHeaders(token) });
+        if (!resp.ok) throw new Error(`Groups failed: ${resp.status}`);
+        const { data } = await resp.json();
+        return data?.groups || [];
+      };
+      const apiCreateGroup = async (token, name) => {
+        const resp = await fetch(`${API_BASE}/predictor/groups`, {
+          method: "POST", headers: apiHeaders(token),
+          body: JSON.stringify({ name, competition: "worldcup", season: 2026 }),
+        });
+        if (!resp.ok) { const e = await resp.json().catch(()=>({})); throw new Error(e.message || `Create failed: ${resp.status}`); }
+        return resp.json();
+      };
+      const apiJoinGroup = async (token, inviteCode) => {
+        const resp = await fetch(`${API_BASE}/predictor/groups/join`, {
+          method: "POST", headers: apiHeaders(token),
+          body: JSON.stringify({ inviteCode }),
+        });
+        if (!resp.ok) { const e = await resp.json().catch(()=>({})); throw new Error(e.message || `Join failed: ${resp.status}`); }
+        return resp.json();
+      };
+      const apiLeaveGroup = async (token, groupId) => {
+        const resp = await fetch(`${API_BASE}/predictor/groups/${groupId}/leave`, {
+          method: "POST", headers: apiHeaders(token),
+        });
+        if (!resp.ok) throw new Error(`Leave failed: ${resp.status}`);
+        return resp.json();
+      };
+      const apiGroupLeaderboard = async (token, groupId) => {
+        const resp = await fetch(`${API_BASE}/predictor/groups/${groupId}/leaderboard`, {
+          headers: apiHeaders(token),
+        });
+        if (!resp.ok) throw new Error(`Group LB failed: ${resp.status}`);
+        const { data } = await resp.json();
+        return data?.leaderboard || [];
+      };
+
       const DEFAULT_LEAGUE = 1;      // 1 = World Cup
       const DEFAULT_SEASON = 2026;
 
@@ -747,6 +800,10 @@
         };
         const [savedPicks, setSavedPicks] = useState(loadPicksLocal);
         const [userPicks, setUserPicks] = useState(loadPicksLocal); // overlay id-> 'A'|'B'|'D'|winnerId
+        const [scores, setScores] = useState(() => {
+          try { return JSON.parse(localStorage.getItem("wcp.scores.v1") || "{}") || {}; }
+          catch { return {}; }
+        }); // { "sh:{fixtureId}": number, "sa:{fixtureId}": number }
         const [authToken, setAuthToken] = useState(null); // JWT from parent samsports app
         const [backendStats, setBackendStats] = useState(null); // stats from server
         const [saveToast, setSaveToast] = useState(false);
@@ -770,7 +827,9 @@
         };
         const signOut = () => {
           localStorage.removeItem(LS_ACCOUNT);
+          try { localStorage.removeItem("wcp.scores.v1"); } catch {}
           setAccount(null);
+          setScores({});
         };
 
         /* ---------- Auto-auth from parent samsports app via postMessage ---------- */
@@ -800,7 +859,7 @@
           let cancelled = false;
           (async () => {
             try {
-              const { picks, stats: serverStats } = await apiLoadPicks(authToken);
+              const { picks, scores: serverScores, stats: serverStats } = await apiLoadPicks(authToken);
               if (cancelled) return;
               if (picks && Object.keys(picks).length > 0) {
                 // Merge: backend picks take priority, keep any local-only keys (tie: etc.)
@@ -810,6 +869,11 @@
                 setSavedPicks(merged);
                 // Also persist to localStorage as cache
                 try { localStorage.setItem(LS_PICKS, JSON.stringify(merged)); } catch {}
+              }
+              // Restore exact score predictions
+              if (serverScores && Object.keys(serverScores).length > 0) {
+                setScores(prev => ({ ...prev, ...serverScores }));
+                try { localStorage.setItem("wcp.scores.v1", JSON.stringify(serverScores)); } catch {}
               }
               if (serverStats) setBackendStats(serverStats);
             } catch (err) {
@@ -953,7 +1017,9 @@
             onConfirm: async () => {
               setUserPicks({});
               setSavedPicks({});
+              setScores({});
               try { localStorage.removeItem(LS_PICKS); } catch {}
+              try { localStorage.removeItem("wcp.scores.v1"); } catch {}
               setConfirmModal(null);
               // Note: backend picks are NOT deleted — they remain as history.
               // The user simply starts fresh on the frontend.
@@ -976,12 +1042,14 @@
           try {
             // Always save to localStorage as cache
             localStorage.setItem(LS_PICKS, JSON.stringify(userPicks));
+            // Also save exact scores to localStorage
+            try { localStorage.setItem("wcp.scores.v1", JSON.stringify(scores)); } catch {}
 
             // If authenticated, also save to backend
             if (authToken) {
               setSaving(true);
               try {
-                await apiSavePicks(authToken, userPicks, data);
+                await apiSavePicks(authToken, userPicks, data, scores);
               } catch (apiErr) {
                 console.warn("[WCP] Backend save failed, localStorage saved:", apiErr.message);
                 // Don't block — localStorage save succeeded
@@ -996,7 +1064,7 @@
           } catch (e) {
             setError(`Could not save: ${e.message}`);
           }
-        }, [userPicks, authToken, data]);
+        }, [userPicks, scores, authToken, data]);
 
         /* Ctrl/Cmd+S keyboard shortcut */
         useEffect(() => {
@@ -1023,6 +1091,13 @@
           if (String(p[key]) === String(teamId)) delete next[key]; else next[key] = teamId;
           return next;
         });
+
+        /* Exact score handler */
+        const handleScoreChange = (matchId, side, value) => {
+          const num = value === "" ? null : Math.max(0, parseInt(value) || 0);
+          const key = side === "home" ? `sh:${matchId}` : `sa:${matchId}`;
+          setScores(prev => ({ ...prev, [key]: num }));
+        };
 
         /* Tiebreak: move a team up one slot within its tied cluster */
         const bumpTieTeamUp = (groupLetter, teamId) => setUserPicks(p => {
@@ -1361,6 +1436,27 @@
                 <StatCard icon={<Medal className="h-4 w-4" />} label="Runner-up" value={runnerUp ? runnerUp.code : "TBD"} color="slate" />
               </section>
 
+              {/* ---------- SP Rewards Legend ---------- */}
+              <div className="flex flex-wrap items-center gap-2 mb-4 px-4 py-3 rounded-xl bg-gradient-to-r from-amber-500/10 via-slate-900/80 to-emerald-500/10 border border-amber-500/30 shadow-[0_0_15px_rgba(251,191,36,0.1)]">
+                <span className="text-xs uppercase tracking-wider font-bold text-amber-400 flex items-center gap-1.5"><Flame className="h-4 w-4" /> SP Rewards:</span>
+                {[
+                  { label: "Group Match", pts: POINTS.group },
+                  { label: "Exact Score", pts: 50000, accent: true },
+                  { label: "Group Pos.", pts: POINTS.groupPosition },
+                  { label: "R32", pts: POINTS.r32 },
+                  { label: "R16", pts: POINTS.r16 },
+                  { label: "QF", pts: POINTS.qf },
+                  { label: "SF", pts: POINTS.sf },
+                  { label: "3rd Place", pts: POINTS.third },
+                  { label: "Winner", pts: POINTS.final, gold: true },
+                ].map(r => (
+                  <span key={r.label} className={`inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full border ${r.gold ? "border-amber-400/40 bg-amber-400/10 text-amber-300" : r.accent ? "border-emerald-400/30 bg-emerald-400/5 text-emerald-300" : "border-slate-700 bg-slate-800/60 text-slate-300"}`}>
+                    {r.label} <b className={r.gold ? "text-amber-300" : "text-white"}>{r.pts >= 1000000 ? `${(r.pts/1000000).toFixed(0)}M` : `${(r.pts/1000).toFixed(0)}K`}</b>
+                  </span>
+                ))}
+                <span className="text-[10px] text-slate-500 ml-auto">2x for upset picks</span>
+              </div>
+
               {/* ---------- Tabs ---------- */}
               <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
                 <nav className="inline-flex rounded-xl bg-slate-900/80 border border-slate-800 p-1">
@@ -1382,15 +1478,16 @@
 
               {/* ---------- Main ---------- */}
               {tab === "groups" ? (
-                <GroupStage data={merged} onPick={setGroupResult} userPicks={userPicks} onBumpTie={bumpTieTeamUp} />
+                <GroupStage data={merged} onPick={setGroupResult} userPicks={userPicks} onBumpTie={bumpTieTeamUp} onScoreChange={handleScoreChange} scores={scores} />
               ) : (
-                <KnockoutStage data={merged} onPick={setKoWinner} />
+                <KnockoutStage data={merged} onPick={setKoWinner} onScoreChange={handleScoreChange} scores={scores} />
               )}
 
               {/* ---------- Leaderboard ---------- */}
               <Leaderboard
                 rows={leaderboard}
                 account={account}
+                authToken={authToken}
                 onSignIn={() => {
                   if (window.parent !== window) {
                     window.parent.postMessage({ type: 'wcp:requestLogin' }, '*');
@@ -1605,7 +1702,7 @@
       }
 
       /* ---------- Group stage ---------- */
-      function GroupStage({ data, onPick, userPicks, onBumpTie }) {
+      function GroupStage({ data, onPick, userPicks, onBumpTie, onScoreChange, scores }) {
         if (!data.groups.length) {
           return (
             <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-8 text-center">
@@ -1622,6 +1719,8 @@
                 key={g.letter}
                 group={g}
                 onPick={onPick}
+                onScoreChange={onScoreChange}
+                scores={scores}
                 tieOrder={userPicks?.[`tie:${g.letter}`]}
                 onBumpTie={(teamId) => onBumpTie(g.letter, teamId)}
               />
@@ -1630,7 +1729,7 @@
         );
       }
 
-      function GroupCard({ group, onPick, tieOrder, onBumpTie }) {
+      function GroupCard({ group, onPick, onScoreChange, scores, tieOrder, onBumpTie }) {
         const { standings, allPlayed, tieClusters, needsResolution } = computeStandings(group, tieOrder);
         const tiedIdxSet = new Set(tieClusters.flat());
         return (
@@ -1649,7 +1748,7 @@
               </div>
             </div>
             <div className="px-2 pt-2 pb-1.5 space-y-1">
-              {group.matches.map(m => <GroupMatchRow key={m.id} match={m} onPick={r => onPick(m.id, r)} />)}
+              {group.matches.map(m => <GroupMatchRow key={m.id} match={m} onPick={r => onPick(m.id, r)} onScoreChange={onScoreChange} scoreHome={scores?.[`sh:${m.id}`]} scoreAway={scores?.[`sa:${m.id}`]} />)}
             </div>
             <div className="px-2 pb-2">
               <div className="rounded-md bg-slate-950/60 border border-slate-800 overflow-hidden">
@@ -1700,27 +1799,59 @@
         );
       }
 
-      function GroupMatchRow({ match, onPick }) {
+      function GroupMatchRow({ match, onPick, onScoreChange, scoreHome, scoreAway }) {
         const locked = !!match.actual;
         const pA = match.actual ? match.actual === "A" : match.result === "A";
         const pB = match.actual ? match.actual === "B" : match.result === "B";
         const pD = match.actual ? match.actual === "D" : match.result === "D";
+        const hasPick = pA || pB || pD;
+        const hasScore = scoreHome != null && scoreAway != null && scoreHome !== "" && scoreAway !== "";
+
+        // When user types a score, auto-set the result pick
+        const handleScore = (side, value) => {
+          onScoreChange(match.id, side, value);
+          const h = side === "home" ? (value === "" ? null : Math.max(0, parseInt(value) || 0)) : scoreHome;
+          const a = side === "away" ? (value === "" ? null : Math.max(0, parseInt(value) || 0)) : scoreAway;
+          if (h != null && a != null) {
+            if (h > a) onPick("A");
+            else if (a > h) onPick("B");
+            else onPick("D");
+          }
+        };
+
         return (
           <div className={`rounded-md border p-1 ${locked ? "bg-slate-950/80 border-cyan-900/40" : "bg-slate-950/60 border-slate-800"}`}>
-            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-0.5">
+            <div className="flex items-center gap-0.5">
+              {/* Home team button */}
               <button onClick={()=>!locked && onPick("A")} disabled={locked}
-                className={`flex items-center justify-center gap-1 px-1.5 py-1 rounded-md border-2 text-xs transition-all relative ${pA ? "bg-gradient-to-r from-emerald-600/40 to-emerald-500/30 border-emerald-400 text-white shadow-[0_0_12px_rgba(16,185,129,0.35),inset_0_1px_0_rgba(255,255,255,0.1)]" : "bg-slate-900/60 border-slate-800 text-slate-400 hover:border-slate-600 hover:text-slate-200"} ${locked ? "cursor-default opacity-90" : ""}`}>
+                className={`flex items-center justify-center gap-1 px-1.5 py-1 rounded-md border-2 text-xs transition-all relative flex-1 min-w-0 ${pA ? "bg-gradient-to-r from-emerald-600/40 to-emerald-500/30 border-emerald-400 text-white shadow-[0_0_12px_rgba(16,185,129,0.35),inset_0_1px_0_rgba(255,255,255,0.1)]" : "bg-slate-900/60 border-slate-800 text-slate-400 hover:border-slate-600 hover:text-slate-200"} ${locked ? "cursor-default opacity-90" : ""}`}>
                 <TeamBadge team={match.teamA} size={13} />
-                <span className={pA ? "font-extrabold text-white" : "font-medium"}>{match.teamA.code}</span>
+                <span className={`truncate ${pA ? "font-extrabold text-white" : "font-medium"}`}>{match.teamA.code}</span>
                 {pA && <span className="absolute top-0 right-0.5 text-[7px] text-emerald-300">✓</span>}
-                {locked && match.score.home != null && <span className="absolute right-1.5 text-[10px] font-mono text-cyan-200">{match.score.home}</span>}
               </button>
-              <button onClick={()=>!locked && onPick("D")} disabled={locked}
-                className={`px-1.5 py-0.5 rounded-md text-[9px] font-bold tracking-wider border-2 ${pD ? "bg-gradient-to-r from-amber-500/35 to-amber-400/25 border-amber-400 text-white shadow-[0_0_12px_rgba(251,191,36,0.3),inset_0_1px_0_rgba(255,255,255,0.1)]" : "bg-slate-900/60 border-slate-800 text-slate-500 hover:text-amber-300 hover:border-amber-500/40"} ${locked ? "cursor-default opacity-90" : ""}`}>DRAW</button>
+              {/* Score inputs inline */}
+              {!locked && onScoreChange ? (
+                <div className="flex items-center gap-0.5 flex-none">
+                  <input type="number" min="0" max="20" placeholder="-"
+                    value={scoreHome != null ? scoreHome : ""}
+                    onChange={e => handleScore("home", e.target.value)}
+                    className="w-7 h-6 text-center text-xs font-mono rounded border border-amber-500/30 bg-slate-900 text-white focus:border-amber-400 focus:outline-none appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none" />
+                  <span className="text-[10px] text-slate-600 font-bold">-</span>
+                  <input type="number" min="0" max="20" placeholder="-"
+                    value={scoreAway != null ? scoreAway : ""}
+                    onChange={e => handleScore("away", e.target.value)}
+                    className="w-7 h-6 text-center text-xs font-mono rounded border border-amber-500/30 bg-slate-900 text-white focus:border-amber-400 focus:outline-none appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none" />
+                </div>
+              ) : (
+                <button onClick={()=>!locked && onPick("D")} disabled={locked}
+                  className={`px-1.5 py-0.5 rounded-md text-[9px] font-bold tracking-wider border-2 flex-none ${pD ? "bg-gradient-to-r from-amber-500/35 to-amber-400/25 border-amber-400 text-white shadow-[0_0_12px_rgba(251,191,36,0.3),inset_0_1px_0_rgba(255,255,255,0.1)]" : "bg-slate-900/60 border-slate-800 text-slate-500 hover:text-amber-300 hover:border-amber-500/40"} ${locked ? "cursor-default opacity-90" : ""}`}>
+                  {locked && match.score.home != null ? <span className="font-mono text-cyan-200">{match.score.home}-{match.score.away}</span> : "DRAW"}
+                </button>
+              )}
+              {/* Away team button */}
               <button onClick={()=>!locked && onPick("B")} disabled={locked}
-                className={`flex items-center justify-center gap-1 px-1.5 py-1 rounded-md border-2 text-xs transition-all relative ${pB ? "bg-gradient-to-l from-emerald-600/40 to-emerald-500/30 border-emerald-400 text-white shadow-[0_0_12px_rgba(16,185,129,0.35),inset_0_1px_0_rgba(255,255,255,0.1)]" : "bg-slate-900/60 border-slate-800 text-slate-400 hover:border-slate-600 hover:text-slate-200"} ${locked ? "cursor-default opacity-90" : ""}`}>
-                {locked && match.score.away != null && <span className="absolute left-1.5 text-[10px] font-mono text-cyan-200">{match.score.away}</span>}
-                <span className={pB ? "font-extrabold text-white" : "font-medium"}>{match.teamB.code}</span>
+                className={`flex items-center justify-center gap-1 px-1.5 py-1 rounded-md border-2 text-xs transition-all relative flex-1 min-w-0 ${pB ? "bg-gradient-to-l from-emerald-600/40 to-emerald-500/30 border-emerald-400 text-white shadow-[0_0_12px_rgba(16,185,129,0.35),inset_0_1px_0_rgba(255,255,255,0.1)]" : "bg-slate-900/60 border-slate-800 text-slate-400 hover:border-slate-600 hover:text-slate-200"} ${locked ? "cursor-default opacity-90" : ""}`}>
+                <span className={`truncate ${pB ? "font-extrabold text-white" : "font-medium"}`}>{match.teamB.code}</span>
                 <TeamBadge team={match.teamB} size={13} />
                 {pB && <span className="absolute top-0 left-0.5 text-[7px] text-emerald-300">✓</span>}
               </button>
@@ -1730,7 +1861,7 @@
       }
 
       /* ---------- Knockout ---------- */
-      function KnockoutStage({ data, onPick }) {
+      function KnockoutStage({ data, onPick, onScoreChange, scores }) {
         const stages = KO_ORDER.filter(k => {
           if (k === "f") return !!data.knockout.f;
           return data.knockout[k].length > 0;
@@ -1755,6 +1886,8 @@
                     points={KO_META[key].basePoints}
                     matches={key === "f" ? [data.knockout.f] : data.knockout[key]}
                     onPick={onPick}
+                    onScoreChange={onScoreChange}
+                    scores={scores}
                     final={key==="f"}
                   />
                 ))}
@@ -1766,14 +1899,14 @@
                   <Medal className="h-3.5 w-3.5 text-amber-300" />
                   Third-place Playoff <span className="text-amber-300 ml-auto">+{POINTS.third}pt</span>
                 </div>
-                <MatchCard match={data.knockout.third} onPick={team => team && onPick(data.knockout.third.id, team.id)} />
+                <MatchCard match={data.knockout.third} onPick={team => team && onPick(data.knockout.third.id, team.id)} onScoreChange={onScoreChange} scores={scores} />
               </div>
             )}
           </>
         );
       }
 
-      function BracketColumn({ title, points, matches, onPick, final=false }) {
+      function BracketColumn({ title, points, matches, onPick, final=false, onScoreChange, scores }) {
         return (
           <div className="flex-1 min-w-[180px] flex flex-col">
             <div className="text-[11px] uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
@@ -1782,16 +1915,34 @@
             <div className={`flex-1 flex flex-col justify-around gap-2 ${final ? "justify-center" : ""}`}>
               {matches.map(m => (
                 <MatchCard key={m?.id || Math.random()} match={m} big={final}
-                  onPick={team => team && m && onPick(m.id, team.id)} />
+                  onPick={team => team && m && onPick(m.id, team.id)}
+                  onScoreChange={onScoreChange} scores={scores} />
               ))}
             </div>
           </div>
         );
       }
 
-      function MatchCard({ match, onPick, big=false }) {
+      function MatchCard({ match, onPick, big=false, onScoreChange, scores }) {
         if (!match) return null;
         const locked = !!match.actual;
+        const fId = match.id;
+        const sh = scores?.[`sh:${fId}`] ?? "";
+        const sa = scores?.[`sa:${fId}`] ?? "";
+        const handleKoScore = (side, val) => {
+          if (!onScoreChange || locked) return;
+          const v = val === "" ? "" : Math.max(0, Math.min(99, parseInt(val) || 0));
+          onScoreChange(fId, side, v);
+          // Auto-pick winner when both scores entered
+          const nh = side === "home" ? v : sh;
+          const na = side === "away" ? v : sa;
+          if (nh !== "" && na !== "" && match.teamA && match.teamB) {
+            const h = Number(nh), a = Number(na);
+            if (h > a) onPick(match.teamA);
+            else if (a > h) onPick(match.teamB);
+            // If draw in knockout, user must still pick a winner manually
+          }
+        };
         return (
           <div className={`rounded-lg border overflow-hidden shadow-md transition ${locked ? "border-cyan-900/40 bg-slate-900/80" : "border-slate-800 bg-slate-900/70"} ${big ? "ring-1 ring-amber-400/30 shadow-[0_0_30px_rgba(251,191,36,0.15)]" : ""}`}>
             {big && (
@@ -1804,19 +1955,43 @@
                 FIFA M{match.matchNum}
               </div>
             )}
-            <KoRow team={match.teamA}
-              winner={(match.actual ? match.actual==="A" : match.winner && match.teamA && match.winner.id === match.teamA.id)}
-              score={match.score.home}
-              locked={locked}
-              onClick={()=>!locked && match.teamA && onPick(match.teamA)}
-              big={big} />
+            <div className="flex items-center">
+              <div className="flex-1">
+                <KoRow team={match.teamA}
+                  winner={(match.actual ? match.actual==="A" : match.winner && match.teamA && match.winner.id === match.teamA.id)}
+                  score={match.score.home}
+                  locked={locked}
+                  onClick={()=>!locked && match.teamA && onPick(match.teamA)}
+                  big={big} />
+              </div>
+              {!locked && onScoreChange && match.teamA && match.teamB ? (
+                <div className="flex flex-col items-center gap-0.5 px-1 flex-none">
+                  <input type="number" min="0" max="99" value={sh}
+                    onChange={e => handleKoScore("home", e.target.value)}
+                    className="w-7 h-6 text-center text-[11px] font-mono bg-slate-800 border border-slate-600 rounded text-white focus:border-amber-400 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    placeholder="-" />
+                </div>
+              ) : null}
+            </div>
             <div className="h-px bg-slate-800" />
-            <KoRow team={match.teamB}
-              winner={(match.actual ? match.actual==="B" : match.winner && match.teamB && match.winner.id === match.teamB.id)}
-              score={match.score.away}
-              locked={locked}
-              onClick={()=>!locked && match.teamB && onPick(match.teamB)}
-              big={big} />
+            <div className="flex items-center">
+              <div className="flex-1">
+                <KoRow team={match.teamB}
+                  winner={(match.actual ? match.actual==="B" : match.winner && match.teamB && match.winner.id === match.teamB.id)}
+                  score={match.score.away}
+                  locked={locked}
+                  onClick={()=>!locked && match.teamB && onPick(match.teamB)}
+                  big={big} />
+              </div>
+              {!locked && onScoreChange && match.teamA && match.teamB ? (
+                <div className="flex flex-col items-center gap-0.5 px-1 flex-none">
+                  <input type="number" min="0" max="99" value={sa}
+                    onChange={e => handleKoScore("away", e.target.value)}
+                    className="w-7 h-6 text-center text-[11px] font-mono bg-slate-800 border border-slate-600 rounded text-white focus:border-amber-400 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    placeholder="-" />
+                </div>
+              ) : null}
+            </div>
             {match.date && (
               <div className="px-2 py-1 text-[10px] text-slate-500 flex items-center justify-between border-t border-slate-800">
                 <span>{new Date(match.date).toLocaleDateString(undefined,{month:"short",day:"numeric"})}</span>
@@ -1845,21 +2020,76 @@
       }
 
       /* ---------- Leaderboard ---------- */
-      function Leaderboard({ rows, account, onSignIn }) {
-        const [mode, setMode] = useState("overall"); // "overall" | "country"
-        // Default the country filter to the signed-in user's country (if any)
-        // so they land on their own leaderboard — then let them change it.
+      function Leaderboard({ rows, account, authToken, onSignIn }) {
+        const [mode, setMode] = useState("overall"); // "overall" | "country" | "group"
         const [countryFilter, setCountryFilter] = useState(
           () => account?.country || "BR"
         );
-        // Keep filter in sync when user signs in after the component mounts
         useEffect(() => {
           if (account?.country) setCountryFilter(account.country);
         }, [account?.country]);
 
-        // Collect countries actually represented in the leaderboard,
-        // in descending player-count order, so the dropdown surfaces the
-        // active ones first.
+        // Private groups state
+        const [myGroups, setMyGroups] = useState([]);
+        const [activeGroupId, setActiveGroupId] = useState(null);
+        const [groupLB, setGroupLB] = useState([]);
+        const [groupLoading, setGroupLoading] = useState(false);
+        const [showCreate, setShowCreate] = useState(false);
+        const [showJoin, setShowJoin] = useState(false);
+        const [newGroupName, setNewGroupName] = useState("");
+        const [joinCode, setJoinCode] = useState("");
+        const [groupErr, setGroupErr] = useState(null);
+        const [copiedCode, setCopiedCode] = useState(null);
+
+        // Load user's groups on mount (if authenticated)
+        useEffect(() => {
+          if (!authToken) return;
+          apiLoadMyGroups(authToken).then(setMyGroups).catch(() => {});
+        }, [authToken]);
+
+        // Load group leaderboard when a group is selected
+        useEffect(() => {
+          if (!activeGroupId || !authToken) return;
+          setGroupLoading(true);
+          apiGroupLeaderboard(authToken, activeGroupId)
+            .then(lb => setGroupLB(lb))
+            .catch(() => setGroupLB([]))
+            .finally(() => setGroupLoading(false));
+        }, [activeGroupId, authToken]);
+
+        const handleCreateGroup = async () => {
+          if (!newGroupName.trim()) return;
+          setGroupErr(null);
+          try {
+            const res = await apiCreateGroup(authToken, newGroupName.trim());
+            const grp = res.data?.group || res.group;
+            if (grp) setMyGroups(prev => [...prev, grp]);
+            setNewGroupName(""); setShowCreate(false);
+          } catch (e) { setGroupErr(e.message); }
+        };
+        const handleJoinGroup = async () => {
+          if (!joinCode.trim()) return;
+          setGroupErr(null);
+          try {
+            const res = await apiJoinGroup(authToken, joinCode.trim());
+            const grp = res.data?.group || res.group;
+            if (grp) setMyGroups(prev => [...prev, grp]);
+            setJoinCode(""); setShowJoin(false);
+          } catch (e) { setGroupErr(e.message); }
+        };
+        const handleLeaveGroup = async (gid) => {
+          try {
+            await apiLeaveGroup(authToken, gid);
+            setMyGroups(prev => prev.filter(g => g._id !== gid));
+            if (activeGroupId === gid) { setActiveGroupId(null); setGroupLB([]); setMode("overall"); }
+          } catch {}
+        };
+        const copyInvite = (code) => {
+          navigator.clipboard?.writeText(code);
+          setCopiedCode(code);
+          setTimeout(() => setCopiedCode(null), 2000);
+        };
+
         const countriesInUse = useMemo(() => {
           const counts = new Map();
           rows.forEach(r => {
@@ -1872,10 +2102,10 @@
         }, [rows]);
 
         const filtered = useMemo(() => {
-          if (mode === "overall") return rows;
-          return rows.filter(r => r.country === countryFilter)
-            .map((r,i) => ({ ...r, countryRank: i+1 }));
-        }, [mode, rows, countryFilter]);
+          if (mode === "group") return groupLB.map((r,i) => ({ ...r, rank: i+1 }));
+          if (mode === "country") return rows.filter(r => r.country === countryFilter).map((r,i) => ({ ...r, countryRank: i+1 }));
+          return rows;
+        }, [mode, rows, countryFilter, groupLB]);
 
         const myRow = rows.find(r => r.isUser);
         const myCountryRank = account
@@ -1883,40 +2113,68 @@
                 .findIndex(r => r.isUser) + 1
           : 0;
 
+        // Render a leaderboard table
+        const renderTable = (data, isGroup) => (
+          <div className="rounded-2xl border border-slate-800 bg-slate-900/70 overflow-hidden">
+            <div className="grid grid-cols-[3rem_2rem_1fr_7rem_5rem] text-[11px] uppercase text-slate-500 px-4 py-2 border-b border-slate-800">
+              <div>Rank</div><div></div><div>Player</div><div className="text-center">Winner pick</div><div className="text-right">Score</div>
+            </div>
+            {data.length === 0 ? (
+              <div className="px-4 py-6 text-sm text-slate-500 text-center">
+                {isGroup ? "No picks in this group yet." : `No players yet from ${countryName(countryFilter)}. Be the first!`}
+              </div>
+            ) : data.map(row => {
+              const displayRank = mode === "country" ? row.countryRank : row.rank;
+              return (
+                <div key={`${displayRank}-${row.name || row.displayName}`} className={`grid grid-cols-[3rem_2rem_1fr_7rem_5rem] items-center px-4 py-2 text-sm border-b border-slate-800/70 last:border-none ${row.isUser ? "bg-emerald-400/10 text-emerald-100" : "text-slate-300"}`}>
+                  <div className={`font-bold ${displayRank===1?"text-amber-300":displayRank===2?"text-slate-200":displayRank===3?"text-orange-300":"text-slate-500"}`}>
+                    {displayRank===1 ? <span className="inline-flex items-center gap-1"><Crown className="h-3.5 w-3.5" />1</span> : `#${displayRank}`}
+                  </div>
+                  <div className="text-center text-base leading-none" title={countryName(row.country)}>
+                    {flagFor(row.country)}
+                  </div>
+                  <div className="truncate flex items-center gap-2">
+                    {row.isUser ? <span className="inline-flex items-center gap-1.5"><Star className="h-3.5 w-3.5 text-emerald-300" /><span className="font-semibold">{row.name || row.displayName}</span></span> : (row.name || row.displayName)}
+                    {!isGroup && mode === "overall" && row.country && <span className="text-[10px] text-slate-500 uppercase">· {countryName(row.country)}</span>}
+                  </div>
+                  <div className="text-center text-xs text-slate-400 truncate">{row.winner || "—"}</div>
+                  <div className="text-right font-mono font-semibold">{fmtPts(row.score || row.totalPoints)}</div>
+                </div>
+              );
+            })}
+          </div>
+        );
+
         return (
           <section className="mt-10">
             <div className="flex items-center gap-2 mb-3 flex-wrap">
               <TrendingUp className="h-5 w-5 text-cyan-300" />
               <h2 className="text-lg font-bold">Leaderboard</h2>
-              <span className="text-xs text-slate-500">(simulated — wired to samsports accounts)</span>
               <div className="ml-auto inline-flex rounded-lg bg-slate-900/80 border border-slate-800 p-1">
-                <button
-                  onClick={()=>setMode("overall")}
-                  className={`px-3 py-1 text-xs rounded-md font-semibold transition ${mode==="overall" ? "bg-slate-800 text-emerald-300" : "text-slate-400 hover:text-slate-200"}`}
-                >
+                <button onClick={()=>{setMode("overall");setActiveGroupId(null);}}
+                  className={`px-3 py-1 text-xs rounded-md font-semibold transition ${mode==="overall" ? "bg-slate-800 text-emerald-300" : "text-slate-400 hover:text-slate-200"}`}>
                   <span className="inline-flex items-center gap-1.5"><Trophy className="h-3.5 w-3.5" /> Overall</span>
                 </button>
-                <button
-                  onClick={()=>setMode("country")}
-                  className={`px-3 py-1 text-xs rounded-md font-semibold transition ${mode==="country" ? "bg-slate-800 text-emerald-300" : "text-slate-400 hover:text-slate-200"}`}
-                >
-                  <span className="inline-flex items-center gap-1.5">🌍 By Country</span>
+                <button onClick={()=>setMode("country")}
+                  className={`px-3 py-1 text-xs rounded-md font-semibold transition ${mode==="country" ? "bg-slate-800 text-emerald-300" : "text-slate-400 hover:text-slate-200"}`}>
+                  <span className="inline-flex items-center gap-1.5">🌍 Country</span>
                 </button>
+                {authToken && (
+                  <button onClick={()=>setMode("group")}
+                    className={`px-3 py-1 text-xs rounded-md font-semibold transition ${mode==="group" ? "bg-slate-800 text-emerald-300" : "text-slate-400 hover:text-slate-200"}`}>
+                    <span className="inline-flex items-center gap-1.5"><Users className="h-3.5 w-3.5" /> Groups</span>
+                  </button>
+                )}
               </div>
             </div>
 
             {mode === "country" && (
               <div className="mb-3 flex items-center gap-2 flex-wrap">
                 <label className="text-xs text-slate-400">Showing</label>
-                <select
-                  value={countryFilter}
-                  onChange={e=>setCountryFilter(e.target.value)}
-                  className="bg-slate-900 border border-slate-800 rounded-md px-2 py-1 text-sm text-slate-100"
-                >
+                <select value={countryFilter} onChange={e=>setCountryFilter(e.target.value)}
+                  className="bg-slate-900 border border-slate-800 rounded-md px-2 py-1 text-sm text-slate-100">
                   {countriesInUse.map(c => (
-                    <option key={c.code} value={c.code}>
-                      {flagFor(c.code)} {countryName(c.code)} ({c.n})
-                    </option>
+                    <option key={c.code} value={c.code}>{flagFor(c.code)} {countryName(c.code)} ({c.n})</option>
                   ))}
                 </select>
                 {account && account.country === countryFilter && myCountryRank > 0 && (
@@ -1925,7 +2183,76 @@
               </div>
             )}
 
-            {/* Guest banner — invite them to sign up to rank */}
+            {/* Private Groups toolbar */}
+            {mode === "group" && authToken && (
+              <div className="mb-3 space-y-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <button onClick={()=>{setShowCreate(true);setShowJoin(false);setGroupErr(null);}}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold hover:brightness-125">
+                    <Shield className="h-3.5 w-3.5" /> Create Group
+                  </button>
+                  <button onClick={()=>{setShowJoin(true);setShowCreate(false);setGroupErr(null);}}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 text-xs font-semibold hover:text-white">
+                    <KeyRound className="h-3.5 w-3.5" /> Join Group
+                  </button>
+                </div>
+
+                {/* Create form */}
+                {showCreate && (
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <input value={newGroupName} onChange={e=>setNewGroupName(e.target.value)}
+                      placeholder="Group name" maxLength={30}
+                      className="bg-slate-900 border border-slate-700 rounded-md px-2 py-1 text-sm text-white w-44 focus:border-emerald-400 focus:outline-none"
+                      onKeyDown={e => e.key === "Enter" && handleCreateGroup()} />
+                    <button onClick={handleCreateGroup}
+                      className="px-3 py-1 rounded-md bg-emerald-500 text-slate-900 text-xs font-bold hover:bg-emerald-400">Create</button>
+                    <button onClick={()=>setShowCreate(false)} className="text-slate-500 text-xs hover:text-slate-300">Cancel</button>
+                  </div>
+                )}
+
+                {/* Join form */}
+                {showJoin && (
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <input value={joinCode} onChange={e=>setJoinCode(e.target.value)}
+                      placeholder="Invite code" maxLength={6}
+                      className="bg-slate-900 border border-slate-700 rounded-md px-2 py-1 text-sm text-white w-28 font-mono uppercase focus:border-cyan-400 focus:outline-none"
+                      onKeyDown={e => e.key === "Enter" && handleJoinGroup()} />
+                    <button onClick={handleJoinGroup}
+                      className="px-3 py-1 rounded-md bg-cyan-500 text-slate-900 text-xs font-bold hover:bg-cyan-400">Join</button>
+                    <button onClick={()=>setShowJoin(false)} className="text-slate-500 text-xs hover:text-slate-300">Cancel</button>
+                  </div>
+                )}
+
+                {groupErr && <div className="text-xs text-red-400">{groupErr}</div>}
+
+                {/* Group chips */}
+                {myGroups.length > 0 && (
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {myGroups.map(g => (
+                      <div key={g._id}
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border cursor-pointer transition ${activeGroupId === g._id ? "bg-emerald-500/20 border-emerald-400 text-emerald-200" : "bg-slate-800/80 border-slate-700 text-slate-400 hover:text-slate-200 hover:border-slate-600"}`}>
+                        <span onClick={() => setActiveGroupId(g._id)} className="font-semibold">{g.name}</span>
+                        <span className="text-[10px] text-slate-500">({g.members?.length || 0})</span>
+                        <button onClick={(e)=>{e.stopPropagation();copyInvite(g.inviteCode);}} title={`Invite code: ${g.inviteCode}`}
+                          className="ml-0.5 text-slate-500 hover:text-cyan-300">
+                          {copiedCode === g.inviteCode ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3" />}
+                        </button>
+                        <button onClick={(e)=>{e.stopPropagation();handleLeaveGroup(g._id);}} title="Leave group"
+                          className="text-slate-600 hover:text-red-400">
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {myGroups.length === 0 && !showCreate && !showJoin && (
+                  <div className="text-xs text-slate-500 italic">Create a group to compete with friends, or join one with an invite code.</div>
+                )}
+              </div>
+            )}
+
+            {/* Guest banner */}
             {!account && (
               <div className="mb-3 rounded-lg bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 border border-emerald-500/30 px-4 py-3 flex items-center gap-3 flex-wrap">
                 <Star className="h-5 w-5 text-emerald-300 flex-none" />
@@ -1938,34 +2265,15 @@
               </div>
             )}
 
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/70 overflow-hidden">
-              <div className="grid grid-cols-[3rem_2rem_1fr_7rem_5rem] text-[11px] uppercase text-slate-500 px-4 py-2 border-b border-slate-800">
-                <div>Rank</div><div></div><div>Player</div><div className="text-center">Winner pick</div><div className="text-right">Score</div>
+            {mode === "group" && groupLoading && (
+              <div className="flex items-center justify-center py-8 text-slate-500 text-sm gap-2">
+                <Loader2 className="h-4 w-4 animate-spin" /> Loading group leaderboard…
               </div>
-              {filtered.length === 0 ? (
-                <div className="px-4 py-6 text-sm text-slate-500 text-center">
-                  No players yet from {countryName(countryFilter)}. Be the first!
-                </div>
-              ) : filtered.map(row => {
-                const displayRank = mode === "country" ? row.countryRank : row.rank;
-                return (
-                  <div key={`${row.rank}-${row.name}`} className={`grid grid-cols-[3rem_2rem_1fr_7rem_5rem] items-center px-4 py-2 text-sm border-b border-slate-800/70 last:border-none ${row.isUser ? "bg-emerald-400/10 text-emerald-100" : "text-slate-300"}`}>
-                    <div className={`font-bold ${displayRank===1?"text-amber-300":displayRank===2?"text-slate-200":displayRank===3?"text-orange-300":"text-slate-500"}`}>
-                      {displayRank===1 ? <span className="inline-flex items-center gap-1"><Crown className="h-3.5 w-3.5" />1</span> : `#${displayRank}`}
-                    </div>
-                    <div className="text-center text-base leading-none" title={countryName(row.country)}>
-                      {flagFor(row.country)}
-                    </div>
-                    <div className="truncate flex items-center gap-2">
-                      {row.isUser ? <span className="inline-flex items-center gap-1.5"><Star className="h-3.5 w-3.5 text-emerald-300" /><span className="font-semibold">{row.name}</span></span> : row.name}
-                      {mode === "overall" && row.country && <span className="text-[10px] text-slate-500 uppercase">· {countryName(row.country)}</span>}
-                    </div>
-                    <div className="text-center text-xs text-slate-400 truncate">{row.winner}</div>
-                    <div className="text-right font-mono font-semibold">{fmtPts(row.score)}</div>
-                  </div>
-                );
-              })}
-            </div>
+            )}
+            {mode === "group" && !activeGroupId && !groupLoading && myGroups.length > 0 && (
+              <div className="text-center py-6 text-sm text-slate-500">Select a group above to see rankings.</div>
+            )}
+            {(mode !== "group" || (activeGroupId && !groupLoading)) && renderTable(filtered, mode === "group")}
           </section>
         );
       }

@@ -5,6 +5,7 @@ import Header from '../../components/Header'
 import { attachToken, privateAPI } from '../../config/constants'
 import { useLanguage } from '../../i18n/LanguageContext'
 import OnboardingGuide from '../../components/OnboardingGuide'
+import { CREST_STYLES, COLORS, crestDataUri } from '../../utils/crestStyles'
 
 const ROLE_BADGES = {
   gm: (color, size = 20) => (
@@ -81,6 +82,23 @@ const TeamSettings = () => {
   const [logoPreview, setLogoPreview] = useState(null)
   const [logoFile, setLogoFile] = useState(null)
   const [savingLogo, setSavingLogo] = useState(false)
+  const [crestOpen, setCrestOpen] = useState(false)
+  const [colorA, setColorA] = useState(COLORS[4].val)
+  const [colorB, setColorB] = useState(COLORS[1].val)
+
+  const saveCrest = async (styleKey) => {
+    setSavingLogo(true)
+    try {
+      attachToken()
+      const dataUri = crestDataUri(styleKey, team?.name || 'Team', colorA, colorB)
+      await privateAPI.post('/team/set-logo', { logo: dataUri, teamId: resolvedTeamId })
+      notification.success({ message: 'Crest set as your team logo!' })
+      setTimeout(() => window.location.reload(), 700)
+    } catch (err) {
+      notification.error({ message: err.response?.data?.message || 'Failed to save crest' })
+      setSavingLogo(false)
+    }
+  }
 
   const [resolvedTeamId, setResolvedTeamId] = useState(teamId)
 
@@ -433,6 +451,16 @@ const TeamSettings = () => {
             >
               Choose Image
             </button>
+            <button
+              onClick={() => setCrestOpen((o) => !o)}
+              style={{
+                background: crestOpen ? 'rgba(34,197,94,0.28)' : 'rgba(34,197,94,0.12)',
+                border: '1px solid rgba(34,197,94,0.3)', borderRadius: 8, color: '#22C55E',
+                fontSize: 12, fontWeight: 600, padding: '6px 14px', cursor: 'pointer',
+              }}
+            >
+              Design Crest
+            </button>
             {logoFile && (
               <>
                 <button
@@ -489,6 +517,39 @@ const TeamSettings = () => {
           </div>
         </div>
       </div>
+
+      {/* Crest Designer */}
+      {isOwner && crestOpen && (
+        <div style={{ background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: 12, padding: '18px 20px', marginBottom: 24 }}>
+          {[{ lbl: 'Primary colour', val: colorA, set: setColorA }, { lbl: 'Secondary colour (for split styles)', val: colorB, set: setColorB }].map((row) => (
+            <div key={row.lbl} style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#22C55E', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8, fontFamily: "'Rajdhani', sans-serif" }}>{row.lbl}</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
+                {COLORS.map((c) => (
+                  <button key={c.key} onClick={() => row.set(c.val)} title={c.key}
+                    style={{ width: 30, height: 30, borderRadius: 7, cursor: 'pointer', background: c.val,
+                      border: row.val === c.val ? '2px solid #22C55E' : '1px solid rgba(255,255,255,0.15)',
+                      boxShadow: row.val === c.val ? '0 0 8px rgba(34,197,94,0.4)' : 'none' }} />
+                ))}
+              </div>
+            </div>
+          ))}
+          <div style={{ fontSize: 12, fontWeight: 700, color: '#22C55E', textTransform: 'uppercase', letterSpacing: 1, margin: '16px 0 12px', fontFamily: "'Rajdhani', sans-serif" }}>Choose a style</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(96px, 1fr))', gap: 12 }}>
+            {CREST_STYLES.map((st) => (
+              <button key={st.key} onClick={() => saveCrest(st.key)} disabled={savingLogo}
+                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, padding: 8,
+                  cursor: savingLogo ? 'default' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(34,197,94,0.5)' }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)' }}>
+                <img alt={st.label} src={crestDataUri(st.key, team?.name || 'Team', colorA, colorB)} style={{ width: 76, height: 76 }} />
+                <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 600 }}>{st.label}</span>
+              </button>
+            ))}
+          </div>
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', marginTop: 12 }}>Click a style to set it as your team crest. You can change it anytime.</div>
+        </div>
+      )}
 
       {/* Owner Card */}
       <div style={{

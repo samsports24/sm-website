@@ -1543,7 +1543,7 @@ const WorldCupHub = () => {
         </div>
         <iframe
           id='wcp-iframe'
-          src='/WorldCupPredictor-Live.html'
+          src='/WorldCupPredictor-Live.html?v=3'
           title='World Cup Predictor'
           style={{
             flex: 1, width: '100%', border: 'none',

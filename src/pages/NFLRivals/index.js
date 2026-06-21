@@ -376,7 +376,7 @@ const NFLRivalsOverview = () => {
                   return (
                     <div key={(m.entry && m.entry._id) || idx} className={`rv2-pod-row ${isMe ? 'rv2-pod-me' : ''}`}>
                       <span className="rv2-pod-rank">{idx + 1}</span>
-                      <span className="rv2-pod-name">{(m.user && m.user.username) || m.username || 'Manager'}</span>
+                      <span className="rv2-pod-name">{(m.user && (m.user.userName || m.user.username)) || (m.entry && m.entry.teamName) || m.username || 'Manager'}</span>
                       <span className="rv2-pod-record">
                         <span className="rv2-pod-w">{m.wins || 0}</span>
                         <span className="rv2-pod-sep">-</span>

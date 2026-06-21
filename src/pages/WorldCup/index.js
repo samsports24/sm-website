@@ -326,7 +326,7 @@ const WorldCup = () => {
           {activeTab === 'predictor' && (
             <div className='wc-predictor'>
               <iframe
-                src='/WorldCupPredictor-Live.html'
+                src='/WorldCupPredictor-Live.html?v=3'
                 title='World Cup Predictor'
                 className='wc-predictor-iframe'
                 loading='lazy'

@@ -81,7 +81,7 @@ const TeamRoster = () => {
       <ButtonsAndPagination />
       <div className='viewing_roster_heading'>
         {activePlayerData[0]?.team?.name && (
-          <h2>Your are viewing {activePlayerData[0]?.team?.name} rosters.</h2>
+          <h2>Viewing <b>{activePlayerData[0]?.team?.name}</b> Roster</h2>
         )}
       </div>
       <hr className='divider' />
@@ -95,7 +95,10 @@ const TeamRoster = () => {
               <div style={{ minWidth: '800px' }}>
                 <div className='practice_squad_header' style={{ marginTop: '20px' }}>
                   <p className='heading'>
-                    Active<b>Squad</b>
+                    Active <b>Squad</b>
+                    <span style={{ marginLeft: 12, fontSize: 13, color: 'rgba(255,255,255,0.4)', fontWeight: 400 }}>
+                      {filterData?.filterActiveRoster?.length || 0} players
+                    </span>
                   </p>
                 </div>
                 <section className='stats_container'>
@@ -119,13 +122,16 @@ const TeamRoster = () => {
                       )
                     })
                   ) : (
-                    <Empty text={'Active Squad IS EMPTY'} />
+                    <Empty text={'No active players yet'} />
                   )}
                 </section>
                 {/* -------------------------------------------------- */}
                 <div className='practice_squad_header' style={{ marginTop: '20px' }}>
                   <p className='heading'>
-                    Non-Active<b>Squad</b>
+                    Non-Active <b>Squad</b>
+                    <span style={{ marginLeft: 12, fontSize: 13, color: 'rgba(255,255,255,0.4)', fontWeight: 400 }}>
+                      {filterData?.filterNonActiveRoster?.length || 0} players
+                    </span>
                   </p>
                 </div>
                 <section className='stats_container'>
@@ -149,14 +155,17 @@ const TeamRoster = () => {
                       )
                     })
                   ) : (
-                    <Empty text={'Non-Active Squad IS EMPTY'} />
+                    <Empty text={'No non-active players'} />
                   )}
                 </section>
                 {/* -------------------------------------------------- */}
-                <hr style={{ marginBlock: '20px' }} />
+                <hr style={{ marginBlock: '20px', borderColor: 'rgba(255,255,255,0.08)' }} />
                 <div className='practice_squad_header'>
                   <p className='heading'>
-                    Practice<b>Squad</b>
+                    Practice <b>Squad</b>
+                    <span style={{ marginLeft: 12, fontSize: 13, color: 'rgba(255,255,255,0.4)', fontWeight: 400 }}>
+                      {filterData?.filterPracticeRoster?.length || 0} players
+                    </span>
                   </p>
                 </div>
                 <section className='stats_container'>
@@ -181,13 +190,16 @@ const TeamRoster = () => {
                       )
                     })
                   ) : (
-                    <Empty text={'Practice Squad IS EMPTY'} />
+                    <Empty text={'No practice squad players'} />
                   )}
                 </section>
                 {/* -------------------------------------------------- */}
                 <div className='practice_squad_header' style={{ marginTop: '20px' }}>
                   <p className='heading'>
-                    Protected<b>Squad</b>
+                    Protected <b>Squad</b>
+                    <span style={{ marginLeft: 12, fontSize: 13, color: 'rgba(255,255,255,0.4)', fontWeight: 400 }}>
+                      {filterData?.filterProtectedRoster?.length || 0} players
+                    </span>
                   </p>
                 </div>
                 <section className='stats_container'>
@@ -212,7 +224,7 @@ const TeamRoster = () => {
                       )
                     })
                   ) : (
-                    <Empty text={'Protected Squad IS EMPTY'} />
+                    <Empty text={'No protected players'} />
                   )}
                 </section>
                 {/* Draft picks section removed, managed via Trade page */}

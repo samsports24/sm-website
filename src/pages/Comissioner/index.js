@@ -22,7 +22,7 @@ import {
 } from '@ant-design/icons'
 
 import { getLeagueDetails, getProfessionalLeagueRanks, impersonateUser, updateCommissionersInLeague, getSamMetric } from '../../redux'
-import { updateLeagueCommissioner } from '../../redux/actions/leagueActions'
+import { updateLeagueCommissioner, deleteLeagueCommissioner } from '../../redux/actions/leagueActions'
 import { attachToken, privateAPI } from '../../config/constants'
 import { getRenewalStatus, respondToRenewal, revokeCancellation, transferCommissioner } from '../../redux/actions/seasonRenewalAction'
 import { updateTeamConfDivision, getAllTeamsList } from '../../redux/actions/teamActions'
@@ -120,7 +120,22 @@ const Comissioner = () => {
   const leagueState = useSelector((state) => state.league) || {}
   const currentLeague = leagueState.currentLeague
 
-  const isCommissioner = user?.isCommissioner ?? false
+  // Access gate is league-aware: trust the global `user.isCommissioner` flag
+  // when set (legacy behavior), AND fall back to a fresh check of the active
+  // league document. Previously we only used the global flag, which meant that
+  // newly-added co-commissioners got "Commissioner Access Required" until they
+  // logged out and back in — because the global boolean hadn't been refreshed
+  // on their session yet.
+  const requesterId = String(user?._id || user?.id || '')
+  const ownerId = String(currentLeague?.createdBy?._id || currentLeague?.createdBy || '')
+  const coId = String(currentLeague?.coComissioner?._id || currentLeague?.coComissioner || '')
+  const leagueCommIds = (currentLeague?.leagueCommissioners || []).map((c) => String(c?._id || c))
+  const isLeagueCommissioner = !!requesterId && (
+    (!!ownerId && requesterId === ownerId) ||
+    (!!coId && requesterId === coId) ||
+    leagueCommIds.includes(requesterId)
+  )
+  const isCommissioner = (user?.isCommissioner ?? false) || isLeagueCommissioner
   const currentLeagueId = user?.team?.currentLeague?._id
 
   useEffect(() => {
@@ -3882,11 +3897,36 @@ const AdminsTab = ({ teams, user, userLeague, currentLeague }) => {
 
   const updateLeagueCommissioners = async () => {
     setLoading(true)
-    await updateCommissionersInLeague({
-      leagueId: userLeague,
-      users: goingToBeCommissioner,
-    })
-    setGoingToBeCommissioner([])
+    // Use the ACTUAL active league id. `userLeague` came from
+    // state.user.SamPoints.league which is not always set, so the previous
+    // call frequently sent a falsy leagueId — the backend's
+    // findByIdAndUpdate silently no-op'd and the new commissioner never
+    // landed in league.leagueCommissioners[], even though their
+    // User.isCommissioner global flag flipped. Result: granted user could
+    // not access /commissioner because the league-aware gate (createdBy /
+    // coComissioner / leagueCommissioners) didn't include them.
+    const leagueId = currentLeague?._id || userLeague
+    if (!leagueId) {
+      setLoading(false)
+      try { (await import('antd')).notification.error({ message: 'No active league selected' }) } catch (_) {}
+      return
+    }
+    try {
+      // `goingToBeCommissioner` may be a mix of objects (existing populated
+      // commissioners) and strings (newly-picked user ids) depending on the
+      // Select control. Normalise to ObjectId strings before sending.
+      const userIds = (goingToBeCommissioner || []).map((u) => String(u?._id || u))
+      await updateCommissionersInLeague({
+        leagueId,
+        users: userIds,
+      })
+      // Refresh the league so currentLeague.leagueCommissioners reflects
+      // the new state — otherwise the UI stays stale until a hard refresh.
+      try { await getLeagueDetails() } catch (_) {}
+      try { (await import('antd')).notification.success({ message: 'Commissioners updated' }) } catch (_) {}
+    } catch (err) {
+      try { (await import('antd')).notification.error({ message: 'Could not update commissioners', description: err?.response?.data?.message || err?.message || 'Server error' }) } catch (_) {}
+    }
     setLoading(false)
   }
 
@@ -4421,7 +4461,202 @@ const SeasonTab = ({ teams, user, currentLeague }) => {
           <p>Are you sure you want to transfer your commissioner rights? You will be demoted to co-commissioner and cannot undo this action.</p>
         </Modal>
       </div>
+
+      {/* ═══ DANGER ZONE: Delete League ═══
+          Top-level section inside SeasonTab so it stands on its own (the
+          version nested in the Transfer Commissioner card was visually
+          hidden under the transfer button). */}
+      <DangerZoneNFL currentLeague={currentLeague} />
     </>
+  )
+}
+
+/* ───────── Danger Zone: Vote-based League Deletion (NFL) ─────────
+   The old single-click delete is superseded by a 67%/7-day owner vote.
+   This thin wrapper picks up the league + user context and renders the
+   shared vote card. Solo commissioner → auto-passes immediately. */
+import LeagueDeletionVoteCardNFL from '../../components/LeagueDeletionVoteCard'
+
+const DangerZoneNFL = ({ currentLeague }) => {
+  const user = useSelector((s) => s.user?.user || s.user?.userDetails)
+  const requesterId = String(user?._id || user?.id || '')
+  const ownerId = String(currentLeague?.createdBy?._id || currentLeague?.createdBy || '')
+  const isHeadCommissioner = !!requesterId && !!ownerId && requesterId === ownerId
+  // Any user with a team in the league is an owner who can vote.
+  const myTeamInLeague = (currentLeague?.teams || []).some(
+    (t) => String(t?.owner?._id || t?.owner || t?.user?._id || t?.user) === requesterId
+  )
+  return (
+    <LeagueDeletionVoteCardNFL
+      currentLeague={currentLeague}
+      user={user}
+      isHeadCommissioner={isHeadCommissioner}
+      isTeamOwner={myTeamInLeague || isHeadCommissioner}
+    />
+  )
+}
+
+// Old direct-delete component kept for reference; no longer rendered.
+const _LegacyDangerZoneNFL = ({ currentLeague }) => {
+  const navigate = useNavigate()
+  // Look up the current user across the same shapes the rest of the page uses
+  // (the redux store has been seen as both s.user.user and s.user.userDetails
+  // depending on which slice last hydrated).
+  const user = useSelector((s) => s.user?.user || s.user?.userDetails)
+  const [open, setOpen] = useState(false)
+  const [typed, setTyped] = useState('')
+  const [deleting, setDeleting] = useState(false)
+  const targetName = currentLeague?.name || currentLeague?.leagueName || ''
+  const canDelete = typed.trim().length > 0 && typed.trim() === targetName.trim()
+
+  // UI gate (defense in depth — the backend already enforces "only createdBy
+  // can delete" and 403s everyone else). We surface the panel to:
+  //   - the head commissioner (league.createdBy), AND
+  //   - any user listed in league.leagueCommissioners[]
+  // so co-commissioners can SEE the option and read the explanation, but the
+  // backend still refuses if they try to actually delete. If the league object
+  // is missing those fields entirely (older sessions, partial hydration), we
+  // fall back to the page-level isCommissioner check — if you're allowed on
+  // /commissioner at all, you're allowed to read the Danger Zone copy.
+  const requesterId = String(user?._id || user?.id || '')
+  const ownerId = String(
+    currentLeague?.createdBy?._id || currentLeague?.createdBy || ''
+  )
+  const coIds = (currentLeague?.leagueCommissioners || []).map(
+    (c) => String(c?._id || c)
+  )
+  const isHeadCommissioner = !!requesterId && !!ownerId && requesterId === ownerId
+  const isAnyCommissioner = isHeadCommissioner || coIds.includes(requesterId)
+  // Final gate: if we can confidently identify the head commissioner, restrict
+  // to commissioners; otherwise (no createdBy on the object) fall through so
+  // the panel still surfaces — the API will still 403 anyone unauthorized.
+  if (ownerId && !isAnyCommissioner) return null
+
+  const onDelete = async () => {
+    if (!canDelete) return
+    setDeleting(true)
+    try {
+      await deleteLeagueCommissioner({ _id: currentLeague?._id })
+      notification.success({
+        message: 'League deleted',
+        description: `${targetName} has been permanently removed.`,
+      })
+      setOpen(false)
+      navigate('/hub')
+    } catch (err) {
+      notification.error({
+        message: 'Could not delete league',
+        description: err?.response?.data?.message || err?.message || 'The league could not be deleted. Make sure you are the only commissioner and no other teams remain.',
+      })
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  return (
+    <div style={{
+      ...GLASS_STYLE,
+      padding: '24px',
+      marginTop: '32px',
+      borderColor: 'rgba(239,68,68,0.35)',
+      background: 'linear-gradient(135deg, rgba(239,68,68,0.06), rgba(127,29,29,0.03))',
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+        <WarningOutlined style={{ color: '#EF4444', fontSize: 18 }} />
+        <h3 style={{
+          fontFamily: "'Rajdhani', sans-serif",
+          fontSize: '18px',
+          fontWeight: 700,
+          color: '#EF4444',
+          margin: 0,
+          textTransform: 'uppercase',
+          letterSpacing: '0.5px',
+        }}>Danger Zone</h3>
+      </div>
+      <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13, margin: '0 0 16px' }}>
+        Deleting the league removes every team, draft, trade, fixture and history record for {targetName || 'this league'}.
+        This cannot be undone. Only the commissioner can perform this action, and only when no other teams remain.
+      </p>
+      <Button
+        danger
+        size='large'
+        icon={<ExclamationCircleOutlined />}
+        onClick={() => { setTyped(''); setOpen(true) }}
+        style={{ fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}
+      >
+        Delete League
+      </Button>
+
+      <Modal
+        open={open}
+        title={null}
+        footer={null}
+        closable={false}
+        centered
+        onCancel={() => !deleting && setOpen(false)}
+        styles={{ content: { background: '#111827', border: '1px solid rgba(239,68,68,0.4)', borderRadius: '16px', padding: '28px' } }}
+      >
+        <div style={{ textAlign: 'left' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+            <ExclamationCircleOutlined style={{ color: '#EF4444', fontSize: 22 }} />
+            <h3 style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: 20, fontWeight: 700, color: '#fff', margin: 0 }}>
+              Permanently delete league
+            </h3>
+          </div>
+          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, margin: '0 0 14px', lineHeight: 1.5 }}>
+            This action is irreversible. Every team, draft, trade, fixture and trophy from{' '}
+            <span style={{ color: '#22C55E', fontWeight: 700 }}>{targetName}</span>{' '}
+            will be deleted.
+          </p>
+          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, margin: '0 0 6px' }}>
+            Type the league name to confirm:
+          </p>
+          <input
+            type='text'
+            value={typed}
+            onChange={(e) => setTyped(e.target.value)}
+            placeholder={targetName}
+            disabled={deleting}
+            autoFocus
+            style={{
+              width: '100%',
+              background: 'rgba(0,0,0,0.35)',
+              border: `1px solid ${canDelete ? '#22C55E' : 'rgba(239,68,68,0.4)'}`,
+              borderRadius: 8,
+              padding: '10px 14px',
+              color: '#fff',
+              fontSize: 14,
+              outline: 'none',
+              marginBottom: 18,
+              fontFamily: 'inherit',
+            }}
+          />
+          <div style={{ display: 'flex', gap: 12 }}>
+            <Button
+              onClick={() => setOpen(false)}
+              disabled={deleting}
+              style={{ flex: 1, height: 40, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(110,105,128,0.3)', color: 'rgba(255,255,255,0.8)', borderRadius: 8, fontWeight: 600 }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={onDelete}
+              disabled={!canDelete || deleting}
+              loading={deleting}
+              style={{
+                flex: 1.4, height: 40, borderRadius: 8, fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase',
+                background: canDelete ? 'linear-gradient(135deg, #EF4444, #B91C1C)' : 'rgba(239,68,68,0.25)',
+                color: '#fff', border: 'none',
+                cursor: canDelete && !deleting ? 'pointer' : 'not-allowed',
+                opacity: canDelete ? 1 : 0.55,
+              }}
+            >
+              {deleting ? 'Deleting…' : 'Delete league'}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    </div>
   )
 }
 

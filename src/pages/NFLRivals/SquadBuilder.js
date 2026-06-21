@@ -440,8 +440,8 @@ const SquadBuilder = () => {
             {drafting ? 'Drafting...' : `Random Draft${draftAttempts > 0 ? ` (${MAX_DRAFT_ATTEMPTS - draftAttempts} left)` : ''}`}
           </Button>
           <Button block type="primary" size="large" icon={<SaveOutlined />}
-            loading={saving} disabled={!dirty} onClick={() => handleSave(null, false)} className="nflr-gold-btn">
-            {dirty ? 'Save Roster' : 'Roster Saved'}
+            loading={saving} disabled={saving || squad.length === 0} onClick={() => handleSave(null, false)} className="nflr-gold-btn">
+            {saving ? 'Saving…' : dirty ? 'Save Roster' : 'Roster Saved ✓'}
           </Button>
           <Button size="large" icon={<DollarOutlined />} onClick={() => navigate('/nfl-rivals/buy-sp')}
             style={{ background: 'linear-gradient(135deg, #10b981, #059669)', border: 'none', fontWeight: 700, color: '#fff', flex: '0 0 auto' }}>

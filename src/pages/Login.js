@@ -12,6 +12,7 @@ import Banner from '../assets/login-pic-1.png'
 import { authLogin } from '../redux'
 import { useDispatch, useSelector } from 'react-redux'
 import PaymentModal from '../components/modal/PaymentModal'
+import SocialLogin from '../components/SocialLogin'
 
 
 const SignIn = () => {
@@ -103,6 +104,7 @@ const SignIn = () => {
                   </Button>
                 </Form.Item>
               </Form>
+              <SocialLogin />
               <div className='create-account'>
                 <p>
                   Don{"'"}t have an account?{' '}

@@ -2,11 +2,13 @@ import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SPORT_TABS } from './constants';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { usePartner } from '../../contexts/PartnerContext';
 
 const LandingHeader = ({ activeSport, onSportChange, isAuthenticated, onLoginClick, onLogout }) => {
   const navigate = useNavigate();
   const tabsContainerRef = useRef(null);
   const { lang, changeLang, t } = useLanguage();
+  const { isPartnerSite, logo, businessName } = usePartner();
 
   const languages = ['en', 'fr', 'es', 'pt'];
 
@@ -28,11 +30,12 @@ const LandingHeader = ({ activeSport, onSportChange, isAuthenticated, onLoginCli
       {/* Logo Section */}
       <a href="#" onClick={(e) => { e.preventDefault(); handleLogoClick(); }} className="ls-logo">
         <img
-          src="/samsports-logo.svg"
-          alt="SAMSports"
+          src={isPartnerSite && logo ? logo : "/samsports-logo.svg"}
+          alt={isPartnerSite ? businessName : "SAMSports"}
           className="ls-logo-icon"
+          style={isPartnerSite && logo ? { borderRadius: 6, objectFit: 'contain' } : {}}
         />
-        <span className="ls-logo-text">SAMSPORTS</span>
+        <span className="ls-logo-text">{isPartnerSite ? businessName.toUpperCase() : 'SAMSPORTS'}</span>
       </a>
 
       {/* Sport Tabs Section */}

@@ -1,0 +1,51 @@
+server {
+    server_name samsports.io www.samsports.io;
+
+    root /opt/samsports/sm-website/build;
+    index index.html;
+
+    # Never cache the HTML shell or the build manifest — always revalidate so
+    # users pick up new deploys immediately.
+    location = /index.html {
+        add_header Cache-Control "no-store, no-cache, must-revalidate";
+        expires -1;
+    }
+    location = /asset-manifest.json {
+        add_header Cache-Control "no-store, no-cache, must-revalidate";
+        expires -1;
+    }
+
+    location = /WorldCupPredictor-Live.html {
+        add_header Cache-Control "no-cache, no-store, must-revalidate";
+        expires 0;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.html;
+        add_header Cache-Control "no-store, no-cache, must-revalidate";
+        expires -1;
+    }
+
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    listen 443 ssl;
+    ssl_certificate /etc/letsencrypt/live/samsports.io/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/samsports.io/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+}
+
+server {
+    if ($host = www.samsports.io) {
+        return 301 https://$host$request_uri;
+    }
+    if ($host = samsports.io) {
+        return 301 https://$host$request_uri;
+    }
+    listen 80;
+    server_name samsports.io www.samsports.io;
+    return 404;
+}

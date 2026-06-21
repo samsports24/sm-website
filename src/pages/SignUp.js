@@ -19,6 +19,7 @@ import Twitter from '../assets/twitter.svg'
 import YouTube from '../assets/youtube.svg'
 import Banner from '../assets/login-pic-1.png'
 import { authSignup } from '../redux/actions/authActions'
+import SocialLogin from '../components/SocialLogin'
 const SignUp = () => {
   const [loading, setLoading] = useState(false)
   const [terms, setTerms] = useState(false)
@@ -155,6 +156,7 @@ const SignUp = () => {
                   </Button>
                 </Form.Item>
               </Form>
+              <SocialLogin />
               <div className='create-account'>
                 <p>
                   Already Registered{' '}

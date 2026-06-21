@@ -1,17 +1,17 @@
 /* ============================================
-   YOUR EMPIRE — Hybrid Front Office (NFL)
+   YOUR EMPIRE — Hybrid Front Office
    Gold Empire branding + Bloomberg ticker
    + Intel Feed sidebar + 3-panel layouts
 
    Palette:
-     Gold:       #D4AF37
-     Gold Dim:   #8a7a44
-     Gold BG:    #1a1400
-     Gold Border:#2a2200
-     Dark:       #0a0a00
-     Card:       #0d0d00
-     Green:      #00ff87
-     Red:        #ff4444
+     Gold:       #C9A86A
+     Gold Dim:   #69748B
+     Gold BG:    #0F1A2C
+     Gold Border:rgba(233,231,223,0.09)
+     Dark:       #080C14
+     Card:       #0C1422
+     Green:      #5FD08A
+     Red:        #E8786C
      Cyan:       #00ccff
      Purple:     #aa44ff
    ============================================ */
@@ -20,49 +20,61 @@
 .empire-page {
   width: 100%;
   min-height: 100vh;
-  background: #050505;
-  color: #fff;
+  background: #080C14;
+  color: #ECEAE3;
+  font-variant-numeric: tabular-nums;
 }
+.empire-page .empire-kpi-value,
+.empire-page .franchise-stat-value,
+.empire-page .empire-ticker-val,
+.empire-page .empire-ticker-up,
+.empire-page .empire-ticker-down,
+.empire-page .empire-sp-badge { font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
 
 /* ══════════════════════════════════
    TICKER STRIP
 ══════════════════════════════════ */
 .empire-ticker {
-  background: linear-gradient(90deg, #060600, #0a0a00, #060600);
-  border-bottom: 1px solid #2a2200;
-  padding: 10px 0;
-  overflow-x: auto;
+  background: #0A1120;
+  border-bottom: 1px solid rgba(233,231,223,0.09);
+  padding: 9px 0;
+  overflow: hidden;
 }
-.empire-ticker::-webkit-scrollbar { display: none; }
-.empire-ticker-inner {
+.empire-ticker-track {
   display: flex;
-  gap: 0;
-  padding: 0 32px;
-  min-width: min-content;
+  width: max-content;
+  animation: empireTickerScroll 38s linear infinite;
+}
+.empire-ticker-track:hover { animation-play-state: paused; }
+.empire-ticker-seq { display: flex; }
+@keyframes empireTickerScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 .empire-ticker-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 0 20px;
+  gap: 7px;
+  padding: 0 22px;
   white-space: nowrap;
+  border-right: 1px solid rgba(233,231,223,0.07);
 }
 .empire-ticker-divider {
   width: 1px;
-  background: #2a2200;
+  background: rgba(233,231,223,0.09);
   align-self: stretch;
   margin: -2px 0;
 }
 .empire-ticker-label {
   font-size: 10px;
   font-weight: 700;
-  color: #8a7a44;
+  color: #69748B;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 .empire-ticker-val { font-size: 13px; font-weight: 700; color: #fff; }
-.empire-ticker-up { font-size: 13px; font-weight: 700; color: #00ff87; }
-.empire-ticker-down { font-size: 13px; font-weight: 700; color: #ff4444; }
+.empire-ticker-up { font-size: 13px; font-weight: 700; color: #5FD08A; }
+.empire-ticker-down { font-size: 13px; font-weight: 700; color: #E8786C; }
 
 /* ══════════════════════════════════
    HEADER
@@ -72,8 +84,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 24px 32px 16px;
-  background: linear-gradient(135deg, #1a1400 0%, #0a0a00 50%, #0d0800 100%);
-  border-bottom: 1px solid #2a2200;
+  background: linear-gradient(135deg, #0F1A2C 0%, #080C14 50%, #080C14 100%);
+  border-bottom: 1px solid rgba(233,231,223,0.09);
 }
 .empire-header-left {
   display: flex;
@@ -82,16 +94,16 @@
 }
 .empire-crown { font-size: 40px; }
 .empire-title {
-  font-size: 28px;
-  font-weight: 900;
+  font-size: 26px;
+  font-weight: 600;
   margin: 0;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.4px;
   line-height: 1.1;
 }
-.empire-title span { color: #D4AF37; }
+.empire-title span { color: #C9A86A; }
 .empire-subtitle {
   font-size: 13px;
-  color: #8a7a44;
+  color: #69748B;
   margin: 2px 0 0;
 }
 .empire-header-right {
@@ -102,25 +114,25 @@
 .empire-sp-badge {
   padding: 8px 18px;
   border-radius: 8px;
-  background: #1a1400;
-  border: 1px solid #2a2200;
+  background: #0F1A2C;
+  border: 1px solid rgba(233,231,223,0.09);
   font-size: 14px;
   font-weight: 800;
-  color: #D4AF37;
+  color: #C9A86A;
 }
 .empire-intel-btn {
   padding: 8px 16px;
   border-radius: 8px;
-  background: #1a1400;
-  border: 1px solid #2a2200;
-  color: #D4AF37;
+  background: #0F1A2C;
+  border: 1px solid rgba(233,231,223,0.09);
+  color: #C9A86A;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
 }
 .empire-intel-btn:hover {
-  background: #D4AF37;
+  background: #C9A86A;
   color: #0a0a0a;
 }
 
@@ -130,9 +142,9 @@
 .empire-tab-bar {
   display: flex;
   gap: 0;
-  border-bottom: 1px solid #2a2200;
+  border-bottom: 1px solid rgba(233,231,223,0.09);
   padding: 0 32px;
-  background: #0a0a00;
+  background: #080C14;
 }
 .empire-tab {
   padding: 14px 28px;
@@ -147,10 +159,10 @@
   text-transform: uppercase;
   letter-spacing: 1px;
 }
-.empire-tab:hover { color: #8a7a44; }
+.empire-tab:hover { color: #69748B; }
 .empire-tab.active {
-  color: #D4AF37;
-  border-bottom-color: #D4AF37;
+  color: #C9A86A;
+  border-bottom-color: #C9A86A;
 }
 
 /* ══════════════════════════════════
@@ -165,6 +177,9 @@
   min-width: 0;
   transition: margin-right 0.3s;
 }
+.empire-content.intel-open .empire-main {
+  /* Just flex, sidebar takes its own width */
+}
 .empire-leagues {
   padding: 0;
 }
@@ -173,8 +188,8 @@
 .empire-intel-sidebar {
   width: 300px;
   flex-shrink: 0;
-  background: #060600;
-  border-left: 1px solid #2a2200;
+  background: #0A1120;
+  border-left: 1px solid rgba(233,231,223,0.09);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -186,17 +201,17 @@
   gap: 8px;
   font-size: 10px;
   font-weight: 800;
-  color: #D4AF37;
+  color: #C9A86A;
   text-transform: uppercase;
   letter-spacing: 2px;
-  border-bottom: 1px solid #2a2200;
-  background: #0a0a00;
+  border-bottom: 1px solid rgba(233,231,223,0.09);
+  background: #080C14;
 }
 .empire-intel-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #D4AF37;
+  background: #C9A86A;
   animation: intelPulse 2s infinite;
 }
 @keyframes intelPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
@@ -204,7 +219,7 @@
   margin-left: auto;
   background: none;
   border: none;
-  color: #8a7a44;
+  color: #69748B;
   cursor: pointer;
   font-size: 14px;
   padding: 0;
@@ -217,18 +232,18 @@
 .empire-intel-item {
   padding: 10px 12px;
   margin-bottom: 6px;
-  background: #0d0d00;
-  border: 1px solid #2a2200;
+  background: #0C1422;
+  border: 1px solid rgba(233,231,223,0.09);
   border-radius: 8px;
   border-left: 3px solid;
   transition: border-color 0.2s;
 }
-.empire-intel-item:hover { border-color: #D4AF37; }
+.empire-intel-item:hover { border-color: #C9A86A; }
 .empire-intel-item.trade { border-left-color: #00ccff; }
-.empire-intel-item.injury { border-left-color: #ff4444; }
-.empire-intel-item.auction { border-left-color: #D4AF37; }
+.empire-intel-item.injury { border-left-color: #E8786C; }
+.empire-intel-item.auction { border-left-color: #C9A86A; }
 .empire-intel-item.gov { border-left-color: #aa44ff; }
-.empire-intel-item.earn { border-left-color: #00ff87; }
+.empire-intel-item.earn { border-left-color: #5FD08A; }
 .empire-intel-item.scout { border-left-color: #ff8800; }
 .empire-intel-cat {
   font-size: 9px;
@@ -236,7 +251,7 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 3px;
-  color: #8a7a44;
+  color: #69748B;
 }
 .empire-intel-text {
   color: #aaa;
@@ -259,8 +274,8 @@
   padding: 24px 32px;
 }
 .empire-kpi {
-  background: linear-gradient(180deg, #141000 0%, #0d0d00 100%);
-  border: 1px solid #2a2200;
+  background: linear-gradient(180deg, #0F1A2C 0%, #0C1422 100%);
+  border: 1px solid rgba(233,231,223,0.09);
   border-radius: 12px;
   padding: 20px;
   display: flex;
@@ -268,27 +283,32 @@
 }
 .empire-kpi-label {
   font-size: 10px;
-  color: #8a7a44;
+  color: #69748B;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   font-weight: 700;
 }
 .empire-kpi-value {
   font-size: 28px;
-  font-weight: 900;
+  font-weight: 500;
   margin-top: 6px;
-  color: #fff;
+  color: #ECEAE3;
 }
-.empire-kpi-value.gold { color: #D4AF37; }
-.empire-kpi-value.green { color: #00ff87; }
-.empire-kpi-value.red { color: #ff4444; }
+.empire-kpi-value.gold { color: #C9A86A; }
+.empire-kpi-value.green { color: #5FD08A; }
+.empire-kpi-value.red { color: #E8786C; }
 .empire-kpi-delta {
   font-size: 12px;
   margin-top: 4px;
   font-weight: 600;
 }
-.empire-kpi-delta.up { color: #D4AF37; }
-.empire-kpi-delta.muted { color: #666; }
+.empire-kpi-delta.up { color: #5FD08A; }
+.empire-kpi-delta.muted { color: #69748B; }
+.empire-kpi-value small { font-size: 13px; color: #69748B; font-weight: 400; }
+.empire-kpi-value.red { color: #E8786C; }
+.empire-spark { display: block; width: 100%; height: 26px; margin-top: 12px; }
+.empire-kpi-allocrow { display: flex; gap: 4px; margin-top: 14px; }
+.empire-kpi-allocrow span { height: 5px; border-radius: 3px; }
 
 /* ══════════════════════════════════
    FILTERS
@@ -304,6 +324,10 @@
   font-weight: 900;
   color: #fff;
 }
+.empire-filters-label::after {
+  content: '';
+  /* No pseudo needed */
+}
 .empire-sport-pills {
   display: flex;
   gap: 6px;
@@ -314,64 +338,19 @@
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  border: 1px solid #2a2200;
-  background: #0d0d00;
-  color: #8a7a44;
+  border: 1px solid rgba(233,231,223,0.09);
+  background: #0C1422;
+  color: #69748B;
   transition: all 0.2s;
 }
 .empire-sport-pill.active {
-  background: #D4AF37;
+  background: #C9A86A;
   color: #0a0a0a;
-  border-color: #D4AF37;
+  border-color: #C9A86A;
 }
 .empire-sport-pill:hover:not(.active) {
-  border-color: #D4AF37;
-  color: #D4AF37;
-}
-
-/* ══════════════════════════════════
-   ACTIVE EMPIRE SALE BANNER (NFL)
-══════════════════════════════════ */
-.empire-sale-banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 18px;
-  margin: 0 32px 16px;
-  background: linear-gradient(135deg, rgba(212,175,55,0.12), rgba(212,175,55,0.04));
-  border: 1px solid rgba(212,175,55,0.35);
-  border-radius: 10px;
-}
-.empire-sale-badge {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 5px;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  background: #D4AF37;
-  color: #0a0a0a;
-  margin-right: 10px;
-}
-.empire-sale-info {
-  font-size: 13px;
-  color: #D4AF37;
-}
-.empire-sale-cancel {
-  padding: 8px 16px;
-  border-radius: 8px;
-  background: transparent;
-  border: 1px solid #ff4444;
-  color: #ff4444;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.empire-sale-cancel:hover {
-  background: #ff4444;
-  color: #fff;
+  border-color: #C9A86A;
+  color: #C9A86A;
 }
 
 /* ══════════════════════════════════
@@ -384,25 +363,25 @@
   padding: 0 32px 24px;
 }
 .franchise-card {
-  background: #0d0d00;
-  border: 1px solid #2a2200;
+  background: #0C1422;
+  border: 1px solid rgba(233,231,223,0.09);
   border-radius: 14px;
   overflow: hidden;
   transition: all 0.25s;
 }
 .franchise-card.hovered,
 .franchise-card:hover {
-  border-color: #D4AF37;
-  box-shadow: 0 8px 40px rgba(212,175,55,0.08);
+  border-color: #C9A86A;
+  box-shadow: 0 8px 40px rgba(201,168,106,0.08);
   transform: translateY(-2px);
 }
 .franchise-card.active {
-  border-color: #D4AF37;
-  box-shadow: 0 0 0 1px #D4AF37;
+  border-color: #C9A86A;
+  box-shadow: 0 0 0 1px #C9A86A;
 }
 .franchise-accent-bar {
   height: 4px;
-  background: linear-gradient(90deg, #D4AF37, transparent);
+  background: linear-gradient(90deg, #C9A86A, transparent);
 }
 .franchise-body { padding: 20px; }
 .franchise-header {
@@ -433,7 +412,7 @@
 }
 .franchise-league {
   font-size: 11px;
-  color: #8a7a44;
+  color: #69748B;
   margin-top: 2px;
 }
 .franchise-pos-badge {
@@ -441,9 +420,9 @@
   border-radius: 6px;
   font-size: 10px;
   font-weight: 800;
-  background: #1a1400;
-  color: #D4AF37;
-  border: 1px solid #2a2200;
+  background: #0F1A2C;
+  color: #C9A86A;
+  border: 1px solid rgba(233,231,223,0.09);
 }
 .franchise-stats {
   display: grid;
@@ -462,8 +441,8 @@
   font-weight: 800;
   margin-top: 2px;
 }
-.franchise-stat-value.gold { color: #D4AF37; }
-.franchise-stat-value.green { color: #00ff87; }
+.franchise-stat-value.gold { color: #C9A86A; }
+.franchise-stat-value.green { color: #5FD08A; }
 .franchise-form-dots {
   display: flex;
   gap: 4px;
@@ -475,8 +454,8 @@
   height: 8px;
   border-radius: 50%;
 }
-.franchise-form-dot.win { background: #00ff87; }
-.franchise-form-dot.loss { background: #ff4444; }
+.franchise-form-dot.win { background: #5FD08A; }
+.franchise-form-dot.loss { background: #E8786C; }
 .franchise-form-dot.draw { background: #ffaa00; }
 
 .franchise-actions {
@@ -484,7 +463,7 @@
   gap: 8px;
   margin-top: 14px;
   padding-top: 14px;
-  border-top: 1px solid #2a2200;
+  border-top: 1px solid rgba(233,231,223,0.09);
 }
 .franchise-btn {
   flex: 1;
@@ -498,27 +477,115 @@
   transition: all 0.2s;
 }
 .franchise-btn.gold {
-  background: #D4AF37;
+  background: #C9A86A;
   color: #0a0a0a;
 }
 .franchise-btn.gold:hover { background: #e6c04a; }
 .franchise-btn.outline {
   background: transparent;
-  border: 1px solid #D4AF37;
-  color: #D4AF37;
+  border: 1px solid #C9A86A;
+  color: #C9A86A;
 }
 .franchise-btn.outline:hover {
-  background: #D4AF37;
+  background: #C9A86A;
   color: #0a0a0a;
 }
 .franchise-btn.red-outline {
   background: transparent;
-  border: 1px solid #ff4444;
-  color: #ff4444;
+  border: 1px solid #E8786C;
+  color: #E8786C;
 }
 .franchise-btn.red-outline:hover {
-  background: #ff4444;
+  background: #E8786C;
   color: #fff;
+}
+
+/* ══════════════════════════════════
+   HOLDINGS LAYOUT + RIGHT RAIL (donut + intel)
+══════════════════════════════════ */
+.empire-hold-layout { display: grid; grid-template-columns: 1fr 320px; gap: 20px; padding: 0 32px 24px; align-items: start; }
+.empire-hold-layout .empire-holdings { margin: 0; }
+.empire-hold-rail { display: flex; flex-direction: column; gap: 18px; }
+.empire-panel { background: #0C1422; border: 1px solid rgba(233,231,223,0.09); border-radius: 12px; overflow: hidden; }
+.empire-panel-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid rgba(233,231,223,0.09); }
+.empire-panel-head h3 { font-size: 13px; font-weight: 600; color: #ECEAE3; margin: 0; }
+.empire-micro { font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; color: #69748B; font-weight: 600; }
+.empire-micro.up { color: #5FD08A; }
+.empire-donut-wrap { display: flex; align-items: center; gap: 16px; padding: 18px 16px; }
+.empire-donut-legend { flex: 1; font-size: 12px; color: #AEB6C4; }
+.empire-donut-legend > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 5px 0; }
+.empire-donut-legend .num { font-variant-numeric: tabular-nums; color: #ECEAE3; }
+.empire-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 7px; vertical-align: 1px; }
+.empire-intel-row { display: flex; gap: 10px; padding: 11px 16px; border-bottom: 1px solid rgba(233,231,223,0.06); }
+.empire-intel-row:last-child { border-bottom: none; }
+.empire-intel-tag { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; padding: 2px 7px; border-radius: 4px; height: fit-content; margin-top: 1px; background: rgba(201,168,106,0.14); color: #C9A86A; text-transform: uppercase; }
+.empire-intel-tag.earn { background: rgba(95,208,138,0.14); color: #5FD08A; }
+.empire-intel-tag.trade { background: rgba(143,180,240,0.16); color: #8FB4F0; }
+.empire-intel-tag.injury { background: rgba(232,120,108,0.14); color: #E8786C; }
+.empire-intel-txt { font-size: 12.5px; color: #AEB6C4; line-height: 1.45; }
+.empire-intel-when { font-size: 10.5px; color: #69748B; margin-top: 3px; }
+.empire-intel-empty { padding: 22px 16px; text-align: center; color: #69748B; font-size: 12.5px; }
+@media (max-width: 1100px) { .empire-hold-layout { grid-template-columns: 1fr; } }
+
+/* ══════════════════════════════════
+   FRANCHISE HOLDINGS — portfolio table
+══════════════════════════════════ */
+.empire-holdings {
+  margin: 0 32px 24px;
+  background: #0C1422;
+  border: 1px solid rgba(233,231,223,0.09);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.holdings-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.holdings-table thead th {
+  font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase;
+  color: #69748B; font-weight: 600; text-align: right; padding: 12px 18px;
+  border-bottom: 1px solid rgba(233,231,223,0.09);
+}
+.holdings-table th.th-left { text-align: left; }
+.holdings-table th.th-right { text-align: right; }
+.holdings-table tbody td {
+  padding: 14px 18px; text-align: right; font-size: 13.5px; color: #ECEAE3;
+  border-bottom: 1px solid rgba(233,231,223,0.06);
+}
+.holdings-table tbody tr:last-child td { border-bottom: none; }
+.holdings-table tbody tr:hover { background: #0F1A2C; }
+.holdings-table tbody tr.hold-active { box-shadow: inset 3px 0 0 #C9A86A; }
+.holdings-table td.num { font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.holdings-table td.td-left { text-align: left; }
+.holdings-table td.td-right { text-align: right; white-space: nowrap; }
+.holdings-table .pl-up { color: #5FD08A; }
+.holdings-table .pl-down { color: #E8786C; }
+
+.hold-asset { cursor: pointer; }
+.hold-asset > div:last-child { display: inline-block; vertical-align: middle; }
+.hold-asset .hold-crest {
+  width: 30px; height: 30px; border-radius: 7px; display: inline-flex;
+  align-items: center; justify-content: center; font-weight: 700; font-size: 13px;
+  margin-right: 11px; vertical-align: middle;
+}
+.hold-name { font-size: 13.5px; font-weight: 600; color: #ECEAE3; }
+.hold-asset:hover .hold-name { color: #C9A86A; }
+.hold-league { font-size: 11px; color: #69748B; margin-top: 1px; }
+.hold-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 7px; vertical-align: 1px; }
+.hold-dot.soccer { background: #5FD08A; }
+.hold-dot.nfl { background: #8FB4F0; }
+.hold-alloc { display: inline-flex; align-items: center; gap: 8px; justify-content: flex-end; }
+.hold-alloc-bar { display: inline-block; width: 54px; height: 5px; border-radius: 3px; background: rgba(233,231,223,0.08); overflow: hidden; }
+.hold-alloc-bar b { display: block; height: 100%; background: #C9A86A; }
+.hold-btn {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.03em; padding: 6px 11px;
+  border-radius: 6px; border: 1px solid rgba(233,231,223,0.14); background: transparent;
+  color: #AEB6C4; cursor: pointer; margin-left: 6px; transition: all 0.15s;
+}
+.hold-btn:hover { border-color: rgba(233,231,223,0.3); color: #ECEAE3; }
+.hold-btn.gold { border-color: rgba(201,168,106,0.4); color: #C9A86A; }
+.hold-btn.gold:hover { background: rgba(201,168,106,0.12); }
+
+@media (max-width: 900px) {
+  .empire-holdings { margin: 0 16px 16px; overflow-x: auto; }
+  .holdings-table { min-width: 640px; }
 }
 
 /* ── Expand CTA ── */
@@ -532,36 +599,30 @@
   font-size: 15px;
   font-weight: 800;
   cursor: pointer;
-  border: 2px solid #D4AF37;
+  border: 2px solid #C9A86A;
   background: transparent;
-  color: #D4AF37;
+  color: #C9A86A;
   transition: all 0.3s;
   letter-spacing: 0.5px;
 }
 .empire-expand-btn:hover {
-  background: #D4AF37;
+  background: #C9A86A;
   color: #0a0a0a;
-  box-shadow: 0 0 40px rgba(212,175,55,0.2);
+  box-shadow: 0 0 40px rgba(201,168,106,0.2);
 }
 .empire-expand-links {
   display: flex;
   justify-content: center;
   gap: 24px;
   margin-top: 14px;
-  flex-wrap: wrap;
 }
 .empire-expand-links span {
   font-size: 13px;
-  color: #8a7a44;
+  color: #69748B;
   cursor: pointer;
   transition: color 0.2s;
 }
-.empire-expand-links span:hover { color: #D4AF37; }
-.empire-expand-links span.disabled {
-  color: #555;
-  cursor: not-allowed;
-}
-.empire-expand-links span.disabled:hover { color: #555; }
+.empire-expand-links span:hover { color: #C9A86A; }
 
 /* ── Empty state ── */
 .empire-empty {
@@ -576,11 +637,11 @@
    SELL MODAL
 ══════════════════════════════════ */
 .empire-sell-modal {
-  background: linear-gradient(145deg, #141000 0%, #0d0d00 100%);
+  background: linear-gradient(145deg, #0F1A2C 0%, #0C1422 100%);
   border-radius: 16px;
   padding: 28px;
   color: #fff;
-  border: 1px solid #2a2200;
+  border: 1px solid rgba(233,231,223,0.09);
 }
 .empire-sell-title {
   margin: 0 0 6px;
@@ -591,7 +652,7 @@
 .empire-sell-subtitle {
   margin: 0;
   font-size: 13px;
-  color: #8a7a44;
+  color: #69748B;
 }
 .empire-sell-options {
   display: flex;
@@ -604,7 +665,7 @@
   border-radius: 12px;
   cursor: pointer;
   background: rgba(255,255,255,0.03);
-  border: 2px solid #2a2200;
+  border: 2px solid rgba(233,231,223,0.09);
   transition: all 0.2s;
 }
 .empire-sell-option.selected {
@@ -626,14 +687,14 @@
 }
 .empire-sell-mv {
   padding: 14px 16px;
-  background: #1a1400;
+  background: #0F1A2C;
   border-radius: 10px;
   margin-bottom: 12px;
-  border: 1px solid #2a2200;
+  border: 1px solid rgba(233,231,223,0.09);
 }
 .empire-sell-mv-label {
   font-size: 10px;
-  color: #8a7a44;
+  color: #69748B;
   text-transform: uppercase;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -642,7 +703,7 @@
 .empire-sell-mv-value {
   font-size: 22px;
   font-weight: 800;
-  color: #D4AF37;
+  color: #C9A86A;
 }
 .empire-sell-price-section { margin-bottom: 12px; }
 .empire-sell-price-label {
@@ -650,7 +711,7 @@
   margin-bottom: 6px;
   font-weight: 700;
   font-size: 11px;
-  color: #8a7a44;
+  color: #69748B;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -659,14 +720,14 @@
   padding: 12px 16px;
   font-size: 18px;
   font-weight: 700;
-  background: #0a0a00;
-  border: 1px solid #2a2200;
+  background: #080C14;
+  border: 1px solid rgba(233,231,223,0.09);
   border-radius: 10px;
   color: #fff;
   outline: none;
   box-sizing: border-box;
 }
-.empire-sell-input:focus { border-color: #D4AF37; }
+.empire-sell-input:focus { border-color: #C9A86A; }
 .empire-sell-multipliers {
   display: flex;
   gap: 8px;
@@ -677,18 +738,18 @@
   padding: 8px 4px;
   border-radius: 8px;
   cursor: pointer;
-  background: #0a0a00;
-  border: 1px solid #2a2200;
-  color: #8a7a44;
+  background: #080C14;
+  border: 1px solid rgba(233,231,223,0.09);
+  color: #69748B;
   font-size: 12px;
   font-weight: 700;
   text-align: center;
   transition: all 0.2s;
 }
 .empire-sell-mult.selected {
-  background: rgba(212,175,55,0.15);
-  border-color: #D4AF37;
-  color: #D4AF37;
+  background: rgba(201,168,106,0.15);
+  border-color: #C9A86A;
+  color: #C9A86A;
 }
 .empire-sell-mult-val {
   font-size: 10px;
@@ -705,9 +766,9 @@
   padding: 12px;
   border-radius: 10px;
   cursor: pointer;
-  background: #0a0a00;
-  border: 1px solid #2a2200;
-  color: #8a7a44;
+  background: #080C14;
+  border: 1px solid rgba(233,231,223,0.09);
+  color: #69748B;
   font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
@@ -717,17 +778,17 @@
   padding: 12px;
   border-radius: 10px;
   cursor: pointer;
-  background: linear-gradient(135deg, #D4AF37 0%, #B8962E 100%);
+  background: linear-gradient(135deg, #C9A86A 0%, #B8962E 100%);
   border: none;
   color: #0a0a0a;
   font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  box-shadow: 0 4px 16px rgba(212,175,55,0.3);
+  box-shadow: 0 4px 16px rgba(201,168,106,0.3);
 }
 .empire-sell-confirm:hover {
-  background: linear-gradient(135deg, #e6c04a 0%, #D4AF37 100%);
+  background: linear-gradient(135deg, #e6c04a 0%, #C9A86A 100%);
 }
 
 /* ══════════════════════════════════
@@ -753,24 +814,44 @@
 }
 
 /* ══════════════════════════════════
-   LEGACY COMPATIBILITY — Keep old names
-   working for ExchangeSection /
-   GovernanceSection / TrophyRoom
+   LEGACY COMPATIBILITY
+   Keep old class names working for
+   Exchange, Governance, TrophyRoom
+   sub-components
 ══════════════════════════════════ */
+
+/* The sub-components (ExchangeSection, GovernanceSection, TrophyRoom)
+   use their own inline styles or these shared wrapper classes */
+
 .wr-sleeper-page { /* alias */ }
-.wr-s-header { display: none; }
-.wr-s-tabs { display: none; }
+.wr-s-header { display: none; /* replaced by empire-header */ }
+.wr-s-tabs { display: none; /* replaced by empire-tab-bar */ }
 .wr-s-empire { padding: 0; }
-.wr-s-kpi-row { display: none; }
+.wr-s-kpi-row { display: none; /* replaced by empire-kpi-row */ }
 .wr-s-sport-pills { display: none; }
 .wr-s-empty { text-align: center; padding: 40px; color: #666; }
-.wr-s-empire button:focus { outline: none; }
 
-/* Dark confirm modal override */
-.wr-dark-confirm .ant-modal-content {
-  background: #0d0d00 !important;
-  border: 1px solid #2a2200 !important;
+/* General gold theming for sub-components */
+.wr-s-league-section,
+.wr-s-league-header,
+.wr-s-league-icon,
+.wr-s-league-info,
+.wr-s-league-name,
+.wr-s-league-meta,
+.wr-s-team-rows,
+.wr-s-add-section,
+.wr-s-add-row,
+.wr-s-add-icon,
+.wr-s-add-info,
+.wr-s-add-name,
+.wr-s-add-meta,
+.wr-s-add-arrow,
+.wr-s-add-soon {
+  /* Keep any existing styles from sub-components */
 }
+
+/* Exchange and Governance sub-components get gold accent overrides */
+.wr-s-empire button:focus { outline: none; }
 
 /* ══════════════════════════════════
    GOVERNANCE SECTION — Gold Empire Theme
@@ -781,25 +862,26 @@
 .wr-gov-league-banner {
   display: flex; align-items: center; gap: 12px;
   padding: 14px 18px; margin-bottom: 20px;
-  background: #0d0d00; border: 1px solid #2a2200; border-radius: 10px;
+  background: #0C1422; border: 1px solid rgba(233,231,223,0.09); border-radius: 10px;
 }
 .wr-gov-league-sport-icon { font-size: 24px; }
 .wr-gov-league-info { flex: 1; }
 .wr-gov-league-name { font-size: 15px; font-weight: 700; }
-.wr-gov-league-sport { font-size: 11px; color: #8a7a44; }
+.wr-gov-league-sport { font-size: 11px; color: #69748B; }
 
 .wr-gov-ai-banner {
   display: flex; align-items: center; gap: 12px;
   padding: 14px 18px; margin-bottom: 16px;
-  background: rgba(212,175,55,0.08); border: 1px solid rgba(212,175,55,0.2);
+  background: rgba(201,168,106,0.08); border: 1px solid rgba(201,168,106,0.2);
   border-radius: 10px;
 }
-.wr-gov-ai-icon { font-size: 24px; color: #D4AF37; }
-.wr-gov-ai-title { font-size: 12px; font-weight: 800; color: #D4AF37; text-transform: uppercase; letter-spacing: 1px; }
-.wr-gov-ai-sub { font-size: 11px; color: #8a7a44; margin-top: 2px; }
+.wr-gov-ai-icon { font-size: 24px; color: #C9A86A; }
+.wr-gov-ai-text {}
+.wr-gov-ai-title { font-size: 12px; font-weight: 800; color: #C9A86A; text-transform: uppercase; letter-spacing: 1px; }
+.wr-gov-ai-sub { font-size: 11px; color: #69748B; margin-top: 2px; }
 
 .wr-gov-card {
-  background: #0d0d00; border: 1px solid #2a2200;
+  background: #0C1422; border: 1px solid rgba(233,231,223,0.09);
   border-radius: 12px; padding: 18px; margin-bottom: 14px;
 }
 .wr-gov-card-header {
@@ -808,45 +890,48 @@
 }
 .wr-gov-card-icon { font-size: 16px; margin-right: 8px; }
 
+.wr-gov-commissioner-card {}
 .wr-gov-commissioner-info { margin-top: 8px; }
 .wr-gov-commissioner-name { font-size: 16px; font-weight: 800; }
-.wr-gov-commissioner-ai { font-size: 11px; color: #D4AF37; margin-bottom: 4px; }
+.wr-gov-commissioner-ai { font-size: 11px; color: #C9A86A; margin-bottom: 4px; }
 .wr-gov-text-dim { color: #666; }
 
 .wr-gov-action-btn {
   padding: 8px 16px; border-radius: 8px; font-size: 12px;
-  font-weight: 700; cursor: pointer; border: 1px solid #2a2200;
-  background: #1a1400; color: #D4AF37; margin-top: 8px; transition: all 0.2s;
+  font-weight: 700; cursor: pointer; border: 1px solid rgba(233,231,223,0.09);
+  background: #0F1A2C; color: #C9A86A; margin-top: 8px; transition: all 0.2s;
 }
-.wr-gov-action-btn:hover { border-color: #D4AF37; }
+.wr-gov-action-btn:hover { border-color: #C9A86A; }
+.wr-gov-transfer-btn {}
 .wr-gov-transfer-form {
   display: flex; gap: 8px; margin-top: 10px;
 }
 .wr-gov-input {
   flex: 1; padding: 8px 12px; border-radius: 6px;
-  border: 1px solid #2a2200; background: #0a0a00;
+  border: 1px solid rgba(233,231,223,0.09); background: #080C14;
   color: #fff; font-size: 13px; outline: none;
 }
-.wr-gov-input:focus { border-color: #D4AF37; }
+.wr-gov-input:focus { border-color: #C9A86A; }
 .wr-gov-submit-btn {
   padding: 8px 16px; border-radius: 6px; border: none;
-  background: #D4AF37; color: #0a0a0a; font-size: 12px;
+  background: #C9A86A; color: #0a0a0a; font-size: 12px;
   font-weight: 700; cursor: pointer;
 }
 
+.wr-gov-vote-card {}
 .wr-gov-vote-timer { font-size: 12px; color: #ffaa00; font-weight: 600; }
 .wr-gov-vote-bar {
   height: 10px; border-radius: 5px; overflow: hidden;
   background: #1a1a1a; display: flex; margin-bottom: 8px;
 }
 .wr-gov-vote-bar-fill { transition: width 0.3s; }
-.wr-gov-yes { background: #00ff87; }
-.wr-gov-no { background: #ff4444; }
+.wr-gov-yes { background: #5FD08A; }
+.wr-gov-no { background: #E8786C; }
 .wr-gov-vote-stats {
   display: flex; gap: 14px; font-size: 12px; color: #888; flex-wrap: wrap;
 }
-.wr-gov-stat-yes { color: #00ff87; }
-.wr-gov-stat-no { color: #ff4444; }
+.wr-gov-stat-yes { color: #5FD08A; }
+.wr-gov-stat-no { color: #E8786C; }
 .wr-gov-stat-abstain { color: #888; }
 .wr-gov-stat-total { color: #666; }
 .wr-gov-vote-threshold { font-size: 11px; color: #666; margin-top: 6px; }
@@ -857,45 +942,46 @@
   padding: 8px 20px; border-radius: 8px; font-size: 12px;
   font-weight: 700; cursor: pointer; border: none; transition: all 0.2s;
 }
-.wr-gov-vote-yes { background: #00ff87; color: #0a0a0a; }
-.wr-gov-vote-no { background: #ff4444; color: #fff; }
+.wr-gov-vote-yes { background: #5FD08A; color: #0a0a0a; }
+.wr-gov-vote-no { background: #E8786C; color: #fff; }
 .wr-gov-vote-abstain { background: #333; color: #888; }
-.wr-gov-vote-candidate { background: transparent; border: 1px solid #D4AF37; color: #D4AF37; }
-.wr-gov-vote-candidate:hover { background: #D4AF37; color: #0a0a0a; }
+.wr-gov-vote-candidate { background: transparent; border: 1px solid #C9A86A; color: #C9A86A; }
+.wr-gov-vote-candidate:hover { background: #C9A86A; color: #0a0a0a; }
 .wr-gov-voted-badge {
   display: inline-block; padding: 6px 14px; border-radius: 6px;
   font-size: 11px; font-weight: 700; margin-top: 8px;
-  background: rgba(212,175,55,0.1); color: #D4AF37; border: 1px solid rgba(212,175,55,0.2);
+  background: rgba(201,168,106,0.1); color: #C9A86A; border: 1px solid rgba(201,168,106,0.2);
 }
 
+.wr-gov-election-card {}
 .wr-gov-election-phase {
   display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
   font-size: 13px; font-weight: 600;
 }
-.wr-gov-phase-arrow { color: #D4AF37; }
+.wr-gov-phase-arrow { color: #C9A86A; }
 .wr-gov-candidates { margin-top: 12px; }
-.wr-gov-candidates-title { font-size: 12px; font-weight: 700; color: #8a7a44; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.wr-gov-candidates-title { font-size: 12px; font-weight: 700; color: #69748B; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
 .wr-gov-no-candidates { font-size: 13px; color: #666; padding: 12px; }
 .wr-gov-candidate-row {
   display: flex; align-items: center; gap: 10px;
-  padding: 10px 14px; background: #1a1400; border: 1px solid #2a2200;
+  padding: 10px 14px; background: #0F1A2C; border: 1px solid rgba(233,231,223,0.09);
   border-radius: 8px; margin-bottom: 6px;
 }
 .wr-gov-candidate-info { display: flex; align-items: center; gap: 10px; flex: 1; }
-.wr-gov-candidate-rank { font-size: 14px; font-weight: 900; color: #D4AF37; }
+.wr-gov-candidate-rank { font-size: 14px; font-weight: 900; color: #C9A86A; }
 .wr-gov-candidate-name { font-size: 13px; font-weight: 600; }
 .wr-gov-candidate-statement { font-size: 11px; color: #888; margin-top: 2px; }
-.wr-gov-candidate-votes { font-size: 12px; color: #D4AF37; font-weight: 700; }
+.wr-gov-candidate-votes { font-size: 12px; color: #C9A86A; font-weight: 700; }
 
 .wr-gov-nominate-form { margin-top: 12px; }
 .wr-gov-textarea {
   width: 100%; padding: 10px 14px; border-radius: 8px;
-  border: 1px solid #2a2200; background: #0a0a00;
+  border: 1px solid rgba(233,231,223,0.09); background: #080C14;
   color: #fff; font-size: 13px; outline: none;
   resize: vertical; min-height: 60px; font-family: inherit;
   box-sizing: border-box;
 }
-.wr-gov-textarea:focus { border-color: #D4AF37; }
+.wr-gov-textarea:focus { border-color: #C9A86A; }
 .wr-gov-nominate-btn { margin-top: 8px; }
 
 .wr-gov-actions-row {
@@ -903,23 +989,24 @@
 }
 .wr-gov-action-card {
   flex: 1; min-width: 200px; padding: 16px;
-  background: #0d0d00; border: 1px solid #2a2200; border-radius: 12px;
+  background: #0C1422; border: 1px solid rgba(233,231,223,0.09); border-radius: 12px;
   cursor: pointer; transition: all 0.2s; text-align: left;
 }
-.wr-gov-action-card:hover { border-color: #D4AF37; }
+.wr-gov-action-card:hover { border-color: #C9A86A; }
 .wr-gov-action-icon { font-size: 20px; margin-bottom: 8px; display: block; }
 .wr-gov-action-label { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-.wr-gov-action-desc { font-size: 11px; color: #8a7a44; line-height: 1.3; }
+.wr-gov-action-desc { font-size: 11px; color: #69748B; line-height: 1.3; }
 
 .wr-gov-section { margin-bottom: 20px; }
 .wr-gov-section-title {
   font-size: 16px; font-weight: 800; margin-bottom: 12px;
-  color: #D4AF37;
+  color: #C9A86A;
 }
 
+.wr-gov-history {}
 .wr-gov-history-row {
   display: flex; align-items: flex-start; gap: 10px;
-  padding: 12px; background: #0d0d00; border: 1px solid #2a2200;
+  padding: 12px; background: #0C1422; border: 1px solid rgba(233,231,223,0.09);
   border-radius: 8px; margin-bottom: 8px;
 }
 .wr-gov-history-info { flex: 1; }
@@ -930,12 +1017,38 @@
 .wr-gov-empty {
   text-align: center; padding: 40px 20px;
 }
-.wr-gov-empty-icon { font-size: 40px; color: #2a2200; display: block; margin-bottom: 12px; }
+.wr-gov-empty-icon { font-size: 40px; color: rgba(233,231,223,0.09); display: block; margin-bottom: 12px; }
 .wr-gov-empty-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
 .wr-gov-empty-sub { font-size: 13px; color: #666; }
 .wr-gov-empty-activity {
   text-align: center; padding: 20px; color: #666; font-size: 13px;
 }
 
+/* Modal overrides for governance */
 .wr-gov .ant-modal-content { background: transparent !important; }
 .wr-gov button:focus { outline: none; }
+
+/* ══════════════════════════════════════════════════════════
+   MOBILE — stack + scroll (phones)
+══════════════════════════════════════════════════════════ */
+@media (max-width: 760px) {
+  .empire-header { flex-direction: column; align-items: flex-start; gap: 12px; padding: 16px; }
+  .empire-header-right { width: 100%; justify-content: flex-start; }
+  .empire-title { font-size: 22px; }
+  .empire-tab-bar { padding: 0 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+  .empire-tab { padding: 12px 14px; font-size: 11px; white-space: nowrap; }
+  .empire-kpi-row { grid-template-columns: 1fr 1fr; padding: 14px; gap: 10px; }
+  .empire-kpi { padding: 14px; }
+  .empire-kpi-value { font-size: 20px; }
+  .empire-spark { height: 20px; }
+  .empire-hold-layout { grid-template-columns: 1fr; padding: 0 12px 16px; gap: 14px; }
+  .empire-filters { padding: 0 12px 10px; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
+  .empire-filters-label { font-size: 16px; }
+  .empire-holdings { margin: 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .holdings-table { min-width: 600px; }
+  .empire-ticker-item { padding: 0 16px; }
+  .empire-donut-wrap { flex-direction: column; text-align: center; }
+}
+@media (max-width: 420px) {
+  .empire-kpi-row { grid-template-columns: 1fr; }
+}

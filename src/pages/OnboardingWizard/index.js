@@ -31,7 +31,7 @@ const SPORTS = [
     tagline: 'Eleven F.C, Soccer Fantasy',
     color: '#D4A843',
     enabled: true,
-    frontEndUrl: process.env.REACT_APP_SOCCER_URL || 'https://soccer.samsports.io',
+    frontEndUrl: process.env.REACT_APP_SOCCER_URL || 'https://football.samsports.io',
     features: ['5 Leagues', 'AI Coach', 'Matchweek Scoring', 'Transfer Market'],
   },
   {
@@ -145,6 +145,8 @@ const StepSetupSport = ({ sport, onCreateSuccess, onJoinLeague, onSkip }) => {
         <div className="ob-setup-options">
           {/* Browse & Join — primary action for new users */}
           <JoinLeagueModal
+            sport={sport}
+            frontEndUrl={sportInfo.frontEndUrl}
             button={
               <button className="ob-option-card ob-option-card--featured">
                 <span className="ob-option-icon">🔍</span>

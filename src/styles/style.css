@@ -1,3 +1,14 @@
+/* ── Partner White-Label CSS Variables (defaults) ── */
+:root {
+  --partner-primary: #D4A843;
+  --partner-secondary: #141C2D;
+  --partner-accent: #22C55E;
+  --partner-header-bg: #0A0F1C;
+  --partner-card-bg: rgba(20, 28, 45, 0.85);
+  --partner-text: #E2E8F0;
+  --partner-font: 'Rajdhani', sans-serif;
+}
+
 /* Third Party CSS */
 @font-face {
   font-family: 'dot-font';

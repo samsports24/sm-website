@@ -8,6 +8,8 @@ import { Spin, notification } from 'antd'
 import { version } from './constants'
 import DraftCountdownPopup from '../components/DraftCountdownPopup'
 import AnnouncementBanner from '../components/AnnouncementBanner'
+import UpdateBanner from '../components/UpdateBanner'
+import WhatsNewBanner from '../components/WhatsNewBanner'
 import { trackPageView } from '../utils/analytics'
 
 // Auto-track page views on route change
@@ -60,6 +62,8 @@ const CookiePolicy = lazy(() => import('../pages/CookiePolicy'))
 const GDPRCompliance = lazy(() => import('../pages/GDPRCompliance'))
 const DataRights = lazy(() => import('../pages/DataRights'))
 const Contact = lazy(() => import('../pages/Contact'))
+const PartnerRulesPage = lazy(() => import('../pages/PartnerRulesPage'))
+const PartnerTVDisplay = lazy(() => import('../pages/PartnerTVDisplay'))
 const LeagueNotification = lazy(() => import('../pages/LeagueNotification'))
 const TotalPayment = lazy(() => import('../pages/TotalPayment'))
 const MyLeague = lazy(() => import('../pages/MyLeague'))
@@ -119,6 +123,10 @@ const ScoutReport = lazy(() => import('../pages/ScoutReport'))
 const LiveScore = lazy(() => import('../pages/LiveScore'))
 const Marketing = lazy(() => import('../pages/Marketing'))
 const ArticlesPage = lazy(() => import('../soccer/pages/Articles'))
+
+// ── Partner Platform ──
+const PartnerSignup = lazy(() => import('../pages/PartnerSignup'))
+const PartnerDashboard = lazy(() => import('../pages/PartnerDashboard'))
 
 // ── Product Marketing Pages ──
 const RivalsPage = lazy(() => import('../pages/Products/RivalsPage'))
@@ -192,6 +200,8 @@ const Routers = () => {
     <React.StrictMode>
       <PageTracker />
       <AnnouncementBanner />
+      <UpdateBanner />
+      <WhatsNewBanner />
       <Suspense fallback={<PageLoader />}>
       <Routes>
         {/* ── Admin Auth ── */}
@@ -232,7 +242,10 @@ const Routers = () => {
           <Route path='/depth-chart' element={<L><DepthChart /></L>} />
           <Route path='/team-starters/:teamID' element={<L><DepthChart /></L>} />
           <Route path='/league-standings' element={<L><LeagueStandings /></L>} />
-          <Route path='/comissioner' element={<L><Comissioner /></L>} />
+          {/* Canonical path with correct spelling */}
+          <Route path='/commissioner' element={<L><Comissioner /></L>} />
+          {/* Legacy redirect — old bookmarks & external links still work */}
+          <Route path='/comissioner' element={<Navigate to='/commissioner' replace />} />
           <Route path='/player-auction' element={<L><PlayerAuction /></L>} />
           <Route path='/player-winning-bid/:id' element={<L><PlayerWinningBid /></L>} />
           <Route path='/agent-player-interface/:id' element={<L><AgentPlayerInterface /></L>} />
@@ -317,9 +330,15 @@ const Routers = () => {
         <Route path='/products/sam-metric' element={<L><SAMMetricPage /></L>} />
         <Route path='/products/sampoints' element={<L><SamPointsPage /></L>} />
         <Route path='/products/how-it-works' element={<L><HowItWorksPage /></L>} />
+        <Route path='/partners' element={<L><PartnerSignup /></L>} />
+        <Route path='/partner-dashboard' element={<L><PartnerDashboard /></L>} />
         <Route path='/' element={<L><LandingPage /></L>} />
         <Route path='/articles' element={<L><ArticlesPage /></L>} />
 
+        <Route path='/tv' element={<L><PartnerTVDisplay /></L>} />
+        <Route path='/partner-terms' element={<L><PartnerRulesPage type="terms" /></L>} />
+        <Route path='/partner-privacy' element={<L><PartnerRulesPage type="privacy" /></L>} />
+        <Route path='/partner-rules' element={<L><PartnerRulesPage type="rules" /></L>} />
         <Route path='/terms' element={<L><TermsOfService /></L>} />
         <Route path='/privacy' element={<L><PrivacyPolicy /></L>} />
         <Route path='/eu-privacy' element={<L><EUPrivacyRights /></L>} />

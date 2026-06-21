@@ -21,6 +21,9 @@ import StandingsPanel from './StandingsPanel'
 import WorldCupHub from './WorldCupHub'
 import Footer from './Footer'
 import ArticlesWidget from './ArticlesWidget'
+import PartnerAdverts from './PartnerAdverts'
+import PartnerSimpleLanding from './PartnerSimpleLanding'
+import { usePartner } from '../../contexts/PartnerContext'
 import EcosystemPopup from '../../components/EcosystemPopup'
 import LoginModal from '../../components/LoginModal'
 import { summarizeArticleUrl } from '../../redux/actions/newsAction'
@@ -193,6 +196,9 @@ const DateNavBar = ({ selectedDate, onDateChange }) => {
 }
 
 const LandingPage = () => {
+  const { isPartnerSite, landingPageMode } = usePartner()
+  const navigate = useNavigate()
+
   // Live clock for status bar (updates every 30s)
   const [clockTime, setClockTime] = useState(() => new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'}))
   useEffect(() => {
@@ -235,7 +241,6 @@ const LandingPage = () => {
   // Auth state from Redux
   const user = useSelector(state => state?.user)
   const isAuthenticated = !!user?.userDetails?._id
-  const navigate = useNavigate()
   const dispatch = useDispatch()
 
   // Listen for predictor iframe requesting login
@@ -250,6 +255,13 @@ const LandingPage = () => {
     window.addEventListener('message', handler)
     return () => window.removeEventListener('message', handler)
   }, [])
+
+  // Partner "login" mode: redirect to game selection page
+  useEffect(() => {
+    if (isPartnerSite && landingPageMode === 'login') {
+      navigate('/select-game', { replace: true })
+    }
+  }, [isPartnerSite, landingPageMode, navigate])
 
   // After login, push user into predictor iframe if it exists
   useEffect(() => {
@@ -549,6 +561,17 @@ const LandingPage = () => {
 
   // Google Fonts now loaded via public/index.html <link> for no FOUT
 
+  // ── Partner landing page mode switching ──
+  // Must be AFTER all hooks (React rules of hooks) but BEFORE main JSX return
+  if (isPartnerSite && landingPageMode === 'login') {
+    // Redirect handled by useEffect below to avoid calling navigate during render
+    return null
+  }
+  if (isPartnerSite && landingPageMode === 'simple') {
+    return <PartnerSimpleLanding />
+  }
+  // "full" or default → continue with the full sports hub landing page
+
   return (
     <div className="ls-page">
       <SEO
@@ -570,8 +593,11 @@ const LandingPage = () => {
 
       <LiveTicker tickerItems={tickerItems} />
 
-      {/* Rotating Promo Banner (2 SamSports + 1 SAM RIVALS) */}
-      <div className="ls-top-banner-wrap">
+      {/* Partner Landing Banner Advert (only shows on partner subdomains) */}
+      {isPartnerSite && <PartnerAdverts position="landing-banner" />}
+
+      {/* Rotating Promo Banner (2 SamSports + 1 SAM RIVALS) — hidden on partner sites */}
+      {!isPartnerSite && <div className="ls-top-banner-wrap">
         <div className="ls-promo" onClick={() => navigate('/select-game')} style={bannerSlide !== 1 ? {background: 'linear-gradient(135deg, #0a1628 0%, #162544 50%, #0d2137 100%)'} : {}}>
           <div className="ls-promo-glow" style={bannerSlide !== 1 ? {background: 'radial-gradient(circle at 15% 50%, rgba(59,130,246,0.2), transparent 60%)'} : {}} />
           <div className="ls-promo-shimmer" />
@@ -622,7 +648,10 @@ const LandingPage = () => {
             <button key={i} onClick={() => setBannerSlide(i)} style={{width: bannerSlide === i ? 18 : 6, height: 6, borderRadius: 3, border: 'none', cursor: 'pointer', transition: 'all 0.3s', background: bannerSlide === i ? (i === 1 ? '#22c55e' : '#3b82f6') : 'rgba(255,255,255,0.15)'}} />
           ))}
         </div>
-      </div>
+      </div>}
+
+      {/* Partner In-Feed Advert (only on partner sites, between banner and content) */}
+      {isPartnerSite && <PartnerAdverts position="in-feed" />}
 
       {/* Date Navigation Bar */}
       <DateNavBar selectedDate={selectedDate} onDateChange={setSelectedDate} />
@@ -655,10 +684,13 @@ const LandingPage = () => {
           {renderMainContent()}
         </div>
 
-        <RightSidebar
-          scorers={topScorers}
-          isAuthenticated={isAuthenticated}
-        />
+        <div>
+          <RightSidebar
+            scorers={topScorers}
+            isAuthenticated={isAuthenticated}
+          />
+          {isPartnerSite && <PartnerAdverts position="sidebar" />}
+        </div>
       </div>
 
       <NewsCarousel articles={newsArticles} activeSport={activeSport} onArticleClick={handleArticleClick} />

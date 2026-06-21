@@ -6,7 +6,8 @@ import {
   Settings, RefreshCw, Eye, Trash2, Send, Bell, Database,
   Zap, TrendingUp, Award, Flag, MessageSquare, FileText, Lock,
   Globe, Server, Cpu, LayoutDashboard, Workflow, Play,
-  Pause, Loader2, ImagePlus, LogOut, UserPlus, Calendar, DollarSign, Image, Download
+  Pause, Loader2, ImagePlus, LogOut, UserPlus, Calendar, DollarSign, Image, Download,
+  Store
 } from "lucide-react";
 import * as adminAPI from "../../services/adminService";
 
@@ -6748,6 +6749,173 @@ const FinanceTrackerSection = ({ toast }) => {
   );
 };
 
+/* ═══════════════════════════════════════════════════════════════
+   PARTNERS SECTION — White-Label Partner Management
+   ═══════════════════════════════════════════════════════════════ */
+const PartnersSection = ({ toast }) => {
+  const [tab,setTab]=useState("overview"); const [partners,setPartners]=useState([]); const [stats,setStats]=useState(null); const [loading,setLoading]=useState(false); const [filter,setFilter]=useState("all"); const [actionLoading,setActionLoading]=useState(null);
+
+  const loadPartners=async(status)=>{
+    setLoading(true);
+    try{
+      const url=status&&status!=="all"?`/partner/admin/list?status=${status}`:`/partner/admin/list`;
+      const res=await adminAPI.get(url);
+      setPartners(res?.data?.partners||res?.partners||[]);
+    }catch(e){toast("error","Failed to load partners")}
+    setLoading(false);
+  };
+
+  const loadStats=async()=>{
+    try{
+      const res=await adminAPI.get("/partner/admin/stats");
+      setStats(res?.data||res||null);
+    }catch(e){console.error("Stats load error:",e)}
+  };
+
+  useEffect(()=>{loadPartners(filter);loadStats();},[]);
+  useEffect(()=>{loadPartners(filter);},[filter]);
+
+  const handleAction=async(id,action,body={})=>{
+    setActionLoading(id);
+    try{
+      await adminAPI.post(`/partner/admin/${action}/${id}`,body);
+      toast("success",`Partner ${action}d successfully`);
+      loadPartners(filter);loadStats();
+    }catch(e){toast("error",`Failed to ${action} partner`)}
+    setActionLoading(null);
+  };
+
+  const handlePlanChange=async(id,plan)=>{
+    setActionLoading(id);
+    try{
+      await adminAPI.put(`/partner/admin/plan/${id}`,{plan});
+      toast("success",`Plan updated to ${plan}`);
+      loadPartners(filter);
+    }catch(e){toast("error","Failed to update plan")}
+    setActionLoading(null);
+  };
+
+  const statusColor={pending:"#f59e0b",active:"#22c55e",suspended:"#ef4444",rejected:"#6b7280"};
+  const planColor={free:C.textMuted,pro:C.blue,enterprise:C.purple};
+
+  return (
+    <div style={{padding:28}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:24}}>
+        <div>
+          <h2 style={{fontSize:20,fontWeight:800,color:C.white,margin:0}}>White-Label Partners</h2>
+          <p style={{fontSize:12,color:C.textMuted,margin:"4px 0 0"}}>Manage bar & venue partner platforms</p>
+        </div>
+        <button onClick={()=>{loadPartners(filter);loadStats();toast("info","Refreshed")}} style={{...btn,padding:"8px 16px",background:C.bgCard,border:`1px solid ${C.border}`,gap:6}}>
+          <RefreshCw size={14}/> Refresh
+        </button>
+      </div>
+
+      {/* Stats Cards */}
+      {stats&&(
+        <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:12,marginBottom:24}}>
+          {[
+            {label:"Total Partners",value:stats.totalPartners,color:C.blue},
+            {label:"Active",value:stats.activePartners,color:"#22c55e"},
+            {label:"Pending",value:stats.pendingPartners,color:"#f59e0b"},
+            {label:"Partner Users",value:stats.totalPartnerUsers,color:C.purple},
+            {label:"Partner Leagues",value:stats.totalPartnerLeagues,color:C.teal||"#14b8a6"},
+          ].map((s,i)=>(
+            <div key={i} style={{background:C.bgCard,border:`1px solid ${C.border}`,borderRadius:12,padding:16}}>
+              <div style={{fontSize:10,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:1}}>{s.label}</div>
+              <div style={{fontSize:28,fontWeight:800,color:s.color,marginTop:4}}>{s.value||0}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Filter */}
+      <div style={{display:"flex",gap:8,marginBottom:16}}>
+        {["all","pending","active","suspended","rejected"].map(s=>(
+          <button key={s} onClick={()=>setFilter(s)} style={{...btn,padding:"6px 14px",background:filter===s?C.blueLight:C.bgCard,color:filter===s?C.blue:C.textMuted,border:`1px solid ${filter===s?C.blue+"33":C.border}`,fontSize:12,fontWeight:600,textTransform:"capitalize"}}>
+            {s}
+          </button>
+        ))}
+      </div>
+
+      {/* Partners Table */}
+      <div style={{background:C.bgCard,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden"}}>
+        <div style={{display:"grid",gridTemplateColumns:"2fr 1.5fr 1fr 1fr 1fr 1.5fr",gap:0,padding:"10px 16px",borderBottom:`1px solid ${C.border}`,fontSize:10,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:1}}>
+          <span>Partner</span><span>Subdomain</span><span>Plan</span><span>Status</span><span>Users</span><span>Actions</span>
+        </div>
+        {loading?(
+          <div style={{padding:40,textAlign:"center",color:C.textMuted}}><Loader2 size={20} className="spin"/> Loading...</div>
+        ):partners.length===0?(
+          <div style={{padding:40,textAlign:"center",color:C.textMuted}}>No partners found</div>
+        ):(
+          partners.map(p=>(
+            <div key={p._id} style={{display:"grid",gridTemplateColumns:"2fr 1.5fr 1fr 1fr 1fr 1.5fr",gap:0,padding:"12px 16px",borderBottom:`1px solid ${C.border}22`,alignItems:"center",transition:"background .1s"}}>
+              <div>
+                <div style={{fontSize:14,fontWeight:700,color:C.text}}>{p.name}</div>
+                <div style={{fontSize:11,color:C.textMuted}}>{p.email}</div>
+                <div style={{fontSize:10,color:C.textMuted}}>{p.businessType} — {[p.address?.city,p.address?.country].filter(Boolean).join(", ")||"No location"}</div>
+              </div>
+              <div>
+                <span style={{fontSize:13,fontWeight:600,color:C.blue}}>{p.subdomain}</span>
+                <span style={{fontSize:11,color:C.textMuted}}>.samsports.io</span>
+              </div>
+              <div>
+                <span style={{fontSize:11,fontWeight:700,color:planColor[p.plan]||C.textMuted,textTransform:"uppercase"}}>{p.plan||"free"}</span>
+              </div>
+              <div>
+                <span style={{fontSize:10,fontWeight:700,color:statusColor[p.status],background:`${statusColor[p.status]}15`,padding:"3px 8px",borderRadius:6,textTransform:"uppercase"}}>{p.status}</span>
+              </div>
+              <div style={{fontSize:13,fontWeight:600,color:C.text}}>{p.stats?.totalUsers||0}</div>
+              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                {p.status==="pending"&&(
+                  <>
+                    <button onClick={()=>handleAction(p._id,"approve")} disabled={actionLoading===p._id} style={{...btn,padding:"4px 10px",fontSize:10,fontWeight:700,background:"rgba(34,197,94,0.1)",color:"#22c55e",border:"1px solid rgba(34,197,94,0.2)"}}>
+                      <CheckCircle size={12}/> Approve
+                    </button>
+                    <button onClick={()=>handleAction(p._id,"reject",{reason:"Not meeting requirements"})} disabled={actionLoading===p._id} style={{...btn,padding:"4px 10px",fontSize:10,fontWeight:700,background:"rgba(239,68,68,0.1)",color:"#ef4444",border:"1px solid rgba(239,68,68,0.2)"}}>
+                      <XCircle size={12}/> Reject
+                    </button>
+                  </>
+                )}
+                {p.status==="active"&&(
+                  <>
+                    <select onChange={e=>{if(e.target.value)handlePlanChange(p._id,e.target.value);e.target.value=""}} style={{fontSize:10,fontWeight:600,background:C.bgCard,color:C.text,border:`1px solid ${C.border}`,borderRadius:6,padding:"4px 6px",cursor:"pointer"}} defaultValue="">
+                      <option value="" disabled>Plan</option>
+                      <option value="free">Free</option>
+                      <option value="pro">Pro</option>
+                      <option value="enterprise">Enterprise</option>
+                    </select>
+                    <button onClick={()=>handleAction(p._id,"suspend",{reason:"Admin action"})} disabled={actionLoading===p._id} style={{...btn,padding:"4px 10px",fontSize:10,fontWeight:700,background:"rgba(239,68,68,0.05)",color:"#ef4444",border:"1px solid rgba(239,68,68,0.15)"}}>
+                      Suspend
+                    </button>
+                  </>
+                )}
+                {p.status==="suspended"&&(
+                  <button onClick={()=>handleAction(p._id,"reactivate")} disabled={actionLoading===p._id} style={{...btn,padding:"4px 10px",fontSize:10,fontWeight:700,background:"rgba(34,197,94,0.1)",color:"#22c55e",border:"1px solid rgba(34,197,94,0.2)"}}>
+                    Reactivate
+                  </button>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Plan by stats */}
+      {stats?.partnersByPlan&&(
+        <div style={{marginTop:24,display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12}}>
+          {["free","pro","enterprise"].map(plan=>(
+            <div key={plan} style={{background:C.bgCard,border:`1px solid ${C.border}`,borderRadius:12,padding:16,textAlign:"center"}}>
+              <div style={{fontSize:10,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:1}}>{plan} Plan</div>
+              <div style={{fontSize:24,fontWeight:800,color:planColor[plan]||C.text,marginTop:4}}>{stats.partnersByPlan[plan]||0}</div>
+              <div style={{fontSize:10,color:C.textMuted}}>active partners</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const ComplianceSection = ({ toast }) => {
   const [reports, setReports] = useState([]);
   const [selectedReport, setSelectedReport] = useState(null);
@@ -6975,6 +7143,8 @@ const AdminPanel = () => {
     {id:"deploy",label:"Deploy & Server",icon:Server},
     {divider:true,label:"SEASONS"},
     {id:"seasons",label:"Season Mgmt",icon:Calendar},
+    {divider:true,label:"PARTNERS"},
+    {id:"partners",label:"Partners",icon:Store},
     {divider:true,label:"LEGAL"},
     {id:"compliance",label:"Compliance",icon:Shield},
   ];
@@ -7001,6 +7171,7 @@ const AdminPanel = () => {
     case "infographics": return <InfographicsSection toast={toast}/>;
     case "deploy": return <DeploySection toast={toast}/>;
     case "seasons": return <SeasonManagementSection toast={toast}/>;
+    case "partners": return <PartnersSection toast={toast}/>;
     case "compliance": return <ComplianceSection toast={toast}/>;
     case "employees": return isSuperAdmin ? <EmployeesSection toast={toast}/> : <DashboardSection toast={toast}/>;
     case "settings": return <SettingsSection toast={toast} adminUser={adminUser}/>;

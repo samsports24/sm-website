@@ -62,7 +62,7 @@ const Leaderboard = () => {
               }}>
                 <span style={{ width: 40, fontWeight: 700, color: idx < 3 ? '#ffd700' : '#A78BFA' }}>{idx + 1}</span>
                 <span style={{ flex: 1, fontWeight: 500, color: '#e2e8f0' }}>
-                  {e.teamName || (e.user && e.user.username) || 'Manager'}
+                  {(e.user && (e.user.userName || e.user.username)) || e.teamName || 'Manager'}
                   {isMe && <span style={{ color: '#A78BFA', fontSize: 11, marginLeft: 6 }}>(You)</span>}
                 </span>
                 <span style={{ width: 120, fontSize: 12, color: divColor, fontWeight: 600 }}>

@@ -81,7 +81,7 @@ const MainMenu = ({ visible }) => {
       '/stadium': 'stadium',
       '/clubhouse': 'clubhouse',
       '/my-league': 'my-league',
-      '/comissioner': 'comissioner',
+      '/commissioner': 'comissioner',
       '/rule-book': 'rule-book',
       '/search-player': 'search-player',
       '/chat': 'chat',
@@ -269,7 +269,7 @@ const MainMenu = ({ visible }) => {
                       <MenuItem id="league-rosters" icon={<GiAmericanFootballPlayer />} label={t('rosters')} onClick={() => navigatePath('/league-rosters')} />
                       <MenuItem id="league-standings" icon={<BsShop />} label={t('standings')} onClick={() => navigatePath('/league-standings')} />
                       <MenuItem id="leagueScore" icon={<TbLivePhoto />} label={t('liveScoring')} onClick={() => navigatePath('/leagueScore')} />
-                      <MenuItem id="comissioner" icon={<img src={comissioner} alt="" />} label={t('commissioner')} onClick={() => { setCommInboxCount(0); navigate('/comissioner'); }} glowColor={commInboxCount > 0 ? '#22C55E' : null} />
+                      <MenuItem id="comissioner" icon={<img src={comissioner} alt="" />} label={t('commissioner')} onClick={() => { setCommInboxCount(0); navigate('/commissioner'); }} glowColor={commInboxCount > 0 ? '#22C55E' : null} />
                     </div>
                   )}
 

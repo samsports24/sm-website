@@ -145,7 +145,7 @@ const PodStandingsTable = ({ members, userId }) => {
                   {idx + 1}
                 </td>
                 <td style={{ padding: '8px 12px', fontSize: 13, fontWeight: isYou ? 700 : 500, color: isYou ? '#A78BFA' : '#e2e8f0', textAlign: 'left' }}>
-                  {m.user?.username || m.username || '—'} {isYou && <Tag color="purple" style={{ fontSize: 9 }}>YOU</Tag>}
+                  {m.user?.userName || m.user?.username || m.entry?.teamName || m.username || '—'} {isYou && <Tag color="purple" style={{ fontSize: 9 }}>YOU</Tag>}
                 </td>
                 <td style={{ textAlign: 'center', padding: '8px', fontSize: 13, fontWeight: 600, color: '#10b981' }}>{m.wins || 0}</td>
                 <td style={{ textAlign: 'center', padding: '8px', fontSize: 13, fontWeight: 600, color: '#f59e0b' }}>{m.draws || 0}</td>
