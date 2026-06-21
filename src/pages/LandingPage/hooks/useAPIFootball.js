@@ -162,7 +162,9 @@ export const useSoccerFixtures = (selectedDate = undefined, leagues = AF_LEAGUES
   const [data, setData] = useState({ leagues: [], loading: !disabled, totalMatches: 0, activeLeagues: 0 })
   const intervalRef = useRef(null)
 
-  const PRIORITY_IDS = new Set([39, 140, 78, 135, 61, 2, 3])
+  // 1 = FIFA World Cup (active tournament during summer 2026 — must load first
+  // or it lands in PHASE 2 and most users never see it).
+  const PRIORITY_IDS = new Set([1, 39, 140, 78, 135, 61, 2, 3])
   const priorityLeagues = leagues.filter(lg => PRIORITY_IDS.has(lg.id))
   const otherLeagues = leagues.filter(lg => !PRIORITY_IDS.has(lg.id))
 

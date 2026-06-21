@@ -4,6 +4,7 @@ export const ESPN_API_BASE = 'https://site.api.espn.com/apis/site/v2/sports';
 // Soccer Leagues Configuration
 export const SOCCER_LEAGUES = [
   // International
+  { id: 'fifa.world', name: 'FIFA World Cup 2026', emoji: '🏆' },
   { id: 'fifa.worldq.uefa', name: 'World Cup Qualifiers - UEFA', emoji: '🌍' },
   { id: 'fifa.worldq.conmebol', name: 'World Cup Qualifiers - CONMEBOL', emoji: '🌎' },
   { id: 'fifa.worldq.concacaf', name: 'World Cup Qualifiers - CONCACAF', emoji: '🌎' },
