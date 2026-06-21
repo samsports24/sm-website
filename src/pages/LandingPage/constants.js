@@ -2,13 +2,16 @@
 export const ESPN_API_BASE = 'https://site.api.espn.com/apis/site/v2/sports';
 
 // Soccer Leagues Configuration
-// NOTE: FIFA World Cup is handled by API-Football (id=1) — DO NOT add an ESPN
-// fifa.world entry here. Doing so duplicates the league with a different name
-// ('FIFA World Cup 2026' vs API-Football's 'World Cup') and the merge logic
-// keeps both, causing ESPN's eventId (no `af-` prefix) to win at render time
-// and the user gets the flat ESPN drawer instead of the tabbed AF drawer.
+// NOTE: We keep ESPN's fifa.world AND API-Football's id=1 — AF is preferred
+// when it returns data (its events have `af-` prefix and trigger the tabbed
+// AFMatchDetail drawer), ESPN is the fallback so games still appear if AF
+// hits a rate limit / outage. Drawer tab vs flat depends on which feed
+// wins for that fixture.
 export const SOCCER_LEAGUES = [
   // International
+  // Use AF's exact name ('World Cup') so the merge logic's afCovered set
+  // matches this entry and skips ESPN duplication when AF has data.
+  { id: 'fifa.world', name: 'World Cup', emoji: '🏆' },
   { id: 'fifa.worldq.uefa', name: 'World Cup Qualifiers - UEFA', emoji: '🌍' },
   { id: 'fifa.worldq.conmebol', name: 'World Cup Qualifiers - CONMEBOL', emoji: '🌎' },
   { id: 'fifa.worldq.concacaf', name: 'World Cup Qualifiers - CONCACAF', emoji: '🌎' },
