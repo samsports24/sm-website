@@ -6,7 +6,34 @@ import axios from 'axios'
 import io from 'socket.io-client'
 import { setSocket } from './socketAction'
 import store from '../store'
-import { getUserLeagues } from './leagueActions'
+import { getUserLeagues, joinLeagueFromPlatform } from './leagueActions'
+
+/* ── Auto-join the league an invited user arrived for ──
+   The invite link (/select-game?token=…) carries the league _id. We stash it in
+   keys that survive clearStaleSessionData so that, right after the account is
+   created (token OR email-verification path), the user is dropped straight into
+   the league with no manual code. Uses join-from-platform, which takes the
+   league _id (exactly what the invite carries). Returns true on success. */
+export const autoJoinPendingInvite = async ({ teamName, email } = {}) => {
+  const leagueId = localStorage.getItem('pendingInviteLeague') // league _id
+  if (!leagueId) return false
+  const sport = localStorage.getItem('pendingInviteSport') || 'football'
+  localStorage.setItem('selectedGame', sport)
+  const safeTeam = (teamName && String(teamName).trim()) || (email ? String(email).split('@')[0] : 'My Team')
+  try {
+    const res = await joinLeagueFromPlatform({ leagueId, teamName: safeTeam })
+    if (res) {
+      localStorage.removeItem('pendingInviteLeague')
+      localStorage.removeItem('pendingInviteSport')
+      window.location.href = '/dashboard'
+      return true
+    }
+    return false
+  } catch (e) {
+    // Keep the pending keys so it can retry; the error is already surfaced.
+    return false
+  }
+}
 
 /* ── Clear stale session data (league, chat, invitation, etc.) ──
    MUST be called on every login / signup / logout so a new user
@@ -158,9 +185,19 @@ export const authSignupAdvanced = async (payload, navigate, setVerificationState
     const registerUrl = payload.registerPath
       ? `${payload.url}${payload.registerPath}`
       : `${payload.url}/auth/register`
+    // Capture invite context BEFORE clearStaleSessionData wipes AssignLeague,
+    // and re-stash it under keys that survive the cleanup so we can auto-join
+    // once the account exists (works for both token + email-verification paths).
+    const inviteLeagueId = localStorage.getItem('AssignLeague')
+    const inviteSport = localStorage.getItem('selectedGame') || payload.key || 'football'
+
     const res = await axios.post(registerUrl, { ...payload, skipVerification: false })
     if (res) {
       clearStaleSessionData()
+      if (inviteLeagueId) {
+        localStorage.setItem('pendingInviteLeague', inviteLeagueId)
+        localStorage.setItem('pendingInviteSport', inviteSport)
+      }
       localStorage.setItem('version', version)
       localStorage.setItem('email', payload.email)
       const resData = res.data?.data || res.data
@@ -199,6 +236,16 @@ export const authSignupAdvanced = async (payload, navigate, setVerificationState
 
         try { await getUserLeagues() } catch (e) { /* noop */ }
         try { await store.dispatch(getUser()) } catch (e) { /* noop */ }
+
+        // Invited user → auto-join the league and go straight in (no manual code,
+        // no onboarding detour). joinLeague redirects to /dashboard on success.
+        try {
+          const joined = await autoJoinPendingInvite({
+            teamName: resData.user?.userName || resData.user?.name,
+            email: payload.email,
+          })
+          if (joined) return
+        } catch (e) { /* fall through to normal flow */ }
 
         if (payload.frontEndUrl) {
           const authToken = resData.token
@@ -255,6 +302,15 @@ export const otpVerification = (otp, navigate) => {
           console.error('[otpVerification] Failed to fetch leagues:', leagueErr?.message)
           // Don't block navigation if league fetch fails
         }
+
+        // Invited user → auto-join the league instead of the onboarding detour.
+        try {
+          const joined = await autoJoinPendingInvite({
+            teamName: res.data?.data?.user?.userName || res.data?.data?.user?.name,
+            email,
+          })
+          if (joined) return
+        } catch (e) { /* fall through to onboarding */ }
 
         // New users always go to onboarding after OTP verification
         navigate('/onboarding')

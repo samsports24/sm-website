@@ -1,0 +1,119 @@
+/* ═══════════════════════════════════════════════════════════════
+   Custom Widget Components — SamSports Styles
+   Additional CSS for the custom-built widget components
+   (CustomWidgets.js) that replicate API-Sports visual design.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Smooth scrollbar for widget containers ─────────────────── */
+.cw-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.cw-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.cw-scroll::-webkit-scrollbar-thumb {
+  background: var(--ls-border, #1E293B);
+  border-radius: 2px;
+}
+.cw-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--ls-gdim, #64748B);
+}
+
+/* ── Widget panel layout ─────────────────────────────────────── */
+.cw-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+/* ── Scores list — taller to show more matches without scrolling ── */
+.widget-scores-list {
+  max-height: 720px;
+  overflow-y: auto;
+}
+.widget-scores-list::-webkit-scrollbar { width: 4px; }
+.widget-scores-list::-webkit-scrollbar-track { background: transparent; }
+.widget-scores-list::-webkit-scrollbar-thumb { background: var(--ls-border, #1E293B); border-radius: 2px; }
+
+/* ── Responsive: tablet ─────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .widget-scores-list {
+    max-height: none; /* remove cap — let all matches show */
+  }
+}
+
+/* ── Responsive: mobile ─────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .cw-panel {
+    gap: 10px;
+  }
+  .widget-scores-list {
+    max-height: none;
+  }
+  /* Compact game rows on mobile */
+  .widget-game-row {
+    padding: 8px 10px !important;
+    gap: 6px !important;
+  }
+  /* Smaller team names and scores */
+  .widget-game-row span[style*="fontSize: 13"],
+  .widget-game-row div span {
+    font-size: 12px !important;
+  }
+  .widget-game-row div[style*="fontSize: 20"] span,
+  .widget-game-row div[style*="fontSize: 20"] {
+    font-size: 16px !important;
+  }
+  /* Hide team abbreviations on mobile to save space */
+  .widget-game-row div span[style*="fontSize: 10"] {
+    display: none;
+  }
+}
+
+/* ── Standings table row hover effect ─────────────────────────── */
+.cw-standings-row:hover {
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* ── Zone indicator pulse for live games ─────────────────────── */
+.cw-live-indicator {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ls-cyan, #22C55E);
+  animation: cwPulse 1.5s ease-in-out infinite;
+  margin-right: 4px;
+}
+
+@keyframes cwPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+/* ── Tab transition effects ──────────────────────────────────── */
+.cw-tab-content {
+  animation: cwFadeIn 0.2s ease-out;
+}
+
+@keyframes cwFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Circle gauge animation ──────────────────────────────────── */
+.cw-gauge circle {
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Stat bar animation ──────────────────────────────────────── */
+.cw-stat-bar {
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Game row press effect ───────────────────────────────────── */
+.cw-game-row:active {
+  transform: scale(0.995);
+  transition: transform 0.1s ease;
+}

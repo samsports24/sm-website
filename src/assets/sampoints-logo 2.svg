@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <!-- Main gradient - emerald green -->
+    <linearGradient id="mainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#34D399;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#22C55E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16A34A;stop-opacity:1" />
+    </linearGradient>
+    <!-- Dark inner gradient -->
+    <linearGradient id="darkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F1923;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0A0E17;stop-opacity:1" />
+    </linearGradient>
+    <!-- Glow effect -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <!-- Outer glow -->
+    <filter id="outerGlow">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feFlood flood-color="#22C55E" flood-opacity="0.4" />
+      <feComposite in2="blur" operator="in" />
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <!-- Shield clip path -->
+    <clipPath id="shieldClip">
+      <path d="M100 10 L175 45 L175 110 Q175 155 100 190 Q25 155 25 110 L25 45 Z" />
+    </clipPath>
+  </defs>
+
+  <!-- Outer glow circle -->
+  <circle cx="100" cy="100" r="90" fill="none" stroke="#22C55E" stroke-width="0.5" opacity="0.3" />
+
+  <!-- Shield shape - outer -->
+  <path d="M100 12 L173 46 L173 110 Q173 153 100 188 Q27 153 27 110 L27 46 Z"
+        fill="url(#mainGrad)" filter="url(#outerGlow)" />
+
+  <!-- Shield shape - inner dark -->
+  <path d="M100 22 L163 52 L163 108 Q163 146 100 178 Q37 146 37 108 L37 52 Z"
+        fill="url(#darkGrad)" />
+
+  <!-- Subtle grid lines inside shield -->
+  <g clip-path="url(#shieldClip)" opacity="0.05">
+    <line x1="25" y1="60" x2="175" y2="60" stroke="#22C55E" stroke-width="1" />
+    <line x1="25" y1="80" x2="175" y2="80" stroke="#22C55E" stroke-width="1" />
+    <line x1="25" y1="100" x2="175" y2="100" stroke="#22C55E" stroke-width="1" />
+    <line x1="25" y1="120" x2="175" y2="120" stroke="#22C55E" stroke-width="1" />
+    <line x1="25" y1="140" x2="175" y2="140" stroke="#22C55E" stroke-width="1" />
+    <line x1="60" y1="10" x2="60" y2="190" stroke="#22C55E" stroke-width="1" />
+    <line x1="100" y1="10" x2="100" y2="190" stroke="#22C55E" stroke-width="1" />
+    <line x1="140" y1="10" x2="140" y2="190" stroke="#22C55E" stroke-width="1" />
+  </g>
+
+  <!-- "S" letter - bold, athletic -->
+  <text x="72" y="128" font-family="'Arial Black', 'Impact', sans-serif" font-size="88" font-weight="900"
+        fill="url(#mainGrad)" filter="url(#glow)" letter-spacing="-4">S</text>
+
+  <!-- "P" letter - overlapping -->
+  <text x="112" y="128" font-family="'Arial Black', 'Impact', sans-serif" font-size="88" font-weight="900"
+        fill="url(#mainGrad)" filter="url(#glow)" letter-spacing="-4" opacity="0.85">P</text>
+
+  <!-- Small diamond accent -->
+  <polygon points="100,38 106,44 100,50 94,44" fill="#22C55E" opacity="0.8" />
+
+  <!-- Bottom accent line -->
+  <line x1="65" y1="148" x2="135" y2="148" stroke="url(#mainGrad)" stroke-width="2.5" stroke-linecap="round" opacity="0.7" />
+
+  <!-- Small "SAMPOINTS" text at bottom -->
+  <text x="100" y="164" font-family="'Arial', sans-serif" font-size="11" font-weight="700"
+        fill="#22C55E" text-anchor="middle" letter-spacing="3" opacity="0.6">SAMPOINTS</text>
+</svg>

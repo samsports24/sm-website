@@ -1,0 +1,422 @@
+/* ========================================== */
+/* TEAM SETTINGS PAGE - MODERN DARK REDESIGN  */
+/* ========================================== */
+
+.team_settings_wrapper {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.team_settings_container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 20px;
+}
+
+/* Header Banner */
+.ts_header_banner {
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.8), rgba(34, 197, 94, 0.08));
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 12px;
+  padding: 40px 32px;
+  margin-bottom: 40px;
+  backdrop-filter: blur(10px);
+}
+
+.ts_header_content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ts_page_title {
+  color: #ffffff;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.ts_page_subtitle {
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-body), sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  margin: 0;
+}
+
+/* Form Container */
+.ts_form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Section Styling */
+.ts_section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ts_section_header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 8px;
+}
+
+.ts_section_title {
+  color: #ffffff;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.ts_section_desc {
+  color: rgba(255, 255, 255, 0.6);
+  font-family: var(--font-body), sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  margin: 0;
+}
+
+/* Card Container */
+.ts_card {
+  background: linear-gradient(135deg, rgba(31, 42, 61, 0.6), rgba(17, 24, 39, 0.4));
+  border: 1px solid rgba(30, 41, 59, 0.8);
+  border-radius: 12px;
+  padding: 28px;
+  backdrop-filter: blur(8px);
+}
+
+/* Form Labels */
+.ts_form .ant-form-item-label > label {
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-family: var(--font-stats), sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Form Inputs */
+.ts_input {
+  background-color: #0A0F1A !important;
+  border: 1px solid rgba(30, 41, 59, 0.9) !important;
+  border-radius: 8px !important;
+  padding: 10px 14px !important;
+  color: #ffffff !important;
+  font-family: var(--font-body), sans-serif;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.ts_input::placeholder {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.ts_input:hover {
+  border-color: rgba(34, 197, 94, 0.4) !important;
+}
+
+.ts_input:focus,
+.ts_input:focus-visible {
+  border-color: #22C55E !important;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1) !important;
+}
+
+/* Ant Design Input Wrapper Override */
+.ts_form .ant-input-affix-wrapper {
+  background-color: #0A0F1A !important;
+  border: 1px solid rgba(30, 41, 59, 0.9) !important;
+  border-radius: 8px !important;
+}
+
+.ts_form .ant-input-affix-wrapper:hover {
+  border-color: rgba(34, 197, 94, 0.4) !important;
+}
+
+.ts_form .ant-input-affix-wrapper:focus-within {
+  border-color: #22C55E !important;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1) !important;
+}
+
+/* Color Picker */
+.ts_color_picker_wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ts_color_picker {
+  height: 50px;
+  width: 100%;
+  border: 1px solid rgba(30, 41, 59, 0.9) !important;
+  border-radius: 8px !important;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.ts_color_picker:hover {
+  border-color: rgba(34, 197, 94, 0.4) !important;
+}
+
+.ts_color_hint {
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--font-body), sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+/* Logo Upload */
+.ts_logo_upload {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.ts_file_button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.08));
+  border: 2px solid #22C55E;
+  border-radius: 8px;
+  color: #22C55E;
+  font-family: var(--font-stats), sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.ts_file_button:hover {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.25), rgba(34, 197, 94, 0.15));
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+  transform: translateY(-2px);
+}
+
+.ts_upload_icon {
+  font-size: 16px;
+}
+
+.ts_upload_text {
+  display: inline-block;
+}
+
+.ts_upload_hint {
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--font-body), sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  margin: 0;
+}
+
+/* Checkbox */
+.ts_checkbox {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+}
+
+.ts_checkbox .ant-checkbox-inner {
+  background-color: #0A0F1A !important;
+  border: 2px solid rgba(30, 41, 59, 0.9) !important;
+  border-radius: 4px !important;
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.ts_checkbox .ant-checkbox-inner::after {
+  border-color: #22C55E !important;
+  border-width: 0 2px 2px 0 !important;
+}
+
+.ts_checkbox .ant-checkbox:hover .ant-checkbox-inner,
+.ts_checkbox .ant-checkbox-input:focus + .ant-checkbox-inner {
+  border-color: #22C55E !important;
+}
+
+.ts_checkbox.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #22C55E !important;
+  border-color: #22C55E !important;
+}
+
+.ts_checkbox_label {
+  color: rgba(255, 255, 255, 0.85);
+  font-family: var(--font-body), sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Submit Button */
+.ts_submit_btn {
+  background: linear-gradient(135deg, #22C55E, #16A34A) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 12px 32px !important;
+  color: #ffffff !important;
+  font-family: var(--font-stats), sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  height: auto !important;
+  min-height: 44px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+}
+
+.ts_submit_btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #16A34A, #15803D) !important;
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.3) !important;
+  transform: translateY(-2px);
+}
+
+.ts_submit_btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2) !important;
+}
+
+.ts_submit_btn:disabled {
+  background: rgba(34, 197, 94, 0.3) !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Form Item Spacing */
+.ts_form .ant-form-item {
+  margin-bottom: 0 !important;
+}
+
+/* Error Messages */
+.ts_form .ant-form-item-explain-error {
+  color: #F87171 !important;
+  font-family: var(--font-body), sans-serif;
+  font-size: 12px;
+  margin-top: 4px !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .team_settings_container {
+    padding: 24px 16px;
+  }
+
+  .ts_header_banner {
+    padding: 28px 20px;
+    margin-bottom: 28px;
+  }
+
+  .ts_page_title {
+    font-size: 28px;
+  }
+
+  .ts_page_subtitle {
+    font-size: 13px;
+  }
+
+  .ts_card {
+    padding: 20px;
+  }
+
+  .ts_section_title {
+    font-size: 18px;
+  }
+
+  .ts_file_button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .ts_submit_btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .team_settings_container {
+    padding: 16px 12px;
+  }
+
+  .ts_header_banner {
+    padding: 20px 16px;
+    margin-bottom: 20px;
+  }
+
+  .ts_page_title {
+    font-size: 24px;
+    letter-spacing: 1px;
+  }
+
+  .ts_page_subtitle {
+    font-size: 12px;
+  }
+
+  .ts_form {
+    gap: 24px;
+  }
+
+  .ts_section {
+    gap: 12px;
+  }
+
+  .ts_card {
+    padding: 16px;
+  }
+
+  .ts_section_title {
+    font-size: 16px;
+    letter-spacing: 0.5px;
+  }
+
+  .ts_input {
+    padding: 8px 12px !important;
+    font-size: 13px;
+  }
+
+  .ts_submit_btn {
+    width: 100%;
+    padding: 10px 24px !important;
+    font-size: 13px;
+  }
+}
+
+/* Dark Mode Compatibility & Theme Variables */
+@supports (--color: value) {
+  .team_settings_container {
+    --ts-bg-primary: #0A0F1A;
+    --ts-bg-secondary: #111827;
+    --ts-bg-card: #1F2A3D;
+    --ts-accent-green: #22C55E;
+    --ts-accent-blue: #3B82F6;
+    --ts-accent-gold: #F59E0B;
+    --ts-border: #1E293B;
+    --ts-text-primary: #ffffff;
+    --ts-text-secondary: rgba(255, 255, 255, 0.7);
+  }
+}
+
+/* Override Ant Design's default styling for consistency */
+.ts_form .ant-form-item-label {
+  padding-bottom: 8px !important;
+}
+
+.ts_form .ant-form-item-explain {
+  margin-top: 4px !important;
+  font-size: 12px;
+}

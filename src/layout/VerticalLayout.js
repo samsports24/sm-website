@@ -18,6 +18,7 @@ import { removeLeague } from '../redux'
 import { useDispatch } from 'react-redux'
 import LanguageSwitcher from '../i18n/LanguageSwitcher'
 import { useLanguage } from '../i18n/LanguageContext'
+import ReportBugButton from '../components/ReportBugButton'
 // import { isAuthenticated } from '../functions/auth'
 
 const VerticalLayout = ({ children, active }) => {
@@ -176,6 +177,7 @@ const VerticalLayout = ({ children, active }) => {
 {/* Footer removed */}
         </Layout>
       </Layout>
+      <ReportBugButton />
     </div>
   )
 }

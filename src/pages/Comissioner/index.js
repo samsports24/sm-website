@@ -1,6 +1,7 @@
 import { Button, Select, InputNumber, Switch, Input, notification, Spin, Dropdown, Modal, Radio, TimePicker, Card, Tabs, Tooltip, Tag } from 'antd'
 import { useEffect, useState, useMemo } from 'react'
 import SamDatePicker from '../../components/SamDatePicker'
+import PlayoffBracketBuilder from '../../components/PlayoffBracketBuilder'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
@@ -4461,6 +4462,9 @@ const SeasonTab = ({ teams, user, currentLeague }) => {
           <p>Are you sure you want to transfer your commissioner rights? You will be demoted to co-commissioner and cannot undo this action.</p>
         </Modal>
       </div>
+
+      {/* Manual playoff bracket — for non-standard league sizes that can't auto-seed */}
+      <PlayoffBracketBuilder leagueId={currentLeague?._id} teams={teams} />
 
       {/* ═══ DANGER ZONE: Delete League ═══
           Top-level section inside SeasonTab so it stands on its own (the

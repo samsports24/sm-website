@@ -151,8 +151,6 @@ export const joinLeague = async (payload) => {
       localStorage.setItem('token', res.data.data.token)
       store.dispatch(getUser())
       attachToken()
-      window.location.href = '/dashboard'
-
 
       notification.success({
         description: res.data.data.message,
@@ -165,6 +163,8 @@ export const joinLeague = async (payload) => {
       localStorage.removeItem('leagueroom')
       localStorage.removeItem('roomId')
 
+      window.location.href = '/dashboard'
+      return res.data.data
       // window.open(`${link.frontEndUrl}/login`, '_self', 'noreferrer')
       // navigate('/dashboard')
     }
@@ -173,6 +173,7 @@ export const joinLeague = async (payload) => {
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
     })
+    return false
   }
 }
 

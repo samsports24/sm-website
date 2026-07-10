@@ -306,32 +306,22 @@ const LandingPage = () => {
   const espnSoccerData = useSoccerScoreboards(selectedDate, isSoccerActive)
   const afSoccerData = useSoccerFixtures(USE_API_FOOTBALL && isSoccerActive ? selectedDate : null)
 
-  // Merge: use API-Football leagues that have data, fill gaps with ESPN
+  // Soccer source is API-Football ONLY (when the key is present). We do NOT
+  // merge ESPN in: the same competition appears under different names across
+  // providers (ESPN "World Cup" vs API-Football "FIFA World Cup 2026"), which
+  // showed every match twice. One source, no duplicates. ESPN is used only as
+  // the full fallback when API-Football is unavailable.
   const soccerData = useMemo(() => {
     if (!isSoccerActive) return { leagues: [], loading: false, totalMatches: 0, activeLeagues: 0 }
     if (!USE_API_FOOTBALL) return espnSoccerData
 
     const afLeagues = afSoccerData?.leagues || []
-    const espnLeagues = espnSoccerData?.leagues || []
-
-    const afCovered = new Set(
-      afLeagues
-        .filter(l => l.events?.length > 0)
-        .map(l => (l.lg?.name || '').toLowerCase())
-    )
-
-    const espnExtras = espnLeagues.filter(l => {
-      const name = (l.lg?.name || '').toLowerCase()
-      return l.events?.length > 0 && !afCovered.has(name)
-    })
-
-    const merged = [...afLeagues, ...espnExtras]
-    const totalMatches = merged.reduce((s, l) => s + (l.events?.length || 0), 0)
-    const activeLeagues = merged.filter(l => l.events?.length > 0).length
+    const totalMatches = afLeagues.reduce((s, l) => s + (l.events?.length || 0), 0)
+    const activeLeagues = afLeagues.filter(l => l.events?.length > 0).length
 
     return {
-      leagues: merged,
-      loading: afSoccerData?.loading || espnSoccerData?.loading,
+      leagues: afLeagues,
+      loading: afSoccerData?.loading,
       totalMatches,
       activeLeagues,
     }

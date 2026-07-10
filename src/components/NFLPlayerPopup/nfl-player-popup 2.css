@@ -1,0 +1,731 @@
+/* ═══════════════════════════════════════════
+   NFL PLAYER POPUP — Dark Theme, Purple Accent
+   ═══════════════════════════════════════════ */
+
+/* Modal override */
+.nfl-popup-modal .ant-modal-content {
+  background: #0E1320 !important;
+  border: 1px solid rgba(167,139,250,0.15);
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 40px rgba(167,139,250,0.08);
+  padding: 0;
+  overflow: hidden;
+}
+.nfl-popup-modal .ant-modal-body {
+  padding: 0;
+}
+
+/* ── Loading ── */
+.nflp-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  gap: 16px;
+  color: rgba(255,255,255,0.4);
+}
+
+/* ── Container ── */
+.nflp-container {
+  position: relative;
+  max-height: 80vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(167,139,250,0.2) transparent;
+}
+.nflp-container::-webkit-scrollbar { width: 6px; }
+.nflp-container::-webkit-scrollbar-thumb { background: rgba(167,139,250,0.2); border-radius: 3px; }
+
+/* ── Close ── */
+.nflp-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 10;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.5);
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.15s;
+}
+.nflp-close:hover {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+}
+
+/* ═══ HERO ═══ */
+.nflp-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px 16px;
+  background: linear-gradient(135deg, rgba(167,139,250,0.08) 0%, transparent 60%);
+  border-bottom: 1px solid rgba(167,139,250,0.06);
+}
+.nflp-hero-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+}
+.nflp-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+  object-fit: cover;
+  background: rgba(167,139,250,0.08);
+  border: 2px solid rgba(167,139,250,0.15);
+  flex-shrink: 0;
+}
+.nflp-avatar-placeholder {
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+  background: rgba(167,139,250,0.1);
+  border: 2px solid rgba(167,139,250,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.nflp-avatar-placeholder span {
+  font-size: 28px;
+  font-weight: 800;
+  color: #A78BFA;
+  font-family: 'Rajdhani', sans-serif;
+}
+.nflp-hero-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.nflp-name {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  font-family: 'Rajdhani', sans-serif;
+  letter-spacing: 0.3px;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nflp-hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nflp-pos-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  font-family: 'Rajdhani', sans-serif;
+}
+.nflp-team {
+  color: rgba(255,255,255,0.5);
+  font-size: 13px;
+  font-weight: 600;
+}
+.nflp-jersey {
+  color: rgba(255,255,255,0.25);
+  font-size: 13px;
+}
+.nflp-hero-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.nflp-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  font-family: 'Rajdhani', sans-serif;
+}
+.nflp-tag.injury {
+  background: rgba(239,68,68,0.12);
+  color: #ef4444;
+  border: 1px solid rgba(239,68,68,0.2);
+}
+.nflp-tag.starter {
+  background: rgba(34,197,94,0.12);
+  color: #22c55e;
+  border: 1px solid rgba(34,197,94,0.2);
+}
+.nflp-tag.fa {
+  background: rgba(59,130,246,0.12);
+  color: #3b82f6;
+  border: 1px solid rgba(59,130,246,0.2);
+}
+
+/* Score Ring */
+.nflp-hero-right {
+  flex-shrink: 0;
+  padding-left: 12px;
+}
+.nflp-score-ring {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(167,139,250,0.08);
+  border: 3px solid #A78BFA;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+.nflp-score-val {
+  font-size: 20px;
+  font-weight: 800;
+  color: #A78BFA;
+  font-family: 'Rajdhani', sans-serif;
+  line-height: 1;
+}
+.nflp-score-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(167,139,250,0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ═══ KEY METRICS BAR ═══ */
+.nflp-metrics {
+  display: flex;
+  padding: 14px 24px;
+  gap: 4px;
+  border-bottom: 1px solid rgba(167,139,250,0.06);
+  background: rgba(14,19,32,0.5);
+}
+.nflp-metric {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.nflp-metric-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: 'Rajdhani', sans-serif;
+}
+.nflp-metric-value {
+  font-size: 15px;
+  font-weight: 800;
+  color: #e2e8f0;
+  font-family: 'Rajdhani', sans-serif;
+}
+.nflp-metric-value.purple { color: #A78BFA; }
+.nflp-metric-value.green { color: #22c55e; }
+.nflp-metric-value.gold { color: #f59e0b; }
+
+/* ═══ TABS ═══ */
+.nflp-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 12px 24px 0;
+  border-bottom: 1px solid rgba(167,139,250,0.06);
+}
+.nflp-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 0;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.35);
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Rajdhani', sans-serif;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+}
+.nflp-tab:hover {
+  color: rgba(255,255,255,0.6);
+}
+.nflp-tab.active {
+  color: #A78BFA;
+  border-bottom-color: #A78BFA;
+}
+
+/* ═══ BODY ═══ */
+.nflp-body {
+  padding: 20px 24px 24px;
+}
+
+/* ═══ SECTIONS ═══ */
+.nflp-section {
+  margin-top: 20px;
+}
+.nflp-section:first-child {
+  margin-top: 0;
+}
+.nflp-section-title {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-family: 'Rajdhani', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.nflp-section-title .anticon {
+  color: #A78BFA;
+  font-size: 14px;
+}
+
+/* ── Bio Grid ── */
+.nflp-bio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+}
+.nflp-bio-item {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+.nflp-bio-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-family: 'Rajdhani', sans-serif;
+}
+.nflp-bio-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin-top: 2px;
+}
+
+/* ── Next Game ── */
+.nflp-next-game {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(167,139,250,0.06);
+  border: 1px solid rgba(167,139,250,0.1);
+  border-radius: 10px;
+  padding: 10px 16px;
+}
+.nflp-next-week {
+  font-size: 11px;
+  font-weight: 700;
+  color: #A78BFA;
+  background: rgba(167,139,250,0.12);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-family: 'Rajdhani', sans-serif;
+  letter-spacing: 0.3px;
+}
+.nflp-next-vs {
+  font-size: 11px;
+  color: rgba(255,255,255,0.25);
+}
+.nflp-next-opp {
+  font-size: 14px;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+/* ── Injury Card ── */
+.nflp-injury-card {
+  background: rgba(239,68,68,0.05);
+  border: 1px solid rgba(239,68,68,0.12);
+  border-radius: 10px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.nflp-injury-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.nflp-injury-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+}
+.nflp-injury-val {
+  font-size: 13px;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+.nflp-injury-val.red { color: #ef4444; }
+
+/* ── Recent Form ── */
+.nflp-form-row {
+  display: flex;
+  gap: 8px;
+}
+.nflp-form-gw {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 10px;
+  padding: 10px 6px;
+}
+.nflp-form-week {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.3);
+  font-family: 'Rajdhani', sans-serif;
+  letter-spacing: 0.3px;
+}
+.nflp-form-pts {
+  font-size: 18px;
+  font-weight: 800;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+/* ── Stats Grid ── */
+.nflp-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px;
+}
+.nflp-stat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 10px;
+  padding: 12px 8px;
+}
+.nflp-stat-box-val {
+  font-size: 20px;
+  font-weight: 800;
+  color: #e2e8f0;
+  font-family: 'Rajdhani', sans-serif;
+  line-height: 1;
+}
+.nflp-stat-box-lbl {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-family: 'Rajdhani', sans-serif;
+  margin-top: 4px;
+}
+
+/* ═══ CONTRACT TAB ═══ */
+.nflp-empty {
+  text-align: center;
+  color: rgba(255,255,255,0.3);
+  padding: 40px 20px;
+  font-size: 14px;
+}
+.nflp-contract-summary {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.nflp-contract-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+}
+.nflp-contract-row:last-child { border-bottom: none; }
+.nflp-contract-val {
+  font-weight: 700;
+  color: #e2e8f0;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+}
+.nflp-contract-val.green { color: #22c55e; }
+.nflp-contract-val.gold { color: #f59e0b; }
+.nflp-contract-val.purple { color: #A78BFA; }
+
+/* Cap Grid */
+.nflp-cap-grid {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.nflp-cap-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+}
+.nflp-cap-row:last-child { border-bottom: none; }
+.nflp-cap-row.highlight {
+  background: rgba(167,139,250,0.06);
+}
+
+/* Cap Bars */
+.nflp-cap-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.nflp-cap-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nflp-cap-bar-label {
+  width: 40px;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  font-family: 'Rajdhani', sans-serif;
+}
+.nflp-cap-bar-track {
+  flex: 1;
+  height: 20px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.nflp-cap-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #A78BFA, #8B5CF6);
+  border-radius: 6px;
+  transition: width 0.3s ease;
+  min-width: 4px;
+}
+.nflp-cap-bar-value {
+  width: 60px;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 700;
+  color: #e2e8f0;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+/* Yearly Breakdown */
+.nflp-breakdown-header {
+  display: grid;
+  grid-template-columns: 60px 1fr 1fr 1fr 1fr;
+  gap: 4px;
+  padding: 8px 12px;
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-family: 'Rajdhani', sans-serif;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.nflp-breakdown-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 1fr 1fr 1fr;
+  gap: 4px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.nflp-breakdown-row:last-child { border-bottom: none; }
+.nflp-breakdown-year {
+  font-weight: 700;
+  color: #e2e8f0;
+}
+.nflp-breakdown-row .green { color: #22c55e; }
+.nflp-breakdown-row .purple { color: #A78BFA; }
+.nflp-breakdown-row .red { color: #ef4444; }
+
+/* Contract Notes */
+.nflp-contract-notes {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ═══ SCOUTING TAB ═══ */
+.nflp-scout-header {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.nflp-scout-grade {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(167,139,250,0.06);
+  border: 1px solid rgba(167,139,250,0.12);
+  border-radius: 12px;
+  padding: 12px 20px;
+  min-width: 80px;
+}
+.nflp-scout-grade-val {
+  font-size: 24px;
+  font-weight: 800;
+  color: #A78BFA;
+  font-family: 'Rajdhani', sans-serif;
+  line-height: 1;
+}
+.nflp-scout-grade span:last-child {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-top: 4px;
+}
+.nflp-scout-overview {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Strengths & Weaknesses */
+.nflp-sw-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.nflp-sw-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.nflp-sw-title {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: 'Rajdhani', sans-serif;
+}
+.nflp-sw-title.green { color: #22c55e; }
+.nflp-sw-title.red { color: #ef4444; }
+.nflp-sw-item {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+.nflp-sw-item.green {
+  background: rgba(34,197,94,0.06);
+  color: rgba(34,197,94,0.9);
+  border: 1px solid rgba(34,197,94,0.12);
+}
+.nflp-sw-item.red {
+  background: rgba(239,68,68,0.06);
+  color: rgba(239,68,68,0.9);
+  border: 1px solid rgba(239,68,68,0.12);
+}
+
+/* Comps */
+.nflp-comps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.nflp-comp {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 10px;
+}
+.nflp-comp.med {
+  background: rgba(167,139,250,0.05);
+  border-color: rgba(167,139,250,0.12);
+}
+.nflp-comp.high {
+  background: rgba(34,197,94,0.05);
+  border-color: rgba(34,197,94,0.12);
+}
+.nflp-comp-tier {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-family: 'Rajdhani', sans-serif;
+  width: 50px;
+}
+.nflp-comp-name {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+.nflp-comp-ppg {
+  font-size: 13px;
+  font-weight: 700;
+  color: #A78BFA;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+/* ═══ Responsive ═══ */
+@media (max-width: 600px) {
+  .nflp-hero {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .nflp-hero-right {
+    padding-left: 0;
+    align-self: flex-end;
+  }
+  .nflp-metrics {
+    flex-wrap: wrap;
+  }
+  .nflp-metric {
+    min-width: calc(33% - 4px);
+  }
+  .nflp-sw-grid {
+    grid-template-columns: 1fr;
+  }
+  .nflp-breakdown-header,
+  .nflp-breakdown-row {
+    grid-template-columns: 50px 1fr 1fr 1fr 1fr;
+    font-size: 10px;
+  }
+}

@@ -1,0 +1,172 @@
+/* ═══════════════════════════════════════════════════════════════
+   EMAIL VERIFICATION — 6-digit code entry screen
+   ═══════════════════════════════════════════════════════════════ */
+
+.ev-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: #0A0F1A;
+}
+
+.ev-card {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(18, 18, 35, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(34, 197, 94, 0.15);
+  border-radius: 20px;
+  padding: 40px 32px;
+  text-align: center;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+}
+
+.ev-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.ev-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 8px;
+  letter-spacing: -0.3px;
+}
+
+.ev-subtitle {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0 0 28px;
+  line-height: 1.5;
+}
+
+.ev-email {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+/* ── Code input row ── */
+.ev-code-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+
+.ev-code-input {
+  width: 48px;
+  height: 56px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid rgba(110, 105, 128, 0.2);
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  outline: none;
+  transition: all 0.2s;
+  font-family: monospace;
+  caret-color: #22c55e;
+}
+
+.ev-code-input:focus {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.06);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+.ev-code-input:disabled {
+  opacity: 0.5;
+}
+
+/* ── Verify button ── */
+.ev-verify-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 20px;
+}
+
+.ev-verify-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.35);
+}
+
+.ev-verify-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Resend ── */
+.ev-resend-text {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0 0 12px;
+}
+
+.ev-resend-btn {
+  background: none;
+  border: none;
+  color: #22c55e;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.ev-resend-btn:hover {
+  color: #16a34a;
+}
+
+.ev-resend-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ev-cooldown {
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 500;
+}
+
+/* ── Back button ── */
+.ev-back-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 8px 0;
+  transition: color 0.2s;
+}
+
+.ev-back-btn:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+  .ev-card {
+    padding: 32px 20px;
+  }
+
+  .ev-code-input {
+    width: 42px;
+    height: 50px;
+    font-size: 22px;
+  }
+
+  .ev-code-row {
+    gap: 6px;
+  }
+}

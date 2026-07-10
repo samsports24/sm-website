@@ -2,6 +2,22 @@ import React, { useState, useEffect } from 'react'
 import { getGlobalGmRankings } from '../../redux'
 import './gmRankingWidget.css'
 
+// Soccer leagues live in a separate backend/database. The shared NFL ranking
+// endpoint has no soccer data, so the Soccer tab must read from the soccer
+// backend's own global GM rankings (public — optionalAuth on that route).
+const SOCCER_API_URL = process.env.REACT_APP_SOCCER_API_URL || 'https://soccerbackend.samsports.io'
+
+const fetchSoccerGmRankings = async () => {
+  try {
+    const res = await fetch(`${SOCCER_API_URL}/api/v1/leagues/gm-rankings/global`)
+    if (!res.ok) return null
+    const json = await res.json()
+    return json?.data || json
+  } catch (e) {
+    return null
+  }
+}
+
 /* Sport tabs matching the backend enum */
 const SPORTS = [
   { key: '', label: 'All', emoji: '🌐' },
@@ -45,7 +61,10 @@ const GmRankingWidget = () => {
   const fetchRankings = async (sport) => {
     setLoading(true)
     setExpanded(false)
-    const data = await getGlobalGmRankings(sport || null)
+    // Soccer comes from the soccer backend; everything else from the shared endpoint.
+    const data = sport === 'soccer'
+      ? await fetchSoccerGmRankings()
+      : await getGlobalGmRankings(sport || null)
     if (data) {
       // Filter out entries with no real username (broken user refs)
       const filtered = (data.rankings || []).filter(gm =>
@@ -153,7 +172,7 @@ const GmRankingWidget = () => {
                     className="gmw-rating"
                     style={{ color: getRatingColor(gm.overallRating) }}
                   >
-                    {gm.overallRating.toFixed(1)}
+                    {(gm.overallRating ?? 0).toFixed(1)}
                   </span>
                 </div>
               </div>
@@ -171,7 +190,7 @@ const GmRankingWidget = () => {
             className="gmw-my-rank-score"
             style={{ color: getRatingColor(myRank.overallRating) }}
           >
-            {myRank.overallRating.toFixed(1)}
+            {(myRank.overallRating ?? 0).toFixed(1)}
           </span>
         </div>
       )}

@@ -9,9 +9,7 @@ export const ESPN_API_BASE = 'https://site.api.espn.com/apis/site/v2/sports';
 // wins for that fixture.
 export const SOCCER_LEAGUES = [
   // International
-  // Use AF's exact name ('World Cup') so the merge logic's afCovered set
-  // matches this entry and skips ESPN duplication when AF has data.
-  { id: 'fifa.world', name: 'World Cup', emoji: '🏆' },
+  { id: 'fifa.world', name: 'FIFA World Cup 2026', emoji: '🏆' },
   { id: 'fifa.worldq.uefa', name: 'World Cup Qualifiers - UEFA', emoji: '🌍' },
   { id: 'fifa.worldq.conmebol', name: 'World Cup Qualifiers - CONMEBOL', emoji: '🌎' },
   { id: 'fifa.worldq.concacaf', name: 'World Cup Qualifiers - CONCACAF', emoji: '🌎' },

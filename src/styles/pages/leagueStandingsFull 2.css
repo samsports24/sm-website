@@ -1,0 +1,259 @@
+/* ═══════════════════════════════════════════════════════════════
+   LEAGUE STANDINGS — Full Page Redesign
+   Prefix: lsf-
+   ═══════════════════════════════════════════════════════════════ */
+.lsf-page {
+  width: 100%;
+  min-height: 100vh;
+  background: #0A0F1A;
+}
+
+.lsf-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+}
+
+.lsf-page-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  margin: 20px 0 24px;
+  letter-spacing: -0.3px;
+}
+
+.lsf-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+/* ── Conference wrapper ── */
+.lsf-conferences {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.lsf-conference {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lsf-conf-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.lsf-conf-bar {
+  width: 4px;
+  height: 20px;
+  border-radius: 2px;
+  background: #22C55E;
+}
+.lsf-conf-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  letter-spacing: -0.2px;
+}
+
+/* ── Division block ── */
+.lsf-division {
+  border-radius: 10px;
+  border: 1px solid rgba(110, 105, 128, 0.2);
+  background: rgba(255, 255, 255, 0.015);
+  overflow: hidden;
+}
+
+.lsf-div-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(40, 159, 201, 0.05);
+  border-bottom: 1px solid rgba(110, 105, 128, 0.12);
+}
+.lsf-div-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22C55E;
+  flex-shrink: 0;
+}
+.lsf-div-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+/* ── Table wrap (horizontal scroll on small screens) ── */
+.lsf-table-wrap {
+  overflow-x: auto;
+}
+.lsf-table-wrap::-webkit-scrollbar { height: 4px; }
+.lsf-table-wrap::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+}
+
+/* ── Table header ── */
+.lsf-table-head {
+  display: grid;
+  grid-template-columns: 36px 1fr 40px 40px 40px 56px 48px 60px 60px 64px 64px 64px 64px 80px;
+  align-items: center;
+  padding: 6px 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(110, 105, 128, 0.1);
+  min-width: 900px;
+}
+
+.lsf-th {
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+  white-space: nowrap;
+}
+.lsf-th-rank { text-align: center; }
+.lsf-th-team { text-align: left; padding-left: 4px; }
+.lsf-th-num { text-align: center; }
+.lsf-th-rec { text-align: center; }
+.lsf-th-act { text-align: right; }
+
+/* ── Team row ── */
+.lsf-row {
+  display: grid;
+  grid-template-columns: 36px 1fr 40px 40px 40px 56px 48px 60px 60px 64px 64px 64px 64px 80px;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(110, 105, 128, 0.06);
+  transition: background 0.12s;
+  min-width: 900px;
+}
+.lsf-row:last-child { border-bottom: none; }
+.lsf-row:hover { background: rgba(255, 255, 255, 0.025); }
+.lsf-row-leader { background: rgba(40, 159, 201, 0.03); }
+.lsf-row-leader:hover { background: rgba(40, 159, 201, 0.06); }
+
+/* ── Cells ── */
+.lsf-td {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Rank */
+.lsf-th-rank {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.3);
+}
+.lsf-rank-top {
+  color: #22C55E !important;
+  font-weight: 700 !important;
+}
+
+/* Team cell */
+.lsf-td-team {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 4px;
+  cursor: pointer;
+  min-width: 0;
+}
+.lsf-td-team:hover .lsf-name {
+  color: #22C55E;
+}
+
+.lsf-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.lsf-logo-ph {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  flex-shrink: 0;
+}
+.lsf-team-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.lsf-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.15s;
+}
+.lsf-owner {
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+/* Wins highlight */
+.lsf-wins {
+  color: #fff !important;
+  font-weight: 700 !important;
+}
+
+/* GB */
+.lsf-gb {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 11px;
+}
+
+/* Starters button */
+.lsf-starters-btn {
+  background: rgba(40, 159, 201, 0.1);
+  border: 1px solid rgba(40, 159, 201, 0.2);
+  color: #22C55E;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.lsf-starters-btn:hover {
+  background: rgba(40, 159, 201, 0.2);
+  border-color: rgba(40, 159, 201, 0.35);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1100px) {
+  .lsf-content { padding: 0 16px 40px; }
+  .lsf-page-title { font-size: 18px; margin: 16px 0 20px; }
+}
+
+@media (max-width: 768px) {
+  .lsf-content { padding: 0 10px 30px; }
+  .lsf-page-title { font-size: 16px; }
+  .lsf-conf-name { font-size: 14px; }
+}

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="coinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#34D399" />
+      <stop offset="50%" style="stop-color:#22C55E" />
+      <stop offset="100%" style="stop-color:#16A34A" />
+    </linearGradient>
+    <linearGradient id="coinDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F1923" />
+      <stop offset="100%" style="stop-color:#0A0E17" />
+    </linearGradient>
+    <filter id="coinGlow">
+      <feGaussianBlur stdDeviation="1.5" result="blur" />
+      <feFlood flood-color="#22C55E" flood-opacity="0.35" />
+      <feComposite in2="blur" operator="in" />
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Outer ring -->
+  <circle cx="24" cy="24" r="22" fill="url(#coinGrad)" filter="url(#coinGlow)" />
+
+  <!-- Inner dark circle -->
+  <circle cx="24" cy="24" r="18" fill="url(#coinDark)" />
+
+  <!-- Inner accent ring -->
+  <circle cx="24" cy="24" r="16.5" fill="none" stroke="#22C55E" stroke-width="0.5" opacity="0.3" />
+
+  <!-- SP letters -->
+  <text x="14.5" y="30.5" font-family="'Arial Black', 'Impact', sans-serif" font-size="20" font-weight="900"
+        fill="url(#coinGrad)" letter-spacing="-1.5">SP</text>
+</svg>

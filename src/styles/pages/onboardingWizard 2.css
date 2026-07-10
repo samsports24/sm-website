@@ -1,0 +1,615 @@
+/* ═══════════════════════════════════════════════
+   ONBOARDING WIZARD — SAMSports Front Office
+   Dark theme, sport-colored accents
+   ═══════════════════════════════════════════════ */
+
+.ob-page {
+  min-height: 100vh;
+  background: #0a0f14;
+  color: #e8eaed;
+  font-family: var(--font-body), -apple-system, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Header ── */
+.ob-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 40px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.ob-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-heading), sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: #00e676;
+}
+.ob-logo-icon { height: 28px; width: 28px; }
+.ob-welcome {
+  font-size: 14px;
+  color: #8a9bae;
+  font-family: var(--font-stats), sans-serif;
+}
+
+/* ── Step Indicator ── */
+.ob-steps {
+  display: flex;
+  gap: 8px;
+  padding: 24px 0 8px;
+}
+.ob-step-dot {
+  width: 32px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.1);
+  transition: all 0.3s ease;
+}
+.ob-step-dot.active {
+  background: #00e676;
+  width: 48px;
+}
+.ob-step-dot.done {
+  background: rgba(0, 230, 118, 0.4);
+}
+
+/* ── Body ── */
+.ob-body {
+  width: 100%;
+  max-width: 800px;
+  padding: 20px 24px 60px;
+}
+.ob-step-content {
+  animation: ob-fadeIn 0.35s ease;
+}
+@keyframes ob-fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Titles ── */
+.ob-title {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  text-align: center;
+}
+.ob-subtitle {
+  font-size: 15px;
+  color: #8a9bae;
+  text-align: center;
+  margin: 0 0 32px;
+}
+
+/* ── Sport Grid (Step 1) ── */
+.ob-sport-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.ob-sport-card {
+  position: relative;
+  background: rgba(255,255,255,0.03);
+  border: 2px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 24px 20px 16px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: center;
+  color: #e8eaed;
+}
+.ob-sport-card:hover:not(.disabled) {
+  border-color: var(--sport-color);
+  background: rgba(255,255,255,0.05);
+  transform: translateY(-2px);
+}
+.ob-sport-card.selected {
+  border-color: var(--sport-color);
+  background: rgba(255,255,255,0.06);
+  box-shadow: 0 0 20px rgba(0,0,0,0.3), inset 0 0 30px rgba(255,255,255,0.02);
+}
+.ob-sport-card.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.ob-sport-emoji { font-size: 42px; margin-bottom: 8px; }
+.ob-sport-name {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+}
+.ob-sport-tagline {
+  font-size: 12px;
+  color: #6b7d8f;
+  margin-bottom: 12px;
+}
+.ob-soon-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255,255,255,0.1);
+  color: #8a9bae;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+}
+.ob-check {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--sport-color);
+  color: #fff;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+.ob-sport-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+}
+.ob-feature-tag {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  color: #8a9bae;
+}
+
+/* ── Buttons ── */
+.ob-btn-primary {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  padding: 14px 28px;
+  background: #00e676;
+  color: #0a0f14;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.5px;
+}
+.ob-btn-primary:hover:not(:disabled) {
+  background: #00c864;
+  transform: translateY(-1px);
+}
+.ob-btn-primary:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.ob-btn-secondary {
+  padding: 12px 24px;
+  background: transparent;
+  color: #8a9bae;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: var(--font-body), sans-serif;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+.ob-btn-secondary:hover {
+  border-color: rgba(255,255,255,0.25);
+  color: #e8eaed;
+}
+
+/* ── Step 2: Setup Sport ── */
+.ob-setup-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.03);
+  border-left: 4px solid var(--sport-color);
+}
+.ob-setup-emoji { font-size: 40px; }
+.ob-setup-title {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+.ob-setup-tag {
+  font-size: 13px;
+  color: #6b7d8f;
+  margin: 0;
+}
+
+.ob-setup-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ob-option-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  color: #e8eaed;
+  transition: all 0.2s;
+  width: 100%;
+}
+.ob-option-card:hover {
+  border-color: #00e676;
+  background: rgba(0, 230, 118, 0.04);
+}
+.ob-option-card--featured {
+  border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.06);
+}
+.ob-option-card--featured:hover {
+  border-color: #22C55E;
+  background: rgba(34, 197, 94, 0.1);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.1);
+}
+.ob-option-card--skip {
+  opacity: 0.6;
+}
+.ob-option-card--skip:hover {
+  opacity: 0.85;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.ob-option-icon { font-size: 28px; }
+.ob-option-title {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+}
+.ob-option-desc {
+  font-size: 13px;
+  color: #6b7d8f;
+  margin-top: 2px;
+}
+
+/* ── Form ── */
+.ob-form {
+  margin-top: 8px;
+}
+.ob-form-group {
+  margin-bottom: 16px;
+}
+.ob-form-group label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #8a9bae;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.ob-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: #e8eaed;
+  font-size: 15px;
+  font-family: var(--font-body), sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.ob-input:focus {
+  border-color: #00e676;
+}
+.ob-input::placeholder {
+  color: #4a5568;
+}
+.ob-form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+.ob-form-actions .ob-btn-primary {
+  flex: 1;
+  max-width: none;
+}
+
+/* ── Step 3: Done ── */
+.ob-done {
+  text-align: center;
+}
+.ob-done-icon {
+  font-size: 64px;
+  margin-bottom: 12px;
+  animation: ob-bounce 0.6s ease;
+}
+@keyframes ob-bounce {
+  0% { transform: scale(0.5); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+.ob-done-summary {
+  margin: 24px auto;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ob-done-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 10px;
+  border-left: 3px solid var(--sport-color);
+}
+.ob-done-emoji { font-size: 22px; }
+.ob-done-name {
+  font-family: var(--font-heading), sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  min-width: 80px;
+}
+.ob-done-status {
+  font-size: 13px;
+  color: #8a9bae;
+  margin-left: auto;
+}
+.ob-btn-launch {
+  margin-top: 32px;
+  font-size: 18px;
+  padding: 16px 32px;
+  max-width: 400px;
+}
+
+/* ── Form Row (side by side) ── */
+.ob-form-row {
+  display: flex;
+  gap: 16px;
+}
+.ob-form-half {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Radio Group (Public/Private) ── */
+.ob-radio-group {
+  display: flex;
+  gap: 12px;
+}
+.ob-radio-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ob-radio-option:hover {
+  border-color: rgba(255,255,255,0.2);
+}
+.ob-radio-option.active {
+  border-color: #00e676;
+  background: rgba(0, 230, 118, 0.06);
+}
+.ob-radio-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.2);
+  flex-shrink: 0;
+  transition: all 0.2s;
+  position: relative;
+}
+.ob-radio-dot.checked {
+  border-color: #00e676;
+}
+.ob-radio-dot.checked::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00e676;
+}
+.ob-radio-label {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #e8eaed;
+}
+.ob-radio-desc {
+  font-size: 11px;
+  color: #6b7d8f;
+  margin-top: 1px;
+}
+
+/* ── Star Rating ── */
+.ob-star-rating {
+  display: flex;
+  gap: 4px;
+  padding: 8px 0;
+}
+.ob-star {
+  font-size: 28px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.15);
+  transition: color 0.15s, transform 0.15s;
+  user-select: none;
+}
+.ob-star:hover { transform: scale(1.15); }
+.ob-star.filled { color: #F59E0B; }
+
+/* ── Form Hint ── */
+.ob-form-hint {
+  display: block;
+  font-size: 11px;
+  color: #6b7d8f;
+  margin-top: 6px;
+}
+
+/* ── Date Input Override ── */
+.ob-input[type="datetime-local"] {
+  color-scheme: dark;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .ob-header { padding: 16px 20px; }
+  .ob-body { padding: 16px 16px 40px; }
+  .ob-sport-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ob-sport-card { padding: 16px 12px 12px; }
+  .ob-sport-emoji { font-size: 32px; }
+  .ob-title { font-size: 24px; }
+  .ob-form-row { flex-direction: column; gap: 0; }
+  .ob-mode-grid { flex-direction: column; }
+  .ob-scoring-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ═══════════════════════════════════════════════
+   LEAGUE MODE CARDS
+   ═══════════════════════════════════════════════ */
+.ob-mode-grid {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.ob-mode-card {
+  flex: 1;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  text-align: left;
+  color: #e8eaed;
+  transition: all 0.2s ease;
+}
+
+.ob-mode-card:hover {
+  border-color: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.05);
+}
+
+.ob-mode-card.active {
+  border-color: #00e676;
+  background: rgba(0, 230, 118, 0.06);
+  box-shadow: 0 0 0 1px rgba(0, 230, 118, 0.15);
+}
+
+.ob-mode-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.ob-mode-icon {
+  font-size: 20px;
+}
+
+.ob-mode-name {
+  font-weight: 700;
+  font-size: 15px;
+  font-family: var(--font-heading), sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ob-mode-check {
+  margin-left: auto;
+  color: #00e676;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.ob-mode-desc {
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+
+.ob-mode-details {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.3px;
+}
+
+/* ═══════════════════════════════════════════════
+   SCORING FORMAT CHIPS
+   ═══════════════════════════════════════════════ */
+.ob-scoring-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.ob-scoring-chip {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  text-align: left;
+  color: #e8eaed;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ob-scoring-chip:hover {
+  border-color: rgba(255,255,255,0.15);
+}
+
+.ob-scoring-chip.active {
+  border-color: #00e676;
+  background: rgba(0, 230, 118, 0.06);
+}
+
+.ob-scoring-name {
+  font-weight: 700;
+  font-size: 13px;
+  font-family: var(--font-heading), sans-serif;
+  text-transform: uppercase;
+}
+
+.ob-scoring-chip.active .ob-scoring-name {
+  color: #00e676;
+}
+
+.ob-scoring-desc {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+}

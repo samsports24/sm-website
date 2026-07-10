@@ -1,0 +1,114 @@
+/* ═══════════════════════════════════════════════════════════════
+   API-Sports Widgets — SamSports Custom Styles
+   Wraps and styles the API-Sports widget web components
+   to blend seamlessly with the dark SamSports landing page.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Container resets ─────────────────────────────────────── */
+.asw-container {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.asw-sport-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+/* ── Games widget tweaks ──────────────────────────────────── */
+.asw-games {
+  background: var(--ls-surface, #111827);
+  border: 1px solid var(--ls-border, #1E293B);
+  border-radius: 8px;
+  min-height: 300px;
+}
+
+/* ── Standings widget ─────────────────────────────────────── */
+.asw-standings {
+  background: var(--ls-surface, #111827);
+  border: 1px solid var(--ls-border, #1E293B);
+  border-radius: 8px;
+}
+
+/* ── Game detail (expanded view) ──────────────────────────── */
+.asw-game-detail {
+  background: var(--ls-surface2, #1A2235);
+  border: 1px solid var(--ls-border, #1E293B);
+  border-radius: 8px;
+}
+
+#asw-game-detail {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#asw-game-detail:empty {
+  display: none;
+}
+
+/* ── League schedule widget ───────────────────────────────── */
+.asw-league {
+  background: var(--ls-surface, #111827);
+  border: 1px solid var(--ls-border, #1E293B);
+  border-radius: 8px;
+}
+
+/* ── Team widget ──────────────────────────────────────────── */
+.asw-team {
+  background: var(--ls-surface, #111827);
+  border: 1px solid var(--ls-border, #1E293B);
+  border-radius: 8px;
+}
+
+/* ── Player widget ────────────────────────────────────────── */
+.asw-player {
+  background: var(--ls-surface, #111827);
+  border: 1px solid var(--ls-border, #1E293B);
+  border-radius: 8px;
+}
+
+/* ── H2H widget ───────────────────────────────────────────── */
+.asw-h2h {
+  background: var(--ls-surface, #111827);
+  border: 1px solid var(--ls-border, #1E293B);
+  border-radius: 8px;
+}
+
+/* ── Standings page full-width ────────────────────────────── */
+.asw-standings-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Mobile responsive ────────────────────────────────────── */
+@media (max-width: 768px) {
+  .asw-container {
+    border-radius: 6px;
+  }
+
+  .asw-sport-panel {
+    gap: 12px;
+  }
+}
+
+/* ── Loading state ────────────────────────────────────────── */
+.asw-container:empty::after {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 24px;
+  margin: 40px auto;
+  border: 2px solid var(--ls-border, #1E293B);
+  border-top-color: var(--ls-cyan, #22C55E);
+  border-radius: 50%;
+  animation: asw-spin 0.8s linear infinite;
+}
+
+@keyframes asw-spin {
+  to { transform: rotate(360deg); }
+}

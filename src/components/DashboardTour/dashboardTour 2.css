@@ -1,0 +1,658 @@
+/* ═══════════════════════════════════════════════════════════════
+   Dashboard Tour — Animated multi-step guided walkthrough
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Modal Override ── */
+.dt-modal .ant-modal-content {
+  background: linear-gradient(165deg, #0f1724 0%, #0a0f1a 50%, #111827 100%) !important;
+  border: 1px solid rgba(34, 197, 94, 0.15);
+  border-radius: 20px !important;
+  padding: 0 !important;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(34, 197, 94, 0.08);
+}
+
+.dt-modal .ant-modal-body {
+  padding: 0 !important;
+}
+
+/* ── Content Wrapper ── */
+.dt-content {
+  position: relative;
+  padding: 0 0 24px;
+}
+
+/* ── Close Button ── */
+.dt-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+.dt-close:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+/* ── Auto-play Progress Bar ── */
+.dt-autoplay-bar {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  width: 100%;
+}
+.dt-autoplay-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #22C55E, #16a34a);
+  width: 0%;
+  animation: dt-fill-bar linear forwards;
+  border-radius: 0 2px 2px 0;
+}
+@keyframes dt-fill-bar {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+/* ── Visual Area ── */
+.dt-visual-wrap {
+  height: 200px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.dt-visual {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 30px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s, transform 0.4s;
+}
+.dt-visual--enter {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Step Content ── */
+.dt-step-content {
+  padding: 24px 32px 0;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease 0.1s, transform 0.4s ease 0.1s;
+}
+.dt-step-content--enter {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dt-greeting {
+  color: #22C55E;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 4px;
+  letter-spacing: 0.03em;
+}
+
+.dt-step-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.dt-step-icon {
+  font-size: 26px;
+}
+.dt-step-title {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.dt-step-subtitle {
+  color: #22C55E;
+  font-size: 13px;
+  font-weight: 500;
+  margin: 2px 0 10px;
+  opacity: 0.9;
+}
+
+.dt-step-body {
+  color: #b0b8c8;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 14px;
+}
+
+/* ── "Go To" Button ── */
+.dt-go-btn {
+  display: inline-block;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  color: #22C55E;
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 4px;
+}
+.dt-go-btn:hover {
+  background: rgba(34, 197, 94, 0.2);
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+/* ── Progress Dots ── */
+.dt-progress {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  padding: 18px 0 4px;
+}
+.dt-progress-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s;
+}
+.dt-progress-dot--active {
+  background: #22C55E;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+  transform: scale(1.3);
+}
+.dt-progress-dot--done {
+  background: rgba(34, 197, 94, 0.4);
+}
+
+/* ── Navigation Buttons ── */
+.dt-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 32px 0;
+}
+
+.dt-nav-btn {
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+.dt-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.dt-nav-btn--primary {
+  background: linear-gradient(135deg, #22C55E, #16a34a);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.3);
+}
+.dt-nav-btn--primary:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.45);
+  transform: translateY(-1px);
+}
+
+.dt-nav-btn--secondary {
+  background: rgba(255, 255, 255, 0.06);
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.dt-nav-btn--secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+}
+
+.dt-nav-skip {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 6px 12px;
+  transition: color 0.2s;
+}
+.dt-nav-skip:hover {
+  color: #94a3b8;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOCK VISUALS — mini dashboard previews for each step
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Welcome: Mini Dashboard Layout ── */
+.dt-mock-dashboard {
+  width: 100%;
+  max-width: 420px;
+}
+.dt-mock-header {
+  height: 14px;
+  background: rgba(34, 197, 94, 0.15);
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+.dt-mock-ticker {
+  height: 8px;
+  background: linear-gradient(90deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.05));
+  border-radius: 4px;
+  margin-bottom: 12px;
+  animation: dt-shimmer 2s infinite;
+}
+.dt-mock-grid {
+  display: flex;
+  gap: 10px;
+}
+.dt-mock-main {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dt-mock-sidebar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dt-mock-card {
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.dt-mock-card--lg { height: 80px; }
+.dt-mock-card--md { height: 50px; }
+.dt-mock-card--sm { height: 60px; }
+
+@keyframes dt-shimmer {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* ── News Feed ── */
+.dt-mock-feed {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.dt-mock-feed-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 10px 14px;
+  border-radius: 8px;
+  border-left: 3px solid #22C55E;
+  color: #c8d0dc;
+  font-size: 12px;
+  opacity: 0;
+  animation: dt-slide-in 0.5s forwards;
+}
+.dt-mock-dot {
+  width: 6px;
+  height: 6px;
+  background: #22C55E;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Standings Table ── */
+.dt-mock-table {
+  width: 100%;
+  max-width: 340px;
+}
+.dt-mock-table-header {
+  display: flex;
+  gap: 10px;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 0 12px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 6px;
+}
+.dt-mock-table-header span:first-child { flex: 2; }
+.dt-mock-table-header span { flex: 1; text-align: center; }
+
+.dt-mock-table-row {
+  display: flex;
+  gap: 10px;
+  color: #b0b8c8;
+  font-size: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  opacity: 0;
+  animation: dt-slide-in 0.4s forwards;
+}
+.dt-mock-table-row span:first-child { flex: 2; }
+.dt-mock-table-row span { flex: 1; text-align: center; }
+.dt-mock-table-row--you {
+  background: rgba(34, 197, 94, 0.08);
+  color: #22C55E;
+  font-weight: 600;
+}
+
+/* ── Transactions ── */
+.dt-mock-txns {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.dt-mock-txn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: #c8d0dc;
+  font-size: 12px;
+  opacity: 0;
+  animation: dt-slide-in 0.5s forwards;
+}
+.dt-mock-txn-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+/* ── Trade ── */
+.dt-mock-trade {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 380px;
+  justify-content: center;
+}
+.dt-mock-trade-side {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px 20px;
+  text-align: center;
+  min-width: 140px;
+}
+.dt-mock-trade-label {
+  color: #64748b;
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+.dt-mock-trade-player {
+  color: #e2e8f0;
+  font-size: 13px;
+  font-weight: 600;
+}
+.dt-mock-trade-arrow {
+  font-size: 28px;
+  color: #22C55E;
+  animation: dt-pulse-arrow 1.5s infinite;
+}
+@keyframes dt-pulse-arrow {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+/* ── Auction ── */
+.dt-mock-auction {
+  width: 100%;
+  max-width: 340px;
+  text-align: center;
+}
+.dt-mock-auction-player {
+  margin-bottom: 14px;
+}
+.dt-mock-auction-name {
+  display: block;
+  color: #e2e8f0;
+  font-size: 16px;
+  font-weight: 700;
+}
+.dt-mock-auction-pos {
+  color: #64748b;
+  font-size: 11px;
+}
+.dt-mock-auction-bids {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.dt-mock-bid {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.03);
+  text-align: left;
+}
+.dt-mock-bid--winning {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  color: #22C55E;
+  font-weight: 600;
+}
+.dt-mock-auction-timer {
+  color: #F59E0B;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ── Roster ── */
+.dt-mock-roster {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.dt-mock-roster-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  opacity: 0;
+  animation: dt-slide-in 0.4s forwards;
+}
+.dt-mock-roster-pos {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22C55E;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 30px;
+  text-align: center;
+}
+.dt-mock-roster-name {
+  color: #e2e8f0;
+  font-size: 13px;
+  font-weight: 500;
+  flex: 1;
+}
+.dt-mock-roster-cap {
+  color: #F59E0B;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ── Draft ── */
+.dt-mock-draft {
+  width: 100%;
+  max-width: 340px;
+}
+.dt-mock-draft-round {
+  color: #22C55E;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(34, 197, 94, 0.15);
+}
+.dt-mock-draft-pick {
+  padding: 8px 12px;
+  color: #c8d0dc;
+  font-size: 12px;
+  border-left: 2px solid rgba(34, 197, 94, 0.3);
+  margin-bottom: 4px;
+  opacity: 0;
+  animation: dt-slide-in 0.4s forwards;
+}
+.dt-mock-draft-clock {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 8px;
+  color: #22C55E;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  animation: dt-pulse-glow 2s infinite;
+}
+@keyframes dt-pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 rgba(34, 197, 94, 0); }
+  50% { box-shadow: 0 0 16px rgba(34, 197, 94, 0.15); }
+}
+
+/* ── Chat ── */
+.dt-mock-chat {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.dt-mock-chat-msg {
+  display: flex;
+  flex-direction: column;
+  max-width: 75%;
+  opacity: 0;
+  animation: dt-slide-in 0.5s forwards;
+}
+.dt-mock-chat-msg--left { align-self: flex-start; }
+.dt-mock-chat-msg--right { align-self: flex-end; }
+
+.dt-mock-chat-from {
+  font-size: 10px;
+  color: #64748b;
+  margin-bottom: 2px;
+  font-weight: 600;
+}
+.dt-mock-chat-msg--right .dt-mock-chat-from {
+  text-align: right;
+  color: #22C55E;
+}
+
+.dt-mock-chat-text {
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 12px;
+  color: #d1d5db;
+  background: rgba(255, 255, 255, 0.06);
+}
+.dt-mock-chat-msg--right .dt-mock-chat-text {
+  background: rgba(34, 197, 94, 0.12);
+  color: #e2e8f0;
+}
+
+/* ── Countdown ── */
+.dt-mock-countdown {
+  text-align: center;
+}
+.dt-mock-countdown-label {
+  color: #94a3b8;
+  font-size: 13px;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+.dt-mock-countdown-nums {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+.dt-mock-countdown-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.dt-mock-countdown-val {
+  font-size: 36px;
+  font-weight: 800;
+  color: #22C55E;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+}
+.dt-mock-countdown-lbl {
+  font-size: 10px;
+  color: #64748b;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+/* ── Ready / Finish ── */
+.dt-mock-ready {
+  text-align: center;
+}
+.dt-mock-ready-trophy {
+  font-size: 64px;
+  animation: dt-bounce 1.5s infinite;
+  margin-bottom: 10px;
+}
+.dt-mock-ready-text {
+  color: #94a3b8;
+  font-size: 16px;
+  font-weight: 500;
+}
+@keyframes dt-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* ── Shared Animation ── */
+@keyframes dt-slide-in {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}

@@ -1,0 +1,63 @@
+/* ═══════════════════════════════════════════════════════════════
+   SPOT AUCTION TIMER — Glass Redesign
+   ═══════════════════════════════════════════════════════════════ */
+
+.sat-timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 0;
+}
+
+.sat-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 56px;
+  padding: 10px 8px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(110, 105, 128, 0.15);
+  border-radius: 12px;
+}
+
+.sat-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: #22C55E;
+  font-family: 'Rajdhani', sans-serif;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.sat-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'Inter', sans-serif;
+}
+
+.sat-colon {
+  font-size: 28px;
+  font-weight: 800;
+  color: rgba(34, 197, 94, 0.4);
+  font-family: 'Rajdhani', sans-serif;
+  margin-top: -14px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 576px) {
+  .sat-unit {
+    min-width: 44px;
+    padding: 8px 6px;
+  }
+  .sat-value {
+    font-size: 24px;
+  }
+  .sat-colon {
+    font-size: 22px;
+  }
+}
