@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux'
 import axios from 'axios'
 import { getUserLeagues, selectLeague } from '../../redux/actions/leagueActions'
 import { attachToken, serverUrls } from '../../config/constants'
+import MessagesBell from '../../components/PlatformChat/MessagesBell'
+import HubChatDock from '../../components/PlatformChat/HubChatDock'
 
 /* ═══════════════════════════════════════════════════════════
    YOUR EMPIRE — NFL Front Office (Hybrid Design)
@@ -163,6 +165,7 @@ const SportHub = () => {
           </div>
         </div>
         <div style={S.headerRight}>
+          <span style={{ marginRight: 12, display: 'inline-flex' }}><MessagesBell /></span>
           <div style={S.spBadge}>
             <div style={S.spIcon}>SP</div>
             <div>
@@ -312,6 +315,9 @@ const SportHub = () => {
           Marketplace · Trophies · Governance · Team Sales
         </div>
       </div>
+
+      {/* ── Community chat — docked to the right ── */}
+      <HubChatDock />
     </div>
   )
 }

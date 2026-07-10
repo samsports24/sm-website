@@ -7,7 +7,7 @@ import { games } from './data'
 import { countries, UsaStates } from '../../config/countriesData'
 
 import { serverUrls } from '../../config/constants'
-import { authSignupAdvanced } from '../../redux'
+import { authSignupAdvanced, autoJoinPendingInvite } from '../../redux'
 
 import moment from 'moment-timezone'
 import dayjs from 'dayjs'
@@ -40,6 +40,16 @@ const SelectGame = () => {
       form.setFieldValue('email', decodedToken.emailsent)
       if (decodedToken.league) {
         localStorage.setItem('AssignLeague', decodedToken.league)
+        // Persist invite context in keys that survive session cleanup, so the
+        // user is auto-joined after signup/onboarding with no manual code.
+        localStorage.setItem('pendingInviteLeague', decodedToken.league)
+        localStorage.setItem('pendingInviteSport', 'football')
+        // Already logged in? Send them to the invite review screen so they can
+        // see the league details and Accept or Decline (no more silent join).
+        const existingToken = localStorage.getItem('token')
+        if (existingToken) {
+          window.location.replace(`/hub/invite/${token}`)
+        }
       }
       if (decodedToken.paid) {
         localStorage.setItem('paid', decodedToken.paid)

@@ -119,6 +119,8 @@ const Glossary = lazy(() => import('../pages/Glossary'))
 const GMChallenge = lazy(() => import('../pages/GMChallenge'))
 const OnboardingWizard = lazy(() => import('../pages/OnboardingWizard'))
 const SportHub = lazy(() => import('../pages/SportHub'))
+const Messages = lazy(() => import('../pages/Messages'))
+const InviteReview = lazy(() => import('../pages/InviteReview'))
 const ScoutReport = lazy(() => import('../pages/ScoutReport'))
 const LiveScore = lazy(() => import('../pages/LiveScore'))
 const Marketing = lazy(() => import('../pages/Marketing'))
@@ -351,6 +353,10 @@ const Routers = () => {
         <Route path='/select-game' element={<L><SelectGame /></L>} />
         <Route path='/onboarding' element={<L><OnboardingWizard /></L>} />
         <Route path='/hub' element={<L><SportHub /></L>} />
+        <Route path='/messages' element={<L><Messages /></L>} />
+        <Route path='/hub/chat' element={<L><Messages /></L>} />
+        <Route path='/hub/messages' element={<L><Messages /></L>} />
+        <Route path='/hub/invite/:token' element={<L><InviteReview /></L>} />
         <Route path='/signup' element={<Navigate to='/select-game' replace />} />
         <Route path='/select-league' element={<Navigate to='/onboarding' replace />} />
         <Route path='/proleague' element={<L><Proleague /></L>} />

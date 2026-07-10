@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { notification } from 'antd'
 import { attachToken, serverUrls } from '../../config/constants'
 import store from '../../redux/store'
-import { getUser } from '../../redux/actions/authActions'
+import { getUser, autoJoinPendingInvite } from '../../redux/actions/authActions'
 import { getUserLeagues } from '../../redux/actions/leagueActions'
 import CreateLeague from '../../components/modal/CreateLeague'
 import CreateSoccerLeague from '../../soccer/components/CreateSoccerLeague'
@@ -123,9 +123,13 @@ const StepPickSports = ({ selected, onToggle, onNext }) => (
 
 /* ── Step 2: Set Up Each Sport ── */
 const StepSetupSport = ({ sport, onCreateSuccess, onJoinLeague, onSkip }) => {
-  const [mode, setMode] = useState(null) // null | 'join'
+  // If the user arrived via a league invite, open the join view with the
+  // invited league pre-filled so they never have to fetch a code from email
+  // (fallback in case the auto-join at finish doesn't complete).
+  const _pendingInvite = typeof window !== 'undefined' ? localStorage.getItem('pendingInviteLeague') : ''
+  const [mode, setMode] = useState(_pendingInvite ? 'join' : null) // null | 'join'
   const [teamName, setTeamName] = useState('')
-  const [leagueId, setLeagueId] = useState('')
+  const [leagueId, setLeagueId] = useState(_pendingInvite || '')
   const [loading, setLoading] = useState(false)
   const [createModalOpen, setCreateModalOpen] = useState(false)
 
@@ -391,6 +395,10 @@ const OnboardingWizard = () => {
     // Ensure Redux is fully up to date before navigating
     await store.dispatch(getUser())
     await getUserLeagues()
+    // If the user arrived via a league invite, drop them straight into that
+    // league instead of sending them back to their email for a code.
+    const joined = await autoJoinPendingInvite({ teamName: userName, email: localStorage.getItem('email') })
+    if (joined) return // autoJoinPendingInvite already redirects into the league
     navigate('/hub')
   }
 
