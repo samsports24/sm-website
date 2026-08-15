@@ -4,7 +4,7 @@
 
 .gmw-container {
   background: linear-gradient(180deg, #111827, #0D1117);
-  border: 1px solid rgba(212, 168, 67, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.12);
   border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -16,8 +16,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px;
-  background: linear-gradient(135deg, rgba(212, 168, 67, 0.08), rgba(17, 24, 39, 0.8));
-  border-bottom: 1px solid rgba(212, 168, 67, 0.1);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(17, 24, 39, 0.8));
+  border-bottom: 1px solid rgba(34, 197, 94, 0.1);
 }
 
 .gmw-header-left {
@@ -31,7 +31,7 @@
 }
 
 .gmw-header-title {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 16px;
   font-weight: 800;
   color: #F1F5F9;
@@ -39,12 +39,12 @@
 }
 
 .gmw-header-badge {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 10px;
   font-weight: 700;
-  color: #D4A843;
-  background: rgba(212, 168, 67, 0.12);
-  border: 1px solid rgba(212, 168, 67, 0.2);
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.2);
   padding: 3px 10px;
   border-radius: 20px;
   letter-spacing: 1.2px;
@@ -79,9 +79,9 @@
 }
 
 .gmw-sport-tab.active {
-  background: rgba(212, 168, 67, 0.1);
-  border-color: rgba(212, 168, 67, 0.25);
-  box-shadow: 0 0 12px rgba(212, 168, 67, 0.08);
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.25);
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.08);
 }
 
 .gmw-sport-emoji {
@@ -90,7 +90,7 @@
 }
 
 .gmw-sport-label {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 9px;
   font-weight: 700;
   color: #64748B;
@@ -99,7 +99,7 @@
 }
 
 .gmw-sport-tab.active .gmw-sport-label {
-  color: #D4A843;
+  color: #22c55e;
 }
 
 /* ─── Rankings List ─── */
@@ -119,12 +119,12 @@
 
 .gmw-row:hover {
   background: rgba(255, 255, 255, 0.03);
-  border-left-color: rgba(212, 168, 67, 0.3);
+  border-left-color: rgba(34, 197, 94, 0.3);
 }
 
 .gmw-row-top1 {
-  background: linear-gradient(90deg, rgba(212, 168, 67, 0.08), transparent);
-  border-left-color: #D4A843;
+  background: linear-gradient(90deg, rgba(34, 197, 94, 0.08), transparent);
+  border-left-color: #22c55e;
 }
 .gmw-row-top2 {
   background: linear-gradient(90deg, rgba(192, 192, 192, 0.05), transparent);
@@ -137,7 +137,7 @@
 
 /* Rank */
 .gmw-rank {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 13px;
   font-weight: 800;
   color: #64748B;
@@ -159,22 +159,22 @@
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
-  border: 1.5px solid rgba(212, 168, 67, 0.2);
+  border: 1.5px solid rgba(34, 197, 94, 0.2);
 }
 
 .gmw-avatar-ph {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(212, 168, 67, 0.12), rgba(212, 168, 67, 0.06));
-  border: 1.5px solid rgba(212, 168, 67, 0.15);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(34, 197, 94, 0.06));
+  border: 1.5px solid rgba(34, 197, 94, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 13px;
   font-weight: 800;
-  color: #D4A843;
+  color: #22c55e;
   flex-shrink: 0;
 }
 
@@ -185,7 +185,7 @@
 }
 
 .gmw-gm-name {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 13px;
   font-weight: 700;
   color: #F1F5F9;
@@ -196,7 +196,7 @@
 }
 
 .gmw-gm-leagues {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 9px;
   color: #64748B;
   white-space: nowrap;
@@ -213,7 +213,7 @@
 }
 
 .gmw-grade {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 13px;
   font-weight: 900;
   width: 24px;
@@ -227,7 +227,7 @@
 }
 
 .gmw-rating {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 16px;
   font-weight: 800;
   min-width: 36px;
@@ -240,26 +240,26 @@
   align-items: center;
   gap: 8px;
   padding: 10px 14px;
-  background: linear-gradient(90deg, rgba(212, 168, 67, 0.06), transparent);
-  border-top: 1px solid rgba(212, 168, 67, 0.1);
+  background: linear-gradient(90deg, rgba(34, 197, 94, 0.06), transparent);
+  border-top: 1px solid rgba(34, 197, 94, 0.1);
 }
 
 .gmw-my-rank-label {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 10px;
   color: #94A3B8;
   flex: 1;
 }
 
 .gmw-my-rank-pos {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 14px;
   font-weight: 800;
-  color: #D4A843;
+  color: #22c55e;
 }
 
 .gmw-my-rank-score {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 14px;
   font-weight: 800;
 }
@@ -270,11 +270,11 @@
   padding: 10px;
   background: none;
   border: none;
-  border-top: 1px solid rgba(212, 168, 67, 0.08);
-  font-family: 'Rajdhani', sans-serif;
+  border-top: 1px solid rgba(34, 197, 94, 0.08);
+  font-family: 'Oxanium', sans-serif;
   font-size: 12px;
   font-weight: 700;
-  color: #D4A843;
+  color: #22c55e;
   letter-spacing: 0.8px;
   text-transform: uppercase;
   cursor: pointer;
@@ -282,7 +282,7 @@
 }
 
 .gmw-toggle:hover {
-  background: rgba(212, 168, 67, 0.06);
+  background: rgba(34, 197, 94, 0.06);
 }
 
 /* ─── Loading ─── */
@@ -295,7 +295,7 @@
 
 .gmw-loading-bar {
   height: 34px;
-  background: linear-gradient(90deg, rgba(212, 168, 67, 0.04) 0%, rgba(212, 168, 67, 0.08) 50%, rgba(212, 168, 67, 0.04) 100%);
+  background: linear-gradient(90deg, rgba(34, 197, 94, 0.04) 0%, rgba(34, 197, 94, 0.08) 50%, rgba(34, 197, 94, 0.04) 100%);
   border-radius: 6px;
   animation: gmw-shimmer 1.5s infinite;
 }
@@ -313,7 +313,7 @@
 }
 
 .gmw-empty p {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 14px;
   font-weight: 700;
   color: #94A3B8;
@@ -321,7 +321,43 @@
 }
 
 .gmw-empty span {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 11px;
   color: #64748B;
+}
+
+/* ═══ POLISH — spacing, medals, typography ═══ */
+.gmw-header-title {
+  font-size: 15px;
+  letter-spacing: 1.2px;
+}
+.gmw-list {
+  padding: 6px 0;
+}
+.gmw-row {
+  padding: 10px 14px;
+  gap: 8px;
+}
+.gmw-rank {
+  font-size: 15px;
+}
+.gmw-row-top1 .gmw-rank,
+.gmw-row-top2 .gmw-rank,
+.gmw-row-top3 .gmw-rank {
+  font-size: 17px;
+  line-height: 1;
+}
+.gmw-avatar,
+.gmw-avatar-ph {
+  width: 30px;
+  height: 30px;
+}
+.gmw-rating {
+  font-size: 17px;
+}
+.gmw-sport-tab {
+  padding: 7px 4px;
+}
+.gmw-sport-tab.active {
+  box-shadow: 0 0 14px rgba(34, 197, 94, 0.12), inset 0 0 0 1px rgba(34, 197, 94, 0.1);
 }

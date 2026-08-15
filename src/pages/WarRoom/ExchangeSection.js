@@ -51,7 +51,7 @@ const getTimeAgo = (timestamp) => {
 
 // Rank badge color mapping
 const getRankColor = (position) => {
-  if (position === 1) return '#22C55E' // green
+  if (position === 1) return '#4ADE80' // green
   if (position === 2) return '#3B82F6' // blue
   if (position === 3) return '#F59E0B' // amber
   return '#6B7280' // gray
@@ -367,15 +367,15 @@ const ExchangeSection = ({ onSellEmpire }) => {
             left: 0,
             right: 0,
             height: '2px',
-            background: 'linear-gradient(90deg, #22C55E 0%, #14B8A6 100%)',
+            background: 'linear-gradient(90deg, #F7C948 0%, #4ADE80 100%)',
             borderRadius: '2px',
           }}
         />
 
         <div
           style={{
-            background: 'linear-gradient(135deg, rgba(20,28,45,0.9) 0%, rgba(30,40,60,0.8) 100%)',
-            border: '1px solid rgba(110,105,128,0.15)',
+            background: 'linear-gradient(135deg, #0A0E17 0%, #0A0E17 100%)',
+            border: '1px solid rgba(233,231,223,0.15)',
             borderRadius: '12px',
             padding: '24px 28px',
             display: 'flex',
@@ -419,9 +419,9 @@ const ExchangeSection = ({ onSellEmpire }) => {
                 fontSize: '14px',
                 fontWeight: '700',
                 fontFamily: "'Rajdhani', sans-serif",
-                color: '#22C55E',
+                color: '#F7C948',
                 background: 'transparent',
-                border: '2px solid #22C55E',
+                border: '2px solid #F7C948',
                 borderRadius: '8px',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
@@ -432,8 +432,8 @@ const ExchangeSection = ({ onSellEmpire }) => {
                 letterSpacing: '0.5px',
               }}
               onMouseEnter={(e) => {
-                e.target.style.background = 'rgba(34,197,94,0.1)'
-                e.target.style.boxShadow = '0 0 16px rgba(34,197,94,0.2)'
+                e.target.style.background = 'rgba(247,201,72,0.1)'
+                e.target.style.boxShadow = '0 0 16px rgba(247,201,72,0.2)'
               }}
               onMouseLeave={(e) => {
                 e.target.style.background = 'transparent'
@@ -452,8 +452,8 @@ const ExchangeSection = ({ onSellEmpire }) => {
                 fontWeight: '600',
                 fontFamily: "'Rajdhani', sans-serif",
                 color: '#FFFFFF',
-                background: 'rgba(110,105,128,0.2)',
-                border: '1px solid rgba(110,105,128,0.3)',
+                background: 'rgba(233,231,223,0.2)',
+                border: '1px solid rgba(233,231,223,0.3)',
                 borderRadius: '8px',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
@@ -463,10 +463,10 @@ const ExchangeSection = ({ onSellEmpire }) => {
                 gap: '8px',
               }}
               onMouseEnter={(e) => {
-                e.target.style.background = 'rgba(110,105,128,0.3)'
+                e.target.style.background = 'rgba(233,231,223,0.3)'
               }}
               onMouseLeave={(e) => {
-                e.target.style.background = 'rgba(110,105,128,0.2)'
+                e.target.style.background = 'rgba(233,231,223,0.2)'
               }}
             >
               💬 Messages
@@ -476,7 +476,7 @@ const ExchangeSection = ({ onSellEmpire }) => {
                     position: 'absolute',
                     top: '-8px',
                     right: '-8px',
-                    background: '#22C55E',
+                    background: '#F7C948',
                     color: '#FFFFFF',
                     borderRadius: '50%',
                     width: '24px',
@@ -504,7 +504,7 @@ const ExchangeSection = ({ onSellEmpire }) => {
           justifyContent: 'space-around',
           padding: '20px 32px',
           background: 'rgba(10,15,26,0.8)',
-          border: '1px solid rgba(110,105,128,0.15)',
+          border: '1px solid rgba(233,231,223,0.15)',
           borderRadius: '12px',
           marginBottom: '32px',
           backdropFilter: 'blur(8px)',
@@ -652,7 +652,7 @@ const ExchangeSection = ({ onSellEmpire }) => {
               fontSize: '24px',
               fontWeight: 'bold',
               fontFamily: "'Barlow Condensed', sans-serif",
-              color: '#22C55E',
+              color: '#F7C948',
             }}
           >
             {formatMoney(user?.samPointsBalance || user?.wallet?.balance || 0)}
@@ -692,12 +692,12 @@ const ExchangeSection = ({ onSellEmpire }) => {
                     fontFamily: "'Rajdhani', sans-serif",
                     color: isActive ? '#FFFFFF' : 'rgba(255,255,255,0.6)',
                     background: isActive
-                      ? 'rgba(34,197,94,0.15)'
-                      : 'rgba(110,105,128,0.1)',
+                      ? 'rgba(247,201,72,0.15)'
+                      : 'rgba(233,231,223,0.1)',
                     border: `1px solid ${
                       isActive
-                        ? 'rgba(34,197,94,0.3)'
-                        : 'rgba(110,105,128,0.15)'
+                        ? 'rgba(247,201,72,0.3)'
+                        : 'rgba(233,231,223,0.15)'
                     }`,
                     borderRadius: '24px',
                     cursor: 'pointer',
@@ -708,14 +708,14 @@ const ExchangeSection = ({ onSellEmpire }) => {
                   }}
                   onMouseEnter={(e) => {
                     if (!isActive) {
-                      e.target.style.background = 'rgba(110,105,128,0.15)'
-                      e.target.style.borderColor = 'rgba(110,105,128,0.2)'
+                      e.target.style.background = 'rgba(233,231,223,0.15)'
+                      e.target.style.borderColor = 'rgba(233,231,223,0.2)'
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!isActive) {
-                      e.target.style.background = 'rgba(110,105,128,0.1)'
-                      e.target.style.borderColor = 'rgba(110,105,128,0.15)'
+                      e.target.style.background = 'rgba(233,231,223,0.1)'
+                      e.target.style.borderColor = 'rgba(233,231,223,0.15)'
                     }
                   }}
                 >
@@ -768,12 +768,12 @@ const ExchangeSection = ({ onSellEmpire }) => {
                   fontFamily: "'Rajdhani', sans-serif",
                   color: isActive ? '#FFFFFF' : 'rgba(255,255,255,0.6)',
                   background: isActive
-                    ? 'rgba(34,197,94,0.15)'
-                    : 'rgba(110,105,128,0.1)',
+                    ? 'rgba(247,201,72,0.15)'
+                    : 'rgba(233,231,223,0.1)',
                   border: `1px solid ${
                     isActive
-                      ? 'rgba(34,197,94,0.3)'
-                      : 'rgba(110,105,128,0.15)'
+                      ? 'rgba(247,201,72,0.3)'
+                      : 'rgba(233,231,223,0.15)'
                   }`,
                   borderRadius: '8px',
                   cursor: 'pointer',
@@ -781,12 +781,12 @@ const ExchangeSection = ({ onSellEmpire }) => {
                 }}
                 onMouseEnter={(e) => {
                   if (!isActive) {
-                    e.target.style.background = 'rgba(110,105,128,0.15)'
+                    e.target.style.background = 'rgba(233,231,223,0.15)'
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isActive) {
-                    e.target.style.background = 'rgba(110,105,128,0.1)'
+                    e.target.style.background = 'rgba(233,231,223,0.1)'
                   }
                 }}
               >
@@ -823,14 +823,14 @@ const ExchangeSection = ({ onSellEmpire }) => {
               sortedListings.map((listing) => {
                 const rankColor = getRankColor(listing.teamSnapshot?.rank || 4)
                 const trendPct = listing.teamSnapshot?.trendPct || 0
-                const trendColor = trendPct > 0 ? '#22C55E' : trendPct < 0 ? '#EF4444' : '#6B7280'
+                const trendColor = trendPct > 0 ? '#4ADE80' : trendPct < 0 ? '#EF4444' : '#6B7280'
 
                 return (
                   <div
                     key={listing._id}
                     style={{
-                      background: 'linear-gradient(135deg, rgba(30,40,60,0.8) 0%, rgba(20,28,45,0.9) 100%)',
-                      border: '1px solid rgba(110,105,128,0.2)',
+                      background: 'linear-gradient(135deg, #0A0E17 0%, #0A0E17 100%)',
+                      border: '1px solid rgba(233,231,223,0.2)',
                       borderRadius: '12px',
                       overflow: 'hidden',
                       display: 'flex',
@@ -839,11 +839,11 @@ const ExchangeSection = ({ onSellEmpire }) => {
                       cursor: 'pointer',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = 'rgba(34,197,94,0.4)'
-                      e.currentTarget.style.boxShadow = '0 8px 24px rgba(34,197,94,0.1)'
+                      e.currentTarget.style.borderColor = 'rgba(247,201,72,0.4)'
+                      e.currentTarget.style.boxShadow = '0 8px 24px rgba(247,201,72,0.1)'
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = 'rgba(110,105,128,0.2)'
+                      e.currentTarget.style.borderColor = 'rgba(233,231,223,0.2)'
                       e.currentTarget.style.boxShadow = 'none'
                     }}
                   >
@@ -851,8 +851,8 @@ const ExchangeSection = ({ onSellEmpire }) => {
                     <div
                       style={{
                         padding: '16px',
-                        borderBottom: '1px solid rgba(110,105,128,0.15)',
-                        background: 'rgba(20,28,45,0.6)',
+                        borderBottom: '1px solid rgba(233,231,223,0.15)',
+                        background: '#0A0E17',
                       }}
                     >
                       {/* Listing type badge */}
@@ -862,7 +862,7 @@ const ExchangeSection = ({ onSellEmpire }) => {
                           letterSpacing: '1px', textTransform: 'uppercase',
                           color: 'rgba(255,255,255,0.45)',
                           background: 'rgba(255,255,255,0.06)',
-                          border: '1px solid rgba(110,105,128,0.15)',
+                          border: '1px solid rgba(233,231,223,0.15)',
                           borderRadius: '4px', padding: '2px 8px',
                         }}>
                           Single Franchise
@@ -925,7 +925,7 @@ const ExchangeSection = ({ onSellEmpire }) => {
                         }}
                       >
                         <span>
-                          W: <span style={{ fontWeight: 'bold', color: '#22C55E' }}>
+                          W: <span style={{ fontWeight: 'bold', color: '#4ADE80' }}>
                             {listing.teamSnapshot?.wins || 0}
                           </span>
                         </span>
@@ -959,7 +959,7 @@ const ExchangeSection = ({ onSellEmpire }) => {
                           justifyContent: 'space-between',
                           alignItems: 'center',
                           padding: '8px 12px',
-                          background: 'rgba(110,105,128,0.1)',
+                          background: 'rgba(233,231,223,0.1)',
                           borderRadius: '8px',
                         }}
                       >
@@ -1005,11 +1005,11 @@ const ExchangeSection = ({ onSellEmpire }) => {
                     <div
                       style={{
                         padding: '16px',
-                        borderTop: '1px solid rgba(110,105,128,0.15)',
+                        borderTop: '1px solid rgba(233,231,223,0.15)',
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                        background: 'rgba(20,28,45,0.6)',
+                        background: '#0A0E17',
                       }}
                     >
                       <span
@@ -1029,7 +1029,7 @@ const ExchangeSection = ({ onSellEmpire }) => {
                           fontSize: '18px',
                           fontWeight: 'bold',
                           fontFamily: "'Barlow Condensed', sans-serif",
-                          color: '#22C55E',
+                          color: '#F7C948',
                         }}
                       >
                         {formatMoney(listing.askingPrice || 0)}
@@ -1053,20 +1053,20 @@ const ExchangeSection = ({ onSellEmpire }) => {
                           fontSize: '13px',
                           fontWeight: '600',
                           fontFamily: "'Rajdhani', sans-serif",
-                          color: '#22C55E',
-                          background: 'rgba(34,197,94,0.1)',
-                          border: '1px solid rgba(34,197,94,0.2)',
+                          color: '#F7C948',
+                          background: 'rgba(247,201,72,0.1)',
+                          border: '1px solid rgba(247,201,72,0.2)',
                           borderRadius: '8px',
                           cursor: 'pointer',
                           transition: 'all 0.2s ease',
                         }}
                         onMouseEnter={(e) => {
-                          e.target.style.background = 'rgba(34,197,94,0.15)'
+                          e.target.style.background = 'rgba(247,201,72,0.15)'
                           e.target.style.boxShadow =
-                            '0 0 12px rgba(34,197,94,0.15)'
+                            '0 0 12px rgba(247,201,72,0.15)'
                         }}
                         onMouseLeave={(e) => {
-                          e.target.style.background = 'rgba(34,197,94,0.1)'
+                          e.target.style.background = 'rgba(247,201,72,0.1)'
                           e.target.style.boxShadow = 'none'
                         }}
                       >
@@ -1081,7 +1081,7 @@ const ExchangeSection = ({ onSellEmpire }) => {
                           fontWeight: '600',
                           fontFamily: "'Rajdhani', sans-serif",
                           color: '#FFFFFF',
-                          background: '#22C55E',
+                          background: '#F7C948',
                           border: 'none',
                           borderRadius: '8px',
                           cursor: 'pointer',
@@ -1089,10 +1089,10 @@ const ExchangeSection = ({ onSellEmpire }) => {
                         }}
                         onMouseEnter={(e) => {
                           e.target.style.background = '#34D399'
-                          e.target.style.boxShadow = '0 0 16px rgba(34,197,94,0.3)'
+                          e.target.style.boxShadow = '0 0 16px rgba(247,201,72,0.3)'
                         }}
                         onMouseLeave={(e) => {
-                          e.target.style.background = '#22C55E'
+                          e.target.style.background = '#F7C948'
                           e.target.style.boxShadow = 'none'
                         }}
                       >
@@ -1120,7 +1120,7 @@ const ExchangeSection = ({ onSellEmpire }) => {
                             textTransform: 'uppercase',
                             color: 'rgba(255,255,255,0.7)',
                             background: 'rgba(255,255,255,0.04)',
-                            border: '1px solid rgba(110,105,128,0.2)',
+                            border: '1px solid rgba(233,231,223,0.2)',
                             borderRadius: '8px',
                             cursor: 'pointer',
                             transition: 'all 0.2s ease',
@@ -1130,13 +1130,13 @@ const ExchangeSection = ({ onSellEmpire }) => {
                             gap: '8px',
                           }}
                           onMouseEnter={(e) => {
-                            e.target.style.background = 'rgba(34,197,94,0.08)'
-                            e.target.style.borderColor = 'rgba(34,197,94,0.25)'
-                            e.target.style.color = '#22C55E'
+                            e.target.style.background = 'rgba(247,201,72,0.08)'
+                            e.target.style.borderColor = 'rgba(247,201,72,0.25)'
+                            e.target.style.color = '#F7C948'
                           }}
                           onMouseLeave={(e) => {
                             e.target.style.background = 'rgba(255,255,255,0.04)'
-                            e.target.style.borderColor = 'rgba(110,105,128,0.2)'
+                            e.target.style.borderColor = 'rgba(233,231,223,0.2)'
                             e.target.style.color = 'rgba(255,255,255,0.7)'
                           }}
                         >
@@ -1183,7 +1183,7 @@ const ExchangeSection = ({ onSellEmpire }) => {
         cancelText="Cancel"
         centered
         style={{
-          '--primary-color': '#22C55E',
+          '--primary-color': '#F7C948',
         }}
       >
         {offerModal.listing && (
@@ -1271,15 +1271,15 @@ const ExchangeSection = ({ onSellEmpire }) => {
         width={520}
         title={null}
         closable={false}
-        bodyStyle={{ padding: 0, background: '#0A0F1A', borderRadius: '12px', overflow: 'hidden' }}
+        bodyStyle={{ padding: 0, background: '#0A0E17', borderRadius: '12px', overflow: 'hidden' }}
         style={{ top: 40 }}
       >
         <div style={{ height: '70vh', display: 'flex', flexDirection: 'column' }}>
           {/* Modal Header */}
           <div style={{
-            padding: '16px 20px', borderBottom: '1px solid rgba(110,105,128,0.2)',
+            padding: '16px 20px', borderBottom: '1px solid rgba(233,231,223,0.2)',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            background: 'rgba(20,28,45,0.8)',
+            background: '#0A0E17',
           }}>
             {activeConvo ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -1313,19 +1313,19 @@ const ExchangeSection = ({ onSellEmpire }) => {
             /* ── Conversation List ── */
             <div style={{ flex: 1, overflowY: 'auto' }}>
               {/* Search for new DM */}
-              <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(110,105,128,0.1)' }}>
+              <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(233,231,223,0.1)' }}>
                 <Input
                   prefix={<SearchOutlined style={{ color: 'rgba(255,255,255,0.3)' }} />}
                   placeholder="Search users to message..."
                   value={searchQuery}
                   onChange={(e) => { setSearchQuery(e.target.value); searchUsers(e.target.value) }}
-                  style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(110,105,128,0.2)', color: '#fff', borderRadius: '8px' }}
+                  style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(233,231,223,0.2)', color: '#fff', borderRadius: '8px' }}
                 />
               </div>
 
               {/* Search results */}
               {searchQuery.length >= 2 && (
-                <div style={{ borderBottom: '1px solid rgba(110,105,128,0.15)' }}>
+                <div style={{ borderBottom: '1px solid rgba(233,231,223,0.15)' }}>
                   {searchingUsers ? (
                     <div style={{ padding: '16px', textAlign: 'center' }}><Spin size="small" /></div>
                   ) : searchResults.length === 0 ? (
@@ -1339,10 +1339,10 @@ const ExchangeSection = ({ onSellEmpire }) => {
                           padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '10px',
                           cursor: 'pointer', transition: 'background 0.15s',
                         }}
-                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(34,197,94,0.05)'}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(247,201,72,0.05)'}
                         onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                       >
-                        <Avatar size={32} style={{ backgroundColor: '#22C55E', fontSize: '13px', fontWeight: 700 }}>
+                        <Avatar size={32} style={{ backgroundColor: '#F7C948', fontSize: '13px', fontWeight: 700 }}>
                           {(u.userName || '?').charAt(0).toUpperCase()}
                         </Avatar>
                         <span style={{ color: '#fff', fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 500 }}>
@@ -1372,7 +1372,7 @@ const ExchangeSection = ({ onSellEmpire }) => {
                       onClick={() => openConversation(convo)}
                       style={{
                         padding: '14px 16px', display: 'flex', alignItems: 'center', gap: '12px',
-                        cursor: 'pointer', borderBottom: '1px solid rgba(110,105,128,0.08)',
+                        cursor: 'pointer', borderBottom: '1px solid rgba(233,231,223,0.08)',
                         transition: 'background 0.15s',
                       }}
                       onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
@@ -1421,8 +1421,8 @@ const ExchangeSection = ({ onSellEmpire }) => {
                       <div key={idx} style={{ display: 'flex', justifyContent: isMine ? 'flex-end' : 'flex-start' }}>
                         <div style={{
                           maxWidth: '75%', padding: '8px 12px', borderRadius: '12px',
-                          background: isMine ? 'rgba(34,197,94,0.15)' : 'rgba(255,255,255,0.06)',
-                          border: isMine ? '1px solid rgba(34,197,94,0.25)' : '1px solid rgba(110,105,128,0.12)',
+                          background: isMine ? 'rgba(247,201,72,0.15)' : 'rgba(255,255,255,0.06)',
+                          border: isMine ? '1px solid rgba(247,201,72,0.25)' : '1px solid rgba(233,231,223,0.12)',
                         }}>
                           <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.85)', fontFamily: "'Inter', sans-serif", lineHeight: 1.4, wordBreak: 'break-word' }}>
                             {msg.text}
@@ -1438,21 +1438,21 @@ const ExchangeSection = ({ onSellEmpire }) => {
                 <div ref={messagesEndRef} />
               </div>
               {/* DM Input */}
-              <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(110,105,128,0.15)', display: 'flex', gap: '8px' }}>
+              <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(233,231,223,0.15)', display: 'flex', gap: '8px' }}>
                 <Input
                   placeholder="Type a message..."
                   value={dmInput}
                   onChange={(e) => setDmInput(e.target.value)}
                   onPressEnter={activeConvo?._newRecipient ? handleSendNewDm : handleSendDm}
                   disabled={sendingDm}
-                  style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(110,105,128,0.2)', color: '#fff', borderRadius: '8px', height: '36px' }}
+                  style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(233,231,223,0.2)', color: '#fff', borderRadius: '8px', height: '36px' }}
                 />
                 <button
                   onClick={activeConvo?._newRecipient ? handleSendNewDm : handleSendDm}
                   disabled={sendingDm || !dmInput.trim()}
                   style={{
-                    background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)',
-                    color: '#22C55E', borderRadius: '8px', width: '36px', height: '36px',
+                    background: 'rgba(247,201,72,0.15)', border: '1px solid rgba(247,201,72,0.3)',
+                    color: '#F7C948', borderRadius: '8px', width: '36px', height: '36px',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     cursor: sendingDm || !dmInput.trim() ? 'not-allowed' : 'pointer', opacity: sendingDm || !dmInput.trim() ? 0.5 : 1,
                   }}

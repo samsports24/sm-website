@@ -22,16 +22,16 @@
 }
 
 .pd-login-title {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 22px;
   font-weight: 800;
-  color: #D4A843;
+  color: #22c55e;
   letter-spacing: 2px;
   margin: 0 0 8px;
 }
 
 .pd-login-subtitle {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 13px;
   color: rgba(255, 255, 255, 0.4);
   margin: 0 0 28px;
@@ -54,11 +54,11 @@
   margin-top: 8px;
   height: 44px !important;
   border-radius: 10px !important;
-  font-family: 'Rajdhani', sans-serif !important;
+  font-family: 'Oxanium', sans-serif !important;
   font-weight: 800 !important;
   font-size: 14px !important;
   letter-spacing: 1.5px !important;
-  background: linear-gradient(135deg, #D4A843, #B8922E) !important;
+  background: linear-gradient(135deg, #22c55e, #B8922E) !important;
   border: none !important;
   color: #0A0F1C !important;
 }
@@ -101,11 +101,11 @@
   width: 36px;
   height: 36px;
   border-radius: 8px;
-  background: linear-gradient(135deg, #D4A843, #B8922E);
+  background: linear-gradient(135deg, #22c55e, #B8922E);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-weight: 800;
   font-size: 18px;
   color: #0A0F1C;
@@ -119,7 +119,7 @@
 }
 
 .pd-sidebar-name {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 14px;
   font-weight: 700;
   color: #E2E8F0;
@@ -129,16 +129,16 @@
 }
 
 .pd-sidebar-sub {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 10px;
   color: rgba(255, 255, 255, 0.3);
 }
 
 .pd-sidebar-code {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 10px;
   font-weight: 700;
-  color: #D4A843;
+  color: #22c55e;
   letter-spacing: 1.5px;
   margin-top: 2px;
 }
@@ -164,7 +164,7 @@
   border: none;
   background: transparent;
   color: rgba(255, 255, 255, 0.5);
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -179,8 +179,8 @@
 }
 
 .pd-nav-active {
-  background: rgba(212, 168, 67, 0.1) !important;
-  color: #D4A843 !important;
+  background: rgba(34, 197, 94, 0.1) !important;
+  color: #22c55e !important;
 }
 
 .pd-nav-logout {
@@ -206,23 +206,23 @@
 }
 
 .pd-section-title {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 20px;
   font-weight: 800;
-  color: #D4A843;
+  color: #22c55e;
   letter-spacing: 2px;
   margin: 0 0 24px;
 }
 
 .pd-section-desc {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 13px;
   color: rgba(255, 255, 255, 0.4);
   margin: -16px 0 24px;
 }
 
 .pd-sub-title {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 15px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.5);
@@ -259,12 +259,12 @@
 
 .pd-stat-icon {
   font-size: 20px;
-  color: #D4A843;
+  color: #22c55e;
   margin-bottom: 8px;
 }
 
 .pd-stat-value {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 32px;
   font-weight: 800;
   color: #E2E8F0;
@@ -273,7 +273,7 @@
 }
 
 .pd-stat-label {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 11px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.35);
@@ -291,13 +291,13 @@
 
 .pd-stat-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #D4A843, #22C55E);
+  background: linear-gradient(90deg, #22c55e, #22C55E);
   border-radius: 2px;
   transition: width 0.5s;
 }
 
 .pd-stat-limit {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 10px;
   color: rgba(255, 255, 255, 0.25);
   margin-top: 6px;
@@ -324,7 +324,7 @@
 }
 
 .pd-recent-name {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 13px;
   font-weight: 700;
   color: #E2E8F0;
@@ -332,7 +332,7 @@
 }
 
 .pd-recent-date {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 11px;
   color: rgba(255, 255, 255, 0.25);
 }
@@ -341,7 +341,7 @@
   text-align: center;
   padding: 40px;
   color: rgba(255, 255, 255, 0.3);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 13px;
 }
 
@@ -357,7 +357,7 @@
 
 .pd-table .ant-table-thead > tr > th {
   background: rgba(255, 255, 255, 0.03) !important;
-  font-family: 'Rajdhani', sans-serif !important;
+  font-family: 'Oxanium', sans-serif !important;
   font-size: 11px !important;
   font-weight: 700 !important;
   text-transform: uppercase !important;
@@ -368,13 +368,13 @@
 
 .pd-table .ant-table-tbody > tr > td {
   border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
-  font-family: 'Inter', sans-serif !important;
+  font-family: 'Oxanium', sans-serif !important;
   font-size: 13px !important;
   color: #E2E8F0 !important;
 }
 
 .pd-table .ant-table-tbody > tr:hover > td {
-  background: rgba(212, 168, 67, 0.04) !important;
+  background: rgba(34, 197, 94, 0.04) !important;
 }
 
 .pd-user-cell {
@@ -402,7 +402,7 @@
 }
 
 .pd-user-name {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-weight: 700;
   font-size: 13px;
 }
@@ -422,7 +422,7 @@
 
 .pd-brand-field label {
   display: block;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 11px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.4);
@@ -435,7 +435,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 13px;
   color: rgba(255, 255, 255, 0.5);
 }
@@ -460,7 +460,7 @@
 
 .pd-preview-header {
   padding: 14px 20px;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 16px;
   font-weight: 800;
   letter-spacing: 1px;
@@ -476,7 +476,7 @@
   padding: 12px 16px;
   border: 1px solid;
   border-radius: 8px;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-weight: 700;
   font-size: 14px;
 }
@@ -506,19 +506,19 @@
 }
 
 .pd-logo-dropzone:hover {
-  border-color: #D4A843;
-  background: rgba(212, 168, 67, 0.04);
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.04);
 }
 
 .pd-logo-dropzone-text {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 14px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.5);
 }
 
 .pd-logo-dropzone-hint {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 11px;
   color: rgba(255, 255, 255, 0.25);
 }
@@ -555,7 +555,7 @@
   border: 1px solid rgba(110, 105, 128, 0.2);
   background: rgba(255, 255, 255, 0.03);
   color: rgba(255, 255, 255, 0.6);
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
@@ -563,8 +563,8 @@
 }
 
 .pd-logo-change-btn:hover {
-  border-color: #D4A843;
-  color: #D4A843;
+  border-color: #22c55e;
+  color: #22c55e;
 }
 
 .pd-logo-remove-btn:hover {
@@ -628,7 +628,7 @@
 
 .pd-setting-item label {
   display: block;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 12px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.5);
@@ -648,14 +648,14 @@
 
 /* ── Save Button ── */
 .pd-save-btn {
-  font-family: 'Rajdhani', sans-serif !important;
+  font-family: 'Oxanium', sans-serif !important;
   font-weight: 800 !important;
   font-size: 13px !important;
   letter-spacing: 1.5px !important;
   border-radius: 10px !important;
   height: 42px !important;
   padding: 0 28px !important;
-  background: linear-gradient(135deg, #D4A843, #B8922E) !important;
+  background: linear-gradient(135deg, #22c55e, #B8922E) !important;
   border: none !important;
   color: #0A0F1C !important;
 }
@@ -680,12 +680,12 @@
 }
 
 .pd-plan-card:hover {
-  border-color: rgba(212, 168, 67, 0.2);
+  border-color: rgba(34, 197, 94, 0.2);
 }
 
 .pd-plan-featured {
-  border-color: rgba(212, 168, 67, 0.3);
-  background: rgba(212, 168, 67, 0.04);
+  border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.04);
 }
 
 .pd-plan-current {
@@ -694,7 +694,7 @@
 }
 
 .pd-plan-badge {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 2px;
@@ -703,15 +703,15 @@
 }
 
 .pd-plan-badge-pro {
-  color: #D4A843;
+  color: #22c55e;
 }
 
 .pd-plan-badge-ent {
-  color: #A78BFA;
+  color: #4ade80;
 }
 
 .pd-plan-price {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 36px;
   font-weight: 800;
   color: #E2E8F0;
@@ -733,7 +733,7 @@
 }
 
 .pd-plan-features li {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 12px;
   color: rgba(255, 255, 255, 0.5);
   padding: 6px 0;
@@ -747,7 +747,7 @@
 }
 
 .pd-plan-current-label {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 12px;
   font-weight: 700;
   color: #22C55E;
@@ -756,14 +756,14 @@
 }
 
 .pd-plan-upgrade-btn {
-  font-family: 'Rajdhani', sans-serif !important;
+  font-family: 'Oxanium', sans-serif !important;
   font-weight: 800 !important;
   font-size: 12px !important;
   letter-spacing: 1.5px !important;
   border-radius: 10px !important;
   height: 38px !important;
   padding: 0 24px !important;
-  background: linear-gradient(135deg, #D4A843, #B8922E) !important;
+  background: linear-gradient(135deg, #22c55e, #B8922E) !important;
   border: none !important;
   color: #0A0F1C !important;
   margin-top: auto;
@@ -787,7 +787,7 @@
 }
 
 .pd-plan-usage-label {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 11px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.35);
@@ -797,7 +797,7 @@
 }
 
 .pd-plan-usage-value {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 18px;
   font-weight: 800;
   color: #E2E8F0;
@@ -823,7 +823,7 @@
 }
 
 .pd-advert-card:hover {
-  border-color: rgba(212, 168, 67, 0.2);
+  border-color: rgba(34, 197, 94, 0.2);
 }
 
 .pd-advert-img-wrap {
@@ -847,7 +847,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 11px;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.5);
@@ -860,7 +860,7 @@
 }
 
 .pd-advert-title {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 14px;
   font-weight: 700;
   color: #E2E8F0;
@@ -871,7 +871,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 11px;
   color: rgba(255, 255, 255, 0.3);
   margin-bottom: 4px;
@@ -896,7 +896,7 @@
 
 .pd-modal-field label {
   display: block;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 12px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.5);
@@ -929,7 +929,7 @@
 }
 
 .pd-ticket-card:hover {
-  border-color: rgba(212, 168, 67, 0.3);
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 .pd-ticket-header {
@@ -941,7 +941,7 @@
 }
 
 .pd-ticket-subject {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 16px;
   font-weight: 700;
   color: #E2E8F0;
@@ -955,7 +955,7 @@
 }
 
 .pd-ticket-body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 13px;
   color: rgba(255, 255, 255, 0.55);
   line-height: 1.6;
@@ -972,7 +972,7 @@
 }
 
 .pd-ticket-date {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 11px;
   color: rgba(255, 255, 255, 0.3);
 }
@@ -989,13 +989,13 @@
 .pd-ticket-reply {
   padding: 12px 16px;
   border-radius: 10px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 13px;
 }
 
 .pd-reply-partner {
-  background: rgba(212, 168, 67, 0.08);
-  border: 1px solid rgba(212, 168, 67, 0.15);
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.15);
 }
 
 .pd-reply-admin {
@@ -1004,7 +1004,7 @@
 }
 
 .pd-reply-from {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
@@ -1070,7 +1070,7 @@
   flex-shrink: 0;
   border-radius: 12px;
   overflow: hidden;
-  border: 2px solid rgba(212, 168, 67, 0.3);
+  border: 2px solid rgba(34, 197, 94, 0.3);
 }
 
 .pd-qr-info {
@@ -1080,8 +1080,8 @@
 .pd-qr-url {
   font-size: 14px;
   font-weight: 600;
-  color: #D4A843;
-  background: rgba(212, 168, 67, 0.08);
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.08);
   padding: 8px 14px;
   border-radius: 6px;
   margin-bottom: 12px;
@@ -1101,8 +1101,8 @@
 }
 
 .pd-qr-actions .ant-btn:hover {
-  border-color: #D4A843;
-  color: #D4A843;
+  border-color: #22c55e;
+  color: #22c55e;
 }
 
 /* ── Announcements ── */
@@ -1166,8 +1166,8 @@
   flex-shrink: 0;
   width: 56px;
   text-align: center;
-  background: rgba(212, 168, 67, 0.1);
-  border: 1px solid rgba(212, 168, 67, 0.2);
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
   border-radius: 8px;
   padding: 8px 4px;
 }
@@ -1175,7 +1175,7 @@
 .pd-event-date-month {
   font-size: 10px;
   text-transform: uppercase;
-  color: #D4A843;
+  color: #22c55e;
   font-weight: 700;
   letter-spacing: 1px;
 }
@@ -1222,7 +1222,7 @@
   font-family: monospace;
   font-size: 16px;
   font-weight: 700;
-  color: #D4A843;
+  color: #22c55e;
   letter-spacing: 2px;
 }
 

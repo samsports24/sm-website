@@ -87,7 +87,18 @@ export const useESPNScoreboard = (sport, league, selectedDate = null) => {
 
     setLoading(true);
     const params = selectedDate ? { dates: toESPNDate(selectedDate) } : {};
-    const data = await espnGet(sport, league, 'scoreboard', params);
+    let data = await espnGet(sport, league, 'scoreboard', params);
+
+    // NFL preseason games are spread across the week (Thu–Mon), and ESPN's
+    // date-scoped call only returns that one day. If the selected day has no NFL
+    // game, fall back to the current week's full slate (ESPN default scoreboard)
+    // so started + upcoming preseason games still show. NFL only — other sports
+    // keep their date-scoped behaviour.
+    const isNFL = sport === 'football' && league === 'nfl';
+    if (isNFL && selectedDate && (!data || !data.events || data.events.length === 0)) {
+      const wk = await espnGet(sport, league, 'scoreboard', {});
+      if (wk && wk.events && wk.events.length) data = wk;
+    }
 
     if (data && data.events) {
       setEvents(data.events);

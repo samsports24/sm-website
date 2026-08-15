@@ -39,6 +39,14 @@ const send = (body) => {
 export const trackPageView = (path) => {
   if (path === lastPath) return;
   lastPath = path;
+  // Google Analytics 4 — send a page_view for this SPA route.
+  if (typeof window !== "undefined" && typeof window.gtag === "function") {
+    window.gtag("event", "page_view", {
+      page_path: path,
+      page_location: window.location.href,
+      page_title: typeof document !== "undefined" ? document.title : undefined,
+    });
+  }
   send({
     type: "page_view",
     sessionId: SESSION_ID,

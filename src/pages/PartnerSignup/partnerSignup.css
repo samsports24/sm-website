@@ -28,16 +28,16 @@
 }
 
 .ps-title {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 28px;
   font-weight: 800;
-  color: #D4A843;
+  color: #22c55e;
   letter-spacing: 2px;
   margin: 0 0 8px;
 }
 
 .ps-subtitle {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 14px;
   color: rgba(255, 255, 255, 0.5);
   margin: 0;
@@ -49,7 +49,7 @@
 }
 
 .ps-steps .ant-steps-item-title {
-  font-family: 'Rajdhani', sans-serif !important;
+  font-family: 'Oxanium', sans-serif !important;
   font-weight: 700 !important;
   font-size: 12px !important;
   letter-spacing: 0.5px !important;
@@ -66,7 +66,7 @@
 }
 
 .ps-step-title {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 20px;
   font-weight: 700;
   color: #E2E8F0;
@@ -80,7 +80,7 @@
 
 .ps-field label {
   display: block;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 12px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.5);
@@ -96,15 +96,15 @@
   border: 1px solid rgba(110, 105, 128, 0.2) !important;
   border-radius: 10px !important;
   color: #E2E8F0 !important;
-  font-family: 'Inter', sans-serif !important;
+  font-family: 'Oxanium', sans-serif !important;
   font-size: 14px !important;
   padding: 10px 14px !important;
 }
 
 .ps-field .ant-input:focus,
 .ps-field .ant-input-affix-wrapper-focused {
-  border-color: #D4A843 !important;
-  box-shadow: 0 0 0 2px rgba(212, 168, 67, 0.1) !important;
+  border-color: #22c55e !important;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.1) !important;
 }
 
 .ps-field-row {
@@ -131,10 +131,10 @@
 }
 
 .ps-subdomain-input .ant-input-group-addon {
-  background: rgba(212, 168, 67, 0.1) !important;
-  border: 1px solid rgba(212, 168, 67, 0.2) !important;
-  color: #D4A843 !important;
-  font-family: 'Rajdhani', sans-serif !important;
+  background: rgba(34, 197, 94, 0.1) !important;
+  border: 1px solid rgba(34, 197, 94, 0.2) !important;
+  color: #22c55e !important;
+  font-family: 'Oxanium', sans-serif !important;
   font-weight: 700 !important;
   font-size: 13px !important;
 }
@@ -142,7 +142,7 @@
 .ps-subdomain-status {
   display: inline-block;
   margin-top: 6px;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 12px;
   font-weight: 700;
 }
@@ -154,7 +154,7 @@
 .ps-hint {
   display: block;
   margin-top: 6px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 11px;
   color: rgba(255, 255, 255, 0.3);
 }
@@ -177,7 +177,7 @@
 }
 
 .ps-color-label {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 13px;
   color: rgba(255, 255, 255, 0.4);
 }
@@ -199,7 +199,7 @@
 
 .ps-review-label {
   display: block;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 10px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.35);
@@ -212,7 +212,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 15px;
   font-weight: 700;
   color: #E2E8F0;
@@ -227,17 +227,17 @@
 
 /* ── Plan preview ── */
 .ps-plan-preview {
-  background: rgba(212, 168, 67, 0.05);
-  border: 1px solid rgba(212, 168, 67, 0.15);
+  background: rgba(34, 197, 94, 0.05);
+  border: 1px solid rgba(34, 197, 94, 0.15);
   border-radius: 12px;
   padding: 20px 24px;
 }
 
 .ps-plan-preview h3 {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 14px;
   font-weight: 800;
-  color: #D4A843;
+  color: #22c55e;
   letter-spacing: 1.5px;
   margin: 0 0 12px;
 }
@@ -249,7 +249,7 @@
 }
 
 .ps-plan-preview li {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 13px;
   color: rgba(255, 255, 255, 0.6);
   padding: 4px 0;
@@ -263,7 +263,7 @@
 }
 
 .ps-plan-upgrade {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 11px;
   color: rgba(255, 255, 255, 0.3);
   margin: 0;
@@ -282,7 +282,7 @@
 }
 
 .ps-btn-back {
-  font-family: 'Rajdhani', sans-serif !important;
+  font-family: 'Oxanium', sans-serif !important;
   font-weight: 700 !important;
   font-size: 13px !important;
   letter-spacing: 1px !important;
@@ -296,14 +296,14 @@
 
 .ps-btn-next,
 .ps-btn-submit {
-  font-family: 'Rajdhani', sans-serif !important;
+  font-family: 'Oxanium', sans-serif !important;
   font-weight: 800 !important;
   font-size: 14px !important;
   letter-spacing: 1.5px !important;
   border-radius: 10px !important;
   height: 44px !important;
   padding: 0 32px !important;
-  background: linear-gradient(135deg, #D4A843, #B8922E) !important;
+  background: linear-gradient(135deg, #22c55e, #B8922E) !important;
   border: none !important;
   color: #0A0F1C !important;
 }
@@ -317,7 +317,7 @@
 .ps-footer {
   text-align: center;
   margin-top: 24px;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 10px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.15);
@@ -338,16 +338,16 @@
 }
 
 .ps-success-title {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 24px;
   font-weight: 800;
-  color: #D4A843;
+  color: #22c55e;
   letter-spacing: 2px;
   margin: 0 0 16px;
 }
 
 .ps-success-text {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 14px;
   color: rgba(255, 255, 255, 0.6);
   line-height: 1.6;
@@ -355,7 +355,7 @@
 }
 
 .ps-success-subtext {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 12px;
   color: rgba(255, 255, 255, 0.3);
 }

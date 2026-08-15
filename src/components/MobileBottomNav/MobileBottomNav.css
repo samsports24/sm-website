@@ -1,0 +1,62 @@
+/* MobileBottomNav — hidden by default; styled as a fixed bottom bar only on
+   mobile (≤1024px). Dynasty's MobileLayout mounts ≤900px, NFL Rivals uses the
+   1024px breakpoint, so a single media query covers both usages. */
+.mbn {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .mbn {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1300;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 2px;
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+    background: rgba(8, 11, 18, 0.98);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.45);
+    scrollbar-width: none;
+  }
+  .mbn::-webkit-scrollbar {
+    display: none;
+  }
+  .mbn-item {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-width: 58px;
+    padding: 4px 8px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #9aa3b2;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.1;
+  }
+  .mbn-item .mbn-icon {
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+  }
+  .mbn-item .mbn-label {
+    max-width: 72px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .mbn-item.active {
+    color: var(--mbn-accent, #7C3AED);
+  }
+  .mbn-item.active .mbn-icon {
+    filter: drop-shadow(0 0 6px var(--mbn-accent, #7C3AED));
+  }
+}

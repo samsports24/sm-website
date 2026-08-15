@@ -36,15 +36,48 @@ const fmtMoney = (val) => {
   return `${val.toLocaleString()} SP`
 }
 
+// ── Front Office panel helpers (matchup + activity) ──
+const foDate = (d) => (d ? new Date(d).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) : 'TBD')
+const foTimeAgo = (d) => {
+  if (!d) return ''
+  const s = Math.floor((Date.now() - new Date(d).getTime()) / 1000)
+  if (s < 60) return 'just now'
+  const m = Math.floor(s / 60); if (m < 60) return `${m}m ago`
+  const h = Math.floor(m / 60); if (h < 24) return `${h}h ago`
+  return `${Math.floor(h / 24)}d ago`
+}
+const foTxIcon = (m = '') => {
+  const t = String(m).toLowerCase()
+  if (t.includes('auction')) return '🔨'
+  if (t.includes('trade')) return '🔁'
+  if (t.includes('squad') || t.includes('lineup')) return '🛡️'
+  if (t.includes('win') || t.includes('match')) return '🏆'
+  return '📣'
+}
+const foCard = { background: '#0A0E17', border: '1px solid rgba(233,231,223,0.09)', borderRadius: 14, padding: 16 }
+const foCardTitle = { fontSize: 14, fontWeight: 800, color: '#ECEAE3', marginBottom: 4 }
+const FoTeam = ({ t, fb }) => {
+  const src = t?.logo || fb?.logo
+  return (
+    <div style={{ textAlign: 'center', minWidth: 64 }}>
+      {src
+        ? <img src={src} alt="" style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(233,231,223,0.09)' }} />
+        : <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#1a1400', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>🏈</div>}
+      <div style={{ fontSize: 11, color: '#cfc7a8', marginTop: 5, maxWidth: 84, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t?.name || fb?.name || 'TBD'}</div>
+    </div>
+  )
+}
+const POS_COLOR = { QB: '#FF6B6B', RB: '#8FB4F0', WR: '#B794F6', TE: '#F7C948' }
+
 const SPORT_EMOJIS = { all: '🌍', soccer: '⚽', nba: '🏀', nfl: '🏈', mlb: '⚾', ice_hockey: '🏒' }
 
 const SPORT_COLORS = {
-  all:    { primary: '#D4AF37', dark: '#B8962E', rgba: '212,175,55' },
-  nfl:    { primary: '#D4AF37', dark: '#B8962E', rgba: '212,175,55' },
-  soccer: { primary: '#D4AF37', dark: '#B8962E', rgba: '212,175,55' },
-  nba:    { primary: '#D4AF37', dark: '#B8962E', rgba: '212,175,55' },
-  mlb:    { primary: '#D4AF37', dark: '#B8962E', rgba: '212,175,55' },
-  ice_hockey: { primary: '#D4AF37', dark: '#B8962E', rgba: '212,175,55' },
+  all:    { primary: '#F7C948', dark: '#D4A82E', rgba: '247,201,72' },
+  nfl:    { primary: '#F7C948', dark: '#D4A82E', rgba: '247,201,72' },
+  soccer: { primary: '#F7C948', dark: '#D4A82E', rgba: '247,201,72' },
+  nba:    { primary: '#F7C948', dark: '#D4A82E', rgba: '247,201,72' },
+  mlb:    { primary: '#F7C948', dark: '#D4A82E', rgba: '247,201,72' },
+  ice_hockey: { primary: '#F7C948', dark: '#D4A82E', rgba: '247,201,72' },
 }
 
 const WarRoom = () => {
@@ -71,6 +104,53 @@ const WarRoom = () => {
 
   // Multi-team user teams
   const [userTeams, setUserTeams] = useState([])
+
+  // New Front Office top bar (SamPoints + Budget Left) + next matchup, wired to
+  // real endpoints. Additive — doesn't touch the existing empire/exchange logic.
+  const [topbar, setTopbar] = useState({ sp: 0, budget: null, teamName: '' })
+  const [nextMatch, setNextMatch] = useState(null)
+  const [activity, setActivity] = useState([])
+  const [news, setNews] = useState([])
+  const [topPlayers, setTopPlayers] = useState([])
+
+  useEffect(() => {
+    if (!user) return
+    attachToken()
+    ;(async () => {
+      try {
+        const r = await privateAPI.get('/user/get-user')
+        const d = r?.data?.data || r?.data || {}
+        const sp = d?.sampoints?.earnedSamPoints ?? d?.sampoints?.SamPoints ?? (user?.earnedSamPoints || 0)
+        const cap = d?.leagueSalaryCap ?? leagueSalaryCap
+        const used = d?.teamSalaryCap ?? 0
+        setTopbar({ sp, budget: Math.max(0, cap - used), teamName: user?.team?.name || '' })
+      } catch (e) {
+        setTopbar({ sp: user?.earnedSamPoints || 0, budget: null, teamName: user?.team?.name || '' })
+      }
+      try {
+        const m = await privateAPI.post('/schedule/get-full-team-schedule', {})
+        const weeks = m?.data?.data || m?.data || []
+        const next = (Array.isArray(weeks) ? weeks : []).find((w) => (w.opponentOne || w.opponentTwo) && !w.isBye)
+        if (next) setNextMatch(next)
+      } catch (e) { /* no matchup */ }
+      try {
+        const tx = await privateAPI.get('/transaction/get-top-transactions')
+        const list = tx?.data?.data?.topTransaction || tx?.data?.topTransaction || tx?.data?.data || []
+        setActivity(Array.isArray(list) ? list.slice(0, 6) : [])
+      } catch (e) { /* no activity */ }
+      try {
+        const n = await privateAPI.get('/news/get-news')
+        const l = n?.data?.data || n?.data || []
+        setNews(Array.isArray(l) ? l.slice(0, 4) : [])
+      } catch (e) { /* no news */ }
+      try {
+        const p = await privateAPI.get('/nfl-top-performers?limit=6')
+        const l = p?.data?.data || p?.data || []
+        setTopPlayers(Array.isArray(l) ? l.slice(0, 5) : [])
+      } catch (e) { /* no players */ }
+    })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
 
   // Active empire sale + my listings (for cancel buttons)
   const [activeEmpireSale, setActiveEmpireSale] = useState(null)
@@ -238,6 +318,11 @@ const WarRoom = () => {
   const totalGames = userTeams.reduce((sum, ttm) => sum + (ttm.wins || 0) + (ttm.losses || 0) + (ttm.ties || ttm.draws || 0), 0)
   const winRate = totalGames > 0 ? Math.round((totalWins / totalGames) * 100) : 0
 
+  // Real data only — panels render empty states when a feed has nothing yet.
+  const matchupData = nextMatch
+  const playersData = topPlayers
+  const activityData = activity
+
   // Dark-themed confirm modal helper
   const darkConfirm = ({ icon, title, subtitle, onOk, okLabel = 'Confirm', cancelLabel = 'Go Back' }) => {
     Modal.confirm({
@@ -249,7 +334,7 @@ const WarRoom = () => {
           <div style={{ fontSize: '16px', fontWeight: 800, color: '#fff', marginBottom: '8px' }}>
             {title}
           </div>
-          <div style={{ fontSize: '13px', color: '#8a7a44', lineHeight: 1.5 }}>
+          <div style={{ fontSize: '13px', color: '#69748B', lineHeight: 1.5 }}>
             {subtitle}
           </div>
         </div>
@@ -266,8 +351,8 @@ const WarRoom = () => {
       },
       cancelButtonProps: {
         style: {
-          background: '#1a1400', border: '1px solid #2a2200',
-          color: '#8a7a44', fontWeight: 600,
+          background: '#1a1400', border: '1px solid rgba(233,231,223,0.09)',
+          color: '#69748B', fontWeight: 600,
           borderRadius: '8px', height: '36px', fontSize: '12px',
         },
       },
@@ -401,9 +486,84 @@ const WarRoom = () => {
     return authToken ? `${soccerUrl}?token=${encodeURIComponent(authToken)}` : soccerUrl
   }
 
+  const heroBlock = (
+    <div style={{
+      position: 'relative', overflow: 'hidden', borderRadius: 16,
+      border: '1px solid rgba(139,92,246,0.25)',
+      background: `linear-gradient(100deg, #191030 0%, #191030 24%, rgba(20,17,43,0.72) 42%, rgba(1,6,14,0) 60%), url(${process.env.PUBLIC_URL || ''}/assets/hub/hero-crown.png) right center / auto 128% no-repeat, linear-gradient(100deg, #1a1030 0%, #14112b 40%, #050912 74%, #01060e 100%)`,
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '16px 26px', minHeight: 96,
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14, position: 'relative', zIndex: 1 }}>
+        <span style={{ fontSize: 36 }}>👑</span>
+        <div>
+          <h1 style={{ fontSize: 30, fontWeight: 900, margin: 0, color: '#fff', letterSpacing: '-0.5px' }}>Your <span style={{ color: '#F7C948' }}>Empire</span></h1>
+          <p style={{ fontSize: 13, color: '#9aa4b6', margin: '4px 0 0' }}>Build, manage, and expand your sports franchise dynasty.</p>
+        </div>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, position: 'relative', zIndex: 1 }}>
+        <div style={{ background: '#0C1320', border: '1px solid rgba(233,231,223,0.12)', borderRadius: 10, padding: '10px 22px', textAlign: 'center', fontWeight: 800, color: '#fff', fontSize: 15 }}>{fmtMoney(portfolioValue)}</div>
+        <button onClick={() => setIntelOpen(!intelOpen)} style={{ background: '#0C1320', border: '1px solid rgba(233,231,223,0.12)', borderRadius: 10, padding: '10px 22px', color: '#cfd6e2', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>🔎 Intel</button>
+      </div>
+    </div>
+  )
+  const tabBar = (
+    <div className="empire-tab-bar">
+      {[
+        { key: 'empire', label: 'My Leagues' },
+        { key: 'trophy', label: 'Trophies' },
+        { key: 'exchange', label: 'Exchange' },
+        { key: 'governance', label: 'Governance' },
+      ].map((tab) => (
+        <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+          className={`empire-tab ${activeTab === tab.key ? 'active' : ''}`}>
+          {tab.label}
+        </button>
+      ))}
+    </div>
+  )
+
   return (
     <div className="empire-page">
       <OnboardingGuide tabKey="front-office" />
+
+      {/* ══════════════ FRONT OFFICE TOP BAR ══════════════ */}
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap',
+        padding: '12px 20px', borderBottom: '1px solid rgba(233,231,223,0.09)',
+        background: 'linear-gradient(90deg,#0A0E17,#080C14)',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ fontSize: 22 }}>🏈</span>
+          <div>
+            <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', lineHeight: 1.1 }}>{topbar.teamName || 'Your Franchise'}</div>
+            <div style={{ fontSize: 11, color: '#69748B' }}>Front Office</div>
+          </div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: '#0C1320', border: '1px solid rgba(124,58,237,0.3)', borderRadius: 12, padding: '8px 16px', whiteSpace: 'nowrap' }}>
+            <span style={{ width: 30, height: 30, flexShrink: 0, borderRadius: '50%', background: 'linear-gradient(135deg,#8B5CF6,#6D28D9)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 11 }}>SP</span>
+            <div><div style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>{fmtMoney(topbar.sp)}</div><div style={{ fontSize: 10, color: '#69748B', textTransform: 'uppercase', letterSpacing: 0.4 }}>SamPoints</div></div>
+          </div>
+          {topbar.budget != null && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: '#0C1320', border: '1px solid rgba(233,231,223,0.09)', borderRadius: 12, padding: '8px 16px', whiteSpace: 'nowrap' }}>
+              <span style={{ fontSize: 18, flexShrink: 0 }}>💼</span>
+              <div><div style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>{fmtMoney(topbar.budget)}</div><div style={{ fontSize: 10, color: '#69748B', textTransform: 'uppercase', letterSpacing: 0.4 }}>Budget Left</div></div>
+            </div>
+          )}
+          <span style={{ width: 1, height: 32, background: 'rgba(233,231,223,0.12)', flexShrink: 0 }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 18, flexShrink: 0 }}>
+            <span style={{ position: 'relative', fontSize: 20, cursor: 'pointer', color: '#AEB6C4', lineHeight: 1 }}>
+              🔔
+              <span style={{ position: 'absolute', top: -7, right: -7, background: '#8B5CF6', color: '#fff', fontSize: 9, fontWeight: 800, borderRadius: '50%', minWidth: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px', border: '2px solid #0A0E17' }}>3</span>
+            </span>
+            <span style={{ fontSize: 19, cursor: 'pointer', color: '#AEB6C4', lineHeight: 1 }}>💬</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }} onClick={() => navigate('/edit-profile')}>
+              <span style={{ width: 36, height: 36, flexShrink: 0, borderRadius: '50%', background: 'linear-gradient(135deg,#16A34A,#0f7a37)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 14 }}>{(user?.userName || user?.name || 'U').charAt(0).toUpperCase()}</span>
+              <span style={{ color: '#69748B', fontSize: 11 }}>▾</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* ══════════════ LIVE TICKER (moving) ══════════════
           Bloomberg-style scrolling strip. Two duplicate sequences let the CSS
@@ -436,36 +596,14 @@ const WarRoom = () => {
         </div>
       </div>
 
-      {/* ══════════════ HEADER + TABS ══════════════ */}
-      <div className="empire-header">
-        <div className="empire-header-left">
-          <span className="empire-crown">👑</span>
-          <div>
-            <h1 className="empire-title">Your <span>Empire</span></h1>
-            <p className="empire-subtitle">Build, manage, and expand your sports franchise dynasty</p>
-          </div>
+      {/* HEADER + TABS — full-width only OFF the My Leagues tab. On My Leagues the
+          hero + tabs live inside the left column so the rail rises up beside them. */}
+      {activeTab !== 'empire' && (
+        <div style={{ margin: '16px 20px 0', display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {heroBlock}
+          {tabBar}
         </div>
-        <div className="empire-header-right">
-          <div className="empire-sp-badge">{fmtMoney(portfolioValue)}</div>
-          <button className="empire-intel-btn" onClick={() => setIntelOpen(!intelOpen)}>
-            📡 Intel
-          </button>
-        </div>
-      </div>
-
-      <div className="empire-tab-bar">
-        {[
-          { key: 'empire', label: 'My Leagues' },
-          { key: 'trophy', label: 'Trophies' },
-          { key: 'exchange', label: 'Exchange' },
-          { key: 'governance', label: 'Governance' },
-        ].map((tab) => (
-          <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-            className={`empire-tab ${activeTab === tab.key ? 'active' : ''}`}>
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      )}
 
       {/* Main content area with optional Intel sidebar */}
       <div className={`empire-content ${intelOpen ? 'intel-open' : ''}`}>
@@ -474,25 +612,30 @@ const WarRoom = () => {
           {/* ══════════════ MY LEAGUES TAB ══════════════ */}
           {activeTab === 'empire' && (
             <div className="empire-leagues">
-              {/* KPI Strip — terminal tiles with sparklines (matches today's soccer redesign) */}
-              <div className="empire-kpi-row">
+              {/* Two-column: left content (hero, tabs, KPIs, table, news) + right rail, per the mockup */}
+              <div className="empire-hold-layout">
+                <div style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {heroBlock}
+              {tabBar}
+              {/* KPI Strip */}
+              <div className="empire-kpi-row" style={{ padding: 0, gridTemplateColumns: 'repeat(4, 1fr)' }}>
                 <div className="empire-kpi">
                   <span className="empire-kpi-label">Empire Valuation</span>
                   <span className="empire-kpi-value gold">{fmtMoney(portfolioValue)}</span>
                   <span className="empire-kpi-delta up">▲ Portfolio total</span>
-                  <svg className="empire-spark" viewBox="0 0 120 26" preserveAspectRatio="none"><polyline points="0,20 18,18 36,21 54,14 72,15 90,9 108,7 120,4" fill="none" stroke="#5FD08A" strokeWidth="1.5" /></svg>
+                  <svg className="empire-spark" viewBox="0 0 120 26" preserveAspectRatio="none"><polyline points="0,20 18,18 36,21 54,14 72,15 90,9 108,7 120,4" fill="none" stroke="#4ADE80" strokeWidth="1.5" /></svg>
                 </div>
                 <div className="empire-kpi">
                   <span className="empire-kpi-label">Season Revenue</span>
                   <span className="empire-kpi-value green">+{fmtMoney(annualEarnings)}</span>
                   <span className="empire-kpi-delta up">Across all franchises</span>
-                  <svg className="empire-spark" viewBox="0 0 120 26" preserveAspectRatio="none"><polyline points="0,22 20,20 40,17 60,16 80,11 100,8 120,6" fill="none" stroke="#5FD08A" strokeWidth="1.5" /></svg>
+                  <svg className="empire-spark" viewBox="0 0 120 26" preserveAspectRatio="none"><polyline points="0,22 20,20 40,17 60,16 80,11 100,8 120,6" fill="none" stroke="#4ADE80" strokeWidth="1.5" /></svg>
                 </div>
                 <div className="empire-kpi">
                   <span className="empire-kpi-label">Net P&amp;L · Season</span>
                   <span className={`empire-kpi-value ${netProfit >= 0 ? 'green' : 'red'}`}>{netProfit >= 0 ? '+' : ''}{fmtMoney(netProfit)}</span>
                   <span className={`empire-kpi-delta ${netProfit >= 0 ? 'up' : 'muted'}`}>{netProfit >= 0 ? '▲' : '▼'} revenue − spending</span>
-                  <svg className="empire-spark" viewBox="0 0 120 26" preserveAspectRatio="none"><polyline points="0,16 18,19 36,12 54,15 72,10 90,12 108,7 120,8" fill="none" stroke={netProfit >= 0 ? '#5FD08A' : '#E8786C'} strokeWidth="1.5" /></svg>
+                  <svg className="empire-spark" viewBox="0 0 120 26" preserveAspectRatio="none"><polyline points="0,16 18,19 36,12 54,15 72,10 90,12 108,7 120,8" fill="none" stroke={netProfit >= 0 ? '#4ADE80' : '#FF6B6B'} strokeWidth="1.5" /></svg>
                 </div>
                 <div className="empire-kpi">
                   <span className="empire-kpi-label">Franchises Owned</span>
@@ -502,7 +645,7 @@ const WarRoom = () => {
                   </span>
                   <div className="empire-kpi-allocrow">
                     <span style={{ flex: userTeams.filter((ttm) => (ttm.league?.sport) === 'nfl').length || 1, background: 'rgba(143,180,240,0.5)' }} />
-                    <span style={{ flex: userTeams.filter((ttm) => (ttm.league?.sport) === 'soccer').length || 1, background: '#C9A86A' }} />
+                    <span style={{ flex: userTeams.filter((ttm) => (ttm.league?.sport) === 'soccer').length || 1, background: '#F7C948' }} />
                   </div>
                 </div>
               </div>
@@ -522,7 +665,7 @@ const WarRoom = () => {
               )}
 
               {/* Sport filter pills */}
-              <div className="empire-filters">
+              <div className="empire-filters" style={{ padding: 0 }}>
                 <span className="empire-filters-label">Your Franchises</span>
                 <div className="empire-sport-pills">
                   {['all', 'nfl', 'soccer'].map((s) => (
@@ -534,9 +677,7 @@ const WarRoom = () => {
                 </div>
               </div>
 
-              {/* Franchise holdings + right rail (allocation donut) — matches today's soccer redesign */}
-              <div className="empire-hold-layout">
-                <div className="empire-holdings">
+                  <div className="empire-holdings" style={{ margin: 0 }}>
                   <table className="holdings-table">
                     <thead>
                       <tr>
@@ -589,15 +730,106 @@ const WarRoom = () => {
                       )}
                     </tbody>
                   </table>
+
+                  {/* Breaking News + Top Players — inside the left column, per the mockup */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 16, marginTop: 64 }}>
+                    <div className="empire-panel" style={{ padding: 16 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#ECEAE3' }}>Breaking News</div>
+                        <span style={{ fontSize: 11, color: '#4ADE80', cursor: 'pointer' }} onClick={() => navigate('/all-news')}>View All</span>
+                      </div>
+                      {news.length === 0 ? (
+                        <div style={{ color: '#69748B', fontSize: 12 }}>No news right now.</div>
+                      ) : (
+                        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.35fr) minmax(0,1fr)', gap: 14 }}>
+                          <a href={news[0].link || '#'} target="_blank" rel="noreferrer" style={{ textDecoration: 'none', display: 'block' }}>
+                            <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', borderRadius: 10, overflow: 'hidden', background: 'linear-gradient(135deg,#152238,#0C1320)' }}>
+                              {news[0].image && <img src={news[0].image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.style.display = 'none' }} />}
+                              <span style={{ position: 'absolute', top: 8, left: 8, background: '#EF4444', color: '#fff', fontSize: 9, fontWeight: 800, letterSpacing: 0.5, padding: '3px 8px', borderRadius: 4 }}>BREAKING</span>
+                            </div>
+                            <div style={{ fontSize: 14, fontWeight: 800, color: '#ECEAE3', marginTop: 10, lineHeight: 1.3 }}>{news[0].headline}</div>
+                            <div style={{ fontSize: 11, color: '#69748B', marginTop: 5 }}>{foTimeAgo(news[0].lastModified)}</div>
+                          </a>
+                          <div>
+                            {news.slice(1, 4).map((n, i) => (
+                              <a key={i} href={n.link || '#'} target="_blank" rel="noreferrer" style={{ display: 'flex', gap: 10, padding: '9px 0', borderTop: i ? '1px solid rgba(233,231,223,0.08)' : 'none', textDecoration: 'none' }}>
+                                <div style={{ width: 46, height: 46, borderRadius: 8, flexShrink: 0, overflow: 'hidden', background: 'linear-gradient(135deg,#152238,#0C1320)' }}>
+                                  {n.image && <img src={n.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.style.display = 'none' }} />}
+                                </div>
+                                <div style={{ minWidth: 0 }}>
+                                  <div style={{ fontSize: 12, fontWeight: 700, color: '#ECEAE3', lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{n.headline}</div>
+                                  <div style={{ fontSize: 10, color: '#69748B', marginTop: 3 }}>{foTimeAgo(n.lastModified)}</div>
+                                </div>
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <div className="empire-panel" style={{ padding: 16 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#ECEAE3' }}>Top Players</div>
+                        <span style={{ fontSize: 10, color: '#69748B', textTransform: 'uppercase', letterSpacing: 0.5 }}>Projected</span>
+                      </div>
+                      {playersData.length === 0 && <div style={{ color: '#69748B', fontSize: 12, padding: '4px 0' }}>No player data yet.</div>}
+                      {playersData.map((p, i) => (
+                        <div key={p._id || i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '9px 0', borderTop: i ? '1px solid rgba(233,231,223,0.08)' : 'none' }}>
+                          <span style={{ minWidth: 38, textAlign: 'center', fontSize: 10, fontWeight: 800, color: '#0B0F17', background: POS_COLOR[p.position] || '#F7C948', borderRadius: 5, padding: '4px 0' }}>{p.position || '—'}</span>
+                          {p.photo ? <img src={p.photo} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} /> : <span style={{ width: 32, height: 32, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, color: '#fff', background: `linear-gradient(135deg, ${POS_COLOR[p.position] || '#F7C948'}, rgba(12,19,32,0.9))` }}>{(p.name || '?').charAt(0)}</span>}
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: 13, fontWeight: 700, color: '#ECEAE3', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</div>
+                            <div style={{ fontSize: 10.5, color: '#69748B' }}>{p.team || ''}</div>
+                          </div>
+                          <span style={{ fontSize: 14, fontWeight: 800, color: '#ECEAE3' }}>{Number(p.totalScore ?? p.ppg ?? 0).toFixed(1)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
                 </div>
 
                 <aside className="empire-hold-rail">
+                  {/* Upcoming Matchup */}
+                  <div className="empire-panel" style={{ padding: 16 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: '#ECEAE3', marginBottom: 4 }}>Upcoming Matchup</div>
+                    {matchupData ? (
+                      <>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around', gap: 8, marginTop: 12 }}>
+                          {(() => {
+                            const meId = String(user?.team?._id || '')
+                            const o1 = matchupData.opponentOne || {}
+                            const o2 = matchupData.opponentTwo || {}
+                            const me = (o2._id && String(o2._id) === meId) ? o2 : o1
+                            const opp = (o2._id && String(o2._id) === meId) ? o1 : o2
+                            return (
+                              <>
+                                <FoTeam t={me} fb={user?.team} />
+                                <div style={{ textAlign: 'center' }}>
+                                  <div style={{ color: '#4ADE80', fontWeight: 800, fontSize: 12 }}>{matchupData.week ? (String(matchupData.week).match(/^\d+$/) ? `Week ${matchupData.week}` : matchupData.week) : 'Next Game'}</div>
+                                  <div style={{ color: '#69748B', fontSize: 10.5, margin: '2px 0' }}>{foDate(matchupData.startDate || matchupData.matchStartDate)}</div>
+                                  <div style={{ color: '#69748B', fontSize: 11, fontWeight: 700 }}>VS</div>
+                                </div>
+                                <FoTeam t={opp} />
+                              </>
+                            )
+                          })()}
+                        </div>
+                        <button onClick={() => navigate('/dashboard')} style={{ width: '100%', marginTop: 14, padding: '10px 0', borderRadius: 8, border: '1px solid rgba(74,222,128,0.4)', background: 'rgba(74,222,128,0.08)', color: '#4ADE80', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>View Matchup</button>
+                      </>
+                    ) : (
+                      <div style={{ textAlign: 'center', padding: '18px 8px 8px' }}>
+                        <FoTeam t={user?.team} fb={user?.team} />
+                        <div style={{ color: '#69748B', fontSize: 12, marginTop: 10, lineHeight: 1.5 }}>No upcoming matchup right now.<br />Check back when the next week is scheduled.</div>
+                      </div>
+                    )}
+                  </div>
+
                   <div className="empire-panel">
                     <div className="empire-panel-head"><h3>Allocation</h3><span className="empire-micro">By value</span></div>
                     <div className="empire-donut-wrap">
                       {(() => {
                         const total = userTeams.reduce((s, t) => s + (t.marketValue || 0), 0) || 1
-                        const palette = ['#C9A86A', '#8FB4F0', '#5C7BB0', '#3A4D70', '#5FD08A', '#69748B']
+                        const palette = ['#F7C948', '#8FB4F0', '#5C7BB0', '#3A4D70', '#4ADE80', '#69748B']
                         let off = 25
                         const segs = [...userTeams].sort((a, b) => (b.marketValue || 0) - (a.marketValue || 0)).map((t, i) => {
                           const pct = Math.round(((t.marketValue || 0) / total) * 100)
@@ -624,6 +856,22 @@ const WarRoom = () => {
                         )
                       })()}
                     </div>
+                  </div>
+
+                  {/* Recent Activity */}
+                  <div className="empire-panel" style={{ padding: 16 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: '#ECEAE3', marginBottom: 6 }}>Recent Activity</div>
+                    {activityData.length === 0 && <div style={{ color: '#69748B', fontSize: 12, padding: '4px 0' }}>No recent activity yet.</div>}
+                    {activityData.map((a, i) => (
+                      <div key={a._id || i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 0', borderTop: i ? '1px solid rgba(233,231,223,0.08)' : 'none' }}>
+                        <span style={{ width: 30, height: 30, borderRadius: 8, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, background: `${a.color || '#69748B'}22` }}>{a.icon || foTxIcon(a.module || a.title)}</span>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 12.5, fontWeight: 700, color: '#ECEAE3', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{a.title || a.module || 'Activity'}</div>
+                          <div style={{ fontSize: 10.5, color: '#69748B' }}>{foTimeAgo(a.createdAt)}</div>
+                        </div>
+                        {a.amount && <span style={{ fontSize: 12, fontWeight: 800, color: a.color || '#69748B' }}>{a.amount}</span>}
+                      </div>
+                    ))}
                   </div>
                 </aside>
               </div>
@@ -715,7 +963,7 @@ const WarRoom = () => {
 
             <div className="empire-sell-options">
               {[
-                { key: 'individual', label: 'Sell This Franchise', color: '#D4AF37', rgba: '212,175,55',
+                { key: 'individual', label: 'Sell This Franchise', color: '#F7C948', rgba: '247,201,72',
                   desc: `List "${sellModal.team.name}" at your asking price` },
                 { key: 'empire_bundle', label: 'Sell Empire (Bundle)', color: '#F59E0B', rgba: '245,158,11',
                   desc: `All ${userTeams.length} franchises as one package` },

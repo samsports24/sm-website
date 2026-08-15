@@ -3,6 +3,7 @@ import moment from 'moment'
 import Carousel from 'react-multi-carousel'
 import { useSelector } from 'react-redux'
 import CustomCarousel from '../Carousel/CustomCarousel'
+import TeamLogo from '../TeamLogo'
 
 /* ── NFL season structure (fallback if backend doesn't provide full calendar) ── */
 const REGULAR_SEASON_WEEKS = 18
@@ -230,7 +231,7 @@ const ScheduleWeekCard = ({ match }) => {
 
       <div className='sch-card-logo-wrap'>
         {match.opponentLogo ? (
-          <img src={match.opponentLogo} alt={match.opponentName} className='sch-card-logo' />
+          <TeamLogo src={match.opponentLogo} name={match.opponentName} size={36} round={false} className='sch-card-logo' />
         ) : match.isBye ? (
           <div className='sch-card-logo-placeholder sch-bye-icon'>BYE</div>
         ) : match.isPlayoff && !match.opponentName ? (

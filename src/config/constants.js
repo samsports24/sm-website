@@ -109,9 +109,16 @@ privateAPI.interceptors.response.use(
   (error) => {
     // Clear session on 401 (cookie expired or invalid)
     if (error?.response?.status === 401) {
-      console.warn('[Auth] 401 received, cookie expired or invalid, clearing session')
+      console.warn('[Auth] 401 received — session expired/invalid, clearing session')
+      localStorage.removeItem('token')
       localStorage.removeItem('userName')
       localStorage.removeItem('userId')
+      // The token is dead — send the user to the public landing to log in again
+      // instead of leaving the page stuck loading. Guard against redirect loops.
+      const p = window.location.pathname
+      if (p !== '/' && !p.startsWith('/admin')) {
+        window.location.assign('/?sessionExpired=1')
+      }
     }
     // Ensure error.response.data.message is always a string so notification.error()
     // doesn't crash React by trying to render a Mongoose error object
@@ -130,9 +137,16 @@ privateDRAFTAPI.interceptors.response.use(
   (error) => {
     // Clear session on 401 (cookie expired or invalid)
     if (error?.response?.status === 401) {
-      console.warn('[Auth] 401 received, cookie expired or invalid, clearing session')
+      console.warn('[Auth] 401 received — session expired/invalid, clearing session')
+      localStorage.removeItem('token')
       localStorage.removeItem('userName')
       localStorage.removeItem('userId')
+      // The token is dead — send the user to the public landing to log in again
+      // instead of leaving the page stuck loading. Guard against redirect loops.
+      const p = window.location.pathname
+      if (p !== '/' && !p.startsWith('/admin')) {
+        window.location.assign('/?sessionExpired=1')
+      }
     }
     if (error?.response?.data?.message && typeof error.response.data.message !== 'string') {
       error.response.data.message = error.response.data.message?.message || 'Server Error'

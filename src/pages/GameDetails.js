@@ -7,6 +7,7 @@ import Loader from '../components/Loader'
 import HeadingAndWeek from '../components/Pagination/HeadingAndWeek'
 import Player1 from '../assets/player-img-60x60.png'
 import ViewBreakdown from '../components/modal/ViewBreakdown'
+import TeamLogo from '../components/TeamLogo'
 import { positions } from '../config/constants'
 
 const mapPos = (p) => positions[p] || p
@@ -191,7 +192,7 @@ const GameDetails = () => {
 // ═══════════════════════════════════════════════════════
 const TeamHeader = ({ logo, name, record, score, leading, diff, starters, bench25, locked, unlocked, isLeft }) => (
   <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 14, flexDirection: isLeft ? 'row' : 'row-reverse' }}>
-    <img src={logo} alt="" style={{ width: 80, height: 80, objectFit: 'contain', flexShrink: 0 }} />
+    <TeamLogo src={logo} name={name} size={80} round={false} style={{ objectFit: 'contain' }} />
     <div style={{ flex: 1, textAlign: isLeft ? 'left' : 'right' }}>
       <div style={{ fontFamily: "'Rajdhani',sans-serif", fontSize: 20, fontWeight: 800, color: '#fff', textTransform: 'uppercase' }}>{name}</div>
       <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>({record})</div>

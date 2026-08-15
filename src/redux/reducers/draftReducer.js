@@ -47,10 +47,14 @@ const initialState = {
         }
       }
       case 'SET_ALL_PLAYERS': {
+        // Keep the user's current selection across pool refetches (search, paging,
+        // and the league-wide `counter` socket that refires on every pick). Only
+        // default-select the top row when nothing is selected yet — otherwise a
+        // refetch could silently swap the highlighted player and cause a mis-draft.
         return {
           ...state,
           allPlayers: payload,
-          selectedPlayer: payload?.players?.length > 0 ? payload?.players?.[0] : null,
+          selectedPlayer: state.selectedPlayer || (payload?.players?.length > 0 ? payload?.players?.[0] : null),
         }
       }
       case 'SET_SELECTED_PLAYER': {

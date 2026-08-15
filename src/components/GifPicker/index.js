@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { base_url } from '../../config/constants'
 
 /**
  * GifPicker — lightweight GIF search panel using the Tenor API.
@@ -10,8 +11,10 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
  *   accentColor  — string, theme accent (default: '#A78BFA')
  */
 
-const TENOR_KEY = 'AIzaSyAyimkuYQYF_FXVALexPuGQctUWRURdCYQ'
-const TENOR_BASE = 'https://tenor.googleapis.com/v2'
+// GIF search goes through our own backend (/gifs), which holds the Tenor key.
+// The key used to be hardcoded here and shipped in the public bundle — and it
+// stopped working, which is what produced "Could not load GIFs".
+const GIF_BASE = `${base_url}/gifs`
 
 const GifPicker = ({ visible, onSelect, onClose, accentColor = '#A78BFA' }) => {
   const [query, setQuery] = useState('')
@@ -37,21 +40,15 @@ const GifPicker = ({ visible, onSelect, onClose, accentColor = '#A78BFA' }) => {
     if (visible && trending.length === 0) fetchTrending()
   }, [visible]) // eslint-disable-line
 
-  const mapResults = (results) =>
-    results.map(r => ({
-      id: r.id,
-      title: r.title || r.content_description || '',
-      preview: r.media_formats?.tinygif?.url || r.media_formats?.gif?.url || '',
-      full: r.media_formats?.gif?.url || r.media_formats?.tinygif?.url || '',
-    })).filter(g => g.preview)
+  // No local mapping any more — the backend returns {id,title,preview,full}.
 
   const fetchTrending = async () => {
     setLoading(true); setError(null)
     try {
-      const res = await fetch(`${TENOR_BASE}/featured?key=${TENOR_KEY}&limit=20&media_filter=gif,tinygif&contentfilter=medium`)
+      const res = await fetch(`${GIF_BASE}/trending`)
       if (!res.ok) throw new Error('API returned ' + res.status)
       const json = await res.json()
-      setTrending(mapResults(json.results || []))
+      setTrending(json.results || [])  // backend already maps to {id,title,preview,full}
     } catch (err) {
       setError('Could not load GIFs.')
     } finally { setLoading(false) }
@@ -61,11 +58,11 @@ const GifPicker = ({ visible, onSelect, onClose, accentColor = '#A78BFA' }) => {
     if (!q.trim()) { setGifs([]); setNextPos(''); return }
     setLoading(true); setError(null)
     try {
-      const url = `${TENOR_BASE}/search?key=${TENOR_KEY}&q=${encodeURIComponent(q)}&limit=20&media_filter=gif,tinygif&contentfilter=medium` + (pos ? `&pos=${pos}` : '')
+      const url = `${GIF_BASE}/search?q=${encodeURIComponent(q)}` + (pos ? `&pos=${encodeURIComponent(pos)}` : '')
       const res = await fetch(url)
       if (!res.ok) throw new Error('API returned ' + res.status)
       const json = await res.json()
-      const mapped = mapResults(json.results || [])
+      const mapped = json.results || []  // backend already maps
       if (!pos) setGifs(mapped); else setGifs(prev => prev.concat(mapped))
       setNextPos(json.next || '')
     } catch (err) {

@@ -3,8 +3,13 @@ import { getStatus } from './constants'
 
 const TeamBadge = ({ team, size = 20 }) => {
   const t = team?.team || team
-  const logo = t?.logos?.[0]?.href || t?.logo || team?.logos?.[0]?.href || team?.logo || ''
-  const abbr = (t?.abbreviation || t?.shortDisplayName || team?.abbreviation || '?').slice(0, 3).toUpperCase()
+  // Tennis competitors have an `athlete` (or `athletes[]`) with a flag/headshot
+  // instead of a team logo. Fall back to those so players get an image/initials.
+  const ath = team?.athlete || (Array.isArray(team?.athletes) ? (team.athletes[0]?.athlete || team.athletes[0]) : null)
+  const logo = t?.logos?.[0]?.href || t?.logo || team?.logos?.[0]?.href || team?.logo ||
+    ath?.flag?.href || ath?.headshot?.href || ath?.headshot || ''
+  const abbr = (t?.abbreviation || t?.shortDisplayName || team?.abbreviation ||
+    ath?.shortName || ath?.displayName || '?').slice(0, 3).toUpperCase()
   const color = (t?.color || team?.color) ? '#' + (t?.color || team?.color) : '#1A2332'
 
   if (logo) {

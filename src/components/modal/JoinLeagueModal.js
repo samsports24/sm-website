@@ -4,7 +4,7 @@ import { SearchOutlined } from '@ant-design/icons'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
 import { attachToken, privateAPI, serverUrls } from '../../config/constants'
-import { joinLeagueFromPlatform, getUserLeagues } from '../../redux/actions/leagueActions'
+import { joinLeagueFromPlatform, getUserLeagues, selectLeague } from '../../redux/actions/leagueActions'
 import { getUser } from '../../redux/actions/authActions'
 import store from '../../redux/store'
 
@@ -625,22 +625,26 @@ const JoinLeagueModal = ({ button, sport, frontEndUrl }) => {
                         </div>
                       </div>
                       {joined ? (
-                        <span style={{
-                          background: 'rgba(255,255,255,0.06)',
-                          color: 'rgba(255,255,255,0.4)',
-                          border: '1px solid rgba(255,255,255,0.1)',
-                          borderRadius: 8,
-                          padding: '7px 16px',
-                          fontSize: 12,
-                          fontWeight: 700,
-                          fontFamily: "'Rajdhani', sans-serif",
-                          letterSpacing: '0.8px',
-                          textTransform: 'uppercase',
-                          flexShrink: 0,
-                          marginLeft: 12,
-                        }}>
-                          Joined
-                        </span>
+                        <button
+                          onClick={() => selectLeague({ leagueId: league._id })}
+                          title="Enter this league"
+                          style={{
+                            background: 'rgba(34,197,94,0.12)',
+                            color: '#22C55E',
+                            border: '1px solid rgba(34,197,94,0.5)',
+                            borderRadius: 8,
+                            padding: '7px 18px',
+                            fontSize: 12,
+                            fontWeight: 700,
+                            fontFamily: "'Rajdhani', sans-serif",
+                            cursor: 'pointer',
+                            letterSpacing: '0.8px',
+                            textTransform: 'uppercase',
+                            flexShrink: 0,
+                            marginLeft: 12,
+                          }}>
+                          Enter
+                        </button>
                       ) : (
                         <button
                           onClick={() => handleJoin(league)}

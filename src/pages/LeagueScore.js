@@ -1,55 +1,115 @@
-import React, { useEffect, useState, useCallback } from 'react'
-import { Spin, Modal, Table } from 'antd'
+import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import Pagination from '../components/Pagination'
 import { getScheduleByWeek, getWeeklyNflSchedule, getGameDetails, updateWeek } from '../redux'
 import { useSelector, useDispatch } from 'react-redux'
-import Carousel from 'react-multi-carousel'
-import { TiChevronRight } from 'react-icons/ti'
 import Player1 from '../assets/player-img-60x60.png'
 import { positions } from '../config/constants'
 import PlayerAvatar from '../components/PlayerAvatar'
+import MATCH_EMPTY from '../assets/match-empty.png'
+import '../styles/pages/liveScoring2.css'
 
 const mapPos = (p) => positions[p] || p
 
-/* ═══════════════════════════════════════════════════════════
-   LEAGUE SCORES, Soccer-style matchup rows
-   Click team  → team player breakdown
-   Click score → H2H player-by-player comparison
-   Click player→ stat breakdown popup
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   LIVE SCORING — Redesign (reskin only)
+   Data flow preserved verbatim:
+     - getScheduleByWeek(SETTING?.week)       → fantasy matchups
+     - getWeeklyNflSchedule({ week })         → NFL games ticker
+     - getGameDetails({ team1, team2, week }) → per-matchup rosters
+     - updateWeek (redux) via week selector
+     - refetch on [SETTING?.week, currentLeagueId]
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── count-up animation for score changes (no deps) ── */
+const useCountUp = (target, duration = 550) => {
+  const [val, setVal] = useState(Number(target) || 0)
+  const prevRef = useRef(Number(target) || 0)
+  useEffect(() => {
+    const from = prevRef.current
+    const to = Number(target) || 0
+    if (from === to) {
+      setVal(to)
+      return undefined
+    }
+    let raf
+    const start = (typeof performance !== 'undefined' ? performance.now() : Date.now())
+    const tick = (now) => {
+      const t = (typeof performance !== 'undefined' ? now : Date.now())
+      const p = Math.min(1, (t - start) / duration)
+      const eased = 1 - Math.pow(1 - p, 3)
+      setVal(from + (to - from) * eased)
+      if (p < 1) raf = requestAnimationFrame(tick)
+      else prevRef.current = to
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [target, duration])
+  return val
+}
+
+const fmt = (n) => (Number(n) || 0).toFixed(1)
+const fmt2 = (n) => (Number(n) || 0).toFixed(2)
+
+const shortName = (p) =>
+  (p?.Name && p.Name.length >= 17 ? p?.ShortName : p?.Name) || p?.ShortName || '—'
+
+const teamName = (t) => t?.name || t?.teamName || 'Team'
+const teamOwner = (t) => t?.user?.username || t?.user?.name || ''
+
+/* status classification for a fantasy matchup (derived from real fields) */
+const matchupStatus = (m) => {
+  const s1 = Number(m?.scoreOne) || 0
+  const s2 = Number(m?.scoreTwo) || 0
+  if (s1 > 0 || s2 > 0) return 'live'
+  return 'upcoming'
+}
+
+const camelToTitle = (str) =>
+  !str ? '' : str.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, (s) => s.toUpperCase())
 
 const LeagueScore = () => {
   const SETTING = useSelector((state) => state?.user?.setting)
   const currentLeagueId = useSelector((state) => state?.user?.userDetails?.team?.currentLeague?._id)
+  const leagueName = useSelector(
+    (state) => state?.user?.userDetails?.team?.currentLeague?.name
+  )
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const isAuthenticated = localStorage.getItem('token')
   !isAuthenticated && navigate('/transactions')
 
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState([])
   const [carouselData, setCarouselData] = useState([])
-  const dispatch = useDispatch()
 
-  // Track expanded states: { matchIndex: 'team1' | 'team2' | 'h2h' | null }
-  const [expanded, setExpanded] = useState({})
-  // Cache game details per match
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [activeTab, setActiveTab] = useState(() => {
+    try {
+      return localStorage.getItem('lsc_tab') || 'box'
+    } catch (e) {
+      return 'box'
+    }
+  })
+
+  // Per-matchup game-details cache (preserved mechanism)
   const [gameDetailsCache, setGameDetailsCache] = useState({})
   const [detailsLoading, setDetailsLoading] = useState({})
 
   useEffect(() => {
     getDataByWeek()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [SETTING?.week, currentLeagueId])
 
   const getDataByWeek = async () => {
     setLoading(true)
-    setExpanded({})
     setGameDetailsCache({})
+    setSelectedIndex(0)
     const res = await getScheduleByWeek(SETTING?.week)
-    setData(res)
+    setData(Array.isArray(res) ? res : [])
     const schedule = await getWeeklyNflSchedule({ week: SETTING?.week })
-    setCarouselData(schedule)
+    setCarouselData(Array.isArray(schedule) ? schedule : [])
     setLoading(false)
   }
 
@@ -57,420 +117,221 @@ const LeagueScore = () => {
     dispatch(updateWeek(page))
   }
 
-  // Fetch game details for a match (cached)
-  const fetchDetails = useCallback(async (matchIndex, matchData) => {
-    if (gameDetailsCache[matchIndex]) return gameDetailsCache[matchIndex]
-    setDetailsLoading((p) => ({ ...p, [matchIndex]: true }))
-    const d = await getGameDetails({
-      team1: matchData?.opponentOne?._id,
-      team2: matchData?.opponentTwo?._id,
-      week: SETTING?.week,
-    })
-    setGameDetailsCache((p) => ({ ...p, [matchIndex]: d }))
-    setDetailsLoading((p) => ({ ...p, [matchIndex]: false }))
-    return d
-  }, [SETTING?.week, gameDetailsCache])
+  const goWeek = (delta) => {
+    const next = (Number(SETTING?.week) || 1) + delta
+    if (next < 1) return
+    dispatch(updateWeek(next))
+  }
 
-  // Toggle expand: clicking the same thing closes it
-  const handleExpand = async (matchIndex, type, matchData) => {
-    const current = expanded[matchIndex]
-    if (current === type) {
-      setExpanded((p) => ({ ...p, [matchIndex]: null }))
-      return
+  // Fetch game details for a matchup (cached) — preserved endpoint & payload
+  const fetchDetails = useCallback(
+    async (matchIndex, matchData) => {
+      if (gameDetailsCache[matchIndex]) return gameDetailsCache[matchIndex]
+      setDetailsLoading((p) => ({ ...p, [matchIndex]: true }))
+      const d = await getGameDetails({
+        team1: matchData?.opponentOne?._id,
+        team2: matchData?.opponentTwo?._id,
+        week: SETTING?.week,
+      })
+      setGameDetailsCache((p) => ({ ...p, [matchIndex]: d }))
+      setDetailsLoading((p) => ({ ...p, [matchIndex]: false }))
+      return d
+    },
+    [SETTING?.week, gameDetailsCache]
+  )
+
+  // Load details for the currently selected matchup
+  useEffect(() => {
+    if (loading) return
+    const match = data?.[selectedIndex]
+    if (match && !gameDetailsCache[selectedIndex]) {
+      fetchDetails(selectedIndex, match)
     }
-    setExpanded((p) => ({ ...p, [matchIndex]: type }))
-    // Fetch details if not cached
-    if (!gameDetailsCache[matchIndex]) {
-      await fetchDetails(matchIndex, matchData)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedIndex, loading, data])
+
+  const selectTab = (key) => {
+    setActiveTab(key)
+    try {
+      localStorage.setItem('lsc_tab', key)
+    } catch (e) {
+      /* ignore */
     }
   }
 
+  // NFL game lookup by team abbreviation (real data from getWeeklyNflSchedule)
+  const nflGameMap = useMemo(() => {
+    const map = {}
+    ;(carouselData || []).forEach((g) => {
+      if (g?.HomeTeam) map[g.HomeTeam] = g
+      if (g?.AwayTeam) map[g.AwayTeam] = g
+    })
+    return map
+  }, [carouselData])
+
+  const selectedMatch = data?.[selectedIndex] || null
+  const details = gameDetailsCache[selectedIndex]
+  const isDetailsLoading = detailsLoading[selectedIndex]
+
+  const weekNum = Number(SETTING?.week) || 1
+
   return (
-    <div className='ls-container'>
+    <div className='lsc-root'>
       <Header />
 
-      {/* ── Page Header ── */}
-      <div className='ls-page-header'>
-        <div className='ls-page-header-bg' />
-        <div className='ls-page-header-content'>
-          <div className='ls-page-header-left'>
-            <h1 className='ls-page-title'>
-              LEAGUE <span>SCORES</span>
+      <div className='lsc-wrap'>
+        {/* ═══════ HEADER ═══════ */}
+        <div className='lsc-header'>
+          <div>
+            <h1 className='lsc-title'>
+              LIVE <span>SCORING</span>
             </h1>
-            <p className='ls-page-subtitle'>
-              Week {SETTING?.week} matchups &amp; results
+            <p className='lsc-subtitle'>
+              <span className='lsc-live-dot' />
+              <span className='lsc-league-chip'>{leagueName || 'League'}</span>
+              <span>Week {weekNum}</span>
             </p>
           </div>
-          <div className='ls-week-selector'>
-            <span className='ls-week-label'>Go to week:</span>
+
+          {/* Week selector — reuses updateWeek + Pagination logic */}
+          <div className='lsc-week'>
+            <span className='lsc-week-label'>Week</span>
+            <button
+              className='lsc-week-btn'
+              onClick={() => goWeek(-1)}
+              disabled={weekNum <= 1}
+              aria-label='Previous week'
+            >
+              ‹
+            </button>
+            <span className='lsc-week-current'>Week {weekNum}</span>
+            <button
+              className='lsc-week-btn'
+              onClick={() => goWeek(1)}
+              aria-label='Next week'
+            >
+              ›
+            </button>
+            {/* Go-to-week (original Ant pagination, kept for parity/accessibility) */}
             <Pagination
               title=''
-              current={SETTING?.week}
-              defaultCurrent={SETTING?.week}
+              current={weekNum}
+              defaultCurrent={weekNum}
               total={230}
               onChange={handlePagination}
             />
           </div>
         </div>
-      </div>
 
-      {/* ── NFL Ticker Carousel ── */}
-      {carouselData?.length > 0 && (
-        <div className='ls-ticker-wrap'>
-          <div className='ls-ticker-carousel'>
-            <CarouselComponent data={carouselData} />
-          </div>
-        </div>
-      )}
+        {/* ═══════ NFL TICKER (getWeeklyNflSchedule) ═══════ */}
+        {carouselData?.length > 0 && (
+          <>
+            <div className='lsc-section-label'>Around the NFL</div>
+            <div className='lsc-nfl-strip'>
+              {carouselData.map((v, i) => {
+                const isLive = v?.Status === 'InProgress'
+                const status =
+                  v?.AwayTeam === 'BYE'
+                    ? `${v?.HomeTeam} BYE`
+                    : v?.Status === 'Final'
+                    ? 'FINAL'
+                    : v?.Status === 'Scheduled'
+                    ? 'SCHED'
+                    : v?.Status || '—'
+                return (
+                  <div className='lsc-nfl-card' key={i}>
+                    <div className='lsc-nfl-row'>
+                      <span className={`lsc-nfl-team ${isLive ? 'lsc-live' : ''}`}>{v?.AwayTeam}</span>
+                      <span className={`lsc-nfl-score ${isLive ? 'lsc-live' : ''}`}>
+                        {v?.AwayScore > 0 ? v?.AwayScore : '-'}
+                      </span>
+                    </div>
+                    <div className='lsc-nfl-row'>
+                      <span className={`lsc-nfl-team ${isLive ? 'lsc-live' : ''}`}>{v?.HomeTeam}</span>
+                      <span className={`lsc-nfl-score ${isLive ? 'lsc-live' : ''}`}>
+                        {v?.HomeScore > 0 ? v?.HomeScore : '-'}
+                      </span>
+                    </div>
+                    <div className={`lsc-nfl-status ${isLive ? 'lsc-live' : ''}`}>{status}</div>
+                  </div>
+                )
+              })}
+            </div>
+          </>
+        )}
 
-      {/* ── Matchup List (Soccer-style rows) ── */}
-      <div style={{ maxWidth: 900, margin: '0 auto', padding: '16px 20px 40px' }}>
+        {/* ═══════ MATCHUP CAROUSEL ═══════ */}
+        <div className='lsc-section-label'>Matchups</div>
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '60px 0' }}>
-            <Spin size='large' />
-          </div>
-        ) : data?.length > 0 ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-            {data?.map((match, index) => (
-              <MatchupRow
-                key={index}
-                match={match}
-                index={index}
-                expandedType={expanded[index] || null}
-                onExpandTeam1={() => handleExpand(index, 'team1', match)}
-                onExpandTeam2={() => handleExpand(index, 'team2', match)}
-                onExpandH2H={() => handleExpand(index, 'h2h', match)}
-                details={gameDetailsCache[index]}
-                detailsLoading={detailsLoading[index]}
-                week={SETTING?.week}
-              />
+          <div className='lsc-carousel'>
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className='lsc-skel lsc-skel-card' />
             ))}
           </div>
-        ) : (
-          <div style={{ textAlign: 'center', padding: '60px 0', color: 'rgba(255,255,255,0.3)' }}>
-            No schedule for this week
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
-
-/* ═══════════════════════════════════════════════════════════
-   MATCHUP ROW, Single match (soccer-style)
-   ═══════════════════════════════════════════════════════════ */
-const MatchupRow = ({ match, index, expandedType, onExpandTeam1, onExpandTeam2, onExpandH2H, details, detailsLoading }) => {
-  const score1 = parseFloat(match?.scoreOne) || 0
-  const score2 = parseFloat(match?.scoreTwo) || 0
-  const lead1 = score1 > score2
-  const lead2 = score2 > score1
-
-  const getName = (name) => {
-    if (!name) return '—'
-    const parts = name.split(' ')
-    return parts.length > 2 ? `${parts[0]} ${parts[1]}` : name
-  }
-
-  const isExpanded = !!expandedType
-
-  return (
-    <div style={{
-      borderBottom: '1px solid rgba(110,105,128,0.1)',
-      background: isExpanded ? 'rgba(20,28,45,0.4)' : 'transparent',
-      transition: 'background 0.2s',
-    }}>
-      {/* ── Main Row ── */}
-      <div style={{
-        display: 'flex', alignItems: 'center', padding: '14px 16px',
-        cursor: 'default',
-      }}>
-        {/* Team 1, Left */}
-        <div
-          onClick={onExpandTeam1}
-          style={{
-            flex: 1, display: 'flex', alignItems: 'center', gap: 12,
-            cursor: 'pointer', padding: '4px 0',
-            opacity: lead2 ? 0.6 : 1,
-            transition: 'opacity 0.2s',
-          }}
-        >
-          <div style={{
-            width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
-            backgroundImage: `url(${match?.opponentOne?.logo})`,
-            backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat',
-            border: '2px solid rgba(110,105,128,0.15)',
-          }} />
-          <div>
-            <div style={{
-              fontFamily: "'Rajdhani',sans-serif", fontSize: 14, fontWeight: 700,
-              color: lead1 ? '#fff' : 'rgba(255,255,255,0.7)',
-              textTransform: 'uppercase',
-            }}>
-              {getName(match?.opponentOne?.name)}
-            </div>
-            <div style={{
-              fontFamily: "'Barlow Condensed',sans-serif", fontSize: 11, color: 'rgba(255,255,255,0.3)',
-              textTransform: 'uppercase', letterSpacing: 1,
-            }}>
-              {match?.opponentOne?.name?.split(' ').pop()?.substring(0, 3)?.toUpperCase()}
-            </div>
-          </div>
-        </div>
-
-        {/* Score, Center (clickable for H2H) */}
-        <div
-          onClick={onExpandH2H}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 12,
-            cursor: 'pointer', padding: '6px 20px',
-            borderRadius: 8,
-            background: expandedType === 'h2h' ? 'rgba(34,197,94,0.08)' : 'transparent',
-            border: expandedType === 'h2h' ? '1px solid rgba(34,197,94,0.2)' : '1px solid transparent',
-            transition: 'all 0.2s',
-          }}
-        >
-          <span style={{
-            fontFamily: "'Rajdhani',sans-serif", fontSize: 22, fontWeight: 900, minWidth: 40, textAlign: 'right',
-            color: lead1 ? '#22C55E' : '#fff',
-          }}>
-            {score1.toFixed(1)}
-          </span>
-          <span style={{
-            fontFamily: "'Barlow Condensed',sans-serif", fontSize: 14, color: 'rgba(255,255,255,0.25)',
-            margin: '0 2px',
-          }}>
-            —
-          </span>
-          <span style={{
-            fontFamily: "'Rajdhani',sans-serif", fontSize: 22, fontWeight: 900, minWidth: 40, textAlign: 'left',
-            color: lead2 ? '#22C55E' : '#fff',
-          }}>
-            {score2.toFixed(1)}
-          </span>
-        </div>
-
-        {/* Team 2, Right */}
-        <div
-          onClick={onExpandTeam2}
-          style={{
-            flex: 1, display: 'flex', alignItems: 'center', gap: 12,
-            flexDirection: 'row-reverse',
-            cursor: 'pointer', padding: '4px 0',
-            opacity: lead1 ? 0.6 : 1,
-            transition: 'opacity 0.2s',
-          }}
-        >
-          <div style={{
-            width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
-            backgroundImage: `url(${match?.opponentTwo?.logo})`,
-            backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat',
-            border: '2px solid rgba(110,105,128,0.15)',
-          }} />
-          <div style={{ textAlign: 'right' }}>
-            <div style={{
-              fontFamily: "'Rajdhani',sans-serif", fontSize: 14, fontWeight: 700,
-              color: lead2 ? '#fff' : 'rgba(255,255,255,0.7)',
-              textTransform: 'uppercase',
-            }}>
-              {getName(match?.opponentTwo?.name)}
-            </div>
-            <div style={{
-              fontFamily: "'Barlow Condensed',sans-serif", fontSize: 11, color: 'rgba(255,255,255,0.3)',
-              textTransform: 'uppercase', letterSpacing: 1,
-            }}>
-              {match?.opponentTwo?.name?.split(' ').pop()?.substring(0, 3)?.toUpperCase()}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Expanded Panel ── */}
-      {isExpanded && (
-        <div style={{
-          padding: '0 16px 16px',
-          animation: 'fadeIn 0.2s ease',
-        }}>
-          {detailsLoading ? (
-            <div style={{ textAlign: 'center', padding: '24px 0' }}>
-              <Spin size='small' />
-            </div>
-          ) : expandedType === 'team1' ? (
-            <TeamBreakdownPanel
-              details={details}
-              teamSide='player1'
-              teamName={match?.opponentOne?.name}
-              teamLogo={match?.opponentOne?.logo}
-              score={score1}
-            />
-          ) : expandedType === 'team2' ? (
-            <TeamBreakdownPanel
-              details={details}
-              teamSide='player2'
-              teamName={match?.opponentTwo?.name}
-              teamLogo={match?.opponentTwo?.logo}
-              score={score2}
-            />
-          ) : expandedType === 'h2h' ? (
-            <H2HPanel
-              details={details}
-              match={match}
-              score1={score1}
-              score2={score2}
-            />
-          ) : null}
-        </div>
-      )}
-    </div>
-  )
-}
-
-/* ═══════════════════════════════════════════════════════════
-   TEAM BREAKDOWN PANEL, Shows one team's players + scores
-   ═══════════════════════════════════════════════════════════ */
-const TeamBreakdownPanel = ({ details, teamSide, teamName, teamLogo, score }) => {
-  const [breakdownPlayer, setBreakdownPlayer] = useState(null)
-  const starters = details?.starters || []
-  const bench = teamSide === 'player1' ? (details?.bench1 || []) : (details?.bench2 || [])
-
-  // Extract players for this team side
-  const starterPlayers = starters
-    .map((s) => ({ ...s[teamSide], position: s.position }))
-    .filter((p) => p?.Name || p?.ShortName)
-
-  const benchPlayers = bench
-    .map((b) => ({ ...b?.players, position: 'BNH' }))
-    .filter((p) => p?.Name || p?.ShortName)
-
-  return (
-    <div style={{
-      background: 'rgba(10,15,26,0.5)', borderRadius: 12,
-      border: '1px solid rgba(110,105,128,0.1)', overflow: 'hidden',
-    }}>
-      {/* Team Header */}
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: 12,
-        padding: '12px 16px',
-        borderBottom: '1px solid rgba(110,105,128,0.1)',
-        background: 'rgba(20,28,45,0.4)',
-      }}>
-        <div style={{
-          width: 28, height: 28, borderRadius: '50%',
-          backgroundImage: `url(${teamLogo})`,
-          backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat',
-        }} />
-        <span style={{ fontFamily: "'Rajdhani',sans-serif", fontSize: 14, fontWeight: 700, color: '#fff', textTransform: 'uppercase', flex: 1 }}>
-          {teamName}
-        </span>
-        <span style={{ fontFamily: "'Rajdhani',sans-serif", fontSize: 18, fontWeight: 900, color: '#22C55E' }}>
-          {score?.toFixed(2)}
-        </span>
-      </div>
-
-      {/* Column Headers */}
-      <div style={{
-        display: 'flex', alignItems: 'center', padding: '6px 16px',
-        borderBottom: '1px solid rgba(110,105,128,0.06)',
-      }}>
-        <span style={{ width: 40, fontFamily: "'Barlow Condensed',sans-serif", fontSize: 10, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>POS</span>
-        <span style={{ flex: 1, fontFamily: "'Barlow Condensed',sans-serif", fontSize: 10, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>PLAYER</span>
-        <span style={{ width: 40, fontFamily: "'Barlow Condensed',sans-serif", fontSize: 10, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>TEAM</span>
-        <span style={{ width: 60, fontFamily: "'Barlow Condensed',sans-serif", fontSize: 10, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', textAlign: 'right' }}>PTS</span>
-      </div>
-
-      {/* Starter Rows */}
-      {starterPlayers.map((player, i) => (
-        <PlayerRow key={`s-${i}`} player={player} onBreakdown={() => setBreakdownPlayer(player)} />
-      ))}
-
-      {/* Bench Section */}
-      {benchPlayers.length > 0 && (
-        <>
-          <div style={{
-            padding: '6px 16px',
-            background: 'rgba(245,158,11,0.04)',
-            borderTop: '1px solid rgba(110,105,128,0.08)',
-            borderBottom: '1px solid rgba(110,105,128,0.06)',
-          }}>
-            <span style={{ fontFamily: "'Rajdhani',sans-serif", fontSize: 10, fontWeight: 700, color: '#F59E0B', textTransform: 'uppercase', letterSpacing: 1 }}>
-              BENCH (25%)
-            </span>
-          </div>
-          {benchPlayers.map((player, i) => (
-            <PlayerRow key={`b-${i}`} player={player} isBench onBreakdown={() => setBreakdownPlayer(player)} />
-          ))}
-        </>
-      )}
-
-      {/* Stat Breakdown Modal */}
-      <BreakdownModal player={breakdownPlayer} onClose={() => setBreakdownPlayer(null)} />
-    </div>
-  )
-}
-
-/* ═══════════════════════════════════════════════════════════
-   PLAYER ROW, Single player within team breakdown
-   ═══════════════════════════════════════════════════════════ */
-const PlayerRow = ({ player, isBench, onBreakdown }) => {
-  const score = player?.playerScore || 0
-  const img = player?.HostedHeadshotNoBackgroundUrl || Player1
-
-  return (
-    <div
-      onClick={onBreakdown}
-      style={{
-        display: 'flex', alignItems: 'center', padding: '8px 16px',
-        borderBottom: '1px solid rgba(110,105,128,0.04)',
-        cursor: 'pointer',
-        opacity: isBench ? 0.65 : 1,
-        transition: 'background 0.15s',
-      }}
-      onMouseOver={(e) => e.currentTarget.style.background = 'rgba(34,197,94,0.03)'}
-      onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
-    >
-      {/* Position */}
-      <span style={{
-        width: 40, fontFamily: "'Rajdhani',sans-serif", fontSize: 11, fontWeight: 700,
-        color: isBench ? '#F59E0B' : '#22C55E',
-      }}>
-        {mapPos(player?.Position) || player?.position || '—'}
-      </span>
-
-      {/* Photo + Name */}
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8 }}>
-        <div style={{ flexShrink: 0, border: '1px solid rgba(110,105,128,0.15)', borderRadius: '50%' }}>
-          <PlayerAvatar
-            name={player?.Name || '—'}
-            src={player?.HostedHeadshotNoBackgroundUrl}
-            size={28}
+        ) : data?.length === 0 ? (
+          <EmptyState
+            image={MATCH_EMPTY}
+            title='No matchups this week'
+            text='There is no schedule available for the selected week yet.'
           />
-        </div>
-        <span style={{
-          fontFamily: "'Rajdhani',sans-serif", fontSize: 13, fontWeight: 600, color: '#fff',
-          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-        }}>
-          {player?.Name?.length >= 18 ? player?.ShortName : player?.Name || '—'}
-        </span>
-      </div>
+        ) : (
+          <MatchupCarousel
+            data={data}
+            selectedIndex={selectedIndex}
+            onSelect={setSelectedIndex}
+          />
+        )}
 
-      {/* Pro Team */}
-      <span style={{
-        width: 40, fontFamily: "'Barlow Condensed',sans-serif", fontSize: 11, color: 'rgba(255,255,255,0.35)',
-        textAlign: 'center',
-      }}>
-        {player?.Team || '—'}
-      </span>
+        {/* ═══════ HERO + BODY ═══════ */}
+        {!loading && data?.length > 0 && selectedMatch && (
+          <div className='lsc-grid lsc-fade'>
+            <div className='lsc-main'>
+              <MatchupHero
+                match={selectedMatch}
+                nflGames={carouselData}
+                details={details}
+              />
 
-      {/* Score */}
-      <div style={{ width: 60, textAlign: 'right' }}>
-        <span style={{
-          fontFamily: "'Barlow Condensed',sans-serif", fontSize: 16, fontWeight: 700,
-          color: score > 10 ? '#22C55E' : score > 5 ? '#D4A843' : score > 0 ? '#fff' : 'rgba(255,255,255,0.2)',
-        }}>
-          {score ? score.toFixed(1) : '—'}
-        </span>
-        {isBench && score > 0 && (
-          <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontSize: 9, color: '#F59E0B' }}>
-            25%: {(score * 0.25).toFixed(1)}
+              {/* Tabs */}
+              <div className='lsc-tabs' role='tablist'>
+                {[
+                  { key: 'box', label: 'Box Score' },
+                  { key: 'breakdown', label: 'Player Breakdown' },
+                  { key: 'log', label: 'Scoring Log' },
+                ].map((t) => (
+                  <button
+                    key={t.key}
+                    role='tab'
+                    aria-selected={activeTab === t.key}
+                    className={`lsc-tab ${activeTab === t.key ? 'is-active' : ''}`}
+                    onClick={() => selectTab(t.key)}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+
+              {isDetailsLoading ? (
+                <div>
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <div key={i} className='lsc-skel lsc-skel-line' />
+                  ))}
+                </div>
+              ) : activeTab === 'box' ? (
+                <BoxScoreTab match={selectedMatch} details={details} nflGameMap={nflGameMap} />
+              ) : activeTab === 'breakdown' ? (
+                <PlayerBreakdownTab match={selectedMatch} details={details} />
+              ) : (
+                <ScoringLogTab />
+              )}
+            </div>
+
+            {/* Sidebar */}
+            <MatchupSidebar
+              match={selectedMatch}
+              details={details}
+              onViewFull={() => navigate('/game-details', { state: { data: selectedMatch } })}
+            />
           </div>
         )}
       </div>
@@ -478,329 +339,507 @@ const PlayerRow = ({ player, isBench, onBreakdown }) => {
   )
 }
 
-/* ═══════════════════════════════════════════════════════════
-   H2H PANEL, Head-to-head player comparison
-   ═══════════════════════════════════════════════════════════ */
-const H2HPanel = ({ details, match, score1, score2 }) => {
-  const [breakdownPlayer, setBreakdownPlayer] = useState(null)
-  const starters = details?.starters || []
-  const lead1 = score1 > score2
-
-  // Build bench matchup rows
-  const b1 = details?.bench1 || []
-  const b2 = details?.bench2 || []
-  const maxBench = Math.max(b1.length, b2.length)
-  const benchRows = []
-  for (let i = 0; i < maxBench; i++) {
-    benchRows.push({
-      player1: b1[i]?.players || null,
-      player2: b2[i]?.players || null,
-      position: 'BNH',
-    })
-  }
-
-  const H2HRow = ({ data, isBench }) => {
-    const p1 = data?.player1
-    const p2 = data?.player2
-    const s1 = p1?.playerScore || 0
-    const s2 = p2?.playerScore || 0
-    const pos = data?.position
-
-    const PlayerSide = ({ player, score, isRight, won }) => {
-      if (!player?.Name && !player?.ShortName) {
-        return (
-          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: isRight ? 'flex-end' : 'flex-start', padding: '6px 0', opacity: 0.3 }}>
-            <span style={{ fontFamily: "'Inter',sans-serif", fontSize: 10, color: 'rgba(255,255,255,0.3)' }}>Empty</span>
-          </div>
-        )
-      }
-      const img = player?.HostedHeadshotNoBackgroundUrl || Player1
-      const nm = player?.Name?.length >= 16 ? player?.ShortName : player?.Name
-
+/* ═══════════════════════════════════════════════════════════════
+   MATCHUP CAROUSEL
+   ═══════════════════════════════════════════════════════════════ */
+const MatchupCarousel = ({ data, selectedIndex, onSelect }) => (
+  <div className='lsc-carousel' role='listbox' aria-label='Matchups'>
+    {data.map((m, i) => {
+      const s1 = Number(m?.scoreOne) || 0
+      const s2 = Number(m?.scoreTwo) || 0
+      const lead1 = s1 > s2
+      const lead2 = s2 > s1
+      const status = matchupStatus(m)
       return (
-        <div
-          onClick={() => setBreakdownPlayer(player)}
-          style={{
-            flex: 1, display: 'flex', alignItems: 'center', gap: 8,
-            flexDirection: isRight ? 'row-reverse' : 'row',
-            cursor: 'pointer', padding: '4px 0',
-            opacity: isBench ? 0.65 : 1,
-          }}
+        <button
+          key={m?._id || i}
+          role='option'
+          aria-selected={selectedIndex === i}
+          className={`lsc-mcard ${selectedIndex === i ? 'is-active' : ''}`}
+          onClick={() => onSelect(i)}
         >
-          <div style={{
-            flexShrink: 0,
-            border: won ? '2px solid rgba(34,197,94,0.5)' : '1px solid rgba(110,105,128,0.15)',
-            borderRadius: '50%',
-          }}>
-            <PlayerAvatar
-              name={nm || '—'}
-              src={player?.HostedHeadshotNoBackgroundUrl}
-              size={28}
-            />
+          <div className='lsc-mcard-status'>
+            {status === 'live' ? (
+              <>
+                <span className='lsc-live-dot' />
+                <span className='lsc-live'>LIVE</span>
+              </>
+            ) : (
+              <span>UPCOMING</span>
+            )}
           </div>
-          <div style={{ flex: 1, textAlign: isRight ? 'right' : 'left', overflow: 'hidden' }}>
-            <div style={{
-              fontFamily: "'Rajdhani',sans-serif", fontSize: 12, fontWeight: 600, color: '#fff',
-              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-            }}>{nm || '—'}</div>
-            <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontSize: 10, color: 'rgba(255,255,255,0.3)' }}>
-              {player?.Team}
+
+          {[
+            { t: m?.opponentOne, s: s1, lead: lead1 },
+            { t: m?.opponentTwo, s: s2, lead: lead2 },
+          ].map((row, ri) => (
+            <div className='lsc-mcard-team' key={ri}>
+              <div
+                className='lsc-logo'
+                style={{ backgroundImage: `url(${row.t?.logo})` }}
+              />
+              <div className='lsc-mcard-meta'>
+                <div className='lsc-mcard-name'>{teamName(row.t)}</div>
+                {teamOwner(row.t) ? (
+                  <div className='lsc-mcard-owner'>{teamOwner(row.t)}</div>
+                ) : (
+                  <div className='lsc-mcard-owner'>—</div>
+                )}
+              </div>
+              <div className={`lsc-mcard-score ${row.lead ? 'lsc-score-lead' : 'lsc-score-dim'}`}>
+                {fmt(row.s)}
+              </div>
             </div>
-          </div>
-          <span style={{
-            fontFamily: "'Barlow Condensed',sans-serif", fontSize: 15, fontWeight: 700, minWidth: 32,
-            textAlign: isRight ? 'left' : 'right',
-            color: won ? '#22C55E' : score > 0 ? '#fff' : 'rgba(255,255,255,0.2)',
-          }}>
-            {score ? score.toFixed(1) : '—'}
-          </span>
-        </div>
-      )
-    }
-
-    return (
-      <div style={{
-        display: 'flex', alignItems: 'center', padding: '6px 16px',
-        borderBottom: '1px solid rgba(110,105,128,0.04)',
-      }}>
-        <PlayerSide player={p1} score={s1} won={s1 > s2} />
-
-        {/* Position Badge */}
-        <div style={{
-          width: 32, height: 32, borderRadius: '50%', flexShrink: 0, margin: '0 6px',
-          background: 'rgba(10,15,26,0.9)', border: `1.5px solid ${isBench ? 'rgba(245,158,11,0.3)' : 'rgba(34,197,94,0.3)'}`,
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        }}>
-          {pos?.split('/').map((p) => (
-            <span key={p} style={{
-              fontFamily: "'Rajdhani',sans-serif", fontSize: 8, fontWeight: 800,
-              color: isBench ? '#F59E0B' : '#22C55E', lineHeight: 1.1,
-            }}>{p}</span>
           ))}
+        </button>
+      )
+    })}
+  </div>
+)
+
+/* ═══════════════════════════════════════════════════════════════
+   MATCHUP HERO — animated scores + progress bar
+   ═══════════════════════════════════════════════════════════════ */
+const MatchupHero = ({ match, nflGames, details }) => {
+  const s1 = Number(match?.scoreOne) || 0
+  const s2 = Number(match?.scoreTwo) || 0
+  const a1 = useCountUp(s1)
+  const a2 = useCountUp(s2)
+  const lead1 = s1 > s2
+  const lead2 = s2 > s1
+  const total = s1 + s2
+  const share1 = total > 0 ? (s1 / total) * 100 : 50
+
+  // YTP (Yet To Play) = starters whose game isn't locked yet (real). PMR (Points
+  // Max Remaining) needs projections, which the API doesn't provide → shown as 0.
+  const hr1 = buildRoster(details, 'player1')
+  const hr2 = buildRoster(details, 'player2')
+  const ytp1 = hr1.starters.filter((p) => !p?.isPlayerLocked).length
+  const ytp2 = hr2.starters.filter((p) => !p?.isPlayerLocked).length
+
+  const liveGames = (nflGames || []).filter((g) => g?.Status === 'InProgress').length
+  const started = matchupStatus(match) === 'live'
+  const t1 = match?.opponentOne
+  const t2 = match?.opponentTwo
+
+  return (
+    <div className='lsc-hero'>
+      <div className='lsc-hero-status'>
+        {started ? (
+          <>
+            <span className='lsc-live-dot' />
+            <span className='lsc-live'>LIVE</span>
+            {liveGames > 0 && <span>· {liveGames} NFL game{liveGames > 1 ? 's' : ''} in progress</span>}
+          </>
+        ) : (
+          <span>MATCHUP · GAMES NOT STARTED</span>
+        )}
+      </div>
+
+      <div className='lsc-hero-body'>
+        <div className='lsc-hero-team'>
+          <div className='lsc-hero-logo' style={{ backgroundImage: `url(${t1?.logo})` }} />
+          <div className='lsc-hero-name'>{teamName(t1)}</div>
+          <div className='lsc-hero-owner'>{teamOwner(t1) || '—'}</div>
+          <div className='lsc-hero-score' style={{ color: lead1 ? 'var(--lsc-green)' : 'var(--lsc-text)' }}>
+            {fmt2(a1)}
+          </div>
+          <div className='lsc-hero-ytp'>YTP: {ytp1} · PMR: 0</div>
         </div>
 
-        <PlayerSide player={p2} score={s2} isRight won={s2 > s1} />
+        <div className='lsc-hero-vs'>VS</div>
+
+        <div className='lsc-hero-team'>
+          <div className='lsc-hero-logo' style={{ backgroundImage: `url(${t2?.logo})` }} />
+          <div className='lsc-hero-name'>{teamName(t2)}</div>
+          <div className='lsc-hero-owner'>{teamOwner(t2) || '—'}</div>
+          <div className='lsc-hero-score' style={{ color: lead2 ? 'var(--lsc-green)' : 'var(--lsc-text)' }}>
+            {fmt2(a2)}
+          </div>
+          <div className='lsc-hero-ytp'>YTP: {ytp2} · PMR: 0</div>
+        </div>
+      </div>
+
+      {started ? (
+        <>
+          <div className='lsc-progress'>
+            <div className='lsc-progress-fill' style={{ width: `${share1}%` }} />
+          </div>
+          <div className='lsc-progress-legend'>
+            <span>{fmt(s1)}</span>
+            <span>{fmt(s2)}</span>
+          </div>
+        </>
+      ) : (
+        <div className='lsc-hero-empty'>
+          Games haven&apos;t started for this matchup yet — check back once kickoff begins.
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Roster extraction helpers (from getGameDetails)
+   ═══════════════════════════════════════════════════════════════ */
+const buildRoster = (details, side) => {
+  const starters = (details?.starters || [])
+    .map((s) => ({ ...(s?.[side] || {}), position: s?.position, _bench: false }))
+    .filter((p) => p?.Name || p?.ShortName)
+  const benchArr = side === 'player1' ? details?.bench1 || [] : details?.bench2 || []
+  const bench = benchArr
+    .map((b) => ({ ...(b?.players || {}), position: 'BNH', _bench: true }))
+    .filter((p) => p?.Name || p?.ShortName)
+  return { starters, bench }
+}
+
+const ptsClass = (score) => {
+  const s = Number(score) || 0
+  if (s > 10) return 'lsc-pts-hot'
+  if (s > 5) return 'lsc-pts-warm'
+  if (s > 0) return ''
+  return 'lsc-pts-cold'
+}
+
+/* NFL game cell — real mapping from player.Team → NFL schedule */
+const NflGameCell = ({ team, nflGameMap }) => {
+  const g = team ? nflGameMap[team] : null
+  if (!g) return <div className='lsc-pgame'>—</div>
+  const opp = g.HomeTeam === team ? `vs ${g.AwayTeam}` : `@ ${g.HomeTeam}`
+  const isLive = g.Status === 'InProgress'
+  const label =
+    isLive ? 'live' : g.Status === 'Final' ? 'final' : g.Status === 'Scheduled' ? 'sched' : (g.Status || '')
+  const cls = isLive ? 'lsc-chip-live' : g.Status === 'Final' ? 'lsc-chip-final' : 'lsc-chip-sched'
+  return (
+    <div className='lsc-pgame'>
+      {opp}
+      <small>
+        <span className={`lsc-chip ${cls}`}>{label}</span>
+      </small>
+    </div>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PLAYER STAT BREAKDOWN (real playerScoreBreakDown; OL-aware)
+   ═══════════════════════════════════════════════════════════════ */
+const PlayerStatBreakdown = ({ player }) => {
+  const breakdown = player?.playerScoreBreakDown || []
+  if (!breakdown || breakdown.length === 0) {
+    return <div className='lsc-note'>Detailed stats unavailable — fantasy points: {fmt2(player?.playerScore)}</div>
+  }
+  const isOL =
+    player?.FantasyPosition === 'OL' ||
+    ['OL', 'G', 'OT', 'C'].includes(player?.Position)
+
+  if (isOL && typeof breakdown[0] === 'object' && breakdown[0] && !breakdown[0].metric) {
+    const rows = Object.entries(breakdown[0]).filter(([k]) => k !== 'playerSnap')
+    return (
+      <div>
+        {rows.map(([metric, units], i) => (
+          <div className='lsc-stat-row' key={i}>
+            <span className='lsc-stat-metric'>{camelToTitle(metric)}</span>
+            <span className='lsc-stat-val'>{String(units)}</span>
+            <span className='lsc-stat-pts' />
+          </div>
+        ))}
       </div>
     )
   }
 
   return (
-    <div style={{
-      background: 'rgba(10,15,26,0.5)', borderRadius: 12,
-      border: '1px solid rgba(110,105,128,0.1)', overflow: 'hidden',
-    }}>
-      {/* H2H Header */}
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '12px 16px',
-        borderBottom: '1px solid rgba(110,105,128,0.1)',
-        background: 'rgba(20,28,45,0.4)',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{
-            width: 24, height: 24, borderRadius: '50%',
-            backgroundImage: `url(${match?.opponentOne?.logo})`,
-            backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat',
-          }} />
-          <span style={{ fontFamily: "'Rajdhani',sans-serif", fontSize: 16, fontWeight: 900, color: lead1 ? '#22C55E' : '#fff' }}>
-            {score1.toFixed(2)}
-          </span>
+    <div>
+      {breakdown.map((b, i) => (
+        <div className='lsc-stat-row' key={i}>
+          <span className='lsc-stat-metric'>{camelToTitle(b?.metric)}</span>
+          <span className='lsc-stat-val'>{b?.units}</span>
+          <span className='lsc-stat-pts'>{b?.total != null ? fmt2(b.total) : '—'}</span>
         </div>
-        <span style={{ fontFamily: "'Rajdhani',sans-serif", fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: 2 }}>
-          HEAD TO HEAD
+      ))}
+    </div>
+  )
+}
+
+/* single expandable player row */
+const PlayerRow = ({ player, nflGameMap, expanded, onToggle }) => {
+  const score = Number(player?.playerScore) || 0
+  return (
+    <>
+      <button
+        className={`lsc-prow ${player?._bench ? 'is-bench' : ''}`}
+        onClick={onToggle}
+        aria-expanded={expanded}
+      >
+        <span className='lsc-pos'>{mapPos(player?.Position) || player?.position || '—'}</span>
+        <span className='lsc-pname'>
+          <PlayerAvatar name={shortName(player)} src={player?.HostedHeadshotNoBackgroundUrl || Player1} size={26} />
+          <span className='lsc-pname-text'>{shortName(player)}</span>
         </span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontFamily: "'Rajdhani',sans-serif", fontSize: 16, fontWeight: 900, color: !lead1 && score1 !== score2 ? '#22C55E' : '#fff' }}>
-            {score2.toFixed(2)}
-          </span>
-          <div style={{
-            width: 24, height: 24, borderRadius: '50%',
-            backgroundImage: `url(${match?.opponentTwo?.logo})`,
-            backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat',
-          }} />
+        <NflGameCell team={player?.Team} nflGameMap={nflGameMap} />
+        <span className={`lsc-ppts ${ptsClass(score)}`}>{score > 0 ? fmt(score) : '—'}</span>
+      </button>
+      {expanded && (
+        <div className='lsc-expand'>
+          <PlayerStatBreakdown player={player} />
+          {player?._bench && score > 0 && (
+            <div className='lsc-note'>Bench counts at 25%: {fmt2(score * 0.25)}</div>
+          )}
         </div>
+      )}
+    </>
+  )
+}
+
+/* one team's roster table */
+const RosterTable = ({ team, score, roster, nflGameMap }) => {
+  const [openKey, setOpenKey] = useState(null)
+  const all = [...roster.starters, ...roster.bench]
+  const firstBenchIdx = roster.starters.length
+
+  return (
+    <div className='lsc-roster'>
+      <div className='lsc-roster-head'>
+        <div className='lsc-logo' style={{ backgroundImage: `url(${team?.logo})` }} />
+        <div className='lsc-roster-title'>{teamName(team)}</div>
+        <div className='lsc-roster-total'>{fmt2(score)}</div>
+      </div>
+      <div className='lsc-cols'>
+        <span>Pos</span>
+        <span>Player</span>
+        <span>NFL Game</span>
+        <span>Pts</span>
+      </div>
+      {all.length === 0 ? (
+        <div className='lsc-note' style={{ padding: '14px' }}>No roster data available.</div>
+      ) : (
+        all.map((p, i) => (
+          <React.Fragment key={i}>
+            {i === firstBenchIdx && roster.bench.length > 0 && (
+              <div className='lsc-bench-sep'>Bench · 25% value</div>
+            )}
+            <PlayerRow
+              player={p}
+              nflGameMap={nflGameMap}
+              expanded={openKey === i}
+              onToggle={() => setOpenKey(openKey === i ? null : i)}
+            />
+          </React.Fragment>
+        ))
+      )}
+    </div>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BOX SCORE TAB — two side-by-side roster tables
+   ═══════════════════════════════════════════════════════════════ */
+const BoxScoreTab = ({ match, details, nflGameMap }) => {
+  const r1 = buildRoster(details, 'player1')
+  const r2 = buildRoster(details, 'player2')
+  if (!details) {
+    return (
+      <EmptyState icon='📋' title='Box score unavailable' text='Roster details could not be loaded for this matchup.' />
+    )
+  }
+  return (
+    <div className='lsc-box-grid lsc-fade'>
+      <RosterTable team={match?.opponentOne} score={match?.scoreOne} roster={r1} nflGameMap={nflGameMap} />
+      <RosterTable team={match?.opponentTwo} score={match?.scoreTwo} roster={r2} nflGameMap={nflGameMap} />
+    </div>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PLAYER BREAKDOWN TAB — expand any player for real stat splits
+   ═══════════════════════════════════════════════════════════════ */
+const PlayerBreakdownTab = ({ match, details }) => {
+  const [openKey, setOpenKey] = useState(null)
+  if (!details) {
+    return <EmptyState icon='📊' title='Breakdown unavailable' text='Player stats could not be loaded for this matchup.' />
+  }
+  const teams = [
+    { team: match?.opponentOne, roster: buildRoster(details, 'player1'), side: 'a' },
+    { team: match?.opponentTwo, roster: buildRoster(details, 'player2'), side: 'b' },
+  ]
+  return (
+    <div className='lsc-fade'>
+      {teams.map((tm) => {
+        const all = [...tm.roster.starters, ...tm.roster.bench]
+        return (
+          <div key={tm.side}>
+            <div className='lsc-pb-team-label'>{teamName(tm.team)}</div>
+            <div className='lsc-pb-list'>
+              {all.length === 0 ? (
+                <div className='lsc-note' style={{ padding: 14 }}>No players available.</div>
+              ) : (
+                all.map((p, i) => {
+                  const key = `${tm.side}-${i}`
+                  const score = Number(p?.playerScore) || 0
+                  return (
+                    <React.Fragment key={key}>
+                      <button
+                        className={`lsc-prow ${p?._bench ? 'is-bench' : ''}`}
+                        onClick={() => setOpenKey(openKey === key ? null : key)}
+                        aria-expanded={openKey === key}
+                      >
+                        <span className='lsc-pos'>{mapPos(p?.Position) || p?.position || '—'}</span>
+                        <span className='lsc-pname'>
+                          <PlayerAvatar name={shortName(p)} src={p?.HostedHeadshotNoBackgroundUrl || Player1} size={26} />
+                          <span className='lsc-pname-text'>{shortName(p)}</span>
+                        </span>
+                        <span className='lsc-pgame'>{p?.Team || '—'}</span>
+                        <span className={`lsc-ppts ${ptsClass(score)}`}>{score > 0 ? fmt(score) : '—'}</span>
+                      </button>
+                      {openKey === key && (
+                        <div className='lsc-expand'>
+                          <PlayerStatBreakdown player={p} />
+                        </div>
+                      )}
+                    </React.Fragment>
+                  )
+                })
+              )}
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCORING LOG TAB — no scoring-event source exists (honest empty)
+   ═══════════════════════════════════════════════════════════════ */
+const ScoringLogTab = () => (
+  <EmptyState
+    icon='🧾'
+    title='No scoring feed available'
+    text="A chronological scoring-event feed isn't provided by the scoring engine for this league. Player point totals update live in the Box Score tab."
+  />
+)
+
+/* ═══════════════════════════════════════════════════════════════
+   SIDEBAR
+   ═══════════════════════════════════════════════════════════════ */
+const MatchupSidebar = ({ match, details, onViewFull }) => {
+  const s1 = Number(match?.scoreOne) || 0
+  const s2 = Number(match?.scoreTwo) || 0
+  const lead1 = s1 > s2
+  const tied = s1 === s2
+  const margin = Math.abs(s1 - s2)
+  const leader = lead1 ? match?.opponentOne : match?.opponentTwo
+
+  const r1 = buildRoster(details, 'player1')
+  const r2 = buildRoster(details, 'player2')
+
+  // real: starters locked (game started) vs remaining, via isPlayerLocked
+  const lockedCount = (roster) => roster.starters.filter((p) => p?.isPlayerLocked).length
+  const startersLocked1 = lockedCount(r1)
+  const startersLocked2 = lockedCount(r2)
+  const remaining1 = r1.starters.length - startersLocked1
+  const remaining2 = r2.starters.length - startersLocked2
+
+  // top performers across the matchup (real playerScore)
+  const tagged = [
+    ...r1.starters.map((p) => ({ ...p, _team: teamName(match?.opponentOne) })),
+    ...r1.bench.map((p) => ({ ...p, _team: teamName(match?.opponentOne) })),
+    ...r2.starters.map((p) => ({ ...p, _team: teamName(match?.opponentTwo) })),
+    ...r2.bench.map((p) => ({ ...p, _team: teamName(match?.opponentTwo) })),
+  ]
+    .filter((p) => (Number(p?.playerScore) || 0) > 0)
+    .sort((a, b) => (Number(b?.playerScore) || 0) - (Number(a?.playerScore) || 0))
+    .slice(0, 5)
+
+  const hasRoster = r1.starters.length > 0 || r2.starters.length > 0
+
+  return (
+    <div className='lsc-side'>
+      {/* Matchup Summary */}
+      <div className='lsc-panel'>
+        <div className='lsc-panel-title'>Matchup Summary</div>
+        {tied ? (
+          <div className='lsc-tied'>Tied at {fmt2(s1)}</div>
+        ) : (
+          <div className='lsc-winner'>
+            <div className='lsc-logo' style={{ backgroundImage: `url(${leader?.logo})` }} />
+            <div className='lsc-winner-name'>{teamName(leader)}</div>
+            <div className='lsc-winner-margin'>+{fmt2(margin)}</div>
+          </div>
+        )}
       </div>
 
-      {/* Starter Rows */}
-      {starters.map((s, i) => (
-        <H2HRow key={`s-${i}`} data={s} />
-      ))}
-
-      {/* Bench Section */}
-      {benchRows.length > 0 && (
-        <>
-          <div style={{
-            padding: '6px 16px',
-            background: 'rgba(245,158,11,0.04)',
-            borderTop: '1px solid rgba(110,105,128,0.08)',
-            borderBottom: '1px solid rgba(110,105,128,0.06)',
-          }}>
-            <span style={{ fontFamily: "'Rajdhani',sans-serif", fontSize: 10, fontWeight: 700, color: '#F59E0B', textTransform: 'uppercase', letterSpacing: 1 }}>
-              BENCH (25%)
-            </span>
+      {/* Quick Comparison — only real, derivable metrics */}
+      {hasRoster && (
+        <div className='lsc-panel'>
+          <div className='lsc-panel-title'>Quick Comparison</div>
+          <div className='lsc-cmp-row'>
+            <span className='lsc-cmp-num l'>{startersLocked1}/{r1.starters.length}</span>
+            <span className='lsc-cmp-label'>Starters Played</span>
+            <span className='lsc-cmp-num r'>{startersLocked2}/{r2.starters.length}</span>
           </div>
-          {benchRows.map((b, i) => (
-            <H2HRow key={`b-${i}`} data={b} isBench />
-          ))}
-        </>
+          <div className='lsc-cmp-row'>
+            <span className='lsc-cmp-num l'>{remaining1}</span>
+            <span className='lsc-cmp-label'>Players Left</span>
+            <span className='lsc-cmp-num r'>{remaining2}</span>
+          </div>
+          <div className='lsc-cmp-row'>
+            <span className='lsc-cmp-num l'>{remaining1}</span>
+            <span className='lsc-cmp-label'>YTP</span>
+            <span className='lsc-cmp-num r'>{remaining2}</span>
+          </div>
+          <div className='lsc-cmp-row'>
+            <span className='lsc-cmp-num l'>0</span>
+            <span className='lsc-cmp-label' title='Points Max Remaining — needs projections (unavailable)'>PMR</span>
+            <span className='lsc-cmp-num r'>0</span>
+          </div>
+        </div>
       )}
 
-      {/* Breakdown Modal */}
-      <BreakdownModal player={breakdownPlayer} onClose={() => setBreakdownPlayer(null)} />
-    </div>
-  )
-}
-
-/* ═══════════════════════════════════════════════════════════
-   BREAKDOWN MODAL, Full stat-by-stat popup for a player
-   ═══════════════════════════════════════════════════════════ */
-const BreakdownModal = ({ player, onClose }) => {
-  if (!player) return null
-
-  const breakdown = player?.playerScoreBreakDown || []
-  const isOL = player?.FantasyPosition === 'OL' || player?.Position === 'OL' || player?.Position === 'G' || player?.Position === 'OT' || player?.Position === 'C'
-
-  const camelToTitle = (str) => {
-    if (!str) return ''
-    return str.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, (s) => s.toUpperCase())
-  }
-
-  // OL data is shaped differently (object instead of array)
-  const dataSource = isOL && breakdown.length > 0 && typeof breakdown[0] === 'object' && !breakdown[0].metric
-    ? Object.entries(breakdown[0])
-        .filter(([k]) => k !== 'playerSnap')
-        .map(([metric, units], i) => ({ key: i, metric: camelToTitle(metric), units }))
-    : breakdown.map((b, i) => ({ ...b, key: i, metric: camelToTitle(b.metric) }))
-
-  const columns = isOL
-    ? [
-        { title: 'Stat', dataIndex: 'metric', key: 'metric' },
-        { title: 'Value', dataIndex: 'units', key: 'units' },
-      ]
-    : [
-        { title: 'Stat', dataIndex: 'metric', key: 'metric' },
-        { title: 'Units', dataIndex: 'units', key: 'units' },
-        { title: 'Pts/Unit', dataIndex: 'pointsPerUnit', key: 'ppu', render: (v) => v?.toFixed(4) },
-        { title: 'Points', dataIndex: 'total', key: 'total', render: (v) => <span style={{ color: v > 0 ? '#22C55E' : v < 0 ? '#EF4444' : '#fff', fontWeight: 700 }}>{v?.toFixed(2)}</span> },
-      ]
-
-  const img = player?.HostedHeadshotNoBackgroundUrl || Player1
-
-  return (
-    <Modal
-      open={!!player}
-      onCancel={onClose}
-      footer={null}
-      centered
-      width={540}
-      className='view_breakdown_modal'
-      closable
-    >
-      <div style={{ padding: '16px 0 0' }}>
-        {/* Player Header */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-          <div style={{ border: '2px solid rgba(34,197,94,0.3)', borderRadius: '50%' }}>
-            <PlayerAvatar
-              name={player?.Name || player?.ShortName || '—'}
-              src={player?.HostedHeadshotNoBackgroundUrl}
-              size={48}
-            />
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontFamily: "'Rajdhani',sans-serif", fontSize: 18, fontWeight: 800, color: '#fff' }}>
-              {player?.Name || player?.ShortName}
-            </div>
-            <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>
-              {mapPos(player?.Position)}, {player?.Team}
-            </div>
-          </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontFamily: "'Rajdhani',sans-serif", fontSize: 28, fontWeight: 900, color: '#22C55E' }}>
-              {player?.playerScore?.toFixed(2) || '0.00'}
-            </div>
-            <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontSize: 10, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>
-              Total Points
-            </div>
-          </div>
-        </div>
-
-        {/* Stat Table */}
-        <Table
-          columns={columns}
-          dataSource={dataSource}
-          pagination={false}
-          size='small'
-          style={{ background: 'transparent' }}
-        />
-      </div>
-    </Modal>
-  )
-}
-
-/* ═══════════════════════════════════════════════════════════
-   CAROUSEL (kept from original)
-   ═══════════════════════════════════════════════════════════ */
-const CarouselComponent = ({ data }) => {
-  const [currentSlide, setCurrentSlide] = useState(0)
-  const responsive = {
-    superLargeDesktop: { breakpoint: { max: 4000, min: 1500 }, items: 7 },
-    desktop1: { breakpoint: { max: 1600, min: 1400 }, items: 5 },
-    desktop2: { breakpoint: { max: 1400, min: 1300 }, items: 4 },
-    desktop3: { breakpoint: { max: 1300, min: 1024 }, items: 3 },
-    tablet: { breakpoint: { max: 1024, min: 600 }, items: 2 },
-    mobile: { breakpoint: { max: 600, min: 0 }, items: 1 },
-  }
-
-  let carousel
-
-  const getSchedule = (status, obj) => {
-    if (obj?.AwayTeam === 'BYE') return `${obj?.HomeTeam} BYE`
-    if (status === 'Final') return 'FINAL'
-    if (status === 'Scheduled') return 'SCHED'
-    return `${status}`
-  }
-
-  return (
-    <div style={{ display: 'flex', alignItems: 'stretch', gap: 12 }}>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <Carousel
-          responsive={responsive}
-          arrows={false}
-          ref={(el) => (carousel = el)}
-          beforeChange={(s) => setCurrentSlide(s)}
-          infinite
-        >
-          {data?.map((v, i) => {
-            const isLive = v?.Status === 'InProgress'
-            return (
-              <div key={i} className='ls-ticker-card'>
-                <div className='ls-ticker-row'>
-                  <p className={`ls-ticker-team ${isLive ? 'ls-ticker-live' : ''}`}>{v?.HomeTeam}</p>
-                  <p className={`ls-ticker-score ${isLive ? 'ls-ticker-live' : ''}`}>
-                    {v?.HomeScore > 0 ? v?.HomeScore : '-'}
-                  </p>
+      {/* Top Performers */}
+      {tagged.length > 0 && (
+        <div className='lsc-panel'>
+          <div className='lsc-panel-title'>Top Performers</div>
+          {tagged.map((p, i) => (
+            <div className='lsc-top-row' key={i}>
+              <span className='lsc-top-rank'>{i + 1}</span>
+              <PlayerAvatar name={shortName(p)} src={p?.HostedHeadshotNoBackgroundUrl || Player1} size={30} />
+              <div className='lsc-top-meta'>
+                <div className='lsc-top-name'>{shortName(p)}</div>
+                <div className='lsc-top-sub'>
+                  {mapPos(p?.Position)} · {p?.Team || '—'} · {p?._team}
                 </div>
-                <div className='ls-ticker-row'>
-                  <p className={`ls-ticker-team ${isLive ? 'ls-ticker-live' : ''}`}>{v?.AwayTeam}</p>
-                  <p className={`ls-ticker-score ${isLive ? 'ls-ticker-live' : ''}`}>
-                    {v?.AwayScore > 0 ? v?.AwayScore : '-'}
-                  </p>
-                </div>
-                <p className={`ls-ticker-status ${isLive ? 'ls-ticker-live' : ''}`}>
-                  {getSchedule(v?.Status, v)}
-                </p>
               </div>
-            )
-          })}
-        </Carousel>
-      </div>
-      <div className='ls-ticker-arrow'>
-        <div className='ls-arrow-btn' onClick={() => carousel?.next()}>
-          <TiChevronRight color='#22C55E' size={24} />
+              <span className='lsc-top-pts'>{fmt(p?.playerScore)}</span>
+            </div>
+          ))}
         </div>
-      </div>
+      )}
+
+      <button className='lsc-full-btn lsc-tap' onClick={onViewFull}>
+        View Full Box Score
+      </button>
     </div>
   )
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   EMPTY STATE
+   ═══════════════════════════════════════════════════════════════ */
+const EmptyState = ({ icon, title, text, image }) => (
+  <div className='lsc-empty lsc-fade'>
+    {image ? (
+      <img
+        src={image}
+        alt=''
+        style={{ display: 'block', width: '100%', maxWidth: 460, margin: '0 auto 8px', mixBlendMode: 'screen' }}
+        onError={(e) => { e.currentTarget.style.display = 'none' }}
+      />
+    ) : (
+      <div className='lsc-empty-icon'>{icon}</div>
+    )}
+    <p className='lsc-empty-title'>{title}</p>
+    <p className='lsc-empty-text'>{text}</p>
+  </div>
+)
 
 export default LeagueScore

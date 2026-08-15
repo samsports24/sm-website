@@ -35,7 +35,7 @@
   font-size: 22px;
   font-weight: 800;
   margin: 0;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -332,7 +332,7 @@
   flex-shrink: 0;
 }
 
-.nfl-predictor-lb-row:nth-child(1) .nfl-predictor-lb-rank { background: #D4AF37; color: #000; }
+.nfl-predictor-lb-row:nth-child(1) .nfl-predictor-lb-rank { background: #16a34a; color: #000; }
 .nfl-predictor-lb-row:nth-child(2) .nfl-predictor-lb-rank { background: #C0C0C0; color: #000; }
 .nfl-predictor-lb-row:nth-child(3) .nfl-predictor-lb-rank { background: #CD7F32; color: #000; }
 
@@ -371,4 +371,13 @@
     padding: 8px 10px;
     gap: 6px;
   }
+}
+
+/* ── Confirmed pick: dim the un-picked side so the selection reads as locked in ── */
+.nfl-predictor-game-card.confirmed {
+  border-color: rgba(34, 197, 94, 0.55);
+}
+.nfl-predictor-game-card.confirmed .nfl-predictor-team:not(.selected) {
+  opacity: 0.4;
+  filter: grayscale(0.5);
 }

@@ -38,6 +38,7 @@ function setClientCache(key, data) {
 export const AF_LEAGUES = [
   // International
   { id: 10, name: 'Friendlies', emoji: '🤝', country: 'World', type: 'intl' },
+  { id: 667, name: 'Club Friendlies', emoji: '🤝', country: 'World', type: 'intl' },
   { id: 5, name: 'UEFA Nations League', emoji: '🇪🇺', country: 'World', type: 'intl' },
   { id: 32, name: 'WC Qualifiers Europe', emoji: '🌍', country: 'World', type: 'intl' },
   { id: 34, name: 'WC Qualifiers South America', emoji: '🌎', country: 'World', type: 'intl' },
@@ -58,6 +59,8 @@ export const AF_LEAGUES = [
   { id: 94, name: 'Primeira Liga', emoji: '🇵🇹', country: 'Portugal', type: 'euro-club' },
   { id: 88, name: 'Eredivisie', emoji: '🇳🇱', country: 'Netherlands', type: 'euro-club' },
   { id: 45, name: 'FA Cup', emoji: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', country: 'England', type: 'euro-club' },
+  // Summer-start season (Jul–May, labelled by start year)
+  { id: 106, name: 'Ekstraklasa', emoji: '🇵🇱', country: 'Poland', type: 'summer' },
   // Calendar-year leagues
   { id: 253, name: 'MLS', emoji: '🇺🇸', country: 'USA', type: 'calendar' },
   { id: 71, name: 'Serie A', emoji: '🇧🇷', country: 'Brazil', type: 'calendar' },
@@ -72,6 +75,10 @@ const getSeasonYear = (league) => {
 
   if (league.type === 'calendar' || league.type === 'intl') {
     return year
+  }
+  // summer: Jul-May season, labelled by start year → Jan-Jun = previous year, Jul-Dec = current year
+  if (league.type === 'summer') {
+    return month <= 6 ? year - 1 : year
   }
   // euro-club: Aug-May season → Jan-Jul = previous year started, Aug-Dec = current year
   return month <= 7 ? year - 1 : year
@@ -113,6 +120,8 @@ const normalizeFixture = (f) => {
   return {
     id: `af-${f.fixture?.id}`,
     _afId: f.fixture?.id,
+    _leagueName: f.league?.name || '',
+    _leagueId: f.league?.id,
     date: f.fixture?.date,
     competitions: [
       {
@@ -177,10 +186,10 @@ export const useSoccerFixtures = (selectedDate = undefined, leagues = AF_LEAGUES
     const buildLeagueParam = (lgList) =>
       lgList.map(lg => `${lg.id}:${getSeasonYear(lg)}`).join(',')
 
-    // Helper: fetch a batch of leagues from proxy, return per-league results
-    const fetchBatch = async (lgList) => {
+    // Helper: fetch a batch of leagues from proxy for a given date.
+    const fetchBatch = async (lgList, ds) => {
       const leagueParam = buildLeagueParam(lgList)
-      const cacheKey = `fix_${dateStr}_${leagueParam}`
+      const cacheKey = `fix_${ds}_${leagueParam}`
       const cached = getCached(cacheKey)
 
       let leagueResults
@@ -188,7 +197,7 @@ export const useSoccerFixtures = (selectedDate = undefined, leagues = AF_LEAGUES
         leagueResults = cached.leagues || []
       } else {
         try {
-          const res = await fetch(`${PROXY_BASE}/fixtures-by-date?date=${dateStr}&leagues=${encodeURIComponent(leagueParam)}`)
+          const res = await fetch(`${PROXY_BASE}/fixtures-by-date?date=${ds}&leagues=${encodeURIComponent(leagueParam)}`)
           if (!res.ok) throw new Error(`HTTP ${res.status}`)
           const json = await res.json()
           leagueResults = json.data?.leagues || []
@@ -199,20 +208,15 @@ export const useSoccerFixtures = (selectedDate = undefined, leagues = AF_LEAGUES
         }
       }
 
-      // Map proxy results back to per-league format
       const byId = {}
       for (const lr of leagueResults) {
         byId[lr.leagueId] = lr.fixtures || []
       }
-
-      return lgList.map(lg => ({
-        lg,
-        events: (byId[lg.id] || []).map(normalizeFixture),
-      }))
+      return lgList.map(lg => ({ lg, events: (byId[lg.id] || []).map(normalizeFixture) }))
     }
 
     // ── PHASE 1: Priority leagues (1 batch call) ──
-    const priorityResults = await fetchBatch(priorityLeagues)
+    const priorityResults = await fetchBatch(priorityLeagues, dateStr)
     const allResults = [...priorityResults]
 
     const pTotal = allResults.reduce((s, r) => s + r.events.length, 0)
@@ -221,12 +225,34 @@ export const useSoccerFixtures = (selectedDate = undefined, leagues = AF_LEAGUES
 
     // ── PHASE 2: Remaining leagues (1 batch call) ──
     if (otherLeagues.length > 0) {
-      const otherResults = await fetchBatch(otherLeagues)
+      const otherResults = await fetchBatch(otherLeagues, dateStr)
       allResults.push(...otherResults)
 
       const total = allResults.reduce((s, r) => s + r.events.length, 0)
       const active = allResults.filter(r => r.events.length > 0).length
       setData({ leagues: [...allResults], loading: false, totalMatches: total, activeLeagues: active })
+    }
+
+    // ── FALLBACK: no fixtures today (e.g. pre-season gap) and the user hasn't
+    // picked a specific date → scan the next 10 days and show the soonest
+    // upcoming fixtures so the panel is never empty between seasons. ──
+    const todayTotal = allResults.reduce((s, r) => s + r.events.length, 0)
+    if (!selectedDate && todayTotal === 0) {
+      const base = new Date()
+      for (let i = 1; i <= 10; i++) {
+        const nd = new Date(base)
+        nd.setDate(base.getDate() + i)
+        const ds = `${nd.getFullYear()}-${String(nd.getMonth() + 1).padStart(2, '0')}-${String(nd.getDate()).padStart(2, '0')}`
+        const pr = await fetchBatch(priorityLeagues, ds)
+        const or = otherLeagues.length ? await fetchBatch(otherLeagues, ds) : []
+        const combined = [...pr, ...or]
+        const t = combined.reduce((s, r) => s + r.events.length, 0)
+        if (t > 0) {
+          const a = combined.filter(r => r.events.length > 0).length
+          setData({ leagues: combined, loading: false, totalMatches: t, activeLeagues: a, upcomingDate: ds })
+          break
+        }
+      }
     }
   }, [selectedDate, leagues, disabled])
 
@@ -243,11 +269,12 @@ export const useSoccerFixtures = (selectedDate = undefined, leagues = AF_LEAGUES
 /* ═══════════════════════════════════════════════════════════
    Hook: useLiveFixtures  (v4 — proxied)
    ═══════════════════════════════════════════════════════════ */
-export const useLiveFixtures = () => {
+export const useLiveFixtures = (enabled = true) => {
   const [fixtures, setFixtures] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!enabled) return
     const fetchLive = async () => {
       try {
         const cached = getCached('live_fixtures')
@@ -272,7 +299,7 @@ export const useLiveFixtures = () => {
     fetchLive()
     const interval = setInterval(fetchLive, 60000)
     return () => clearInterval(interval)
-  }, [])
+  }, [enabled])
 
   return { fixtures, loading }
 }

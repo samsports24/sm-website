@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { notification } from 'antd'
@@ -122,7 +122,7 @@ const StepPickSports = ({ selected, onToggle, onNext }) => (
 )
 
 /* ── Step 2: Set Up Each Sport ── */
-const StepSetupSport = ({ sport, onCreateSuccess, onJoinLeague, onSkip }) => {
+const StepSetupSport = ({ sport, userName, onCreateSuccess, onJoinLeague, onSkip }) => {
   // If the user arrived via a league invite, open the join view with the
   // invited league pre-filled so they never have to fetch a code from email
   // (fallback in case the auto-join at finish doesn't complete).
@@ -135,57 +135,137 @@ const StepSetupSport = ({ sport, onCreateSuccess, onJoinLeague, onSkip }) => {
 
   const sportInfo = SPORTS.find(s => s.key === sport)
 
+  // Decorative/status only — no new data fetch.
+  const email = typeof window !== 'undefined' ? (localStorage.getItem('email') || '') : ''
+  const initials = (userName || 'M')
+    .trim()
+    .split(/\s+/)
+    .map((w) => w[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase() || 'M'
+  // Real chips from the SPORTS entry so this works for any sport (Soccer, etc.).
+  const recChips = (sportInfo.features || []).slice(0, 3)
+
+  const WHY = [
+    { icon: '🏆', title: 'Competitive Leagues', desc: 'Join thousands of serious fantasy players' },
+    { icon: '📊', title: 'Advanced Tools', desc: 'Powerful analytics and insights to dominate your league' },
+    { icon: '⚡', title: 'Live Scoring', desc: 'Real-time updates and alerts keep you in the game' },
+    { icon: '🔒', title: 'Secure & Fair', desc: 'Your data is protected with industry-standard security' },
+  ]
+  const PROGRESS = ['Setup', 'League', 'Draft', 'Members', 'Ready']
+
   return (
-    <div className="ob-step-content">
-      <div className="ob-setup-header" style={{ '--sport-color': sportInfo.color }}>
-        <span className="ob-setup-emoji">{sportInfo.emoji}</span>
-        <div>
-          <h2 className="ob-setup-title">{sportInfo.name} Setup</h2>
-          <p className="ob-setup-tag">{sportInfo.tagline}</p>
+    <div className="ob-setup-page" style={{ '--sport-color': sportInfo.color }}>
+      {/* ── Top status bar ── */}
+      <div className="ob-topbar">
+        <div className="ob-brand">
+          <img src="/samsports-logo.svg" alt="" className="ob-brand-icon" />
+          <span>SAMSPORTS</span>
+        </div>
+        <div className="ob-verify">
+          <div className="ob-verify-status">
+            <span className="ob-verify-check">✓</span>
+            Verification Code: <span className="ob-verify-ok">Verified</span>
+          </div>
+          {email && <div className="ob-verify-email">{email}</div>}
+        </div>
+        <div className="ob-topbar-right">
+          <span className="ob-league-pill">🏆 Fantasy A.Football League</span>
+          <span className="ob-avatar">{initials}</span>
         </div>
       </div>
 
-      {!mode && (
-        <div className="ob-setup-options">
-          {/* Browse & Join — primary action for new users */}
-          <JoinLeagueModal
-            sport={sport}
-            frontEndUrl={sportInfo.frontEndUrl}
-            button={
-              <button className="ob-option-card ob-option-card--featured">
-                <span className="ob-option-icon">🔍</span>
-                <div>
-                  <div className="ob-option-title">Browse & Join a League</div>
-                  <div className="ob-option-desc">Find open leagues and start playing right away</div>
+      {/* ── Heading ── */}
+      <div className="ob-setup-heading">
+        <h1 className="ob-setup-h1">
+          LET&apos;S GET YOUR LEAGUE <span className="ob-accent">SET UP</span>
+        </h1>
+        <p className="ob-setup-sub">
+          Follow these steps to create your league and start your fantasy journey.
+        </p>
+      </div>
+
+      {/* ── 5-step progress bar ── */}
+      <div className="ob-progress">
+        {PROGRESS.map((label, i) => (
+          <div key={label} className={`ob-progress-step ${i === 0 ? 'active' : ''}`}>
+            <span className="ob-progress-circle">{i + 1}</span>
+            <span className="ob-progress-label">{label}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Two-column layout ── */}
+      <div className="ob-setup-layout">
+        <div className="ob-setup-main">
+          {!mode && (
+            <div className="ob-setup-options">
+              {/* Featured RECOMMENDED card → primary action = Create a League */}
+              <button
+                className="ob-rec-card"
+                onClick={() => setCreateModalOpen(true)}
+                style={{ '--sport-color': sportInfo.color }}
+              >
+                <span className="ob-rec-badge">RECOMMENDED</span>
+                <div className="ob-rec-body">
+                  <span className="ob-rec-icon">{sportInfo.emoji}</span>
+                  <div className="ob-rec-text">
+                    <div className="ob-rec-title">{sportInfo.name} Setup</div>
+                    <div className="ob-rec-sub">{sportInfo.tagline}</div>
+                    <div className="ob-rec-chips">
+                      {recChips.map((c) => (
+                        <span key={c} className="ob-rec-chip">{c}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <span className="ob-option-chevron">›</span>
                 </div>
               </button>
-            }
-          />
-          <button className="ob-option-card" onClick={() => setCreateModalOpen(true)}>
-            <span className="ob-option-icon">🏟️</span>
-            <div>
-              <div className="ob-option-title">Create a League</div>
-              <div className="ob-option-desc">Start your own league and invite friends</div>
-            </div>
-          </button>
-          <button className="ob-option-card" onClick={() => setMode('join')}>
-            <span className="ob-option-icon">🤝</span>
-            <div>
-              <div className="ob-option-title">Join with League ID</div>
-              <div className="ob-option-desc">Got an invite code? Enter it here</div>
-            </div>
-          </button>
-          <button className="ob-option-card ob-option-card--skip" onClick={() => onSkip(sport)}>
-            <span className="ob-option-icon">⏭️</span>
-            <div>
-              <div className="ob-option-title">Skip for Now</div>
-              <div className="ob-option-desc">Set up later from the homepage</div>
-            </div>
-          </button>
-        </div>
-      )}
 
-      {mode === 'join' && (
+              {/* Browse & Join — keeps the JoinLeagueModal wrapper */}
+              <JoinLeagueModal
+                sport={sport}
+                frontEndUrl={sportInfo.frontEndUrl}
+                button={
+                  <button className="ob-option-card ob-option-card--featured">
+                    <span className="ob-option-icon">🔍</span>
+                    <div className="ob-option-text">
+                      <div className="ob-option-title">Browse & Join a League</div>
+                      <div className="ob-option-desc">Find open leagues and start playing right away</div>
+                    </div>
+                    <span className="ob-option-chevron">›</span>
+                  </button>
+                }
+              />
+              <button className="ob-option-card" onClick={() => setCreateModalOpen(true)}>
+                <span className="ob-option-icon">🏟️</span>
+                <div className="ob-option-text">
+                  <div className="ob-option-title">Create a League</div>
+                  <div className="ob-option-desc">Start your own league and invite friends</div>
+                </div>
+                <span className="ob-option-chevron">›</span>
+              </button>
+              <button className="ob-option-card" onClick={() => setMode('join')}>
+                <span className="ob-option-icon">✉️</span>
+                <div className="ob-option-text">
+                  <div className="ob-option-title">Join with League ID</div>
+                  <div className="ob-option-desc">Got an invite code? Enter it here</div>
+                </div>
+                <span className="ob-option-chevron">›</span>
+              </button>
+              <button className="ob-option-card ob-option-card--skip" onClick={() => onSkip(sport)}>
+                <span className="ob-option-icon">⏭️</span>
+                <div className="ob-option-text">
+                  <div className="ob-option-title">Skip for Now</div>
+                  <div className="ob-option-desc">Set up later from the homepage</div>
+                </div>
+                <span className="ob-option-chevron">›</span>
+              </button>
+            </div>
+          )}
+
+          {mode === 'join' && (
         <div className="ob-form">
           <div className="ob-form-group">
             <label>Team Name</label>
@@ -220,7 +300,34 @@ const StepSetupSport = ({ sport, onCreateSuccess, onJoinLeague, onSkip }) => {
             </button>
           </div>
         </div>
-      )}
+          )}
+        </div>
+
+        {/* ── Why-Play rail ── */}
+        <aside className="ob-setup-aside">
+          <div className="ob-why">
+            <div className="ob-why-title">WHY PLAY ON SAMSPORTS?</div>
+            {WHY.map((item) => (
+              <div key={item.title} className="ob-why-item">
+                <span className="ob-why-icon">{item.icon}</span>
+                <div>
+                  <div className="ob-why-item-title">{item.title}</div>
+                  <div className="ob-why-item-desc">{item.desc}</div>
+                </div>
+              </div>
+            ))}
+            <div className="ob-why-box">
+              <div className="ob-why-box-title">🛡️ Your data is protected</div>
+              <div className="ob-why-box-desc">
+                We use industry-standard security to keep your information safe.
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      {/* ── Footer ── */}
+      <div className="ob-footer">🔒 Protected by reCAPTCHA · Privacy · Terms</div>
 
       {/* Uses sport-specific Create League wizard */}
       {sport === 'eleven_fc' ? (
@@ -246,37 +353,247 @@ const StepSetupSport = ({ sport, onCreateSuccess, onJoinLeague, onSkip }) => {
   )
 }
 
-/* ── Step 3: All Done ── */
-const StepDone = ({ selectedSports, setupResults, onFinish }) => (
-  <div className="ob-step-content ob-done">
-    <div className="ob-done-icon">🎉</div>
-    <h1 className="ob-title">You&apos;re All Set!</h1>
-    <p className="ob-subtitle">Your front office is ready. Here&apos;s what&apos;s set up:</p>
+/* ── Step 3: All Done — "You're All Set!" (redesigned) ── */
+const humanizeDraftOrder = (mode) => {
+  switch (mode) {
+    case 'inverse_standings': return 'Linear (Worst First)'
+    case 'standings': return 'Linear (Best First)'
+    case 'random': return 'Random'
+    case 'snake': return 'Snake'
+    default:
+      return mode
+        ? String(mode).replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+        : '—'
+  }
+}
 
-    <div className="ob-done-summary">
-      {selectedSports.map((key) => {
-        const sport = SPORTS.find(s => s.key === key)
-        const result = setupResults[key]
-        return (
-          <div key={key} className="ob-done-row" style={{ '--sport-color': sport.color }}>
-            <span className="ob-done-emoji">{sport.emoji}</span>
-            <span className="ob-done-name">{sport.name}</span>
-            <span className="ob-done-status">
-              {result?.action === 'created' && `Created: ${result.leagueName}`}
-              {result?.action === 'joined' && `Joined league`}
-              {result?.action === 'skipped' && 'Browse leagues later'}
-              {!result && 'Ready to go'}
-            </span>
+const humanizeDraftType = (type) => {
+  if (!type) return 'Draft'
+  const t = String(type).toLowerCase()
+  if (t === 'live') return 'Live Draft'
+  if (t === 'auto') return 'Auto Draft'
+  return String(type).replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) + ' Draft'
+}
+
+const humanizeLeagueType = (league) => {
+  if (league?.leagueMode === 'full') return 'Full Roster'
+  if (league?.leagueMode) {
+    return String(league.leagueMode).replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+  }
+  if (league?.leagueType) {
+    return String(league.leagueType).replace(/\b\w/g, (c) => c.toUpperCase())
+  }
+  return 'League'
+}
+
+const StepDone = ({ selectedSports, setupResults, onFinish }) => {
+  const navigate = useNavigate()
+  const currentLeague = useSelector(state => state?.league?.currentLeague)
+
+  const sportKey = selectedSports && selectedSports[0]
+  const sport = SPORTS.find(s => s.key === sportKey) || SPORTS[0]
+
+  const leagueName = currentLeague?.name || 'Your League'
+  const numberOfTeams = currentLeague?.numberOfTeams
+  const teamsFilled = `${currentLeague?.teams?.length || 1} of ${currentLeague?.numberOfTeams || '?'}`
+  const draftTimer = `${currentLeague?.draftPickTimer || 120} Seconds`
+  const draftOrder = humanizeDraftOrder(currentLeague?.draftPositionMode)
+  const draftType = humanizeDraftType(currentLeague?.draftType)
+  const leagueTypeBadge = humanizeLeagueType(currentLeague)
+  const leagueCode = currentLeague?.leagueId || '—'
+
+  const email = typeof window !== 'undefined' ? (localStorage.getItem('email') || '') : ''
+  const initials = (leagueName || 'L')
+    .trim()
+    .split(/\s+/)
+    .map((w) => w[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase() || 'L'
+
+  const copyCode = () => {
+    if (!currentLeague?.leagueId) return
+    try {
+      navigator.clipboard.writeText(currentLeague.leagueId)
+      notification.success({ message: 'Copied', duration: 2 })
+    } catch (err) {
+      notification.error({ message: 'Could not copy code', duration: 2 })
+    }
+  }
+
+  const PROGRESS = ['Setup', 'League', 'Draft', 'Members', 'Ready']
+
+  const STATS = [
+    { icon: '🏆', label: 'League Type', value: leagueTypeBadge },
+    { icon: '👥', label: 'Teams', value: teamsFilled },
+    { icon: '🎯', label: 'Draft Type', value: draftType },
+    { icon: '⏱️', label: 'Draft Timer', value: draftTimer },
+    { icon: '🔀', label: 'Order', value: draftOrder },
+  ]
+
+  const NEXT = [
+    {
+      icon: '✉️',
+      title: 'Invite Your League',
+      desc: 'Invite friends and fill your league',
+      sub: `${teamsFilled} teams filled`,
+      onClick: () => navigate('/hub'),
+    },
+    {
+      icon: '⚙️',
+      title: 'Set League Rules',
+      desc: 'Configure scoring, roster settings, and league rules',
+      onClick: () => navigate('/dashboard'),
+    },
+    {
+      icon: '📋',
+      title: 'Prepare for Draft',
+      desc: 'Review draft order and league settings before draft day',
+      onClick: () => navigate('/dashboard'),
+    },
+    {
+      icon: '🚀',
+      title: 'Start Draft',
+      desc: "When everyone's ready, start the draft and have fun!",
+      onClick: () => navigate('/dashboard'),
+    },
+  ]
+
+  return (
+    <div className="ob-setup-page ob-done-page" style={{ '--sport-color': sport.color }}>
+      {/* ── Top status bar ── */}
+      <div className="ob-topbar">
+        <div className="ob-brand">
+          <img src="/samsports-logo.svg" alt="" className="ob-brand-icon" />
+          <span>SAMSPORTS</span>
+        </div>
+        <div className="ob-verify">
+          <div className="ob-verify-status">
+            <span className="ob-verify-check">✓</span>
+            Verification Code: <span className="ob-verify-ok">Verified</span>
           </div>
-        )
-      })}
-    </div>
+          {email && <div className="ob-verify-email">{email}</div>}
+        </div>
+        <div className="ob-topbar-right">
+          <span className="ob-league-pill">🏆 {leagueName}</span>
+          <span className="ob-avatar">{initials}</span>
+        </div>
+      </div>
 
-    <button className="ob-btn-primary ob-btn-launch" onClick={onFinish}>
-      Launch Front Office
-    </button>
-  </div>
-)
+      {/* ── 5-step progress bar (all complete, Ready active) ── */}
+      <div className="ob-progress">
+        {PROGRESS.map((label, i) => {
+          const isReady = i === PROGRESS.length - 1
+          return (
+            <div
+              key={label}
+              className={`ob-progress-step done ${isReady ? 'active' : ''}`}
+            >
+              <span className="ob-progress-circle">{isReady ? '5' : '✓'}</span>
+              <span className="ob-progress-label">{label}</span>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* ── Center hero ── */}
+      <div className="ob-done-hero">
+        <div className="ob-done-icon">🎉</div>
+        <h1 className="ob-done-h1">
+          You&apos;re <span className="ob-accent">All Set!</span>
+        </h1>
+        <p className="ob-setup-sub">Your front office is ready. Here&apos;s what&apos;s set up:</p>
+      </div>
+
+      {/* ── Two-column layout ── */}
+      <div className="ob-done-layout">
+        <div className="ob-done-main">
+          {/* League summary card */}
+          <div className="ob-summary-card">
+            <div className="ob-summary-head">
+              <span className="ob-summary-emoji">{sport.emoji}</span>
+              <div className="ob-summary-titles">
+                <div className="ob-summary-name">
+                  {sport.name}
+                  <span className="ob-summary-badge">{leagueTypeBadge}</span>
+                </div>
+                <div className="ob-summary-sub">{leagueName}</div>
+              </div>
+              {numberOfTeams != null && (
+                <span className="ob-summary-teams">{numberOfTeams} Teams</span>
+              )}
+            </div>
+
+            <div className="ob-summary-divider" />
+
+            <div className="ob-summary-stats">
+              {STATS.map((s) => (
+                <div key={s.label} className="ob-stat">
+                  <span className="ob-stat-icon">{s.icon}</span>
+                  <span className="ob-stat-label">{s.label}</span>
+                  <span className="ob-stat-value">{s.value}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="ob-summary-foot">
+              🗓 Draft will begin when the commish starts the draft.
+            </div>
+          </div>
+
+          <button className="ob-launch-btn" onClick={onFinish}>
+            Launch Front Office →
+          </button>
+          <button className="ob-dash-link" onClick={() => navigate('/dashboard')}>
+            Go to League Dashboard
+          </button>
+        </div>
+
+        {/* ── Right rail ── */}
+        <aside className="ob-done-aside">
+          {/* What's next */}
+          <div className="ob-next">
+            <div className="ob-next-title">WHAT&apos;S NEXT?</div>
+            {NEXT.map((row) => (
+              <button key={row.title} className="ob-next-row" onClick={row.onClick}>
+                <span className="ob-next-icon">{row.icon}</span>
+                <div className="ob-next-text">
+                  <div className="ob-next-row-title">{row.title}</div>
+                  <div className="ob-next-row-desc">{row.desc}</div>
+                  {row.sub && <div className="ob-next-row-sub">{row.sub}</div>}
+                </div>
+                <span className="ob-next-chevron">›</span>
+              </button>
+            ))}
+          </div>
+
+          {/* League code */}
+          <div className="ob-code-card">
+            <div className="ob-code-title">LEAGUE CODE</div>
+            <div className="ob-code-row">
+              <span className="ob-code-value">{leagueCode}</span>
+              <button className="ob-code-copy" onClick={copyCode} title="Copy code">📋</button>
+            </div>
+            <div className="ob-code-hint">Share this code to invite others</div>
+          </div>
+
+          {/* Need help */}
+          <div className="ob-help-card">
+            <div className="ob-help-title">NEED HELP?</div>
+            <button className="ob-help-row" onClick={() => navigate('/hub')}>
+              <span className="ob-help-icon">💬</span>
+              <span className="ob-help-text">Visit our Help Center</span>
+              <span className="ob-next-chevron">›</span>
+            </button>
+          </div>
+        </aside>
+      </div>
+
+      {/* ── Footer ── */}
+      <div className="ob-footer">🔒 Protected by reCAPTCHA · Privacy · Terms</div>
+    </div>
+  )
+}
 
 /* ── Main Wizard ── */
 const OnboardingWizard = () => {
@@ -292,10 +609,30 @@ const OnboardingWizard = () => {
     }
   }, [userTeam, navigate])
 
+  // The sport the user ALREADY chose during signup (SelectGame stored it as
+  // `selectedGame`). Map it to an onboarding sport key so we don't ask again.
+  const SIGNUP_TO_SPORT = { football: 'football', eleven_fc: 'eleven_fc', soccer: 'eleven_fc' }
+  const rawSignupSport = typeof window !== 'undefined' ? (localStorage.getItem('selectedGame') || '') : ''
+  const mappedSignupSport = SIGNUP_TO_SPORT[rawSignupSport] || rawSignupSport
+  const signupSport = SPORTS.some((s) => s.key === mappedSignupSport && s.enabled) ? mappedSignupSport : ''
+
   const [step, setStep] = useState(0) // 0 = pick sports, 1..N = setup each, last = done
-  const [selectedSports, setSelectedSports] = useState([])
+  const [selectedSports, setSelectedSports] = useState(signupSport ? [signupSport] : [])
   const [currentSportIndex, setCurrentSportIndex] = useState(0)
   const [setupResults, setSetupResults] = useState({}) // { sportKey: { action, ... } }
+
+  // Skip the redundant "Pick Your Sports" step when the user already chose a
+  // sport at signup — go straight to setting up that sport.
+  const autoSkippedRef = useRef(false)
+  useEffect(() => {
+    if (autoSkippedRef.current) return
+    if (step === 0 && signupSport) {
+      autoSkippedRef.current = true
+      localStorage.setItem('selectedSports', JSON.stringify([signupSport]))
+      setCurrentSportIndex(0)
+      setStep(1)
+    }
+  }, [step, signupSport])
 
   const totalSteps = selectedSports.length + 2 // pick + N sports + done
 
@@ -335,6 +672,14 @@ const OnboardingWizard = () => {
       const email = localStorage.getItem('email')
       const token = localStorage.getItem('token')
 
+      // An INVITED user carries the league's Mongo _id (24 hex chars) from the
+      // invite token, not the SAM-XXXX join code. The code-based /league/join
+      // resolves by code (findOne({leagueId})) and would return "No League Found"
+      // for an _id — so invited joins must go to /league/join-from-platform,
+      // which resolves by _id (findById). Manual code entry keeps using /league/join.
+      const isInvite = /^[a-f0-9]{24}$/i.test(String(data.leagueId || ''))
+      const joinPath = isInvite ? '/league/join-from-platform' : '/league/join'
+
       // Build FormData, backend uses global multer middleware
       const formData = new FormData()
       formData.append('leagueId', data.leagueId)
@@ -342,7 +687,7 @@ const OnboardingWizard = () => {
       if (email) formData.append('email', email)
 
       const headers = token ? { Authorization: `Bearer ${token}` } : {}
-      const res = await axios.post(`${server.url}/league/join`, formData, { headers, withCredentials: true })
+      const res = await axios.post(`${server.url}${joinPath}`, formData, { headers, withCredentials: true })
 
       // Reset stale league state and refresh Redux
       store.dispatch({ type: 'RESET_LEAGUE_DATA' })
@@ -356,6 +701,16 @@ const OnboardingWizard = () => {
       // Refresh user state so header/sidebar see the new team & league
       await store.dispatch(getUser())
       await getUserLeagues()
+
+      // Invited managers just needed to create their account + team — drop them
+      // straight into the league they were invited to (their new dashboard).
+      if (isInvite) {
+        localStorage.removeItem('pendingInviteLeague')
+        localStorage.removeItem('pendingInviteSport')
+        notification.success({ message: 'Joined league!', duration: 2 })
+        window.location.href = '/dashboard'
+        return
+      }
 
       setSetupResults(prev => ({
         ...prev,
@@ -402,20 +757,27 @@ const OnboardingWizard = () => {
     navigate('/hub')
   }
 
+  const isSetupStep = step > 0 && step <= selectedSports.length
+  const isDoneStep = step === selectedSports.length + 1
+  // Both the setup and done steps render their own top status bar + progress,
+  // so we hide the generic header/dot-indicator and go full-width for them.
+  const isFullBleed = isSetupStep || isDoneStep
+
   return (
     <div className="ob-page">
-      {/* Header */}
-      <div className="ob-header">
-        <div className="ob-logo">
-          <img src="/samsports-logo.svg" alt="" className="ob-logo-icon" />
-          <span>SAMSPORTS</span>
+      {!isFullBleed && (
+        <div className="ob-header">
+          <div className="ob-logo">
+            <img src="/samsports-logo.svg" alt="" className="ob-logo-icon" />
+            <span>SAMSPORTS</span>
+          </div>
+          <div className="ob-welcome">Welcome, {userName}</div>
         </div>
-        <div className="ob-welcome">Welcome, {userName}</div>
-      </div>
+      )}
 
-      <StepIndicator current={step} total={totalSteps || 3} />
+      {!isFullBleed && <StepIndicator current={step} total={totalSteps || 3} />}
 
-      <div className="ob-body">
+      <div className={`ob-body ${isFullBleed ? 'ob-body--wide' : ''}`}>
         {step === 0 && (
           <StepPickSports
             selected={selectedSports}
@@ -424,10 +786,11 @@ const OnboardingWizard = () => {
           />
         )}
 
-        {step > 0 && step <= selectedSports.length && (
+        {isSetupStep && (
           <StepSetupSport
             key={selectedSports[currentSportIndex]}
             sport={selectedSports[currentSportIndex]}
+            userName={userName}
             onCreateSuccess={handleCreateSuccess}
             onJoinLeague={handleJoinLeague}
             onSkip={handleSkipSport}

@@ -1,85 +1,297 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Spin, Empty } from 'antd'
-import { StarOutlined } from '@ant-design/icons'
+import { Spin, notification } from 'antd'
+import {
+  TeamOutlined,
+  TrophyOutlined,
+  StarFilled,
+} from '@ant-design/icons'
 import { privateAPI, attachToken } from '../../config/constants'
+import rank1Img from '../../assets/rivals/rank-1.png'
+import rank2Img from '../../assets/rivals/rank-2.png'
+import rank3Img from '../../assets/rivals/rank-3.png'
+import lorTrophy from '../../assets/rivals/lor-trophy.png'
 import './nfl-rivals.css'
-import { DIVISIONS as DIVISION_NAMES, DIVISION_COLORS } from './rivalsConfig'
+import { DIVISIONS } from './rivalsConfig'
+
+const LIMIT = 50
 
 const Leaderboard = () => {
   const token = useSelector(s => s.user.token)
-  const user = useSelector(s => s.user.user)
+  const user = useSelector(s => s.user.userDetails || s.user.user)
+  const userId = user?._id || user?.id
   const [loading, setLoading] = useState(true)
   const [entries, setEntries] = useState([])
+  const [total, setTotal] = useState(0)
+  const [pages, setPages] = useState(1)
+  const [division, setDivision] = useState('')
+  const [page, setPage] = useState(1)
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        attachToken()
-        const { data } = await privateAPI.get('/nfl-rivals/leaderboard')
-        setEntries(data.data?.leaderboard || data.data?.entries || [])
-      } catch (err) { /* ignore */ }
-      finally { setLoading(false) }
+  useEffect(() => { loadLeaderboard() }, [token, division, page]) // eslint-disable-line
+
+  const loadLeaderboard = async () => {
+    try {
+      setLoading(true)
+      attachToken()
+      const params = new URLSearchParams({ page, limit: LIMIT })
+      if (division) params.append('division', division)
+      const { data } = await privateAPI.get(`/nfl-rivals/leaderboard?${params}`)
+      setEntries(data.data?.entries || [])
+      setTotal(data.data?.total || 0)
+      setPages(data.data?.pages || 1)
+    } catch (err) {
+      notification.error({ message: 'Failed to load leaderboard' })
+    } finally {
+      setLoading(false)
     }
-    load()
-  }, [token])
+  }
+
+  // ── helpers ──
+  const managerName = (e) =>
+    e?.user?.userName || e?.user?.username || e?.teamName || 'Unknown'
+
+  const monogram = (name) => {
+    const m = (name || '').match(/[a-zA-Z0-9]/)
+    return m ? m[0].toUpperCase() : '?'
+  }
+
+  const isMe = (e) => userId && String(e?.user?._id) === String(userId)
+
+  const rankOf = (i) => (page - 1) * LIMIT + i + 1
+
+  // Current user's row + absolute rank
+  const meIndex = entries.findIndex(isMe)
+  const myEntry = meIndex >= 0 ? entries[meIndex] : null
+  const myRank = meIndex >= 0 ? (page - 1) * LIMIT + meIndex + 1 : null
+
+  const from = total === 0 ? 0 : (page - 1) * LIMIT + 1
+  const to = (page - 1) * LIMIT + entries.length
+
+  // Season overview (from me row)
+  let seasonOverview = null
+  if (myEntry) {
+    const cs = myEntry.careerStats || {}
+    const w = cs.totalWins || 0
+    const d = cs.totalDraws || 0
+    const l = cs.totalLosses || 0
+    const games = w + d + l
+    seasonOverview = {
+      seasons: cs.totalSeasons || 0,
+      winRate: games ? Math.round((w / games) * 100) : 0,
+      w, d, l,
+    }
+  }
+
+  const rankImg = (rank) =>
+    rank === 1 ? rank1Img : rank === 2 ? rank2Img : rank3Img
 
   if (loading) return <div className="nflr-loading"><Spin size="large" /></div>
 
-  const userId = user ? (user._id || user.id) : null
-
   return (
-    <div className="nflr-page">
-      <h2 className="nflr-page-title"><StarOutlined /> Global Leaderboard</h2>
-      {entries.length > 0 ? (
-        <div style={{
-          background: 'rgba(20,28,45,0.6)', border: '1px solid rgba(110,105,128,0.15)',
-          borderRadius: 16, padding: 20,
-        }}>
-          <div style={{
-            display: 'flex', padding: '8px 12px', fontSize: 11, fontWeight: 700,
-            color: 'rgba(255,255,255,0.25)', textTransform: 'uppercase',
-            fontFamily: "'Rajdhani', sans-serif",
-          }}>
-            <span style={{ width: 40 }}>#</span>
-            <span style={{ flex: 1 }}>Manager</span>
-            <span style={{ width: 120 }}>Division</span>
-            <span style={{ width: 60, textAlign: 'center' }}>W</span>
-            <span style={{ width: 60, textAlign: 'center' }}>L</span>
-            <span style={{ width: 80, textAlign: 'right' }}>Career Pts</span>
-          </div>
-          {entries.map((e, idx) => {
-            const entryUserId = e.user ? (e.user._id || e.user) : null
-            const isMe = userId && entryUserId && String(userId) === String(entryUserId)
-            const div = e.division || 4
-            const divColor = DIVISION_COLORS[div] || '#8b5cf6'
-            return (
-              <div key={idx} style={{
-                display: 'flex', alignItems: 'center', padding: '10px 12px',
-                borderRadius: 10, marginBottom: 4,
-                background: isMe ? 'rgba(167,139,250,0.1)' : 'rgba(255,255,255,0.02)',
-                border: isMe ? '1px solid rgba(167,139,250,0.25)' : '1px solid transparent',
-              }}>
-                <span style={{ width: 40, fontWeight: 700, color: idx < 3 ? '#ffd700' : '#A78BFA' }}>{idx + 1}</span>
-                <span style={{ flex: 1, fontWeight: 500, color: '#e2e8f0' }}>
-                  {(e.user && (e.user.userName || e.user.username)) || e.teamName || 'Manager'}
-                  {isMe && <span style={{ color: '#A78BFA', fontSize: 11, marginLeft: 6 }}>(You)</span>}
-                </span>
-                <span style={{ width: 120, fontSize: 12, color: divColor, fontWeight: 600 }}>
-                  {DIVISION_NAMES[div] || `Div ${div}`}
-                </span>
-                <span style={{ width: 60, textAlign: 'center', color: '#4ade80' }}>{e.careerStats?.wins || e.wins || 0}</span>
-                <span style={{ width: 60, textAlign: 'center', color: '#ef4444' }}>{e.careerStats?.losses || e.losses || 0}</span>
-                <span style={{ width: 80, textAlign: 'right', fontWeight: 700, color: '#A78BFA' }}>
-                  {(e.careerStats?.totalPoints || e.totalPoints || 0).toFixed(1)}
-                </span>
+    <div className="nflr-page rvz-lead-page">
+      <div className="rvz-lead-wrap">
+        {/* ── Header ── */}
+        <div className="rvz-lead-header">
+          <div className="rvz-lead-head-left">
+            <span className="rvz-lead-head-icon"><TeamOutlined /></span>
+            <div>
+              <h2 className="rvz-lead-title">Leaderboard</h2>
+              <div className="rvz-lead-subtitle">
+                See how you rank against the best managers across all divisions.
               </div>
-            )
-          })}
+            </div>
+          </div>
+          <select
+            className="rvz-lead-select"
+            value={division}
+            onChange={e => { setDivision(e.target.value); setPage(1) }}
+          >
+            <option value="">All Divisions</option>
+            {Object.entries(DIVISIONS).map(([k, v]) => (
+              <option key={k} value={k}>{v}</option>
+            ))}
+          </select>
         </div>
-      ) : (
-        <Empty description="Leaderboard will populate once the season starts" image={Empty.PRESENTED_IMAGE_SIMPLE} />
-      )}
+
+        {/* ── Main table ── */}
+        <div className="rvz-lead-panel">
+          {entries.length === 0 ? (
+            <div className="rvz-lead-empty">No managers found for this division yet.</div>
+          ) : (
+            <>
+              <div className="rvz-lead-scroll">
+                <div className="rvz-lead-table">
+                  <div className="rvz-lead-trow rvz-lead-thead">
+                    <span className="rvz-lead-c-rank">#</span>
+                    <span className="rvz-lead-c-mgr">Manager</span>
+                    <span className="rvz-lead-c-div">Division</span>
+                    <span className="rvz-lead-c-num">Seasons</span>
+                    <span className="rvz-lead-c-wdl">W / D / L</span>
+                    <span className="rvz-lead-c-pts">Career Points</span>
+                    <span className="rvz-lead-c-tro">Trophies</span>
+                  </div>
+
+                  {entries.map((e, i) => {
+                    const rank = rankOf(i)
+                    const name = managerName(e)
+                    const me = isMe(e)
+                    const cs = e.careerStats || {}
+                    const divName = e.divisionName || DIVISIONS[e.division] || '-'
+                    return (
+                      <div
+                        key={e._id || e.user?._id || i}
+                        className={`rvz-lead-trow${me ? ' rvz-lead-trow--me' : ''}`}
+                      >
+                        <span className="rvz-lead-c-rank">
+                          {rank <= 3 ? (
+                            <img
+                              src={rankImg(rank)}
+                              alt={`Rank ${rank}`}
+                              className="rvz-lead-rank-img"
+                            />
+                          ) : (
+                            <span className="rvz-lead-rank-n">{rank}</span>
+                          )}
+                        </span>
+                        <span className="rvz-lead-c-mgr">
+                          <span className={`rvz-lead-mono${me ? ' rvz-lead-mono--me' : ''}`}>
+                            {monogram(name)}
+                          </span>
+                          <span className="rvz-lead-mgr-name">
+                            {name}
+                            {me && <StarFilled className="rvz-lead-me-star" />}
+                          </span>
+                        </span>
+                        <span className="rvz-lead-c-div">
+                          <span className="rvz-lead-divpill">★ {divName}</span>
+                        </span>
+                        <span className="rvz-lead-c-num">{cs.totalSeasons || 0}</span>
+                        <span className="rvz-lead-c-wdl">
+                          <span className="rvz-lead-w">{cs.totalWins || 0}</span>
+                          <span className="rvz-lead-sep"> / </span>
+                          <span className="rvz-lead-d">{cs.totalDraws || 0}</span>
+                          <span className="rvz-lead-sep"> / </span>
+                          <span className="rvz-lead-l">{cs.totalLosses || 0}</span>
+                        </span>
+                        <span className="rvz-lead-c-pts">
+                          {(cs.totalPointsAllTime || 0).toFixed(1)}
+                        </span>
+                        <span className="rvz-lead-c-tro">
+                          <span className="rvz-lead-tropill">
+                            <TrophyOutlined /> {e.trophies?.length || 0}
+                          </span>
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="rvz-lead-foot">
+                <span className="rvz-lead-showing">
+                  Showing {from} to {to} of {total} managers
+                </span>
+                <div className="rvz-lead-pager">
+                  <button
+                    className="rvz-lead-pgbtn"
+                    disabled={page <= 1}
+                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                  >
+                    ‹
+                  </button>
+                  <span className="rvz-lead-pgnum">{page}</span>
+                  <button
+                    className="rvz-lead-pgbtn"
+                    disabled={page >= pages}
+                    onClick={() => setPage(p => Math.min(pages, p + 1))}
+                  >
+                    ›
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* ── Bottom cards ── */}
+        <div className="rvz-lead-cards">
+          {/* Your rank */}
+          <div className="rvz-lead-card">
+            <div className="rvz-lead-card-label">YOUR RANK</div>
+            {myRank >= 1 && myRank <= 3
+              ? <img src={rankImg(myRank)} alt="" className="rvz-lead-rank-badge" />
+              : <div className="rvz-lead-card-badge">🏅</div>}
+            <div className="rvz-lead-card-big">{myRank != null ? myRank : '—'}</div>
+            <div className="rvz-lead-card-sub">of {total} managers</div>
+          </div>
+
+          {/* Top 3 podium */}
+          <div className="rvz-lead-card">
+            <div className="rvz-lead-card-label">TOP 3 PODIUM</div>
+            <div className="rvz-lead-podium">
+              {[1, 0, 2].map((idx) => {
+                const e = entries[idx]
+                if (!e) return <div key={idx} className="rvz-lead-pod-slot" />
+                const rank = idx + 1
+                return (
+                  <div key={idx} className={`rvz-lead-pod-slot rvz-lead-pod-slot--${rank}`}>
+                    <img
+                      src={rankImg(rank)}
+                      alt={`Rank ${rank}`}
+                      className="rvz-lead-podium-img"
+                    />
+                    <span className="rvz-lead-pod-name">{managerName(e)}</span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Season overview */}
+          <div className="rvz-lead-card">
+            <div className="rvz-lead-card-label">SEASON OVERVIEW</div>
+            {seasonOverview ? (
+              <div className="rvz-lead-overview">
+                <div className="rvz-lead-ov-row">
+                  <span className="rvz-lead-ov-label">Seasons</span>
+                  <span className="rvz-lead-ov-val">{seasonOverview.seasons}</span>
+                </div>
+                <div className="rvz-lead-ov-row">
+                  <span className="rvz-lead-ov-label">Win Rate</span>
+                  <span className="rvz-lead-ov-val rvz-lead-w">{seasonOverview.winRate}%</span>
+                </div>
+                <div className="rvz-lead-ov-wdl">
+                  <span className="rvz-lead-w">W {seasonOverview.w}</span>
+                  <span className="rvz-lead-d">D {seasonOverview.d}</span>
+                  <span className="rvz-lead-l">L {seasonOverview.l}</span>
+                </div>
+              </div>
+            ) : (
+              <div className="rvz-lead-overview">
+                <div className="rvz-lead-ov-row">
+                  <span className="rvz-lead-ov-label">Seasons</span>
+                  <span className="rvz-lead-ov-val">—</span>
+                </div>
+                <div className="rvz-lead-ov-row">
+                  <span className="rvz-lead-ov-label">Win Rate</span>
+                  <span className="rvz-lead-ov-val">—</span>
+                </div>
+                <div className="rvz-lead-ov-wdl rvz-lead-muted">W — D — L —</div>
+              </div>
+            )}
+          </div>
+
+          {/* Trophy case */}
+          <div className="rvz-lead-card">
+            <img src={lorTrophy} alt="" className="rvz-lead-trophy-img" />
+            <div className="rvz-lead-card-label">TROPHY CASE</div>
+            <div className="rvz-lead-card-big">{myEntry?.trophies?.length || 0}</div>
+            <div className="rvz-lead-card-sub">Total Trophies</div>
+            <div className="rvz-lead-card-note">Keep competing to unlock more</div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

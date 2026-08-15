@@ -41,7 +41,12 @@ const LiveTicker = ({ tickerItems = [] }) => {
         {liveCount > 0 && <span className="ls-live-count">{liveCount}</span>}
       </div>
       <div className="ls-ticker-track-wrap">
-        <div className="ls-ticker-track">
+        {/* Duration scales with the number of items so the scroll stays a calm,
+            readable pace regardless of how many games are on the ticker. */}
+        <div
+          className="ls-ticker-track"
+          style={{ animationDuration: `${Math.max(90, displayItems.length * 9)}s` }}
+        >
           {/* Render twice for infinite scroll */}
           {[...displayItems, ...displayItems].map((item, i) => (
             item.type === 'divider' ? (

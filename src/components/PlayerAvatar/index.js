@@ -76,7 +76,23 @@ const PlayerAvatar = ({
   // Reset error state when src changes
   useEffect(() => { setImgError(false) }, [src])
 
-  const showImage = imagesEnabled && src && !imgError
+  // A placeholder is not a photo.
+  //
+  // The players sync used to invent a headshot URL from a player's id whenever
+  // the provider had none. It resolves — 200 OK, a grey silhouette reading
+  // "image not available". So `src` is truthy, the image loads, onError never
+  // fires, and this component's whole reason for existing (draw his initials
+  // when there's no picture) could never trigger.
+  //
+  // The backend strips these now, but this component is the last line of defence
+  // and several endpoints still hand it a raw field. If it's a silhouette, treat
+  // it as no photo — because that is exactly what it is.
+  const isPlaceholder =
+    typeof src === 'string' &&
+    (/^https?:\/\/media\.api-sports\.io\/american-football\/players\/\d+\.png/i.test(src) ||
+      /(placeholder|no[-_]?image|not[-_]?available|silhouette)/i.test(src))
+
+  const showImage = imagesEnabled && src && !isPlaceholder && !imgError
 
   const containerStyle = {
     width: size,

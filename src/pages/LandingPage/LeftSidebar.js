@@ -1,6 +1,20 @@
 import React from 'react'
+import rivalsPromo from '../../assets/rivals-promo.png'
 
-const LeftSidebar = ({ headlines = [], onViewAllNews, onArticleClick }) => (
+const LeftSidebar = ({ headlines = [], onViewAllNews, onArticleClick, ad }) => {
+  const handleClick = (article) => (e) => {
+    e.preventDefault()
+    if (onArticleClick) {
+      onArticleClick(article)
+    } else if (article.links?.web?.href) {
+      window.open(article.links.web.href, '_blank', 'noopener,noreferrer')
+    }
+  }
+
+  const featured = headlines[0]
+  const rest = headlines.slice(1, 5)
+
+  return (
   <aside className="ls-left-sidebar">
     {/* Headlines Card */}
     <div className="ls-lsb-card">
@@ -9,18 +23,49 @@ const LeftSidebar = ({ headlines = [], onViewAllNews, onArticleClick }) => (
         <span className="ls-lsb-hd-link" onClick={onViewAllNews}>VIEW ALL</span>
       </div>
       <div className="ls-headlines-list">
-        {headlines.slice(0, 10).map((article, i) => (
+        {/* Featured story — large image + AI summary */}
+        {featured && (
+          <a
+            href={featured.links?.web?.href || '#'}
+            onClick={handleClick(featured)}
+            className="ls-hl-featured"
+          >
+            <div className="ls-hl-feat-img-wrap">
+              {featured.images?.[0]?.url ? (
+                <img
+                  src={featured.images[0].url}
+                  alt=""
+                  className="ls-hl-feat-img"
+                  onError={(e) => { e.target.style.display = 'none' }}
+                />
+              ) : (
+                <div className="ls-hl-feat-img-ph">{featured._icon || '📰'}</div>
+              )}
+              <div className="ls-hl-feat-img-overlay" />
+              <span className="ls-hl-feat-tag">
+                <span className="ls-hl-feat-tag-dot" />SAM AI
+              </span>
+            </div>
+            <div className="ls-hl-feat-body">
+              <div className="ls-hl-feat-title">{featured.headline || featured.title}</div>
+              {featured.description && (
+                <div className="ls-hl-feat-summary">{featured.description}</div>
+              )}
+              <div className="ls-hl-meta ls-hl-feat-meta">
+                {featured.source && <span>{featured.source}</span>}
+                {featured.source && <span className="ls-hl-meta-dot">&middot;</span>}
+                <span>{featured._timeAgo}</span>
+              </div>
+            </div>
+          </a>
+        )}
+
+        {/* Four smaller stories */}
+        {rest.map((article, i) => (
           <a
             key={i}
             href={article.links?.web?.href || '#'}
-            onClick={(e) => {
-              e.preventDefault();
-              if (onArticleClick) {
-                onArticleClick(article);
-              } else if (article.links?.web?.href) {
-                window.open(article.links.web.href, '_blank', 'noopener,noreferrer');
-              }
-            }}
+            onClick={handleClick(article)}
             className="ls-hl-item"
             style={{ cursor: 'pointer' }}
           >
@@ -51,22 +96,18 @@ const LeftSidebar = ({ headlines = [], onViewAllNews, onArticleClick }) => (
       </div>
     </div>
 
-    {/* SAM RIVALS Promo */}
-    <div className="ls-lsb-ad" onClick={() => window.location.href='/select-game'}>
-      <div className="ls-lsb-ad-glow" />
-      <div className="ls-lsb-ad-shimmer" />
-      <div className="ls-lsb-ad-inner">
-        <span className="ls-lsb-ad-badge">NEW</span>
-        <div className="ls-lsb-ad-title">SAM <span className="ls-lsb-ad-hl">RIVALS</span></div>
-        <div className="ls-lsb-ad-sub">Climb divisions &middot; H2H Matchups &middot; Earn SamPoints</div>
-        <div className="ls-lsb-ad-pills">
-          <span className="ls-lsb-ad-pill active">Soccer</span>
-          <span className="ls-lsb-ad-pill active" style={{background: 'rgba(124,58,237,0.2)', borderColor: 'rgba(124,58,237,0.4)', color: '#A78BFA'}}>A.Football</span>
-        </div>
-        <a href="/select-game" className="ls-lsb-ad-btn" onClick={e => e.stopPropagation()}>Enter Rivals</a>
+    {/* Advert — admin-configured ad if present, otherwise the SAM Rivals promo */}
+    {ad && ad.imageUrl ? (
+      <div className="ls-lsb-ad ls-lsb-ad--img" onClick={() => { if (ad.linkUrl) window.location.href = ad.linkUrl }} role="button" aria-label="Advertisement">
+        <img src={ad.imageUrl} alt="Advertisement" className="ls-lsb-ad-img" />
       </div>
-    </div>
+    ) : (
+      <div className="ls-lsb-ad ls-lsb-ad--img" onClick={() => window.location.href='/select-game'} role="button" aria-label="Enter SAM Rivals">
+        <img src={rivalsPromo} alt="SAM Rivals — Enter Rivals" className="ls-lsb-ad-img" />
+      </div>
+    )}
   </aside>
-)
+  )
+}
 
 export default LeftSidebar

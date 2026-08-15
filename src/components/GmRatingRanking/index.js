@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { getGmRatings } from '../../redux'
 import { Tooltip } from 'antd'
+import TeamLogo from '../TeamLogo'
 import './gmRatingRanking.css'
 
 const GmRatingRanking = () => {
@@ -96,16 +97,14 @@ const GmRatingRanking = () => {
 
               {/* Team Info */}
               <div className='gmr-team'>
-                {r.teamLogo ? (
-                  <img src={r.teamLogo} className='gmr-logo' alt='' />
-                ) : (
-                  <div
-                    className='gmr-logo-ph'
-                    style={{ background: r.teamColor || '#1A2332' }}
-                  >
-                    {(r.teamName || '?').charAt(0)}
-                  </div>
-                )}
+                <TeamLogo
+                  src={r.teamLogo}
+                  name={r.teamName}
+                  teamColor={r.teamColor}
+                  size={28}
+                  round={false}
+                  className='gmr-logo'
+                />
                 <div className='gmr-team-info'>
                   <span className='gmr-team-name'>{r.teamAbbr || r.teamName}</span>
                   <span className='gmr-gm-name'>{r.gmName}</span>

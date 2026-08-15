@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Header from '../../components/Header'
 import { IoMdArrowDropdown } from 'react-icons/io'
-import { Button, Select, Spin, Input, notification } from 'antd'
+import { Button, Select, Input, notification, Modal } from 'antd'
 import sampointslogo from '../../assets/samcoinlogo.png'
 import {
   ArrowUpOutlined,
@@ -23,42 +23,30 @@ import {
   getstadium,
   setMystadium,
 } from '../../redux/actions/stadium'
-import Loader from '../../components/Loader'
 import StadiumModal from '../../components/modal/StadiumModal'
 import StadiumImage from '../../components/StadiumImage'
 import { isValidStadiumImage, extractLevelNumber } from '../../utils/stadiumImageUtils'
 import { privateAPI, attachToken } from '../../config/constants'
 import OnboardingGuide from '../../components/OnboardingGuide'
+import gridiron from '../../assets/stadiums/gridiron-park.png'
+import thunder from '../../assets/stadiums/thunder-dome.png'
+import legends from '../../assets/stadiums/legends-arena.png'
+import empire from '../../assets/stadiums/empire-stadium.png'
+import colosseum from '../../assets/stadiums/colosseum.png'
+import '../../styles/pages/stadium2.css'
 
 /* ═══════════════════════════════════════════════════════════════
-   NFL STADIUM – SamPoints Economy
+   STADIUM — SamPoints Economy (UI reskin over existing logic)
 
-   Key economics:
-   - 60,000 seats × 85 SP/seat = 5,100,000 SP weekly pot
-   - 90% → Home Owner revenue
-   - 10% → Away Team share
+   Economics (surfaced in UI, computed from real stadium data):
+   - 90% → Home Owner revenue | 10% → Away Team share
    - Win: +3% attendance | Loss: -3% attendance
    - Daily login (Sun-Wed): +1.5% attendance per login
    - Minimum attendance floor: 49%
    - Upgrades increase capacity up to 80,000 seats
    ═══════════════════════════════════════════════════════════════ */
 
-const ACCENT = '#22C55E'
-const ACCENT_DARK = '#16A34A'
-const SP_ICON_IMG = (cls = 'stm-sp-icon-sm') => (
-  <img className={cls} src={sampointslogo} alt="SP" style={{ width: cls === 'stm-sp-icon-xs' ? 14 : 18, height: cls === 'stm-sp-icon-xs' ? 14 : 18, marginRight: 4, verticalAlign: 'middle' }} />
-)
-
-const cardStyle = {
-  background: 'rgba(20, 28, 45, 0.6)',
-  backdropFilter: 'blur(12px)',
-  border: '1px solid rgba(110, 105, 128, 0.15)',
-  borderRadius: '16px',
-  padding: '24px',
-  boxShadow: '0 4px 16px rgba(0,0,0,0.2), inset 0 1px 1px rgba(255,255,255,0.05)',
-}
-
-// Stadium level names
+// Stadium level names (level number → name)
 const STADIUM_NAMES = {
   1: 'Gridiron Park',
   2: 'Thunder Dome',
@@ -67,9 +55,296 @@ const STADIUM_NAMES = {
   5: 'The Colosseum',
 }
 
+// Staged renders (bundled by webpack) mapped by level number
+const LEVEL_IMAGES = {
+  1: gridiron,
+  2: thunder,
+  3: legends,
+  4: empire,
+  5: colosseum,
+}
+
 const getStadiumName = (level) => {
   const lvlNum = typeof level === 'string' ? parseInt(level.replace(/\D/g, ''), 10) : level
   return STADIUM_NAMES[lvlNum] || `Stadium Level ${lvlNum}`
+}
+
+const getLevelImage = (lvl) => LEVEL_IMAGES[lvl] || null
+
+const formatInt = (val) => {
+  if (val === null || val === undefined || isNaN(val)) return '—'
+  return new Intl.NumberFormat('en-US').format(Math.round(val))
+}
+
+/* ── SamPoints icon ── */
+const SPIcon = ({ small }) => (
+  <img className={`std-sp-ico${small ? ' sm' : ''}`} src={sampointslogo} alt="SP" />
+)
+
+/* ── Count-up hook + component (no deps) ── */
+const useCountUp = (target, duration = 900) => {
+  const [val, setVal] = useState(target)
+  const prev = useRef(target)
+  useEffect(() => {
+    const start = Number(prev.current) || 0
+    const end = Number(target) || 0
+    if (start === end) {
+      setVal(end)
+      return undefined
+    }
+    let raf
+    const t0 = (typeof performance !== 'undefined' ? performance.now() : Date.now())
+    const tick = (now) => {
+      const elapsed = now - t0
+      const p = Math.min(1, elapsed / duration)
+      const eased = 1 - Math.pow(1 - p, 3)
+      setVal(start + (end - start) * eased)
+      if (p < 1) {
+        raf = requestAnimationFrame(tick)
+      } else {
+        prev.current = end
+      }
+    }
+    raf = requestAnimationFrame(tick)
+    return () => raf && cancelAnimationFrame(raf)
+  }, [target, duration])
+  return val
+}
+
+const CountUp = ({ value, duration, format }) => {
+  const numeric = Number.isFinite(Number(value)) ? Number(value) : 0
+  const animated = useCountUp(numeric, duration)
+  if (!Number.isFinite(Number(value))) return <>—</>
+  return <>{format ? format(animated) : Math.round(animated).toLocaleString()}</>
+}
+
+/* ── Decorative inline-SVG sparkline (illustrative trend, no historical
+      data exists in the API, so bars are seeded from the current value
+      and intentionally carry no numeric labels) ── */
+const Sparkline = ({ seed = 1, color = '#24d26c', bars = 9 }) => {
+  let s = (Math.abs(Math.floor(seed)) % 997) + 11
+  const values = []
+  for (let i = 0; i < bars; i += 1) {
+    s = (s * 1103515245 + 12345) & 0x7fffffff
+    const base = 0.35 + ((s >> 8) % 100) / 150
+    values.push(Math.min(1, base * (0.65 + i / (bars * 1.5))))
+  }
+  const w = 100
+  const h = 34
+  const gap = 2
+  const bw = (w - gap * (bars - 1)) / bars
+  return (
+    <svg className="std-spark" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" aria-hidden="true">
+      {values.map((v, i) => {
+        const bh = Math.max(2, v * (h - 2))
+        const x = i * (bw + gap)
+        const y = h - bh
+        const op = 0.35 + (i / bars) * 0.6
+        return (
+          <rect key={i} x={x} y={y} width={bw} height={bh} rx="1.4" fill={color} opacity={op} />
+        )
+      })}
+    </svg>
+  )
+}
+
+/* ── Stadium visual (DB image → staged render → SVG fallback) ── */
+const StadiumVisual = ({ dbImg, level, preferLevel }) => {
+  const png = getLevelImage(level)
+  // Upgrade cards/thumbnails prefer the bundled per-level render (always present,
+  // transparent bg). Hero keeps the DB art first, falling back to the level render.
+  if (preferLevel && png) {
+    return <img src={png} alt="stadium" className="std-visual-img" />
+  }
+  if (isValidStadiumImage(dbImg)) {
+    return <img src={dbImg} alt="stadium" className="std-visual-img" onError={(e) => { if (png) { e.target.src = png } else { e.target.style.display = 'none' } }} />
+  }
+  if (png) {
+    return <img src={png} alt="stadium" className="std-visual-img" />
+  }
+  return <StadiumImage level={level || 0} />
+}
+
+/* ── Skeleton loader ── */
+const StadiumSkeleton = () => (
+  <div className="std-wrap">
+    <div className="std-skel std-skel-line" style={{ width: 240, height: 30 }} />
+    <div className="std-skel std-skel-line" style={{ width: 180 }} />
+    <div className="std-overview" style={{ marginTop: 24 }}>
+      <div className="std-card">
+        <div className="std-skel std-skel-hero" />
+        <div className="std-hero-stats" style={{ marginTop: 14 }}>
+          <div className="std-skel std-skel-block" />
+          <div className="std-skel std-skel-block" />
+          <div className="std-skel std-skel-block" />
+        </div>
+      </div>
+      <div className="std-metrics">
+        <div className="std-skel std-skel-block" />
+        <div className="std-skel std-skel-block" />
+        <div className="std-skel std-skel-block" />
+        <div className="std-skel std-skel-block" />
+      </div>
+    </div>
+    <div className="std-card" style={{ marginTop: 24 }}>
+      <div className="std-skel std-skel-row" />
+      <div className="std-skel std-skel-row" />
+      <div className="std-skel std-skel-row" />
+    </div>
+  </div>
+)
+
+/* ── Upgrade preview modal ── */
+const UpgradePreviewModal = ({
+  open,
+  onCancel,
+  onConfirm,
+  loading,
+  stadium,
+  currentLevel,
+  currentName,
+  currentImg,
+  currentCapacity,
+  currentTicket,
+  currentWeeklyHomeOwner,
+  homeAttendance,
+}) => {
+  if (!stadium) return null
+
+  const nextLevel = extractLevelNumber(stadium.level)
+  const nextName = getStadiumName(stadium.level)
+  const newCapacity = stadium?.newseatingCapacity ?? 0
+  const newTicket = stadium?.newticketCost ?? 0
+  const upgradeCost = stadium?.upgradedCost ?? 0
+
+  const att = Number.isFinite(Number(homeAttendance)) ? Number(homeAttendance) : null
+  const nextWeeklyTicket = att !== null ? (att * newCapacity * newTicket) / 100 : null
+  const nextHomeOwner = nextWeeklyTicket !== null ? nextWeeklyTicket * 0.9 : null
+
+  const pct = (from, to) => (from > 0 ? Math.round(((to - from) / from) * 100) : null)
+  const deltaCell = (from, to, isSp) => {
+    if (from === null || to === null || from === undefined || to === undefined) {
+      return <span className="std-td-delta is-flat">—</span>
+    }
+    const diff = to - from
+    const p = pct(from, to)
+    return (
+      <span className={`std-td-delta${diff === 0 ? ' is-flat' : ''}`}>
+        {diff >= 0 ? '+' : ''}
+        {isSp ? <SPIcon small /> : null}
+        {formatInt(diff)}
+        {p !== null ? ` (${p >= 0 ? '+' : ''}${p}%)` : ''}
+      </span>
+    )
+  }
+
+  // ROI (weeks) — derivable only when the extra Home Owner share is positive
+  const weeklyGain =
+    nextHomeOwner !== null && Number.isFinite(currentWeeklyHomeOwner)
+      ? nextHomeOwner - currentWeeklyHomeOwner
+      : null
+  const roiWeeks = weeklyGain && weeklyGain > 0 ? Math.ceil(upgradeCost / weeklyGain) : null
+
+  return (
+    <Modal
+      className="std-modal"
+      open={open}
+      onCancel={onCancel}
+      footer={null}
+      centered
+      width={560}
+      title=""
+    >
+      <div className="std-modal-inner">
+        <h2 className="std-modal-title">Upgrade Preview</h2>
+        <p className="std-modal-sub">Review the impact before you spend SamPoints.</p>
+
+        <div className="std-modal-compare">
+          <div className="std-compare-cell">
+            <div className="std-compare-media">
+              <StadiumVisual dbImg={currentImg} level={currentLevel} preferLevel />
+            </div>
+            <div className="std-compare-tag">Current · Lvl {currentLevel}</div>
+            <div className="std-compare-name">{currentName}</div>
+          </div>
+          <div className="std-compare-arrow" aria-hidden="true">→</div>
+          <div className="std-compare-cell">
+            <div className="std-compare-media">
+              <StadiumVisual dbImg={stadium?.stadiumimg} level={nextLevel} preferLevel />
+            </div>
+            <div className="std-compare-tag">Next · Lvl {nextLevel}</div>
+            <div className="std-compare-name">{nextName}</div>
+          </div>
+        </div>
+
+        <table className="std-modal-table">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Current</th>
+              <th>Next</th>
+              <th>Change</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Seating Capacity</td>
+              <td>{formatInt(currentCapacity)}</td>
+              <td><span className="std-td-new">{formatInt(newCapacity)}</span></td>
+              <td>{deltaCell(currentCapacity, newCapacity)}</td>
+            </tr>
+            <tr>
+              <td>Ticket Price</td>
+              <td><SPIcon small /> {formatInt(currentTicket)}</td>
+              <td><span className="std-td-new"><SPIcon small /> {formatInt(newTicket)}</span></td>
+              <td>{deltaCell(currentTicket, newTicket, true)}</td>
+            </tr>
+            <tr>
+              <td>Weekly Ticket Sales (Est.)</td>
+              <td>{att !== null ? formatInt((att * currentCapacity * currentTicket) / 100) : '—'}</td>
+              <td><span className="std-td-new">{nextWeeklyTicket !== null ? formatInt(nextWeeklyTicket) : '—'}</span></td>
+              <td>{deltaCell(att !== null ? (att * currentCapacity * currentTicket) / 100 : null, nextWeeklyTicket, true)}</td>
+            </tr>
+            <tr>
+              <td>Home Owner Share (90%)</td>
+              <td>{Number.isFinite(currentWeeklyHomeOwner) ? formatInt(currentWeeklyHomeOwner) : '—'}</td>
+              <td><span className="std-td-new">{nextHomeOwner !== null ? formatInt(nextHomeOwner) : '—'}</span></td>
+              <td>{deltaCell(Number.isFinite(currentWeeklyHomeOwner) ? currentWeeklyHomeOwner : null, nextHomeOwner, true)}</td>
+            </tr>
+            <tr>
+              <td>Upgrade Cost</td>
+              <td>—</td>
+              <td><span className="std-td-new" style={{ color: '#24d26c' }}><SPIcon small /> {formatInt(upgradeCost)}</span></td>
+              <td><span className="std-td-delta is-flat">—</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        {roiWeeks !== null && (
+          <div className="std-roi">
+            <span className="std-roi-label">
+              Estimated payback at current attendance ({att}%)
+            </span>
+            <span className="std-roi-value">~{roiWeeks} {roiWeeks === 1 ? 'week' : 'weeks'}</span>
+          </div>
+        )}
+
+        <div className="std-modal-actions">
+          <button type="button" className="std-btn is-ghost" onClick={onCancel}>
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="std-btn is-primary"
+            onClick={onConfirm}
+            disabled={loading}
+          >
+            {loading ? 'Upgrading…' : 'Confirm Upgrade'}
+          </button>
+        </div>
+      </div>
+    </Modal>
+  )
 }
 
 const Stadium = () => {
@@ -87,6 +362,7 @@ const Stadium = () => {
   const [isRenaming, setIsRenaming] = useState(false)
   const [renameValue, setRenameValue] = useState('')
   const [renameSaving, setRenameSaving] = useState(false)
+  const [previewStadium, setPreviewStadium] = useState(null)
 
   const myleague = async () => {
     await getLeagueDetails()
@@ -194,6 +470,12 @@ const Stadium = () => {
     }
   }
 
+  const handleConfirmUpgrade = async () => {
+    if (!previewStadium) return
+    await handlecreatestadium(previewStadium._id)
+    setPreviewStadium(null)
+  }
+
   // ── Rename handler ──
   const handleRenameStart = () => {
     const currentCustomName = mystadiumlevel?.[0]?.stadiumName || ''
@@ -255,785 +537,428 @@ const Stadium = () => {
           .map(([key, value]) => [dayMapping[key] || key.toUpperCase(), value])
       : defaultDays.map((day) => [day, false])
 
-  const formatNum = (val) => {
-    if (!isNaN(val) && typeof val === 'number') {
-      return new Intl.NumberFormat('en-US').format(Math.round(val))
-    }
-    return '—'
-  }
-
   const customStadiumName = mystadiumlevel?.[0]?.stadiumName
-  const stadiumName = customStadiumName || getStadiumName(maxMyStadiumLevel) || mystadiumlevel?.[0]?.teamId?.name || user?.team?.name || 'Stadium'
+  const stadiumName =
+    customStadiumName ||
+    getStadiumName(maxMyStadiumLevel) ||
+    mystadiumlevel?.[0]?.teamId?.name ||
+    user?.team?.name ||
+    'Stadium'
   const teamName = user?.team?.name || 'My Team'
   const season = user?.team?.currentLeague?.season || new Date().getFullYear()
+
+  // Safe display level (max can be -Infinity before data loads)
+  const displayLevel = Number.isFinite(maxMyStadiumLevel) && maxMyStadiumLevel > 0 ? maxMyStadiumLevel : 1
+  const currentDbImg = mystadiumlevel?.[0]?.stadiumlevel?.stadiumimg
+
+  // Next upgradeable stadium (lowest level above what you own)
+  const nextAvailableId = sortedStadiums?.[0]?._id
+
+  // Full level ladder (all tiers) for the upgrade cards
+  const allSorted = (allstadiumlevel || [])
+    .filter((s) => s.level !== 'level0')
+    .slice()
+    .sort((a, b) => extractLevelNumber(a.level) - extractLevelNumber(b.level))
+
+  // ── Daily-login derived values ──
+  const weekDays = [
+    ...daysToDisplay.map(([name, active]) => ({ name, active, real: true })),
+    { name: 'THU', active: false, real: false },
+    { name: 'FRI', active: false, real: false },
+    { name: 'SAT', active: false, real: false },
+  ]
+  let loginStreak = 0
+  for (let i = 0; i < daysToDisplay.length; i += 1) {
+    if (daysToDisplay[i][1]) loginStreak += 1
+    else break
+  }
+  // "Reset In" — derived from the documented weekly Sun-Wed cadence (no API field)
+  const now = new Date()
+  const dow = now.getDay() // 0 = Sunday
+  let daysUntilReset = (7 - dow) % 7
+  if (daysUntilReset === 0) daysUntilReset = 7
+  const resetTarget = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysUntilReset)
+  const msLeft = resetTarget.getTime() - now.getTime()
+  const resetDays = Math.floor(msLeft / (1000 * 60 * 60 * 24))
+  const resetHours = Math.floor((msLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+  const resetIn = `${resetDays}d ${resetHours}h`
+
+  const teamSelect = currentLeague && currentLeague?.teams && currentLeague.teams.length > 1 && (
+    <Select
+      style={{ minWidth: 160 }}
+      className="stadium-team-select"
+      allowClear
+      placeholder="View other team"
+      onChange={getteamstadium}
+      value={team}
+      suffixIcon={<IoMdArrowDropdown size={14} color="rgba(36,210,108,0.7)" />}
+      dropdownStyle={{
+        background: '#141C2D',
+        borderRadius: 10,
+        border: '1px solid rgba(36,210,108,0.15)',
+      }}
+      popupClassName="stadium-team-dropdown"
+    >
+      {currentLeague.teams.map((t) => (
+        <Select.Option key={t._id} value={t._id}>
+          {t.name}
+        </Select.Option>
+      ))}
+    </Select>
+  )
 
   return (
     <>
       <Header />
       <OnboardingGuide tabKey="stadium" />
       {modalshow && <StadiumModal visible={modalshow} onClose={handleConfirm} />}
-      {loading ? (
-        <Loader />
-      ) : (
-        <div style={{
-          background: '#0A0F1A',
-          minHeight: '100vh',
-          paddingBottom: '60px',
-        }}>
-          <div style={{
-            maxWidth: '1400px',
-            margin: '0 auto',
-            padding: '40px 24px',
-          }}>
-            {/* ── Page Header ── */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: '32px',
-            }}>
+
+      <UpgradePreviewModal
+        open={!!previewStadium}
+        onCancel={() => setPreviewStadium(null)}
+        onConfirm={handleConfirmUpgrade}
+        loading={upgradeLoading === previewStadium?._id}
+        stadium={previewStadium}
+        currentLevel={displayLevel}
+        currentName={stadiumName}
+        currentImg={currentDbImg}
+        currentCapacity={seatingCapacity}
+        currentTicket={ticketCost}
+        currentWeeklyHomeOwner={weeklyHomeOwner}
+        homeAttendance={homeAttendance}
+      />
+
+      <div className="std-page">
+        {loading ? (
+          <StadiumSkeleton />
+        ) : (
+          <div className="std-wrap">
+            {/* ── Page header ── */}
+            <div className="std-header">
               <div>
-                <h1 style={{
-                  fontFamily: "'Rajdhani', sans-serif",
-                  fontSize: '36px',
-                  fontWeight: 800,
-                  color: '#fff',
-                  marginBottom: '8px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                }}>
-                  <ThunderboltOutlined style={{ color: ACCENT }} />
+                <h1 className="std-title">
+                  <ThunderboltOutlined className="std-title-ico" />
                   Stadium
                 </h1>
-                <p style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: '15px',
-                  color: 'rgba(255,255,255,0.6)',
-                  margin: 0,
-                }}>
+                <p className="std-subtitle">
                   {teamName} &bull; Season {season}
                 </p>
               </div>
-              {currentLeague && currentLeague?.teams && currentLeague.teams.length > 1 && (
-                <Select
-                  style={{
-                    minWidth: 160,
-                  }}
-                  className="stadium-team-select"
-                  allowClear
-                  placeholder="View other team"
-                  onChange={getteamstadium}
-                  value={team}
-                  suffixIcon={<IoMdArrowDropdown size={14} color="rgba(34,197,94,0.7)" />}
-                  dropdownStyle={{
-                    background: '#141C2D',
-                    borderRadius: 10,
-                    border: '1px solid rgba(34,197,94,0.15)',
-                  }}
-                  popupClassName="stadium-team-dropdown"
-                >
-                  {currentLeague.teams.map((t) => (
-                    <Select.Option key={t._id} value={t._id}>
-                      {t.name}
-                    </Select.Option>
-                  ))}
-                </Select>
-              )}
+              <div className="std-header-actions">{teamSelect}</div>
             </div>
 
-            {/* ═══ TOP ROW: Stadium Card + Stats + Daily Login ═══ */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr 300px',
-              gap: '16px',
-              marginBottom: '24px',
-            }}>
-              {/* Stadium Card */}
-              <div style={{
-                ...cardStyle,
-                position: 'relative',
-                overflow: 'hidden',
-                background: `linear-gradient(135deg, rgba(20,28,45,0.8), rgba(34,197,94,0.06))`,
-                border: `1px solid rgba(34,197,94,0.15)`,
-              }}>
-                {/* Stadium visual */}
-                <div style={{
-                  textAlign: 'center',
-                  marginBottom: '20px',
-                }}>
-                  <div style={{ marginBottom: '8px', maxHeight: 120, overflow: 'hidden', borderRadius: 10 }}>
-                    {isValidStadiumImage(mystadiumlevel?.[0]?.stadiumlevel?.stadiumimg) ? (
-                      <img
-                        src={mystadiumlevel?.[0]?.stadiumlevel?.stadiumimg}
-                        alt="stadium"
-                        style={{ width: '100%', maxHeight: 120, objectFit: 'cover', borderRadius: 10 }}
-                        onError={(e) => { e.target.style.display = 'none' }}
-                      />
-                    ) : (
-                      <StadiumImage
-                        level={maxMyStadiumLevel || 0}
-                        style={{ borderRadius: 10, maxHeight: 120 }}
-                      />
-                    )}
-                  </div>
-                  <div style={{
-                    fontSize: '11px',
-                    color: 'rgba(255,255,255,0.4)',
-                    fontFamily: "'Rajdhani', sans-serif",
-                    textTransform: 'uppercase',
-                    letterSpacing: '1px',
-                    marginBottom: '4px',
-                  }}>
-                    Your Stadium
-                  </div>
-                  {isRenaming ? (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}>
-                      <Input
-                        value={renameValue}
-                        onChange={(e) => setRenameValue(e.target.value)}
-                        maxLength={30}
-                        onPressEnter={handleRenameSave}
-                        autoFocus
-                        style={{
-                          background: 'rgba(0,0,0,0.3)',
-                          border: `1px solid ${ACCENT}`,
-                          borderRadius: 8,
-                          color: '#fff',
-                          fontFamily: "'Rajdhani', sans-serif",
-                          fontSize: '18px',
-                          fontWeight: 700,
-                          textAlign: 'center',
-                          width: 200,
-                        }}
-                      />
-                      <Button
-                        type="text"
-                        icon={<CheckOutlined />}
-                        loading={renameSaving}
-                        onClick={handleRenameSave}
-                        style={{ color: ACCENT, fontSize: 16 }}
-                      />
-                      <Button
-                        type="text"
-                        icon={<CloseOutlined />}
-                        onClick={handleRenameCancel}
-                        style={{ color: '#EF4444', fontSize: 16 }}
-                      />
-                    </div>
-                  ) : (
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '8px',
-                    }}>
-                      <div style={{
-                        fontFamily: "'Rajdhani', sans-serif",
-                        fontSize: '22px',
-                        fontWeight: 800,
-                        color: '#fff',
-                      }}>
-                        {stadiumName}
-                      </div>
-                      <EditOutlined
-                        onClick={handleRenameStart}
-                        style={{
-                          color: 'rgba(255,255,255,0.3)',
-                          fontSize: 14,
-                          cursor: 'pointer',
-                          transition: 'color 0.2s',
-                        }}
-                        onMouseEnter={(e) => e.target.style.color = ACCENT}
-                        onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.3)'}
-                      />
-                    </div>
-                  )}
-                  <div style={{
-                    fontSize: '11px',
-                    color: 'rgba(255,255,255,0.5)',
-                    fontFamily: "'Rajdhani', sans-serif",
-                    marginTop: 2,
-                  }}>
-                    Level {maxMyStadiumLevel || 1}
-                  </div>
-                </div>
-
-                {/* Details */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <DetailRow
-                    icon={<TeamOutlined style={{ color: ACCENT }} />}
-                    label="Seating Capacity"
-                    value={seatingCapacity.toLocaleString()}
-                  />
-                  <DetailRow
-                    icon={<RiseOutlined style={{ color: ACCENT }} />}
-                    label="Home Attendance"
-                    value={`${homeAttendance}%`}
-                    accent
-                  />
-                  <DetailRow
-                    icon={<DollarOutlined style={{ color: ACCENT }} />}
-                    label="Avg. Ticket Cost"
-                    value={
-                      <span style={{ color: ACCENT, fontWeight: 700, display: 'flex', alignItems: 'center' }}>
-                        {SP_ICON_IMG('stm-sp-icon-xs')} {ticketCost} SP
-                      </span>
-                    }
-                  />
-                </div>
-              </div>
-
-              {/* Stats Column */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {/* Weekly Ticket Sales */}
-                <div style={cardStyle}>
-                  <div style={{
-                    fontSize: '11px',
-                    fontWeight: 600,
-                    color: 'rgba(255,255,255,0.5)',
-                    fontFamily: "'Rajdhani', sans-serif",
-                    textTransform: 'uppercase',
-                    letterSpacing: '1px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    marginBottom: '8px',
-                  }}>
-                    <DollarOutlined /> Weekly Ticket Sales
-                  </div>
-                  <div style={{
-                    fontSize: '28px',
-                    fontWeight: 800,
-                    color: ACCENT,
-                    fontFamily: "'Barlow Condensed', sans-serif",
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}>
-                    {SP_ICON_IMG()} {formatNum(weeklyticketsale)} SP
-                  </div>
-                </div>
-
-                {/* Home Owner Share */}
-                <div style={cardStyle}>
-                  <div style={{
-                    fontSize: '11px',
-                    fontWeight: 600,
-                    color: 'rgba(255,255,255,0.5)',
-                    fontFamily: "'Rajdhani', sans-serif",
-                    textTransform: 'uppercase',
-                    letterSpacing: '1px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    marginBottom: '8px',
-                  }}>
-                    <TrophyOutlined /> Home Owner Share
-                  </div>
-                  <div style={{
-                    fontSize: '28px',
-                    fontWeight: 800,
-                    color: '#4ADE80',
-                    fontFamily: "'Barlow Condensed', sans-serif",
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}>
-                    {SP_ICON_IMG()} {formatNum(weeklyHomeOwner)} SP
-                  </div>
-                  <div style={{
-                    fontSize: '11px',
-                    color: 'rgba(255,255,255,0.4)',
-                    fontFamily: "'Inter', sans-serif",
-                    marginTop: '4px',
-                  }}>
-                    90% of ticket sales
-                  </div>
-                </div>
-
-                {/* Away Team Share */}
-                <div style={cardStyle}>
-                  <div style={{
-                    fontSize: '11px',
-                    fontWeight: 600,
-                    color: 'rgba(255,255,255,0.5)',
-                    fontFamily: "'Rajdhani', sans-serif",
-                    textTransform: 'uppercase',
-                    letterSpacing: '1px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    marginBottom: '8px',
-                  }}>
-                    <ThunderboltOutlined /> Away Team Share
-                  </div>
-                  <div style={{
-                    fontSize: '28px',
-                    fontWeight: 800,
-                    color: '#F59E0B',
-                    fontFamily: "'Barlow Condensed', sans-serif",
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}>
-                    {SP_ICON_IMG()} {formatNum(weeklyAwayShare)} SP
-                  </div>
-                  <div style={{
-                    fontSize: '11px',
-                    color: 'rgba(255,255,255,0.4)',
-                    fontFamily: "'Inter', sans-serif",
-                    marginTop: '4px',
-                  }}>
-                    10% of ticket sales
-                  </div>
-                </div>
-              </div>
-
-              {/* Daily Login Card */}
-              <div style={cardStyle}>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  marginBottom: '16px',
-                }}>
-                  <CalendarOutlined style={{ color: ACCENT }} />
-                  <h3 style={{
-                    fontFamily: "'Rajdhani', sans-serif",
-                    fontSize: '16px',
-                    fontWeight: 700,
-                    color: '#fff',
-                    margin: 0,
-                  }}>
-                    Daily Login
-                  </h3>
-                </div>
-                <div style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px',
-                  marginBottom: '16px',
-                }}>
-                  {daysToDisplay.map(([day, active], index) => (
-                    <div
-                      key={index}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '10px 14px',
-                        borderRadius: '10px',
-                        background: active
-                          ? 'rgba(34,197,94,0.1)'
-                          : 'rgba(0,0,0,0.15)',
-                        border: active
-                          ? '1px solid rgba(34,197,94,0.25)'
-                          : '1px solid rgba(110,105,128,0.08)',
-                      }}
-                    >
-                      <span style={{
-                        fontFamily: "'Rajdhani', sans-serif",
-                        fontSize: '14px',
-                        fontWeight: 700,
-                        color: active ? ACCENT : 'rgba(255,255,255,0.4)',
-                      }}>
-                        {day}
-                      </span>
-                      {active && (
-                        <span style={{ color: ACCENT, fontSize: '16px', fontWeight: 800 }}>&#10003;</span>
+            {/* ═══ 1. STADIUM OVERVIEW ═══ */}
+            <div className="std-overview std-section std-fade">
+              {/* Hero */}
+              <div className="std-hero">
+                <div className="std-hero-media">
+                  <StadiumVisual dbImg={currentDbImg} level={displayLevel} />
+                  <div className="std-hero-overlay">
+                    <div>
+                      <div className="std-hero-level-label">Stadium Level: {getStadiumName(displayLevel)}</div>
+                      {isRenaming ? (
+                        <div className="std-rename-row">
+                          <Input
+                            value={renameValue}
+                            onChange={(e) => setRenameValue(e.target.value)}
+                            maxLength={30}
+                            onPressEnter={handleRenameSave}
+                            autoFocus
+                            style={{
+                              background: 'rgba(0,0,0,0.4)',
+                              border: '1px solid #24d26c',
+                              borderRadius: 8,
+                              color: '#fff',
+                              fontFamily: "'Rajdhani', sans-serif",
+                              fontSize: 18,
+                              fontWeight: 700,
+                              width: 200,
+                            }}
+                          />
+                          <Button
+                            type="text"
+                            icon={<CheckOutlined />}
+                            loading={renameSaving}
+                            onClick={handleRenameSave}
+                            aria-label="Save stadium name"
+                            style={{ color: '#24d26c', fontSize: 16, minWidth: 44, minHeight: 44 }}
+                          />
+                          <Button
+                            type="text"
+                            icon={<CloseOutlined />}
+                            onClick={handleRenameCancel}
+                            aria-label="Cancel rename"
+                            style={{ color: '#EF4444', fontSize: 16, minWidth: 44, minHeight: 44 }}
+                          />
+                        </div>
+                      ) : (
+                        <div className="std-hero-name">
+                          {stadiumName}
+                        </div>
                       )}
                     </div>
-                  ))}
+                    {!isRenaming && (
+                      <button
+                        type="button"
+                        className="std-edit-btn"
+                        onClick={handleRenameStart}
+                        aria-label="Rename stadium"
+                      >
+                        <EditOutlined />
+                      </button>
+                    )}
+                  </div>
                 </div>
-                <p style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: '11px',
-                  color: 'rgba(255,255,255,0.4)',
-                  margin: 0,
-                  lineHeight: 1.4,
-                }}>
-                  Log in Sun-Wed to boost attendance by +1.5% per day
-                </p>
+
+                {/* Hero stat cards */}
+                <div className="std-hero-stats">
+                  <div className="std-stat">
+                    <div className="std-stat-label"><TeamOutlined /> Seating Capacity</div>
+                    <div className="std-stat-value">
+                      <CountUp value={seatingCapacity} />
+                    </div>
+                  </div>
+                  <div className="std-stat">
+                    <div className="std-stat-label"><RiseOutlined /> Home Attendance</div>
+                    <div className="std-stat-value is-green">
+                      <CountUp value={homeAttendance} />%
+                    </div>
+                  </div>
+                  <div className="std-stat">
+                    <div className="std-stat-label"><DollarOutlined /> Avg Ticket Price</div>
+                    <div className="std-stat-value is-green">
+                      <SPIcon small /> <CountUp value={ticketCost} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Metric cards */}
+              <div className="std-metrics">
+                <div className="std-metric">
+                  <div className="std-metric-label"><DollarOutlined /> Weekly Ticket Sales</div>
+                  <div className="std-metric-value is-green">
+                    <SPIcon /> <CountUp value={weeklyticketsale} />
+                  </div>
+                  <Sparkline seed={weeklyticketsale} color="#24d26c" />
+                </div>
+
+                <div className="std-metric">
+                  <div className="std-metric-label"><TrophyOutlined /> Home Owner Share</div>
+                  <div className="std-metric-value is-green">
+                    <SPIcon /> <CountUp value={weeklyHomeOwner} />
+                  </div>
+                  <div className="std-metric-sub">90% of ticket sales</div>
+                  <Sparkline seed={weeklyHomeOwner} color="#24d26c" />
+                </div>
+
+                <div className="std-metric">
+                  <div className="std-metric-label"><ThunderboltOutlined /> Away Team Share</div>
+                  <div className="std-metric-value is-orange">
+                    <SPIcon /> <CountUp value={weeklyAwayShare} />
+                  </div>
+                  <div className="std-metric-sub">10% of ticket sales</div>
+                  <Sparkline seed={weeklyAwayShare} color="#f97316" />
+                </div>
+
+                <div className="std-metric">
+                  <div className="std-metric-label"><DollarOutlined /> Avg Ticket Price</div>
+                  <div className="std-metric-value is-purple">
+                    <SPIcon /> <CountUp value={ticketCost} />
+                  </div>
+                  <div className="std-metric-sub">Per seat, per game</div>
+                  <Sparkline seed={ticketCost * 37} color="#8b5cf6" />
+                </div>
               </div>
             </div>
 
-            {/* ═══ ATTENDANCE DYNAMICS ═══ */}
-            <div style={{
-              ...cardStyle,
-              marginBottom: '24px',
-            }}>
-              <h2 style={{
-                fontFamily: "'Rajdhani', sans-serif",
-                fontSize: '20px',
-                fontWeight: 700,
-                color: '#fff',
-                marginBottom: '16px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-              }}>
-                <RiseOutlined style={{ color: ACCENT }} />
-                Attendance Dynamics
-              </h2>
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(4, 1fr)',
-                gap: '12px',
-                marginBottom: '20px',
-              }}>
-                {[
-                  { delta: '-3%', trigger: 'Per Loss', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.25)' },
-                  { delta: '+3%', trigger: 'Per Win', color: '#22C55E', bg: 'rgba(34,197,94,0.1)', border: 'rgba(34,197,94,0.25)' },
-                  { delta: '+1.5%', trigger: 'Daily Login (Sun-Wed)', color: '#3B82F6', bg: 'rgba(59,130,246,0.1)', border: 'rgba(59,130,246,0.25)' },
-                  { delta: '49%', trigger: 'Minimum Floor', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.25)' },
-                ].map((item) => (
-                  <div key={item.trigger} style={{
-                    background: item.bg,
-                    border: `1px solid ${item.border}`,
-                    borderRadius: '12px',
-                    padding: '16px',
-                    textAlign: 'center',
-                  }}>
-                    <div style={{
-                      fontFamily: "'Barlow Condensed', sans-serif",
-                      fontSize: '24px',
-                      fontWeight: 800,
-                      color: item.color,
-                      marginBottom: '4px',
-                    }}>
-                      {item.delta}
-                    </div>
-                    <div style={{
-                      fontFamily: "'Inter', sans-serif",
-                      fontSize: '11px',
-                      color: 'rgba(255,255,255,0.5)',
-                    }}>
-                      {item.trigger}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Revenue Split Visualization */}
-              <div style={{
-                background: 'rgba(0,0,0,0.2)',
-                borderRadius: '12px',
-                padding: '16px',
-                border: '1px solid rgba(110,105,128,0.1)',
-              }}>
-                <div style={{
-                  fontFamily: "'Rajdhani', sans-serif",
-                  fontSize: '13px',
-                  fontWeight: 700,
-                  color: 'rgba(255,255,255,0.5)',
-                  textTransform: 'uppercase',
-                  letterSpacing: '1px',
-                  marginBottom: '12px',
-                }}>
-                  Weekly Revenue Split
-                </div>
-                {[
-                  { label: 'Home Owner', pct: 90, color: '#22C55E' },
-                  { label: 'Away Team', pct: 10, color: '#F59E0B' },
-                ].map((split) => (
-                  <div key={split.label} style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    marginBottom: '8px',
-                  }}>
-                    <div style={{
-                      flex: 1,
-                      height: '8px',
-                      borderRadius: '4px',
-                      background: 'rgba(255,255,255,0.04)',
-                      overflow: 'hidden',
-                    }}>
-                      <div style={{
-                        height: '100%',
-                        width: `${split.pct}%`,
-                        borderRadius: '4px',
-                        background: `linear-gradient(90deg, ${split.color}, ${split.color}88)`,
-                      }} />
-                    </div>
-                    <span style={{
-                      fontFamily: "'Barlow Condensed', sans-serif",
-                      fontSize: '14px',
-                      fontWeight: 700,
-                      color: split.color,
-                      minWidth: '50px',
-                      textAlign: 'right',
-                    }}>
-                      {split.pct}%
-                    </span>
-                    <span style={{
-                      fontFamily: "'Inter', sans-serif",
-                      fontSize: '12px',
-                      color: 'rgba(255,255,255,0.5)',
-                      minWidth: '140px',
-                    }}>
-                      {split.label}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* ═══ STADIUM UPGRADES ═══ */}
-            <div style={cardStyle}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: '20px',
-              }}>
-                <h2 style={{
-                  fontFamily: "'Rajdhani', sans-serif",
-                  fontSize: '20px',
-                  fontWeight: 700,
-                  color: '#fff',
-                  margin: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                }}>
-                  <ArrowUpOutlined style={{ color: ACCENT }} />
-                  Stadium Upgrades
+            {/* ═══ 2. ATTENDANCE DYNAMICS ═══ */}
+            <div className="std-card std-section std-fade">
+              <div className="std-section-head">
+                <h2 className="std-section-title">
+                  <RiseOutlined className="std-sec-ico" /> Attendance Dynamics
                 </h2>
-                <span style={{
-                  fontFamily: "'Rajdhani', sans-serif",
-                  fontSize: '12px',
-                  fontWeight: 600,
-                  color: 'rgba(255,255,255,0.4)',
-                  background: 'rgba(255,255,255,0.04)',
-                  padding: '4px 10px',
-                  borderRadius: '6px',
-                }}>
-                  {sortedStadiums?.length || 0} available
-                </span>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {sortedStadiums?.map((s, index) => {
-                  const isAvailable = index === 0
-                  const levelNum = extractLevelNumber(s?.level) || 0
-                  return (
-                    <div key={s._id} style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      padding: '16px 20px',
-                      borderRadius: '12px',
-                      background: isAvailable ? 'rgba(34,197,94,0.06)' : 'rgba(0,0,0,0.15)',
-                      border: isAvailable ? '1px solid rgba(34,197,94,0.15)' : '1px solid rgba(110,105,128,0.08)',
-                      opacity: isAvailable ? 1 : 0.5,
-                    }}>
-                      {/* Stadium image thumbnail */}
-                      <div style={{ width: 80, height: 50, marginRight: 16, borderRadius: 8, overflow: 'hidden', flexShrink: 0 }}>
-                        {isValidStadiumImage(s?.stadiumimg) ? (
-                          <img
-                            src={s?.stadiumimg}
-                            alt="stadium upgrade"
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                            onError={(e) => { e.target.style.display = 'none' }}
-                          />
-                        ) : (
-                          <StadiumImage
-                            level={levelNum}
-                            style={{ borderRadius: 8 }}
-                          />
-                        )}
-                      </div>
+              <div className="std-pills">
+                {[
+                  { delta: '-3%', trigger: 'Per Loss', cls: 'is-red' },
+                  { delta: '+3%', trigger: 'Per Win', cls: 'is-green' },
+                  { delta: '+1.5%', trigger: 'Daily Login (Sun-Wed)', cls: 'is-blue' },
+                  { delta: '49%', trigger: 'Minimum Floor', cls: 'is-orange' },
+                ].map((item) => (
+                  <div key={item.trigger} className={`std-pill ${item.cls}`}>
+                    <div className="std-pill-value">{item.delta}</div>
+                    <div className="std-pill-label">{item.trigger}</div>
+                  </div>
+                ))}
+              </div>
 
-                      <div style={{ flex: 1 }}>
-                        <div style={{
-                          fontFamily: "'Rajdhani', sans-serif",
-                          fontSize: '16px',
-                          fontWeight: 700,
-                          color: '#fff',
-                          marginBottom: '8px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '8px',
-                        }}>
-                          {getStadiumName(s?.level)}
-                          <span style={{
-                            fontSize: '11px',
-                            color: 'rgba(34,197,94,0.6)',
-                            fontWeight: 600,
-                          }}>
-                            {s?.level?.toUpperCase?.()}
-                          </span>
-                        </div>
-                        <div style={{
-                          display: 'flex',
-                          gap: '24px',
-                          flexWrap: 'wrap',
-                        }}>
-                          {/* Capacity change */}
-                          <div>
-                            <div style={{
-                              fontFamily: "'Inter', sans-serif",
-                              fontSize: '10px',
-                              color: 'rgba(255,255,255,0.4)',
-                              textTransform: 'uppercase',
-                              marginBottom: '2px',
-                            }}>
-                              Seating Capacity
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <span style={{
-                                fontFamily: "'Barlow Condensed', sans-serif",
-                                fontSize: '13px',
-                                color: 'rgba(255,255,255,0.4)',
-                                textDecoration: 'line-through',
-                              }}>
-                                {s?.previousseatingCapacity?.toLocaleString()}
-                              </span>
-                              <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '12px' }}>&rarr;</span>
-                              <span style={{
-                                fontFamily: "'Barlow Condensed', sans-serif",
-                                fontSize: '14px',
-                                fontWeight: 700,
-                                color: ACCENT,
-                              }}>
-                                {s?.newseatingCapacity?.toLocaleString()}
-                              </span>
-                            </div>
-                          </div>
-                          {/* Ticket cost change */}
-                          <div>
-                            <div style={{
-                              fontFamily: "'Inter', sans-serif",
-                              fontSize: '10px',
-                              color: 'rgba(255,255,255,0.4)',
-                              textTransform: 'uppercase',
-                              marginBottom: '2px',
-                            }}>
-                              Ticket Cost
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <span style={{
-                                fontFamily: "'Barlow Condensed', sans-serif",
-                                fontSize: '13px',
-                                color: 'rgba(255,255,255,0.4)',
-                                textDecoration: 'line-through',
-                              }}>
-                                {SP_ICON_IMG('stm-sp-icon-xs')} {s?.previousticketCost} SP
-                              </span>
-                              <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '12px' }}>&rarr;</span>
-                              <span style={{
-                                fontFamily: "'Barlow Condensed', sans-serif",
-                                fontSize: '14px',
-                                fontWeight: 700,
-                                color: ACCENT,
-                              }}>
-                                {SP_ICON_IMG('stm-sp-icon-xs')} {s?.newticketCost} SP
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+              <div className="std-dyn-grid">
+                {/* Weekly revenue split */}
+                <div className="std-subcard">
+                  <div className="std-subcard-title">Weekly Revenue Split</div>
+                  <div className="std-split-row">
+                    <div className="std-split-track">
+                      <div className="std-split-fill is-green" style={{ width: '90%' }} />
+                    </div>
+                    <span className="std-split-pct is-green">90%</span>
+                    <span className="std-split-name">Home Owner</span>
+                  </div>
+                  <div className="std-split-row">
+                    <div className="std-split-track">
+                      <div className="std-split-fill is-orange" style={{ width: '10%' }} />
+                    </div>
+                    <span className="std-split-pct is-orange">10%</span>
+                    <span className="std-split-name">Away Team</span>
+                  </div>
+                  <p className="std-login-hint">
+                    Home Owner earns <SPIcon small /> {formatInt(weeklyHomeOwner)} SP · Away Team earns{' '}
+                    <SPIcon small /> {formatInt(weeklyAwayShare)} SP this week.
+                  </p>
+                </div>
 
-                      {/* Upgrade cost + button */}
-                      <div style={{ textAlign: 'right', minWidth: '160px' }}>
-                        <div style={{
-                          fontFamily: "'Inter', sans-serif",
-                          fontSize: '10px',
-                          color: 'rgba(255,255,255,0.4)',
-                          textTransform: 'uppercase',
-                          marginBottom: '4px',
-                        }}>
-                          Upgrade Cost
-                        </div>
-                        <div style={{
-                          fontFamily: "'Barlow Condensed', sans-serif",
-                          fontSize: '18px',
-                          fontWeight: 800,
-                          color: ACCENT,
-                          marginBottom: '8px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'flex-end',
-                        }}>
-                          {SP_ICON_IMG()} {s?.upgradedCost?.toLocaleString()} SP
-                        </div>
-                        <Button
-                          loading={upgradeLoading === s._id}
-                          onClick={() => handlecreatestadium(s._id)}
-                          disabled={!isAvailable}
-                          style={{
-                            background: isAvailable
-                              ? `linear-gradient(135deg, ${ACCENT_DARK}, ${ACCENT})`
-                              : 'rgba(255,255,255,0.04)',
-                            border: 'none',
-                            color: isAvailable ? '#fff' : 'rgba(255,255,255,0.3)',
-                            fontWeight: 800,
-                            borderRadius: '8px',
-                            fontFamily: "'Rajdhani', sans-serif",
-                            fontSize: '13px',
-                            height: '34px',
-                            letterSpacing: '0.5px',
-                          }}
+                {/* Daily login */}
+                <div className="std-subcard">
+                  <div className="std-subcard-title">
+                    <CalendarOutlined /> Daily Login
+                  </div>
+                  <div className="std-login-days">
+                    {weekDays.map((d, i) => {
+                      const done = d.real && d.active
+                      const inactive = !d.real
+                      const upcoming = d.real && !d.active
+                      return (
+                        <div
+                          key={i}
+                          className={`std-day${done ? ' is-done' : ''}${inactive ? ' is-inactive' : ''}`}
                         >
-                          {isAvailable ? 'UPGRADE NOW' : 'LOCKED'}
-                        </Button>
+                          <div className="std-day-name">{d.name}</div>
+                          <div className={`std-day-mark${upcoming ? ' is-plus' : ''}`}>
+                            {done ? '✓' : inactive ? '–' : '+'}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                  <div className="std-login-meta">
+                    <div className="std-login-stat">
+                      <div className="std-login-stat-label">Current Streak</div>
+                      <div className="std-login-stat-value">{loginStreak} {loginStreak === 1 ? 'Day' : 'Days'}</div>
+                    </div>
+                    <div className="std-login-stat">
+                      <div className="std-login-stat-label">Next Reward</div>
+                      <div className="std-login-stat-value">+{(Math.max(0, 4 - loginStreak) * 1.5 || 6).toFixed(0)}% Attendance</div>
+                    </div>
+                    <div className="std-login-stat">
+                      <div className="std-login-stat-label">Reset In</div>
+                      <div className="std-login-stat-value">{resetIn}</div>
+                    </div>
+                  </div>
+                  <p className="std-login-hint">
+                    Log in Sun–Wed to boost attendance by +1.5% per day.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* ═══ 3. STADIUM UPGRADES ═══ */}
+            <div className="std-card std-section std-fade">
+              <div className="std-section-head">
+                <h2 className="std-section-title">
+                  <ArrowUpOutlined className="std-sec-ico" /> Stadium Upgrades
+                </h2>
+                <span className="std-pill-count">{sortedStadiums?.length || 0} available</span>
+              </div>
+
+              <div className="std-upgrades">
+                {allSorted.map((s) => {
+                  const levelNum = extractLevelNumber(s?.level) || 0
+                  const owned = Number.isFinite(maxMyStadiumLevel) && levelNum <= maxMyStadiumLevel
+                  const isCurrent = Number.isFinite(maxMyStadiumLevel) && levelNum === maxMyStadiumLevel
+                  const isAvailable = s._id === nextAvailableId
+                  const isLocked = !owned && !isAvailable
+
+                  let cardCls = 'std-upcard'
+                  if (isCurrent) cardCls += ' is-current'
+                  else if (isAvailable) cardCls += ' is-available'
+                  else if (isLocked) cardCls += ' is-locked'
+
+                  return (
+                    <div key={s._id} className={cardCls}>
+                      <div className="std-upcard-thumb">
+                        <StadiumVisual dbImg={s?.stadiumimg} level={levelNum} preferLevel />
+                      </div>
+
+                      <div className="std-upcard-body">
+                        <div className="std-upcard-head">
+                          <span className="std-upcard-name">{getStadiumName(s?.level)}</span>
+                          <span className="std-badge is-level">{s?.level?.toUpperCase?.()}</span>
+                          {isCurrent && <span className="std-badge is-current">Current Stadium</span>}
+                          {owned && !isCurrent && <span className="std-badge is-owned">Owned</span>}
+                        </div>
+
+                        <div className="std-upcard-stats">
+                          <div className="std-mini">
+                            <div className="std-mini-label">Seating Capacity</div>
+                            <div className="std-mini-diff">
+                              <span className="std-mini-old">{s?.previousseatingCapacity?.toLocaleString?.()}</span>
+                              <span className="std-mini-arrow">→</span>
+                              <span className="std-mini-new">{s?.newseatingCapacity?.toLocaleString?.()}</span>
+                            </div>
+                          </div>
+                          <div className="std-mini">
+                            <div className="std-mini-label">Ticket Price</div>
+                            <div className="std-mini-diff">
+                              <span className="std-mini-old"><SPIcon small /> {s?.previousticketCost}</span>
+                              <span className="std-mini-arrow">→</span>
+                              <span className="std-mini-new"><SPIcon small /> {s?.newticketCost}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="std-upcard-action">
+                        <div className="std-cost-label">Upgrade Cost</div>
+                        <div className="std-cost-value">
+                          <SPIcon /> {s?.upgradedCost?.toLocaleString?.()}
+                        </div>
+                        {isAvailable ? (
+                          <button
+                            type="button"
+                            className="std-btn is-primary"
+                            onClick={() => setPreviewStadium(s)}
+                            disabled={upgradeLoading === s._id}
+                          >
+                            {upgradeLoading === s._id ? 'Upgrading…' : 'Upgrade Now'}
+                          </button>
+                        ) : owned ? (
+                          <button type="button" className="std-btn is-owned" disabled>
+                            {isCurrent ? 'Current' : 'Owned'}
+                          </button>
+                        ) : (
+                          <button type="button" className="std-btn is-locked" disabled>
+                            Locked
+                          </button>
+                        )}
                       </div>
                     </div>
                   )
                 })}
-                {(!sortedStadiums || sortedStadiums.length === 0) && (
-                  <div style={{
-                    textAlign: 'center',
-                    padding: '40px 0',
-                    color: 'rgba(255,255,255,0.4)',
-                  }}>
-                    <TrophyOutlined style={{ fontSize: 32, color: ACCENT, marginBottom: 12 }} />
-                    <p style={{
-                      fontFamily: "'Rajdhani', sans-serif",
-                      fontSize: '16px',
-                      fontWeight: 600,
-                      margin: 0,
-                    }}>
-                      Your stadium is fully upgraded!
-                    </p>
+
+                {allSorted.length === 0 && (
+                  <div className="std-empty">
+                    <TrophyOutlined className="std-empty-ico" />
+                    <p>Your stadium is fully upgraded!</p>
                   </div>
                 )}
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </>
   )
 }
-
-/* ── Detail Row Sub-Component ── */
-const DetailRow = ({ icon, label, value, accent }) => (
-  <div style={{
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    padding: '8px 0',
-    borderBottom: '1px solid rgba(110,105,128,0.08)',
-  }}>
-    <span style={{ fontSize: '16px' }}>{icon}</span>
-    <div style={{ flex: 1 }}>
-      <div style={{
-        fontFamily: "'Inter', sans-serif",
-        fontSize: '11px',
-        color: 'rgba(255,255,255,0.4)',
-      }}>
-        {label}
-      </div>
-      <div style={{
-        fontFamily: "'Barlow Condensed', sans-serif",
-        fontSize: '16px',
-        fontWeight: 700,
-        color: accent ? '#22C55E' : '#fff',
-      }}>
-        {typeof value === 'string' ? value : value}
-      </div>
-    </div>
-  </div>
-)
 
 export default Stadium

@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from 'react'
 import { BiRightArrowAlt } from 'react-icons/bi'
 import { useNavigate } from 'react-router-dom'
+import CommissionerBadge from '../CommissionerBadge'
+import TeamLogo from '../TeamLogo'
 
 const STAT_COLS = [
   { key: 'record', label: 'W-L-T', width: 52 },
@@ -144,15 +146,12 @@ const LeagueStandings = ({ data, maxHeight }) => {
                       <div key={rank?._id || idx} className={`ls-row ${isFirst ? 'ls-row--first' : ''}`}>
                         <span className={`ls-rank ${isFirst ? 'ls-rank--first' : ''}`}>{idx + 1}</span>
                         <div className='ls-team'>
-                          {team?.logo ? (
-                            <img src={team.logo} className='ls-logo' alt='' />
-                          ) : (
-                            <div className='ls-logo-ph' style={{ background: team?.teamColor || '#22C55E' }}>
-                              {(team?.name || '?').charAt(0)}
-                            </div>
-                          )}
+                          <TeamLogo team={team} size={26} className='ls-logo' />
                           <div className='ls-team-info'>
-                            <span className='ls-team-name'>{team?.name || 'Unknown'}</span>
+                            <span className='ls-team-name' style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                              {team?.name || 'Unknown'}
+                              <CommissionerBadge show={team?.isCommissioner && !team?.hideCommissionerBadge} />
+                            </span>
                             {team?.user?.name && <span className='ls-owner'>{team.user.name}</span>}
                           </div>
                         </div>

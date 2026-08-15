@@ -400,7 +400,7 @@
 
 .auc-header-icon {
   font-size: 32px;
-  color: #a5b4fc;
+  color: #4ade80;
   flex-shrink: 0;
 }
 
@@ -436,14 +436,14 @@
 }
 
 .auc-tabs .ant-tabs-tab:hover {
-  color: #a5b4fc !important;
+  color: #4ade80 !important;
   border-color: rgba(165, 180, 252, 0.3) !important;
 }
 
 .auc-tabs .ant-tabs-tab-active {
   background: rgba(165, 180, 252, 0.1) !important;
-  border-color: #a5b4fc !important;
-  color: #a5b4fc !important;
+  border-color: #4ade80 !important;
+  color: #4ade80 !important;
 }
 
 .auc-tabs .ant-tabs-content {
@@ -566,7 +566,7 @@
 }
 
 .all_auction_table .fa_p_name {
-  color: #a5b4fc;
+  color: #4ade80;
   font-weight: 600;
   cursor: pointer;
   transition: color 0.2s ease;
@@ -580,8 +580,8 @@
 .auc-table-wrapper button,
 .new_table_container.auction_table_container button {
   background: rgba(165, 180, 252, 0.1) !important;
-  border: 1px solid #a5b4fc !important;
-  color: #a5b4fc !important;
+  border: 1px solid #4ade80 !important;
+  color: #4ade80 !important;
   padding: 8px 16px !important;
   border-radius: 6px !important;
   font-weight: 600;
@@ -592,7 +592,7 @@
 
 .auc-table-wrapper button:hover:not(:disabled),
 .new_table_container.auction_table_container button:hover:not(:disabled) {
-  background: #a5b4fc !important;
+  background: #4ade80 !important;
   color: #0D1220 !important;
 }
 

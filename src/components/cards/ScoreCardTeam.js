@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image } from 'antd'
+import TeamLogo from '../TeamLogo'
 
 const ScoreCardTeam = ({ alignment, data, score }) => {
   return (
@@ -12,7 +12,7 @@ const ScoreCardTeam = ({ alignment, data, score }) => {
         }}
       >
         <div className='image-container'>
-          <Image preview={false} alt='team-logo' src={data?.logo} />
+          <TeamLogo team={data} size={80} />
         </div>
         <div className='content'>
           <div className='top'>

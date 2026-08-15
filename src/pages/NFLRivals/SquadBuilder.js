@@ -1,13 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useSelector } from 'react-redux'
+import { Button, Input, Select, Spin, Empty, notification, Pagination } from 'antd'
 import {
-  Card, Button, Row, Col, Input, Select, Tag, Progress,
-  Statistic, Spin, Empty, notification, Pagination
-} from 'antd'
-import {
-  SearchOutlined, TeamOutlined, DeleteOutlined,
-  SaveOutlined, HolderOutlined, MedicineBoxOutlined,
-  AlertOutlined, ThunderboltOutlined, DollarOutlined
+  SearchOutlined, TeamOutlined, DeleteOutlined, SaveOutlined,
+  ThunderboltOutlined, DollarOutlined, AlertOutlined, LockOutlined,
 } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { privateAPI, attachToken } from '../../config/constants'
@@ -32,35 +28,43 @@ const POS_OPTIONS = [
 
 /* ─── Zone config matching backend validation ─── */
 const ZONES = [
-  { role: 'offense_starter',  label: 'Offense',       sublabel: '11 starters — QB, RB, WR, TE, OL', limit: OFFENSE_SIZE, color: '#22c55e' },
-  { role: 'defense_starter',  label: 'Defense',        sublabel: '11 starters — DL, LB, CB, S',      limit: DEFENSE_SIZE, color: '#3b82f6' },
-  { role: 'special_teams',    label: 'K / P',          sublabel: '1 Kicker + 1 Punter',               limit: SPECIAL_TEAMS_SIZE,  color: '#f59e0b' },
-  { role: 'bench',            label: 'Bench',          sublabel: 'Depth & backups (29 slots)',         limit: BENCH_SIZE, color: '#64748b' },
+  { role: 'offense_starter',  label: 'Offense', limit: OFFENSE_SIZE,        color: '#22c55e' },
+  { role: 'defense_starter',  label: 'Defense', limit: DEFENSE_SIZE,        color: '#3b82f6' },
+  { role: 'special_teams',    label: 'K / P',   limit: SPECIAL_TEAMS_SIZE,  color: '#f59e0b' },
+  { role: 'bench',            label: 'Bench',   limit: BENCH_SIZE,          color: '#8b5cf6' },
 ]
 
-const ROLE_COLORS = {}
 const ROLE_LABELS = {}
 const ROLE_LIMITS = {}
-ZONES.forEach(z => { ROLE_COLORS[z.role] = z.color; ROLE_LABELS[z.role] = z.label; ROLE_LIMITS[z.role] = z.limit })
+ZONES.forEach(z => { ROLE_LABELS[z.role] = z.label; ROLE_LIMITS[z.role] = z.limit })
 
+/* Muted HUD sublabel per zone */
+const ZONE_SUB = {
+  offense_starter: '11 STARTERS — QB, RB, WR, TE, OL',
+  defense_starter: '11 STARTERS — DL, LB, CB, S',
+  special_teams: '1 KICKER + 1 PUNTER',
+  bench: 'DRAG UP TO PROMOTE',
+}
+/* Short zone label rendered on each card */
+const ZONE_SHORT = {
+  offense_starter: 'OFFENSE',
+  defense_starter: 'DEFENSE',
+  special_teams: 'K/P',
+  bench: 'BENCH',
+}
+
+/* Position → tint color (purple HUD accents) */
 const POS_COLOR = {
-  QB: '#ef4444', RB: '#3b82f6', WR: '#22c55e', TE: '#f59e0b',
-  OL: '#64748b', OT: '#64748b', OG: '#64748b', C: '#64748b', G: '#64748b', T: '#64748b',
-  DE: '#a855f7', DT: '#a855f7', LB: '#ec4899', CB: '#06b6d4', S: '#06b6d4', SS: '#06b6d4', FS: '#06b6d4',
-  K: '#78716c', P: '#78716c',
+  QB: '#EF4444', RB: '#3B82F6', WR: '#22C55E', TE: '#F59E0B',
+  OL: '#8B5CF6', C: '#8B5CF6', G: '#8B5CF6', OG: '#8B5CF6', OT: '#8B5CF6', T: '#8B5CF6',
+  DL: '#A855F7', DE: '#A855F7', DT: '#A855F7', NT: '#A855F7',
+  LB: '#EC4899', CB: '#38BDF8', S: '#0EA5E9', FS: '#0EA5E9', SS: '#0EA5E9',
+  K: '#F59E0B', P: '#38BDF8',
 }
 
 const OFFENSE_POS = new Set(['QB', 'RB', 'WR', 'TE', 'OL', 'OT', 'OG', 'C', 'G', 'T'])
-const DEFENSE_POS = new Set(['DE', 'DT', 'LB', 'CB', 'S', 'SS', 'FS'])
+const DEFENSE_POS = new Set(['DE', 'DT', 'DL', 'NT', 'LB', 'CB', 'S', 'SS', 'FS'])
 const SPECIAL_POS = new Set(['K', 'P'])
-
-/* Suggest which zone a position belongs to */
-const suggestRole = (pos) => {
-  if (OFFENSE_POS.has(pos)) return 'offense_starter'
-  if (DEFENSE_POS.has(pos)) return 'defense_starter'
-  if (SPECIAL_POS.has(pos)) return 'special_teams'
-  return 'bench'
-}
 
 const formatValue = (v) => {
   if (!v) return '—'
@@ -79,32 +83,6 @@ const getPpg = (p) => {
 }
 
 const getSalary = (p) => p.otcCapHit || p.currentYearSalaryCap || p.PlayerCap || 0
-
-/* ═══ AI Coach Inline ═══ */
-const analyzeSquad = (squad) => {
-  const tips = []
-  if (!squad || squad.length === 0) return [{ icon: '🧠', text: 'Start building your roster — the AI Coach will analyze it as you add players.', color: '#A78BFA' }]
-
-  const offense = squad.filter(s => s.role === 'offense_starter')
-  const defense = squad.filter(s => s.role === 'defense_starter')
-  const special = squad.filter(s => s.role === 'special_teams')
-
-  if (offense.length < 11) tips.push({ icon: '🏈', text: `Offense: ${offense.length}/11 starters. Drag players from Bench to Offense.`, color: '#22c55e' })
-  if (defense.length < 11) tips.push({ icon: '🛡️', text: `Defense: ${defense.length}/11 starters. Drag players from Bench to Defense.`, color: '#3b82f6' })
-  if (special.length < 2) tips.push({ icon: '🦶', text: `Special Teams: ${special.length}/2. Add a Kicker and Punter.`, color: '#f59e0b' })
-
-  const activeQBs = offense.filter(s => (s.player?.Position || s.position) === 'QB')
-  if (offense.length >= 1 && activeQBs.length === 0) tips.push({ icon: '⚠️', text: 'No QB in Offense — you need exactly 1 starting quarterback.', color: '#ef4444' })
-  if (activeQBs.length > 1) tips.push({ icon: '⚠️', text: `${activeQBs.length} QBs in Offense — only 1 is allowed.`, color: '#ef4444' })
-
-  if (squad.length < 40) tips.push({ icon: '📋', text: `${squad.length}/53 roster spots used. Fill your roster for maximum depth.`, color: '#A78BFA' })
-
-  const injured = squad.filter(s => s.player?.isPlayerInjured)
-  if (injured.length > 0) tips.push({ icon: '🏥', text: `${injured.length} injured player${injured.length > 1 ? 's' : ''}. Check your depth chart.`, color: '#ef4444' })
-
-  if (tips.length === 0) tips.push({ icon: '✅', text: 'Roster looks solid! Save when ready.', color: '#22c55e' })
-  return tips.slice(0, 3)
-}
 
 const SquadBuilder = () => {
   const token = useSelector(s => s.user.token)
@@ -130,6 +108,9 @@ const SquadBuilder = () => {
   const [draftAttempts, setDraftAttempts] = useState(0)
   const [drafting, setDrafting] = useState(false)
   const MAX_DRAFT_ATTEMPTS = 5
+
+  const [collapsed, setCollapsed] = useState({})
+  const [recentlyAdded, setRecentlyAdded] = useState([])
 
   const [popupPlayerId, setPopupPlayerId] = useState(null)
   const [popupPlayer, setPopupPlayer] = useState(null)
@@ -169,6 +150,42 @@ const SquadBuilder = () => {
       notification.error({ message: 'Draft failed', description: err.response?.data?.message || 'Could not generate roster' })
     } finally {
       setDrafting(false)
+    }
+  }
+
+  /* Client-side Auto Fill — promote eligible Bench players into open starter slots */
+  const handleAutoFill = () => {
+    const updated = squad.map(s => ({ ...s }))
+    const fillOrder = [
+      { role: 'offense_starter', posSet: OFFENSE_POS, limit: OFFENSE_SIZE },
+      { role: 'defense_starter', posSet: DEFENSE_POS, limit: DEFENSE_SIZE },
+      { role: 'special_teams', posSet: SPECIAL_POS, limit: SPECIAL_TEAMS_SIZE },
+    ]
+    let moved = 0
+    fillOrder.forEach(z => {
+      let count = updated.filter(s => s.role === z.role).length
+      let hasQB = z.role === 'offense_starter' &&
+        updated.some(s => s.role === 'offense_starter' && (s.player?.Position || s.position) === 'QB')
+      for (let i = 0; i < updated.length && count < z.limit; i++) {
+        const s = updated[i]
+        if (s.role !== 'bench') continue
+        const pos = s.player?.Position || s.position || ''
+        if (!z.posSet.has(pos)) continue
+        if (z.role === 'offense_starter' && pos === 'QB') {
+          if (hasQB) continue
+          hasQB = true
+        }
+        updated[i] = { ...s, role: z.role }
+        count++
+        moved++
+      }
+    })
+    if (moved > 0) {
+      setSquad(updated)
+      setDirty(true)
+      notification.success({ message: 'Auto Fill', description: `Promoted ${moved} bench player${moved > 1 ? 's' : ''} into open starter slots.` })
+    } else {
+      notification.info({ message: 'Auto Fill', description: 'No eligible bench players to promote — add players or draft first.' })
     }
   }
 
@@ -217,6 +234,7 @@ const SquadBuilder = () => {
       player: player, playerId: player._id,
       role: 'bench', position: player.Position || '',
     }])
+    setRecentlyAdded(prev => [player, ...prev.filter(x => x._id !== player._id)].slice(0, 6))
     setDirty(true)
   }
 
@@ -333,6 +351,16 @@ const SquadBuilder = () => {
 
   const totalSalary = squad.reduce((sum, s) => sum + getSalary(s.player || {}), 0)
   const capPct = Math.min((totalSalary / SALARY_CAP) * 100, 100)
+  const overCap = totalSalary > SALARY_CAP
+  const underFloor = totalSalary < SALARY_FLOOR
+  const overBy = totalSalary - SALARY_CAP
+
+  const offCount = squad.filter(s => s.role === 'offense_starter').length
+  const defCount = squad.filter(s => s.role === 'defense_starter').length
+  const stCount = squad.filter(s => s.role === 'special_teams').length
+  const benchCount = squad.filter(s => s.role === 'bench').length
+
+  const trending = [...searchResults].sort((a, b) => getPpg(b) - getPpg(a)).slice(0, 5)
 
   const SortHeader = ({ field, label }) => {
     const isActive = sortField === field
@@ -351,263 +379,272 @@ const SquadBuilder = () => {
     )
   }
 
-  /* ─── Mini Player Card ─── */
-  const renderMiniCard = (s, zone) => {
+  /* ─── Player Card ─── */
+  const renderMiniCard = (s) => {
     const p = s.player || {}
     const pid = p._id || s.player
     const pos = p.Position || s.position || ''
-    const posColor = POS_COLOR[pos] || '#94a3b8'
+    const posColor = POS_COLOR[pos] || '#94A3B8'
     const playerName = p.Name || `${p.FirstName || ''} ${p.LastName || ''}`.trim() || 'Unknown'
-    const headshot = p.HostedHeadshotNoBackgroundUrl || p.Photo
+    const headshot = p.HostedHeadshotNoBackgroundUrl || p.Photo || p.photo || p.headshot
     const isDragging = dragPlayerId === pid
     const rating = getPpg(p)
     const ratingTier = rating >= 15 ? 'elite' : rating >= 8 ? 'good' : 'avg'
 
     return (
-      <div key={pid} className={`mc-card${isDragging ? ' mc-dragging' : ''}`}
-        style={{ '--mc-pos-color': posColor }}
+      <div key={pid} className={`nrb-card${isDragging ? ' nrb-card--drag' : ''}`}
+        style={{ '--pos-color': posColor }}
         draggable onDragStart={(e) => handleDragStart(e, pid)} onDragEnd={handleDragEnd}
         onClick={() => openPopup(p)}>
-        <button className="mc-cut" onClick={(e) => { e.stopPropagation(); removePlayer(pid) }} title="Cut player">
-          <DeleteOutlined />
+        <span className="nrb-card-pos" style={{ background: posColor }}>{pos}</span>
+        <button className="nrb-card-lock" onClick={(e) => { e.stopPropagation(); removePlayer(pid) }} title="Remove player">
+          <LockOutlined className="nrb-lock-i" />
+          <DeleteOutlined className="nrb-del-i" />
         </button>
-        <div className="mc-pos-badge" style={{ background: posColor }}>{pos}</div>
-        <div className="mc-photo-wrap">
-          <div className="mc-photo-ring"><div className="mc-photo-ring-inner" /></div>
-          {headshot ? (
-            <img src={headshot} alt="" className="mc-photo" />
-          ) : (
-            <div className="mc-photo-ph"><span>{playerName.charAt(0)}</span></div>
-          )}
-          {p.isPlayerInjured && <span className="mc-injured"><AlertOutlined /></span>}
+        <div className="nrb-card-photo" style={{ '--ring': posColor }}>
+          {p.Team && <img className="nrb-card-teamlogo" src={`https://a.espncdn.com/i/teamlogos/nfl/500/${String(p.Team).toLowerCase()}.png`} alt="" onError={(e) => { e.currentTarget.style.display = 'none' }} />}
+          <span className="nrb-card-ph">{playerName.charAt(0)}</span>
+          {headshot && <img src={headshot} alt="" className="nrb-card-img" onError={(e) => { e.currentTarget.remove() }} />}
+          {p.isPlayerInjured && <span className="nrb-card-inj"><AlertOutlined /></span>}
         </div>
-        <div className="mc-name">{playerName.split(' ').pop()}</div>
-        <div className="mc-details">
-          <span className={`mc-rating mc-rating--${ratingTier}`}>
-            {rating.toFixed(1)}
-          </span>
-          <span className="mc-value">{formatValue(getSalary(p))}</span>
+        <div className="nrb-card-name">{playerName.split(' ').pop()}</div>
+        <div className="nrb-card-meta">
+          <span className={`nrb-card-rating nrb-card-rating--${ratingTier}`}>{rating.toFixed(1)}</span>
+          <span className="nrb-card-value">{formatValue(getSalary(p))}</span>
         </div>
-        <select className="mc-zone-select" value={zone.role}
-          onClick={(e) => e.stopPropagation()}
-          onChange={(e) => changeRole(pid, e.target.value)}>
-          {ZONES.map(z => <option key={z.role} value={z.role}>{z.label}</option>)}
-        </select>
+        <div className="nrb-card-zonelbl">{ZONE_SHORT[s.role] || 'BENCH'}</div>
       </div>
     )
   }
 
-  /* ─── Empty slot placeholder ─── */
-  const renderEmptySlot = (zone, idx) => (
-    <div key={`empty-${zone.role}-${idx}`} className="mc-card mc-empty">
-      <div className="mc-empty-icon">+</div>
-      <div className="mc-empty-label">{zone.label}</div>
+  const renderEmptySlot = (role, idx) => (
+    <div key={`empty-${role}-${idx}`} className="nrb-card nrb-card--empty">
+      <div className="nrb-empty-plus">+</div>
+      <div className="nrb-empty-label">{ZONE_SHORT[role]}</div>
     </div>
   )
 
+  const renderZone = (zone) => {
+    const players = squad.filter(s => s.role === zone.role)
+    const emptySlots = Math.max(0, zone.limit - players.length)
+    const isCollapsed = collapsed[zone.role]
+    return (
+      <section key={zone.role}
+        className={`nrb-zone${dropTarget === zone.role ? ' nrb-zone--drop' : ''}`}
+        style={{ '--zone-color': zone.color }}
+        onDragOver={(e) => handleDragOver(e, zone.role)}
+        onDragLeave={(e) => handleDragLeave(e, zone.role)}
+        onDrop={(e) => handleDrop(e, zone.role)}>
+        <div className="nrb-zone-head">
+          <span className="nrb-zone-dot" />
+          <span className="nrb-zone-title">{zone.label.toUpperCase()}</span>
+          <span className="nrb-zone-count">{players.length}/{zone.limit}</span>
+          <span className="nrb-zone-sub">{ZONE_SUB[zone.role]}</span>
+          <button type="button" className="nrb-zone-chev"
+            onClick={() => setCollapsed(c => ({ ...c, [zone.role]: !c[zone.role] }))}
+            aria-label="Toggle section">
+            {isCollapsed ? '▸' : '▾'}
+          </button>
+        </div>
+        {!isCollapsed && (
+          <div className="nrb-row-wrap">
+            <button type="button" className="nrb-arrow nrb-arrow-l" aria-label="Scroll left"
+              onClick={(e) => { const r = e.currentTarget.parentElement.querySelector('.nrb-card-row'); if (r) r.scrollBy({ left: -320, behavior: 'smooth' }) }}>‹</button>
+            <div className="nrb-card-row">
+              {players.map(s => renderMiniCard(s))}
+              {Array.from({ length: emptySlots }).map((_, i) => renderEmptySlot(zone.role, i))}
+            </div>
+            <button type="button" className="nrb-arrow nrb-arrow-r" aria-label="Scroll right"
+              onClick={(e) => { const r = e.currentTarget.parentElement.querySelector('.nrb-card-row'); if (r) r.scrollBy({ left: 320, behavior: 'smooth' }) }}>›</button>
+          </div>
+        )}
+      </section>
+    )
+  }
+
   return (
-    <div className="nflr-page">
-      <h2 className="nflr-page-title"><TeamOutlined /> Roster Builder</h2>
+    <div className="nflr-page nrb-page">
+      {/* ═══ Header ═══ */}
+      <div className="nrb-header">
+        <h2 className="nrb-title"><TeamOutlined /> Roster Builder</h2>
+        <button
+          className={`nrb-savepill${dirty ? ' nrb-savepill--dirty' : ''}`}
+          disabled={saving || squad.length === 0}
+          onClick={() => handleSave(null, false)}>
+          <SaveOutlined /> {saving ? 'Saving…' : dirty ? 'Save Roster' : 'Roster Saved ✓'}
+        </button>
+      </div>
 
       {/* ═══ Stats Bar ═══ */}
-      <Card className="nflr-card" bordered={false} style={{ marginBottom: 20 }}>
-        <Row gutter={16} align="middle">
-          <Col xs={12} sm={3}>
-            <Statistic title="Players" value={squad.length} suffix="/ 53" valueStyle={{ color: squad.length === 53 ? '#4ade80' : '#e2e8f0' }} />
-          </Col>
-          {ZONES.map(z => (
-            <Col xs={12} sm={3} key={z.role}>
-              <Statistic title={z.label} value={squad.filter(s => s.role === z.role).length} suffix={`/ ${z.limit}`} valueStyle={{ color: z.color }} />
-            </Col>
-          ))}
-          <Col xs={24} sm={9}>
-            <div className="nflr-stat-row" style={{ marginBottom: 4 }}>
-              <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>Salary Cap</span>
-              <strong style={{ color: totalSalary > SALARY_CAP ? '#ef4444' : totalSalary < SALARY_FLOOR ? '#f59e0b' : '#A78BFA', fontSize: 14 }}>
-                {formatValue(totalSalary)} / {formatValue(SALARY_CAP)}
-              </strong>
-            </div>
-            <Progress percent={capPct} strokeColor={totalSalary > SALARY_CAP ? '#ef4444' : '#A78BFA'} showInfo={false} size="small" />
-            {totalSalary < SALARY_FLOOR && (
-              <div style={{ fontSize: 11, color: '#f59e0b', marginTop: 2 }}>Min floor: {formatValue(SALARY_FLOOR)}</div>
-            )}
-          </Col>
-        </Row>
-        <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
-          <Button type="primary" size="large" icon={<ThunderboltOutlined />} loading={drafting}
-            disabled={draftAttempts >= MAX_DRAFT_ATTEMPTS} onClick={handleRandomDraft}
-            style={{ background: 'linear-gradient(135deg, #8B5CF6, #6D28D9)', border: 'none', fontWeight: 700, flex: '0 0 auto' }}>
-            {drafting ? 'Drafting...' : `Random Draft${draftAttempts > 0 ? ` (${MAX_DRAFT_ATTEMPTS - draftAttempts} left)` : ''}`}
-          </Button>
-          <Button block type="primary" size="large" icon={<SaveOutlined />}
-            loading={saving} disabled={saving || squad.length === 0} onClick={() => handleSave(null, false)} className="nflr-gold-btn">
-            {saving ? 'Saving…' : dirty ? 'Save Roster' : 'Roster Saved ✓'}
-          </Button>
-          <Button size="large" icon={<DollarOutlined />} onClick={() => navigate('/nfl-rivals/buy-sp')}
-            style={{ background: 'linear-gradient(135deg, #10b981, #059669)', border: 'none', fontWeight: 700, color: '#fff', flex: '0 0 auto' }}>
-            Buy SP
-          </Button>
+      <div className="nrb-statsbar">
+        <div className="nrb-statcells">
+          <div className="nrb-stat">
+            <span className="nrb-stat-num" style={{ color: squad.length === 53 ? '#4ADE80' : '#e2e8f0' }}>{squad.length}/53</span>
+            <span className="nrb-stat-lbl">Players</span>
+          </div>
+          <div className="nrb-stat">
+            <span className="nrb-stat-num" style={{ color: '#22c55e' }}>{offCount}/11</span>
+            <span className="nrb-stat-lbl">Offense</span>
+          </div>
+          <div className="nrb-stat">
+            <span className="nrb-stat-num" style={{ color: '#3b82f6' }}>{defCount}/11</span>
+            <span className="nrb-stat-lbl">Defense</span>
+          </div>
+          <div className="nrb-stat">
+            <span className="nrb-stat-num" style={{ color: '#f59e0b' }}>{stCount}/2</span>
+            <span className="nrb-stat-lbl">K / P</span>
+          </div>
+          <div className="nrb-stat">
+            <span className="nrb-stat-num" style={{ color: '#A78BFA' }}>{benchCount}/29</span>
+            <span className="nrb-stat-lbl">Bench</span>
+          </div>
         </div>
-      </Card>
 
-      {/* ═══ AI Coach ═══ */}
-      <div style={{
-        background: 'rgba(167,139,250,0.06)', border: '1px solid rgba(167,139,250,0.2)',
-        borderRadius: 14, padding: '16px 20px', marginBottom: 20,
-        display: 'flex', alignItems: 'flex-start', gap: 16,
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 'fit-content' }}>
-          <MedicineBoxOutlined style={{ fontSize: 20, color: '#A78BFA' }} />
-          <span style={{ fontWeight: 700, fontSize: 14, color: '#A78BFA', fontFamily: "'Rajdhani', sans-serif", letterSpacing: '0.5px' }}>AI COACH</span>
+        <div className="nrb-cap">
+          <div className="nrb-cap-head">
+            <span className="nrb-cap-lbl">Salary Cap</span>
+            <span className="nrb-cap-val" style={{ color: overCap ? '#EF4444' : underFloor ? '#f59e0b' : '#4ADE80' }}>
+              {formatValue(totalSalary)} / {formatValue(SALARY_CAP)}
+            </span>
+          </div>
+          <div className="nrb-cap-bar">
+            <div className="nrb-cap-fill" style={{ width: `${capPct}%`, background: overCap ? '#EF4444' : 'linear-gradient(90deg,#22c55e,#4ADE80)' }} />
+          </div>
+          {overCap
+            ? <div className="nrb-cap-note nrb-cap-note--over">Over by {formatValue(overBy)}</div>
+            : underFloor
+              ? <div className="nrb-cap-note nrb-cap-note--warn">Min floor: {formatValue(SALARY_FLOOR)}</div>
+              : <div className="nrb-cap-note nrb-cap-note--ok">Under cap ✓</div>}
         </div>
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {analyzeSquad(squad).map((tip, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#CBD5E1' }}>
-              <span>{tip.icon}</span>
-              <span style={{ color: tip.color, fontWeight: 500 }}>{tip.text}</span>
-            </div>
-          ))}
+
+        <div className="nrb-actions">
+          <button className="nrb-btn nrb-btn--primary" disabled={drafting || draftAttempts >= MAX_DRAFT_ATTEMPTS} onClick={handleRandomDraft}>
+            <ThunderboltOutlined /> {drafting ? 'Drafting…' : `Random Draft${draftAttempts > 0 ? ` (${MAX_DRAFT_ATTEMPTS - draftAttempts})` : ''}`}
+          </button>
+          <button className="nrb-btn nrb-btn--dark" onClick={handleAutoFill}>Auto Fill</button>
+          <button className="nrb-btn nrb-btn--green" onClick={() => navigate('/nfl-rivals/buy-sp')}>
+            <DollarOutlined /> Buy SP
+          </button>
         </div>
       </div>
 
-      {/* ═══ Drag Instruction ═══ */}
-      <div style={{ marginBottom: 12, fontSize: 12, color: 'rgba(255,255,255,0.35)', textAlign: 'center' }}>
-        Drag players between zones, or use the dropdown on each player card
-      </div>
+      {/* ═══ Zone Sections ═══ */}
+      {ZONES.map(renderZone)}
 
-      {/* ═══ Starter Zones (Offense, Defense, K/P) — Card Grid ═══ */}
-      {ZONES.filter(z => z.role !== 'bench').map(zone => {
-        const zonePlayers = squad.filter(s => s.role === zone.role)
-        const emptySlots = Math.max(0, zone.limit - zonePlayers.length)
-        return (
-          <div key={zone.role}
-            className={`mc-zone${dropTarget === zone.role ? ' mc-zone-drop' : ''}${dragPlayerId ? ' mc-zone-dragging' : ''}`}
-            onDragOver={(e) => handleDragOver(e, zone.role)}
-            onDragLeave={(e) => handleDragLeave(e, zone.role)}
-            onDrop={(e) => handleDrop(e, zone.role)}
-            style={{ '--zone-accent': zone.color }}>
-            <div className="mc-zone-header">
-              <span className="mc-zone-dot" style={{ background: zone.color }} />
-              <span className="mc-zone-label">{zone.label}</span>
-              <span className="mc-zone-count">{zonePlayers.length}/{zone.limit}</span>
-              <span className="mc-zone-scoring">{zone.sublabel}</span>
-            </div>
-            <div className="mc-grid">
-              {zonePlayers.map(s => renderMiniCard(s, zone))}
-              {emptySlots > 0 && Array.from({ length: Math.min(emptySlots, 4) }).map((_, i) => renderEmptySlot(zone, i))}
-            </div>
-          </div>
-        )
-      })}
-
-      {/* ═══ Bench — Horizontal Scroll Carousel ═══ */}
-      {(() => {
-        const benchZone = ZONES.find(z => z.role === 'bench')
-        const benchPlayers = squad.filter(s => s.role === 'bench')
-        return (
-          <div
-            className={`mc-zone mc-zone-bench${dropTarget === 'bench' ? ' mc-zone-drop' : ''}${dragPlayerId ? ' mc-zone-dragging' : ''}`}
-            onDragOver={(e) => handleDragOver(e, 'bench')}
-            onDragLeave={(e) => handleDragLeave(e, 'bench')}
-            onDrop={(e) => handleDrop(e, 'bench')}
-            style={{ '--zone-accent': benchZone.color }}>
-            <div className="mc-zone-header">
-              <span className="mc-zone-dot" style={{ background: benchZone.color }} />
-              <span className="mc-zone-label">Bench</span>
-              <span className="mc-zone-count">{benchPlayers.length}/{benchZone.limit}</span>
-              <span className="mc-zone-scoring">Drag up to promote</span>
-            </div>
-            {benchPlayers.length > 0 ? (
-              <div className="mc-carousel">
-                <div className="mc-carousel-track">
-                  {benchPlayers.map(s => renderMiniCard(s, benchZone))}
-                </div>
-              </div>
-            ) : (
-              <div className="mc-zone-empty-msg">
-                {dragPlayerId ? 'Drop here for Bench' : 'No bench players — search below to sign players'}
-              </div>
-            )}
-          </div>
-        )
-      })()}
-
-      {/* ═══ Player Search ═══ */}
-      <Card className="nflr-card" bordered={false} style={{ marginBottom: 20, marginTop: 24 }}>
-        <h3 className="nflr-card-heading"><SearchOutlined /> Find Players</h3>
-        <Row gutter={[12, 12]} align="middle">
-          <Col xs={24} sm={10}>
-            <Input placeholder="Search by name..." value={searchQ} onChange={e => setSearchQ(e.target.value)}
-              onPressEnter={() => handleSearch(1)} allowClear prefix={<SearchOutlined style={{ color: 'rgba(255,255,255,0.3)' }} />} />
-          </Col>
-          <Col xs={12} sm={6}>
-            <Select placeholder="Position" allowClear style={{ width: '100%' }}
+      {/* ═══ Bottom: Find Players + side panels ═══ */}
+      <div className="nrb-bottom">
+        <div className="nrb-panel nrb-find">
+          <h3 className="nrb-find-title"><SearchOutlined /> Find Players</h3>
+          <div className="nrb-find-row">
+            <Input className="nrb-find-input" placeholder="Search by name…" value={searchQ}
+              onChange={e => setSearchQ(e.target.value)} onPressEnter={() => handleSearch(1)} allowClear
+              prefix={<SearchOutlined style={{ color: 'rgba(255,255,255,0.3)' }} />} />
+            <Select className="nrb-find-sel" placeholder="Position" allowClear style={{ minWidth: 150 }}
               value={searchPos || undefined} onChange={v => setSearchPos(v || '')} options={POS_OPTIONS} />
-          </Col>
-          <Col xs={12} sm={8}>
-            <Button type="primary" block loading={searchLoading} onClick={() => handleSearch(1)} className="nflr-gold-btn">Search</Button>
-          </Col>
-        </Row>
+            <Button className="nrb-find-btn" type="primary" loading={searchLoading} onClick={() => handleSearch(1)}
+              style={{ background: 'linear-gradient(135deg, #8B5CF6, #6D28D9)', border: 'none', fontWeight: 700 }}>
+              Search
+            </Button>
+          </div>
 
-        <div style={{ marginTop: 16 }}>
-          {searchLoading ? (
-            <div style={{ textAlign: 'center', padding: '40px 0' }}><Spin size="large" /></div>
-          ) : sortedResults.length > 0 ? (
-            <>
-              <div style={{ display: 'flex', gap: 12, marginBottom: 8, padding: '0 16px', flexWrap: 'wrap' }}>
-                <SortHeader field="pointsPerGame" label="Avg Wk Pts" />
-                <SortHeader field="PlayerCap" label="Salary" />
-                <SortHeader field="samAdp24" label="ADP" />
-              </div>
-              {sortedResults.map(p => {
-                const pos = p.Position || ''
-                const posColor = POS_COLOR[pos] || '#94a3b8'
-                const playerName = p.Name || `${p.FirstName || ''} ${p.LastName || ''}`.trim() || 'Unknown'
-                const headshot = p.HostedHeadshotNoBackgroundUrl
-                const inSquad = isInSquad(p._id)
-                return (
-                  <div key={p._id} className={`rp-row${inSquad ? ' in-squad' : ''}`}>
-                    <div className="rp-row-identity">
-                      {headshot ? <img src={headshot} alt="" className="rp-row-photo" /> : (
-                        <div className="rp-row-photo-placeholder"><span className="rp-row-photo-letter">{playerName.charAt(0)}</span></div>
-                      )}
-                      <div className="rp-row-info">
-                        <div className="rp-row-name" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                          <span className="rp-clickable-name" style={{ cursor: 'pointer' }} onClick={() => openPopup(p)}>{playerName}</span>
-                          {p.isPlayerInjured && <AlertOutlined style={{ color: '#ef4444', fontSize: 11 }} />}
-                        </div>
-                        <div className="rp-row-meta">
-                          <span className="rp-row-pos-tag" style={{ background: `${posColor}20`, color: posColor, border: `1px solid ${posColor}40` }}>{pos}</span>
-                          <span>{p.Team || '-'}</span>
-                          {p.Number && <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 11 }}>#{p.Number}</span>}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="rp-row-center">
-                      <div className="rp-row-stats">
-                        <div className="rp-row-stat"><span className="rp-row-stat-label">Avg Wk Pts</span><span className="rp-row-stat-value teal">{getPpg(p).toFixed(1)}</span></div>
-                        <div className="rp-row-stat"><span className="rp-row-stat-label">Salary</span><span className="rp-row-stat-value">{formatValue(getSalary(p))}</span></div>
-                      </div>
-                    </div>
-                    <div className="rp-row-actions">
-                      {inSquad ? <span className="rp-row-btn in-squad-tag">On Roster</span> : (
-                        <button className="rp-row-btn buy" onClick={() => addPlayer(p)}>+ Sign</button>
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
-              {searchTotal > 20 && (
-                <div style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
-                  <Pagination current={searchPage} total={searchTotal} pageSize={20} onChange={(p) => handleSearch(p)} showSizeChanger={false} size="small" />
+          <div style={{ marginTop: 16 }}>
+            {searchLoading ? (
+              <div style={{ textAlign: 'center', padding: '40px 0' }}><Spin size="large" /></div>
+            ) : sortedResults.length > 0 ? (
+              <>
+                <div style={{ display: 'flex', gap: 12, marginBottom: 8, padding: '0 16px', flexWrap: 'wrap' }}>
+                  <SortHeader field="pointsPerGame" label="Avg Wk Pts" />
+                  <SortHeader field="PlayerCap" label="Salary" />
+                  <SortHeader field="samAdp24" label="ADP" />
                 </div>
-              )}
-            </>
-          ) : (
-            <Empty description="Search for players to add to your roster" image={Empty.PRESENTED_IMAGE_SIMPLE} />
-          )}
+                {sortedResults.map(p => {
+                  const pos = p.Position || ''
+                  const posColor = POS_COLOR[pos] || '#94A3B8'
+                  const playerName = p.Name || `${p.FirstName || ''} ${p.LastName || ''}`.trim() || 'Unknown'
+                  const headshot = p.HostedHeadshotNoBackgroundUrl
+                  const inSquad = isInSquad(p._id)
+                  return (
+                    <div key={p._id} className={`rp-row${inSquad ? ' in-squad' : ''}`}>
+                      <div className="rp-row-identity">
+                        {headshot ? <img src={headshot} alt="" className="rp-row-photo" /> : (
+                          <div className="rp-row-photo-placeholder"><span className="rp-row-photo-letter">{playerName.charAt(0)}</span></div>
+                        )}
+                        <div className="rp-row-info">
+                          <div className="rp-row-name" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <span className="rp-clickable-name" style={{ cursor: 'pointer' }} onClick={() => openPopup(p)}>{playerName}</span>
+                            {p.isPlayerInjured && <AlertOutlined style={{ color: '#ef4444', fontSize: 11 }} />}
+                          </div>
+                          <div className="rp-row-meta">
+                            <span className="rp-row-pos-tag" style={{ background: `${posColor}20`, color: posColor, border: `1px solid ${posColor}40` }}>{pos}</span>
+                            <span>{p.Team || '-'}</span>
+                            {p.Number && <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 11 }}>#{p.Number}</span>}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="rp-row-center">
+                        <div className="rp-row-stats">
+                          <div className="rp-row-stat"><span className="rp-row-stat-label">Avg Wk Pts</span><span className="rp-row-stat-value teal">{getPpg(p).toFixed(1)}</span></div>
+                          <div className="rp-row-stat"><span className="rp-row-stat-label">Salary</span><span className="rp-row-stat-value">{formatValue(getSalary(p))}</span></div>
+                        </div>
+                      </div>
+                      <div className="rp-row-actions">
+                        {inSquad ? <span className="rp-row-btn in-squad-tag">On Roster</span> : (
+                          <button className="rp-row-btn buy" onClick={() => addPlayer(p)}>+ Sign</button>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+                {searchTotal > 20 && (
+                  <div style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
+                    <Pagination current={searchPage} total={searchTotal} pageSize={20} onChange={(p) => handleSearch(p)} showSizeChanger={false} size="small" />
+                  </div>
+                )}
+              </>
+            ) : (
+              <Empty description="Search for players to add to your roster" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+            )}
+          </div>
         </div>
-      </Card>
+
+        <div className="nrb-side">
+          <div className="nrb-panel nrb-mini">
+            <div className="nrb-mini-head">TRENDING PLAYERS</div>
+            {trending.length > 0 ? trending.map(p => {
+              const pos = p.Position || ''
+              const posColor = POS_COLOR[pos] || '#94A3B8'
+              const name = p.Name || `${p.FirstName || ''} ${p.LastName || ''}`.trim() || 'Unknown'
+              return (
+                <div key={p._id} className="nrb-mini-row" onClick={() => openPopup(p)}>
+                  <div className="nrb-mini-info">
+                    <span className="nrb-mini-name">{name}</span>
+                    <span className="nrb-mini-sub" style={{ color: posColor }}>{pos} · {p.Team || '-'}</span>
+                  </div>
+                  <span className="nrb-mini-val">{getPpg(p).toFixed(1)}</span>
+                </div>
+              )
+            }) : <div className="nrb-mini-empty">Search to see top-rated players</div>}
+          </div>
+
+          <div className="nrb-panel nrb-mini">
+            <div className="nrb-mini-head">RECENTLY ADDED</div>
+            {recentlyAdded.length > 0 ? recentlyAdded.map(p => {
+              const pos = p.Position || ''
+              const posColor = POS_COLOR[pos] || '#94A3B8'
+              const name = p.Name || `${p.FirstName || ''} ${p.LastName || ''}`.trim() || 'Unknown'
+              return (
+                <div key={p._id} className="nrb-mini-row" onClick={() => openPopup(p)}>
+                  <div className="nrb-mini-info">
+                    <span className="nrb-mini-name">{name}</span>
+                    <span className="nrb-mini-sub" style={{ color: posColor }}>{pos} · {p.Team || '-'}</span>
+                  </div>
+                  <span className="nrb-mini-val">{getPpg(p).toFixed(1)}</span>
+                </div>
+              )
+            }) : <div className="nrb-mini-empty">Players you sign this session appear here</div>}
+          </div>
+        </div>
+      </div>
 
       <NFLPlayerPopup playerId={popupPlayerId} player={popupPlayer} isOpen={popupOpen}
         onClose={() => { setPopupOpen(false); setPopupPlayerId(null); setPopupPlayer(null) }} />

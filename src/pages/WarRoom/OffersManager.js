@@ -173,7 +173,7 @@ const OffersManager = ({ accent }) => {
       },
       cancelButtonProps: {
         style: {
-          background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(110,105,128,0.2)',
+          background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(233,231,223,0.2)',
           color: 'rgba(255,255,255,0.6)', fontWeight: 600, fontFamily: "'Inter', sans-serif",
           borderRadius: '8px', height: '36px', fontSize: '12px',
         },
@@ -476,7 +476,7 @@ const OffersManager = ({ accent }) => {
         confirmLoading={loading}
         centered
         bodyStyle={{
-          backgroundColor: '#1a1a2e',
+          backgroundColor: '#0A0E17',
           borderRadius: '12px',
         }}
         modalRenderToBody={true}
@@ -587,7 +587,7 @@ const styles = {
   },
 
   card: accent => ({
-    backgroundColor: 'rgba(30, 30, 46, 0.6)',
+    backgroundColor: '#0A0E17',
     borderRadius: '12px',
     border: `1px solid ${accent?.rgba || 'rgba(255, 255, 255, 0.1)'}`,
     padding: '16px',
@@ -595,7 +595,7 @@ const styles = {
     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
     transition: 'all 0.3s ease',
     ':hover': {
-      backgroundColor: 'rgba(30, 30, 46, 0.8)',
+      backgroundColor: '#0A0E17',
       borderColor: accent?.primary,
     },
   }),
@@ -646,7 +646,7 @@ const styles = {
   },
 
   priceValue: {
-    color: '#fbbf24',
+    color: '#F7C948',
     fontWeight: 600,
     fontFamily: 'Rajdhani, sans-serif',
   },
@@ -658,8 +658,8 @@ const styles = {
 
     if (status === 'pending') {
       bgColor = 'rgba(251, 191, 36, 0.2)'
-      borderColor = '#fbbf24'
-      textColor = '#fbbf24'
+      borderColor = '#F7C948'
+      textColor = '#F7C948'
     } else if (status === 'accepted') {
       bgColor = 'rgba(16, 185, 129, 0.2)'
       borderColor = '#10b981'
@@ -860,7 +860,7 @@ const styles = {
   },
 
   negotiationAmount: {
-    color: '#fbbf24',
+    color: '#F7C948',
     fontWeight: 600,
     fontFamily: 'Rajdhani, sans-serif',
   },

@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import HubChat from './HubChat'
 
-// Right-docked community chat. Open by default on desktop, auto-collapsed on
-// mobile. Collapsed state shows a slim "Chat" tab on the right edge.
-export default function HubChatDock() {
+// Right-docked community chat. Collapsed state shows a slim "Chat" tab on the
+// right edge.
+//
+// `defaultOpen` matters more than it looks. This dock is now mounted app-wide,
+// and while open it pushes the page over by 372px (see the body padding below).
+// Defaulting to open would silently reflow every single page on the site the
+// moment a user logs in. So it starts COLLAPSED everywhere, and only the Hub —
+// where the chat is the point of the page — opens it by default.
+export default function HubChatDock({ defaultOpen = null }) {
   const isDesktop = () => (typeof window !== 'undefined' ? window.innerWidth >= 1024 : true)
-  const [open, setOpen] = useState(isDesktop())
+  // The Hub is the chat's home page, so it opens there. Everywhere else it waits
+  // to be asked. Read from the path rather than a prop because the single dock
+  // lives in App.js, above the router.
+  const onHub = () => (typeof window !== 'undefined' ? window.location.pathname.startsWith('/hub') : false)
+  const [open, setOpen] = useState((defaultOpen ?? onHub()) && isDesktop())
 
   useEffect(() => {
     const onResize = () => { if (!isDesktop()) setOpen(false) }
@@ -13,11 +23,9 @@ export default function HubChatDock() {
     return () => window.removeEventListener('resize', onResize)
   }, [])
 
-  // Reserve space so the fixed panel doesn't cover page content when open.
-  useEffect(() => {
-    document.body.style.paddingRight = open ? '372px' : ''
-    return () => { document.body.style.paddingRight = '' }
-  }, [open])
+  // The chat panel is a fixed overlay — it must NOT reflow/resize the page
+  // content when it opens (that squashed every box on the page). It simply
+  // floats over the right edge instead.
 
   if (!open) {
     return (

@@ -1,0 +1,36 @@
+.inj-sym {
+  --inj-c: #ef4444;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(239, 68, 68, 0.16);
+  background: color-mix(in srgb, var(--inj-c) 16%, transparent);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  border: 1px solid color-mix(in srgb, var(--inj-c) 45%, transparent);
+  color: var(--inj-c);
+  border-radius: 6px;
+  padding: 1px 5px;
+  font-weight: 800;
+  line-height: 1;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.inj-sym-cross {
+  color: var(--inj-c);
+  font-size: 0.95em;
+}
+.inj-sym-txt {
+  letter-spacing: 0.3px;
+}
+.inj-sym-sm {
+  font-size: 10px;
+}
+.inj-sym-lg {
+  font-size: 12px;
+  padding: 2px 7px;
+}
+/* Small spacing when placed inline after other meta text. */
+.inj-sym.pls-inj,
+.inj-sym.auc-inj {
+  margin-left: 6px;
+}

@@ -1,0 +1,188 @@
+/* ═══════════════════════════════════════════════════════════════
+   Starting XI (xi-*) — rebuilt field UI. Dark theme, green accents.
+   ═══════════════════════════════════════════════════════════════ */
+.xi-wrap {
+  --x-green:#24d26c; --x-bg:#04050a; --x-surface:#0a0d14; --x-surface2:#0e121b;
+  --x-border:rgba(255,255,255,0.06); --x-text:#f5f7fa; --x-muted:#8a93a6;
+  background:#04050a; min-height:100vh; color:var(--x-text); font-family:var(--font-body),-apple-system,sans-serif;
+}
+.xi { display:block; padding:16px 22px 50px; max-width:1840px; margin:0 auto; transition:padding-right .28s cubic-bezier(.22,.61,.36,1); }
+/* When the Replace-Player drawer is open, shrink the pitch to the left so it's
+   not covered by the drawer — the field stays fully visible and clickable. */
+.xi--drawer { padding-right:calc(min(600px, 58vw) + 24px); } /* always dock: shrink pitch beside the drawer at every width */
+.xi-main { min-width:0; display:flex; flex-direction:column; gap:14px; }
+
+/* Toolbar */
+.xi-toolbar { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+.xi-title { font-family:var(--font-heading),'Rajdhani',sans-serif; font-size:28px; font-weight:800; margin:0; color:#fff; }
+.xi-weekchip { display:inline-flex; align-items:center; height:36px; padding:0 16px; border-radius:9px; border:1px solid rgba(36,210,108,.35); background:rgba(36,210,108,.10); color:var(--x-green,#24d26c); font-weight:800; font-size:13px; white-space:nowrap; }
+.xi-sub { color:var(--x-muted); font-size:13px; margin:4px 0 0; }
+.xi-toolbar-right { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.xi-tabs { display:flex; gap:4px; background:var(--x-surface); border:1px solid var(--x-border); border-radius:10px; padding:4px; }
+.xi-tab { background:transparent; border:none; color:var(--x-muted); font-size:12.5px; font-weight:700; padding:8px 18px; border-radius:8px; cursor:pointer; }
+.xi-tab--on { background:linear-gradient(135deg,#16a34a,var(--x-green)); color:#04110a; }
+.xi-btn { display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; padding:9px 14px; border-radius:10px; cursor:pointer; border:1px solid var(--x-border); background:var(--x-surface); color:var(--x-text); }
+.xi-btn--ghost:hover { border-color:rgba(36,210,108,.4); }
+.xi-btn:disabled { opacity:.5; cursor:not-allowed; }
+.xi-formation { display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--x-muted); }
+.xi-formation select { background:var(--x-surface); color:#fff; border:1px solid var(--x-border); border-radius:9px; padding:8px 10px; font-size:12.5px; font-weight:700; cursor:pointer; }
+
+/* Field */
+.xi-field {
+  position:relative; border-radius:16px; overflow:hidden; padding:0;
+  /* Match the field photo's real proportions and show the WHOLE image,
+     un-cropped, so the endzone lettering + every yard line is visible. */
+  aspect-ratio:1584 / 946; min-height:480px;
+  background-color:#0f3d21;
+  background-image:url('../../assets/football-field-new.png');
+  background-size:100% 100%; background-position:center; background-repeat:no-repeat;
+  border:1px solid rgba(36,210,108,.22);
+}
+/* subtle darkening so the player cards stay readable over the field photo */
+.xi-field::after {
+  content:''; position:absolute; inset:0; pointer-events:none; z-index:0;
+  background:linear-gradient(180deg, rgba(0,0,0,.30), rgba(0,0,0,.10) 45%, rgba(0,0,0,.30));
+}
+/* Yard lines (horizontal) + numbers down each sideline */
+/* Drawn yard-lines removed — the field photo already has real lines + numbers. */
+.xi-field-lines { display:none; }
+
+/* ── Dev coordinate grid (?grid=1) ── */
+.xi-grid { position:absolute; inset:0; z-index:6; font-family:'JetBrains Mono','Courier New',monospace;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 calc(5% - 1px), rgba(255,255,255,.12) calc(5% - 1px) 5%),
+    repeating-linear-gradient(180deg, transparent 0 calc(5% - 1px), rgba(255,255,255,.12) calc(5% - 1px) 5%); }
+.xi-grid-v { position:absolute; top:0; bottom:0; width:1px; background:rgba(255,255,255,.4); }
+.xi-grid-h { position:absolute; left:0; right:0; height:1px; background:rgba(255,255,255,.4); }
+.xi-grid-lbl { position:absolute; top:2px; left:3px; font-size:10px; font-weight:700; color:#fff; background:rgba(0,0,0,.6); padding:0 4px; border-radius:3px; }
+.xi-grid-h .xi-grid-lbl { top:1px; }
+.xi-grid-readout { position:absolute; top:10px; right:10px; z-index:7; background:#000; color:#24d26c; font-size:13px; font-weight:700; padding:5px 10px; border-radius:7px; pointer-events:none; box-shadow:0 2px 10px rgba(0,0,0,.5); }
+.xi-field-lines::before, .xi-field-lines::after {
+  content:'50\A 40\A 30\A 20\A 10'; white-space:pre; position:absolute; top:44px;
+  font-family:var(--font-heading),'Rajdhani',sans-serif; font-weight:800; font-size:13px; letter-spacing:1px;
+  color:rgba(255,255,255,.22); line-height:118px;
+}
+.xi-field-lines::before { left:8px; }
+.xi-field-lines::after { right:8px; }
+.xi-field-loading { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; color:var(--x-muted); z-index:2; }
+/* Each player sits at an absolute point on the field, positioned by real
+   formation coordinates (percent x/y) computed in the page. This is what makes
+   the formation look right: OL tight on the line + WRs split wide + QB/RB
+   behind on offense; DL tight, LBs medium, secondary spread wide on defense. */
+.xi-slot { position:absolute; left:var(--x); top:var(--y); transform:translate(-50%,-50%) scale(calc(var(--scale,1) * var(--zoom,1))); transform-origin:center; z-index:1; }
+/* When the Replace-player drawer is open the field is squeezed to ~half width,
+   so shrink the cards to match and stop them piling up on each other. */
+.xi--drawer .xi-slot { --zoom:0.6; }
+/* Nearer slots (larger scale) should sit above farther ones so cards never look
+   like the distant player is in front. */
+.xi-slot:hover { z-index:3; }
+
+/* Player card */
+.xi-card { position:relative; width:84px; background:linear-gradient(180deg,#0e1520,#0a0f18); border:1px solid var(--x-border); border-top:3px solid var(--pos,#24d26c); border-radius:12px; padding:8px 7px 7px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:3px; transition:transform .14s ease, box-shadow .14s ease; }
+.xi-card:hover { transform:translateY(-2px); box-shadow:0 8px 22px rgba(0,0,0,.45); }
+.xi-card--empty { border-style:dashed; opacity:.75; }
+.xi-card-badge { position:absolute; top:6px; left:6px; font-size:9px; font-weight:800; color:var(--pos,#24d26c); background:color-mix(in srgb, var(--pos,#24d26c) 18%, transparent); border-radius:5px; padding:2px 6px; }
+.xi-card-photo { width:36px; height:36px; display:flex; align-items:center; justify-content:center; margin-top:6px; }
+.xi-card-plus { width:34px; height:34px; border-radius:50%; border:1.5px dashed var(--pos,#24d26c); color:var(--pos,#24d26c); display:flex; align-items:center; justify-content:center; font-size:20px; }
+.xi-card-name { font-size:11px; font-weight:700; color:#fff; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
+.xi-card-opp { font-size:9.5px; color:var(--x-muted); }
+.xi-card-stats { display:flex; gap:8px; font-size:9px; color:var(--x-muted); }
+.xi-card-stats b { color:#fff; font-family:var(--font-heading),'Rajdhani',sans-serif; }
+
+/* Special teams + bench */
+.xi-special, .xi-bench { background:var(--x-surface); border:1px solid var(--x-border); border-radius:14px; padding:12px 16px; }
+.xi-special-label, .xi-bench-label { display:block; font-size:11px; font-weight:800; letter-spacing:.5px; color:var(--x-muted); text-transform:uppercase; margin-bottom:10px; }
+.xi-special-cards { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+.xi-bench-cards { display:flex; gap:10px; overflow-x:auto; padding-bottom:4px; }
+.xi-bench-card { flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:4px; width:88px; padding:8px; background:var(--x-surface2); border:1px solid var(--x-border); border-radius:10px; }
+.xi-bench-card .xi-card-badge { position:static; }
+.xi-bench-name { font-size:10.5px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
+.xi-bench-empty { font-size:12.5px; color:var(--x-muted); }
+
+/* Sidebar */
+.xi-side { display:flex; flex-direction:column; gap:14px; }
+.xi-panel { background:var(--x-surface); border:1px solid var(--x-border); border-radius:14px; padding:14px 16px; }
+.xi-panel-hd { font-size:11px; font-weight:800; letter-spacing:.5px; color:var(--x-muted); margin-bottom:12px; }
+.xi-opp { font-size:12.5px; color:var(--x-muted); line-height:1.5; }
+.xi-opp-vs { color:var(--x-green); font-weight:800; margin-right:4px; }
+.xi-donut-wrap { display:flex; align-items:center; gap:12px; }
+.xi-donut-legend { flex:1; display:grid; grid-template-columns:1fr 1fr; gap:2px 10px; font-size:11px; color:var(--x-muted); }
+.xi-donut-legend > div { display:flex; align-items:center; gap:6px; }
+.xi-donut-legend span { width:8px; height:8px; border-radius:2px; }
+.xi-donut-legend b { margin-left:auto; color:#fff; }
+.xi-cap-val { font-family:var(--font-heading),'Rajdhani',sans-serif; font-size:22px; font-weight:800; color:#fff; }
+.xi-cap-val span { font-size:13px; color:var(--x-muted); }
+.xi-cap-bar { height:8px; border-radius:6px; background:#0a0e17; overflow:hidden; margin:9px 0 7px; }
+.xi-cap-bar > div { height:100%; border-radius:6px; background:linear-gradient(90deg,#16a34a,var(--x-green)); }
+.xi-cap-space { font-size:11px; color:var(--x-muted); }
+.xi-qa { display:flex; align-items:center; width:100%; font-size:13px; color:#fff; padding:10px 4px; cursor:pointer; background:transparent; border:none; border-top:1px solid var(--x-border); text-align:left; }
+.xi-qa:first-of-type { border-top:none; }
+.xi-qa-chev { margin-left:auto; color:var(--x-muted); }
+
+/* Entrance */
+.xi-card, .xi-panel { animation:xiFade .3s ease both; }
+@keyframes xiFade { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+@media (prefers-reduced-motion: reduce){ .xi-card,.xi-panel{ animation:none !important; } }
+
+/* Responsive */
+@media (max-width:1200px){ .xi{ grid-template-columns:1fr; } .xi-side{ flex-direction:row; flex-wrap:wrap; } .xi-side>*{ flex:1 1 240px; } }
+@media (max-width:640px){ .xi-card{ width:92px; } }
+/* Landscape mobile (iPhone Plus/Max) */
+@media (max-width:960px) and (max-height:500px) and (orientation:landscape){
+  .xi{ grid-template-columns:1fr; padding:8px 12px; }
+  .xi-field{ padding:0; }
+  .xi-card{ width:78px; }
+  .xi-side{ flex-direction:row; }
+}
+
+/* ── Mobile-first: tablet / large phone (portrait) ── */
+@media (max-width: 820px), (max-height: 520px) and (orientation: landscape){
+  .xi{ padding:12px 14px 40px; }
+  .xi-toolbar{ gap:10px; }
+  .xi-toolbar-right{ width:100%; }
+  .xi-title{ font-size:24px; }
+  .xi-field{ padding:0; }
+  .xi-row{ gap:8px; }
+  .xi-tab{ padding:10px 16px; }              /* ≥44px tap target */
+  .xi-btn{ min-height:44px; }
+  .xi-formation select{ min-height:44px; }
+}
+/* ── Phone (iPhone portrait) ── */
+@media (max-width:480px){
+  .xi{ padding:10px 10px 34px; }
+  .xi-title{ font-size:20px; }
+  .xi-field{ padding:0; border-radius:12px; }
+  .xi-row{ gap:6px; }
+  .xi-card{ width:72px; padding:7px 5px 6px; }
+  .xi-card-name{ font-size:10.5px; }
+  .xi-tabs{ flex:1 1 100%; }
+  .xi-tab{ flex:1; }                          /* Offense/Defense share the row */
+  .xi-formation{ width:100%; }
+  .xi-formation select{ flex:1; }
+  .xi-weekchip{ height:40px; }
+  .xi-btn{ flex:1; justify-content:center; }  /* Auto Fill / Reset full width */
+  .xi-special-cards{ gap:8px; }
+  .xi-bench-card{ width:80px; }
+}
+
+/* ── Illegal-squad notice bar (field stays viewable, edits blocked) ────── */
+.xi-illegal-bar{
+  display:flex; align-items:center; gap:12px;
+  margin:0 0 14px; padding:12px 16px;
+  border:1px solid rgba(239,68,68,.45); border-left:4px solid #ef4444;
+  border-radius:12px;
+  background:linear-gradient(90deg, rgba(239,68,68,.14), rgba(239,68,68,.04));
+}
+.xi-illegal-bar-icon{ font-size:20px; line-height:1; color:#ef4444; }
+.xi-illegal-bar-body{ flex:1; min-width:0; color:rgba(255,255,255,.78); font-size:13px; line-height:1.45; }
+.xi-illegal-bar-body b{ color:#fca5a5; }
+.xi-illegal-bar-link{
+  white-space:nowrap; padding:8px 16px; border-radius:8px;
+  background:linear-gradient(135deg, #24d26c, #15a34a); color:#04240f;
+  font-weight:800; font-size:12.5px; text-decoration:none;
+}
+.xi-illegal-bar-link:hover{ filter:brightness(1.05); }
+@media (max-width:640px){
+  .xi-illegal-bar{ flex-wrap:wrap; }
+  .xi-illegal-bar-link{ width:100%; text-align:center; }
+}

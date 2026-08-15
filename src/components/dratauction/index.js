@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import Header from '../../components/Header'
+import TeamLogo from '../TeamLogo'
 import { useSelector } from 'react-redux'
 import teamlogo from '../../assets/beast-square-2.png'
 import { Image, Spin, Button, notification } from 'antd'
@@ -174,7 +175,7 @@ const DraftAuction = () => {
 
                       <div className='dsa-cell dsa-cell-user'>
                         <div className='dsa-team-logo'>
-                          <Image preview={false} src={item?.team?.logo || teamlogo} alt='team' />
+                          <TeamLogo src={item?.team?.logo || teamlogo} name={item?.team?.name} size={36} round={false} />
                         </div>
                         <div className='dsa-user-info'>
                           <span className='dsa-username'>{item?.team?.user?.userName || '-'}</span>
@@ -253,7 +254,7 @@ const DraftAuction = () => {
                     <div className='dsa-myspot-info'>
                       <div className='dsa-myspot-team-row'>
                         <div className='dsa-team-logo dsa-team-logo-sm'>
-                          <Image preview={false} src={myDraftSpot?.team?.logo || teamlogo} alt='team' />
+                          <TeamLogo src={myDraftSpot?.team?.logo || teamlogo} name={myDraftSpot?.team?.name} size={30} round={false} />
                         </div>
                         <span className='dsa-myspot-username'>{myDraftSpot?.team?.user?.userName}</span>
                       </div>

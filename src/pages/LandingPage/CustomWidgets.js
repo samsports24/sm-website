@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { getStatus, fmtTime } from './constants'
 import { TeamBadge } from './MatchCard'
+import RaceCard from './RaceCard'
 import { prefetchMatchDetail } from './hooks/useAPIFootball'
 // espnGet removed — standings popup uses direct fetch to avoid shared cooldown
 
@@ -364,8 +365,8 @@ export const LiveScoresWidget = ({
   const filterTabs = [
     { key: 'all', label: `All (${events.length})` },
     { key: 'live', label: `Live${liveCt ? ` (${liveCt})` : ''}` },
-    { key: 'finished', label: 'Finished' },
     { key: 'scheduled', label: 'Upcoming' },
+    { key: 'finished', label: 'Results' },
   ]
 
   return (
@@ -1370,6 +1371,325 @@ export const H2HWidget = ({
 
 
 /* ═══════════════════════════════════════════════════════════════
+   MATCH CENTER, unified Live & Upcoming board (ESPN / Flashscore feel)
+   Flattens every competition into one dominant, filterable table:
+   tabs (All / Live / Upcoming / Results) + competition chips + search
+   + favourites (localStorage) + venue column. Featured live matches
+   render as cards above the table; the rest as a tight list.
+   ═══════════════════════════════════════════════════════════════ */
+
+const MC_FAV_KEY = 'ls_fav_competitions'
+const mcLoadFavs = () => {
+  try { return new Set(JSON.parse(localStorage.getItem(MC_FAV_KEY) || '[]')) } catch (e) { return new Set() }
+}
+const mcSaveFavs = (set) => {
+  try { localStorage.setItem(MC_FAV_KEY, JSON.stringify([...set])) } catch (e) { /* ignore */ }
+}
+// Pull the pieces we render from an ESPN-shaped event.
+const mcExtract = (ev) => {
+  const comp = ev?.competitions?.[0] || {}
+  const cs = comp.competitors || []
+  const home = cs.find(c => c.homeAway === 'home') || cs[0] || null
+  const away = cs.find(c => c.homeAway === 'away') || cs[1] || null
+  const venue = comp.venue?.fullName || comp.venue?.name || ''
+  return { home, away, venue }
+}
+
+// ESPN tennis scoreboards nest individual matches under each tournament event,
+// either in `competitions[]` or in `groupings[].competitions[]`. Flatten them
+// so every match becomes a standalone event the panel can render as one row.
+const flattenTennisEvents = (events) => {
+  const out = []
+  for (const ev of events || []) {
+    const comps = []
+    if (Array.isArray(ev.competitions)) comps.push(...ev.competitions)
+    if (Array.isArray(ev.groupings)) {
+      for (const g of ev.groupings) {
+        if (Array.isArray(g.competitions)) comps.push(...g.competitions)
+      }
+    }
+    if (!comps.length) { out.push(ev); continue }
+    for (const c of comps) {
+      // Skip entries with no players (e.g. placeholder rounds).
+      if (!Array.isArray(c.competitors) || c.competitors.length < 2) continue
+      out.push({
+        id: c.id || `${ev.id}-${out.length}`,
+        date: c.date || ev.date,
+        name: ev.name,
+        shortName: ev.shortName,
+        status: c.status || ev.status,
+        competitions: [c],
+      })
+    }
+  }
+  return out
+}
+// Tennis competitors carry an `athlete` (or `athletes`) instead of a `team`, so
+// the team-only lookups returned "—" for every player. Fall back to the athlete.
+const mcTeamName = (t) => {
+  const ath = t?.athlete || (Array.isArray(t?.athletes) ? t.athletes[0]?.athlete || t.athletes[0] : null)
+  return t?.team?.shortDisplayName || t?.team?.displayName || t?.team?.abbreviation ||
+    ath?.shortName || ath?.displayName || ath?.fullName || '—'
+}
+
+// One table row.
+const mcTeamId = (c) => {
+  const ath = c?.athlete || (Array.isArray(c?.athletes) ? c.athletes[0]?.athlete || c.athletes[0] : null)
+  return c?.team?.id || ath?.id || c?.id
+}
+const MatchRow = ({ m, fav, onFav, onClick, onTeamClick }) => {
+  // Racing (F1) has no home/away — render a race card instead of a match row.
+  if (m.sport === 'racing') {
+    return (
+      <div className="mc-race-row">
+        <RaceCard event={m.ev} />
+      </div>
+    )
+  }
+  const { home, away } = mcExtract(m.ev)
+  if (!home || !away) return null
+  const goTeam = (comp) => (e) => {
+    const id = mcTeamId(comp)
+    if (!id || !onTeamClick) return
+    e.stopPropagation()
+    onTeamClick(m.sport, m.league, id)
+  }
+  const st = m.st
+  const isLive = st.state === 'live' || st.state === 'halftime'
+  const isFinal = st.state === 'final'
+  const hasScore = home.score !== undefined && away.score !== undefined && (isLive || isFinal)
+  const homeWon = hasScore && isFinal && Number(home.score) > Number(away.score)
+  const awayWon = hasScore && isFinal && Number(away.score) > Number(home.score)
+  const timeCol = isLive ? (st.state === 'halftime' ? 'HT' : (st.clock || 'LIVE'))
+    : isFinal ? 'FT'
+      : (m.ev.date ? fmtTime(new Date(m.ev.date)) : '—')
+  return (
+    <div className="mc-row" onClick={onClick} role="button" tabIndex={0}>
+      <div className="mc-col-comp" title={m.comp}>
+        <span className="mc-comp-emoji">{m.emoji}</span>
+        <span className="mc-comp-name">{m.comp}</span>
+      </div>
+      <div className="mc-col-time" style={{ color: isLive ? T.red : T.textSecondary }}>{timeCol}</div>
+      <div className="mc-col-match">
+        <div className="mc-team mc-team-link" onClick={goTeam(home)} title={`View ${mcTeamName(home)}`}>
+          <TeamBadge team={home} size={18} />
+          <span className="mc-team-name" style={{ color: homeWon ? T.accent : T.white }}>{mcTeamName(home)}</span>
+        </div>
+        <div className="mc-team mc-team-link" onClick={goTeam(away)} title={`View ${mcTeamName(away)}`}>
+          <TeamBadge team={away} size={18} />
+          <span className="mc-team-name" style={{ color: awayWon ? T.accent : T.white }}>{mcTeamName(away)}</span>
+        </div>
+      </div>
+      <div className="mc-col-score">
+        {hasScore ? (
+          <>
+            <span style={{ color: homeWon ? T.accent : T.white }}>{home.score}</span>
+            <span style={{ color: awayWon ? T.accent : T.white }}>{away.score}</span>
+          </>
+        ) : <span className="mc-score-dash">-<br />-</span>}
+      </div>
+      <div className="mc-col-status">
+        {isLive ? <span className="mc-badge live">LIVE</span>
+          : isFinal ? <span className="mc-badge final">FT</span>
+            : <span className="mc-badge soon">UPCOMING</span>}
+      </div>
+      <button
+        className={`mc-col-fav ${fav ? 'on' : ''}`}
+        onClick={(e) => { e.stopPropagation(); onFav() }}
+        title={fav ? 'Remove favourite' : 'Add favourite'}
+      >{fav ? '★' : '☆'}</button>
+    </div>
+  )
+}
+
+// In-panel sport switcher (matches the mockup's Live & Upcoming header).
+const MC_PANEL_SPORTS = [
+  { key: 'soccer', emoji: '⚽', label: 'Soccer' },
+  { key: 'nfl', emoji: '🏈', label: 'Football' },
+  { key: 'nba', emoji: '🏀', label: 'Basketball' },
+  { key: 'mlb', emoji: '⚾', label: 'Baseball' },
+  { key: 'nhl', emoji: '🏒', label: 'Hockey' },
+  { key: 'tennis', emoji: '🎾', label: 'Tennis' },
+]
+const MC_MORE_SPORTS = [
+  // { key: 'worldcup', emoji: '🏆', label: 'World Cup 2026' }, // Hidden — WC 2026 over
+  { key: 'wnba', emoji: '🏀', label: 'WNBA' },
+  { key: 'f1', emoji: '🏎️', label: 'Formula 1' },
+  { key: 'standings', emoji: '📊', label: 'Standings' },
+  { key: 'ncaafb', emoji: '🎓', label: 'NCAAFB' },
+  { key: 'ncaab', emoji: '🎓', label: 'NCAAB' },
+]
+
+const MatchCenterPanel = ({ leagueGroups, activeSport, onSportChange, onMatchClick, onLeagueClick, onTeamClick }) => {
+  const [tab, setTab] = useState('all')
+  const [q, setQ] = useState('')
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [moreOpen, setMoreOpen] = useState(false)
+  const [favs, setFavs] = useState(() => mcLoadFavs())
+  const toggleFav = useCallback((name) => {
+    setFavs(prev => {
+      const n = new Set(prev)
+      if (n.has(name)) n.delete(name); else n.add(name)
+      mcSaveFavs(n)
+      return n
+    })
+  }, [])
+
+  // Flatten every competition's events into one tagged list.
+  const withStatus = useMemo(() => {
+    const out = []
+    ;(leagueGroups || []).forEach(lg => {
+      (lg.events || []).forEach(ev => {
+        out.push({ ev, comp: lg.name, emoji: lg.emoji, sport: lg.sport, league: lg.league, st: getStatus(ev) })
+      })
+    })
+    return out
+  }, [leagueGroups])
+
+  const counts = useMemo(() => {
+    const c = { live: 0, upcoming: 0, results: 0 }
+    withStatus.forEach(m => {
+      const s = m.st.state
+      if (s === 'live' || s === 'halftime') c.live++
+      else if (s === 'scheduled') c.upcoming++
+      else if (s === 'final') c.results++
+    })
+    return c
+  }, [withStatus])
+
+  // Default to the combined "All" view so every score is visible with no extra
+  // click; reset to it when the sport changes.
+  useEffect(() => { setTab('all') }, [activeSport])
+
+  const rankState = (s) => (s === 'live' || s === 'halftime') ? 0 : s === 'scheduled' ? 1 : 2
+  const rows = useMemo(() => {
+    let r = withStatus
+    if (tab === 'live') r = r.filter(m => m.st.state === 'live' || m.st.state === 'halftime')
+    else if (tab === 'upcoming') r = r.filter(m => m.st.state === 'scheduled')
+    else if (tab === 'results' || tab === 'finished') r = r.filter(m => m.st.state === 'final')
+    // tab === 'all' → show everything (live, upcoming and results together)
+    if (q.trim()) {
+      const qq = q.trim().toLowerCase()
+      r = r.filter(m => {
+        const { home, away } = mcExtract(m.ev)
+        return `${m.comp} ${mcTeamName(home)} ${mcTeamName(away)}`.toLowerCase().includes(qq)
+      })
+    }
+    return [...r].sort((a, b) => {
+      const d = rankState(a.st.state) - rankState(b.st.state)
+      if (d !== 0) return d
+      return new Date(a.ev.date || 0) - new Date(b.ev.date || 0)
+    })
+  }, [withStatus, tab, q])
+
+  const TABS = [
+    { key: 'all', label: 'All', n: counts.live + counts.upcoming + counts.results },
+    { key: 'live', label: 'Live', n: counts.live },
+    { key: 'upcoming', label: 'Upcoming', n: counts.upcoming },
+    { key: 'results', label: 'Results', n: counts.results },
+    { key: 'finished', label: 'Finished', n: counts.results },
+  ]
+
+  const clickMatch = (m) => onMatchClick?.(m.ev.id, m.sport, m.league, m.comp)
+  const isMoreActive = !MC_PANEL_SPORTS.some(s => s.key === activeSport)
+
+  return (
+    <div className="mc-wrap">
+      {/* Sport switcher row + search */}
+      <div className="mc-sports">
+        {MC_PANEL_SPORTS.map(s => (
+          <button
+            key={s.key}
+            className={`mc-sport${activeSport === s.key ? ' active' : ''}`}
+            onClick={() => onSportChange?.(s.key)}
+          >
+            <span className="mc-sport-emoji">{s.emoji}</span>{s.label}
+          </button>
+        ))}
+        <div className="mc-more">
+          <button className={`mc-sport${isMoreActive ? ' active' : ''}`} onClick={() => setMoreOpen(v => !v)}>··· More</button>
+          {moreOpen && (
+            <div className="mc-more-menu">
+              {MC_MORE_SPORTS.map(s => (
+                <button key={s.key} className="mc-more-item" onClick={() => { onSportChange?.(s.key); setMoreOpen(false) }}>
+                  <span className="mc-sport-emoji">{s.emoji}</span>{s.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        <span className="mc-sports-spacer" />
+        <button
+          className={`mc-search-toggle${searchOpen ? ' active' : ''}`}
+          onClick={() => { setSearchOpen(v => !v); if (searchOpen) setQ('') }}
+          title="Search matches"
+        >🔍</button>
+      </div>
+
+      {searchOpen && (
+        <div className="mc-searchbar">
+          <input
+            autoFocus
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search team or competition"
+            className="mc-search-input"
+          />
+          {q && <button className="mc-search-clear" onClick={() => setQ('')}>×</button>}
+        </div>
+      )}
+
+      {/* Status tabs */}
+      <div className="mc-toolbar">
+        <div className="mc-tabs">
+          {TABS.map(t => (
+            <button key={t.key} className={`mc-tab${tab === t.key ? ' active' : ''}`} onClick={() => setTab(t.key)}>
+              {t.key === 'live' && t.n > 0 && <span className="mc-tab-dot" />}
+              {t.label}{t.n > 0 && <span className="mc-tab-n">{t.n}</span>}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Table */}
+      {rows.length > 0 ? (
+        <>
+          <div className="mc-thead">
+            <span className="mc-col-comp">Competition</span>
+            <span className="mc-col-time">Time</span>
+            <span className="mc-col-match">Match</span>
+            <span className="mc-col-score">Score</span>
+            <span className="mc-col-status">Status</span>
+            <span className="mc-col-fav" />
+          </div>
+          {rows.map(m => (
+            <MatchRow
+              key={m.ev.id}
+              m={m}
+              fav={favs.has(m.comp)}
+              onFav={() => toggleFav(m.comp)}
+              onClick={() => clickMatch(m)}
+              onTeamClick={onTeamClick}
+            />
+          ))}
+        </>
+      ) : (
+        <div className="mc-empty">
+          {withStatus.length === 0
+            ? 'No matches on this date for this sport. Try another date, or switch sport above.'
+            : `No matches ${tab === 'live' ? 'live right now' : tab === 'upcoming' ? 'scheduled' : 'finished yet'}.`}
+        </div>
+      )}
+
+      {/* All Live Scores footer link — only when there is something to view */}
+      {withStatus.length > 0 && (
+        <div className="mc-foot" onClick={() => onLeagueClick?.()}>View All Live Scores ›</div>
+      )}
+    </div>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
    6. SPORT WIDGET PANEL, Combined widget for a sport's landing tab
    Orchestrates LiveScoresWidget for different sports
    ═══════════════════════════════════════════════════════════════ */
@@ -1968,12 +2288,14 @@ export const SportWidgetPanel = ({
   activeSport,
   currentTab,
   soccerData,
+  liveSoccerFixtures,
   tennisData,
   leagueData,
   onMatchClick,
+  onSportChange,
+  onTeamClick,
 }) => {
   const [popupLeague, setPopupLeague] = useState(null)
-  const [rankingPopup, setRankingPopup] = useState(null)
   const isSoccer = activeSport === 'soccer'
   const isTennis = activeSport === 'tennis'
   const isMultiLeague = isSoccer || isTennis
@@ -1995,10 +2317,32 @@ export const SportWidgetPanel = ({
         .map(item => ({
           name: item.lg.name,
           emoji: item.lg.emoji || (isSoccer ? '⚽' : '🎾'),
-          events: item.events || [],
+          // ESPN tennis returns each TOURNAMENT as one event, with the actual
+          // matches nested under competitions / groupings[].competitions. The
+          // panel renders one row per event, so it was showing a single garbled
+          // row per tournament. Flatten every match into its own event so each
+          // singles/doubles match becomes its own row.
+          events: isTennis ? flattenTennisEvents(item.events || []) : (item.events || []),
           sport: isSoccer ? 'soccer' : 'tennis',
           league: item.lg.id,
         }))
+    }
+    // Merge ALL live soccer fixtures (any competition, not just the whitelist)
+    // so every live soccer match shows here, grouped by its own competition.
+    if (isSoccer && Array.isArray(liveSoccerFixtures) && liveSoccerFixtures.length) {
+      const seen = new Set(leagueGroups.flatMap(g => g.events.map(e => e.id)))
+      const byLeague = {}
+      for (const ev of liveSoccerFixtures) {
+        if (!ev || seen.has(ev.id)) continue
+        const key = ev._leagueName || 'Live'
+        if (!byLeague[key]) byLeague[key] = []
+        byLeague[key].push(ev)
+      }
+      for (const [name, events] of Object.entries(byLeague)) {
+        const existing = leagueGroups.find(g => g.name === name)
+        if (existing) existing.events = [...existing.events, ...events]
+        else leagueGroups.push({ name, emoji: '⚽', events, sport: 'soccer', league: events[0]?._leagueId || name })
+      }
     }
   } else if (leagueData?.events) {
     const leagueName = leagueData.leagueName || currentTab?.label || activeSport.charAt(0).toUpperCase() + activeSport.slice(1)
@@ -2011,8 +2355,6 @@ export const SportWidgetPanel = ({
       league: currentTab?.league || leagueData.league || activeSport,
     }]
   }
-
-  const hasMatches = leagueGroups.some(lb => lb.events?.length > 0)
 
   if (isLoading) {
     return (
@@ -2030,16 +2372,6 @@ export const SportWidgetPanel = ({
     )
   }
 
-  if (!hasMatches) {
-    return (
-      <WidgetBox style={{ padding: '40px 20px', textAlign: 'center' }}>
-        <span style={{
-          fontFamily: T.fontBd, fontSize: 14, color: T.textDim,
-        }}>No matches available for this date</span>
-      </WidgetBox>
-    )
-  }
-
   // Soccer leagues that have SAM ranking data
   const SAM_RANKING_LEAGUES = [39, 140, 78, 135, 61] // EPL, La Liga, Bundesliga, Serie A, Ligue 1
   const hasSamRanking = (lg) => {
@@ -2050,28 +2382,22 @@ export const SportWidgetPanel = ({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      {leagueGroups.map(lg => (
-        <LiveScoresWidget
-          key={lg.league}
-          events={lg.events}
-          leagueName={lg.name}
-          emoji={lg.emoji}
-          onGameClick={(eventId) => onMatchClick?.(eventId, lg.sport, lg.league, lg.name)}
-          onLeagueClick={() => setPopupLeague(lg)}
-          onRankingClick={hasSamRanking(lg) ? () => setRankingPopup(lg) : undefined}
-        />
-      ))}
+      <MatchCenterPanel
+        leagueGroups={leagueGroups}
+        activeSport={activeSport}
+        onSportChange={onSportChange}
+        onMatchClick={onMatchClick}
+        onTeamClick={onTeamClick}
+        onLeagueClick={() => {
+          // Open standings for the first SAM-ranking league if available, else first league.
+          const ranked = leagueGroups.find(hasSamRanking)
+          setPopupLeague(ranked || leagueGroups[0])
+        }}
+      />
       {popupLeague && (
         <StandingsPopup
           league={popupLeague}
           onClose={() => setPopupLeague(null)}
-        />
-      )}
-      {rankingPopup && (
-        <TopPerformersPopup
-          league={rankingPopup}
-          sport={rankingPopup.sport === 'football' ? 'nfl' : rankingPopup.sport}
-          onClose={() => setRankingPopup(null)}
         />
       )}
     </div>
@@ -2114,4 +2440,5 @@ export {
   WidgetBox,
   WidgetHeader,
   GameRow,
+  TopPerformersPopup,
 }

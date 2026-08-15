@@ -52,5 +52,7 @@
     display: block;
     background: var(--backgroundGradient1);
     /* padding: 0.6rem 1.4rem; */
+    /* Keep page content clear of the fixed MobileBottomNav bar. */
+    padding-bottom: 88px;
   }
 }

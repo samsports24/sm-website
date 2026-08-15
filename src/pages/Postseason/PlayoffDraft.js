@@ -14,6 +14,7 @@ import {
 import Header from '../../components/Header'
 import SamDatePicker from '../../components/SamDatePicker'
 import { attachToken, privateAPI } from '../../config/constants'
+import { getLeagueDetails } from '../../redux/actions/leagueActions'
 import OnboardingGuide from '../../components/OnboardingGuide'
 import BreakingNewsPopup from '../../components/BreakingNewsPopup'
 
@@ -143,7 +144,10 @@ const PlayoffDraft = () => {
 
   // ── Load drafts ────────────────────────────────────────────
   const loadDrafts = useCallback(async () => {
-    if (!leagueId) return
+    // No league in redux yet (e.g. landing directly on /playoff-draft) → don't
+    // leave the page spinning forever; clear the loader and let the league fetch
+    // below re-trigger this once currentLeague is populated.
+    if (!leagueId) { setLoading(false); return }
     try {
       attachToken()
       const res = await privateAPI.get(`/playoff-draft/status?leagueId=${leagueId}`)
@@ -179,6 +183,10 @@ const PlayoffDraft = () => {
       console.error('Failed to load pool:', err)
     }
   }
+
+  // If we arrived here without a league in redux (direct navigation / refresh),
+  // fetch it so leagueId resolves and the draft can load.
+  useEffect(() => { if (!leagueId) getLeagueDetails() }, [leagueId])
 
   useEffect(() => { loadDrafts() }, [loadDrafts])
 

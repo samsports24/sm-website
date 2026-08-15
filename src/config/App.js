@@ -7,8 +7,10 @@ import '../styles/style.css'
 import Routes from './Routes'
 // FloatingChat removed – chat notifications now shown in sidebar badge
 // import FloatingChat from '../components/FloatingChat'
+import HubChatDock from '../components/PlatformChat/HubChatDock'
 import SamAIChat from '../components/SamAIChat'
 import PasswordChangeModal from '../components/PasswordChangeModal'
+import RotateHint from '../components/RotateHint'
 import { light, dark } from './theme'
 import { getUser } from '../redux'
 import { version, base_url } from './constants'
@@ -17,7 +19,7 @@ import io from 'socket.io-client'
 import { setSocket } from '../redux/actions/socketAction'
 import { initErrorReporting } from '../utils/errorReporter'
 import { trackPageView } from '../utils/analytics'
-import { getUserLeagues } from '../redux/actions/leagueActions'
+import { getUserLeagues, ensureActiveLeague } from '../redux/actions/leagueActions'
 // AnnouncementBanner moved inside Routes.js (must be inside BrowserRouter)
 
 // Initialize global error listeners (window.onerror, unhandledrejection)
@@ -61,6 +63,15 @@ const App = () => {
     }
   }, [authenticatedID, dispatch]);
 
+  // OneSignal web push — init once on mount, then link the signed-in user so the
+  // backend can push draft/auction alerts to them by id.
+  useEffect(() => {
+    import('../utils/oneSignal').then((m) => {
+      m.initOneSignal()
+      if (authenticatedID) m.linkOneSignalUser(authenticatedID)
+    }).catch(() => {})
+  }, [authenticatedID])
+
   useEffect(() => {
     if (theme === 'light') {
       Object.keys(light).forEach((key) => {
@@ -90,7 +101,11 @@ const App = () => {
   useEffect(() => {
     // Version check is handled in Routes.js — only fetch user data here
     if (localStorage.getItem('token')) {
-      dispatch(getUser())
+      // Load the user, then if no active league is selected but they belong to
+      // one, silently activate it so the app isn't stuck on "select a league first."
+      Promise.resolve(dispatch(getUser()))
+        .then(() => ensureActiveLeague())
+        .catch(() => {})
       // Fetch user leagues on app initialization
       try {
         getUserLeagues().catch(() => {
@@ -120,9 +135,16 @@ const App = () => {
       <button style={{marginLeft: '10px', padding: '5px 10px', cursor: 'pointer', position: 'fixed', right: '10px'}} onClick={handleExit}>Exit</button>
     </div>}
     <Routes />
-    {/* FloatingChat removed – notifications handled by sidebar badge */}
+    {/* Platform-wide community chat, docked right on every authenticated page.
+        It used to be mounted ONLY inside pages/SportHub, which meant the
+        "global" chat existed on /hub and nowhere else — navigate anywhere and
+        the community disappeared. Soccer has always mounted it app-wide; this
+        brings NFL in line. Starts collapsed (a slim tab on the right edge) so it
+        doesn't reflow pages until the user opens it. */}
+    {authenticatedID && <HubChatDock />}
     <SamAIChat />
     <PasswordChangeModal />
+    <RotateHint />
     </div>
   </PlayerImagesProvider>)
 }

@@ -8,6 +8,7 @@ import {
 } from '@ant-design/icons'
 import { Tag, Button, notification } from 'antd'
 import { toggleDraftPause, getSmartAutoDraftPick, addPlayerToDraft } from '../../redux/actions/draftAction'
+import TeamLogo from '../../components/TeamLogo'
 
 // ── Countdown Hook (same as supplemental/rookie drafts) ──
 const useCountdown = (deadline) => {
@@ -218,14 +219,7 @@ const ClockComponent = () => {
         <div className="sd-card" style={{ marginTop: '8px' }}>
           <div className="sd-card-body" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px' }}>
             {onTheClock?.team?.logo && (
-              <div
-                style={{
-                  width: 40, height: 40, borderRadius: 8,
-                  backgroundImage: `url(${onTheClock.team.logo})`,
-                  backgroundSize: 'cover', backgroundPosition: 'center',
-                  flexShrink: 0,
-                }}
-              />
+              <TeamLogo team={onTheClock.team} size={40} round={false} />
             )}
             <div>
               <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>On The Clock</div>

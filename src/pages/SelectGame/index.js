@@ -32,31 +32,51 @@ const SelectGame = () => {
   useEffect(() => {
     const queryParameters = new URLSearchParams(window.location.search)
     const token = queryParameters.get('token')
-    if (token) {
-      const decodedToken = jwtDecode(token)
+    if (!token) return
+    // A malformed/expired token shouldn't blank the whole page — bail quietly.
+    let decodedToken
+    try { decodedToken = jwtDecode(token) } catch { return }
+    if (decodedToken.emailsent) {
       setDecodeEmail(decodedToken.emailsent)
       localStorage.setItem('email', decodedToken.emailsent)
-      setUser(decodedToken.user)
       form.setFieldValue('email', decodedToken.emailsent)
-      if (decodedToken.league) {
-        localStorage.setItem('AssignLeague', decodedToken.league)
-        // Persist invite context in keys that survive session cleanup, so the
-        // user is auto-joined after signup/onboarding with no manual code.
-        localStorage.setItem('pendingInviteLeague', decodedToken.league)
-        localStorage.setItem('pendingInviteSport', 'football')
-        // Already logged in? Send them to the invite review screen so they can
-        // see the league details and Accept or Decline (no more silent join).
-        const existingToken = localStorage.getItem('token')
-        if (existingToken) {
-          window.location.replace(`/hub/invite/${token}`)
-        }
+    }
+    setUser(decodedToken.user)
+    if (decodedToken.league) {
+      localStorage.setItem('AssignLeague', decodedToken.league)
+      // Persist invite context in keys that survive session cleanup, so the
+      // user is auto-joined after signup/onboarding with no manual code.
+      localStorage.setItem('pendingInviteLeague', decodedToken.league)
+      localStorage.setItem('pendingInviteSport', 'football')
+      // Preserve the invite THROUGH auth. This is the signup page, but the person
+      // may already have an account (e.g. an older invite link that was baked as a
+      // "new user" URL). If they log in via the "Log In" link, bring them straight
+      // to the invitation review to name a team and join — no second account.
+      localStorage.setItem('redirectAfterLogin', `/hub/invite/${token}`)
+      // Already logged in? Skip signup entirely and go review + join now.
+      const existingToken = localStorage.getItem('token')
+      if (existingToken) {
+        window.location.replace(`/hub/invite/${token}`)
+      } else if (
+        decodedToken.isRegistered &&
+        !localStorage.getItem('token') &&
+        !localStorage.getItem('authToken')
+      ) {
+        // Logged OUT, but the token says this email already has an account.
+        // Showing the signup form here is a dead end (their email is taken), so
+        // send them to sign in — redirectAfterLogin (set just above) then brings
+        // them back to the invitation review to name a team and join the EXACT
+        // league from the invite. Match InviteReview, which sends logged-out
+        // users to '/' (login is a <Navigate to='/'>). Genuine new users
+        // (isRegistered falsy) still fall through and see the signup form.
+        window.location.replace('/')
       }
-      if (decodedToken.paid) {
-        localStorage.setItem('paid', decodedToken.paid)
-      }
-      if (decodedToken.invitation_Type) {
-        localStorage.setItem('myinvitationtype', decodedToken.invitation_Type)
-      }
+    }
+    if (decodedToken.paid) {
+      localStorage.setItem('paid', decodedToken.paid)
+    }
+    if (decodedToken.invitation_Type) {
+      localStorage.setItem('myinvitationtype', decodedToken.invitation_Type)
     }
   }, [])
 

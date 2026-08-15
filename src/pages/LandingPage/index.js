@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import SEO from '../../components/SEO'
@@ -14,17 +14,18 @@ import { SportWidgetPanel } from './CustomWidgets'
 // Toggle: use new widget-style panels (set to true to enable)
 const USE_WIDGET_PANELS = true
 import LeftSidebar from './LeftSidebar'
-import RightSidebar, { AuthCard } from './RightSidebar'
+import RightSidebar from './RightSidebar'
 import MatchDrawer from './MatchDrawer'
 import NewsCarousel from './NewsCarousel'
+import rivalsHeroSoccer from '../../assets/rivals-hero-soccer.png'
+import rivalsHeroNfl from '../../assets/rivals-hero-nfl.png'
 import StandingsPanel from './StandingsPanel'
-import WorldCupHub from './WorldCupHub'
 import Footer from './Footer'
 import ArticlesWidget from './ArticlesWidget'
+import { getLatestArticles } from '../../soccer/services/articleService'
 import PartnerAdverts from './PartnerAdverts'
 import PartnerSimpleLanding from './PartnerSimpleLanding'
 import { usePartner } from '../../contexts/PartnerContext'
-import EcosystemPopup from '../../components/EcosystemPopup'
 import LoginModal from '../../components/LoginModal'
 import { summarizeArticleUrl } from '../../redux/actions/newsAction'
 
@@ -36,11 +37,21 @@ import {
   useESPNLeaders,
   espnGet
 } from './hooks/useESPNData'
-import { useSoccerFixtures } from './hooks/useAPIFootball'
+import { useSoccerFixtures, useLiveFixtures } from './hooks/useAPIFootball'
 import { useGNews } from './hooks/useGNewsData'
 
-// Use API-Football for soccer if key is configured
-const USE_API_FOOTBALL = !!process.env.REACT_APP_API_FOOTBALL_KEY
+// Soccer comes from the API-Football proxy on the soccer backend. The key lives
+// on the BACKEND, so we must NOT gate this on a frontend env var — if that var is
+// absent from a build, the app silently skips the working proxy and shows no
+// soccer. Always use the proxy; the ESPN fallback covers the rare case it's empty.
+const USE_API_FOOTBALL = true
+
+// SAM Rivals hero banners (soccer + NFL). Wide art with black bars top/bottom
+// that get cropped to a short, wide strip.
+const RIVALS_HEROES = [rivalsHeroSoccer, rivalsHeroNfl]
+
+// Backend base URL for the public landing-ads endpoint (admin-managed adverts).
+const BACKEND_URL = process.env.REACT_APP_API_URL || 'https://backend.samsports.io'
 
 // Constants
 import {
@@ -222,12 +233,42 @@ const LandingPage = () => {
   // Login modal state
   const [loginModalOpen, setLoginModalOpen] = useState(false)
 
-  // Top banner slide rotation (3 slides: SamSports, SAM RIVALS, SamSports)
-  const [bannerSlide, setBannerSlide] = useState(0)
+  // SAM Rivals hero banner — rotates between the football and soccer versions.
+  const [heroIdx, setHeroIdx] = useState(0)
+  const heroPausedRef = useRef(false)
   useEffect(() => {
-    const t = setInterval(() => setBannerSlide(prev => (prev + 1) % 3), 6000)
-    return () => clearInterval(t)
+    const id = setInterval(() => {
+      if (!heroPausedRef.current) setHeroIdx((i) => (i + 1) % RIVALS_HEROES.length)
+    }, 6000)
+    return () => clearInterval(id)
   }, [])
+
+  // Admin-managed landing adverts (hero / left / right). Only ACTIVE ads with an
+  // image are used; everything else falls back to the built-in promos.
+  const [landingAds, setLandingAds] = useState({})
+  useEffect(() => {
+    let alive = true
+    fetch(`${BACKEND_URL}/landing-ads`)
+      .then((r) => r.json())
+      .then((res) => {
+        if (!alive) return
+        const list = res?.data?.ads || res?.ads || []
+        const map = {}
+        list.forEach((a) => {
+          if (a && a.active !== false && a.imageUrl) map[a.slot] = a
+        })
+        setLandingAds(map)
+      })
+      .catch(() => {})
+    return () => { alive = false }
+  }, [])
+
+  // Ad click: external URLs use a full navigation, internal paths use the router.
+  const handleAdClick = useCallback((linkUrl) => {
+    if (!linkUrl) { navigate('/select-game'); return }
+    if (/^https?:\/\//i.test(linkUrl)) window.location.href = linkUrl
+    else navigate(linkUrl)
+  }, [navigate])
 
   // Drawer state
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -305,6 +346,10 @@ const LandingPage = () => {
   // Soccer: only fetch when soccer tab is active
   const espnSoccerData = useSoccerScoreboards(selectedDate, isSoccerActive)
   const afSoccerData = useSoccerFixtures(USE_API_FOOTBALL && isSoccerActive ? selectedDate : null)
+  // All currently-live fixtures, independent of the league whitelist, the
+  // selected date, OR the active tab — the ticker is a global bar, so live soccer
+  // should show there even when the user is on another sport's tab.
+  const { fixtures: liveSoccerFixtures } = useLiveFixtures(USE_API_FOOTBALL)
 
   // Soccer source is API-Football ONLY (when the key is present). We do NOT
   // merge ESPN in: the same competition appears under different names across
@@ -318,6 +363,14 @@ const LandingPage = () => {
     const afLeagues = afSoccerData?.leagues || []
     const totalMatches = afLeagues.reduce((s, l) => s + (l.events?.length || 0), 0)
     const activeLeagues = afLeagues.filter(l => l.events?.length > 0).length
+
+    // Resilience: if API-Football returned nothing once it has finished loading
+    // (proxy down, missing/invalid key, exhausted quota, or a gap the AF league
+    // list doesn't cover) fall back to the ESPN feed so soccer still shows.
+    if (totalMatches === 0 && afSoccerData && afSoccerData.loading === false) {
+      const espnTotal = (espnSoccerData?.leagues || []).reduce((s, l) => s + (l.events?.length || 0), 0)
+      if (espnTotal > 0) return espnSoccerData
+    }
 
     return {
       leagues: afLeagues,
@@ -345,7 +398,43 @@ const LandingPage = () => {
   )
 
   // News data (GNews API)
-  const { articles: newsArticles } = useGNews()
+  const { articles: gnewsArticles } = useGNews()
+
+  // SAM AI articles (generated via the admin panel) — blended into the same feed.
+  const [aiArticles, setAiArticles] = useState([])
+  useEffect(() => {
+    let alive = true
+    getLatestArticles(20)
+      .then((res) => {
+        const list = res?.data?.data?.articles || []
+        if (!alive) return
+        const SPORT_META = { football: { s: 'nfl', i: '🏈', l: 'A.Football' } }
+        setAiArticles(list.map((a) => {
+          const meta = SPORT_META[a.sport] || { s: 'soccer', i: '⚽', l: 'Soccer' }
+          return {
+            headline: a.title,
+            title: a.title,
+            published: a.createdAt || a.publishedAt,
+            images: a.coverImage ? [{ url: a.coverImage }] : [],
+            links: { web: { href: `/articles?article=${a.slug}` } },
+            source: 'SAM AI',
+            _sport: meta.s,
+            _icon: meta.i,
+            _label: meta.l,
+            _ai: true,
+            _slug: a.slug,
+          }
+        }))
+      })
+      .catch(() => {})
+    return () => { alive = false }
+  }, [])
+
+  // Blended feed: SAM AI articles mixed with real headlines, newest first.
+  const newsArticles = useMemo(() => {
+    const combined = [...aiArticles, ...(gnewsArticles || [])]
+    return combined.sort((a, b) => new Date(b.published || 0) - new Date(a.published || 0))
+  }, [aiArticles, gnewsArticles])
 
   // Leaders (top scorers) — defer to avoid blocking initial render
   const [leadersReady, setLeadersReady] = useState(false)
@@ -432,12 +521,22 @@ const LandingPage = () => {
     }
 
     // Use already-fetched soccer data (API-Football + ESPN merged) — no extra API calls
+    const seenSoccer = new Set()
     for (const lg of (soccerData?.leagues || [])) {
       const tag = shortTag(lg.lg?.name || '')
       for (const ev of (lg.events || [])) {
+        if (ev.id) seenSoccer.add(ev.id)
         const item = parseEvent(ev, tag)
         if (item) items.push(item)
       }
+    }
+
+    // Merge in ALL live fixtures (unfiltered by league/date). This catches live
+    // matches in competitions that aren't in the configured league list.
+    for (const ev of (liveSoccerFixtures || [])) {
+      if (ev.id && seenSoccer.has(ev.id)) continue
+      const item = parseEvent(ev, shortTag(ev._leagueName || '') || 'Live')
+      if (item) items.push(item)
     }
 
     // Fetch US sports in parallel (only 4 calls — safe for ESPN rate limits)
@@ -475,16 +574,28 @@ const LandingPage = () => {
     const timer = setTimeout(buildTicker, 500)
     const interval = setInterval(buildTicker, 60000) // was 30s
     return () => { clearTimeout(timer); clearInterval(interval) }
-  }, [soccerData, leagueData, currentTab])
+  }, [soccerData, leagueData, currentTab, liveSoccerFixtures])
 
   // Headlines for left sidebar
   const headlines = useMemo(() => {
     if (!newsArticles.length) return []
-    return newsArticles.slice(0, 10).map(a => ({
+    // Lead with headlines for the sport the user is viewing (mockup shows
+    // soccer stories on the Soccer tab). Fall back to all news if that sport
+    // has none, so the panel is never empty.
+    const sportKey = activeSport === 'worldcup' ? 'soccer'
+      : (activeSport === 'standings' || activeSport === 'news') ? null
+        : activeSport === 'ncaafb' ? 'nfl'
+          : activeSport === 'ncaab' ? 'nba'
+            : activeSport
+    const inSport = sportKey ? newsArticles.filter(a => a._sport === sportKey) : []
+    const ordered = inSport.length
+      ? [...inSport, ...newsArticles.filter(a => a._sport !== sportKey)]
+      : newsArticles
+    return ordered.slice(0, 10).map(a => ({
       ...a,
       _timeAgo: a.published ? timeAgo(new Date(a.published)) : ''
     }))
-  }, [newsArticles])
+  }, [newsArticles, activeSport])
 
   // Match click handler
   const handleMatchClick = useCallback((eventId, sport, league, leagueName) => {
@@ -523,10 +634,6 @@ const LandingPage = () => {
 
   // Determine what main content to render
   const renderMainContent = () => {
-    if (activeSport === 'worldcup') {
-      return <WorldCupHub />
-    }
-
     if (activeSport === 'standings') {
       return <StandingsPanel activeStanding={activeStanding} onStandingChange={setActiveStanding} />
     }
@@ -542,9 +649,12 @@ const LandingPage = () => {
         activeSport={activeSport}
         currentTab={currentTab}
         soccerData={soccerData}
+        liveSoccerFixtures={liveSoccerFixtures}
         tennisData={tennisData}
         leagueData={leagueData}
         onMatchClick={handleMatchClick}
+        onSportChange={setActiveSport}
+        onTeamClick={(sp, lg, id) => navigate(`/team/${sp}/${lg}/${id}`)}
       />
     )
   }
@@ -570,9 +680,6 @@ const LandingPage = () => {
         path="/"
       />
 
-      {/* Ecosystem Popup - shows once per session */}
-      <EcosystemPopup />
-
       <LandingHeader
         activeSport={activeSport}
         onSportChange={setActiveSport}
@@ -586,59 +693,50 @@ const LandingPage = () => {
       {/* Partner Landing Banner Advert (only shows on partner subdomains) */}
       {isPartnerSite && <PartnerAdverts position="landing-banner" />}
 
-      {/* Rotating Promo Banner (2 SamSports + 1 SAM RIVALS) — hidden on partner sites */}
-      {!isPartnerSite && <div className="ls-top-banner-wrap">
-        <div className="ls-promo" onClick={() => navigate('/select-game')} style={bannerSlide !== 1 ? {background: 'linear-gradient(135deg, #0a1628 0%, #162544 50%, #0d2137 100%)'} : {}}>
-          <div className="ls-promo-glow" style={bannerSlide !== 1 ? {background: 'radial-gradient(circle at 15% 50%, rgba(59,130,246,0.2), transparent 60%)'} : {}} />
-          <div className="ls-promo-shimmer" />
-          <div className="ls-promo-inner">
-            {bannerSlide === 1 ? (
-              <>
-                <div className="ls-promo-left">
-                  <span className="ls-promo-badge" style={{background: 'rgba(124,58,237,0.2)', color: '#A78BFA', border: '1px solid rgba(124,58,237,0.4)'}}>NEW</span>
-                  <div className="ls-promo-copy">
-                    <span className="ls-promo-title">SAM <span className="ls-promo-highlight">RIVALS</span></span>
-                    <span className="ls-promo-sub">Climb divisions · H2H Matchups · Promotion &amp; Relegation · Earn SamPoints</span>
-                  </div>
-                </div>
-                <div className="ls-promo-right">
-                  <div className="ls-promo-sports">
-                    <span className="ls-promo-sport-pill active">Soccer</span>
-                    <span className="ls-promo-sport-pill active" style={{background: 'rgba(124,58,237,0.2)', borderColor: 'rgba(124,58,237,0.4)', color: '#A78BFA'}}>A.Football</span>
-                  </div>
-                  <button className="ls-promo-cta" onClick={e => { e.stopPropagation(); navigate('/select-game') }}>
-                    Enter Rivals
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="ls-promo-left">
-                  <div className="ls-promo-copy">
-                    <span className="ls-promo-title">SAM<span className="ls-promo-highlight" style={{color: '#3b82f6'}}>SPORTS</span></span>
-                    <span className="ls-promo-sub">Fantasy Sports Reimagined. Draft, trade and compete across A.Football, Soccer &amp; more.</span>
-                  </div>
-                </div>
-                <div className="ls-promo-right">
-                  <div className="ls-promo-sports">
-                    <span className="ls-promo-sport-pill active" style={{background: 'rgba(59,130,246,0.15)', borderColor: 'rgba(59,130,246,0.3)', color: '#60a5fa'}}>A.Football</span>
-                    <span className="ls-promo-sport-pill active">Soccer</span>
-                  </div>
-                  <button className="ls-promo-cta" onClick={e => { e.stopPropagation(); navigate('/select-game') }} style={{background: 'linear-gradient(135deg, #2563eb, #1d4ed8)'}}>
-                    Play Now
-                  </button>
-                </div>
-              </>
+      {/* Hero banner — an admin-configured advert if present, otherwise the
+          built-in SAM Rivals rotation (football & soccer versions). */}
+      {!isPartnerSite && (
+        landingAds.hero ? (
+          <div className="ls-top-banner-wrap">
+            <button className="ls-hero-banner" onClick={() => handleAdClick(landingAds.hero.linkUrl)} aria-label="Advertisement">
+              <img
+                src={landingAds.hero.imageUrl}
+                alt="Advertisement"
+                className="ls-hero-banner-img active"
+                loading="eager"
+              />
+            </button>
+          </div>
+        ) : (
+          <div className="ls-top-banner-wrap"
+            onMouseEnter={() => { heroPausedRef.current = true }}
+            onMouseLeave={() => { heroPausedRef.current = false }}>
+            <button className="ls-hero-banner" onClick={() => navigate('/select-game')} aria-label="SAM Rivals — enter">
+              {RIVALS_HEROES.map((img, i) => (
+                <img
+                  key={i}
+                  src={img}
+                  alt="SAM Rivals"
+                  className={`ls-hero-banner-img${i === heroIdx ? ' active' : ''}`}
+                  loading="eager"
+                />
+              ))}
+            </button>
+            {RIVALS_HEROES.length > 1 && (
+              <div className="ls-hero-dots">
+                {RIVALS_HEROES.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setHeroIdx(i)}
+                    className={`ls-hero-dot${i === heroIdx ? ' active' : ''}`}
+                    aria-label={`Banner ${i + 1}`}
+                  />
+                ))}
+              </div>
             )}
           </div>
-        </div>
-        {/* Slide dots */}
-        <div style={{display: 'flex', justifyContent: 'center', gap: 6, marginTop: 8}}>
-          {[0,1,2].map(i => (
-            <button key={i} onClick={() => setBannerSlide(i)} style={{width: bannerSlide === i ? 18 : 6, height: 6, borderRadius: 3, border: 'none', cursor: 'pointer', transition: 'all 0.3s', background: bannerSlide === i ? (i === 1 ? '#22c55e' : '#3b82f6') : 'rgba(255,255,255,0.15)'}} />
-          ))}
-        </div>
-      </div>}
+        )
+      )}
 
       {/* Partner In-Feed Advert (only on partner sites, between banner and content) */}
       {isPartnerSite && <PartnerAdverts position="in-feed" />}
@@ -646,24 +744,26 @@ const LandingPage = () => {
       {/* Date Navigation Bar */}
       <DateNavBar selectedDate={selectedDate} onDateChange={setSelectedDate} />
 
-      {/* Mobile Auth Card, visible only on narrow screens where sidebar is hidden */}
-      {!isAuthenticated && (
-        <div className="ls-mobile-auth-wrap">
-          <AuthCard onSignup={() => navigate('/select-game')} />
-        </div>
-      )}
+      {/* Mobile login is now on-demand: the header "Log in" button opens the
+          LoginModal, so we no longer show a persistent auth card on mobile. */}
 
       <div className="ls-layout">
         <LeftSidebar
           headlines={headlines}
           onViewAllNews={() => setActiveSport('news')}
           onArticleClick={handleArticleClick}
+          ad={landingAds.left}
         />
 
         <div className="ls-panels">
           <div className="ls-sec-hd">
             <div className="ls-sec-title">
-              {currentTab?.emoji} <span>{currentTab?.label || 'A.Football'}</span>
+              <span>{
+                activeSport === 'standings' ? 'Standings'
+                  : activeSport === 'worldcup' ? 'World Cup 2026'
+                    : activeSport === 'news' ? 'Latest News'
+                      : 'Live & Upcoming'
+              }</span>
             </div>
             <span className="ls-sec-sub">
               {activeSport === 'soccer' && soccerData?.totalMatches
@@ -678,12 +778,15 @@ const LandingPage = () => {
           <RightSidebar
             scorers={topScorers}
             isAuthenticated={isAuthenticated}
+            ad={landingAds.right}
           />
           {isPartnerSite && <PartnerAdverts position="sidebar" />}
         </div>
       </div>
 
-      <NewsCarousel articles={newsArticles} activeSport={activeSport} onArticleClick={handleArticleClick} />
+      {/* Key Stories carousel — not in the approved mockup; moved off the
+          landing for now (component preserved, just not rendered here). */}
+      {false && <NewsCarousel articles={newsArticles} activeSport={activeSport} onArticleClick={handleArticleClick} />}
 
       {/* SAM Reports — AI-Powered Match Analysis */}
       <ArticlesWidget limit={6} />
@@ -768,14 +871,19 @@ const NewsPanel = ({ articles = [] }) => {
       {slice.map((article, i) => {
         const img = article.images?.[0]?.url
         return (
-          <a key={i} href={article.links?.web?.href || '#'} target="_blank" rel="noopener noreferrer" className="ls-news-card">
+          <a key={i} href={article.links?.web?.href || '#'} {...(article._ai ? {} : { target: '_blank', rel: 'noopener noreferrer' })} className="ls-news-card">
             {img ? (
               <img className="ls-news-img" src={img} alt="" loading="lazy" />
             ) : (
               <div className="ls-news-img-ph">{article._icon || '📰'}</div>
             )}
             <div className="ls-news-body">
-              <div className="ls-news-sport">{article._icon} {article._label}</div>
+              <div className="ls-news-sport">
+                {article._icon} {article._label}
+                {article._ai && (
+                  <span style={{ marginLeft: 6, background: '#22C55E', color: '#04120a', fontSize: 9, fontWeight: 800, padding: '2px 6px', borderRadius: 4, textTransform: 'uppercase', letterSpacing: 0.5 }}>SAM AI</span>
+                )}
+              </div>
               <div className="ls-news-headline">{article.headline || article.title}</div>
               <div className="ls-news-meta">
                 {article.source && <><span>{article.source}</span><span style={{color:'var(--ls-gdim)'}}>·</span></>}

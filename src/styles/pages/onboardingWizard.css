@@ -613,3 +613,661 @@
   font-size: 11px;
   color: rgba(255,255,255,0.4);
 }
+
+/* ═══════════════════════════════════════════════
+   REDESIGNED SETUP STEP — "Let's get your league set up"
+   ═══════════════════════════════════════════════ */
+
+/* Wider body just for the setup step (two-column layout) */
+.ob-body--wide {
+  max-width: 1180px;
+  padding-top: 0;
+}
+
+.ob-setup-page {
+  animation: ob-fadeIn 0.35s ease;
+}
+
+/* ── Top status bar ── */
+.ob-topbar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 0 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  margin-bottom: 28px;
+}
+.ob-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-heading), sans-serif;
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 2px;
+  color: #22C55E;
+  flex: 1 0 auto;
+}
+.ob-brand-icon { height: 30px; width: 30px; }
+.ob-verify {
+  flex: 1 1 auto;
+  text-align: center;
+  min-width: 0;
+}
+.ob-verify-status {
+  font-size: 13px;
+  font-weight: 600;
+  color: #cbd5e1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.ob-verify-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #22C55E;
+  color: #0a0f14;
+  font-size: 11px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.ob-verify-ok { color: #22C55E; font-weight: 700; }
+.ob-verify-email {
+  font-size: 12px;
+  color: #6b7d8f;
+  margin-top: 3px;
+  font-family: var(--font-stats), sans-serif;
+}
+.ob-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1 0 auto;
+  justify-content: flex-end;
+}
+.ob-league-pill {
+  font-size: 12px;
+  font-weight: 600;
+  color: #cbd5e1;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  white-space: nowrap;
+}
+.ob-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #22C55E, #15803d);
+  color: #0a0f14;
+  font-weight: 800;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading), sans-serif;
+  flex-shrink: 0;
+}
+
+/* ── Heading ── */
+.ob-setup-heading {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.ob-setup-h1 {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin: 0 0 8px;
+}
+.ob-accent { color: #22C55E; }
+.ob-setup-sub {
+  font-size: 14px;
+  color: #8a9bae;
+  margin: 0;
+}
+
+/* ── 5-step progress bar ── */
+.ob-progress {
+  display: flex;
+  max-width: 640px;
+  margin: 0 auto 40px;
+}
+.ob-progress-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+.ob-progress-step::before {
+  content: '';
+  position: absolute;
+  top: 17px;
+  right: 50%;
+  left: -50%;
+  height: 2px;
+  background: rgba(255,255,255,0.12);
+  z-index: 0;
+}
+.ob-progress-step:first-child::before { display: none; }
+.ob-progress-circle {
+  position: relative;
+  z-index: 1;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 2px solid rgba(255,255,255,0.14);
+  color: #8a9bae;
+  font-weight: 700;
+  font-size: 14px;
+  font-family: var(--font-heading), sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ob-progress-label {
+  font-size: 12px;
+  color: #8a9bae;
+  font-weight: 600;
+}
+.ob-progress-step.active .ob-progress-circle {
+  background: #22C55E;
+  border-color: #22C55E;
+  color: #0a0f14;
+  box-shadow: 0 0 16px rgba(34, 197, 94, 0.35);
+}
+.ob-progress-step.active .ob-progress-label {
+  color: #22C55E;
+}
+
+/* ── Two-column layout ── */
+.ob-setup-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 28px;
+  align-items: start;
+}
+.ob-setup-main {
+  min-width: 0;
+}
+.ob-setup-aside {
+  min-width: 0;
+}
+
+/* ── Featured RECOMMENDED card ── */
+.ob-rec-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: left;
+  color: #e8eaed;
+  background: linear-gradient(180deg, rgba(239,68,68,0.05), rgba(255,255,255,0.02));
+  border: 1px solid var(--sport-color, #EF4444);
+  border-radius: 14px;
+  padding: 22px 24px;
+  margin-bottom: 14px;
+  cursor: pointer;
+  box-shadow: 0 0 24px -6px var(--sport-color, #EF4444);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.ob-rec-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 32px -4px var(--sport-color, #EF4444);
+}
+.ob-rec-badge {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: #EF4444;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+.ob-rec-body {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.ob-rec-icon { font-size: 44px; flex-shrink: 0; }
+.ob-rec-text { flex: 1; min-width: 0; }
+.ob-rec-title {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+}
+.ob-rec-sub {
+  font-size: 13px;
+  color: #8a9bae;
+  margin: 2px 0 10px;
+}
+.ob-rec-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ob-rec-chip {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #cbd5e1;
+}
+
+/* ── Option row cards (chevron + text layout) ── */
+.ob-option-text { flex: 1; min-width: 0; }
+.ob-option-chevron {
+  margin-left: auto;
+  font-size: 26px;
+  line-height: 1;
+  color: #6b7d8f;
+  font-weight: 400;
+  flex-shrink: 0;
+}
+.ob-option-card:hover .ob-option-chevron { color: #22C55E; }
+
+/* ── Why-Play rail ── */
+.ob-why {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 22px 20px;
+  position: sticky;
+  top: 20px;
+}
+.ob-why-title {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #22C55E;
+  margin-bottom: 18px;
+}
+.ob-why-item {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.ob-why-icon { font-size: 20px; line-height: 1.2; flex-shrink: 0; }
+.ob-why-item-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #e8eaed;
+}
+.ob-why-item-desc {
+  font-size: 12px;
+  color: #8a9bae;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+.ob-why-box {
+  background: rgba(34, 197, 94, 0.07);
+  border: 1px solid rgba(34, 197, 94, 0.22);
+  border-radius: 10px;
+  padding: 14px;
+  margin-top: 4px;
+}
+.ob-why-box-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #22C55E;
+}
+.ob-why-box-desc {
+  font-size: 12px;
+  color: #a7b6c6;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* ── Footer ── */
+.ob-footer {
+  text-align: center;
+  font-size: 12px;
+  color: #6b7d8f;
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  .ob-setup-layout { grid-template-columns: 1fr; }
+  .ob-why { position: static; }
+  .ob-topbar { flex-wrap: wrap; }
+  .ob-verify { order: 3; flex-basis: 100%; }
+  .ob-setup-h1 { font-size: 26px; }
+  .ob-progress-label { font-size: 10px; }
+}
+
+/* ═══════════════════════════════════════════════
+   REDESIGNED "YOU'RE ALL SET!" (READY) STEP
+   ═══════════════════════════════════════════════ */
+
+/* Completed progress steps (green checks) */
+.ob-progress-step.done .ob-progress-circle {
+  background: #22C55E;
+  border-color: #22C55E;
+  color: #0a0f14;
+}
+.ob-progress-step.done::before {
+  background: rgba(34, 197, 94, 0.5);
+}
+.ob-progress-step.done .ob-progress-label {
+  color: #cbd5e1;
+}
+.ob-progress-step.done.active .ob-progress-circle {
+  box-shadow: 0 0 16px rgba(34, 197, 94, 0.4);
+}
+.ob-progress-step.done.active .ob-progress-label {
+  color: #22C55E;
+}
+
+/* ── Center hero ── */
+.ob-done-hero {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.ob-done-hero .ob-done-icon {
+  font-size: 56px;
+  margin-bottom: 8px;
+}
+.ob-done-h1 {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 38px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin: 0 0 8px;
+}
+
+/* ── Two-column layout ── */
+.ob-done-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 28px;
+  align-items: start;
+}
+.ob-done-main { min-width: 0; }
+.ob-done-aside { min-width: 0; }
+
+/* ── League summary card ── */
+.ob-summary-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(34, 197, 94, 0.22);
+  border-radius: 16px;
+  padding: 24px 26px;
+  box-shadow: 0 0 30px -12px rgba(34, 197, 94, 0.35);
+}
+.ob-summary-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.ob-summary-emoji { font-size: 40px; flex-shrink: 0; }
+.ob-summary-titles { flex: 1; min-width: 0; }
+.ob-summary-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+}
+.ob-summary-badge {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #22C55E;
+}
+.ob-summary-sub {
+  font-size: 13px;
+  color: #8a9bae;
+  margin-top: 2px;
+}
+.ob-summary-teams {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #cbd5e1;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ob-summary-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 20px 0;
+}
+.ob-summary-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+.ob-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  text-align: center;
+  padding: 12px 6px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+}
+.ob-stat-icon { font-size: 20px; }
+.ob-stat-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #6b7d8f;
+}
+.ob-stat-value {
+  font-family: var(--font-stats), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #e8eaed;
+  line-height: 1.2;
+}
+.ob-summary-foot {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: #8a9bae;
+}
+
+/* ── Launch button + dashboard link ── */
+.ob-launch-btn {
+  display: block;
+  width: 100%;
+  margin: 22px 0 0;
+  padding: 16px 28px;
+  background: #22C55E;
+  color: #0a0f14;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 8px 24px -8px rgba(34, 197, 94, 0.6);
+}
+.ob-launch-btn:hover {
+  background: #16a34a;
+  transform: translateY(-1px);
+}
+.ob-dash-link {
+  display: block;
+  width: 100%;
+  margin: 14px 0 0;
+  padding: 6px;
+  background: transparent;
+  border: none;
+  color: #8a9bae;
+  font-size: 14px;
+  font-family: var(--font-body), sans-serif;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.ob-dash-link:hover { color: #22C55E; }
+
+/* ── Right rail: What's next ── */
+.ob-next {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 20px 18px;
+  margin-bottom: 18px;
+}
+.ob-next-title,
+.ob-code-title,
+.ob-help-title {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #22C55E;
+  margin-bottom: 14px;
+}
+.ob-next-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 12px 10px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #e8eaed;
+  transition: background 0.2s;
+}
+.ob-next-row:hover { background: rgba(34, 197, 94, 0.06); }
+.ob-next-icon { font-size: 20px; line-height: 1.2; flex-shrink: 0; }
+.ob-next-text { flex: 1; min-width: 0; }
+.ob-next-row-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #e8eaed;
+}
+.ob-next-row-desc {
+  font-size: 12px;
+  color: #8a9bae;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+.ob-next-row-sub {
+  font-size: 12px;
+  font-weight: 700;
+  color: #22C55E;
+  margin-top: 4px;
+}
+.ob-next-chevron {
+  font-size: 22px;
+  line-height: 1;
+  color: #6b7d8f;
+  flex-shrink: 0;
+  align-self: center;
+}
+.ob-next-row:hover .ob-next-chevron { color: #22C55E; }
+
+/* ── Right rail: League code ── */
+.ob-code-card {
+  background: rgba(34, 197, 94, 0.06);
+  border: 1px solid rgba(34, 197, 94, 0.22);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 18px;
+}
+.ob-code-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ob-code-value {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-stats), 'Courier New', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #22C55E;
+  word-break: break-all;
+}
+.ob-code-copy {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #e8eaed;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ob-code-copy:hover {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: rgba(34, 197, 94, 0.4);
+}
+.ob-code-hint {
+  font-size: 12px;
+  color: #8a9bae;
+  margin-top: 10px;
+}
+
+/* ── Right rail: Need help ── */
+.ob-help-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 20px 18px;
+}
+.ob-help-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #e8eaed;
+  transition: background 0.2s;
+}
+.ob-help-row:hover { background: rgba(34, 197, 94, 0.06); }
+.ob-help-icon { font-size: 18px; flex-shrink: 0; }
+.ob-help-text { flex: 1; font-size: 14px; font-weight: 600; }
+.ob-help-row:hover .ob-next-chevron { color: #22C55E; }
+
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  .ob-done-layout { grid-template-columns: 1fr; }
+  .ob-done-h1 { font-size: 30px; }
+  .ob-summary-stats { grid-template-columns: repeat(2, 1fr); }
+  .ob-summary-head { flex-wrap: wrap; }
+}
+@media (max-width: 480px) {
+  .ob-summary-stats { grid-template-columns: 1fr; }
+}

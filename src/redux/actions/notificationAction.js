@@ -182,6 +182,17 @@ export const getCommissionerAnnouncements = async () => {
   }
 }
 
+export const getLeagueActivity = async (limit = 15) => {
+  try {
+    attachToken()
+    const res = await privateAPI.get(`/notification/league-activity?limit=${limit}`)
+    return res?.data?.data || []
+  } catch (err) {
+    // Supplemental feed — fail quietly
+    return []
+  }
+}
+
 export const deleteCommissionerAnnouncement = async (id) => {
   try {
     attachToken()

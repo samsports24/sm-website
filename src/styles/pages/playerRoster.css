@@ -12,7 +12,7 @@
   --sqd-green: #22C55E;
   --sqd-blue: #3B82F6;
   --sqd-amber: #F59E0B;
-  --sqd-purple: #A855F7;
+  --sqd-purple: #22c55e;
   --sqd-red: #EF4444;
   --sqd-white: #F1F5F9;
   --sqd-gray: #94A3B8;
@@ -434,4 +434,30 @@
   .sqd-th-check { display: none; }
   .sqd-th-stats,
   .sqd-th-cap { display: none; }
+}
+
+/* ── Mobile-first: tablet / large phone (portrait) ── */
+/* NB: the table-header grid (.sqd-table-hd) collapses in lockstep with the row
+   grid (.rc-row in newRosterCard.css) at 1100/900/600 — column counts are left
+   untouched here so header and rows stay aligned. */
+@media (max-width: 820px), (max-height: 520px) and (orientation: landscape) {
+  .sqd-page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .sqd-page-week { align-self: flex-start; }
+  .sqd-section-hd { min-height: 56px; }
+}
+
+/* ── Phone (iPhone portrait) ── */
+@media (max-width: 480px) {
+  .sqd-page { padding: 0 12px 36px; }
+  .sqd-page-title { font-size: 20px; }
+  .sqd-page-icon { font-size: 24px; }
+  .sqd-page-week { font-size: 18px; padding: 5px 14px; }
+  .sqd-stats-bar { padding: 10px; gap: 6px; }
+  .sqd-stat { flex-direction: column; gap: 5px; }
+  .sqd-stat-num { font-size: 18px; }
+  .sqd-stat-label { font-size: 10px; }
+  .sqd-section-hd { padding: 12px; }
+  .sqd-section-left { gap: 8px; }
+  .sqd-section-title { font-size: 15px; }
+  .sqd-table-hd { padding: 10px 12px; }
 }

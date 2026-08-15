@@ -1,17 +1,30 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { privateAPI } from '../../config/constants'
 import { Spin } from 'antd'
+import {
+  WarningOutlined,
+  CheckCircleOutlined,
+  ReloadOutlined,
+  RobotOutlined,
+  SendOutlined,
+  MinusOutlined,
+} from '@ant-design/icons'
 import { SALARY_CAP, SALARY_FLOOR, SQUAD_SIZE, SPECIAL_TEAMS_SIZE } from './rivalsConfig'
+import './nfl-rivals.css'
 
 /* ═══════════════════════════════════════════════════════════════
    AI COACH — NFL Rivals Edition
-   Purple-themed (#A78BFA) Roster Health Analysis.
+   Dark sci-fi HUD (purple-on-near-black) roster health analysis.
    Fetches GET /nfl-rivals/profile → analyses squad locally.
    ═══════════════════════════════════════════════════════════════ */
 
 const GRADE_COLOR = { 'A+': '#22C55E', A: '#22C55E', B: '#84CC16', C: '#EAB308', D: '#F97316', F: '#EF4444' }
-const PRIO_COLOR  = { critical: '#EF4444', high: '#F97316', medium: '#EAB308', info: '#818CF8' }
-const SEV_COLOR   = { minor: '#EAB308', moderate: '#F97316', severe: '#EF4444' }
+const PRIO_COLOR  = { critical: '#EF4444', high: '#F97316', medium: '#EAB308', info: '#4ADE80' }
+const PRIO_ORDER  = { critical: 0, high: 1, medium: 2, info: 3 }
+
+/* ─── Unit display (NFL position groups) ─── */
+const UNIT_ICON  = { offense: '🏈', defense: '🛡️', special: '🦶' }
+const UNIT_LABEL = { offense: 'OFFENSE', defense: 'DEFENSE', special: 'SPECIAL TEAMS' }
 
 /* ─── Position helpers ─── */
 const OFFENSE_POS = new Set(['QB','RB','WR','TE','OL','OT','OG','C','G','T'])
@@ -34,6 +47,8 @@ const getPoints = (p) => {
   return p.pointsPerGame || p.avgPf || p.playerScore || 0
 }
 
+const nowTime = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+
 /* ─── Health Score Computation ─── */
 const computeHealth = (squad) => {
   const players = (squad || []).map(s => ({ ...s, playerData: s.player })).filter(s => s.playerData)
@@ -49,6 +64,7 @@ const computeHealth = (squad) => {
   // Role counts
   const roleCounts = { offense_starter: 0, defense_starter: 0, special_teams: 0, bench: 0 }
   const injuries = []
+  const suspensions = []
   let totalSalary = 0
 
   // Position detail
@@ -80,6 +96,14 @@ const computeHealth = (squad) => {
         injuryType: p.injuryType || 'Undisclosed',
         severity: 'moderate',
         daysOut: '?',
+      })
+    }
+
+    if (p.isSuspended) {
+      suspensions.push({
+        _id: p._id,
+        name: p.Name || 'Unknown',
+        position: pos,
       })
     }
   }
@@ -212,11 +236,12 @@ const computeHealth = (squad) => {
   }
 
   return {
-    score, grade, injuries, tips,
+    score, grade, injuries, suspensions, tips,
     unitHealth,
     roleCounts,
     squadSize: total,
     injuredCount: injuries.length,
+    suspendedCount: suspensions.length,
     totalSalary,
     posCount,
   }
@@ -225,21 +250,34 @@ const computeHealth = (squad) => {
 /* ═══ Component ═══ */
 const AICoachNFL = () => {
   const [data, setData] = useState(null)
+  const [squad, setSquad] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+
+  // Chat state
+  const [messages, setMessages] = useState(() => ([
+    { from: 'coach', text: "Hi! I'm your AI Coach. Ask me anything about your roster, players, strategy or upcoming fixtures.", time: nowTime() },
+  ]))
+  const [chatInput, setChatInput] = useState('')
+  const [typing, setTyping] = useState(false)
+  const listRef = useRef(null)
+
+  const attachToken = () => {
+    const token = localStorage.getItem('token')
+    if (token) {
+      privateAPI.defaults.headers.common.Authorization = `Bearer ${token}`
+    }
+  }
 
   const refresh = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
-      const token = localStorage.getItem('token')
-      if (token) {
-        privateAPI.defaults.headers.common.Authorization = `Bearer ${token}`
-      }
+      attachToken()
       const { data: res } = await privateAPI.get('/nfl-rivals/profile')
-      const squad = res.data?.entry?.squad || []
-      const analysis = computeHealth(squad)
-      setData(analysis)
+      const sq = res.data?.entry?.squad || []
+      setSquad(sq)
+      setData(computeHealth(sq))
     } catch (e) {
       setError(e?.response?.data?.message || 'Failed to fetch squad data.')
     } finally {
@@ -249,181 +287,309 @@ const AICoachNFL = () => {
 
   useEffect(() => { refresh() }, [refresh])
 
+  useEffect(() => {
+    if (listRef.current) listRef.current.scrollTop = listRef.current.scrollHeight
+  }, [messages, typing])
+
+  /* ─── Local coach brain (fallback when AI is unavailable) ─── */
+  const coachReply = (qRaw) => {
+    const q = (qRaw || '').toLowerCase()
+    const players = (squad || []).map(s => s.player).filter(Boolean)
+
+    const answerFlex = () => {
+      if (!players.length) return 'Add some players to your roster first, then I can suggest your best play.'
+      const best = players.reduce((a, b) => (getPoints(b) > getPoints(a) ? b : a))
+      return `Start ${best.Name || 'your top player'} — leading your roster at ${getPoints(best).toFixed(1)} pts/game.`
+    }
+
+    const answerTrades = () => {
+      const injured = players.filter(p => p.isPlayerInjured || p.injured)
+      const seen = new Set(injured.map(p => p._id))
+      const weak = players
+        .filter(p => !seen.has(p._id))
+        .sort((a, b) => getPoints(a) - getPoints(b))
+      const picks = []
+      injured.forEach(p => { if (picks.length < 3) picks.push({ p, reason: 'injured' }) })
+      weak.forEach(p => { if (picks.length < 3) picks.push({ p, reason: `low output ${getPoints(p).toFixed(1)} pts` }) })
+      if (!picks.length) return 'Your roster looks solid — no urgent trades.'
+      return 'Players to consider moving on:\n' + picks
+        .map(({ p, reason }) => `• ${p.Name || 'Player'} (${(p.Position || '—').toUpperCase()}) — ${reason}`)
+        .join('\n')
+    }
+
+    const answerCoverage = () => {
+      const uh = (data && data.unitHealth) || {}
+      const parts = Object.entries(uh).map(([u, i]) => `${UNIT_LABEL[u] || u.toUpperCase()} ${i.healthy}/${i.total}`)
+      if (!parts.length) return 'No roster data yet — add players to see your unit coverage.'
+      const lows = Object.entries(uh).filter(([, i]) => i.total > 0 && i.healthy / i.total < 0.6).map(([u]) => UNIT_LABEL[u] || u.toUpperCase())
+      let msg = parts.join(', ') + '.'
+      msg += lows.length ? ` Needs more healthy depth at ${lows.join(', ')}.` : ' Coverage looks balanced across all units.'
+      return msg
+    }
+
+    const answerFixtures = () => 'Head to the Matchday tab to see your upcoming fixtures and set your lineup.'
+
+    if (/flex|start|captain|best play|lineup|who.*play/.test(q)) return answerFlex()
+    if (/trade|sign|sell|buy|move|drop|cut/.test(q)) return answerTrades()
+    if (/coverage|unit|depth|offen|defen|special/.test(q)) return answerCoverage()
+    if (/fixture|match|opponent|schedule|upcoming/.test(q)) return answerFixtures()
+    return 'I can help with your best flex play, trade targets, roster coverage and upcoming fixtures — try one of the quick suggestions above.'
+  }
+
+  const sendMessage = async (raw) => {
+    const text = (raw || '').trim()
+    if (!text) return
+    const userMsg = { from: 'user', text, time: nowTime() }
+    const history = [...messages, userMsg]
+    setMessages(m => [...m, userMsg])
+    setChatInput('')
+    setTyping(true)
+    try {
+      attachToken()
+      // Anthropic requires the conversation to start with a user turn.
+      const convo = history.map(mm => ({ role: mm.from === 'user' ? 'user' : 'assistant', content: mm.text }))
+      while (convo.length && convo[0].role === 'assistant') convo.shift()
+      const { data: res } = await privateAPI.post('/nfl-rivals/coach-chat', { messages: convo })
+      const reply = (res && res.data && res.data.reply) || coachReply(text)
+      setMessages(m => [...m, { from: 'coach', text: reply, time: nowTime() }])
+    } catch (err) {
+      // Fall back to the local roster-analysis answer if the AI is unavailable.
+      setMessages(m => [...m, { from: 'coach', text: coachReply(text), time: nowTime() }])
+    } finally {
+      setTyping(false)
+    }
+  }
+
   if (loading) {
     return (
-      <div style={S.loading}>
+      <div className="aic2-loading">
         <Spin size="large" />
-        <p style={{ color: '#94A3B8', marginTop: 12 }}>AI Coach is scanning your roster...</p>
+        <p>AI Coach is scanning your roster...</p>
       </div>
     )
   }
 
   if (error || !data) {
     return (
-      <div style={S.loading}>
-        <span style={{ fontSize: 40 }}>⚠️</span>
-        <p style={{ color: '#F97316', marginTop: 12 }}>{error || 'Something went wrong.'}</p>
-        <button style={S.refreshBtn} onClick={refresh}>↻ Try Again</button>
+      <div className="aic2-error">
+        <WarningOutlined style={{ fontSize: 40, color: '#F97316' }} />
+        <p>{error || 'Something went wrong.'}</p>
+        <button className="aic2-retry" onClick={refresh}>
+          <ReloadOutlined /> Try Again
+        </button>
       </div>
     )
   }
 
-  const circ = 2 * Math.PI * 54
-  const off = circ - (data.score / 100) * circ
-  const gc = GRADE_COLOR[data.grade] || '#A78BFA'
+  const R = 85
+  const C = 2 * Math.PI * R
+  const dashOffset = C - (data.score / 100) * C
+
+  const sortedTips = [...(data.tips || [])].sort(
+    (a, b) => (PRIO_ORDER[a.priority] ?? 9) - (PRIO_ORDER[b.priority] ?? 9)
+  )
+  const topTip = sortedTips[0]
+  const restTips = sortedTips.slice(1, 3)
+
+  const quickChips = ['Best flex play?', 'Trade suggestions', 'Upcoming fixtures', 'Roster coverage']
 
   return (
-    <div style={S.page}>
-      {/* Header */}
-      <div style={S.header}>
-        <div style={S.headerLeft}>
-          <span style={{ fontSize: 28 }}>🧠</span>
+    <div className="aic2-page">
+      {/* ── Header ── */}
+      <div className="aic2-header">
+        <div className="aic2-header-left">
+          <div className="aic2-hexbadge">
+            <RobotOutlined />
+          </div>
           <div>
-            <h1 style={S.title}>AI Coach</h1>
-            <p style={S.subtitle}>NFL RIVALS &bull; Roster Health Analysis</p>
+            <h1 className="aic2-title">AI COACH</h1>
+            <p className="aic2-subtitle">NFL RIVALS · ROSTER ANALYSIS</p>
           </div>
         </div>
-        <button style={S.refreshBtn} onClick={refresh}>↻ Refresh</button>
+        <button className="aic2-refresh" onClick={refresh}>
+          <ReloadOutlined /> REFRESH
+        </button>
       </div>
 
-      {/* Score + Tips */}
-      <div style={S.topRow}>
-        <div style={S.scoreCard}>
-          <h2 style={S.cardTitle}>Roster Health Score</h2>
-          <div style={S.gaugeWrap}>
-            <svg viewBox="0 0 120 120" style={{ width: 140, height: 140, transform: 'rotate(-90deg)' }}>
-              <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
-              <circle cx="60" cy="60" r="54" fill="none" stroke={gc} strokeWidth="8" strokeLinecap="round"
-                style={{ strokeDasharray: circ, strokeDashoffset: off, transition: 'stroke-dashoffset 1.2s ease-out' }} />
-            </svg>
-            <div style={S.gaugeCenter}>
-              <span style={{ ...S.gaugeNum, color: gc }}>{data.score}</span>
-              <span style={{ ...S.gaugeGrade, color: gc }}>{data.grade}</span>
-            </div>
-          </div>
-          <div style={S.meta}>
-            <span style={S.metaItem}>🏈 {data.squadSize}/53</span>
-            <span style={S.metaItem}>🏥 {data.injuredCount} hurt</span>
-            <span style={S.metaItem}>💰 ${(data.totalSalary / 1e6).toFixed(0)}M</span>
-          </div>
-        </div>
-
-        <div style={S.tipsCard}>
-          <h2 style={S.cardTitle}>Actionable Tips</h2>
-          {data.tips.slice(0, 4).map((tip, i) => (
-            <div key={i} style={{ ...S.tip, borderLeftColor: PRIO_COLOR[tip.priority] || '#A78BFA' }}>
-              <div style={S.tipHeader}>
-                <span style={{ fontSize: 18 }}>{tip.icon}</span>
-                <span style={S.tipTitle}>{tip.title}</span>
-                <span style={{ ...S.tipBadge, background: `${PRIO_COLOR[tip.priority]}22`, color: PRIO_COLOR[tip.priority] }}>{tip.priority}</span>
+      {/* ── Body ── */}
+      <div className="aic2-body">
+        {/* MAIN column */}
+        <div className="aic2-main">
+          <div className="aic2-top-row">
+            {/* Roster Health Score */}
+            <section className="aic2-panel aic2-score-panel">
+              <h2 className="aic2-panel-title">ROSTER HEALTH SCORE</h2>
+              <div className="aic2-gauge-wrap">
+                <svg className="aic2-gauge" viewBox="0 0 200 200">
+                  <defs>
+                    <linearGradient id="aic2GaugeGrad" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="#8B5CF6" />
+                      <stop offset="100%" stopColor="#A78BFA" />
+                    </linearGradient>
+                    <filter id="aic2GaugeGlow" x="-30%" y="-30%" width="160%" height="160%">
+                      <feGaussianBlur stdDeviation="4" result="b" />
+                      <feMerge>
+                        <feMergeNode in="b" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  <circle
+                    className="aic2-gauge-track"
+                    cx="100" cy="100" r={R}
+                  />
+                  <circle
+                    className="aic2-gauge-arc"
+                    cx="100" cy="100" r={R}
+                    transform="rotate(-90 100 100)"
+                    style={{ strokeDasharray: C, strokeDashoffset: dashOffset }}
+                  />
+                </svg>
+                <div className="aic2-gauge-center">
+                  <span className="aic2-gauge-score">{data.score}</span>
+                  <span className="aic2-gauge-grade">{data.grade}</span>
+                </div>
               </div>
-              <p style={S.tipText}>{tip.text}</p>
-            </div>
-          ))}
-        </div>
-      </div>
 
-      {/* Unit Coverage */}
-      <div style={S.card}>
-        <h2 style={S.cardTitle}>Unit Coverage</h2>
-        <div style={S.coverageGrid}>
-          {Object.entries(data.unitHealth).map(([unit, info]) => {
-            const ratio = info.total > 0 ? info.healthy / info.total : 0
-            const clr = ratio >= 0.8 ? '#22C55E' : ratio >= 0.5 ? '#EAB308' : '#EF4444'
-            return (
-              <div key={unit} style={{ textAlign: 'center' }}>
-                <div style={S.coverageLabel}>{unit}</div>
-                <div style={S.barBg}><div style={{ ...S.barFill, width: `${ratio * 100}%`, background: clr }} /></div>
-                <div style={{ ...S.coverageNum, color: clr }}>{info.healthy}/{info.total} fit</div>
+              <div className="aic2-score-divider" />
+
+              <div className="aic2-stats">
+                <div className="aic2-stat">
+                  <span className="aic2-stat-icon">👥</span>
+                  <span className="aic2-stat-num">{data.squadSize}</span>
+                  <span className="aic2-stat-label">PLAYERS</span>
+                </div>
+                <div className="aic2-stat">
+                  <span className="aic2-stat-icon">🔒</span>
+                  <span className="aic2-stat-num aic2-red">{data.injuredCount}</span>
+                  <span className="aic2-stat-label">INJURED</span>
+                </div>
+                <div className="aic2-stat">
+                  <span className="aic2-stat-icon">⚠</span>
+                  <span className="aic2-stat-num aic2-amber">{data.suspendedCount}</span>
+                  <span className="aic2-stat-label">SUSPENDED</span>
+                </div>
               </div>
-            )
-          })}
-        </div>
-      </div>
+            </section>
 
-      {/* Role Assignment Summary */}
-      <div style={S.card}>
-        <h2 style={S.cardTitle}>Zone Assignment</h2>
-        <div style={S.zoneGrid}>
-          {[
-            { key: 'offense_starter', label: 'Offense', target: 11, color: '#22c55e' },
-            { key: 'defense_starter', label: 'Defense', target: 11, color: '#3b82f6' },
-            { key: 'special_teams', label: 'K / P', target: 2, color: '#f59e0b' },
-            { key: 'bench', label: 'Bench', target: 29, color: '#64748b' },
-          ].map(z => {
-            const count = data.roleCounts[z.key] || 0
-            const full = count >= z.target
-            return (
-              <div key={z.key} style={S.zoneItem}>
-                <div style={{ ...S.zoneDot, background: z.color }} />
-                <span style={S.zoneLabel}>{z.label}</span>
-                <span style={{ ...S.zoneCount, color: full ? '#22C55E' : '#F97316' }}>
-                  {count}/{z.target}
-                </span>
-              </div>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* Injury Table */}
-      {data.injuries.length > 0 && (
-        <div style={S.card}>
-          <h2 style={S.cardTitle}>🏥 Injured Players</h2>
-          <div style={S.tableHeader}>
-            <span>Player</span><span>Pos</span><span>Injury</span><span>Severity</span>
+            {/* Actionable Tips */}
+            <section className="aic2-panel aic2-tips-panel">
+              <h2 className="aic2-panel-title">ACTIONABLE TIPS</h2>
+              {topTip ? (
+                <>
+                  <div className="aic2-tip-head">
+                    <div className="aic2-tip-hex">
+                      <CheckCircleOutlined />
+                    </div>
+                    <span className="aic2-tip-title">{topTip.title}</span>
+                    <span
+                      className="aic2-info-pill"
+                      style={{ color: PRIO_COLOR[topTip.priority] || '#4ADE80' }}
+                    >
+                      INFO
+                    </span>
+                  </div>
+                  <p className="aic2-tip-text">{topTip.text}</p>
+                  {restTips.length > 0 && (
+                    <div className="aic2-tip-more">
+                      {restTips.map((t, i) => (
+                        <div
+                          key={i}
+                          className="aic2-tip-mini"
+                          style={{ borderLeftColor: PRIO_COLOR[t.priority] || '#4ADE80' }}
+                        >
+                          <span className="aic2-tip-mini-icon">{t.icon}</span>
+                          <span className="aic2-tip-mini-title">{t.title}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <p className="aic2-tip-text">No issues detected — your roster is in great shape.</p>
+              )}
+            </section>
           </div>
-          {data.injuries.map((inj, i) => (
-            <div key={inj._id || i} style={S.tableRow}>
-              <span style={{ fontWeight: 600 }}>{inj.name}</span>
-              <span style={{ color: '#94A3B8' }}>{inj.position}</span>
-              <span>{inj.injuryType}</span>
-              <span style={{ fontWeight: 700, color: SEV_COLOR[inj.severity] || '#94A3B8', textTransform: 'capitalize' }}>{inj.severity}</span>
+
+          {/* Unit Coverage */}
+          <section className="aic2-panel aic2-coverage-panel">
+            <h2 className="aic2-panel-title">UNIT COVERAGE</h2>
+            <div className="aic2-coverage-grid aic2-coverage-grid--nfl">
+              {Object.entries(data.unitHealth || {}).map(([unit, info]) => {
+                const ratio = info.total > 0 ? info.healthy / info.total : 0
+                return (
+                  <div key={unit} className="aic2-cov-card">
+                    <div className="aic2-cov-icon">{UNIT_ICON[unit] || '🏈'}</div>
+                    <div className="aic2-cov-label">{UNIT_LABEL[unit] || unit.toUpperCase()}</div>
+                    <div className="aic2-cov-bar">
+                      <div className="aic2-cov-bar-fill" style={{ width: `${ratio * 100}%` }} />
+                    </div>
+                    <div className="aic2-cov-num">{info.healthy}/{info.total} FIT</div>
+                  </div>
+                )
+              })}
             </div>
-          ))}
+          </section>
         </div>
-      )}
+
+        {/* CHAT RAIL */}
+        <section className="aic2-panel aic2-chat-panel">
+          <div className="aic2-chat-head">
+            <div className="aic2-chat-head-left">
+              <div className="aic2-chat-hex"><RobotOutlined /></div>
+              <span className="aic2-chat-title">AI COACH CHAT</span>
+            </div>
+            <MinusOutlined className="aic2-chat-min" />
+          </div>
+
+          <div className="aic2-chat-list" ref={listRef}>
+            {messages.map((m, i) => (
+              <div key={i} className={`aic2-msg-row ${m.from === 'user' ? 'aic2-msg-user' : 'aic2-msg-coach'}`}>
+                {m.from === 'coach' && (
+                  <div className="aic2-msg-avatar"><RobotOutlined /></div>
+                )}
+                <div className="aic2-msg-block">
+                  <div className="aic2-msg-bubble">{m.text}</div>
+                  <div className="aic2-msg-time">{m.time}</div>
+                </div>
+              </div>
+            ))}
+            {typing && (
+              <div className="aic2-msg-row aic2-msg-coach">
+                <div className="aic2-msg-avatar"><RobotOutlined /></div>
+                <div className="aic2-msg-block">
+                  <div className="aic2-msg-bubble aic2-typing">
+                    <span /><span /><span />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="aic2-chips">
+            {quickChips.map((c) => (
+              <button key={c} className="aic2-chip" onClick={() => sendMessage(c)}>
+                {c}
+              </button>
+            ))}
+          </div>
+
+          <div className="aic2-chat-input">
+            <input
+              type="text"
+              placeholder="Ask your AI Coach…"
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') sendMessage(chatInput) }}
+            />
+            <button className="aic2-send" onClick={() => sendMessage(chatInput)} aria-label="Send">
+              <SendOutlined />
+            </button>
+          </div>
+        </section>
+      </div>
     </div>
   )
-}
-
-/* ── Inline styles (purple theme) ── */
-const S = {
-  loading: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' },
-  page: { padding: '24px 28px 40px', maxWidth: 1000, margin: '0 auto', color: '#F1F5F9', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' },
-  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 },
-  headerLeft: { display: 'flex', alignItems: 'center', gap: 14 },
-  title: { fontSize: 26, fontWeight: 700, margin: 0, letterSpacing: '-0.5px' },
-  subtitle: { fontSize: 13, color: '#94A3B8', margin: '2px 0 0' },
-  refreshBtn: { background: 'rgba(167,139,250,0.12)', border: '1px solid rgba(167,139,250,0.3)', color: '#A78BFA', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: 13 },
-  topRow: { display: 'grid', gridTemplateColumns: '320px 1fr', gap: 20, marginBottom: 20 },
-  scoreCard: { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 16, padding: 24, textAlign: 'center' },
-  tipsCard: { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 16, padding: 24 },
-  card: { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 16, padding: 24, marginBottom: 20 },
-  cardTitle: { fontSize: 15, fontWeight: 700, margin: '0 0 18px', color: '#CBD5E1', letterSpacing: '0.2px' },
-  gaugeWrap: { position: 'relative', width: 140, height: 140, margin: '0 auto 16px' },
-  gaugeCenter: { position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' },
-  gaugeNum: { fontSize: 36, fontWeight: 800, lineHeight: 1 },
-  gaugeGrade: { fontSize: 14, fontWeight: 700, marginTop: 2 },
-  meta: { display: 'flex', justifyContent: 'center', gap: 16, fontSize: 12, color: '#94A3B8', marginTop: 8 },
-  metaItem: { display: 'flex', alignItems: 'center', gap: 6 },
-  tip: { background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderLeft: '4px solid #A78BFA', borderRadius: 10, padding: '16px 18px', marginBottom: 14 },
-  tipHeader: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 },
-  tipTitle: { fontSize: 14, fontWeight: 700, flex: 1 },
-  tipBadge: { fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 6, textTransform: 'uppercase', letterSpacing: '0.5px' },
-  tipText: { fontSize: 13, color: '#94A3B8', lineHeight: 1.55, margin: 0 },
-  coverageGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 },
-  coverageLabel: { fontSize: 12, fontWeight: 600, color: '#94A3B8', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.5px' },
-  barBg: { height: 6, background: 'rgba(255,255,255,0.06)', borderRadius: 3, overflow: 'hidden', marginBottom: 6 },
-  barFill: { height: '100%', borderRadius: 3, transition: 'width 0.8s ease-out' },
-  coverageNum: { fontSize: 13, fontWeight: 700 },
-  zoneGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 },
-  zoneItem: { display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.02)', borderRadius: 10, padding: '12px 14px' },
-  zoneDot: { width: 10, height: 10, borderRadius: '50%', flexShrink: 0 },
-  zoneLabel: { fontSize: 13, fontWeight: 600, flex: 1 },
-  zoneCount: { fontSize: 15, fontWeight: 800 },
-  tableHeader: { display: 'grid', gridTemplateColumns: '2fr 0.8fr 1.5fr 1fr', gap: 12, padding: '10px 14px', color: '#64748B', fontWeight: 700, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid rgba(255,255,255,0.06)' },
-  tableRow: { display: 'grid', gridTemplateColumns: '2fr 0.8fr 1.5fr 1fr', gap: 12, padding: '10px 14px', fontSize: 13, borderBottom: '1px solid rgba(255,255,255,0.03)' },
 }
 
 export default AICoachNFL

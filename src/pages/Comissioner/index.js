@@ -1,5 +1,5 @@
 import { Button, Select, InputNumber, Switch, Input, notification, Spin, Dropdown, Modal, Radio, TimePicker, Card, Tabs, Tooltip, Tag } from 'antd'
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useRef } from 'react'
 import SamDatePicker from '../../components/SamDatePicker'
 import PlayoffBracketBuilder from '../../components/PlayoffBracketBuilder'
 import { useSelector, useDispatch } from 'react-redux'
@@ -20,6 +20,16 @@ import {
   CheckCircleOutlined,
   CloseCircleOutlined,
   WarningOutlined,
+  LockOutlined,
+  NotificationOutlined,
+  DownloadOutlined,
+  ThunderboltOutlined,
+  FieldTimeOutlined,
+  FileTextOutlined,
+  RightOutlined,
+  ReloadOutlined,
+  DollarOutlined,
+  AuditOutlined,
 } from '@ant-design/icons'
 
 import { getLeagueDetails, getProfessionalLeagueRanks, impersonateUser, updateCommissionersInLeague, getSamMetric } from '../../redux'
@@ -196,10 +206,10 @@ const Comissioner = () => {
       </span>
     ),
     children:
-      tabDef.key === 'inbox' ? <InboxTab currentLeague={currentLeague} /> :
+      tabDef.key === 'inbox' ? <InboxTab currentLeague={currentLeague} onNavigateTab={setTab} /> :
       tabDef.key === 'rules' ? <GameRulesTab currentLeague={currentLeague} /> :
       tabDef.key === 'scoring' ? <ScoringTab currentLeague={currentLeague} /> :
-      tabDef.key === 'teams' ? <TeamsTab teams={teams} currentLeague={currentLeague} user={user} userLeague={userLeague} /> :
+      tabDef.key === 'teams' ? <TeamsTab teams={teams} currentLeague={currentLeague} user={user} userLeague={userLeague} onRefresh={getProLeagueRank} /> :
       tabDef.key === 'trades' ? <TradesTab /> :
       tabDef.key === 'draft' ? <DraftTab currentLeague={currentLeague} /> :
       tabDef.key === 'integrity' ? <TeamControlTab teams={teams} currentLeague={currentLeague} /> :
@@ -214,7 +224,7 @@ const Comissioner = () => {
       <OnboardingGuide tabKey="commissioner" />
       <hr className='divider' />
       <div className='cm-page' style={{
-        background: COLORS.bg,
+        background: 'var(--sidebar)',
         minHeight: '100vh',
         paddingBottom: '60px',
         display: 'block',
@@ -226,9 +236,8 @@ const Comissioner = () => {
         }}>
           {/* HEADER */}
           <div style={{
-            ...GLASS_STYLE,
-            padding: '32px',
-            marginBottom: '40px',
+            padding: '0 4px',
+            marginBottom: '28px',
           }}>
             <button
               onClick={() => navigate('/homepage')}
@@ -267,8 +276,8 @@ const Comissioner = () => {
 
           {/* TABS */}
           <div style={{
-            ...GLASS_STYLE,
-            padding: '32px',
+            background: 'transparent',
+            padding: '0',
           }}>
             <Tabs
               activeKey={tab}
@@ -290,6 +299,238 @@ const Comissioner = () => {
 /* ═══════════════════════════════════════════════════════════
    TAB: Game Rules, Fantasy football specific
    ═══════════════════════════════════════════════════════════ */
+/* Numbered, collapsible settings section (matches Game Rules mockup) */
+const RuleSection = ({ n, icon, iconClass, title, desc, children, defaultOpen = true, style }) => {
+  const [open, setOpen] = useState(defaultOpen)
+  return (
+    <div className={`cm-section cm-rsec ${open ? 'is-open' : 'is-closed'}`} style={style}>
+      <div className='cm-rsec-head' onClick={() => setOpen((o) => !o)}>
+        {icon && <div className={`cm-section-icon ${iconClass || 'cm-section-icon-green'}`}>{icon}</div>}
+        {n != null && <span className='cm-rsec-num'>{n}</span>}
+        <h3 className='cm-section-title'>{title}</h3>
+        {desc && <span className='cm-rsec-desc'>{desc}</span>}
+        <span className={`cm-rsec-chev ${open ? 'open' : ''}`} aria-hidden>⌃</span>
+      </div>
+      {open && <div className='cm-rsec-body'>{children}</div>}
+    </div>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════
+   League Image — commissioner-only logo upload + square crop.
+   Lightweight canvas cropper (no external dependency): fixed
+   square viewport, zoom slider, pointer-drag to reposition.
+   Exports a 512×512 JPEG data URI (quality 0.85) and persists it
+   to league.leagueLogo via updateLeagueCommissioner. This whole
+   card only renders inside the Commissioner page, which already
+   gates every child behind the isCommissioner access check.
+   ═══════════════════════════════════════════════════════════ */
+const LI_VIEWPORT = 260
+const LI_OUTPUT = 512
+const LI_MAX_UPLOAD_BYTES = 1.5 * 1024 * 1024
+
+const LeagueImageCard = ({ currentLeague }) => {
+  const [src, setSrc] = useState(null)          // object URL of the picked file
+  const [zoom, setZoom] = useState(1)
+  const [offset, setOffset] = useState({ x: 0, y: 0 })
+  const [saving, setSaving] = useState(false)
+  const [preview, setPreview] = useState(null)  // exported data-URI preview
+  const imgRef = useRef(null)
+  const natural = useRef({ w: 0, h: 0 })
+  const drag = useRef(null)
+  const fileInputRef = useRef(null)
+
+  const currentLogo = currentLeague?.leagueLogo
+
+  const baseScale = () => {
+    const { w, h } = natural.current
+    if (!w || !h) return 1
+    return LI_VIEWPORT / Math.min(w, h) // "cover" fit at zoom = 1
+  }
+
+  const clampOffset = (o, z = zoom) => {
+    const bs = baseScale() * z
+    const dispW = natural.current.w * bs
+    const dispH = natural.current.h * bs
+    const maxX = Math.max(0, (dispW - LI_VIEWPORT) / 2)
+    const maxY = Math.max(0, (dispH - LI_VIEWPORT) / 2)
+    return {
+      x: Math.max(-maxX, Math.min(maxX, o.x)),
+      y: Math.max(-maxY, Math.min(maxY, o.y)),
+    }
+  }
+
+  const onPick = (e) => {
+    const file = e.target.files && e.target.files[0]
+    if (!file) return
+    if (!['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)) {
+      notification.error({ message: 'Please choose a PNG or JPEG image' })
+      return
+    }
+    if (file.size > LI_MAX_UPLOAD_BYTES) {
+      notification.error({ message: 'Image is too large. Please choose a file under 1.5MB.' })
+      return
+    }
+    const url = URL.createObjectURL(file)
+    setPreview(null)
+    setZoom(1)
+    setOffset({ x: 0, y: 0 })
+    setSrc(url)
+  }
+
+  const onImgLoad = () => {
+    const el = imgRef.current
+    if (!el) return
+    natural.current = { w: el.naturalWidth, h: el.naturalHeight }
+    setOffset({ x: 0, y: 0 })
+  }
+
+  const onPointerDown = (e) => {
+    if (!src) return
+    e.preventDefault()
+    drag.current = { startX: e.clientX, startY: e.clientY, base: offset }
+    const move = (ev) => {
+      if (!drag.current) return
+      const next = {
+        x: drag.current.base.x + (ev.clientX - drag.current.startX),
+        y: drag.current.base.y + (ev.clientY - drag.current.startY),
+      }
+      setOffset(clampOffset(next))
+    }
+    const up = () => {
+      drag.current = null
+      window.removeEventListener('pointermove', move)
+      window.removeEventListener('pointerup', up)
+    }
+    window.addEventListener('pointermove', move)
+    window.addEventListener('pointerup', up)
+  }
+
+  const onZoom = (z) => {
+    setZoom(z)
+    setOffset((o) => clampOffset(o, z))
+  }
+
+  const exportCanvas = () => {
+    const el = imgRef.current
+    if (!el || !natural.current.w) return null
+    const bs = baseScale() * zoom
+    const dispW = natural.current.w * bs
+    const dispH = natural.current.h * bs
+    const imgLeft = LI_VIEWPORT / 2 - dispW / 2 + offset.x
+    const imgTop = LI_VIEWPORT / 2 - dispH / 2 + offset.y
+    // Source region of the natural image that is visible in the viewport window
+    const sx = (0 - imgLeft) / bs
+    const sy = (0 - imgTop) / bs
+    const sSize = LI_VIEWPORT / bs
+    const canvas = document.createElement('canvas')
+    canvas.width = LI_OUTPUT
+    canvas.height = LI_OUTPUT
+    const ctx = canvas.getContext('2d')
+    ctx.fillStyle = '#0A0F1A'
+    ctx.fillRect(0, 0, LI_OUTPUT, LI_OUTPUT)
+    ctx.drawImage(el, sx, sy, sSize, sSize, 0, 0, LI_OUTPUT, LI_OUTPUT)
+    return canvas.toDataURL('image/jpeg', 0.85)
+  }
+
+  const onPreview = () => {
+    const dataUri = exportCanvas()
+    if (dataUri) setPreview(dataUri)
+  }
+
+  const onSave = async () => {
+    const dataUri = preview || exportCanvas()
+    if (!dataUri) {
+      notification.error({ message: 'Please choose and position an image first' })
+      return
+    }
+    // Keep the stored data URI comfortably small (target < ~300KB).
+    if (dataUri.length > 400 * 1024) {
+      notification.error({ message: 'Cropped image is too large. Zoom out or pick a smaller source image.' })
+      return
+    }
+    setSaving(true)
+    try {
+      await updateLeagueCommissioner({ _id: currentLeague?._id, leagueLogo: dataUri })
+      notification.success({ message: 'League image updated' })
+      setTimeout(() => window.location.reload(), 800)
+    } catch (err) {
+      notification.error({ message: 'Failed to update league image' })
+      setSaving(false)
+    }
+  }
+
+  // Displayed image geometry (kept in sync with the export math above)
+  const bs = baseScale() * zoom
+  const dispW = natural.current.w * bs
+  const dispH = natural.current.h * bs
+  const imgLeft = LI_VIEWPORT / 2 - dispW / 2 + offset.x
+  const imgTop = LI_VIEWPORT / 2 - dispH / 2 + offset.y
+
+  return (
+    <RuleSection icon={<TeamOutlined />} iconClass='cm-section-icon-purple' title='League Image' desc='Upload and crop your league logo' defaultOpen={false}>
+      <div style={{ display: 'flex', gap: 28, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+        {/* Current logo */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', letterSpacing: 0.5, fontWeight: 600 }}>Current</span>
+          <div style={{ width: 96, height: 96, borderRadius: 16, overflow: 'hidden', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {currentLogo ? <img src={currentLogo} alt='league' style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 30 }}>🏈</span>}
+          </div>
+        </div>
+
+        {/* Cropper */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <input ref={fileInputRef} type='file' accept='image/png,image/jpeg,image/jpg' style={{ display: 'none' }} onChange={onPick} />
+          <div
+            onPointerDown={onPointerDown}
+            style={{ width: LI_VIEWPORT, height: LI_VIEWPORT, borderRadius: 16, overflow: 'hidden', position: 'relative', background: 'rgba(0,0,0,0.35)', border: '1px solid rgba(34,197,94,0.3)', cursor: src ? 'grab' : 'default', touchAction: 'none', userSelect: 'none' }}
+          >
+            {src ? (
+              <img
+                ref={imgRef}
+                src={src}
+                alt='crop'
+                onLoad={onImgLoad}
+                draggable={false}
+                style={{ position: 'absolute', left: imgLeft, top: imgTop, width: dispW, height: dispH, maxWidth: 'none', pointerEvents: 'none' }}
+              />
+            ) : (
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, color: 'rgba(255,255,255,0.4)' }}>
+                <span style={{ fontSize: 34 }}>🖼️</span>
+                <span style={{ fontSize: 12 }}>No image selected</span>
+              </div>
+            )}
+          </div>
+
+          {src && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)' }}>Zoom</span>
+              <input type='range' min={1} max={3} step={0.01} value={zoom} onChange={(e) => onZoom(Number(e.target.value))} style={{ flex: 1, accentColor: '#22C55E' }} />
+            </div>
+          )}
+
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <Button onClick={() => fileInputRef.current && fileInputRef.current.click()}>{src ? 'Choose Different' : 'Upload Image'}</Button>
+            <Button onClick={onPreview} disabled={!src}>Preview</Button>
+            <Button type='primary' loading={saving} onClick={onSave} disabled={!src}>Save</Button>
+          </div>
+          <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>PNG or JPEG, up to 1.5MB. Drag to reposition, use the slider to zoom.</span>
+        </div>
+
+        {/* Preview */}
+        {preview && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', letterSpacing: 0.5, fontWeight: 600 }}>Preview</span>
+            <div style={{ width: 96, height: 96, borderRadius: 16, overflow: 'hidden', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(34,197,94,0.4)' }}>
+              <img src={preview} alt='preview' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+          </div>
+        )}
+      </div>
+    </RuleSection>
+  )
+}
+
 const GameRulesTab = ({ currentLeague }) => {
   const currentLeagueId = currentLeague?._id
   const [saving, setSaving] = useState(false)
@@ -334,6 +575,15 @@ const GameRulesTab = ({ currentLeague }) => {
   const [auctionApprovalRequired, setAuctionApprovalRequired] = useState(currentLeague?.commissionerAuctionApproval ?? false)
   const [poachingEnabled, setPoachingEnabled] = useState(currentLeague?.practiceSquadPoachingEnabled ?? true)
 
+  // Trade deadline week (pairs with the Trade Deadline Enforcement toggle)
+  const [tradeDeadlineWeek, setTradeDeadlineWeek] = useState(currentLeague?.tradeDeadlineWeek ?? 13)
+
+  // Salary Cap Enforcement toggles + grace-period timing
+  const [capViolationFines, setCapViolationFines] = useState(currentLeague?.capViolationFinesEnabled ?? true)
+  const [lineupLockOnViolation, setLineupLockOnViolation] = useState(currentLeague?.lineupLockOnViolation ?? true)
+  const [gracePeriodFineDays, setGracePeriodFineDays] = useState(currentLeague?.gracePeriodFineDays ?? 14)
+  const [gracePeriodLockDays, setGracePeriodLockDays] = useState(currentLeague?.gracePeriodLockDays ?? 21)
+
   // Sync ALL fields from currentLeague when it loads asynchronously
   // (useState initializers only run once — if currentLeague was null on mount,
   //  fields would be stuck on defaults forever without this effect)
@@ -358,6 +608,11 @@ const GameRulesTab = ({ currentLeague }) => {
     setOwnerAuctionsEnabled(currentLeague.ownerToOwnerAuctionsEnabled ?? true)
     setAuctionApprovalRequired(currentLeague.commissionerAuctionApproval ?? false)
     setPoachingEnabled(currentLeague.practiceSquadPoachingEnabled ?? true)
+    setTradeDeadlineWeek(currentLeague.tradeDeadlineWeek ?? 13)
+    setCapViolationFines(currentLeague.capViolationFinesEnabled ?? true)
+    setLineupLockOnViolation(currentLeague.lineupLockOnViolation ?? true)
+    setGracePeriodFineDays(currentLeague.gracePeriodFineDays ?? 14)
+    setGracePeriodLockDays(currentLeague.gracePeriodLockDays ?? 21)
     // Sync roster
     let settings = currentLeague.rosterSettings || {}
     if (typeof settings === 'string') {
@@ -578,13 +833,7 @@ const GameRulesTab = ({ currentLeague }) => {
   return (
     <>
       {/* General Settings */}
-      <div className='cm-section'>
-        <div className='cm-section-header'>
-          <div className='cm-section-icon cm-section-icon-blue'>
-            <SettingOutlined />
-          </div>
-          <h3 className='cm-section-title'>General Settings</h3>
-        </div>
+      <RuleSection icon={<SettingOutlined />} iconClass='cm-section-icon-blue' title='General Settings'>
         <div className='cm-form-grid'>
           <div className='cm-field'>
             <label className='cm-field-label'>League ID</label>
@@ -602,17 +851,13 @@ const GameRulesTab = ({ currentLeague }) => {
             <span style={{ display: 'block', fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginTop: '4px' }}>Auto-generated. Cannot be changed.</span>
           </div>
         </div>
-      </div>
+      </RuleSection>
+
+      {/* League Image (commissioner-only upload + crop) */}
+      <LeagueImageCard currentLeague={currentLeague} />
 
       {/* League Mode & Scoring */}
-      <div className='cm-section'>
-        <div className='cm-section-header'>
-          <div className='cm-section-icon cm-section-icon-green'>
-            <TrophyOutlined />
-          </div>
-          <h3 className='cm-section-title'>League Mode</h3>
-          <span className='cm-section-desc'>Choose the game format for this league</span>
-        </div>
+      <RuleSection n={1} icon={<TrophyOutlined />} iconClass='cm-section-icon-green' title='League Mode' desc='Choose the game format for this league'>
 
         <div className='cm-draft-pick-cards'>
           {[
@@ -692,17 +937,10 @@ const GameRulesTab = ({ currentLeague }) => {
             </p>
           </div>
         )}
-      </div>
+      </RuleSection>
 
       {/* Roster Settings */}
-      <div className='cm-section'>
-        <div className='cm-section-header'>
-          <div className='cm-section-icon cm-section-icon-green'>
-            <TeamOutlined />
-          </div>
-          <h3 className='cm-section-title'>Roster Positions</h3>
-          <span className='cm-section-desc'>Set how many slots per position</span>
-        </div>
+      <RuleSection n={2} icon={<TeamOutlined />} iconClass='cm-section-icon-green' title='Roster Positions' desc='Set how many slots per position'>
         <div className='cm-roster-grid'>
           {Object.entries(roster).filter(([pos]) => Object.keys(DEFAULT_ROSTER).includes(pos)).map(([pos, count]) => {
             const DEFENSE_POSITIONS = ['DT', 'DE', 'LB', 'CB', 'S', 'P']
@@ -752,16 +990,11 @@ const GameRulesTab = ({ currentLeague }) => {
             Offense Only mode, defensive positions (DT, DE, LB, CB, S) and Punter are not available.
           </p>
         )}
-      </div>
+      </RuleSection>
 
       {/* Trade Rules */}
-      <div className='cm-section'>
-        <div className='cm-section-header'>
-          <div className='cm-section-icon cm-section-icon-amber'>
-            <SwapOutlined />
-          </div>
-          <h3 className='cm-section-title'>Trade Rules</h3>
-        </div>
+      <RuleSection n={3} icon={<SwapOutlined />} iconClass='cm-section-icon-amber' title='Trade Rules' desc='Manage how trades work in your league'>
+        <div className='cm-toggle-cards'>
         <div className='cm-toggle-row'>
           <div className='cm-toggle-info'>
             <span className='cm-toggle-title'>Trade Review Period</span>
@@ -790,17 +1023,79 @@ const GameRulesTab = ({ currentLeague }) => {
           </div>
           <Switch checked={tradeDeadlineEnabled} onChange={(v) => { setTradeDeadlineEnabled(v); handleToggleSave('tradeDeadlineEnabled', v) }} />
         </div>
-      </div>
+        {tradeDeadlineEnabled && (
+          <div className='cm-toggle-row'>
+            <div className='cm-toggle-info'>
+              <span className='cm-toggle-title'>Trade Deadline Week</span>
+              <span className='cm-toggle-desc'>Trades are blocked starting this week of the season</span>
+            </div>
+            <InputNumber
+              min={1}
+              max={18}
+              value={tradeDeadlineWeek}
+              onChange={(v) => { const n = Number(v) || 13; setTradeDeadlineWeek(n); handleToggleSave('tradeDeadlineWeek', n) }}
+              style={{ width: 90 }}
+            />
+          </div>
+        )}
+        </div>
+      </RuleSection>
+
+      {/* Salary Cap Enforcement */}
+      <RuleSection n={4} icon={<SafetyCertificateOutlined />} iconClass='cm-section-icon-amber' title='Salary Cap Enforcement' desc='Penalties and lineup enforcement'>
+        <div className='cm-toggle-cards'>
+        <div className='cm-toggle-row'>
+          <div className='cm-toggle-info'>
+            <span className='cm-toggle-title'>Cap Violation Fines</span>
+            <span className='cm-toggle-desc'>Auto-fine teams that exceed the salary cap (2.5M &ndash; 25M SamPoints based on severity)</span>
+          </div>
+          <Switch checked={capViolationFines} onChange={(v) => { setCapViolationFines(v); handleToggleSave('capViolationFinesEnabled', v) }} />
+        </div>
+        <div className='cm-toggle-row'>
+          <div className='cm-toggle-info'>
+            <span className='cm-toggle-title'>Lineup Lock on Violation</span>
+            <span className='cm-toggle-desc'>Lock a team&apos;s lineup after 7 days of unresolved cap violations</span>
+          </div>
+          <Switch checked={lineupLockOnViolation} onChange={(v) => { setLineupLockOnViolation(v); handleToggleSave('lineupLockOnViolation', v) }} />
+        </div>
+        {capViolationFines && (
+          <div className='cm-toggle-row'>
+            <div className='cm-toggle-info'>
+              <span className='cm-toggle-title'>Fine Grace Period</span>
+              <span className='cm-toggle-desc'>Days a team has to fix a cap violation before the fine applies</span>
+            </div>
+            <InputNumber
+              min={0}
+              max={60}
+              value={gracePeriodFineDays}
+              onChange={(v) => { const n = Number(v) || 0; setGracePeriodFineDays(n); handleToggleSave('gracePeriodFineDays', n) }}
+              addonAfter='days'
+              style={{ width: 120 }}
+            />
+          </div>
+        )}
+        {lineupLockOnViolation && (
+          <div className='cm-toggle-row'>
+            <div className='cm-toggle-info'>
+              <span className='cm-toggle-title'>Lineup Lock Grace Period</span>
+              <span className='cm-toggle-desc'>Days a team has before its lineup is locked for an unresolved violation</span>
+            </div>
+            <InputNumber
+              min={0}
+              max={60}
+              value={gracePeriodLockDays}
+              onChange={(v) => { const n = Number(v) || 0; setGracePeriodLockDays(n); handleToggleSave('gracePeriodLockDays', n) }}
+              addonAfter='days'
+              style={{ width: 120 }}
+            />
+          </div>
+        )}
+        </div>
+      </RuleSection>
 
       {/* Auction & Free Agency */}
-      <div className='cm-section'>
-        <div className='cm-section-header'>
-          <div className='cm-section-icon cm-section-icon-purple'>
-            <OrderedListOutlined />
-          </div>
-          <h3 className='cm-section-title'>Auction & Free Agency</h3>
-          <span className='cm-section-desc'>Player acquisition via SamPoints bidding</span>
-        </div>
+      <RuleSection n={5} icon={<OrderedListOutlined />} iconClass='cm-section-icon-purple' title='Auction & Free Agency' desc='Player acquisition via SamPoints bidding'>
+        <div className='cm-toggle-cards'>
         <div className='cm-toggle-row'>
           <div className='cm-toggle-info'>
             <span className='cm-toggle-title'>Free Agent Auctions</span>
@@ -828,6 +1123,7 @@ const GameRulesTab = ({ currentLeague }) => {
             <span className='cm-toggle-desc'>Allow teams to poach unprotected practice squad players (3-week lockout applies)</span>
           </div>
           <Switch checked={poachingEnabled} onChange={(v) => { setPoachingEnabled(v); handleToggleSave('practiceSquadPoachingEnabled', v) }} />
+        </div>
         </div>
 
         {/* Draft Position Mode, Visual Cards */}
@@ -1030,27 +1326,7 @@ const GameRulesTab = ({ currentLeague }) => {
           </div>
         )}
 
-        {/* Cap Violation Settings */}
-        <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(110,105,128,0.15)' }}>
-          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', letterSpacing: 0.5, fontWeight: 600 }}>
-            Salary Cap Enforcement
-          </span>
-          <div className='cm-toggle-row' style={{ marginTop: 12 }}>
-            <div className='cm-toggle-info'>
-              <span className='cm-toggle-title'>Cap Violation Fines</span>
-              <span className='cm-toggle-desc'>Auto-fine teams that exceed the salary cap (tiered: 2.5M → 25M SamPoints)</span>
-            </div>
-            <Switch defaultChecked={currentLeague?.capViolationFines ?? true} />
-          </div>
-          <div className='cm-toggle-row'>
-            <div className='cm-toggle-info'>
-              <span className='cm-toggle-title'>Lineup Lock on Violation</span>
-              <span className='cm-toggle-desc'>Lock a team&apos;s lineup after 21 days of unresolved cap violations</span>
-            </div>
-            <Switch defaultChecked={currentLeague?.lineupLockOnViolation ?? true} />
-          </div>
-        </div>
-      </div>
+      </RuleSection>
 
       {/* ── EXPANSION DRAFT (League Resize) ── */}
       {numTeams >= 10 && expansionValidSizes.length > 0 && (
@@ -1253,12 +1529,8 @@ const GameRulesTab = ({ currentLeague }) => {
       )}
 
       {/* Conferences & Divisions */}
-      <div className='cm-section'>
-        <div className='cm-section-header'>
-          <div className='cm-section-icon cm-section-icon-red'>
-            <TrophyOutlined />
-          </div>
-          <h3 className='cm-section-title'>Conferences & Divisions</h3>
+      <RuleSection n={6} icon={<TrophyOutlined />} iconClass='cm-section-icon-red' title='Conferences & Divisions' desc={`${numTeams} teams · ${divsPerConf === 1 ? '2 conferences, no divisions' : `2 conferences × ${divsPerConf} divisions`}`}>
+        <div style={{ display: 'none' }}>
           <span className='cm-section-desc'>
             {numTeams} teams, {divsPerConf === 1 ? '2 conferences, no divisions' : `2 conferences × ${divsPerConf} divisions`}
           </span>
@@ -1309,7 +1581,7 @@ const GameRulesTab = ({ currentLeague }) => {
             With {numTeams} teams, each conference operates as a single group, no divisions needed.
           </p>
         )}
-      </div>
+      </RuleSection>
 
       {/* Save */}
       <div className='cm-save-bar'>
@@ -1789,7 +2061,25 @@ const ScoringTab = ({ currentLeague }) => {
 /* ═══════════════════════════════════════════════════════════
    TAB: Teams & Owners
    ═══════════════════════════════════════════════════════════ */
-const TeamsTab = ({ teams, currentLeague, user, userLeague }) => {
+const TeamsTab = ({ teams, currentLeague, user, userLeague, onRefresh }) => {
+  const [removeTarget, setRemoveTarget] = useState(null)
+  const [removing, setRemoving] = useState(false)
+
+  const doRemoveTeam = async (mode) => {
+    if (!removeTarget) return
+    setRemoving(true)
+    try {
+      attachToken()
+      await privateAPI.post('/commissioner/remove-team', { teamId: removeTarget._id, mode })
+      notification.success({ message: mode === 'cpu' ? 'Team is now CPU-managed' : 'Team slot opened for a new manager' })
+      setRemoveTarget(null)
+      onRefresh && onRefresh()
+    } catch (err) {
+      notification.error({ message: err.response?.data?.message || 'Failed to update team' })
+    }
+    setRemoving(false)
+  }
+
   const handleImpersonate = async (userId) => {
     const impersonatedToken = await impersonateUser(userId, userLeague, user?.email)
     if (impersonatedToken) {
@@ -1828,14 +2118,55 @@ const TeamsTab = ({ teams, currentLeague, user, userLeague }) => {
               <span className='cm-team-owner'>{team?.user?.firstName && team?.user?.lastName ? `${team.user.firstName} ${team.user.lastName}` : team?.user?.userName} · {team?.hometown || '-'}</span>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-end' }}>
+              {team?.awayUntil && new Date(team.awayUntil) > new Date() && (
+                <span style={{
+                  fontSize: 10, fontWeight: 700, color: '#F59E0B', background: 'rgba(245,158,11,0.12)',
+                  border: '1px solid rgba(245,158,11,0.3)', borderRadius: 6, padding: '2px 8px',
+                  textTransform: 'uppercase', letterSpacing: 0.5,
+                }}>
+                  ✈ Away
+                </span>
+              )}
               {team?.division?.name && (
                 <span className='cm-team-division-badge'>{team.division.name}</span>
               )}
               <span className='cm-team-impersonate'>Impersonate</span>
+              <button
+                onClick={(e) => { e.stopPropagation(); setRemoveTarget(team) }}
+                style={{
+                  background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)',
+                  color: '#EF4444', borderRadius: 6, padding: '3px 10px', fontSize: 11,
+                  fontWeight: 700, cursor: 'pointer', marginTop: 2,
+                }}
+              >
+                Remove / Replace
+              </button>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Remove / Replace team manager modal */}
+      <Modal
+        title='Remove / Replace Manager'
+        open={!!removeTarget}
+        onCancel={() => setRemoveTarget(null)}
+        footer={null}
+        destroyOnClose
+      >
+        <p style={{ color: 'rgba(0,0,0,0.65)', fontSize: 13, marginBottom: 16 }}>
+          Remove the current manager from <strong>{removeTarget?.name}</strong>. The team stays in the
+          schedule either way.
+        </p>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <Button danger loading={removing} onClick={() => doRemoveTeam('cpu')}>
+            Set to CPU (auto-managed)
+          </Button>
+          <Button loading={removing} onClick={() => doRemoveTeam('open')}>
+            Open Slot (reclaimable)
+          </Button>
+        </div>
+      </Modal>
 
       {/* Division Assignment */}
       {currentLeague?.divisions?.length > 0 && (
@@ -1871,14 +2202,51 @@ const TeamsTab = ({ teams, currentLeague, user, userLeague }) => {
 /* ═══════════════════════════════════════════════════════════
    TAB: Commissioner Inbox — Anti-Tanking Sale Approval Requests
    ═══════════════════════════════════════════════════════════ */
-const InboxTab = ({ currentLeague }) => {
+const InboxTab = ({ currentLeague, onNavigateTab }) => {
+  const navigate = useNavigate()
   const [pending, setPending] = useState([])
   const [history, setHistory] = useState([])
   const [loading, setLoading] = useState(true)
   const [showHistory, setShowHistory] = useState(false)
   const [decidingId, setDecidingId] = useState(null)
 
+  // Inbox dashboard summary (counts + activity feed)
+  const [summary, setSummary] = useState(null)
+
+  // Announcement composer + list
+  const [annOpen, setAnnOpen] = useState(false)
+  const [annList, setAnnList] = useState([])
+  const [annViewOpen, setAnnViewOpen] = useState(false)
+  const [annTitle, setAnnTitle] = useState('')
+  const [annMessage, setAnnMessage] = useState('')
+  const [annPriority, setAnnPriority] = useState('normal')
+  const [annSending, setAnnSending] = useState(false)
+
+  const saleSectionRef = useRef(null)
+
   const leagueId = currentLeague?._id
+
+  const fetchSummary = async () => {
+    if (!leagueId) return
+    try {
+      attachToken()
+      const res = await privateAPI.get('/commissioner/inbox-summary')
+      setSummary(res.data?.data || res.data || null)
+    } catch (err) {
+      console.warn('Failed to fetch inbox summary:', err.message)
+    }
+  }
+
+  const fetchAnnouncements = async () => {
+    try {
+      attachToken()
+      const res = await privateAPI.get('/notification/commissioner-announcements')
+      const data = res.data?.data || res.data || []
+      setAnnList(Array.isArray(data) ? data : [])
+    } catch (err) {
+      console.warn('Failed to fetch announcements:', err.message)
+    }
+  }
 
   const fetchPending = async () => {
     if (!leagueId) return
@@ -1907,11 +2275,11 @@ const InboxTab = ({ currentLeague }) => {
   useEffect(() => {
     const init = async () => {
       setLoading(true)
-      await fetchPending()
-      await fetchHistory()
+      await Promise.all([fetchSummary(), fetchPending(), fetchHistory(), fetchAnnouncements()])
       setLoading(false)
     }
     init()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [leagueId])
 
   const handleDecide = async (approvalId, decision, reason = '') => {
@@ -1986,6 +2354,124 @@ const InboxTab = ({ currentLeague }) => {
     return <WarningOutlined style={{ color: '#eab308' }} />
   }
 
+  // ── Relative "time ago" ──
+  const timeAgo = (d) => {
+    if (!d) return '—'
+    const diff = Date.now() - new Date(d).getTime()
+    if (diff < 0) return 'just now'
+    const mins = Math.floor(diff / 60000)
+    if (mins < 1) return 'just now'
+    if (mins < 60) return `${mins}m ago`
+    const hrs = Math.floor(mins / 60)
+    if (hrs < 24) return `${hrs}h ago`
+    const days = Math.floor(hrs / 24)
+    if (days < 7) return `${days}d ago`
+    return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  }
+
+  // ── Activity category → icon + accent ──
+  const categoryMeta = (cat, action) => {
+    if (cat === 'trade') return { icon: <SwapOutlined />, color: '#A855F7' }
+    if (cat === 'finance') return { icon: <DollarOutlined />, color: '#F7C948' }
+    if (cat === 'commissioner') return { icon: <NotificationOutlined />, color: '#4ADE80' }
+    if (cat === 'member') return { icon: <TeamOutlined />, color: '#3B82F6' }
+    if (cat === 'settings') return { icon: <SettingOutlined />, color: '#3B82F6' }
+    if (cat === 'draft') return { icon: <OrderedListOutlined />, color: '#8B5CF6' }
+    if (cat === 'roster') return { icon: <OrderedListOutlined />, color: '#3B82F6' }
+    if (cat === 'playoff') return { icon: <TrophyOutlined />, color: '#F7C948' }
+    if (action && action.includes('vetoed')) return { icon: <CloseCircleOutlined />, color: '#ef4444' }
+    return { icon: <AuditOutlined />, color: '#94a3b8' }
+  }
+
+  const counts = summary?.counts || {}
+  const lastAction = summary?.lastAction || null
+  const activity = summary?.activity || []
+
+  const scrollToSales = () => {
+    onNavigateTab && onNavigateTab('inbox')
+    setTimeout(() => saleSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60)
+  }
+
+  // ── Send a commissioner announcement (real POST) ──
+  const sendAnnouncement = async () => {
+    if (!annTitle.trim() || !annMessage.trim()) {
+      notification.warning({ message: 'Title and message are required', duration: 2 })
+      return
+    }
+    setAnnSending(true)
+    try {
+      attachToken()
+      await privateAPI.post('/notification/commissioner-announcement', {
+        title: annTitle.trim(),
+        message: annMessage.trim(),
+        priority: annPriority,
+      })
+      notification.success({ message: 'Announcement sent to the league', duration: 2 })
+      setAnnOpen(false)
+      setAnnTitle('')
+      setAnnMessage('')
+      setAnnPriority('normal')
+      await Promise.all([fetchAnnouncements(), fetchSummary()])
+    } catch (err) {
+      notification.error({ message: err.response?.data?.message || 'Failed to send announcement', duration: 3 })
+    } finally {
+      setAnnSending(false)
+    }
+  }
+
+  // ── Export a real league summary snapshot (client-side download) ──
+  const exportLeague = () => {
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      league: {
+        name: currentLeague?.leagueName || currentLeague?.name || null,
+        id: currentLeague?.leagueId || null,
+        season: summary?.league?.season ?? currentLeague?.season ?? null,
+        teams: counts.maxOwners ?? currentLeague?.numberOfTeams ?? null,
+      },
+      inbox: counts,
+      activity,
+    }
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `league-summary-${(currentLeague?.leagueId || 'export')}.json`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+    notification.success({ message: 'League summary exported', duration: 2 })
+  }
+
+  // ── Quick actions (real handlers / honest deep-links) ──
+  const quickActions = [
+    { key: 'lock', label: 'Lock League', icon: <LockOutlined />, color: '#F7C948', onClick: () => onNavigateTab && onNavigateTab('season') },
+    { key: 'advance', label: 'Advance Week', icon: <FieldTimeOutlined />, color: '#4ADE80', onClick: () => onNavigateTab && onNavigateTab('season') },
+    { key: 'pause', label: 'Pause Draft', icon: <ClockCircleOutlined />, color: '#8B5CF6', onClick: () => onNavigateTab && onNavigateTab('draft') },
+    { key: 'announce', label: 'Send Announcement', icon: <NotificationOutlined />, color: '#3B82F6', onClick: () => setAnnOpen(true) },
+    { key: 'export', label: 'Export League', icon: <DownloadOutlined />, color: '#22C55E', onClick: exportLeague },
+    { key: 'emergency', label: 'Emergency Tools', icon: <ThunderboltOutlined />, color: '#ef4444', onClick: () => onNavigateTab && onNavigateTab('integrity') },
+  ]
+
+  // ── Action Center rows ──
+  const actionItems = [
+    { key: 't', icon: <SwapOutlined />, color: '#A855F7', title: 'Pending Trade Review', count: counts.pendingTrades || 0, cta: 'Review Trades', onClick: () => onNavigateTab && onNavigateTab('trades') },
+    { key: 's', icon: <WarningOutlined />, color: '#F59E0B', title: 'Pending Sale Request', count: counts.pendingSales || 0, cta: 'Review Request', onClick: scrollToSales },
+    { key: 'p', icon: <FileTextOutlined />, color: '#3B82F6', title: 'Rule Change Proposal', count: counts.pendingProposals || 0, cta: 'Review Proposals', onClick: () => navigate('/front-office') },
+    { key: 'o', icon: <TeamOutlined />, color: '#22C55E', title: 'Owner Report', count: counts.ownerReports || 0, cta: 'View Reports', onClick: () => onNavigateTab && onNavigateTab('teams') },
+    { key: 'a', icon: <NotificationOutlined />, color: '#8B5CF6', title: 'League Announcements', count: counts.announcements || 0, cta: 'View Announcements', onClick: () => setAnnViewOpen(true) },
+  ]
+
+  // ── Stat cards ──
+  const statCards = [
+    { label: 'Pending Approvals', value: counts.pendingApprovals ?? 0, sub: 'trades · sales · proposals', icon: <InboxOutlined />, color: '#F59E0B' },
+    { label: 'Active Owners', value: `${counts.activeOwners ?? 0}/${counts.maxOwners ?? 0}`, sub: 'franchises filled', icon: <TeamOutlined />, color: '#3B82F6' },
+    { label: 'Trades Awaiting Review', value: counts.pendingTrades ?? 0, sub: 'in your queue', icon: <SwapOutlined />, color: '#A855F7' },
+    { label: 'Pending Sale Requests', value: counts.pendingSales ?? 0, sub: 'anti-tanking flags', icon: <WarningOutlined />, color: '#ef4444' },
+    { label: 'Last Commissioner Action', value: lastAction ? timeAgo(lastAction.at) : '—', sub: lastAction ? lastAction.description : 'no actions yet', icon: <ClockCircleOutlined />, color: '#4ADE80' },
+  ]
+
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 300 }}>
@@ -1996,8 +2482,179 @@ const InboxTab = ({ currentLeague }) => {
 
   return (
     <div>
+      {/* ═══ STAT CARDS ═══ */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+        gap: 14,
+        marginBottom: 20,
+      }}>
+        {statCards.map((c, i) => (
+          <div key={i} style={{
+            ...GLASS_STYLE,
+            padding: '18px 20px',
+            borderRadius: 14,
+            position: 'relative',
+            overflow: 'hidden',
+          }}>
+            <div style={{
+              position: 'absolute', top: 0, left: 0, width: 3, height: '100%',
+              background: c.color,
+            }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+              <div style={{
+                width: 34, height: 34, borderRadius: 9,
+                background: `${c.color}22`, color: c.color,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17,
+              }}>{c.icon}</div>
+              <span style={{
+                color: 'rgba(255,255,255,0.55)', fontSize: 11, fontWeight: 700,
+                letterSpacing: '0.04em', textTransform: 'uppercase', lineHeight: 1.2,
+                fontFamily: "'Inter', sans-serif",
+              }}>{c.label}</span>
+            </div>
+            <div style={{
+              fontFamily: "'Rajdhani', sans-serif", fontWeight: 800, color: '#fff',
+              fontSize: 30, lineHeight: 1, marginBottom: 4,
+            }}>{c.value}</div>
+            <div style={{
+              color: 'rgba(255,255,255,0.4)', fontSize: 11.5,
+              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+            }}>{c.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* ═══ QUICK ACTIONS ═══ */}
+      <div style={{ ...GLASS_STYLE, padding: '16px 18px', borderRadius: 14, marginBottom: 24 }}>
+        <div style={{
+          color: 'rgba(255,255,255,0.5)', fontSize: 11, fontWeight: 700,
+          letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 12,
+          fontFamily: "'Inter', sans-serif",
+        }}>Quick Actions</div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+          {quickActions.map((a) => (
+            <button key={a.key} onClick={a.onClick} style={{
+              display: 'flex', alignItems: 'center', gap: 8,
+              background: 'rgba(255,255,255,0.04)',
+              border: `1px solid ${a.color}44`,
+              color: '#fff', fontWeight: 600, fontSize: 13,
+              borderRadius: 10, padding: '10px 16px', cursor: 'pointer',
+              fontFamily: "'Inter', sans-serif", transition: 'all .15s',
+            }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = `${a.color}1f`; e.currentTarget.style.borderColor = a.color }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.borderColor = `${a.color}44` }}
+            >
+              <span style={{ color: a.color, fontSize: 15, display: 'flex' }}>{a.icon}</span>
+              {a.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ═══ ACTION CENTER + ACTIVITY FEED ═══ */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 0.9fr)',
+        gap: 18,
+        marginBottom: 28,
+      }} className='cm-inbox-split'>
+        {/* Action Center */}
+        <div style={{ ...GLASS_STYLE, padding: '20px 22px', borderRadius: 14 }}>
+          <div style={{
+            color: '#fff', fontSize: 13, fontWeight: 800, letterSpacing: '0.06em',
+            textTransform: 'uppercase', marginBottom: 16, fontFamily: "'Rajdhani', sans-serif",
+            display: 'flex', alignItems: 'center', gap: 8,
+          }}>
+            <InboxOutlined style={{ color: '#F59E0B' }} /> Action Center
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {actionItems.map((it) => (
+              <div key={it.key} style={{
+                display: 'flex', alignItems: 'center', gap: 14,
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                borderRadius: 11, padding: '13px 16px',
+              }}>
+                <div style={{
+                  width: 38, height: 38, borderRadius: 10, flexShrink: 0,
+                  background: `${it.color}1f`, color: it.color,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17,
+                }}>{it.icon}</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ color: '#fff', fontWeight: 600, fontSize: 14, fontFamily: "'Inter', sans-serif" }}>{it.title}</div>
+                  <div style={{ color: it.count > 0 ? it.color : 'rgba(255,255,255,0.4)', fontSize: 12, fontWeight: 600 }}>
+                    {it.count > 0 ? `${it.count} awaiting` : 'All clear'}
+                  </div>
+                </div>
+                <button onClick={it.onClick} style={{
+                  display: 'flex', alignItems: 'center', gap: 5,
+                  background: it.count > 0 ? `${it.color}22` : 'rgba(255,255,255,0.05)',
+                  border: `1px solid ${it.count > 0 ? `${it.color}55` : 'rgba(255,255,255,0.1)'}`,
+                  color: it.count > 0 ? it.color : 'rgba(255,255,255,0.55)',
+                  fontWeight: 600, fontSize: 12.5, borderRadius: 8,
+                  padding: '7px 13px', cursor: 'pointer', whiteSpace: 'nowrap',
+                  fontFamily: "'Inter', sans-serif",
+                }}>
+                  {it.cta} <RightOutlined style={{ fontSize: 10 }} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Activity Feed */}
+        <div style={{ ...GLASS_STYLE, padding: '20px 22px', borderRadius: 14 }}>
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16,
+          }}>
+            <div style={{
+              color: '#fff', fontSize: 13, fontWeight: 800, letterSpacing: '0.06em',
+              textTransform: 'uppercase', fontFamily: "'Rajdhani', sans-serif",
+              display: 'flex', alignItems: 'center', gap: 8,
+            }}>
+              <AuditOutlined style={{ color: '#4ADE80' }} /> Activity Feed
+            </div>
+            <button onClick={fetchSummary} title='Refresh' style={{
+              background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)',
+              cursor: 'pointer', fontSize: 14, display: 'flex',
+            }}><ReloadOutlined /></button>
+          </div>
+          {activity.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '36px 0', color: 'rgba(255,255,255,0.3)', fontSize: 13 }}>
+              <AuditOutlined style={{ fontSize: 30, display: 'block', marginBottom: 10 }} />
+              No recent activity yet
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              {activity.map((ev, i) => {
+                const m = categoryMeta(ev.category, ev.action)
+                return (
+                  <div key={ev.id || i} style={{
+                    display: 'flex', gap: 12, padding: '11px 0',
+                    borderBottom: i < activity.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+                  }}>
+                    <div style={{
+                      width: 30, height: 30, borderRadius: 8, flexShrink: 0, marginTop: 1,
+                      background: `${m.color}1f`, color: m.color,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14,
+                    }}>{m.icon}</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ color: '#e2e8f0', fontSize: 13, lineHeight: 1.35, fontFamily: "'Inter', sans-serif" }}>{ev.description}</div>
+                      <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 11.5, marginTop: 2 }}>
+                        {ev.actorName} · {timeAgo(ev.at)}
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* ── Pending Requests ── */}
-      <div className='cm-section'>
+      <div className='cm-section' ref={saleSectionRef}>
         <div className='cm-section-header'>
           <div className='cm-section-icon cm-section-icon-amber'>
             <InboxOutlined />
@@ -2199,6 +2856,88 @@ const InboxTab = ({ currentLeague }) => {
           </div>
         )}
       </div>
+
+      {/* ═══ SEND ANNOUNCEMENT MODAL ═══ */}
+      <Modal
+        title={<span style={{ color: '#fff', fontFamily: "'Rajdhani', sans-serif", fontWeight: 800 }}>Send League Announcement</span>}
+        open={annOpen}
+        onCancel={() => setAnnOpen(false)}
+        onOk={sendAnnouncement}
+        okText='Send to League'
+        confirmLoading={annSending}
+        okButtonProps={{ style: { background: 'linear-gradient(135deg,#3B82F6,#2563eb)', border: 'none', fontWeight: 700 } }}
+        className='wr-dark-confirm'
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, paddingTop: 8 }}>
+          <div>
+            <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 6 }}>Title</label>
+            <Input
+              value={annTitle}
+              maxLength={100}
+              onChange={(e) => setAnnTitle(e.target.value)}
+              placeholder='e.g. Trade deadline moved to Week 12'
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }}
+            />
+          </div>
+          <div>
+            <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 6 }}>Message</label>
+            <Input.TextArea
+              value={annMessage}
+              maxLength={500}
+              rows={4}
+              onChange={(e) => setAnnMessage(e.target.value)}
+              placeholder='Write your announcement to all owners...'
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }}
+            />
+          </div>
+          <div>
+            <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 6 }}>Priority</label>
+            <Select
+              value={annPriority}
+              onChange={setAnnPriority}
+              style={{ width: '100%' }}
+              options={[
+                { value: 'normal', label: 'Normal' },
+                { value: 'important', label: 'Important' },
+                { value: 'urgent', label: 'Urgent' },
+              ]}
+            />
+          </div>
+        </div>
+      </Modal>
+
+      {/* ═══ VIEW ANNOUNCEMENTS MODAL ═══ */}
+      <Modal
+        title={<span style={{ color: '#fff', fontFamily: "'Rajdhani', sans-serif", fontWeight: 800 }}>League Announcements</span>}
+        open={annViewOpen}
+        onCancel={() => setAnnViewOpen(false)}
+        footer={<Button onClick={() => { setAnnViewOpen(false); setAnnOpen(true) }} type='primary' style={{ background: 'linear-gradient(135deg,#3B82F6,#2563eb)', border: 'none', fontWeight: 700 }}>New Announcement</Button>}
+        className='wr-dark-confirm'
+      >
+        {annList.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '32px 0', color: 'rgba(255,255,255,0.35)' }}>
+            <NotificationOutlined style={{ fontSize: 30, display: 'block', marginBottom: 10 }} />
+            No announcements posted yet
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 380, overflowY: 'auto', paddingTop: 6 }}>
+            {annList.map((a) => (
+              <div key={a._id} style={{
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderLeft: `4px solid ${a.priority === 'urgent' ? '#ef4444' : a.priority === 'important' ? '#F7C948' : '#3B82F6'}`,
+                borderRadius: 10, padding: '12px 15px',
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+                  <span style={{ color: '#fff', fontWeight: 700, fontSize: 14 }}>{a.title}</span>
+                  <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 11 }}>{timeAgo(a.createdAt)}</span>
+                </div>
+                <div style={{ color: '#cbd5e1', fontSize: 13, lineHeight: 1.4 }}>{a.message}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </Modal>
     </div>
   )
 }
@@ -2671,6 +3410,30 @@ const DraftTab = ({ currentLeague }) => {
     setBtnLoading(-1)
   }
 
+  const handleResetOrder = () => {
+    const rounds = (draftRounds || []).filter((r) => r?._id)
+    if (!rounds.length) { notification.info({ message: 'Draft order is already empty.', duration: 2 }); return }
+    Modal.confirm({
+      title: 'Reset draft order?',
+      content: `This clears all ${rounds.length} pick${rounds.length === 1 ? '' : 's'} from the board. You can randomize or regenerate afterward.`,
+      okText: 'Reset',
+      okButtonProps: { danger: true },
+      centered: true,
+      onOk: async () => {
+        setBtnLoading(4)
+        try {
+          for (const r of rounds) { await deleteDraftRound(r._id) }
+          setIds(Object.fromEntries(Array.from({ length: roundLength }, (_, i) => [i + 1, []])))
+          await getDraftRound(false)
+          notification.success({ message: 'Draft order reset.', duration: 2 })
+        } catch (e) {
+          notification.error({ message: 'Failed to reset draft order.', duration: 3 })
+        }
+        setBtnLoading(-1)
+      },
+    })
+  }
+
   const handleRandomDraftExecute = async () => {
     setBtnLoading(3)
     try {
@@ -3074,6 +3837,11 @@ const DraftTab = ({ currentLeague }) => {
         <button className='cm-draft-action-btn cm-draft-action-generate' disabled={btnLoading === 1} onClick={handleGenerateAll}>
           <span style={{ fontSize: 16 }}>⚡</span>
           {btnLoading === 1 ? t('generating') : t('generateAllRounds')}
+        </button>
+        <button className='cm-draft-action-btn cm-draft-action-reset' disabled={btnLoading === 4} onClick={handleResetOrder}
+          style={{ borderColor: 'rgba(255,92,92,0.4)', color: '#FF6B6B' }}>
+          <span style={{ fontSize: 16 }}>↺</span>
+          {btnLoading === 4 ? 'Resetting…' : 'Reset Order'}
         </button>
       </div>
 
@@ -4202,7 +4970,7 @@ const SeasonTab = ({ teams, user, currentLeague }) => {
               <CalendarOutlined />
             </div>
             <h3 className='cm-section-title'>A.Football Schedule Generator</h3>
-            <span className='cm-section-desc'>32-team league, full A.Football format (17 games, 18 weeks, 1 bye)</span>
+            <span className='cm-section-desc'>{leagueSize === 32 ? 'Full A.Football format (17 games, 18 weeks, 1 bye)' : `${leagueSize}-team league — A.Football-style calendar (rivals home & away, byes)`}</span>
           </div>
 
           <div style={{
@@ -4215,7 +4983,9 @@ const SeasonTab = ({ teams, user, currentLeague }) => {
           }}>
             <div style={{ color: '#22C55E', fontWeight: 600, fontSize: 13, marginBottom: 6 }}>How It Works</div>
             <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>
-              Generates a full A.Football-format schedule: 6 divisional games, 4 intra-conference, 4 inter-conference, 2 same-finish, and 1 cross-conference, totaling 17 games per team spread across 18 weeks with bye weeks during weeks 5-14. Each season uses a unique seed so schedules vary year to year.
+              {leagueSize === 32
+                ? 'Generates a full A.Football-format schedule: 6 divisional games, 4 intra-conference, 4 inter-conference, 2 same-finish, and 1 cross-conference, totaling 17 games per team spread across 18 weeks with bye weeks during weeks 5-14. Each season uses a unique seed so schedules vary year to year.'
+                : `Generates an A.Football-style calendar for your ${leagueSize}-team league: every rival is played home and away, one game per team each week, with bye weeks added when the team count is odd. Each season uses a unique seed so schedules vary year to year.`}
             </div>
           </div>
 

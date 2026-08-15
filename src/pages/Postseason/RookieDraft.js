@@ -1,40 +1,37 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import { Button, Input, Table, Tag, Spin, Empty, Tabs, Switch, Modal, notification } from 'antd'
+import { Button, Input, Table, Tag, Spin, Switch, Modal, notification } from 'antd'
 import { CiSearch } from 'react-icons/ci'
 import { BiSolidPlusCircle } from 'react-icons/bi'
 import {
   ThunderboltOutlined,
   ClockCircleOutlined,
-  PauseCircleOutlined,
-  PlayCircleOutlined,
-  TrophyOutlined,
   DeleteOutlined,
-  CaretUpOutlined,
-  CaretDownOutlined,
-  CalendarOutlined,
-  StopOutlined,
-  PoweroffOutlined,
 } from '@ant-design/icons'
 import Header from '../../components/Header'
 import DraftChatWidget from '../../components/DraftChatWidget'
+import NFLPlayerPopup from '../../components/NFLPlayerPopup/NFLPlayerPopup'
 import {
   getRookieDraftOrder,
   getRookiePool,
   makeRookiePick,
-  toggleRookieDraftLive,
   toggleRookieAutoDraft,
-  buildRookieDraftOrder,
   getRookieDraftQueue,
   addToRookieQueue,
   removeFromRookieQueue,
-  reorderRookieQueue,
 } from '../../redux/actions/rookieDraftAction'
 import io from 'socket.io-client'
-import { base_url, attachToken, privateAPI, leagueSalaryCap } from '../../config/constants'
+import { base_url, attachToken, privateAPI } from '../../config/constants'
+import './../Draft/draftLive.css'
 
 const ALL_POSITIONS = ['ALL', 'QB', 'RB', 'WR', 'TE', 'OL', 'DE', 'DT', 'LB', 'CB', 'S', 'K']
 const OFFENSE_ONLY_POSITIONS = ['ALL', 'QB', 'RB', 'WR', 'TE', 'K']
+
+const POS_COLOR = {
+  QB: '#ef4444', RB: '#3b82f6', WR: '#22c55e', TE: '#f59e0b', K: '#78716c',
+}
+const posColor = (pos) => POS_COLOR[pos] || '#64748b'
+const lastName = (nm) => (nm || '').trim().split(/\s+/).slice(-1)[0] || ''
 
 // ── Countdown Hook ──────────────────────────────────────────
 const useCountdown = (deadline) => {
@@ -61,21 +58,17 @@ const RookieDraft = () => {
   const user = useSelector((s) => s.user)
   const currentLeague = useSelector((s) => s.league?.currentLeague)
   const draftYear = currentLeague?.season || new Date().getFullYear()
-  const teamSalary = useSelector((s) => s.user?.teamSalaryCap)
-  const myleagueSalaryCap = useSelector((s) => s.user?.leagueSalaryCap?.leagueSalaryCap)
   const isOffenseOnly = currentLeague?.leagueMode === 'offense_only'
   const POSITIONS = isOffenseOnly ? OFFENSE_ONLY_POSITIONS : ALL_POSITIONS
   const [selectedPlayer, setSelectedPlayer] = useState(null)
   const [searchVal, setSearchVal] = useState('')
   const [posFilter, setPosFilter] = useState('ALL')
   const [autoDraftOn, setAutoDraftOn] = useState(false)
-  const [activeTab, setActiveTab] = useState('1')
   const [draftLoading, setDraftLoading] = useState(false)
   const [queueLoading, setQueueLoading] = useState('')
   const [draftBudget, setDraftBudget] = useState(null) // SamPoints remaining for draft
   const [pickAnnouncement, setPickAnnouncement] = useState(null)
   const [rookieCardPlayer, setRookieCardPlayer] = useState(null)
-  const [scheduleDate, setScheduleDate] = useState('')
   const [draftPaused, setDraftPaused] = useState(false)
   const socketRef = useRef(null)
 
@@ -288,24 +281,6 @@ const RookieDraft = () => {
     await toggleRookieAutoDraft(checked)
   }
 
-  const handleToggleDraftLive = async (isLive) => {
-    await toggleRookieDraftLive(isLive)
-  }
-
-  const handleSaveSchedule = async () => {
-    try {
-      const parsed = scheduleDate ? new Date(scheduleDate) : null
-      if (scheduleDate && isNaN(parsed?.getTime())) {
-        notification.error({ message: 'Invalid date format' })
-        return
-      }
-      await privateAPI.post('/rookie-draft/schedule', { scheduledDate: parsed?.toISOString() || null }, attachToken())
-      notification.success({ message: parsed ? `Draft scheduled for ${parsed.toLocaleString()}` : 'Schedule cleared' })
-    } catch (err) {
-      notification.error({ message: err.response?.data?.message || 'Failed to schedule' })
-    }
-  }
-
   const handleTogglePause = async (paused) => {
     try {
       await privateAPI.post('/rookie-draft/toggle-pause', { paused }, attachToken())
@@ -328,24 +303,9 @@ const RookieDraft = () => {
     setQueueLoading('')
   }
 
-  const handleReorderQueue = async (index, direction) => {
-    if (!draftQueue?.length) return
-    const newOrder = [...draftQueue]
-    const swapIndex = direction === 'up' ? index - 1 : index + 1
-    if (swapIndex < 0 || swapIndex >= newOrder.length) return
-    ;[newOrder[index], newOrder[swapIndex]] = [newOrder[swapIndex], newOrder[index]]
-    const playerIds = newOrder.map((q) => q.player?._id)
-    await reorderRookieQueue(playerIds)
-  }
-
   // Is the player already in queue?
   const isInQueue = (playerId) =>
     draftQueue?.some((q) => String(q.player?._id) === String(playerId))
-
-  // Next pick after current
-  const nextPickInfo = draftOrder?.picks?.find(
-    (p) => !p.isCompleted && p.overall > (currentPickInfo?.overall || 0)
-  )
 
   // ── Pool Columns ──────────────────────────────────────────
   const poolColumns = [
@@ -449,550 +409,88 @@ const RookieDraft = () => {
     },
   ]
 
-  // ── Tab 1: Rookie Pool ────────────────────────────────────
-  const PoolTab = () => (
-    <Spin spinning={loading}>
-      <Table
-        dataSource={pool.players}
-        columns={poolColumns}
-        pagination={{
-          current: pool.page,
-          pageSize: pool.limit,
-          total: pool.total,
-          onChange: (page) =>
-            getRookiePool({
-              page,
-              position: posFilter !== 'ALL' ? posFilter : undefined,
-              search: searchVal || undefined,
-            }),
-          showSizeChanger: false,
-          size: 'small',
-        }}
-        size="small"
-        rowKey={(r) => r._id}
-        className="sd-pool-table"
-        rowClassName={(r) =>
-          selectedPlayer?._id === r._id ? 'sd-selected-row' : ''
-        }
-        onRow={(record) => ({ onClick: () => setSelectedPlayer(record) })}
-        scroll={{ x: 900 }}
-      />
-    </Spin>
+  // ── Derived rail data ─────────────────────────────────────
+  const myPicks = (draftOrder?.picks || []).filter(
+    (p) => p.isCompleted && p.player && String(p.team?._id) === String(user?.team?._id)
   )
-
-  // ── Tab 2: Draft Queue ────────────────────────────────────
-  const queueColumns = [
-    {
-      width: 50,
-      title: '#',
-      key: 'order',
-      render: (_, __, index) => <span>{index + 1}</span>,
-    },
-    {
-      width: 60,
-      title: ' ',
-      key: 'arrows',
-      render: (_, __, index) => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <CaretUpOutlined
-            style={{ cursor: index > 0 ? 'pointer' : 'not-allowed', opacity: index > 0 ? 1 : 0.3 }}
-            onClick={() => index > 0 && handleReorderQueue(index, 'up')}
-          />
-          <CaretDownOutlined
-            style={{ cursor: index < (draftQueue?.length || 0) - 1 ? 'pointer' : 'not-allowed', opacity: index < (draftQueue?.length || 0) - 1 ? 1 : 0.3 }}
-            onClick={() => index < (draftQueue?.length || 0) - 1 && handleReorderQueue(index, 'down')}
-          />
-        </div>
-      ),
-    },
-    {
-      width: 180,
-      title: 'Player',
-      key: 'player',
-      render: (_, obj) => (
-        <div className="table_player_name_box nrc_container">
-          <p>{obj?.player?.Name || '-'}</p>
-        </div>
-      ),
-    },
-    {
-      width: 100,
-      title: 'POSITION',
-      key: 'pos',
-      render: (_, obj) => <p>{obj?.player?.Position || '-'}</p>,
-    },
-    {
-      width: 100,
-      title: 'TEAM',
-      key: 'team',
-      render: (_, obj) => <p>{obj?.player?.Team || '-'}</p>,
-    },
-    {
-      width: 80,
-      title: ' ',
-      key: 'delete',
-      render: (_, obj) => (
-        <Button
-          type="text"
-          danger
-          size="small"
-          icon={<DeleteOutlined />}
-          loading={queueLoading === obj?.player?._id}
-          onClick={() => handleRemoveQueue(obj?.player?._id)}
-        />
-      ),
-    },
-  ]
-
-  const QueueTab = () => (
-    <div>
-      {draftQueue?.length > 0 ? (
-        <Table
-          dataSource={draftQueue}
-          columns={queueColumns}
-          pagination={false}
-          size="small"
-          rowKey={(record) => record._id || record.player?._id}
-          className="sd-pool-table"
-        />
-      ) : (
-        <Empty description="No players in your queue. Click the + icon in the Rookie Pool tab to add players." />
-      )}
-    </div>
-  )
-
-  // ── Tab 3: Team Rosters (picks so far) ────────────────────
-  const TeamRostersTab = () => {
-    const teamPicks = {}
-    draftOrder?.picks
-      ?.filter((p) => p.isCompleted && p.player)
-      ?.forEach((p) => {
-        const teamName = p.team?.name || p.team?.abbreviation || 'Unknown'
-        const teamId = String(p.team?._id || p.team)
-        if (!teamPicks[teamId]) teamPicks[teamId] = { name: teamName, picks: [] }
-        teamPicks[teamId].picks.push(p)
-      })
-
-    return (
-      <div className="sd-team-rosters-tab">
-        {Object.keys(teamPicks).length > 0 ? (
-          Object.entries(teamPicks).map(([teamId, data]) => (
-            <div key={teamId} className="sd-roster-team-block">
-              <div className="sd-roster-team-header">
-                <span className="sd-roster-team-name">{data.name}</span>
-                <span className="sd-roster-team-count">{data.picks.length} picks</span>
-              </div>
-              {data.picks.map((pick, idx) => (
-                <div key={idx} className="sd-roster-pick-row">
-                  <span className="sd-roster-pick-label">{pick.label}</span>
-                  <span className="sd-roster-pick-player">
-                    {pick.player?.Name || 'Unknown'}
-                  </span>
-                  <span className="sd-roster-pick-pos">{pick.player?.Position || '-'}</span>
-                  <span className="sd-roster-pick-team">{pick.player?.Team || '-'}</span>
-                </div>
-              ))}
-            </div>
-          ))
-        ) : (
-          <Empty description="No picks made yet" />
-        )}
-      </div>
-    )
-  }
-
-  const tabItems = [
-    { key: '1', label: 'Rookie Pool', children: <PoolTab /> },
-    { key: '2', label: `Draft Queue (${draftQueue?.length || 0})`, children: <QueueTab /> },
-    { key: '3', label: 'Team Rosters', children: <TeamRostersTab /> },
-  ]
+  const upNextPicks = (draftOrder?.picks || [])
+    .filter((p) => !p.isCompleted)
+    .sort((a, b) => a.overall - b.overall)
+    .slice(0, 10)
+  const recentPicks = (draftOrder?.picks || [])
+    .filter((p) => p.isCompleted && p.player)
+    .sort((a, b) => b.overall - a.overall)
+    .slice(0, 5)
 
   // ═══════════════════════════════════════════════════════════
   //  RENDER
   // ═══════════════════════════════════════════════════════════
   return (
-    <div className="postseason-page">
+    <div className="pro_league_container dl-root">
       <Header />
-      <main className="postseason-main sd-layout">
-        {/* ─── Left Sidebar ─── */}
-        <div className="sd-left">
-          {/* Countdown Timer, always visible when draft exists */}
-          {draftOrder && (
-            <div className={`sd-timer-card ${draftOrder?.isLive && countdown.isUrgent ? 'sd-timer-urgent' : ''} ${!draftOrder?.isLive ? 'sd-timer-paused' : ''}`}>
-              <ClockCircleOutlined className="sd-timer-icon" />
-              <span className="sd-timer-display">
-                {draftOrder?.isLive && currentPickInfo
-                  ? countdown.display
-                  : draftOrder?.isCompleted
-                  ? 'DONE'
-                  : 'PAUSED'}
+
+      <div className="dl-shell">
+        {/* ── Top bar ── */}
+        <div className="dl-topbar">
+          <div className="dl-title">
+            ROOKIE DRAFT
+            <span className="dl-sub">{draftYear} · Round {draftOrder?.currentRound}, Pick {draftOrder?.currentPick}</span>
+            {draftOrder?.isLive && currentPickInfo && (
+              <span className={`dl-onclock ${isMyPick ? 'me' : ''}`}>
+                ● {isMyPick ? "You're on the clock" : `${currentPickInfo.team?.name || ''} on the clock`}
               </span>
-              <span className="sd-timer-label">
-                {draftOrder?.isLive && currentPickInfo
-                  ? isMyPick ? 'Your pick!' : currentPickInfo.team?.abbreviation
-                  : draftOrder?.isCompleted
-                  ? 'Draft Complete'
-                  : 'Waiting to start'}
-              </span>
-            </div>
-          )}
-
-          {/* Draft Budget — matches header "Budget Left" */}
-          {draftOrder && (() => {
-            const effectiveCap = myleagueSalaryCap?.leagueSalaryCap || myleagueSalaryCap || leagueSalaryCap
-            const capLeft = effectiveCap != null && teamSalary != null ? effectiveCap - teamSalary : 0
-            const formatBudget = (val) => {
-              if (val == null) return '$0'
-              const abs = Math.abs(val)
-              const sign = val < 0 ? '-' : ''
-              if (abs >= 1_000_000_000) return `${sign}$${(abs / 1_000_000_000).toFixed(1)}B`
-              if (abs >= 1_000_000) return `${sign}$${(abs / 1_000_000).toFixed(1)}M`
-              if (abs >= 1_000) return `${sign}$${(abs / 1_000).toFixed(0)}K`
-              return `${sign}$${abs}`
-            }
-            return (
-            <div className="sd-card" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.08) 0%, rgba(59,130,246,0.06) 100%)', border: '1px solid rgba(34,197,94,0.2)' }}>
-              <div className="sd-card-header">
-                <h3 style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <span>💎</span> Draft Budget
-                </h3>
-              </div>
-              <div className="sd-card-body" style={{ textAlign: 'center', padding: '8px 0' }}>
-                <div style={{ fontSize: 22, fontWeight: 700, color: capLeft < 0 ? '#EF4444' : '#22C55E', fontFamily: "'Barlow Condensed', sans-serif" }}>
-                  {formatBudget(capLeft)}
-                </div>
-                <div style={{ fontSize: 11, color: '#94A3B8', marginTop: 2 }}>
-                  Budget Remaining
-                </div>
-                {currentPickInfo && isMyPick && (
-                  <div style={{ fontSize: 11, color: '#F97316', marginTop: 6, padding: '4px 8px', background: 'rgba(249,115,22,0.1)', borderRadius: 6 }}>
-                    Pick #{currentPickInfo.overall} slot cost shown on selection
-                  </div>
-                )}
-              </div>
-            </div>
-            )
-          })()}
-
-          {/* Any drafter can pause the draft */}
-          {!isCommissioner && draftOrder?.isLive && !draftOrder?.isCompleted && (
-            <div className="sd-card" style={{ marginBottom: '8px' }}>
-              <div className="sd-card-header"><h3>Draft Control</h3></div>
-              <div className="sd-card-body" style={{ padding: '10px 14px' }}>
-                <Button
-                  icon={<PauseCircleOutlined />}
-                  onClick={() => handleTogglePause(true)}
-                  block
-                  style={{ background: 'rgba(245,158,11,0.1)', borderColor: 'rgba(245,158,11,0.3)', color: '#F59E0B', fontWeight: 700 }}
-                >
-                  CALL TIMEOUT
-                </Button>
-                <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 11, textAlign: 'center', marginTop: 6 }}>
-                  Commissioner must resume
-                </div>
-              </div>
-            </div>
-          )}
-          {!isCommissioner && !draftOrder?.isLive && draftPaused && !draftOrder?.isCompleted && (
-            <div className="sd-card" style={{ marginBottom: '8px' }}>
-              <div className="sd-card-body" style={{ padding: '12px 14px', textAlign: 'center' }}>
-                <div style={{ color: '#F59E0B', fontWeight: 600, fontSize: 13 }}>
-                  ⏸ Draft Paused, Waiting for commissioner to resume
-                </div>
-                <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 11, marginTop: 4 }}>Auto-resumes in 5 min</div>
-              </div>
-            </div>
-          )}
-
-          {/* Commissioner Controls */}
-          {isCommissioner && (
-            <div className="sd-card sd-commissioner-card">
-              <div className="sd-card-header">
-                <h3>Commissioner</h3>
-              </div>
-              <div className="sd-card-body sd-commissioner-controls">
-                {/* Schedule */}
-                <div style={{ marginBottom: 12, padding: '10px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(110,105,128,0.12)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                    <CalendarOutlined style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12 }} />
-                    <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>Schedule</span>
-                    <span style={{ marginLeft: 'auto', color: draftOrder?.scheduledDate ? '#D4A843' : 'rgba(255,255,255,0.3)', fontSize: 11, fontWeight: 600 }}>
-                      {draftOrder?.scheduledDate ? new Date(draftOrder.scheduledDate).toLocaleString() : 'Not set'}
-                    </span>
-                  </div>
-                  <div style={{ display: 'flex', gap: 6 }}>
-                    <Input
-                      size="small"
-                      placeholder="MM/DD/YYYY HH:MM"
-                      value={scheduleDate}
-                      onChange={(e) => setScheduleDate(e.target.value)}
-                      style={{ flex: 1, background: 'rgba(0,0,0,0.2)', borderColor: 'rgba(110,105,128,0.15)', color: '#fff', fontSize: 11 }}
-                    />
-                    <Button size="small" type="primary" onClick={handleSaveSchedule}>Set</Button>
-                    {(draftOrder?.scheduledDate || scheduleDate) && (
-                      <Button size="small" danger onClick={() => { setScheduleDate(''); handleSaveSchedule() }}>Clear</Button>
-                    )}
-                  </div>
-                </div>
-
-                {/* On/Off + Pause */}
-                {draftOrder && !draftOrder?.isCompleted && (
-                  <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-                    {draftOrder?.isLive || !draftPaused ? (
-                      <Button
-                        icon={<StopOutlined />}
-                        danger
-                        onClick={() => { handleToggleDraftLive(false); setDraftPaused(true) }}
-                        style={{ flex: 1 }}
-                      >
-                        TURN OFF
-                      </Button>
-                    ) : (
-                      <Button
-                        icon={<PoweroffOutlined />}
-                        type="primary"
-                        onClick={() => { handleToggleDraftLive(true); setDraftPaused(false) }}
-                        style={{ flex: 1, background: '#22C55E', borderColor: '#22C55E' }}
-                      >
-                        TURN ON
-                      </Button>
-                    )}
-                    {draftOrder?.isLive && (
-                      <Button
-                        icon={<PauseCircleOutlined />}
-                        onClick={() => { handleToggleDraftLive(false); setDraftPaused(true) }}
-                        style={{ flex: 1, background: 'rgba(245,158,11,0.1)', borderColor: 'rgba(245,158,11,0.3)', color: '#F59E0B' }}
-                      >
-                        PAUSE
-                      </Button>
-                    )}
-                  </div>
-                )}
-
-                {!draftOrder ? (
-                  <Button
-                    type="primary"
-                    icon={<TrophyOutlined />}
-                    onClick={() => buildRookieDraftOrder(7)}
-                    loading={loading}
-                    block
-                  >
-                    GENERATE {draftYear} ROOKIE DRAFT
-                  </Button>
-                ) : draftOrder?.isLive ? (
-                  <Button
-                    type="primary"
-                    danger
-                    icon={<PauseCircleOutlined />}
-                    onClick={() => handleToggleDraftLive(false)}
-                    block
-                  >
-                    PAUSE DRAFT
-                  </Button>
-                ) : (
-                  <Button
-                    type="primary"
-                    icon={<PlayCircleOutlined />}
-                    onClick={() => handleToggleDraftLive(true)}
-                    disabled={draftOrder?.isCompleted}
-                    block
-                  >
-                    {draftOrder?.isCompleted ? 'DRAFT COMPLETE' : 'START / RESUME DRAFT'}
-                  </Button>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Autodraft Toggle */}
-          {draftOrder && (
-            <div className="sd-card sd-autodraft-card">
-              <div className="sd-card-header">
-                <h3>Autodraft</h3>
-                <Switch
-                  checked={autoDraftOn}
-                  onChange={handleAutoDraftToggle}
-                  checkedChildren="ON"
-                  unCheckedChildren="OFF"
-                  className="sd-autodraft-switch"
-                />
-              </div>
-              <p className="sd-autodraft-desc">
-                {autoDraftOn
-                  ? 'Picks from your queue (or best available) when on the clock'
-                  : 'Enable to auto-pick rookies when it\'s your turn'}
-              </p>
-            </div>
-          )}
-
-          {/* Draft Chat */}
-          <DraftChatWidget leagueName="Rookie Draft" height="220px" />
-
-          {/* Draft Order */}
-          <div className="sd-card">
-            <div className="sd-card-header">
-              <h3>Draft Order</h3>
-              {draftOrder?.isLive && (
-                <Tag color="green" className="sd-live-tag">LIVE</Tag>
-              )}
-            </div>
-            <div className="sd-card-body sd-order-list">
-              {draftOrder?.picks?.length > 0 ? (
-                <div className="sd-order-scroll">
-                  {draftOrder.picks.map((pick, idx) => {
-                    const isCurrent =
-                      pick.round === draftOrder.currentRound &&
-                      pick.pick === draftOrder.currentPick &&
-                      !pick.isCompleted
-                    const isNext =
-                      nextPickInfo &&
-                      pick.round === nextPickInfo.round &&
-                      pick.pick === nextPickInfo.pick &&
-                      !pick.isCompleted
-                    const isMyTeamPick =
-                      String(pick.team?._id) === String(user?.team?._id)
-                    const posColors = { QB: '#EF4444', RB: '#22C55E', WR: '#3B82F6', TE: '#F59E0B', K: '#A855F7', DE: '#EC4899', DT: '#EC4899', LB: '#8B5CF6', CB: '#06B6D4', S: '#14B8A6', OL: '#6B7280' }
-                    const pickPosColor = pick.player?.Position ? (posColors[pick.player.Position] || '#6B7280') : '#6B7280'
-                    return (
-                      <div
-                        key={idx}
-                        className={`sd-order-row ${pick.isCompleted ? 'sd-order-completed' : ''} ${isCurrent ? 'sd-order-active' : ''} ${isNext ? 'sd-order-next' : ''}`}
-                      >
-                        <span className="sd-order-pick-label">{pick.label}</span>
-                        <span className={`sd-order-team ${isMyTeamPick && !pick.isCompleted ? 'sd-order-my-team' : ''}`}>
-                          {pick.team?.abbreviation || '?'}
-                        </span>
-                        {pick.isCompleted && !pick.skipped && pick.player ? (
-                          <span className="sd-order-player sd-order-player-selected" style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 0 }}>
-                            <span style={{
-                              width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
-                              background: pick.player.HostedHeadshotNoBackgroundUrl
-                                ? `url(${pick.player.HostedHeadshotNoBackgroundUrl}) center/cover`
-                                : `linear-gradient(135deg, ${pickPosColor}40, ${pickPosColor}15)`,
-                              border: `2px solid ${pickPosColor}60`,
-                              display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              fontSize: 11, color: pickPosColor, fontWeight: 700,
-                            }}>
-                              {!pick.player.HostedHeadshotNoBackgroundUrl && (pick.player.Name?.[0] || '?')}
-                            </span>
-                            <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.25, minWidth: 0 }}>
-                              <span style={{ fontWeight: 700, color: '#fff', fontSize: 12, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                {pick.player.Name}
-                              </span>
-                              <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>
-                                <span style={{ color: pickPosColor, fontWeight: 700 }}>{pick.player.Position}</span>
-                                {pick.player.College ? ` · ${pick.player.College}` : pick.player.Team ? ` · ${pick.player.Team}` : ''}
-                              </span>
-                            </span>
-                          </span>
-                        ) : (
-                          <span className="sd-order-player">
-                            {pick.isCompleted
-                              ? 'Skipped'
-                              : isCurrent
-                              ? 'ON CLOCK'
-                              : isNext
-                              ? 'NEXT'
-                              : '—'}
-                          </span>
-                        )}
-                      </div>
-                    )
-                  })}
-                </div>
-              ) : (
-                <Empty description="No draft order yet" image={Empty.PRESENTED_IMAGE_SIMPLE} />
-              )}
-            </div>
+            )}
+          </div>
+          <div className="dl-trade-btn" style={{ cursor: 'default' }}>
+            💎 ${(draftBudget ?? 0).toLocaleString()} SP
           </div>
         </div>
 
-        {/* ─── Center: Main Content ─── */}
-        <div className="sd-center">
-          {/* Rookie Draft Header Banner */}
-          <div className="rd-header-banner">
-            <TrophyOutlined className="rd-header-icon" />
-            <div className="rd-header-text">
-              <h1 className="rd-header-title">{draftYear} ROOKIE DRAFT</h1>
-              <span className="rd-header-subtitle">
-                7 Rounds, Linear Order (Worst to First), 120s Timer, Rookies Only
-              </span>
-            </div>
-            {draftOrder?.isCompleted && (
-              <Tag color="green" style={{ marginLeft: 'auto', fontWeight: 700 }}>COMPLETED</Tag>
-            )}
+        {/* ── Up Next strip ── */}
+        <div className="dl-upnext">
+          <span className="dl-upnext-label">Up Next</span>
+          <div className="dl-upnext-list">
+            {upNextPicks.map((p) => {
+              const isNow = p.overall === currentPickInfo?.overall
+              return (
+                <div key={p.overall} className={`dl-pill ${isNow ? 'now' : ''}`}>
+                  {p.team?.logo
+                    ? <div className="dl-pill-logo" style={{ backgroundImage: `url(${p.team.logo})` }} />
+                    : <div className="dl-pill-logo dl-pill-logo--ph">{(p.team?.abbreviation || p.team?.name || '?').slice(0, 2).toUpperCase()}</div>}
+                  <div className="dl-pill-info">
+                    <span className="dl-pill-num">#{p.overall}</span>
+                    <span className="dl-pill-team">{p.team?.abbreviation || p.team?.name || 'TBD'}</span>
+                  </div>
+                  {isNow && <span className="dl-pill-tag">NOW</span>}
+                </div>
+              )
+            })}
           </div>
+        </div>
 
-          {/* On the Clock Banner with Countdown, always visible when draft exists */}
-          {draftOrder && !draftOrder?.isCompleted && (
-            <div className={`sd-clock-banner ${isMyPick && draftOrder?.isLive ? 'sd-my-pick' : ''} ${!draftOrder?.isLive ? 'sd-clock-paused' : ''}`}>
-              <div className="rd-clock-left">
-                {draftOrder?.isLive ? <ThunderboltOutlined /> : <PauseCircleOutlined />}
-                <span>
-                  {!draftOrder?.isLive
-                    ? 'DRAFT PAUSED, Waiting for commissioner to start'
-                    : isMyPick
-                    ? 'YOU ARE ON THE CLOCK!'
-                    : `On the clock: ${currentPickInfo?.team?.name || 'Unknown'}`}
-                </span>
-                {draftOrder?.isLive && currentPickInfo && (
-                  <span className="sd-clock-pick">{currentPickInfo.label}</span>
-                )}
-                {autoDraftOn && isMyPick && draftOrder?.isLive && (
-                  <Tag color="cyan" className="sd-auto-tag">AUTO in {countdown.display}</Tag>
-                )}
-              </div>
-              <div className={`rd-clock-timer ${draftOrder?.isLive && countdown.isUrgent ? 'rd-clock-urgent' : ''} ${!draftOrder?.isLive ? 'rd-clock-paused' : ''}`}>
-                <ClockCircleOutlined />
-                <span>{draftOrder?.isLive && currentPickInfo ? countdown.display : '--:--'}</span>
-              </div>
-            </div>
-          )}
-
-          {/* Draft Action Bar */}
-          {draftOrder && !draftOrder?.isCompleted && (
-            <div className="rd-draft-action-bar">
-              <Button
-                type="primary"
-                size="large"
-                onClick={() => selectedPlayer ? handleDraftPlayer(selectedPlayer?._id) : null}
-                loading={draftLoading}
-                disabled={!selectedPlayer || !isMyPick || !draftOrder?.isLive}
-                className="rd-draft-btn"
-              >
-                <ThunderboltOutlined />
-                {selectedPlayer
-                  ? `DRAFT ${selectedPlayer?.Name || 'PLAYER'}`
-                  : 'SELECT A PLAYER TO DRAFT'}
-              </Button>
-            </div>
-          )}
-
-          {/* Position Filter Pills + AUTODRAFT + Search */}
-          <div className="rd-filter-bar">
-            <div className="rd-pills">
+        {/* ── Body: pool | card | rail ── */}
+        <div className="dl-body">
+          {/* Player pool */}
+          <div className="dl-col dl-col-pool">
+            <div className="rd-pills" style={{ display: 'flex', flexWrap: 'wrap', gap: 6, padding: '12px 12px 0' }}>
               {POSITIONS.map((pos) => (
                 <button
                   key={pos}
                   className={`rd-pill ${posFilter === pos ? 'rd-pill-active' : ''}`}
                   onClick={() => setPosFilter(pos)}
+                  style={{
+                    padding: '4px 12px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 700,
+                    fontFamily: "'Rajdhani', sans-serif",
+                    background: posFilter === pos ? 'rgba(34,197,94,0.18)' : 'rgba(255,255,255,0.04)',
+                    border: posFilter === pos ? '1px solid rgba(34,197,94,0.5)' : '1px solid rgba(255,255,255,0.08)',
+                    color: posFilter === pos ? '#22c55e' : 'rgba(255,255,255,0.6)',
+                  }}
                 >
                   {pos}
                 </button>
               ))}
             </div>
-            <div className="rd-search-area">
-              <Button
-                loading={draftLoading}
-                disabled={
-                  draftOrder?.isCompleted || !(isMyPick && draftOrder?.isLive)
-                }
-                type="primary"
-                onClick={handleAutoDraft}
-                className="rd-autodraft-btn"
-              >
-                AUTODRAFT
-              </Button>
+            <div style={{ padding: '10px 12px' }}>
               <Input
                 value={searchVal}
                 onChange={(e) => setSearchVal(e.target.value)}
@@ -1003,173 +501,171 @@ const RookieDraft = () => {
                 className="rd-search-input"
               />
             </div>
+            <Spin spinning={loading}>
+              <Table
+                dataSource={pool.players}
+                columns={poolColumns}
+                pagination={{
+                  current: pool.page,
+                  pageSize: pool.limit,
+                  total: pool.total,
+                  onChange: (page) =>
+                    getRookiePool({
+                      page,
+                      position: posFilter !== 'ALL' ? posFilter : undefined,
+                      search: searchVal || undefined,
+                    }),
+                  showSizeChanger: false,
+                  size: 'small',
+                }}
+                size="small"
+                rowKey={(r) => r._id}
+                className="sd-pool-table"
+                rowClassName={(r) => (selectedPlayer?._id === r._id ? 'sd-selected-row' : '')}
+                onRow={(record) => ({ onClick: () => setSelectedPlayer(record) })}
+                scroll={{ x: 900 }}
+              />
+            </Spin>
           </div>
 
-          {/* Tabs */}
-          <div className="table_container">
-            <Tabs
-              activeKey={activeTab}
-              items={tabItems}
-              className="tabs"
-              onChange={(v) => {
-                setActiveTab(v)
-                if (v === '2') getRookieDraftQueue()
-              }}
-            />
-          </div>
-
-        </div>
-
-        {/* ─── Right: Selected Player Detail ─── */}
-        <div className="sd-right">
-          {selectedPlayer ? (
-            <div className="sd-card sd-detail-card">
-              <div className="sd-card-header">
-                <h3>Player Detail</h3>
+          {/* Inline player card */}
+          <div className="dl-col dl-col-card">
+            {selectedPlayer ? (
+              <NFLPlayerPopup
+                inline
+                isOpen
+                playerId={selectedPlayer._id}
+                player={selectedPlayer}
+                onClose={() => {}}
+                onQueue={(p) => (isInQueue(p?._id) ? handleRemoveQueue(p?._id) : handleAddQueue(p?._id))}
+                isQueued={isInQueue(selectedPlayer?._id)}
+              />
+            ) : (
+              <div className="dl-card-empty">
+                <BiSolidPlusCircle size={40} color="rgba(255,255,255,0.15)" />
+                <p>Select a player from the pool to view their card</p>
               </div>
-              <div className="sd-card-body">
-                <div className="sd-detail-img-wrap">
-                  <div
-                    className="sd-detail-img"
-                    style={{
-                      backgroundImage: `url(${selectedPlayer?.HostedHeadshotNoBackgroundUrl || ''})`,
-                    }}
-                  />
-                </div>
-                <h2 className="sd-detail-name">{selectedPlayer?.Name}</h2>
-                <div className="sd-detail-meta">
-                  <Tag color="purple">{selectedPlayer?.Position}</Tag>
-                  <Tag>{selectedPlayer?.Team || 'FA'}</Tag>
-                  <Tag color="blue">Rookie</Tag>
-                </div>
-                {selectedPlayer?.College && (
-                  <p className="sd-detail-from">College: {selectedPlayer.College}</p>
-                )}
-                <div className="sd-detail-stats">
-                  <div className="sd-dstat">
-                    <span className="sd-dstat-val">
-                      {selectedPlayer?.samAdp24 ? Math.round(selectedPlayer.samAdp24) : '-'}
-                    </span>
-                    <span className="sd-dstat-label">SAM ADP</span>
-                  </div>
-                  <div className="sd-dstat">
-                    <span className="sd-dstat-val">
-                      {selectedPlayer?.FantasyPoints24?.toFixed(1) || '0.0'}
-                    </span>
-                    <span className="sd-dstat-label">Proj PTS</span>
-                  </div>
-                  <div className="sd-dstat">
-                    <span className="sd-dstat-val">
-                      ${(selectedPlayer?.currentYearSalaryCap || 0).toLocaleString()}
-                    </span>
-                    <span className="sd-dstat-label">Value</span>
-                  </div>
-                </div>
-                {/* ── Combine Stats ── */}
-                {(selectedPlayer?.fortyYard || selectedPlayer?.verticalJump || selectedPlayer?.broadJump) && (
-                  <div className="sd-detail-stats" style={{ marginTop: 8 }}>
-                    {selectedPlayer?.fortyYard && (
-                      <div className="sd-dstat">
-                        <span className="sd-dstat-val">{selectedPlayer.fortyYard}s</span>
-                        <span className="sd-dstat-label">40-Yard</span>
-                      </div>
-                    )}
-                    {selectedPlayer?.verticalJump && (
-                      <div className="sd-dstat">
-                        <span className="sd-dstat-val">{selectedPlayer.verticalJump}&quot;</span>
-                        <span className="sd-dstat-label">Vert</span>
-                      </div>
-                    )}
-                    {selectedPlayer?.broadJump && (
-                      <div className="sd-dstat">
-                        <span className="sd-dstat-val">{selectedPlayer.broadJump}</span>
-                        <span className="sd-dstat-label">Broad</span>
-                      </div>
-                    )}
-                    {selectedPlayer?.handSize && (
-                      <div className="sd-dstat">
-                        <span className="sd-dstat-val">{selectedPlayer.handSize}&quot;</span>
-                        <span className="sd-dstat-label">Hand</span>
-                      </div>
-                    )}
-                  </div>
-                )}
-                {selectedPlayer?.draftNote && (
-                  <p className="sd-detail-from" style={{ marginTop: 6, color: '#D4A843', fontStyle: 'italic' }}>
-                    {selectedPlayer.draftNote}
-                  </p>
-                )}
-                <Button
-                  block
-                  className={`sd-queue-action-btn ${isInQueue(selectedPlayer?._id) ? 'sd-queue-remove-btn' : 'sd-queue-add-btn'}`}
-                  icon={isInQueue(selectedPlayer?._id) ? <DeleteOutlined /> : <BiSolidPlusCircle />}
-                  onClick={() =>
-                    isInQueue(selectedPlayer?._id)
-                      ? handleRemoveQueue(selectedPlayer?._id)
-                      : handleAddQueue(selectedPlayer?._id)
-                  }
+            )}
+          </div>
+
+          {/* Right rail */}
+          <div className="dl-col dl-col-rail">
+            {/* Draft Control (commissioner) */}
+            {isCommissioner && (
+              <div className="dl-rail-card">
+                <div className="dl-rail-head">Draft Control</div>
+                <button
+                  className={`dl-ctrl-btn ${draftPaused ? 'resume' : 'pause'}`}
+                  onClick={() => handleTogglePause(!draftPaused)}
                 >
-                  {isInQueue(selectedPlayer?._id) ? 'Remove from Queue' : 'Add to Pre-Pick Queue'}
-                </Button>
+                  {draftPaused ? 'Resume Draft' : 'Pause Draft'}
+                </button>
               </div>
-            </div>
-          ) : (
-            <div className="sd-card">
-              <div className="sd-card-header">
-                <h3>Player Detail</h3>
-              </div>
-              <div className="sd-card-body sd-empty-detail">
-                <Empty description="Select a player from the pool" />
-              </div>
-            </div>
-          )}
+            )}
 
-          {/* Draft Info */}
-          <div className="sd-card sd-pool-stats">
-            <div className="sd-card-header">
-              <h3>Draft Info</h3>
+            {/* Your Pick */}
+            <div className="dl-rail-card">
+              <div className="dl-rail-head">Your Pick</div>
+              <div className="dl-yourpick">
+                <div className="dl-yourpick-slot">Round {draftOrder?.currentRound || '—'}, Pick {draftOrder?.currentPick || '—'}</div>
+                <div className={`dl-clock ${countdown.isUrgent ? 'urgent' : ''}`}>
+                  <ClockCircleOutlined /> {draftOrder?.isLive ? countdown.display : '--:--'}
+                </div>
+              </div>
+              <div className="dl-autopick">
+                <span>Auto Pick</span>
+                <Switch size="small" checked={autoDraftOn} checkedChildren="ON" unCheckedChildren="OFF" onChange={handleAutoDraftToggle} />
+              </div>
             </div>
-            <div className="sd-card-body">
-              <div className="sd-stat-row">
-                <span className="sd-stat-label">Season</span>
-                <span className="sd-stat-val">{draftYear}</span>
+
+            {/* Your Roster */}
+            <div className="dl-rail-card">
+              <div className="dl-rail-head">
+                Your Roster
+                <span className="dl-rail-count">{myPicks.length}{draftOrder?.totalRounds ? ` / ${draftOrder.totalRounds}` : ''}</span>
               </div>
-              <div className="sd-stat-row">
-                <span className="sd-stat-label">Rounds</span>
-                <span className="sd-stat-val">{draftOrder?.totalRounds || 7}</span>
+              <div className="dl-roster">
+                {myPicks.length === 0 && <div className="dl-empty-line">No players drafted yet</div>}
+                {myPicks.map((p, i) => (
+                  <div key={i} className="dl-roster-row">
+                    <span className="dl-pos" style={{ background: `${posColor(p.player?.Position)}22`, color: posColor(p.player?.Position) }}>{p.player?.Position || '—'}</span>
+                    <span className="dl-roster-name">{p.player?.Name}</span>
+                    <span className="dl-roster-team">{p.player?.Team}</span>
+                  </div>
+                ))}
               </div>
-              <div className="sd-stat-row">
-                <span className="sd-stat-label">Order</span>
-                <span className="sd-stat-val">Linear (Worst First)</span>
+            </div>
+
+            {/* Queue */}
+            <div className="dl-rail-card">
+              <div className="dl-rail-head">Queue <span className="dl-rail-count">{draftQueue?.length || 0}</span></div>
+              <div className="dl-roster">
+                {(!draftQueue || draftQueue.length === 0) && <div className="dl-empty-line">Queue is empty</div>}
+                {(draftQueue || []).map((q, i) => (
+                  <div key={q._id || i} className="dl-roster-row">
+                    <span className="dl-qnum">{i + 1}</span>
+                    <span className="dl-roster-name">{q.player?.Name}</span>
+                    <span className="dl-pos" style={{ background: `${posColor(q.player?.Position)}22`, color: posColor(q.player?.Position) }}>{q.player?.Position}</span>
+                    <span className="dl-roster-team">{q.player?.Team}</span>
+                  </div>
+                ))}
               </div>
-              <div className="sd-stat-row">
-                <span className="sd-stat-label">Eligible</span>
-                <span className="sd-stat-val">Rookies Only</span>
-              </div>
-              <div className="sd-stat-row">
-                <span className="sd-stat-label">Available</span>
-                <span className="sd-stat-val">{pool.total || 0}</span>
-              </div>
-              <div className="sd-stat-row">
-                <span className="sd-stat-label">Queue</span>
-                <span className="sd-stat-val">{draftQueue?.length || 0} players</span>
-              </div>
-              <div className="sd-stat-row">
-                <span className="sd-stat-label">Status</span>
-                <span className="sd-stat-val">
-                  {draftOrder?.isCompleted
-                    ? 'Complete'
-                    : draftOrder?.isLive
-                    ? 'LIVE'
-                    : draftOrder
-                    ? 'Paused'
-                    : 'Not Started'}
-                </span>
+            </div>
+
+            {/* Recent Picks */}
+            <div className="dl-rail-card">
+              <div className="dl-rail-head">Recent Picks</div>
+              <div className="dl-roster">
+                {recentPicks.length === 0 && <div className="dl-empty-line">No picks yet</div>}
+                {recentPicks.map((p, i) => (
+                  <div key={i} className="dl-roster-row">
+                    <span className="dl-qnum">{p.label}</span>
+                    <span className="dl-roster-name">{p.player?.Name}</span>
+                    <span className="dl-pos" style={{ background: `${posColor(p.player?.Position)}22`, color: posColor(p.player?.Position) }}>{p.player?.Position}</span>
+                    <span className="dl-roster-team">{p.team?.abbreviation || p.team?.name}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </div>
-      </main>
+
+        {/* ── Bottom action bar ── */}
+        <div className="dl-actionbar">
+          <div className="dl-ab-pick">
+            <span className="dl-ab-label">Current Pick</span>
+            <span className="dl-ab-num">#{currentPickInfo?.overall || '—'}</span>
+          </div>
+          <button
+            className="dl-ab-btn draft"
+            disabled={!(selectedPlayer && isMyPick && draftOrder?.isLive && !draftPaused && !draftLoading)}
+            onClick={() => handleDraftPlayer(selectedPlayer?._id)}
+          >
+            <ThunderboltOutlined /> <div><b>{draftLoading ? 'DRAFTING…' : 'DRAFT PLAYER'}</b><small>{selectedPlayer ? `Draft ${lastName(selectedPlayer?.Name)}` : 'Select a player'}</small></div>
+          </button>
+          <button
+            className={`dl-ab-btn queue ${selectedPlayer && isInQueue(selectedPlayer?._id) ? 'active' : ''}`}
+            disabled={!selectedPlayer}
+            onClick={() => (isInQueue(selectedPlayer?._id) ? handleRemoveQueue(selectedPlayer?._id) : handleAddQueue(selectedPlayer?._id))}
+          >
+            <BiSolidPlusCircle /> <div><b>{selectedPlayer && isInQueue(selectedPlayer?._id) ? 'IN QUEUE' : 'ADD TO QUEUE'}</b></div>
+          </button>
+          <div className="dl-ab-stat">
+            <span className="dl-ab-label">Player ADP</span>
+            <span className="dl-ab-val">{selectedPlayer?.samAdp24 || '—'}</span>
+          </div>
+          <div className="dl-ab-stat">
+            <span className="dl-ab-label">Depth</span>
+            <span className="dl-ab-val">{selectedPlayer?.DepthPosition || '—'}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Draft Chat - fixed bottom left */}
+      <div style={{ position: 'fixed', bottom: '16px', left: '200px', width: '320px', zIndex: 5, boxShadow: '0 8px 32px rgba(0,0,0,0.5)', borderRadius: '16px', overflow: 'hidden' }}>
+        <DraftChatWidget leagueName="Rookie Draft" height="360px" />
+      </div>
+
       {/* ═══ NFL-STYLE DRAFT PICK ANNOUNCEMENT ═══ */}
       {pickAnnouncement && (() => {
         const pa = pickAnnouncement

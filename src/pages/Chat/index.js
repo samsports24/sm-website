@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Badge, Button, Spin, Image, Mentions } from 'antd'
+import { Badge, Button, Spin, Mentions } from 'antd'
 import { useSelector } from 'react-redux'
 import { AiOutlineCloudUpload } from 'react-icons/ai'
 import { IoMdSend } from 'react-icons/io'
@@ -119,20 +119,28 @@ const Chat = () => {
   }, [])
 
   useEffect(() => {
-    setLoader(true)
-    if (currentLeague && currentLeague.roomId) {
-      localStorage.setItem('leagueroom', currentLeague.roomId)
-      const leagueroom = localStorage.getItem('leagueroom')
-      const fetchPreviousMessages = async () => {
-        try {
-          const res = await getPreviousMessages(leagueroom)
-        } catch (error) {
-          console.error('Error fetching previous messages:', error)
-        }
+    let cancelled = false
+    const run = async () => {
+      // No league room to load → clear the spinner instead of leaving it stuck.
+      // (Previously setLoader(true) ran unconditionally but was only cleared
+      // inside the roomId branch, so a league with no roomId span forever.)
+      if (!(currentLeague && currentLeague.roomId)) {
+        if (!cancelled) setLoader(false)
+        return
       }
-      fetchPreviousMessages()
-      setLoader(false)
+      if (!cancelled) setLoader(true)
+      localStorage.setItem('leagueroom', currentLeague.roomId)
+      try {
+        // Populates redux league messages (the view renders those).
+        await getPreviousMessages(currentLeague.roomId)
+      } catch (error) {
+        console.error('Error fetching previous messages:', error)
+      } finally {
+        if (!cancelled) setLoader(false)
+      }
     }
+    run()
+    return () => { cancelled = true }
   }, [currentLeague])
 
   useEffect(() => {
@@ -409,14 +417,19 @@ const Chat = () => {
                     }}
                   >
                     <div className='lc-conv-avatar'>
-                      <Image
-                        width={42}
-                        height={42}
-                        preview={false}
-                        src={item?.logo}
-                        alt={item?.name}
-                        className='lc-conv-avatar-img'
-                      />
+                      {/* Initials fallback sits underneath; the logo image covers
+                          it when present and loads. A missing/broken logo just
+                          reveals the initials — never the raw team name as text
+                          (which is what the old alt-text avatar showed). */}
+                      <span className='lc-conv-avatar-fallback'>{(item?.name || '?').trim().charAt(0).toUpperCase() || '?'}</span>
+                      {item?.logo ? (
+                        <img
+                          src={item.logo}
+                          alt=''
+                          className='lc-conv-avatar-img'
+                          onError={(e) => { e.currentTarget.style.display = 'none' }}
+                        />
+                      ) : null}
                       {hasUnread && (
                         <span className='lc-conv-badge'>{currentRoom.unread_count}</span>
                       )}

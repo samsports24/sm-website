@@ -9,6 +9,7 @@ import { getPositionColor, sortedObject } from '../config/helperFunctions'
 import { getLeagueRoster } from '../redux/actions/rosterAction'
 import Loader from '../components/Loader'
 import { getTeamByPlayerName } from '../redux/actions/teamActions'
+import TeamLogo from '../components/TeamLogo'
 
 const STATUS_MAP = [
   { key: 'isRetired', label: 'RET', color: '#A855F7', bg: 'rgba(168,85,247,0.10)' },
@@ -179,13 +180,7 @@ const LeagueRosters = () => {
                         className={`lr-chip ${isActive ? 'lr-chip--on' : ''}`}
                         onClick={() => handleChangeTeam(v?._id)}
                       >
-                        {v?.logo ? (
-                          <img src={v.logo} alt='' className='lr-chip-img' />
-                        ) : (
-                          <div className='lr-chip-ph'>
-                            {(v?.abbreviation || v?.name || '?')[0]}
-                          </div>
-                        )}
+                        <TeamLogo team={v} size={22} round={false} className='lr-chip-img' />
                         <span className='lr-chip-txt'>
                           {v?.abbreviation || v?.name?.substring(0, 3)?.toUpperCase() || ''}
                         </span>
@@ -207,7 +202,7 @@ const LeagueRosters = () => {
                 <div className='lr-roster-hdr'>
                   <div className='lr-roster-hdr-left'>
                     {currentTeam?.logo && (
-                      <img src={currentTeam.logo} alt='' className='lr-roster-logo' />
+                      <TeamLogo team={currentTeam} size={36} round={false} className='lr-roster-logo' />
                     )}
                     <div>
                       <h2 className='lr-roster-name'>{currentTeam?.name}</h2>

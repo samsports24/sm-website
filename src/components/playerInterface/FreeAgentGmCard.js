@@ -1,4 +1,5 @@
 import { Row, Col, Typography, Button } from 'antd'
+import TeamLogo from '../TeamLogo'
 // import { AuctionPlayer } from '../../components/modal/PlayerInterfaceModals'
 
 const GmCard = ({ playerData, news }) => {
@@ -55,7 +56,7 @@ const GmCard = ({ playerData, news }) => {
                 <Typography.Title level={2}>2021</Typography.Title>
               </div>
             </div>
-            {team != null && team?.logo && <img src={team?.logo} height={'100px'} />}
+            {team != null && team?.logo && <TeamLogo team={team} size={100} round={false} />}
           </div>
         </Col>
         {/* <Col xs={24} xl={4}>

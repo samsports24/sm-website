@@ -204,6 +204,13 @@ export const getAuditLogs = async (params = {}) => {
   };
 };
 
+// SamPoints transaction ledger — lives on the soccer backend (it owns the
+// cross-sport transfer flow that writes the ledger).
+export const getSamPointsTransactions = async (params = {}) => {
+  const res = await soccer().get("/api/v1/admin-panel/sampoints-transactions", { params });
+  return res.data?.data || res.data || { items: [], total: 0 };
+};
+
 /* ══════════════════════════════════════════
    ANNOUNCEMENTS (Megaphone)
    ══════════════════════════════════════════ */
@@ -267,6 +274,16 @@ export const dismissAnnouncement = async (announcementId) => {
 
 export const deleteAnnouncement = (announcementId) =>
   soccer().delete(`/api/v1/admin-panel/announcements/${announcementId}`);
+
+/* ══════════════════════════════════════════
+   LANDING ADS (3 advert slots on the samsports.io landing)
+   ══════════════════════════════════════════ */
+export const getLandingAds = () => nfl().get("/admin-panel/landing-ads");
+
+export const saveLandingAd = (formData) =>
+  nfl().post("/admin-panel/landing-ads", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
 
 /* ══════════════════════════════════════════
    DATA SYNC TRIGGERS
@@ -604,6 +621,9 @@ export const generateCustomArticle = (topic, topicType, realLeague, tone, includ
 
 export const generateBatchArticles = (type) =>
   soccer().post("/api/v1/admin-panel/articles/generate-batch", { type });
+
+export const generateTransferNow = () =>
+  soccer().post("/api/v1/admin-panel/articles/generate-transfer-now", {});
 
 export const getArticleStats = () =>
   soccer().get("/api/v1/admin-panel/articles-stats");

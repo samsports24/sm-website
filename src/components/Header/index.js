@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import { Image, Badge, Spin, Button, Dropdown } from 'antd'
+import { Badge, Spin, Button, Dropdown, notification } from 'antd'
+import { promptOneSignal } from '../../utils/oneSignal'
 
 import bellIcon from '../../assets/bell-icon.svg'
 import sampointslogo from '../../assets/samcoinlogo.png'
@@ -13,20 +14,26 @@ import {
   isTradeDeadlineWarning,
   TRADE_DEADLINE_LOCKOUT_WEEK,
   privateAPI,
+  attachToken,
 } from '../../config/constants'
 import { getPendingTrade } from '../../redux/actions/teamTradeAction'
 import LeaguePointsTransfer from '../modal/LeaguePointsTransfer'
 import { TransferPointsToLeague, selectLeague, getUserLeagues } from '../../redux/actions/leagueActions'
 import alertimage from '../../assets/new alert.png'
-import { getAllNotification } from '../../redux/actions/notificationAction'
+import { getAllNotification, getNotiCount } from '../../redux/actions/notificationAction'
+import MessagesBell from '../PlatformChat/MessagesBell'
 import { IoNotificationsOutline } from 'react-icons/io5'
 import { MdOutlineGavel } from 'react-icons/md'
 import { DownOutlined, SwapOutlined, TrophyOutlined } from '@ant-design/icons'
+import CommissionerBadge from '../CommissionerBadge'
+import useIsLeagueCommissioner from '../../utils/useIsLeagueCommissioner'
+import TeamLogo from '../TeamLogo'
 
-const Header = () => {
+const Header = ({ slim = true } = {}) => {
   const dispatch = useDispatch()
   const record = useSelector((state) => state.user.record)
   const user = useSelector((state) => state.user.userDetails)
+  const isLeagueCommissioner = useIsLeagueCommissioner()
   const leagueType = user?.team?.currentLeague?.leagueType
   const safepaylink = user?.team?.currentLeague?.safePayLink
   const teamSalary = useSelector((state) => state.user.teamSalaryCap)
@@ -44,11 +51,32 @@ const Header = () => {
   const [notificationData, setNotificationData] = useState(null)
   const [tradeCount, setTradeCount] = useState(0)
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const [logoError, setLogoError] = useState(false)
   const navigate = useNavigate()
   const SETTING = useSelector((state) => state?.user)
 
   const currentLeagueId = user?.team?.currentLeague?._id
+
+  // One-click push: enable notifications, or if already on, fire a test to this device.
+  const handleAlerts = async () => {
+    const perm = typeof Notification !== 'undefined' ? Notification.permission : 'default'
+    if (perm === 'granted') {
+      try {
+        attachToken()
+        const { data } = await privateAPI.get('/notification/push-test')
+        const r = data?.data || {}
+        if (r.configured === false) notification.warning({ message: 'Push not set up on the server', duration: 5 })
+        else if (r.recipients > 0) notification.success({ message: `Test sent to ${r.recipients} device(s)`, description: 'Check your notifications.', duration: 5 })
+        else notification.error({ message: 'This device isn’t subscribed yet', description: 'Click Alerts again and accept the browser prompt.', duration: 7 })
+      } catch (e) {
+        notification.error({ message: 'Test failed', description: e?.response?.data?.message || 'Could not reach the server.', duration: 5 })
+      }
+    } else if (perm === 'denied') {
+      notification.warning({ message: 'Notifications are blocked', description: 'Re-enable them for this site in your browser’s site settings, then reload.', duration: 8 })
+    } else {
+      await promptOneSignal()
+      notification.info({ message: 'Turning on alerts…', description: 'Accept the browser prompt to get draft, trade and auction notifications.', duration: 6 })
+    }
+  }
 
   const teamFinancials = () => {
     navigate('/team-financials')
@@ -79,6 +107,24 @@ const Header = () => {
     }
     fetchTradeCount()
   }, [currentLeagueId])
+
+  // ── The unread-notification count ───────────────────────────────────────
+  //
+  // The bell was never going to light up. `notificationCount` is read from redux
+  // (line ~33), and the ONLY thing that writes it is the getNotiCount thunk —
+  // which was never dispatched anywhere in the app. So the value stayed null
+  // forever, the ternary always took the "no badge" branch, and every user has
+  // been looking at a permanently grey bell no matter how many notifications
+  // were waiting for them.
+  //
+  // Auction and Trades both fetch their counts. This one just never got hooked
+  // up. Poll it, so the badge also updates while the user sits on a page rather
+  // than only on navigation.
+  useEffect(() => {
+    dispatch(getNotiCount())
+    const t = setInterval(() => dispatch(getNotiCount()), 60_000)
+    return () => clearInterval(t)
+  }, [dispatch, currentLeagueId])
 
   useEffect(() => {
     getUserLeagues()
@@ -160,13 +206,13 @@ const Header = () => {
       label: (
         <div className='hdr-league-menu-item'>
           <div className='hdr-league-menu-top'>
-            {l.myTeam?.logo ? (
-              <img src={l.myTeam.logo} alt='' className='hdr-league-menu-logo' />
-            ) : (
-              <div className='hdr-league-menu-logo-placeholder'>
-                {(l.myTeam?.name || l.name || 'L')[0]?.toUpperCase()}
-              </div>
-            )}
+            <TeamLogo
+              src={l.myTeam?.logo}
+              name={l.myTeam?.name || l.name || 'L'}
+              size={24}
+              round={false}
+              className='hdr-league-menu-logo'
+            />
             <span className='hdr-league-menu-team'>{l.myTeam?.name || 'My Team'}</span>
           </div>
           <span className='hdr-league-menu-name'>{l.name || 'League'}</span>
@@ -175,9 +221,31 @@ const Header = () => {
       onClick: () => handleLeagueSwitch(l),
     })) || []
 
+  const gmBadge = gmRank ? (
+    <div
+      className='hdr-gm-rank'
+      onClick={() => navigate('/homepage')}
+      title={`GM Rating: ${gmRank.overallRating?.toFixed(1)} (${gmRank.grade}), ${gmRank.leagueCount} league${gmRank.leagueCount !== 1 ? 's' : ''}`}
+      style={{
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        minWidth: 80, padding: '6px 12px', borderRadius: 12, cursor: 'pointer', marginLeft: 12,
+        background: gmRank.rank <= 10
+          ? 'linear-gradient(135deg, #FFD700 0%, #FFA000 100%)'
+          : gmRank.rank <= 50
+            ? 'linear-gradient(135deg, #C0C0C0 0%, #9E9E9E 100%)'
+            : 'linear-gradient(135deg, #CD7F32 0%, #8B5A2B 100%)',
+      }}
+    >
+      <TrophyOutlined style={{ fontSize: 14, color: '#fff' }} />
+      <span style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.85)', textTransform: 'uppercase', letterSpacing: 0.5 }}>GM Rank</span>
+      <span style={{ fontSize: 18, fontWeight: 900, color: '#fff', lineHeight: 1.1 }}>#{gmRank.rank}</span>
+      <span style={{ fontSize: 8, color: 'rgba(255,255,255,0.7)' }}>{gmRank.overallRating?.toFixed(1)}</span>
+    </div>
+  ) : null
+
   return user ? (
     <>
-      <header className='hdr-shell no-scrollbar'>
+      <header className={`hdr-shell no-scrollbar${slim ? ' hdr-shell--slim' : ''}`}>
         {/* ══════════════════════════════════════════════
             TOP BAR, Static / Account-level
         ══════════════════════════════════════════════ */}
@@ -223,41 +291,8 @@ const Header = () => {
             </div>
           </div>
 
-          {/* GM Rank Badge */}
-          {gmRank && (
-            <div
-              className='hdr-gm-rank'
-              onClick={() => navigate('/homepage')}
-              title={`GM Rating: ${gmRank.overallRating?.toFixed(1)} (${gmRank.grade}), ${gmRank.leagueCount} league${gmRank.leagueCount !== 1 ? 's' : ''}`}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minWidth: 80,
-                padding: '6px 12px',
-                borderRadius: 12,
-                cursor: 'pointer',
-                background: gmRank.rank <= 10
-                  ? 'linear-gradient(135deg, #FFD700 0%, #FFA000 100%)'
-                  : gmRank.rank <= 50
-                    ? 'linear-gradient(135deg, #C0C0C0 0%, #9E9E9E 100%)'
-                    : 'linear-gradient(135deg, #CD7F32 0%, #8B5A2B 100%)',
-                marginLeft: 12,
-              }}
-            >
-              <TrophyOutlined style={{ fontSize: 14, color: '#fff' }} />
-              <span style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.85)', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                GM Rank
-              </span>
-              <span style={{ fontSize: 18, fontWeight: 900, color: '#fff', lineHeight: 1.1 }}>
-                #{gmRank.rank}
-              </span>
-              <span style={{ fontSize: 8, color: 'rgba(255,255,255,0.7)' }}>
-                {gmRank.overallRating?.toFixed(1)}
-              </span>
-            </div>
-          )}
+          {/* GM Rank Badge — in the top row only when not slim (slim renders it inline in the single command row) */}
+          {!slim && gmBadge}
         </div>
 
         {/* ══════════════════════════════════════════════
@@ -267,21 +302,19 @@ const Header = () => {
           {/* Left: Team identity + league switcher */}
           <div className='hdr-strip-left'>
             <div className='hdr-team-logo'>
-              {user?.team?.logo && !logoError ? (
-                <Image
-                  preview={false}
-                  src={user.team.logo}
-                  onError={() => setLogoError(true)}
-                  alt={user?.team?.name || 'Team'}
-                />
-              ) : (
-                <span className='hdr-team-letter'>
-                  {(user?.team?.name || user?.name || 'S')?.[0]?.toUpperCase()}
-                </span>
-              )}
+              <TeamLogo
+                src={user?.team?.logo}
+                name={user?.team?.name || user?.name || 'S'}
+                size={42}
+                round={false}
+                style={{ width: '100%', height: '100%' }}
+              />
             </div>
             <div className='hdr-team-col'>
-              <span className='hdr-team-name'>{user?.team?.name || user?.name || 'My Team'}</span>
+              <span className='hdr-team-name' style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                {user?.team?.name || user?.name || 'My Team'}
+                <CommissionerBadge show={isLeagueCommissioner} size={16} />
+              </span>
               {leagueMenuItems.length > 0 ? (
                 <Dropdown
                   menu={{ items: leagueMenuItems }}
@@ -336,8 +369,20 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Right: Notification/Auction/Trade badges */}
+          {/* Right: Messages/Notification/Auction/Trade badges */}
           <div className='hdr-strip-right'>
+            {/* Messages bell — DMs, @mentions, replies, reactions.
+                This is NOT the same feed as the Notifications bell beside it:
+                that one is league activity (trades, auctions, drafts) and lives
+                on the per-sport backend. This one is platform-wide messaging on
+                the shared chat backend. It was previously mounted only inside
+                pages/SportHub, so you could be @mentioned or DM'd and never see
+                it unless you happened to be on /hub. */}
+            <span className='hdr-badge' style={{ display: 'inline-flex', alignItems: 'center' }}>
+              <MessagesBell />
+              <span className='hdr-badge-label'>Messages</span>
+            </span>
+
             <span className='hdr-badge' onClick={() => navigate('/league-notification')}>
               {notificationCount ? (
                 <Badge count={notificationCount} color='#d4a017' size='small'>
@@ -349,6 +394,11 @@ const Header = () => {
               <span className='hdr-badge-label' style={notificationCount ? { color: '#d4a017' } : {}}>
                 Notifications
               </span>
+            </span>
+
+            <span className='hdr-badge' onClick={handleAlerts} title='Enable push notifications (draft, trades, auctions)'>
+              <IoNotificationsOutline size={20} style={{ color: '#22C55E' }} />
+              <span className='hdr-badge-label'>Alerts</span>
             </span>
 
             <span className='hdr-badge' onClick={() => navigate('/player-auction')}>
@@ -463,6 +513,7 @@ const Header = () => {
             )}
           </div>
         </div>
+        {slim && gmBadge}
       </header>
 
       <LeaguePointsTransfer

@@ -191,8 +191,21 @@ export const authSignupAdvanced = async (payload, navigate, setVerificationState
     const inviteLeagueId = localStorage.getItem('AssignLeague')
     const inviteSport = localStorage.getItem('selectedGame') || payload.key || 'football'
 
-    const res = await axios.post(registerUrl, { ...payload, skipVerification: false })
+    // Referral attribution: if this visitor arrived via samsports.io/ref/<code>,
+    // RefRedirect stashed the code in localStorage — forward it so the backend
+    // can credit the referrer. Read defensively (private mode / disabled storage).
+    let samsportsRef = null
+    try { samsportsRef = localStorage.getItem('samsports_ref') } catch (e) { samsportsRef = null }
+
+    const res = await axios.post(registerUrl, {
+      ...payload,
+      skipVerification: false,
+      ...(samsportsRef ? { referralCode: samsportsRef } : {}),
+    })
     if (res) {
+      // Referral code is single-use per signup — clear it so it can't re-attribute
+      // a later, unrelated registration on the same device.
+      try { localStorage.removeItem('samsports_ref') } catch (e) { /* noop */ }
       clearStaleSessionData()
       if (inviteLeagueId) {
         localStorage.setItem('pendingInviteLeague', inviteLeagueId)
@@ -250,6 +263,17 @@ export const authSignupAdvanced = async (payload, navigate, setVerificationState
         if (payload.frontEndUrl) {
           const authToken = resData.token
           window.location.href = `${payload.frontEndUrl}/onboarding?token=${encodeURIComponent(authToken)}`
+          return
+        }
+
+        // A brand-new user who arrived via a share link (e.g. /join/<code>) had
+        // their destination stashed here. There's no pending _id invite to
+        // auto-join, so land them back on that page — now logged in — to finish
+        // joining the league. Without this they'd drop into onboarding instead.
+        const intendedAfterSignup = localStorage.getItem('redirectAfterLogin')
+        if (intendedAfterSignup) {
+          localStorage.removeItem('redirectAfterLogin')
+          navigate(intendedAfterSignup)
           return
         }
 
@@ -311,6 +335,16 @@ export const otpVerification = (otp, navigate) => {
           })
           if (joined) return
         } catch (e) { /* fall through to onboarding */ }
+
+        // Share-link (e.g. /join/<code>) signups verify by OTP too. Send them
+        // back to where they were headed so they land in that league, not
+        // onboarding.
+        const intendedAfterVerify = localStorage.getItem('redirectAfterLogin')
+        if (intendedAfterVerify) {
+          localStorage.removeItem('redirectAfterLogin')
+          navigate(intendedAfterVerify)
+          return
+        }
 
         // New users always go to onboarding after OTP verification
         navigate('/onboarding')
@@ -382,8 +416,21 @@ let username=userName
             console.error('[authLogin] Failed to fetch leagues:', leagueErr?.message)
           }
 
-          // Route to hub after login
-          navigate('/hub')
+          // ── Route after login ──
+          //
+          // This used to be an unconditional navigate('/hub'). There was no
+          // redirect-after-login anywhere in the app, which is what made the
+          // league-invite email a dead end: click "View Invitation" while logged
+          // out, get bounced to the login form, sign in — and land on the hub,
+          // with the invite token gone. The only way back was to notice the bell.
+          //
+          // So: if something stashed a destination before sending you to login,
+          // honour it. Only same-origin paths, so a crafted ?redirect= can't be
+          // used to bounce someone to another site straight after they log in.
+          const intended = localStorage.getItem('redirectAfterLogin')
+          localStorage.removeItem('redirectAfterLogin')
+          const safe = intended && intended.startsWith('/') && !intended.startsWith('//')
+          navigate(safe ? intended : '/hub')
            return res
       }
     } catch (err) {

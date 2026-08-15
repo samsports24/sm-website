@@ -86,16 +86,17 @@ const REAL_LEAGUES = [
     matchweeks: 17,
     description: '36 clubs, 17 matchdays (league + knockouts)',
   },
-  {
-    key: 'world_cup_2026',
-    name: 'World Cup 2026',
-    country: 'International',
-    flag: '🏆',
-    color: '#D4AF37',
-    maxTeams: 48,
-    matchweeks: 7,
-    description: '48 nations, 7 matchdays',
-  },
+  // World Cup 2026 retired
+  // {
+  //   key: 'world_cup_2026',
+  //   name: 'World Cup 2026',
+  //   country: 'International',
+  //   flag: '🏆',
+  //   color: '#D4AF37',
+  //   maxTeams: 48,
+  //   matchweeks: 7,
+  //   description: '48 nations, 7 matchdays',
+  // },
 ]
 
 // ── Team size options (generated per league max) ──
@@ -469,6 +470,11 @@ const CreateSoccerLeague = ({ button, onSuccess, externalOpen, onExternalClose }
                   <strong style={{ color: '#fff' }}>{leagueInfo?.name}</strong> — {leagueInfo?.description}.
                   Draft your squad from real {leagueInfo?.name} players and compete with SAM Metric scoring.
                   Season: <strong style={{ color: '#fff' }}>{getCurrentSeason(selectedLeague)}</strong>
+                  <div style={{ marginTop: 8, color: 'rgba(255,255,255,0.5)' }}>
+                    <strong style={{ color: '#fff' }}>Joining mid-season?</strong> If the selected competition is
+                    already underway, your league starts at the current matchweek and runs only the remaining
+                    weeks of the season.
+                  </div>
                 </div>
               )}
             </div>

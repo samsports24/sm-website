@@ -3,6 +3,7 @@ import React from 'react'
 import { Table } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import TeamLogo from '../TeamLogo'
 
 const LeagueStandingCard = ({ data, index, teams }) => {
   const USER = useSelector((state) => state.user.userDetails)
@@ -164,7 +165,7 @@ const LeagueStandingCard = ({ data, index, teams }) => {
                   style={{ cursor: 'pointer' }}
                   onClick={() => handleNavigate(v?.teamId)}
                 >
-                  <img src={v?.team?.logo} alt={v?.team?.name} />
+                  <TeamLogo team={v?.team} size={60} round={false} />
                 </div>
                 <div className='main_ls_table'>
                   <Table

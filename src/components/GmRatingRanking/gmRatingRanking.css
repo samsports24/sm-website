@@ -32,7 +32,7 @@
 }
 
 .gmr-header h3 {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 16px;
   font-weight: 700;
   color: #F1F5F9;
@@ -41,7 +41,7 @@
 }
 
 .gmr-header-week {
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 13px;
   font-weight: 600;
   color: #22C55E;
@@ -63,7 +63,7 @@
 }
 
 .gmr-formula-tag {
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.8px;
@@ -85,7 +85,7 @@
 }
 
 .gmr-formula-plus {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 11px;
   color: #64748B;
   font-weight: 600;
@@ -123,7 +123,7 @@
 
 /* Rank */
 .gmr-rank {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 14px;
   font-weight: 700;
   color: #64748B;
@@ -159,7 +159,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 14px;
   font-weight: 700;
   color: #F1F5F9;
@@ -173,7 +173,7 @@
 }
 
 .gmr-team-name {
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 14px;
   font-weight: 600;
   color: #F1F5F9;
@@ -184,7 +184,7 @@
 }
 
 .gmr-gm-name {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 10px;
   color: #64748B;
   white-space: nowrap;
@@ -221,14 +221,14 @@
 }
 
 .gmr-score {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 18px;
   font-weight: 700;
   line-height: 1.1;
 }
 
 .gmr-label {
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 1.2px;
@@ -242,7 +242,7 @@
   background: none;
   border: none;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 13px;
   font-weight: 600;
   color: #3B82F6;
@@ -284,7 +284,7 @@
 }
 
 .gmr-empty p {
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 15px;
   font-weight: 600;
   color: #94A3B8;
@@ -292,7 +292,7 @@
 }
 
 .gmr-empty span {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 12px;
   color: #64748B;
 }

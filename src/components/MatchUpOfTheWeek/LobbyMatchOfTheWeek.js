@@ -1,4 +1,5 @@
 import React from 'react'
+import TeamLogo from '../TeamLogo'
 
 const LobbyMatchOfTheWeek = ({ data: v }) => {
   const s1 = parseFloat(v?.scoreOne) || 0
@@ -12,13 +13,7 @@ const LobbyMatchOfTheWeek = ({ data: v }) => {
       {/* Team 1 */}
       <div className={`lmw-team ${t1Winning ? 'lmw-team-leading' : ''}`}>
         <div className='lmw-logo-ring'>
-          {v?.opponentOne?.logo ? (
-            <img src={v.opponentOne.logo} alt='' className='lmw-logo' />
-          ) : (
-            <div className='lmw-logo-fallback'>
-              {(v?.opponentOne?.name || '?').charAt(0)}
-            </div>
-          )}
+          <TeamLogo team={v?.opponentOne} size={36} round={false} className='lmw-logo' />
         </div>
         <span className='lmw-team-name'>
           {v?.opponentOne?.name || 'Team 1'}
@@ -49,13 +44,7 @@ const LobbyMatchOfTheWeek = ({ data: v }) => {
       {/* Team 2 */}
       <div className={`lmw-team ${t2Winning ? 'lmw-team-leading' : ''}`}>
         <div className='lmw-logo-ring'>
-          {v?.opponentTwo?.logo ? (
-            <img src={v.opponentTwo.logo} alt='' className='lmw-logo' />
-          ) : (
-            <div className='lmw-logo-fallback'>
-              {(v?.opponentTwo?.name || '?').charAt(0)}
-            </div>
-          )}
+          <TeamLogo team={v?.opponentTwo} size={36} round={false} className='lmw-logo' />
         </div>
         <span className='lmw-team-name'>
           {v?.opponentTwo?.name || 'Team 2'}

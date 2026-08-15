@@ -9,13 +9,17 @@ import { approveAndRejectAuction, auctionEnded, getAuctionPlayer, markAsPaid, ca
 import { useSelector } from 'react-redux'
 import moment from 'moment'
 import PlayerDetailsModal from '../components/modal/PlayerDetailsModal'
+import InjuryBadge from '../components/InjuryBadge'
+import useInjuryReport from '../components/InjuryBadge/useInjuryReport'
 import LiveAuctionModal from '../components/modal/LiveAuctionModal'
+import EnablePushPrompt from '../components/EnablePushPrompt'
 import { positions } from '../config/constants'
 
 import '../styles/pages/playerAuction.css'
 
 const PlayerAuction = () => {
   const [isLoading, setIsLoading] = useState(false)
+  const { getInjury } = useInjuryReport()
   const { data } = useSelector((state) => state.auction)
   const leagueState = useSelector((state) => state.league) || {}
   const currentLeague = leagueState.currentLeague
@@ -109,6 +113,7 @@ const PlayerAuction = () => {
       <hr className='divider' />
 
       <div className='auc-page'>
+        <EnablePushPrompt context="auction" />
         {/* Draft Not Complete Banner */}
         {draftNotCompleted && (
           <div style={{
@@ -261,6 +266,7 @@ const PlayerAuction = () => {
                           {mapPosition(player?.Position) || '-'}
                         </span>
                         <span className='auc-row-team'>{player?.Team || '-'}</span>
+                        <InjuryBadge injury={getInjury(player)} status={player?.InjuryStatus} className='auc-inj' />
                       </div>
                     </div>
                   </div>

@@ -58,6 +58,52 @@ export const getClubhouse = async (params) => {
   }
 }
 
+// ── NEW: Clubhouse referral overview (real data) ──
+// GET /clubhouse/overview → { success, referralLevel, stats, milestones, nextMilestone,
+//   currentProgress, badges, challenge, activity }
+export const getClubhouseOverview = async () => {
+  try {
+    attachToken()
+    const res = await privateAPI.get('/clubhouse/overview')
+    return res.data
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+    return null
+  }
+}
+
+// ── NEW: Clubhouse leaderboard (real data) ──
+// GET /clubhouse/leaderboard?scope=month → { success, scope, players, me }
+export const getClubhouseLeaderboard = async (scope = 'month') => {
+  try {
+    attachToken()
+    const res = await privateAPI.get('/clubhouse/leaderboard', { params: { scope } })
+    return res.data
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Server Error',
+      duration: 3,
+    })
+    return null
+  }
+}
+
+// ── NEW: claim any newly-earned milestone / weekly-challenge SamPoints ──
+// POST /clubhouse/claim → { success, credited:[{kind,key,sp}], totalCredited, mainWallet }
+// Idempotent server-side (unique index), so safe to call on every page load.
+export const claimClubhouseRewards = async () => {
+  try {
+    attachToken()
+    const res = await privateAPI.post('/clubhouse/claim')
+    return res.data
+  } catch (err) {
+    return null
+  }
+}
+
 export const GenerateVerificationCode = async (payload) => {
   try {
     attachToken()

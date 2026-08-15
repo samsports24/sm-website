@@ -10,6 +10,7 @@ import { getTeamFinancials } from '../redux/actions/leagueActions'
 import { getUser } from '../redux'
 
 import '../styles/pages/teamFinancials.css'
+import TeamLogo from '../components/TeamLogo'
 
 const TeamFinancials = () => {
   const SETTING = useSelector((state) => state.user)
@@ -155,7 +156,7 @@ const TeamFinancials = () => {
                     <span className='tfn-card-rank'>#{index + 1}</span>
                     <div className='tfn-card-logo'>
                       {team.logo ? (
-                        <img src={team.logo} alt={team.name} />
+                        <TeamLogo team={team} size={40} round={false} style={{ width: '100%', height: '100%' }} />
                       ) : (
                         <GiHockey size={22} color='rgba(255,255,255,0.3)' />
                       )}

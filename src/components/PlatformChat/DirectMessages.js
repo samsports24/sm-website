@@ -5,7 +5,7 @@ import ChatThread from './ChatThread'
 // DM list + thread. Reuses ChatThread (scope="dm") so DMs get the full
 // feature set (gif, poll, reactions, replies, typing).
 
-export default function DirectMessages({ initialUserId = null, initialName = '' }) {
+export default function DirectMessages({ initialUserId = null, initialName = '', focusMessageId = null }) {
   const myId = localStorage.getItem('userId') || ''
   const [convos, setConvos] = useState([])
   const [sel, setSel] = useState(initialUserId ? { userId: initialUserId, name: initialName } : null)
@@ -18,6 +18,18 @@ export default function DirectMessages({ initialUserId = null, initialName = '' 
       .then((r) => setConvos(r.data?.conversations || [])).catch(() => {})
   }
   useEffect(() => { load() }, [])
+
+  // A DM notification gives us a user id but no name. Once the conversation list
+  // lands, fill the header in rather than sitting on "Direct message".
+  useEffect(() => {
+    if (!initialUserId) return
+    setSel((cur) => {
+      if (cur && String(cur.userId) === String(initialUserId) && cur.name) return cur
+      const c = convos.find((x) => otherOf(x.room) === String(initialUserId))
+      return { userId: initialUserId, name: c?.last?.username || initialName || '' }
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialUserId, initialName, convos])
 
   const [q, setQ] = useState('')
   const [results, setResults] = useState([])
@@ -43,7 +55,14 @@ export default function DirectMessages({ initialUserId = null, initialName = '' 
       <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <div onClick={() => setSel(null)} style={{ padding: '4px 2px 8px', color: '#4a90d9', cursor: 'pointer', fontSize: 13, fontWeight: 700, flexShrink: 0 }}>← Conversations</div>
         <div style={{ flex: 1, minHeight: 0 }}>
-          <ChatThread scope="dm" otherUserId={sel.userId} title={'✉️ ' + (sel.name || 'Direct message')} />
+          <ChatThread
+            scope="dm"
+            otherUserId={sel.userId}
+            title={'✉️ ' + (sel.name || 'Direct message')}
+            // Only anchor on the notification's message if we're actually in the
+            // conversation it came from — otherwise the id is meaningless here.
+            focusMessageId={String(sel.userId) === String(initialUserId) ? focusMessageId : null}
+          />
         </div>
       </div>
     )

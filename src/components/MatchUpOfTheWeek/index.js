@@ -2,6 +2,7 @@ import React from 'react'
 import dayjs from 'dayjs'
 import { BiRightArrowAlt } from 'react-icons/bi'
 import { useNavigate } from 'react-router-dom'
+import TeamLogo from '../TeamLogo'
 
 const MatchUpOfTheWeek = ({ data: v }) => {
   const navigate = useNavigate()
@@ -37,13 +38,7 @@ const MatchUpOfTheWeek = ({ data: v }) => {
         {/* Team 1 */}
         <div className='motw-side'>
           <div className='motw-logo-wrap'>
-            {v?.opponentOne?.logo ? (
-              <img src={v.opponentOne.logo} alt='' className='motw-logo' />
-            ) : (
-              <div className='motw-logo-ph'>
-                {(v?.opponentOne?.name || '?').charAt(0)}
-              </div>
-            )}
+            <TeamLogo team={v?.opponentOne} size={40} round={false} className='motw-logo' />
           </div>
           <span className='motw-team-name'>{v?.opponentOne?.name || 'TBD'}</span>
           {(r1.win != null || r1.lose != null) && (
@@ -66,13 +61,7 @@ const MatchUpOfTheWeek = ({ data: v }) => {
         {/* Team 2 */}
         <div className='motw-side'>
           <div className='motw-logo-wrap'>
-            {v?.opponentTwo?.logo ? (
-              <img src={v.opponentTwo.logo} alt='' className='motw-logo' />
-            ) : (
-              <div className='motw-logo-ph'>
-                {(v?.opponentTwo?.name || '?').charAt(0)}
-              </div>
-            )}
+            <TeamLogo team={v?.opponentTwo} size={40} round={false} className='motw-logo' />
           </div>
           <span className='motw-team-name'>{v?.opponentTwo?.name || 'TBD'}</span>
           {(r2.win != null || r2.lose != null) && (

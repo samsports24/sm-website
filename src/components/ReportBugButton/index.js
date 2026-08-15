@@ -45,6 +45,7 @@ const ReportBugButton = () => {
       <button
         onClick={openModal}
         title='Report a bug'
+        className='report-bug-fab'
         style={{
           position: 'fixed',
           right: 18,

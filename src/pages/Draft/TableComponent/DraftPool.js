@@ -21,7 +21,6 @@ import {
   deleteBlacklistQueue,
   getBlackListQueue,
 } from '../../../redux/actions/draftAction'
-import PlayerDetailsModal from '../../../components/modal/PlayerDetailsModal'
 
 /* ── colour palette ─────────────────────────── */
 const POS_COLORS = {
@@ -122,6 +121,22 @@ const DraftPool = ({ tableScroll }) => {
   /* ── COLUMNS ─────────────────────────── */
   const getColumns = (position) => {
     const baseColumns = [
+      /* Rank — page-aware row rank (pool is ADP-ordered) */
+      {
+        width: 46,
+        title: 'RANK',
+        dataIndex: 'rank',
+        key: 'rank',
+        fixed: 'left',
+        render: (_, __, index) => (
+          <span style={{
+            fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.55)',
+            fontFamily: "'Barlow Condensed', sans-serif",
+          }}>
+            {((page || 1) - 1) * (limit || 10) + index + 1}
+          </span>
+        ),
+      },
       /* Actions — queue + blacklist */
       {
         width: 70,
@@ -194,26 +209,17 @@ const DraftPool = ({ tableScroll }) => {
               </div>
               <div style={{ minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'nowrap' }}>
-                  <PlayerDetailsModal
-                    button={
-                      <span style={{
-                        fontSize: 13, fontWeight: 600, color: 'var(--primary)',
-                        fontFamily: "'Inter', sans-serif",
-                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 120,
-                        cursor: 'pointer',
-                      }}>
-                        {p?.Name}
-                      </span>
-                    }
-                    state={{
-                      isFreeAgent: { status: true },
-                      playerID: p?.PlayerID,
-                      teamId: null,
-                      teamName: p?.Team || '',
-                      teamLogo: null,
+                  <span
+                    onClick={() => dispatch(setSelectedPlayer(obj))}
+                    style={{
+                      fontSize: 13, fontWeight: 600, color: 'var(--primary)',
+                      fontFamily: "'Inter', sans-serif",
+                      whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 120,
+                      cursor: 'pointer',
                     }}
-                    tableRow={true}
-                  />
+                  >
+                    {p?.Name}
+                  </span>
                   {rookie && (
                     <Image width={14} className='rookie_image2' src={rookieimg} alt='R' preview={false} />
                   )}

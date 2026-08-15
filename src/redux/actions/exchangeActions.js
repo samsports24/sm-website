@@ -123,6 +123,21 @@ export const getListingDetail = async (listingId, sport = 'nfl') => {
  * @param {Object} payload - { teamId, askingPrice, ... }
  * @param {string} sport - 'nfl' | 'soccer'
  */
+/**
+ * Fetch the current user's owned, unused draft picks (for the Create Listing flow).
+ * @param {string} sport - 'nfl' | 'soccer'
+ * @returns {Promise<Array>} picks
+ */
+export const getMyPicks = async (sport = 'nfl') => {
+  try {
+    const api = getAPI(sport)
+    const res = await api.get(exchangePath(sport, '/my-picks'))
+    return res?.data?.data?.picks || []
+  } catch (err) {
+    return []
+  }
+}
+
 export const createExchangeListing = async (payload, sport = 'nfl') => {
   try {
     const api = getAPI(sport)

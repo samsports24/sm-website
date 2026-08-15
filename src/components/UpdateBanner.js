@@ -47,7 +47,9 @@ const UpdateBanner = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateAvailable])
 
-  if (!updateAvailable) return null
+  // Hidden on mobile — the refresh prompt is desktop-only per product request.
+  const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches
+  if (!updateAvailable || isMobile) return null
 
   return (
     <div

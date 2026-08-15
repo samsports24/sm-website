@@ -51,7 +51,7 @@ const Footer = () => {
         {/* ── Column 3: Products ── */}
         <div className="ls-footer-col">
           <h4 className="ls-footer-heading">Products</h4>
-          <a href="/products/rivals" onClick={go('/products/rivals')}>SAM Rivals</a>
+          <a href="/products/rivals" onClick={go('/products/rivals')}>League of Rivals</a>
           <a href="/products/cl-fantasy" onClick={go('/products/cl-fantasy')}>CL Fantasy</a>
           <a href="/products/draft-leagues" onClick={go('/products/draft-leagues')}>Dynasty Fantasy</a>
           <a href="/products/predictor" onClick={go('/products/predictor')}>Predictor</a>

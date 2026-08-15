@@ -16,6 +16,17 @@ export default function MessagesBell() {
   const [items, setItems] = useState([])
   const [unread, setUnread] = useState(0)
   const sockRef = useRef(null)
+  const wrapRef = useRef(null)
+
+  // Close the dropdown on outside click / Escape so it can't get "stuck" open.
+  useEffect(() => {
+    if (!open) return
+    const onDown = (e) => { if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false) }
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false) }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => { document.removeEventListener('mousedown', onDown); document.removeEventListener('keydown', onKey) }
+  }, [open])
 
   const load = () => {
     attachToken()
@@ -41,7 +52,16 @@ export default function MessagesBell() {
     setUnread((u) => Math.max(0, u - (n.read ? 0 : 1)))
     setItems((prev) => prev.map((x) => (x._id === n._id ? { ...x, read: true } : x)))
     setOpen(false)
-    if (n.link) navigate(n.link)
+    if (!n.link) return
+
+    // The notification inbox is SHARED between the two sports, but the apps live
+    // on different domains. A soccer league invite opened here would 404 on a
+    // route that only exists on football.samsports.io — so hand it over.
+    if (n.data?.sport === 'soccer') {
+      window.location.href = `https://football.samsports.io${n.link}`
+      return
+    }
+    navigate(n.link)
   }
 
   const markAll = () => {
@@ -51,14 +71,14 @@ export default function MessagesBell() {
   }
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div ref={wrapRef} style={{ position: 'relative' }}>
       <button onClick={() => { setOpen((v) => !v); if (!open) load() }}
         style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: 20, position: 'relative', color: '#c9d2e0' }}>
         🔔
         {unread > 0 && <span style={{ position: 'absolute', top: -4, right: -6, background: '#EF4444', color: '#fff', fontSize: 10, fontWeight: 800, borderRadius: 10, padding: '1px 5px' }}>{unread > 9 ? '9+' : unread}</span>}
       </button>
       {open && (
-        <div style={{ position: 'absolute', right: 0, top: 32, width: 340, maxHeight: 440, overflowY: 'auto', background: '#0f131c', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 12, boxShadow: '0 12px 40px rgba(0,0,0,0.5)', zIndex: 1000 }}>
+        <div style={{ position: 'absolute', right: 0, top: 32, width: 'min(340px, calc(100vw - 24px))', maxHeight: 'min(440px, 70vh)', overflowY: 'auto', background: '#0f131c', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 12, boxShadow: '0 12px 40px rgba(0,0,0,0.5)', zIndex: 3000 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
             <span style={{ fontWeight: 800, color: '#fff' }}>Messages</span>
             <span onClick={markAll} style={{ fontSize: 12, color: '#4a90d9', cursor: 'pointer' }}>Mark all read</span>

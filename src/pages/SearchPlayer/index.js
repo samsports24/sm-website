@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { Input, Pagination as AntPagination, Table, Select, Button, notification, Tooltip } from 'antd'
 
 import moment from 'moment'
@@ -10,6 +10,8 @@ import { LiaSearchSolid } from 'react-icons/lia'
 import { IoIosClose } from 'react-icons/io'
 import { GiAmericanFootballPlayer } from 'react-icons/gi'
 import Header from '../../components/Header'
+import InjuryBadge from '../../components/InjuryBadge'
+import useInjuryReport from '../../components/InjuryBadge/useInjuryReport'
 import PositionComponent from './PositionComponent'
 import { getAllPlayers } from '../../redux/actions/draftAction'
 import { getPlayerForWeeklyScoring } from '../../redux'
@@ -17,6 +19,7 @@ import { createAuction } from '../../redux/actions/rosterAction'
 import { useNavigate } from 'react-router-dom'
 import { positions } from '../../config/constants'
 import OnboardingGuide from '../../components/OnboardingGuide'
+import '../../styles/pages/playerSearch2.css'
 
 // ── Position color map (matches Draft page) ──
 const POS_COLORS = {
@@ -54,21 +57,39 @@ const getContractYrsColor = (yrs) => {
   return '#EF4444'
 }
 
-// NFL season runs Sep–Feb. Before September → most recent season is previous year.
+// The NFL season is named for the year it STARTS, and it starts in September.
+// So until kickoff, the newest season with results in it is last year's.
 const getCurrentNFLSeason = () => {
   const now = new Date()
   return now.getMonth() < 8 ? now.getFullYear() - 1 : now.getFullYear()
 }
 
-// Build year dropdown: always include current calendar year (for rookies/upcoming season)
-// plus NFL seasons back to 2023 (earliest with data)
+// The season about to be played. You want this for rookies, roster planning and
+// depth charts — anything that legitimately looks forward. Never for scores.
+const getUpcomingNFLSeason = () => {
+  const now = new Date()
+  return now.getMonth() < 8 ? now.getFullYear() : now.getFullYear() + 1
+}
+
+// A season with no games in it yet. You can browse it — you just can't have a
+// score for it, because nobody has played.
+export const seasonNotStarted = (yr) => Number(yr) > getCurrentNFLSeason()
+
+// The dropdown goes up to the UPCOMING season, so 2026 is there for rookies and
+// roster work. What it does NOT do is put a number in the points column for it.
+//
+// That was the actual bug: the page was summing weeklyScoring entries stamped
+// 2026 and printing a TOTAL PTS for games nobody has played. Removing the year
+// would have fixed the symptom and broken something you need. So the year stays
+// and the fiction goes — an unplayed season shows "—", not a score.
 const buildSeasonOptions = () => {
-  const current = getCurrentNFLSeason()
-  const calendarYear = new Date().getFullYear()
-  const top = Math.max(current, calendarYear) // Always show current year for rookies
+  const upcoming = getUpcomingNFLSeason()
   const options = []
-  for (let yr = top; yr >= 2023; yr--) {
-    options.push({ value: yr, label: String(yr) })
+  for (let yr = upcoming; yr >= 2023; yr--) {
+    options.push({
+      value: yr,
+      label: seasonNotStarted(yr) ? `${yr} (upcoming)` : String(yr),
+    })
   }
   return options
 }
@@ -81,6 +102,7 @@ const SearchPlayer = () => {
   const draftNotCompleted = currentLeague && currentLeague.draftCompleted !== true
   const sampoints = useSelector((state) => state.user?.SamPoints?.SamPoints)
   const [loading, setLoading] = useState(true)
+  const { getInjury } = useInjuryReport()
   const [auctionbtnloading, setAuctionBtnLoading] = useState(false)
   const [playerID, setPlayerID] = useState(false)
   const [data, setData] = useState([])
@@ -522,6 +544,13 @@ if (week <=8){
         post_season_pts: item?.stats?.post_season_pts,
         regular_season_pts: item?.stats?.regular_season_pts,
         teaminfo: item?.team?.team,
+        // ── additive real-field extraction (undefined → rendered as "—") ──
+        otcValuation: item?.player?.otcValuation,
+        ByeWeek: item?.player?.ByeWeek,
+        Height: item?.player?.Height,
+        Weight: item?.player?.Weight,
+        College: item?.player?.College,
+        InjuryStatus: item?.player?.InjuryStatus,
         // regularseasonpts:
 
         // OL STATS
@@ -564,2090 +593,519 @@ if (week <=8){
     getWeeklyScoring()
   }, [page, position, playerType, search, year])
 
-  const getColumns = (position) => {
-
-    const columns = [
-      {
-        width: 30,
-        title: 'POS',
-        dataIndex: 'position',
-        key: 'position',
-        render: (_, obj) => {
-          const pos = mapPosition(obj?.position) || '-'
-          const posColor = POS_COLORS[pos] || POS_COLORS[obj?.position] || '#22C55E'
-          return (
-            <div style={{
-              border: `1px solid ${posColor}33`,
-              borderRadius: 4,
-              display: 'inline-flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: 22,
-              paddingInline: 6,
-              background: `${posColor}10`,
-            }}>
-              <p style={{ color: posColor, fontFamily: "'Rajdhani', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 0.5, margin: 0 }}>{pos}</p>
-            </div>
-          )
-        },
-      },
-
-      {
-        width: 50,
-        title: 'PLAYER NAME',
-        dataIndex: 'Name',
-        key: 'Name',
-        render: (_, obj) => {
-          const photoUrl = obj?.HostedHeadshotNoBackgroundUrl ||
-            (obj?.apiSportsId ? `https://media.api-sports.io/american-football/players/${obj.apiSportsId}.png` : null)
-          return (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              {photoUrl ? (
-                <img
-                  src={photoUrl}
-                  alt=""
-                  style={{
-                    width: 26,
-                    height: 26,
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    border: '1.5px solid rgba(34, 197, 94, 0.3)',
-                    background: 'rgba(10, 15, 26, 0.5)',
-                    flexShrink: 0,
-                  }}
-                  onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling && (e.target.nextSibling.style.display = 'flex') }}
-                />
-              ) : null}
-              {photoUrl ? (
-                <div style={{ display: 'none', width: 26, height: 26, borderRadius: '50%', background: 'rgba(34, 197, 94, 0.1)', border: '1.5px solid rgba(34, 197, 94, 0.2)', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <GiAmericanFootballPlayer size={14} style={{ color: 'rgba(34, 197, 94, 0.5)' }} />
-                </div>
-              ) : (
-                <div style={{ display: 'flex', width: 26, height: 26, borderRadius: '50%', background: 'rgba(34, 197, 94, 0.1)', border: '1.5px solid rgba(34, 197, 94, 0.2)', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <GiAmericanFootballPlayer size={14} style={{ color: 'rgba(34, 197, 94, 0.5)' }} />
-                </div>
-              )}
-              <PlayerDetailsModal
-                button={<span className='fa_p_name name_text_hover'> {obj?.name}</span>}
-                state={{
-                  playerID: obj?.PlayerID,
-                  teamId: obj?.teaminfo?._id === userDetails?.team?._id ? null : obj?.teaminfo?._id,
-                  teamName: obj?.teaminfo?.name,
-                  teamLogo: null,
-                  isFreeAgent: {
-                    status: obj?.teaminfo ? false : true,
-                  },
-                  isTeamRoster: {
-                    status: obj?.teaminfo?._id === userDetails?.team?._id ? false : true,
-                  },
-                  isOwnRoster: {
-                    status: obj?.teaminfo?._id === userDetails?.team?._id ? true : false,
-                  },
-                }}
-              />
-            </div>
-          )
-        },
-      },
-      {
-        width: 30,
-        title: <p style={{ lineHeight: 1 }}>AGE</p>,
-        dataIndex: 'age',
-        key: 'age',
-        render: (_, obj) => <p>{obj?.age || '-'}</p>,
-      },
-      {
-        width: 30,
-        title: <p style={{ lineHeight: 1 }}>pro team</p>,
-        dataIndex: 'nflteam',
-        key: 'nflteam',
-        render: (_, obj) => <p>{obj?.nflteam || '-'}</p>,
-      },
-
-      {
-        width: 30,
-        title: <p style={{ lineHeight: 1 }}>CAP HIT</p>,
-        dataIndex: 'caphit',
-        key: 'caphit',
-        render: (_, obj) => {
-          if (obj?.otcCapHit && obj.otcCapHit > 0) {
-            const millions = (obj.otcCapHit / 1_000_000).toFixed(1)
-            const capColor = getCapColor(obj.otcCapHit)
-            return (
-              <div style={{ lineHeight: 1.2 }}>
-                <p style={{ margin: 0, fontWeight: 700, fontSize: 12, color: capColor }}>${millions}M</p>
-                <p style={{ margin: 0, fontSize: 9, color: 'rgba(255,255,255,0.35)' }}>{`${(obj?.caphit || 0).toLocaleString()} SP`}</p>
-              </div>
-            )
-          }
-          return <p style={{ color: '#94A3B8' }}>{`${(obj?.caphit || '-').toLocaleString()} SP`}</p>
-        },
-      },
-      {
-        width: 30,
-        title: <p style={{ lineHeight: 1 }}>CONTRACT</p>,
-        dataIndex: 'contractInfo',
-        key: 'contractInfo',
-        render: (_, obj) => {
-          if (obj?.otcTotalValue && obj.otcTotalValue > 0) {
-            const totalM = (obj.otcTotalValue / 1_000_000).toFixed(1)
-            const yrsLeft = obj?.yearsLeftSalaryCap || obj?.otcContractYears || '-'
-            const yrsColor = getContractYrsColor(yrsLeft)
-            return (
-              <div style={{ lineHeight: 1.2 }}>
-                <p style={{ margin: 0, fontWeight: 700, fontSize: 12, color: '#E2E8F0' }}>${totalM}M</p>
-                <p style={{ margin: 0, fontSize: 9 }}>
-                  <span style={{ color: yrsColor, fontWeight: 600 }}>{yrsLeft}yr left</span>
-                  {obj?.otcFreeAgentYear ? <span style={{ color: 'rgba(255,255,255,0.3)' }}> · FA {obj.otcFreeAgentYear}</span> : ''}
-                </p>
-              </div>
-            )
-          }
-          // Parse contractInfo text into short format — never show full paragraph in table
-          const raw = obj?.contractInfo || ''
-          if (raw.length > 0) {
-            // Try to extract dollar amount from text like "signed a 4 year, $48,000,000 contract"
-            const match = raw.match(/(\d+)\s*year.*?\$(\d[\d,]*)/i)
-            if (match) {
-              const yrs = match[1]
-              const dollars = parseInt(match[2].replace(/,/g, ''))
-              const totalM = (dollars / 1_000_000).toFixed(1)
-              return (
-                <div style={{ lineHeight: 1.2 }}>
-                  <p style={{ margin: 0, fontWeight: 700, fontSize: 12, color: '#E2E8F0' }}>${totalM}M</p>
-                  <p style={{ margin: 0, fontSize: 9, color: 'rgba(255,255,255,0.4)' }}>{yrs}yr</p>
-                </div>
-              )
-            }
-            // Try alternate format: just find a dollar amount
-            const dollarMatch = raw.match(/\$(\d[\d,]*)/i)
-            if (dollarMatch) {
-              const dollars = parseInt(dollarMatch[1].replace(/,/g, ''))
-              const totalM = (dollars / 1_000_000).toFixed(1)
-              return (
-                <div style={{ lineHeight: 1.2 }}>
-                  <p style={{ margin: 0, fontWeight: 700, fontSize: 12, color: '#E2E8F0' }}>${totalM}M</p>
-                </div>
-              )
-            }
-          }
-          // Fallback: show cap hit as SP or dash — full contract text is in player popup
-          const capHit = obj?.caphit
-          if (capHit && capHit > 0) {
-            return <p style={{ fontSize: 11, color: '#94A3B8' }}>{`${Number(capHit).toLocaleString()} SP`}</p>
-          }
-          return <p style={{ fontSize: 11, color: '#475569' }}>-</p>
-        },
-      },
-
-      {
-        width: 30,
-        title: <p style={{ lineHeight: 1 }}>OWNED BY</p>,
-        dataIndex: 'HostedHeadshotNoBackgroundUrl',
-        key: 'HostedHeadshotNoBackgroundUrl',
-        render: (_, obj) => {
-
-          return (
-            <div>
-              {obj?.teaminfo ? (
-                <p>{obj?.teaminfo?.name}</p>
-              ) : obj?.teaminfo?._id === userDetails?.team?._id ? (
-                ''
-              ) : (
-                Number(year) >= 2024 && (
-                  draftNotCompleted ? (
-                    <span style={{
-                      padding: '2px 10px', borderRadius: 4,
-                      background: 'rgba(139,92,246,0.12)',
-                      border: '1px solid rgba(139,92,246,0.25)',
-                      color: '#A78BFA', fontSize: 10, fontWeight: 700,
-                      letterSpacing: 1, textTransform: 'uppercase',
-                      fontFamily: "'Rajdhani', sans-serif",
-                    }}>locked</span>
-                  ) : (
-                    <Button
-                      loading={playerID == obj?.PlayerID}
-                      type='primary'
-                      className='_button'
-                      onClick={() => {
-                        handleCreateAuction(obj?.PlayerID, obj?.id, obj?.currentYearSalaryCap)
-                      }}
-                    >
-                      Auction
-                    </Button>
-                  )
-                )
-              )}
-            </div>
-          )
-        },
-      },
-
-      // {
-      //   width: 30,
-      //   title: <p style={{ lineHeight: 1 }}>TOTAL PTS</p>,
-      //   dataIndex: 'totalPts',
-      //   key: 'totalPts',
-      //   // render: (_, obj) => <p>{obj?.regular_season_pts?.toFixed(2) || '-'}</p>,
-      //   render: (_, obj) => <p>{
-
-      //     year == 2024 ?  obj?.regularseasonpts.toFixed(2) :{obj?.regular_season_pts?.toFixed(2)|| '-'}</p>,
-
-      // },
-
-      {
-        width: 30,
-        title: <p style={{ lineHeight: 1 }}>TOTAL PTS</p>,
-        dataIndex: 'totalPts',
-        key: 'totalPts',
-        render: (_, obj) => {
-          const pts = Number(year) >= 2024
-            ? obj?.regularseasonpts
-            : obj?.regular_season_pts
-          const val = pts ? pts.toFixed(2) : '-'
-          const ptsColor = pts >= 200 ? '#22C55E' : pts >= 100 ? '#4ADE80' : pts >= 50 ? '#86EFAC' : '#CBD5E1'
-          return <p style={{ fontWeight: 700, color: pts ? ptsColor : '#475569' }}>{val}</p>
-        },
-      },
-
-      {
-        width: 30,
-        title: 'PPG',
-        dataIndex: 'playerScore',
-        key: 'playerScore',
-        render: (_, obj) => {
-          const regularSeasonPts =
-            Number(year) >= 2024 ? obj?.regularseasonpts || 0 : obj?.regular_season_pts || 0
-
-          // Count weeks with a score > 0 for accurate games played
-          let gamesPlayed = 0
-          for (let w = 1; w <= 18; w++) {
-            const sc = obj?.[`week_${w}_score`]
-            if (sc && sc > 0) gamesPlayed++
-          }
-
-          let ppg = 0
-          if (gamesPlayed > 0 && regularSeasonPts > 0) {
-            ppg = (regularSeasonPts / gamesPlayed).toFixed(2)
-          }
-
-          const ppgStyle = getScoreColor(ppg)
-          return <p style={ppgStyle}>{ppg || '0'}</p>
-        },
-      },
-    ]
-
-    const columns2 = [
-      {
-        //  width: 90,
-        title: 'REGULAR SEASON',
-        dataIndex: 'regularseason',
-        key: 'regularseason',
-        children: [
-          {
-            width: 30,
-            title: 'WK1',
-            dataIndex: 'wk1',
-            key: 'wk1',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_1_score)}>{obj?.week_1_score || '-'}</p>,
-          },
-
-          {
-            width: 30,
-            title: 'WK2',
-            dataIndex: 'wk2',
-            key: 'wk2',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_2_score)}>{obj?.week_2_score || '-'}</p>,
-          },
-          {
-            width: 30,
-            title: 'WK3',
-            dataIndex: 'wk3',
-            key: 'wk3',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_3_score)}>{obj?.week_3_score || '-'}</p>,
-          },
-          {
-            width: 30,
-            title: 'WK4',
-            dataIndex: 'wk4',
-            key: 'wk4',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_4_score)}>{obj?.week_4_score || '-'}</p>,
-          },
-          {
-            width: 30,
-            title: 'WK5',
-            dataIndex: 'wk5',
-            key: 'wk1',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_5_score)}>{obj?.week_5_score || '-'}</p>,
-          },
-          {
-            width: 30,
-            title: 'WK6',
-            dataIndex: 'wk6',
-            key: 'wk1',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_6_score)}>{obj?.week_6_score || '-'}</p>,
-          },
-          {
-            width: 30,
-            title: 'WK7',
-            dataIndex: 'wk7',
-            key: 'wk7',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_7_score)}>{obj?.week_7_score || '-'}</p>,
-          },
-          {
-            width: 30,
-            title: 'WK8',
-            dataIndex: 'wk8',
-            key: 'wk1',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_8_score)}>{obj?.week_8_score || '-'}</p>,
-          },
-          {
-            width: 30,
-            title: 'WK9',
-            dataIndex: 'wk9',
-            key: 'wk9',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_9_score)}>{obj?.week_9_score || '-'}</p>,
-          },
-          {
-            width: 30,
-            title: 'WK10',
-            dataIndex: 'wk10',
-            key: 'wk10',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_10_score)}>{obj?.week_10_score || '-'}</p>,
-          },
-          {
-            width: 30,
-            title: 'WK11',
-            dataIndex: 'wk11',
-            key: 'wk11',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_11_score)}>{obj?.week_11_score || '-'}</p>,
-          },
-
-          {
-            width: 30,
-            title: 'WK12',
-            dataIndex: 'wk12',
-            key: 'wk12',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_12_score)}>{obj?.week_12_score || '-'}</p>,
-          },
-
-          {
-            width: 30,
-            title: 'WK13',
-            dataIndex: 'wk13',
-            key: 'wk13',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_13_score)}>{obj?.week_13_score || '-'}</p>,
-          },
-
-          {
-            width: 30,
-            title: 'WK14',
-            dataIndex: 'wk14',
-            key: 'wk14',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_14_score)}>{obj?.week_14_score || '-'}</p>,
-          },
-          {
-            width: 30,
-            title: 'WK15',
-            dataIndex: 'wk15',
-            key: 'wk15',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_15_score)}>{obj?.week_15_score || '-'}</p>,
-          },
-          {
-            width: 30,
-            title: 'WK16',
-            dataIndex: 'wk16',
-            key: 'wk11',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_16_score)}>{obj?.week_16_score || '-'}</p>,
-          },
-          {
-            width: 30,
-            title: 'WK17',
-            dataIndex: 'wk17',
-            key: 'wk11',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_17_score)}>{obj?.week_17_score || '-'}</p>,
-          },
-          {
-            width: 100,
-            title: 'WK18',
-            dataIndex: 'wk18',
-            key: 'wk11',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_18_score)}>{obj?.week_18_score || '-'}</p>,
-          },
-        ],
-      },
-
-      {
-        //  width: 150,
-        title: 'POST SEASON',
-        dataIndex: 'postseason',
-        key: 'postseason',
-        children: [
-          {
-            width: 30,
-            title: 'RD1',
-            dataIndex: 'rd1',
-            key: 'rd1',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_19_score)}>{obj?.week_19_score || '-'}</p>,
-          },
-
-          {
-            width: 30,
-            title: 'RD2',
-            dataIndex: 'rd2',
-            key: 'rd2',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_20_score)}>{obj?.week_20_score || '-'}</p>,
-          },
-
-          {
-            width: 30,
-            title: 'RD3',
-            dataIndex: 'rd3',
-            key: 'rd1',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_21_score)}>{obj?.week_21_score || '-'}</p>,
-          },
-
-          {
-            width: 30,
-            title: 'SB',
-            dataIndex: 'sb',
-            key: 'sb',
-            render: (_, obj) => <p style={getScoreColor(obj?.week_23_score)}>{obj?.week_23_score || '-'}</p>,
-          },
-
-          {
-            width: 30,
-            title: <p style={{ lineHeight: 1 }}>TOTAL PTS</p>,
-            dataIndex: 'totalPts',
-            key: 'totalPts',
-            render: (_, obj) => {
-              const pts = obj?.post_season_pts
-              const val = pts ? pts.toFixed(2) : '-'
-              const ptsColor = pts >= 50 ? '#22C55E' : pts >= 20 ? '#4ADE80' : pts > 0 ? '#86EFAC' : '#475569'
-              return <p style={{ fontWeight: 700, color: pts ? ptsColor : '#475569' }}>{val}</p>
-            },
-          },
-          {
-            width: 30,
-            title: 'Average PPG',
-            dataIndex: 'playerScore',
-            key: 'playerScore',
-            // render: (_, obj) => <p>{obj?.postavgpts.toFixed(2) || '-'}</p>,
-            render: (_, obj) => {
-              // Extract values
-              const postseasonpts = obj?.post_season_pts || 0
-              const nflGamesPlayed = obj?.nflGamesPlayed || 0
-
-              // Calculate PPG
-              let ppg = 0
-              if (nflGamesPlayed > 0 && postseasonpts > 0) {
-                ppg = (postseasonpts / nflGamesPlayed)?.toFixed(2)
-              }
-
-              // Return formatted result
-              const ppgStyle = getScoreColor(ppg)
-              return <p style={ppgStyle}>{ppg || '0'}</p>
-            },
-          },
-        ],
-      },
-    ]
-
-    const columns3 = [
-      // {
-      //   width: 50,
-      //   title: 'SCORE',
-      //   dataIndex: 'score',
-      //   key: 'score',
-      //   render: (_, obj) => (
-      //     <div className='_positionColumn'>
-      //       <p>{obj?.Position || '-'}</p>
-      //     </div>
-      //   ),
-      // },
-
-      {
-        width: 50,
-        title: 'SCORE',
-        dataIndex: 'score',
-        key: 'score',
-        render: (_, obj) => {
-          // Ensure week is a number
-          const weekNumber = Number(checkweek)
-
-          // Construct the key dynamically based on the week
-          const scoreKey = `week_${weekNumber}_score`
-          const offensivescoreKey = `week_${weekNumber}_OffensiveRatio`
-          return (
-            <div className='_positionColumn'>
-              <p>{obj?.[scoreKey] ?? '-'}</p>
-              {/* <p>{obj?.[offensivescoreKey] ? obj?.[scoreKey] : 0}</p> */}
-            </div>
-          )
-        },
-      },
-
-      // {
-      //   width: 30,
-      //   title: 'AVERAGE SNAP %',
-      //   dataIndex: 'averagesnap%',
-      //   key: 'averagesnap',
-      //   render: (_, obj) => {
-      //     const weekNumber = Number(checkweek)
-
-      //     const offensivescoreKey = `week_${weekNumber}_OffensiveRatio`
-
-      //     const offensiveRatio = obj?.[offensivescoreKey] ?? 0
-
-      //     // Ensure nflGamesPlayed is a number and not zero
-      //     const gamesPlayed = Number(obj.nflGamesPlayed)
-      //     const averageSnapPercentage =
-      //       gamesPlayed > 0 ? (offensiveRatio / gamesPlayed).toFixed(2) : '-'
-
-      //     return (
-      //       <div>
-      //         {/* <p>{averageSnapPercentage}%</p> */}
-      //         <p>{(averageSnapPercentage * 100).toFixed(0)}%</p>
-      //       </div>
-      //     )
-      //   },
-      // },
-
-      {
-        width: 30,
-        title: 'AVERAGE SNAP %',
-        dataIndex: 'averagesnap%',
-        key: 'averagesnap',
-        render: (_, obj) => {
-          // Initialize a variable to hold the total OffensiveRatio
-          let totalOffensiveRatio = 0
-
-          // Loop through the weeks to accumulate the OffensiveRatio values
-          for (let week = 1; week <= 23; week++) {
-            // Adjust the range as necessary
-            const offensivescoreKey = `week_${week}_OffensiveRatio`
-            totalOffensiveRatio += obj?.[offensivescoreKey] || 0 // Safely add the value, defaulting to 0 if undefined
-          }
-
-          // Ensure nflGamesPlayed is a number and not zero
-          const gamesPlayed = Number(obj.nflGamesPlayed)
-          const averageSnapPercentage =
-            gamesPlayed > 0 ? (totalOffensiveRatio / gamesPlayed).toFixed(2) : '-'
-
-          return (
-            <div>
-              <p>
-                {averageSnapPercentage === '-' ? '-' : (averageSnapPercentage * 100).toFixed(0)}%
-              </p>
-            </div>
-          )
-        },
-      },
-
-      // week_1_OffensiveRatio
-      {
-        width: 30,
-        title: 'SNAP %',
-        dataIndex: 'snap%',
-        key: 'snap',
-        render: (_, obj) => {
-          // Ensure week is a number
-          const weekNumber = Number(checkweek)
-
-          // Construct the key dynamically based on the week
-          const offensivescoreKey = `week_${weekNumber}_OffensiveRatio`
-          return (
-            <div>
-              {/* <p>{obj?.[offensivescoreKey].toFixed(2) ?? '-'}%</p> */}
-              <p>
-                {obj?.[offensivescoreKey] ? (obj[offensivescoreKey] * 100).toFixed(0) + '%' : '-'}
-              </p>
-            </div>
-          )
-        },
-      },
-
-      {
-        width: 100,
-        title: 'RUSHING',
-        dataIndex: 'rush',
-        key: 'rush',
-        children: [
-          {
-            width: 30,
-            title: 'ATT',
-            dataIndex: 'att',
-            key: 'att',
-
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const RushingAttempts = `week_${weekNumber}_RushingAttempts`
-
-              return (
-                <div>
-                  <p>{obj?.[RushingAttempts] ?? '-'}</p>
-                  <p></p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 30,
-            title: 'YARD',
-            dataIndex: 'yard',
-            key: 'yard',
-
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const RushingYards = `week_${weekNumber}_RushingYards`
-              return (
-                <div>
-                  <p>{obj?.[RushingYards] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 30,
-            title: 'TD',
-            dataIndex: 'td',
-            key: 'td',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.RushingTouchdowns || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const RushingTouchdowns = `week_${weekNumber}_RushingTouchdowns`
-              return (
-                <div>
-                  <p>{obj?.[RushingTouchdowns] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-        ],
-      },
-
-      {
-        // width: 150,
-        title: 'RECEIVING',
-        dataIndex: 'rec',
-        key: 'rec',
-        children: [
-          {
-            width: 30,
-            title: 'TAR',
-            dataIndex: 'tar',
-            key: 'tar',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.ReceivingTargets || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const ReceivingTargets = `week_${weekNumber}_ReceivingTargets`
-              return (
-                <div>
-                  <p>{obj?.[ReceivingTargets] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-
-          {
-            width: 30,
-            title: 'REC',
-            dataIndex: 'rec',
-            key: 'rec',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.Receptions || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const Receptions = `week_${weekNumber}_Receptions`
-              return (
-                <div>
-                  <p>{obj?.[Receptions] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 30,
-            title: 'YARD',
-            dataIndex: 'yard',
-            key: 'yard',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.ReceivingYards || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const ReceivingYards = `week_${weekNumber}_ReceivingYards`
-              return (
-                <div>
-                  <p>{obj?.[ReceivingYards] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 30,
-            title: 'TD',
-            dataIndex: 'td',
-            key: 'td',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.ReceivingTouchdowns || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const ReceivingTouchdowns = `week_${weekNumber}_ReceivingTouchdowns`
-              return (
-                <div>
-                  <p>{obj?.[ReceivingTouchdowns] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-        ],
-      },
-
-      {
-        // width: 150,
-        title: 'PASSING',
-        dataIndex: 'pass',
-        key: 'pass',
-        children: [
-          {
-            width: 30,
-            title: 'COMP',
-            dataIndex: 'comp',
-            key: 'comp',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.PassingCompletions || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const PassingCompletions = `week_${weekNumber}_PassingCompletions`
-              return (
-                <div>
-                  <p>{obj?.[PassingCompletions] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 30,
-            title: 'ATT',
-            dataIndex: 'att',
-            key: 'att',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.PassingAttempts || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const PassingAttempts = `week_${weekNumber}_PassingAttempts`
-              return (
-                <div>
-                  <p>{obj?.[PassingAttempts] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-
-          {
-            width: 30,
-            title: 'YRD',
-            dataIndex: 'yrd',
-            key: 'yrd',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.PassingYards || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const PassingYards = `week_${weekNumber}_PassingYards`
-              return (
-                <div>
-                  <p>{obj?.[PassingYards] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 30,
-            title: 'TD',
-            dataIndex: 'taf',
-            key: 'taf',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.PassingTouchdowns || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const newPassingTouchdowns = `week_${weekNumber}_PassingTouchdowns`
-              return (
-                <div>
-                  <p>{obj?.[newPassingTouchdowns] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-
-          {
-            width: 30,
-            title: 'SACKED',
-            dataIndex: 'sacked',
-            key: 'sacked',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p>{obj?.PassingSacks || '-'}</p>
-            //     </div>
-            //   )
-            // },
-
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const PassingSacks = `week_${weekNumber}_PassingSacks`
-              return (
-                <div>
-                  <p>{obj?.[PassingSacks] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-
-          {
-            width: 30,
-            title: 'INT THROWN',
-            dataIndex: 'intthrown',
-            key: 'intthrown',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.INTS || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const INTS = `week_${weekNumber}_Interceptions`
-              return (
-                <div>
-                  <p>{obj?.[INTS] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-        ],
-      },
-
-      {
-        title: 'AVERAGES',
-        dataIndex: 'averages',
-        key: 'averages',
-        children: [
-          {
-            width: 40,
-            title: 'COMP %',
-            dataIndex: 'compPct',
-            key: 'compPct',
-            render: (_, obj) => {
-              const weekNumber = Number(checkweek)
-              const weekVal = obj?.[`week_${weekNumber}_CompPct`]
-              const sznVal = obj?.szn_CompPct
-              const val = weekVal != null && weekVal !== '-' ? weekVal + '%' : (sznVal != null && sznVal !== '-' ? sznVal + '%' : '-')
-              return <div><p style={{ color: '#A855F7' }}>{val}</p></div>
-            },
-          },
-          {
-            width: 40,
-            title: 'YPC',
-            dataIndex: 'ypc',
-            key: 'ypc',
-            render: (_, obj) => {
-              const weekNumber = Number(checkweek)
-              const weekVal = obj?.[`week_${weekNumber}_YPC`]
-              const sznVal = obj?.szn_YPC
-              const val = weekVal != null && weekVal !== '-' ? weekVal : (sznVal != null && sznVal !== '-' ? sznVal : '-')
-              return <div><p style={{ color: '#F59E0B' }}>{val}</p></div>
-            },
-          },
-          {
-            width: 40,
-            title: 'CATCH %',
-            dataIndex: 'catchPct',
-            key: 'catchPct',
-            render: (_, obj) => {
-              const weekNumber = Number(checkweek)
-              const weekVal = obj?.[`week_${weekNumber}_CatchPct`]
-              const sznVal = obj?.szn_CatchPct
-              const val = weekVal != null && weekVal !== '-' ? weekVal + '%' : (sznVal != null && sznVal !== '-' ? sznVal + '%' : '-')
-              return <div><p style={{ color: '#06B6D4' }}>{val}</p></div>
-            },
-          },
-        ],
-      },
-
-      {
-        // width: 150,
-        title: 'RETURN',
-        dataIndex: 'return',
-        key: 'return',
-        children: [
-          {
-            width: 30,
-            title: 'KR',
-            dataIndex: 'kr',
-            key: 'kr',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p>{obj?.KickReturns || '-'}</p>
-            //     </div>
-            //   )
-            // },
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const KickReturns = `week_${weekNumber}_KickReturns`
-              return (
-                <div>
-                  <p>{obj?.[KickReturns] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 30,
-            title: 'KR YARDS',
-            dataIndex: 'kryrd',
-            key: 'kryrd',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p>{obj?.KickReturnYards || '-'}</p>
-            //     </div>
-            //   )
-            // },
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const KickReturnYards = `week_${weekNumber}_KickReturnYards`
-              return (
-                <div>
-                  <p>{obj?.[KickReturnYards] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-
-          {
-            width: 30,
-            title: 'PR',
-            dataIndex: 'pr',
-            key: 'Pr',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p>{obj?.PuntReturns || '-'}</p>
-            //     </div>
-            //   )
-            // },
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const PuntReturns = `week_${weekNumber}_PuntReturns`
-              return (
-                <div>
-                  <p>{obj?.[PuntReturns] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 30,
-            title: 'PR YARDS',
-            dataIndex: 'pryrd',
-            key: 'pryrd',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p>{obj?.PuntReturnYards || '-'}</p>
-            //     </div>
-            //   )
-            // },
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const PuntReturnYards = `week_${weekNumber}_PuntReturnYards`
-              return (
-                <div>
-                  <p>{obj?.[PuntReturnYards] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-
-          {
-            width: 30,
-            title: 'STID',
-            dataIndex: 'stid',
-            key: 'stid',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.SpecialTeamsTouchdowns || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const SpecialTeamsTouchdowns = `week_${weekNumber}_SpecialTeamsTouchdowns`
-              return (
-                <div>
-                  <p>{obj?.[SpecialTeamsTouchdowns] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-        ],
-      },
-    ]
-
-    const columns4 = [
-      {
-        width: 50,
-        title: 'SCORE',
-        dataIndex: 'score',
-        key: 'score',
-        render: (_, obj) => {
-          // Ensure week is a number
-          const weekNumber = Number(checkweek)
-
-          // Construct the key dynamically based on the week
-          const scoreKey = `week_${weekNumber}_score`
-          return (
-            <div className='_positionColumn'>
-              <p>{obj?.[scoreKey] ?? '-'}</p>
-            </div>
-          )
-        },
-      },
-
-      {
-        width: 30,
-        title: 'AVERAGE SNAP %',
-        dataIndex: 'averagesnap%',
-        key: 'averagesnap',
-        // render: (_, obj) => {
-        //   const weekNumber = Number(checkweek)
-
-        //   const defensivecoreKey = `week_${weekNumber}_DefensiveRatio`
-
-        //   const defensiveRatio = obj?.[defensivecoreKey] ?? 0
-
-        //   // Ensure nflGamesPlayed is a number and not zero
-        //   const gamesPlayed = Number(obj.nflGamesPlayed)
-        //   const averageSnapPercentage =
-        //     gamesPlayed > 0 ? (defensiveRatio / gamesPlayed).toFixed(2) : '-'
-
-        //   return (
-        //     <div>
-        //       {/* <p>{averageSnapPercentage}%</p> */}
-        //       <p>{(averageSnapPercentage * 100).toFixed(0)}%</p>
-        //     </div>
-        //   )
-        // },
-        render: (_, obj) => {
-          // Initialize a variable to hold the total OffensiveRatio
-          let totaldefensiveRatio = 0
-
-          // Loop through the weeks to accumulate the OffensiveRatio values
-          for (let week = 1; week <= 23; week++) {
-            // Adjust the range as necessary
-            // const offensivescoreKey = `week_${week}_OffensiveRatio`;
-            const defensivecoreKey = `week_${week}_DefensiveRatio`
-            totaldefensiveRatio += obj?.[defensivecoreKey] || 0 // Safely add the value, defaulting to 0 if undefined
-          }
-
-          // Ensure nflGamesPlayed is a number and not zero
-          const gamesPlayed = Number(obj.nflGamesPlayed)
-          const averagedefensiveSnapPercentage =
-            gamesPlayed > 0 ? (totaldefensiveRatio / gamesPlayed).toFixed(2) : '-'
-
-          return (
-            <div>
-              <p>
-                {averagedefensiveSnapPercentage === '-'
-                  ? '-'
-                  : (averagedefensiveSnapPercentage * 100).toFixed(0)}
-                %
-              </p>
-            </div>
-          )
-        },
-      },
-
-      {
-        width: 30,
-        title: 'SNAP %',
-        dataIndex: 'snap%',
-        key: 'snap',
-        render: (_, obj) => {
-          // Ensure week is a number
-          const weekNumber = Number(checkweek)
-
-          // Construct the key dynamically based on the week
-          const defensivecoreKey = `week_${weekNumber}_DefensiveRatio`
-          return (
-            <div>
-              {/* <p>{obj?.[defensivecoreKey].toFixed(2) ?? '-'}%</p> */}
-              <p>
-                {obj?.[defensivecoreKey] ? (obj[defensivecoreKey] * 100).toFixed(0) + '%' : '-'}
-              </p>
-            </div>
-          )
-        },
-      },
-
-      {
-        width: 50,
-        title: 'TACKLE',
-        dataIndex: 'tackel',
-        key: 'tackel',
-        // render: (_, obj) => (
-        //   <div>
-        //     <p>{obj?.TKLS || '-'}</p>
-        //   </div>
-        // ),
-        render: (_, obj) => {
-          // Ensure week is a number
-          const weekNumber = Number(checkweek)
-
-          // Construct the key dynamically based on the week
-          const SoloTackles = `week_${weekNumber}_SoloTackles`
-          return (
-            <div>
-              <p>{obj?.[SoloTackles] ?? '-'}</p>
-            </div>
-          )
-        },
-      },
-
-      {
-        width: 30,
-        title: 'TACKLE FOR LOSS',
-        dataIndex: 'tackelforloss',
-        key: 'tackelforloss',
-        // render: (_, obj) => (
-        //   <div>
-        //     <p>{obj?.TFL || '-'}</p>
-        //   </div>
-        // ),
-
-        render: (_, obj) => {
-          // Ensure week is a number
-          const weekNumber = Number(checkweek)
-
-          // Construct the key dynamically based on the week
-          const TFL = `week_${weekNumber}_TacklesForLoss`
-          return (
-            <div>
-              <p>{obj?.[TFL] ?? '-'}</p>
-            </div>
-          )
-        },
-      },
-
-      {
-        width: 30,
-        title: 'SACKED',
-        dataIndex: 'sacked',
-        key: 'sacked',
-        // render: (_, obj) => (
-        //   <div>
-        //     <p>{obj?.SCKS || '-'}</p>
-        //   </div>
-        // ),
-
-        render: (_, obj) => {
-          // Ensure week is a number
-          const weekNumber = Number(checkweek)
-
-          // Construct the key dynamically based on the week
-          const SCKS = `week_${weekNumber}_Sacks`
-          return (
-            <div>
-              <p>{obj?.[SCKS] ?? '-'}</p>
-            </div>
-          )
-        },
-      },
-
-      {
-        width: 30,
-        title: 'FORCED FUBMBLE',
-        dataIndex: 'forcedfumble',
-        key: 'forcedfumble',
-        // render: (_, obj) => (
-        //   <div>
-        //     <p>{obj?.FF || '-'}</p>
-        //   </div>
-        // ),
-
-        render: (_, obj) => {
-          // Ensure week is a number
-          const weekNumber = Number(checkweek)
-
-          // Construct the key dynamically based on the week
-          const FF = `week_${weekNumber}_FumblesForced`
-          return (
-            <div>
-              <p>{obj?.[FF] ?? '-'}</p>
-            </div>
-          )
-        },
-      },
-
-      {
-        width: 30,
-        title: 'FUBMBLE RECOVERY',
-        dataIndex: 'forcedrecovery',
-        key: 'forcedrecovery',
-        // render: (_, obj) => (
-        //   <div>
-        //     <p>{obj?.FumblesRecovered || '-'}</p>
-        //   </div>
-        // ),
-
-        render: (_, obj) => {
-          // Ensure week is a number
-          const weekNumber = Number(checkweek)
-
-          // Construct the key dynamically based on the week
-          const FumblesRecovered = `week_${weekNumber}_FumblesRecovered`
-          return (
-            <div>
-              <p>{obj?.[FumblesRecovered] ?? '-'}</p>
-            </div>
-          )
-        },
-      },
-
-      {
-        width: 30,
-        title: 'PASS DEFENDED',
-        dataIndex: 'passdefended',
-        key: 'passdefended',
-        // render: (_, obj) => (
-        //   <div>
-        //     <p>{obj?.PD || '-'}</p>
-        //   </div>
-        // ),
-        render: (_, obj) => {
-          // Ensure week is a number
-          const weekNumber = Number(checkweek)
-
-          // Construct the key dynamically based on the week
-          const PD = `week_${weekNumber}_PassesDefended`
-          return (
-            <div>
-              <p>{obj?.[PD] ?? '-'}</p>
-            </div>
-          )
-        },
-      },
-
-      {
-        width: 30,
-        title: 'INTERCEPTIONS',
-        dataIndex: 'interceptions',
-        key: 'interceptions',
-        // render: (_, obj) => (
-        //   <div>
-        //     <p>{obj?.INTS || '-'}</p>
-        //   </div>
-        // ),
-
-        render: (_, obj) => {
-          // Ensure week is a number
-          const weekNumber = Number(checkweek)
-
-          // Construct the key dynamically based on the week
-          const INTS = `week_${weekNumber}_Interceptions`
-          return (
-            <div>
-              <p>{obj?.[INTS] ?? '-'}</p>
-            </div>
-          )
-        },
-      },
-
-      {
-        width: 30,
-        title: 'TOUCHDOWN',
-        dataIndex: 'tocuhdown',
-        key: 'tocuhdown',
-        // render: (_, obj) => (
-        //   <div>
-        //     <p>{obj?.SpecialTeamsTouchdowns || '-'}</p>
-        //   </div>
-        // ),
-
-        render: (_, obj) => {
-          // Ensure week is a number
-          const weekNumber = Number(checkweek)
-
-          // Construct the key dynamically based on the week
-          const SpecialTeamsTouchdowns = `week_${weekNumber}_SpecialTeamsTouchdowns`
-          return (
-            <div>
-              <p>{obj?.[SpecialTeamsTouchdowns] ?? '-'}</p>
-            </div>
-          )
-        },
-      },
-    ]
-
-    const columns5 = [
-      {
-        width: 50,
-        title: 'SCORE',
-        dataIndex: 'score',
-        key: 'score',
-        render: (_, obj) => {
-          // Ensure week is a number
-          const weekNumber = Number(checkweek)
-
-          // Construct the key dynamically based on the week
-          const scoreKey = `week_${weekNumber}_score`
-          return (
-            <div className='_positionColumn'>
-              <p>{obj?.[scoreKey] ?? '-'}</p>
-            </div>
-          )
-        },
-      },
-
-      {
-        width: 30,
-        title: 'AVERAGE SNAP %',
-        dataIndex: 'averagesnap%',
-        key: 'averagesnap',
-        // render: (_, obj) => {
-        //   const weekNumber = Number(checkweek)
-
-        //   const offensivescoreKey = `week_${weekNumber}_OffensiveRatio`
-
-        //   const offensiveRatio = obj?.[offensivescoreKey] ?? 0
-
-        //   // Ensure nflGamesPlayed is a number and not zero
-        //   const gamesPlayed = Number(obj.nflGamesPlayed)
-        //   const averageSnapPercentage =
-        //     gamesPlayed > 0 ? (offensiveRatio / gamesPlayed).toFixed(2) : '-'
-
-        //   return (
-        //     <div>
-        //       {/* <p>{averageSnapPercentage}%</p> */}
-        //       <p>{(averageSnapPercentage * 100).toFixed(0)}%</p>
-        //     </div>
-        //   )
-        // },
-        render: (_, obj) => {
-          // Initialize a variable to hold the total OffensiveRatio
-          let totalOffensiveRatio = 0
-
-          // Loop through the weeks to accumulate the OffensiveRatio values
-          for (let week = 1; week <= 23; week++) {
-            // Adjust the range as necessary
-            const offensivescoreKey = `week_${week}_OffensiveRatio`
-            totalOffensiveRatio += obj?.[offensivescoreKey] || 0 // Safely add the value, defaulting to 0 if undefined
-          }
-
-          // Ensure nflGamesPlayed is a number and not zero
-          const gamesPlayed = Number(obj.nflGamesPlayed)
-          const averageSnapPercentage =
-            gamesPlayed > 0 ? (totalOffensiveRatio / gamesPlayed).toFixed(2) : '-'
-
-          return (
-            <div>
-              <p>
-                {averageSnapPercentage === '-' ? '-' : (averageSnapPercentage * 100).toFixed(0)}%
-              </p>
-            </div>
-          )
-        },
-      },
-
-      // week_1_OffensiveRatio
-      {
-        width: 30,
-        title: 'SNAP %',
-        dataIndex: 'snap%',
-        key: 'snap',
-        render: (_, obj) => {
-          // Ensure week is a number
-          const weekNumber = Number(checkweek)
-
-          // Construct the key dynamically based on the week
-          const offensivescoreKey = `week_${weekNumber}_OffensiveRatio`
-          return (
-            <div>
-              {/* <p>{obj?.[offensivescoreKey].toFixed(2) ?? '-'}%</p> */}
-              <p>
-                {obj?.[offensivescoreKey] ? (obj[offensivescoreKey] * 100).toFixed(0) + '%' : '-'}
-              </p>
-            </div>
-          )
-        },
-      },
-      // OL_TimesSacked
-      {
-        width: 50,
-        title: 'SACKS GIVENUP',
-        dataIndex: 'sacksgivenup',
-        key: 'sacksgivenup',
-        render: (_, obj) => {
-          const weekNumber = Number(checkweek)
-          const OL_TimesSacked = `week_${weekNumber}_TimesSacked`
-          return (
-            <div>
-              <p>{obj?.[OL_TimesSacked] ?? '-'}</p>
-            </div>
-          )
-        },
-      },
-
-      // {
-      //     width: 50,
-      //     title: 'TEAM RUSHED SACKS',
-      //     dataIndex: 'teamrushedsacks',
-      //     key: 'teamrushedsacks',
-      //     render: (_, obj) => {
-      //         const weekNumber = Number(checkweek);
-      //         const OL_TimesSacked = `week_${weekNumber}_TimesSacked`;
-      //         return (
-      //             <div>
-      //                 <p>{obj?.[OL_TimesSacked] - 1 ? NAN :0 ?? '-'}</p>
-      //             </div>
-      //         );
-      //     },
-      // },
-
-      {
-        width: 50,
-        title: 'TEAM RUSHING YARDS',
-        dataIndex: 'teamrushedsacks',
-        key: 'teamrushedsacks',
-        render: (_, obj) => {
-          const weekNumber = Number(checkweek)
-          const OL_TimesSacked = `week_${weekNumber}_TimesSacked`
-          const timesSackedValue = obj?.[OL_TimesSacked]
-
-          const OL_RushingYards = `week_${weekNumber}_RushingYards`
-
-          // Calculate the value, ensuring that NaN or undefined are handled
-          const calculatedValue = 15 - (isNaN(timesSackedValue) ? 0 : Number(timesSackedValue))
-
-          return (
-            <div>
-              {/* <p>{calculatedValue || '0'}</p> */}
-              <p>{obj?.[OL_RushingYards] ?? '-'}</p>
-            </div>
-          )
-        },
-      },
-
-      {
-        width: 50,
-        title: 'TEAM RUSHING TD',
-        dataIndex: 'teamrushedtd',
-        key: 'teamrushedtd',
-        render: (_, obj) => {
-          const weekNumber = Number(checkweek)
-          const OL_RushingTouchdowns = `week_${weekNumber}_RushingTouchdowns`
-          return (
-            <div>
-              <p>{obj?.[OL_RushingTouchdowns] ?? '-'}</p>
-            </div>
-          )
-        },
-      },
-
-      {
-        width: 50,
-        title: 'TEAM PASSING TD',
-        dataIndex: 'teampassingtd',
-        key: 'teampassingtd',
-        render: (_, obj) => {
-          const weekNumber = Number(checkweek)
-          const OL_PassingTouchdowns = `week_${weekNumber}_PassingTouchdowns`
-          return (
-            <div>
-              <p>{obj?.[OL_PassingTouchdowns] ?? '-'}</p>
-            </div>
-          )
-        },
-      },
-    ]
-
-    const columns6 = [
-      {
-        width: 50,
-        title: 'SCORE',
-        dataIndex: 'score',
-        key: 'score',
-        render: (_, obj) => {
-          // Ensure week is a number
-          const weekNumber = Number(checkweek)
-
-          // Construct the key dynamically based on the week
-          const scoreKey = `week_${weekNumber}_score`
-          return (
-            <div className='_positionColumn'>
-              <p>{obj?.[scoreKey] ?? '-'}</p>
-            </div>
-          )
-        },
-      },
-
-      {
-        // width: 150,
-        title: 'KICKING',
-        dataIndex: 'kick',
-        key: 'kick',
-        children: [
-          {
-            width: 30,
-            title: 'AVERAGE SNAP %',
-            dataIndex: 'averagesnap%',
-            key: 'averagesnap',
-            // render: (_, obj) => {
-            //   const weekNumber = Number(checkweek)
-
-            //   const specialteamscoreKey = `week_${weekNumber}_SpecialTeamsRatio`
-
-            //   const specialteamRatio = obj?.[specialteamscoreKey] ?? 0
-
-            //   // Ensure nflGamesPlayed is a number and not zero
-            //   const gamesPlayed = Number(obj.nflGamesPlayed)
-            //   const averageSnapPercentage =
-            //     gamesPlayed > 0 ? (specialteamRatio / gamesPlayed).toFixed(2) : '-'
-
-            //   return (
-            //     <div>
-            //       {/* <p>{averageSnapPercentage}%</p> */}
-            //       <p>{(averageSnapPercentage * 100).toFixed(0)}%</p>
-            //     </div>
-            //   )
-            // },
-
-            render: (_, obj) => {
-              // Initialize a variable to hold the total OffensiveRatio
-              let totalspecialRatio = 0
-
-              // Loop through the weeks to accumulate the OffensiveRatio values
-              for (let week = 1; week <= 23; week++) {
-                // Adjust the range as necessary
-                // const offensivescoreKey = `week_${week}_OffensiveRatio`;
-                const specialscoreKey = `week_${week}_SpecialTeamsRatio`
-                totalspecialRatio += obj?.[specialscoreKey] || 0 // Safely add the value, defaulting to 0 if undefined
-              }
-
-              // Ensure nflGamesPlayed is a number and not zero
-              const gamesPlayed = Number(obj.nflGamesPlayed)
-              const averagespecialSnapPercentage =
-                gamesPlayed > 0 ? (totalspecialRatio / gamesPlayed).toFixed(2) : '-'
-
-              return (
-                <div>
-                  <p>
-                    {averagespecialSnapPercentage === '-'
-                      ? '-'
-                      : (averagespecialSnapPercentage * 100).toFixed(0)}
-                    %
-                  </p>
-                </div>
-              )
-            },
-          },
-
-          {
-            width: 30,
-            title: 'SNAP %',
-            dataIndex: 'snap%',
-            key: 'snap',
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const specialteamscoreKey = `week_${weekNumber}_SpecialTeamsRatio`
-
-              return (
-                <div>
-                  {/* <p>{obj?.[specialteamscoreKey].toFixed(2) ?? '-'}%</p> */}
-                  <p>
-                    {obj?.[specialteamscoreKey]
-                      ? (obj[specialteamscoreKey] * 100).toFixed(0) + '%'
-                      : '-'}
-                  </p>
-                </div>
-              )
-            },
-          },
-
-          {
-            width: 30,
-            title: 'FGA',
-            dataIndex: 'fga',
-            key: 'fga',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.FieldGoalsAttempted || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const FieldGoalsAttempted = `week_${weekNumber}_FieldGoalsAttempted`
-              return (
-                <div>
-                  <p>{obj?.[FieldGoalsAttempted] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 30,
-            title: 'FGM',
-            dataIndex: 'fgm',
-            key: 'fgm',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.FieldGoalsMade || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const FieldGoalsMade = `week_${weekNumber}_FieldGoalsMade`
-              return (
-                <div>
-                  <p>{obj?.[FieldGoalsMade] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-
-          {
-            width: 30,
-            title: 'FGM 30-39',
-            dataIndex: 'fgm30',
-            key: 'fgm30',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.FGM30TO39 || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const FGM30TO39 = `week_${weekNumber}_FieldGoalsMade30to39`
-              return (
-                <div>
-                  <p>{obj?.[FGM30TO39] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 30,
-            title: 'FGM 40-49',
-            dataIndex: 'fgm40',
-            key: 'fgm40',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.FGM40TO49 || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const FGM40TO49 = `week_${weekNumber}_FieldGoalsMade40to49`
-              return (
-                <div>
-                  <p>{obj?.[FGM40TO49] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-
-          {
-            width: 30,
-            title: 'FGM 50+',
-            dataIndex: 'fgm50',
-            key: 'fgm50',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.FGM50 || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const FGM50 = `week_${weekNumber}_FieldGoalsMade50Plus`
-              return (
-                <div>
-                  <p>{obj?.[FGM50] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 30,
-            title: 'XPA',
-            dataIndex: 'xpa',
-            key: 'xpa',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.ExtraPointsAttempted || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const ExtraPointsAttempted = `week_${weekNumber}_ExtraPointsAttempted`
-              return (
-                <div>
-                  <p>{obj?.[ExtraPointsAttempted] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-
-          {
-            width: 30,
-            title: 'XPM',
-            dataIndex: 'xpm',
-            key: 'xpm',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.ExtraPointsMade || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const ExtraPointsMade = `week_${weekNumber}_ExtraPointsMade`
-              return (
-                <div>
-                  <p>{obj?.[ExtraPointsMade] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-        ],
-      },
-
-      {
-        // width: 150,
-        title: 'PUNTING',
-        dataIndex: 'punt',
-        key: 'punt',
-        children: [
-          {
-            width: 30,
-            title: 'PUNTS',
-            dataIndex: 'punts',
-            key: 'punts',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p>{obj?.Punts || '-'}</p>
-            //     </div>
-            //   )
-            // },
-
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const Punts = `week_${weekNumber}_Punts`
-              return (
-                <div>
-                  <p>{obj?.[Punts] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 30,
-            title: 'PUNTS YARDS',
-            dataIndex: 'puntyards',
-            key: 'puntyards',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.PuntYards || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const PuntYards = `week_${weekNumber}_PuntYards`
-              return (
-                <div>
-                  <p>{obj?.[PuntYards] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 30,
-            title: 'PUNTS INSIDE 20',
-            dataIndex: 'puntsinside',
-            key: 'puntsinside',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.PuntInside20 || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const PuntInside20 = `week_${weekNumber}_PuntInside20`
-              return (
-                <div>
-                  <p>{obj?.[PuntInside20] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-          {
-            width: 30,
-            title: 'BLOCKS',
-            dataIndex: 'blocks',
-            key: 'blocks',
-            // render: (_, obj) => {
-            //   return (
-            //     <div className='table_player_name_box nrc_container'>
-            //       <p onClick={() => dispatch(setSelectedPlayer(obj))} style={{ cursor: 'pointer' }}>
-            //         {obj?.PuntsHadBlocked || '-'}
-            //       </p>
-            //     </div>
-            //   )
-            // },
-
-            render: (_, obj) => {
-              // Ensure week is a number
-              const weekNumber = Number(checkweek)
-
-              // Construct the key dynamically based on the week
-              const PuntsHadBlocked = `week_${weekNumber}_PuntsHadBlocked`
-              return (
-                <div>
-                  <p>{obj?.[PuntsHadBlocked] ?? '-'}</p>
-                </div>
-              )
-            },
-          },
-        ],
-      },
-    ]
-
-    if (position === 'ALL') {
-      return [...columns, ...columns2]
-    }
-
-    if (position === 'QB' || position === 'RB' || position === 'WR' || position === 'TE') {
-      return [...columns, ...columns3]
-    }
-
-    if (position === 'DL' || position === 'DE' || position === 'DT' || position === 'LB' || position === 'DB' || position === 'CB' || position === 'S') {
-      return [...columns, ...columns4]
-    }
-
-    if (position === 'OL') {
-      return [...columns, ...columns5]
-    }
-
-    if (position === 'ST' || position === 'K/P') {
-      return [...columns, ...columns6]
-    }
+  // ══════════════════════════════════════════════════════════════
+  //  SCOUTING REDESIGN — presentation layer only.
+  //  All data logic above (getData / getWeeklyScoring / effects) is
+  //  unchanged. Everything below is derived from the SAME real rows.
+  // ══════════════════════════════════════════════════════════════
+  const [viewMode, setViewMode] = useState('table')
+  const [selectedId, setSelectedId] = useState(null)
+  const [panelTab, setPanelTab] = useState('overview')
+  const [compareId, setCompareId] = useState(null)
+  const [teamFilter, setTeamFilter] = useState('ALL')
+  const [clientFilter, setClientFilter] = useState('')
+  const [showAdvanced, setShowAdvanced] = useState(false)
+  const [onlySaved, setOnlySaved] = useState(false)
+  const [saved, setSaved] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('pls_saved') || '[]') } catch (e) { return [] }
+  })
+
+  const persistSaved = (next) => {
+    setSaved(next)
+    try { localStorage.setItem('pls_saved', JSON.stringify(next)) } catch (e) {}
   }
+  const isSaved = (obj) => saved.includes(obj?.PlayerID)
+  const toggleSaved = (obj) => {
+    const id = obj?.PlayerID
+    if (id === undefined || id === null) return
+    persistSaved(isSaved(obj) ? saved.filter((x) => x !== id) : [...saved, id])
+  }
+
+  const HEAT = { none: '#1e2a3d', poor: '#ef4444', avg: '#f6c453', good: '#24d26c' }
+  // Color each week RELATIVE to the player's own average (works across every
+  // position incl. IDP/K). Weeks not played are neutral, not "poor".
+  const heatColor = (score, played, avg) => {
+    if (!played) return HEAT.none
+    const v = Number(score) || 0
+    if (v <= 0) return HEAT.none
+    if (!avg || avg <= 0) return HEAT.avg
+    const r = v / avg
+    if (r >= 1.15) return HEAT.good
+    if (r >= 0.75) return HEAT.avg
+    return HEAT.poor
+  }
+  const playedAvg = (obj) => {
+    const played = weeklyForm(obj).filter((x) => x.played)
+    return played.length ? played.reduce((s, x) => s + x.score, 0) / played.length : 0
+  }
+  const REG_WEEKS = 18
+  const weeklyForm = (obj) => {
+    const arr = []
+    for (let w = 1; w <= REG_WEEKS; w++) {
+      const num = Number(obj?.[`week_${w}_score`]) || 0
+      arr.push({ week: w, score: num, played: num > 0 })
+    }
+    return arr
+  }
+  const gamesPlayedOf = (obj) => weeklyForm(obj).filter((x) => x.played).length
+  const totalPtsOf = (obj) => {
+    if (seasonNotStarted(year)) return null
+    const pts = Number(year) >= 2024 ? obj?.regularseasonpts : obj?.regular_season_pts
+    return pts ? Number(pts) : 0
+  }
+  const ppgOf = (obj) => {
+    if (seasonNotStarted(year)) return null
+    const total = Number(year) >= 2024 ? (obj?.regularseasonpts || 0) : (obj?.regular_season_pts || 0)
+    const gp = gamesPlayedOf(obj)
+    return gp > 0 && total > 0 ? Number((total / gp).toFixed(2)) : 0
+  }
+  const lastNAvg = (obj, n) => {
+    const played = weeklyForm(obj).filter((x) => x.played)
+    if (!played.length) return null
+    const last = played.slice(-n)
+    return Number((last.reduce((s, x) => s + x.score, 0) / last.length).toFixed(1))
+  }
+  const trendOf = (obj) => {
+    const played = weeklyForm(obj).filter((x) => x.played)
+    if (played.length < 4) return 'flat'
+    const recent = played.slice(-3)
+    const prior = played.slice(-6, -3)
+    if (!prior.length) return 'flat'
+    const r = recent.reduce((s, x) => s + x.score, 0) / recent.length
+    const p = prior.reduce((s, x) => s + x.score, 0) / prior.length
+    if (r > p * 1.1) return 'up'
+    if (r < p * 0.9) return 'down'
+    return 'flat'
+  }
+  const money = (v) => {
+    const n = Number(v)
+    if (!n || n <= 0) return null
+    if (n >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M'
+    if (n >= 1000) return '$' + (n / 1000).toFixed(0) + 'K'
+    return '$' + n
+  }
+  const marketValueOf = (obj) => obj?.otcValuation || obj?.otcTotalValue || obj?.otcAvgAnnualValue || null
+  // Cap hit — prefer the OTC dollar cap hit (money-formatted); fall back to the
+  // in-app SP salary cap. Null when neither is present (renders as a dash).
+  const capHitOf = (obj) => {
+    if (obj?.otcCapHit && Number(obj.otcCapHit) > 0) return money(obj.otcCapHit)
+    if (obj?.caphit && Number(obj.caphit) > 0) return Number(obj.caphit).toLocaleString() + ' SP'
+    return null
+  }
+  const ownerNameOf = (obj) => obj?.teaminfo?.name || null
+  const isUnowned = (obj) => !obj?.teaminfo
+  const canAuction = (obj) => isUnowned(obj) && Number(year) >= 2024 && !draftNotCompleted
+  // Why a player can't be auctioned (null = can). Lets the button stay visible + disabled.
+  const auctionReason = (obj) => {
+    if (!isUnowned(obj)) return 'Owned player — only free agents can be auctioned'
+    if (Number(year) < 2024) return 'Switch to the current season to auction'
+    if (draftNotCompleted) return 'Auctions open once the league draft is completed'
+    return null
+  }
+  const photoOf = (obj) => obj?.HostedHeadshotNoBackgroundUrl ||
+    (obj?.apiSportsId ? 'https://media.api-sports.io/american-football/players/' + obj.apiSportsId + '.png' : null)
+  const sumWeeks = (obj, key) => {
+    let t = 0
+    for (let w = 1; w <= REG_WEEKS; w++) t += Number(obj?.[`week_${w}_${key}`]) || 0
+    return t
+  }
+  const GROUP_OF = (pos) => {
+    const p = String(mapPosition(pos) || pos || '').toUpperCase()
+    if (p === 'QB') return 'QB'
+    if (['RB', 'FB', 'HB'].includes(p)) return 'RB'
+    if (p === 'WR') return 'WR'
+    if (p === 'TE') return 'TE'
+    if (['OL', 'C', 'G', 'T', 'LT', 'RT', 'LG', 'RG', 'OT', 'OG', 'IOL'].includes(p)) return 'OL'
+    if (['EDGE', 'DE', 'OLB'].includes(p)) return 'EDGE'
+    if (['IDL', 'DT', 'NT', 'DL'].includes(p)) return 'IDL'
+    if (['LB', 'ILB', 'MLB'].includes(p)) return 'LB'
+    if (['CB', 'DB'].includes(p)) return 'CB'
+    if (['S', 'FS', 'SS', 'SAF'].includes(p)) return 'S'
+    if (['K', 'P', 'K/P', 'ST', 'LS'].includes(p)) return 'K'
+    return 'OFF'
+  }
+
+  const teamOptions = useMemo(() => {
+    // Full 32-team NFL list so every team is selectable, unioned with whatever
+    // codes actually appear in the data (covers JAX/JAC, LV/LVR, WAS/WSH, etc.).
+    const NFL_TEAMS = ['ARI', 'ATL', 'BAL', 'BUF', 'CAR', 'CHI', 'CIN', 'CLE', 'DAL', 'DEN', 'DET', 'GB', 'HOU', 'IND', 'JAX', 'KC', 'LV', 'LAC', 'LAR', 'MIA', 'MIN', 'NE', 'NO', 'NYG', 'NYJ', 'PHI', 'PIT', 'SF', 'SEA', 'TB', 'TEN', 'WAS']
+    const set = new Set(NFL_TEAMS)
+    data.forEach((d) => { if (d?.nflteam) set.add(d.nflteam) })
+    return [{ value: 'ALL', label: 'All NFL Teams' }].concat(
+      Array.from(set).sort().map((t) => ({ value: t, label: t })))
+  }, [data])
+
+  // Hide the global "Report a Bug" button while the player panel is open (it
+  // overlaps the panel's bottom actions).
+  useEffect(() => {
+    document.body.classList.toggle('pls-panel-open', !!selectedId)
+    return () => document.body.classList.remove('pls-panel-open')
+  }, [selectedId])
+
+  const visibleData = useMemo(() => {
+    let rows = data
+    if (onlySaved) rows = rows.filter((d) => saved.includes(d?.PlayerID))
+    if (teamFilter !== 'ALL') rows = rows.filter((d) => d?.nflteam === teamFilter)
+    const q = (clientFilter || '').trim().toLowerCase()
+    if (q) {
+      rows = rows.filter((d) =>
+        String(d?.name || '').toLowerCase().includes(q) ||
+        String(d?.nflteam || '').toLowerCase().includes(q) ||
+        String(mapPosition(d?.position) || '').toLowerCase().includes(q) ||
+        String(d?.teaminfo?.name || '').toLowerCase().includes(q))
+    }
+    return rows
+  }, [data, teamFilter, clientFilter, onlySaved, saved])
+
+  const selectedPlayer = useMemo(
+    () => data.find((d) => (d?.id || d?.PlayerID) === selectedId) || null,
+    [data, selectedId])
+  const comparePlayer = useMemo(
+    () => data.find((d) => (d?.id || d?.PlayerID) === compareId) || null,
+    [data, compareId])
+
+  const rankOf = (obj) => {
+    const idx = data.findIndex((d) => (d?.id || d?.PlayerID) === (obj?.id || obj?.PlayerID))
+    return idx >= 0 ? idx + 1 + (page - 1) * limit : null
+  }
+  const posRankOf = (obj) => {
+    const g = GROUP_OF(obj?.position)
+    const peers = data.filter((d) => GROUP_OF(d?.position) === g)
+    const idx = peers.findIndex((d) => (d?.id || d?.PlayerID) === (obj?.id || obj?.PlayerID))
+    return idx >= 0 ? idx + 1 : null
+  }
+  const openPanel = (obj) => { setSelectedId(obj?.id || obj?.PlayerID); setPanelTab('overview'); setCompareId(null) }
+
+  const PosBadge = (pos) => {
+    const label = mapPosition(pos) || pos || '-'
+    const c = POS_COLORS[label] || POS_COLORS[pos] || '#24d26c'
+    return <span className='pls-pos-badge' style={{ color: c, borderColor: c + '55', background: c + '18' }}>{label}</span>
+  }
+  const HeatStrip = (obj, big) => {
+    const avg = playedAvg(obj)
+    return (
+      <div className={big ? 'pls-heat pls-heat-lg' : 'pls-heat'}>
+        {weeklyForm(obj).map((w) => (
+          <span key={w.week}
+            className={'pls-heat-cell' + (big && Number(checkweek) === w.week ? ' pls-heat-cell-focus' : '')}
+            title={'Wk ' + w.week + ': ' + (w.played ? w.score.toFixed(1) : 'DNP')}
+            style={{ background: heatColor(w.score, w.played, avg) }} />
+        ))}
+      </div>
+    )
+  }
+  const TrendBadge = (obj) => {
+    const t = trendOf(obj)
+    const m = { up: ['▲', '#24d26c'], down: ['▼', '#ef4444'], flat: ['–', '#64748b'] }[t]
+    return <span className='pls-trend' style={{ color: m[1] }}>{m[0]}</span>
+  }
+  const ContractCell = (obj) => {
+    if (obj?.otcTotalValue && obj.otcTotalValue > 0) {
+      const totalM = (obj.otcTotalValue / 1000000).toFixed(1)
+      const yrsLeft = obj?.yearsLeftSalaryCap || obj?.otcContractYears || '-'
+      const yrsColor = getContractYrsColor(yrsLeft)
+      return (
+        <div className='pls-contract'>
+          <span className='pls-contract-v'>${totalM}M</span>
+          <span className='pls-contract-y' style={{ color: yrsColor }}>{yrsLeft}yr left</span>
+        </div>)
+    }
+    const capHit = obj?.caphit
+    if (capHit && capHit > 0) return <span className='pls-cell-dim'>{Number(capHit).toLocaleString()} SP</span>
+    return <span className='pls-cell-muted'>—</span>
+  }
+  const PlayerCell = (obj) => {
+    const url = photoOf(obj)
+    return (
+      <div className='pls-playercell'>
+        <button className='pls-avatar-btn' onClick={() => openPanel(obj)} title='Open scouting panel'>
+          {url
+            ? <img src={url} alt='' className='pls-avatar' onError={(e) => { e.target.style.visibility = 'hidden' }} />
+            : <span className='pls-avatar pls-avatar-ph'><GiAmericanFootballPlayer size={15} /></span>}
+        </button>
+        <div className='pls-playercell-txt'>
+          <PlayerDetailsModal
+            button={<span className='fa_p_name name_text_hover pls-pname'> {obj?.name}</span>}
+            state={{
+              playerID: obj?.PlayerID,
+              teamId: obj?.teaminfo?._id === userDetails?.team?._id ? null : obj?.teaminfo?._id,
+              teamName: obj?.teaminfo?.name,
+              teamLogo: null,
+              isFreeAgent: { status: obj?.teaminfo ? false : true },
+              isTeamRoster: { status: obj?.teaminfo?._id === userDetails?.team?._id ? false : true },
+              isOwnRoster: { status: obj?.teaminfo?._id === userDetails?.team?._id ? true : false },
+            }} />
+          <span className='pls-pmeta'>
+            {obj?.nflteam || '—'}{ownerNameOf(obj) ? ' · ' + ownerNameOf(obj) : ' · FA'}
+            <InjuryBadge injury={getInjury(obj)} status={obj?.InjuryStatus} className='pls-inj' />
+          </span>
+        </div>
+      </div>)
+  }
+  const cellText = (v) => (v === null || v === undefined || v === '' ? '—' : v)
+  const StatCell = (v, cls) => <span className={cls || 'pls-cell-num'}>{cellText(v)}</span>
+  const ActionsCell = (obj) => (
+    <div className='pls-actions'>
+      <button className='pls-icon-btn' title='View' onClick={() => openPanel(obj)}>{'\u{1F441}'}</button>
+      <button className={'pls-icon-btn' + (isSaved(obj) ? ' pls-icon-btn-on' : '')} title='Save to shortlist'
+        onClick={() => toggleSaved(obj)}>{isSaved(obj) ? '★' : '☆'}</button>
+      {canAuction(obj) && (
+        <Button loading={playerID === obj?.PlayerID} className='_button pls-auction-btn'
+          onClick={() => handleCreateAuction(obj?.PlayerID, obj?.id, obj?.currentYearSalaryCap)}>Auction</Button>)}
+    </div>)
+
+  // Sort helpers: numbers (nulls last), strings (case-insensitive, nulls last).
+  const numSort = (fn) => (a, b) => (Number(fn(a)) || -Infinity) - (Number(fn(b)) || -Infinity)
+  const strSort = (fn) => (a, b) => String(fn(a) || '').localeCompare(String(fn(b) || ''))
+  const TREND_RANK = { up: 2, flat: 1, down: 0 }
+
+  const colPlayer = { title: 'PLAYER', key: 'name', fixed: 'left', width: 210, sorter: strSort((o) => o?.name), render: (_, o) => PlayerCell(o) }
+  const colPos = { title: 'POS', key: 'position', width: 62, sorter: strSort((o) => o?.position), render: (_, o) => PosBadge(o?.position) }
+  const colTeam = { title: 'NFL', key: 'nflteam', width: 58, sorter: strSort((o) => o?.nflteam), render: (_, o) => StatCell(o?.nflteam, 'pls-cell-dim') }
+  const colAge = { title: 'AGE', key: 'age', width: 52, sorter: numSort((o) => o?.age), render: (_, o) => StatCell(o?.age, 'pls-cell-dim') }
+
+  const tableColumns = [
+    colPlayer, colPos, colTeam, colAge,
+    { title: 'PPG', key: 'ppg', width: 64, sorter: numSort((o) => ppgOf(o)), render: (_, o) => { const v = ppgOf(o); return v === null ? StatCell(null) : <span style={getScoreColor(v)}>{v}</span> } },
+    { title: 'TOTAL', key: 'total', width: 74, sorter: numSort((o) => totalPtsOf(o)), render: (_, o) => { const v = totalPtsOf(o); return v === null ? StatCell(null) : <span className='pls-cell-num pls-strong'>{v.toFixed(1)}</span> } },
+    { title: 'TREND', key: 'trend', width: 58, sorter: (a, b) => (TREND_RANK[trendOf(a)] ?? -1) - (TREND_RANK[trendOf(b)] ?? -1), render: (_, o) => TrendBadge(o) },
+    { title: 'WEEKLY FORM', key: 'form', width: 200, render: (_, o) => HeatStrip(o, false) },
+    { title: 'CONTRACT', key: 'contract', width: 108, sorter: numSort((o) => o?.otcTotalValue), render: (_, o) => ContractCell(o) },
+    { title: 'CAP HIT', key: 'capHit', width: 96, sorter: numSort((o) => Number(o?.otcCapHit) || Number(o?.caphit)), render: (_, o) => {
+      const ch = capHitOf(o)
+      if (!ch) return StatCell(null)
+      const raw = Number(o?.otcCapHit) || Number(o?.caphit) || 0
+      return <span className='pls-cell-num' style={{ color: getCapColor(raw), fontWeight: 700 }}>{ch}</span>
+    } },
+    { title: 'OWNER', key: 'owner', width: 110, sorter: strSort((o) => ownerNameOf(o)), render: (_, o) => StatCell(ownerNameOf(o), 'pls-cell-dim') },
+    { title: 'ACTIONS', key: 'actions', width: 150, fixed: 'right', render: (_, o) => ActionsCell(o) },
+  ]
+  const weeklyColumns = [
+    colPlayer, colPos, colTeam,
+    { title: 'WEEKLY FANTASY POINTS (WK 1–18)', key: 'form', width: 400, render: (_, o) => HeatStrip(o, true) },
+    { title: 'AVG', key: 'avg', width: 64, sorter: numSort((o) => ppgOf(o)), render: (_, o) => { const v = ppgOf(o); return v === null ? StatCell(null) : <span style={getScoreColor(v)}>{v}</span> } },
+    { title: 'L3', key: 'l3', width: 56, sorter: numSort((o) => lastNAvg(o, 3)), render: (_, o) => StatCell(lastNAvg(o, 3)) },
+    { title: 'BEST', key: 'best', width: 60, sorter: numSort((o) => { const p = weeklyForm(o).filter((x) => x.played); return p.length ? Math.max.apply(null, p.map((x) => x.score)) : null }), render: (_, o) => { const p = weeklyForm(o).filter((x) => x.played); const b = p.length ? Math.max.apply(null, p.map((x) => x.score)) : null; return StatCell(b === null ? null : b.toFixed(1)) } },
+    { title: 'ACTIONS', key: 'actions', width: 140, fixed: 'right', render: (_, o) => ActionsCell(o) },
+  ]
+  const analyticsColumns = [
+    colPlayer, colPos, colTeam,
+    { title: 'FAN RANK', key: 'rank', width: 82, sorter: numSort((o) => rankOf(o)), render: (_, o) => { const r = rankOf(o); return StatCell(r ? '#' + r : null, 'pls-cell-num pls-strong') } },
+    { title: 'POS RANK', key: 'prank', width: 84, sorter: numSort((o) => posRankOf(o)), render: (_, o) => { const pr = posRankOf(o); return StatCell(pr ? GROUP_OF(o?.position) + pr : null) } },
+    { title: 'L3', key: 'l3', width: 56, sorter: numSort((o) => lastNAvg(o, 3)), render: (_, o) => StatCell(lastNAvg(o, 3)) },
+    { title: 'L5', key: 'l5', width: 56, sorter: numSort((o) => lastNAvg(o, 5)), render: (_, o) => StatCell(lastNAvg(o, 5)) },
+    { title: 'SEASON AVG', key: 'savg', width: 96, sorter: numSort((o) => ppgOf(o)), render: (_, o) => { const v = ppgOf(o); return v === null ? StatCell(null) : <span style={getScoreColor(v)}>{v}</span> } },
+    { title: 'TOTAL', key: 'total', width: 74, sorter: numSort((o) => totalPtsOf(o)), render: (_, o) => { const v = totalPtsOf(o); return v === null ? StatCell(null) : <span className='pls-cell-num pls-strong'>{v.toFixed(1)}</span> } },
+    { title: 'ACTIONS', key: 'actions', width: 140, fixed: 'right', render: (_, o) => ActionsCell(o) },
+  ]
+  const activeColumns = viewMode === 'weekly' ? weeklyColumns : viewMode === 'analytics' ? analyticsColumns : tableColumns
+
+  const WeeklyBars = (obj) => {
+    const wk = weeklyForm(obj)
+    const avg = playedAvg(obj)
+    const max = Math.max(1, Math.max.apply(null, wk.map((x) => x.score)))
+    const W = 300, H = 92, pad = 4
+    const bw = (W - pad * 2) / wk.length
+    return (
+      <svg viewBox={'0 0 ' + W + ' ' + H} className='pls-svg' preserveAspectRatio='none'>
+        {wk.map((x, i) => {
+          const h = x.played ? Math.max(2, (x.score / max) * (H - 22)) : 2
+          return (
+            <g key={x.week}>
+              <rect x={pad + i * bw + 1} y={H - h - 14} width={bw - 2} height={h} rx='1.5' fill={heatColor(x.score, x.played, avg)}>
+                <title>{'Week ' + x.week + ': ' + (x.played ? x.score.toFixed(1) + ' pts' : 'DNP')}</title>
+              </rect>
+              <text x={pad + i * bw + bw / 2} y={H - 3} className='pls-svg-lbl'>{x.week}</text>
+            </g>)
+        })}
+      </svg>)
+  }
+  const ProductionDonut = (obj) => {
+    const parts = [
+      { k: 'Passing', v: Number(obj?.szn_PassYds) || 0, c: '#8b5cf6' },
+      { k: 'Rushing', v: Number(obj?.szn_RushYds) || 0, c: '#24d26c' },
+      { k: 'Receiving', v: Number(obj?.szn_RecYds) || 0, c: '#f6c453' },
+    ].filter((p) => p.v > 0)
+    const total = parts.reduce((s, p) => s + p.v, 0)
+    if (!total) return null
+    let acc = 0
+    const R = 34, C = 2 * Math.PI * R
+    return (
+      <div className='pls-donut-wrap'>
+        <svg viewBox='0 0 90 90' className='pls-donut'>
+          <circle cx='45' cy='45' r={R} fill='none' stroke='#1e2a3d' strokeWidth='11' />
+          {parts.map((p) => {
+            const frac = p.v / total
+            const dash = frac * C
+            const el = (
+              <circle key={p.k} cx='45' cy='45' r={R} fill='none' stroke={p.c} strokeWidth='11'
+                strokeDasharray={dash + ' ' + (C - dash)} strokeDashoffset={-acc * C} transform='rotate(-90 45 45)'>
+                <title>{p.k + ': ' + Math.round(p.v) + ' yds (' + Math.round(frac * 100) + '%)'}</title>
+              </circle>)
+            acc += frac
+            return el
+          })}
+        </svg>
+        <div className='pls-donut-legend'>
+          {parts.map((p) => (
+            <div key={p.k} className='pls-legend-row'>
+              <span className='pls-legend-dot' style={{ background: p.c }} /><span>{p.k}</span><b>{Math.round(p.v)}</b>
+            </div>))}
+        </div>
+      </div>)
+  }
+  const StatRow = (label, val) => (
+    <div className='pls-stat-row' key={label}><span>{label}</span><b>{cellText(val)}</b></div>)
+  const renderStats = (obj) => {
+    const g = GROUP_OF(obj?.position)
+    if (g === 'QB') {
+      return (<div className='pls-stat-grid'>
+        {StatRow('Completions', obj?.szn_PassComp || 0)}
+        {StatRow('Attempts', obj?.szn_PassAtt || 0)}
+        {StatRow('Comp %', obj?.szn_CompPct && obj.szn_CompPct !== '-' ? obj.szn_CompPct + '%' : '—')}
+        {StatRow('Pass Yards', obj?.szn_PassYds || 0)}
+        {StatRow('Pass TD', obj?.szn_PassTD || 0)}
+        {StatRow('Interceptions', obj?.szn_PassINT || 0)}
+        {StatRow('Rush Yards', obj?.szn_RushYds || 0)}
+        {StatRow('Rush TD', obj?.szn_RushTD || 0)}
+      </div>)
+    }
+    if (g === 'RB') {
+      return (<div className='pls-stat-grid'>
+        {StatRow('Rush Attempts', obj?.szn_RushAtt || 0)}
+        {StatRow('Rush Yards', obj?.szn_RushYds || 0)}
+        {StatRow('Yards / Carry', obj?.szn_YPC && obj.szn_YPC !== '-' ? obj.szn_YPC : '—')}
+        {StatRow('Rush TD', obj?.szn_RushTD || 0)}
+        {StatRow('Receptions', obj?.szn_Rec || 0)}
+        {StatRow('Rec Yards', obj?.szn_RecYds || 0)}
+        {StatRow('Rec TD', obj?.szn_RecTD || 0)}
+      </div>)
+    }
+    if (g === 'WR' || g === 'TE') {
+      return (<div className='pls-stat-grid'>
+        {StatRow('Targets', obj?.szn_RecTar || 0)}
+        {StatRow('Receptions', obj?.szn_Rec || 0)}
+        {StatRow('Catch %', obj?.szn_CatchPct && obj.szn_CatchPct !== '-' ? obj.szn_CatchPct + '%' : '—')}
+        {StatRow('Rec Yards', obj?.szn_RecYds || 0)}
+        {StatRow('Rec TD', obj?.szn_RecTD || 0)}
+        {StatRow('Rush Yards', obj?.szn_RushYds || 0)}
+      </div>)
+    }
+    if (g === 'OL') {
+      return (<div className='pls-stat-grid'>
+        {StatRow('Total Snaps', obj?.SNAPS || '—')}
+        {StatRow('Avg Snap %', obj?.OL_AVG_SNAP || '—')}
+        {StatRow('Team Score', obj?.OL_TotalTeamScore || '—')}
+        <div className='pls-idp-note'>Individual blocking grades (pressures allowed, run-block win rate) are not in the feed and are omitted.</div>
+      </div>)
+    }
+    if (['EDGE', 'IDL', 'LB', 'CB', 'S'].includes(g)) {
+      const tk = sumWeeks(obj, 'SoloTackles'), sk = sumWeeks(obj, 'Sacks'), tfl = sumWeeks(obj, 'TacklesForLoss'),
+        ff = sumWeeks(obj, 'FumblesForced'), intc = sumWeeks(obj, 'Interceptions'), pbu = sumWeeks(obj, 'PassesDefended'),
+        qbh = sumWeeks(obj, 'QuarterbackHits')
+      const anyBox = tk + sk + tfl + ff + intc + pbu + qbh > 0
+      if (!anyBox) {
+        const tp = totalPtsOf(obj)
+        return <div className='pls-empty-note'>Detailed IDP box-score stats are unavailable for this player. Fantasy points: <b>{tp === null ? '—' : tp.toFixed(1)}</b></div>
+      }
+      let rows = []
+      if (g === 'LB') rows = [['Solo Tackles', tk], ['Sacks', sk], ['Tackles For Loss', tfl], ['Forced Fumbles', ff], ['Interceptions', intc], ['Pass Breakups', pbu]]
+      else if (g === 'EDGE') rows = [['Sacks', sk], ['QB Hits', qbh], ['Tackles For Loss', tfl], ['Forced Fumbles', ff], ['Solo Tackles', tk]]
+      else if (g === 'IDL') rows = [['Sacks', sk], ['QB Hits', qbh], ['Tackles For Loss', tfl], ['Solo Tackles', tk], ['Forced Fumbles', ff]]
+      else if (g === 'CB') rows = [['Interceptions', intc], ['Pass Breakups', pbu], ['Solo Tackles', tk], ['Forced Fumbles', ff]]
+      else rows = [['Solo Tackles', tk], ['Interceptions', intc], ['Pass Breakups', pbu], ['Tackles For Loss', tfl], ['Forced Fumbles', ff]]
+      return (<div className='pls-stat-grid'>
+        {rows.map((r) => StatRow(r[0], r[1]))}
+        <div className='pls-idp-note'>IDP pressures, snap counts and coverage grades are not provided by the feed and are omitted.</div>
+      </div>)
+    }
+    if (g === 'K') {
+      return (<div className='pls-stat-grid'>
+        {StatRow('FG Made', sumWeeks(obj, 'FieldGoalsMade'))}
+        {StatRow('FG Attempted', sumWeeks(obj, 'FieldGoalsAttempted'))}
+        {StatRow('XP Made', sumWeeks(obj, 'ExtraPointsMade'))}
+        {StatRow('Punts', sumWeeks(obj, 'Punts'))}
+        {StatRow('Punt Yards', sumWeeks(obj, 'PuntYards'))}
+        {StatRow('Inside 20', sumWeeks(obj, 'PuntInside20'))}
+      </div>)
+    }
+    const tp = totalPtsOf(obj)
+    return <div className='pls-empty-note'>Detailed box-score stats unavailable. Fantasy points: <b>{tp === null ? '—' : tp.toFixed(1)}</b></div>
+  }
+  const renderContract = (obj) => (
+    <div className='pls-stat-grid'>
+      {StatRow('Years Remaining', obj?.yearsLeftSalaryCap || obj?.otcContractYears || '—')}
+      {StatRow('This-Year Salary', money(obj?.otcBaseSalary) || money(obj?.currentYearSalaryCap) || '—')}
+      {StatRow('Cap Hit', money(obj?.otcCapHit) || (obj?.caphit ? Number(obj.caphit).toLocaleString() + ' SP' : '—'))}
+      {StatRow('Next-Year Cap', money(obj?.nextYearSalaryCap) || '—')}
+      {StatRow('Total Value', money(obj?.otcTotalValue) || '—')}
+      {StatRow('Avg / Year', money(obj?.otcAvgAnnualValue) || '—')}
+      {StatRow('Guaranteed', money(obj?.otcTotalGuaranteed) || '—')}
+      {StatRow('Market Value', money(marketValueOf(obj)) || '—')}
+      {StatRow('Free-Agent Year', obj?.otcFreeAgentYear || '—')}
+      {StatRow('Owner', ownerNameOf(obj) || 'Free Agent')}
+      {StatRow('Dead Cap', '—')}
+    </div>)
+  const renderOverview = (obj) => {
+    const rank = rankOf(obj)
+    const total = totalPtsOf(obj)
+    const ppg = ppgOf(obj)
+    const recent = weeklyForm(obj).filter((x) => x.played).slice(-5).reverse()
+    const donut = ProductionDonut(obj)
+    return (
+      <div>
+        <div className='pls-ov-stats'>
+          <div className='pls-ov-stat'><span>FANTASY RANK</span><b>{rank ? '#' + rank : '—'}</b></div>
+          <div className='pls-ov-stat'><span>TOTAL PTS</span><b>{total === null ? '—' : total.toFixed(1)}</b></div>
+          <div className='pls-ov-stat'><span>PPG</span><b>{ppg === null ? '—' : ppg}</b></div>
+          <div className='pls-ov-stat'><span>GAMES</span><b>{gamesPlayedOf(obj) || '—'}</b></div>
+        </div>
+        <div className='pls-panel-sec'>
+          <div className='pls-sec-head'>WEEKLY FANTASY POINTS {TrendBadge(obj)}</div>
+          {WeeklyBars(obj)}
+        </div>
+        {donut && (<div className='pls-panel-sec'><div className='pls-sec-head'>PRODUCTION MIX (YARDS)</div>{donut}</div>)}
+        <div className='pls-panel-sec'>
+          <div className='pls-sec-head'>RECENT 5 GAMES</div>
+          {recent.length ? (
+            <div className='pls-recent'>
+              {recent.map((x) => (<div key={x.week} className='pls-recent-row'><span>Week {x.week}</span><b style={getScoreColor(x.score)}>{x.score.toFixed(1)}</b></div>))}
+            </div>) : <div className='pls-empty-note'>No games played in {String(year)} yet.</div>}
+        </div>
+      </div>)
+  }
+  const cmpFmt = (v) => (v === null || v === undefined || v === '' ? '—' : (typeof v === 'number' ? (Number.isInteger(v) ? v : v.toFixed(1)) : v))
+  const renderCompare = (a, b) => {
+    const rows = [
+      ['PPG', ppgOf(a), ppgOf(b)],
+      ['Total Pts', totalPtsOf(a), totalPtsOf(b)],
+      ['Last 3 Avg', lastNAvg(a, 3), lastNAvg(b, 3)],
+      ['Last 5 Avg', lastNAvg(a, 5), lastNAvg(b, 5)],
+      ['Games', gamesPlayedOf(a), gamesPlayedOf(b)],
+      ['Market', money(marketValueOf(a)), money(marketValueOf(b))],
+      ['Age', a?.age, b?.age],
+    ]
+    return (
+      <div className='pls-compare'>
+        <div className='pls-compare-head'><div>{a?.name}</div><div className='pls-vs'>VS</div><div>{b?.name}</div></div>
+        {rows.map((row) => {
+          const x = row[1], y = row[2]
+          const nx = typeof x === 'number' ? x : -Infinity, ny = typeof y === 'number' ? y : -Infinity
+          return (<div key={row[0]} className='pls-compare-row'>
+            <b className={nx > ny ? 'pls-win' : ''}>{cmpFmt(x)}</b><span>{row[0]}</span><b className={ny > nx ? 'pls-win' : ''}>{cmpFmt(y)}</b>
+          </div>)
+        })}
+      </div>)
+  }
+
+  const actionCards = [
+    { key: 'auction', label: 'Auction Players', sub: 'Open auction room', color: '#f6c453', onClick: () => navigate('/player-auction') },
+    { key: 'trade', label: 'Trade Center', sub: 'Build a trade', color: '#8b5cf6', onClick: () => navigate('/team-trade') },
+    { key: 'shortlist', label: 'My Shortlist', sub: saved.length ? saved.length + ' saved' : 'Saved players', color: '#24d26c', onClick: () => setOnlySaved((v) => !v), active: onlySaved },
+    { key: 'draft', label: 'Draft Board', sub: 'Rookie draft', color: '#3b82f6', onClick: () => navigate('/rookie-draft') },
+    { key: 'fa', label: 'Free Agents', sub: 'Available players', color: '#22d3ee', onClick: () => { setPlayerType('FreeAgents'); setPage(1) }, active: playerType === 'FreeAgents' },
+  ]
+
   const handlePagination = (val) => setPage(val)
 
   const onFieldClear = () => {
@@ -2683,116 +1141,210 @@ if (week <=8){
     setPlayerID('')
   }
 
-
   return (
-    <div className='sp-container'>
+    <div className='sp-container pls-root'>
       <Header />
 
       <OnboardingGuide tabKey="search" />
 
-      {/* ── Page Header ── */}
-      <div className='sp-page-header'>
-        <div className='sp-page-header-bg' />
-        <div className='sp-page-header-content'>
-          <h1 className='sp-page-title'>
-            PLAYER <span>SEARCH</span>
-          </h1>
-          <p className='sp-page-subtitle'>Browse &amp; discover players across all teams</p>
-        </div>
-      </div>
+      <div className={'pls-shell' + (selectedPlayer ? ' pls-shell-open' : '')}>
+        <div className='pls-main'>
+          {/* ── Page header ── */}
+          <div className='pls-pagehead'>
+            <h1 className='pls-title'>PLAYER <span>SCOUTING</span></h1>
+            <p className='pls-subtitle'>Premium scouting database · {totalCount} players</p>
+          </div>
 
-      {/* ── Toolbar: search + filters + results count ── */}
-      <div className='sp-toolbar'>
-        <div className='sp-search-box'>
-          <Input
-            value={search}
-            className='sp-search-input'
-            size='small'
-            placeholder='Search player name...'
-            suffix={<LiaSearchSolid size={18} style={{ color: '#22C55E' }} />}
-            onChange={(e) => {
-              setSearch(e.target.value)
-              if (e.target.value === '') {
-                onFieldClear()
-              }
-            }}
-            allowClear={{
-              clearIcon: (
-                <IoIosClose
-                  size={22}
-                  style={{ color: '#22C55E', marginBottom: '-3px' }}
-                  onClick={() => {}}
-                />
-              ),
-            }}
-          />
-        </div>
+          {/* ── Top action cards ── */}
+          <div className='pls-cards'>
+            {actionCards.map((c) => (
+              <button key={c.key} className={'pls-card' + (c.active ? ' pls-card-active' : '')} style={{ '--c': c.color }} onClick={c.onClick}>
+                <span className='pls-card-bar' />
+                <span className='pls-card-label'>{c.label}</span>
+                <span className='pls-card-sub'>{c.sub}</span>
+              </button>))}
+          </div>
 
-        <div className='sp-toolbar-divider' />
-
-        <Select
-          value={playerType}
-          style={{ width: 160 }}
-          onChange={(val) => setPlayerType(val)}
-          options={[
-            { value: 'All', label: 'All Players' },
-            { value: 'FreeAgents', label: 'Free Agents' },
-            { value: 'Rookie', label: 'Rookies' },
-          ]}
-        />
-        <Select
-          value={year}
-          style={{ width: 110 }}
-          onChange={(val) => setYear(val)}
-          options={SEASON_OPTIONS}
-        />
-        {position !== 'ALL' && (
-          <Select
-            value={checkweek}
-            style={{ width: 110 }}
-            onChange={(val) => setCheckWeek(val)}
-            options={weekOptions}
-          />
-        )}
-
-        <div className='sp-results-count'>
-          <span>{totalCount}</span> players found
-        </div>
-      </div>
-
-      {/* ── Position Filter Bar ── */}
-      <div className='sp-pos-bar'>
-        <PositionComponent position={position} setPosition={setPosition} playerType={playerType} setPlayerType={setPlayerType} />
-      </div>
-
-      {/* ── Data Table ── */}
-      <div className='sp-table-wrap'>
-        <Table
-          loading={loading}
-          dataSource={data}
-          total={totalCount}
-          columns={getColumns(position)}
-          bordered={false}
-          pagination={false}
-          scroll={{ x: 1700 }}
-          rowKey={(record, index) => record?.id || record?.PlayerID || index}
-          locale={emptyMessage ? { emptyText: (
-            <div style={{ padding: '40px 0', color: 'rgba(255,255,255,0.4)', fontSize: 14 }}>
-              {emptyMessage}
+          {/* ── Sticky search + filters ── */}
+          <div className='pls-toolbar'>
+            <div className='pls-search'>
+              <LiaSearchSolid size={17} className='pls-search-ico' />
+              <Input
+                value={search}
+                className='pls-search-input'
+                placeholder='Search players by name…'
+                onChange={(e) => { setSearch(e.target.value); if (e.target.value === '') onFieldClear() }}
+                allowClear={{ clearIcon: <IoIosClose size={20} style={{ color: '#24d26c' }} /> }} />
             </div>
-          )} : undefined}
-        />
-      </div>
+            <Select value={teamFilter} style={{ width: 150 }} onChange={setTeamFilter} options={teamOptions} />
+            <Select
+              value={playerType}
+              style={{ width: 150 }}
+              onChange={(val) => { setPlayerType(val); setPage(1) }}
+              options={[
+                { value: 'All', label: 'All Players' },
+                { value: 'FreeAgents', label: 'Free Agents' },
+                { value: 'Rookie', label: 'Rookies' },
+              ]} />
+            <Select value={year} style={{ width: 120 }} onChange={(val) => setYear(val)} options={SEASON_OPTIONS} />
+            {viewMode === 'weekly' && (
+              <Select value={checkweek} style={{ width: 110 }} onChange={(val) => setCheckWeek(val)} options={weekOptions} />)}
+            <button className={'pls-filter-btn' + (showAdvanced ? ' pls-filter-btn-on' : '')} onClick={() => setShowAdvanced((v) => !v)}>Filters</button>
+            <button
+              className='pls-reset-btn'
+              onClick={() => {
+                setSearch(''); setPosition('ALL'); setPlayerType('All'); setTeamFilter('ALL')
+                setClientFilter(''); setYear(getCurrentNFLSeason()); setOnlySaved(false); setPage(1)
+              }}>Reset</button>
+            <div className='pls-results'><span>{totalCount}</span> found</div>
+          </div>
 
-      {/* ── Pagination ── */}
-      <div className='sp-pagination'>
-        <AntPagination
-          defaultCurrent={page}
-          total={totalCount}
-          showSizeChanger={false}
-          onChange={handlePagination}
-          pageSize={limit}
-        />
+          {showAdvanced && (
+            <div className='pls-advanced'>
+              <Input
+                value={clientFilter}
+                className='pls-adv-input'
+                placeholder='Quick client filter — name / team / position / owner (this page)…'
+                onChange={(e) => setClientFilter(e.target.value)}
+                allowClear />
+              <span className='pls-adv-note'>Client refine over the loaded page. Only fields present in the feed are filterable — projected points, boom/bust, snap % and news are not provided and are omitted.</span>
+            </div>)}
+
+          {/* ── Position pills (reuses existing PositionComponent → search param) ── */}
+          <div className='pls-pos-wrap'>
+            <PositionComponent position={position} setPosition={setPosition} playerType={playerType} setPlayerType={setPlayerType} />
+          </div>
+
+          {/* ── View mode tabs ── */}
+          <div className='pls-tabs'>
+            {[['table', 'Table View'], ['weekly', 'Weekly View'], ['analytics', 'Analytics View']].map((v) => (
+              <button key={v[0]} className={'pls-tab' + (viewMode === v[0] ? ' pls-tab-active' : '')} onClick={() => setViewMode(v[0])}>{v[1]}</button>))}
+
+            {viewMode !== 'analytics' && (
+              <div className='pls-heat-legend' title='Each week is colored vs the player’s own average'>
+                <span className='pls-legend-label'>Weekly form:</span>
+                <span className='pls-legend-item'><i className='pls-legend-sw' style={{ background: HEAT.good }} />Above avg</span>
+                <span className='pls-legend-item'><i className='pls-legend-sw' style={{ background: HEAT.avg }} />Around avg</span>
+                <span className='pls-legend-item'><i className='pls-legend-sw' style={{ background: HEAT.poor }} />Below avg</span>
+                <span className='pls-legend-item'><i className='pls-legend-sw' style={{ background: HEAT.none }} />Didn’t play</span>
+              </div>
+            )}
+
+            <span className='pls-tab-count'>{visibleData.length} shown</span>
+          </div>
+
+          {/* ── Table / skeleton ── */}
+          <div className='pls-table-wrap'>
+            {loading ? (
+              <div className='pls-skeleton'>
+                {Array.from({ length: 9 }).map((_, i) => (
+                  <div key={i} className='pls-skel-row'>
+                    <span className='pls-skel pls-skel-av' />
+                    <span className='pls-skel pls-skel-line' />
+                    <span className='pls-skel pls-skel-line short' />
+                    <span className='pls-skel pls-skel-line' />
+                    <span className='pls-skel pls-skel-line short' />
+                  </div>))}
+              </div>
+            ) : (
+              <Table
+                dataSource={visibleData}
+                columns={activeColumns}
+                bordered={false}
+                pagination={false}
+                scroll={{ x: 1100 }}
+                rowKey={(record, index) => record?.id || record?.PlayerID || index}
+                rowClassName={(record) => (selectedId && (record?.id || record?.PlayerID) === selectedId ? 'pls-row-active' : '')}
+                locale={{ emptyText: (<div className='pls-empty'>{emptyMessage || 'No players match your filters.'}</div>) }} />)}
+          </div>
+
+          {/* ── Pagination (preserved) ── */}
+          <div className='sp-pagination pls-pagination'>
+            <AntPagination
+              current={page}
+              total={totalCount}
+              showSizeChanger={false}
+              onChange={handlePagination}
+              pageSize={limit} />
+          </div>
+        </div>
+
+        {/* ── Right scouting panel ── */}
+        {selectedPlayer && (
+          <aside className='pls-panel'>
+            <button className='pls-panel-close' onClick={() => setSelectedId(null)} title='Close'>✕</button>
+            <div className='pls-panel-hero'>
+              {photoOf(selectedPlayer)
+                ? <img src={photoOf(selectedPlayer)} alt='' className='pls-panel-photo' onError={(e) => { e.target.style.visibility = 'hidden' }} />
+                : <span className='pls-panel-photo pls-avatar-ph'><GiAmericanFootballPlayer size={30} /></span>}
+              <div className='pls-panel-id'>
+                <div className='pls-panel-name'>{selectedPlayer?.name}</div>
+                <div className='pls-panel-tags'>{PosBadge(selectedPlayer?.position)}<span className='pls-cell-dim'>{selectedPlayer?.nflteam || '—'}</span></div>
+                <div className='pls-panel-vitals'>
+                  <span>AGE {selectedPlayer?.age || '—'}</span>
+                  <span>HT {selectedPlayer?.Height || '—'}</span>
+                  <span>WT {selectedPlayer?.Weight || '—'}</span>
+                  <span>BYE {selectedPlayer?.ByeWeek || '—'}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className='pls-panel-kpis'>
+              <div><span>PPG</span><b>{ppgOf(selectedPlayer) === null ? '—' : ppgOf(selectedPlayer)}</b></div>
+              <div><span>TOTAL</span><b>{totalPtsOf(selectedPlayer) === null ? '—' : totalPtsOf(selectedPlayer).toFixed(1)}</b></div>
+              <div><span>RANK</span><b>{rankOf(selectedPlayer) ? '#' + rankOf(selectedPlayer) : '—'}</b></div>
+              <div><span>STATUS</span><b>{selectedPlayer?.InjuryStatus || 'Active'}</b></div>
+            </div>
+
+            <div className='pls-panel-tabs'>
+              {[['overview', 'Overview'], ['stats', 'Stats'], ['contract', 'Contract'], ['news', 'News']].map((t) => (
+                <button key={t[0]} className={'pls-ptab' + (panelTab === t[0] ? ' pls-ptab-active' : '')} onClick={() => setPanelTab(t[0])}>{t[1]}</button>))}
+            </div>
+
+            <div className='pls-panel-body'>
+              {compareId && comparePlayer ? renderCompare(selectedPlayer, comparePlayer) : (
+                <>
+                  {panelTab === 'overview' && renderOverview(selectedPlayer)}
+                  {panelTab === 'stats' && renderStats(selectedPlayer)}
+                  {panelTab === 'contract' && renderContract(selectedPlayer)}
+                  {panelTab === 'news' && (
+                    <div className='pls-empty-note pls-news-empty'>No recent news is available for {selectedPlayer?.name}. Player news is not part of the search feed.</div>)}
+                </>)}
+            </div>
+
+            <div className='pls-panel-compare'>
+              <span>Compare</span>
+              <Select
+                size='small'
+                value={compareId}
+                placeholder='Select a player…'
+                style={{ flex: 1 }}
+                allowClear
+                showSearch
+                optionFilterProp='label'
+                onChange={(v) => setCompareId(v)}
+                options={visibleData.filter((d) => (d?.id || d?.PlayerID) !== selectedId).map((d) => ({ value: d?.id || d?.PlayerID, label: d?.name }))} />
+            </div>
+
+            <div className='pls-panel-actions'>
+              <button className={'pls-pbtn' + (isSaved(selectedPlayer) ? ' pls-pbtn-on' : '')} onClick={() => toggleSaved(selectedPlayer)}>{isSaved(selectedPlayer) ? '★ Watchlisted' : '☆ Watchlist'}</button>
+              <button className='pls-pbtn' onClick={() => navigate('/team-trade', { state: { playerID: selectedPlayer?.PlayerID, player_id: selectedPlayer?.id } })}>Trade For</button>
+              {(() => {
+                const reason = auctionReason(selectedPlayer)
+                const busy = playerID === selectedPlayer?.PlayerID
+                return (
+                  <button
+                    className='pls-pbtn pls-pbtn-primary'
+                    disabled={!!reason || busy}
+                    title={reason || 'List this player in the auction room'}
+                    onClick={() => { if (!reason) handleCreateAuction(selectedPlayer?.PlayerID, selectedPlayer?.id, selectedPlayer?.currentYearSalaryCap) }}
+                  >
+                    {busy ? 'Adding…' : 'Add to Auction'}
+                  </button>
+                )
+              })()}
+            </div>
+          </aside>)}
       </div>
     </div>
   )

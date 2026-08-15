@@ -1,6 +1,7 @@
 import { Row, Col, Typography, Button } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { isLocked } from '../../config/constants'
+import TeamLogo from '../TeamLogo'
 
 import {
   ActivateFromPracticeSquad,
@@ -95,7 +96,7 @@ const GmCard = (props) => {
                 <Typography.Title level={2}>2021</Typography.Title>
               </div>
             </div>
-            {data?.team?.logo && <img src={data?.team?.logo} height={'100px'} />}
+            {data?.team?.logo && <TeamLogo team={data.team} size={100} round={false} />}
           </div>
         </Col>
         {isAction && (

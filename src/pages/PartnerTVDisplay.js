@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { usePartner } from '../contexts/PartnerContext'
 import { publicAPI } from '../config/constants'
 import { QRCodeSVG } from 'qrcode.react'
+import TeamLogo from '../components/TeamLogo'
 
 /**
  * Full-screen TV display for partner venues.
@@ -233,18 +234,7 @@ const PartnerTVDisplay = () => {
                               {team.rank}
                             </span>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
-                              {team.logo ? (
-                                <img src={team.logo} alt="" style={{ width: 32, height: 32, borderRadius: 6, objectFit: 'cover', flexShrink: 0 }} />
-                              ) : (
-                                <div style={{
-                                  width: 32, height: 32, borderRadius: 6,
-                                  background: `${pc}20`, border: `1px solid ${pc}40`,
-                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                  fontSize: 14, fontWeight: 700, color: pc, flexShrink: 0,
-                                }}>
-                                  {(team.abbreviation || team.name || '?').charAt(0)}
-                                </div>
-                              )}
+                              <TeamLogo team={team} size={32} round={false} />
                               <div style={{ minWidth: 0 }}>
                                 <div style={{
                                   fontSize: 16, fontWeight: 700, color: '#fff',

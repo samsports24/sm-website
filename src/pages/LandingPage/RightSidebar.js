@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { authLogin, googleLogin } from '../../redux/actions/authActions'
 import GmRankingWidget from './GmRankingWidget'
+import LeaguesTeamsBrowser from './LeaguesTeamsBrowser'
+import mockdraftPromo from '../../assets/mockdraft-promo.png'
 
 /* ── Google Client ID ── */
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID'
@@ -253,94 +255,50 @@ const QuickLinksWidget = () => {
 /* ═══════════════════════════════════════════════════════════
    Right Sidebar
    ═══════════════════════════════════════════════════════════ */
-const RightSidebar = ({ scorers = [], isAuthenticated }) => {
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOCK DRAFT PROMO — the cheapest thing we have to convert a scores visitor.
+   No signup wall, so the pitch is simply "play it right now".
+   ═══════════════════════════════════════════════════════════════════════════ */
+const MockDraftPromo = ({ ad }) => {
   const navigate = useNavigate()
-  const [adSlide, setAdSlide] = React.useState(0)
+  const handleClick = () => {
+    if (ad && ad.linkUrl) {
+      if (/^https?:\/\//i.test(ad.linkUrl)) window.location.href = ad.linkUrl
+      else navigate(ad.linkUrl)
+    } else {
+      navigate('/mock-draft')
+    }
+  }
+  return (
+    <div
+      onClick={handleClick}
+      role="button"
+      aria-label={ad && ad.imageUrl ? 'Advertisement' : 'Start a Mock Draft'}
+      style={{
+        position: 'relative', overflow: 'hidden', cursor: 'pointer',
+        borderRadius: 16, border: '1px solid rgba(255,255,255,0.08)', background: '#05070c',
+      }}
+    >
+      <img
+        src={ad && ad.imageUrl ? ad.imageUrl : mockdraftPromo}
+        alt={ad && ad.imageUrl ? 'Advertisement' : 'Mock Draft — Start Drafting'}
+        style={{ display: 'block', width: '100%', height: 'auto', borderRadius: 16 }}
+      />
+    </div>
+  )
+}
 
-  // Rotate every 6 seconds
-  React.useEffect(() => {
-    const timer = setInterval(() => setAdSlide(prev => (prev + 1) % 3), 6000)
-    return () => clearInterval(timer)
-  }, [])
-
-  const slides = [
-    { id: 'samsports-1', type: 'brand' },
-    { id: 'rivals', type: 'rivals' },
-    { id: 'samsports-2', type: 'brand' },
-  ]
-  const current = slides[adSlide]
-
+const RightSidebar = ({ scorers = [], isAuthenticated, ad }) => {
   return (
     <aside className="ls-sidebar">
       {/* GM Overall Ranking, always visible */}
       <GmRankingWidget />
 
-      {/* Rotating Promo Cards */}
-      <div className="ls-rsb-promo" onClick={() => navigate(current.type === 'rivals' ? '/select-game' : '/select-game')} style={current.type === 'brand' ? {background: 'linear-gradient(135deg, #0a1628 0%, #162544 50%, #0d2137 100%)'} : {}}>
-        <div className="ls-rsb-promo-glow" style={current.type === 'brand' ? {background: 'radial-gradient(circle at 30% 20%, rgba(59,130,246,0.25), transparent 60%)'} : {}} />
-        <div className="ls-rsb-promo-shimmer" />
-        <div className="ls-rsb-promo-inner">
+      {/* Mock draft — top of the sidebar (or admin-configured advert) */}
+      <MockDraftPromo ad={ad} />
 
-          {current.type === 'rivals' ? (
-            <>
-              <span className="ls-rsb-promo-badge">NEW</span>
-              <h3 className="ls-rsb-promo-title">
-                SAM<br /><span className="ls-rsb-promo-hl">RIVALS</span>
-              </h3>
-              <p className="ls-rsb-promo-desc">
-                Competitive H2H matchups. Climb through divisions. Earn SamPoints every match.
-              </p>
-              <div className="ls-rsb-promo-sports">
-                <span className="ls-rsb-promo-pill active">Soccer</span>
-                <span className="ls-rsb-promo-pill active" style={{background: 'rgba(124,58,237,0.2)', borderColor: 'rgba(124,58,237,0.4)', color: '#A78BFA'}}>A.Football</span>
-              </div>
-              <a href="/select-game" className="ls-rsb-promo-cta" onClick={e => e.stopPropagation()}>
-                Enter Rivals
-              </a>
-              <span className="ls-rsb-promo-note">Free to play · Earn SamPoints</span>
-            </>
-          ) : (
-            <>
-              <h3 className="ls-rsb-promo-title" style={{fontSize: 28, lineHeight: 1.1}}>
-                SAM<span className="ls-rsb-promo-hl" style={{color: '#3b82f6'}}>SPORTS</span>
-              </h3>
-              <p className="ls-rsb-promo-desc" style={{fontSize: 14, color: 'rgba(255,255,255,0.7)', marginTop: 8}}>
-                Fantasy Sports Reimagined.
-              </p>
-              <div className="ls-rsb-promo-sports" style={{marginTop: 12}}>
-                <span className="ls-rsb-promo-pill active" style={{background: 'rgba(59,130,246,0.15)', borderColor: 'rgba(59,130,246,0.3)', color: '#60a5fa'}}>A.Football</span>
-                <span className="ls-rsb-promo-pill active">Soccer</span>
-              </div>
-              <a href="/select-game" className="ls-rsb-promo-cta" onClick={e => e.stopPropagation()} style={{background: 'linear-gradient(135deg, #2563eb, #1d4ed8)'}}>
-                Play Now
-              </a>
-              <span className="ls-rsb-promo-note">Draft · Trade · Compete</span>
-            </>
-          )}
-
-        </div>
-      </div>
-
-      {/* Slide indicators */}
-      <div style={{display: 'flex', justifyContent: 'center', gap: 6, marginTop: 8}}>
-        {slides.map((s, i) => (
-          <button
-            key={s.id}
-            onClick={() => setAdSlide(i)}
-            style={{
-              width: adSlide === i ? 18 : 6,
-              height: 6,
-              borderRadius: 3,
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'all 0.3s',
-              background: adSlide === i
-                ? (slides[i].type === 'rivals' ? '#22c55e' : '#3b82f6')
-                : 'rgba(255,255,255,0.15)',
-            }}
-          />
-        ))}
-      </div>
+      {/* Leagues & Teams browser — replaces the rotating advert; links to Team pages */}
+      <LeaguesTeamsBrowser />
     </aside>
   )
 }

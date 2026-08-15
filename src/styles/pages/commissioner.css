@@ -10,7 +10,7 @@
   --cm-primary: #22C55E;
   --cm-primary-dark: #16a34a;
   --cm-secondary: #2899c9;
-  --cm-secondary-light: #a5b4fc;
+  --cm-secondary-light: #4ade80;
   --cm-bg-dark: #0a0e17;
   --cm-bg-darker: #050810;
   --cm-bg-card: rgba(20, 28, 45, 0.6);
@@ -457,7 +457,7 @@ body {
 .cm-section-icon-purple {
   background: linear-gradient(135deg, rgba(165, 180, 252, 0.15), rgba(165, 180, 252, 0.08));
   border: 1px solid rgba(165, 180, 252, 0.3);
-  color: #a5b4fc;
+  color: #4ade80;
 }
 
 .cm-section-icon-green {
@@ -1686,7 +1686,7 @@ body {
 .cm-draft-action-randomize {
   background: linear-gradient(135deg, rgba(165, 180, 252, 0.15), rgba(165, 180, 252, 0.05));
   border: 1px solid rgba(165, 180, 252, 0.3) !important;
-  color: #a5b4fc;
+  color: #4ade80;
 }
 
 .cm-draft-action-randomize:hover:not(:disabled) {
@@ -2368,3 +2368,81 @@ body {
 .cm-page .ant-tabs .ant-tabs-content-holder {
   color: #fff;
 }
+
+/* Commissioner Inbox: stack Action Center + Activity Feed on narrow screens */
+@media (max-width: 860px) {
+  .cm-inbox-split { grid-template-columns: 1fr !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GAME RULES — numbered collapsible sections + toggle cards
+   ═══════════════════════════════════════════════════════════ */
+.cm-rsec { padding: 0 !important; overflow: hidden; }
+.cm-rsec-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 22px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.cm-rsec-head:hover { background: rgba(255, 255, 255, 0.02); }
+.cm-rsec-num {
+  width: 22px; height: 22px; border-radius: 7px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(34, 197, 94, 0.15); color: #4ADE80;
+  font-family: 'Oxanium', sans-serif; font-weight: 800; font-size: 13px;
+  margin-left: -2px;
+}
+.cm-rsec-head .cm-section-title { margin: 0; }
+.cm-rsec-desc {
+  margin-left: auto;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 45%;
+}
+.cm-rsec-chev {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 16px;
+  line-height: 1;
+  transition: transform 0.2s ease;
+  transform: rotate(180deg);
+  margin-left: 4px;
+}
+.cm-rsec-chev.open { transform: rotate(0deg); }
+.cm-rsec-body {
+  padding: 4px 22px 22px;
+  animation: cmRsecIn 0.18s ease;
+}
+@keyframes cmRsecIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+/* Toggle cards grid (Trade Rules / Salary Cap / Auction) */
+.cm-toggle-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+.cm-toggle-cards .cm-toggle-row {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  transition: border-color 0.15s, background 0.15s;
+}
+.cm-toggle-cards .cm-toggle-row:hover {
+  border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.03);
+}
+.cm-toggle-cards .cm-toggle-row:last-child { border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+.cm-toggle-cards .cm-toggle-info { flex: 1; }
+.cm-toggle-cards .cm-toggle-title { font-size: 14px; }
+.cm-toggle-cards .cm-toggle-desc { font-size: 12px; line-height: 1.45; margin-top: 4px; }

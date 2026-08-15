@@ -195,6 +195,32 @@ export const proposeLeaguePause = async (leagueId) => {
   }
 }
 
+/**
+ * Commissioner creates a custom proposal the league votes yes/no on.
+ * @param {string} leagueId
+ * @param {{title:string, description?:string, durationHours?:number, threshold?:number}} payload
+ */
+export const createProposal = async (leagueId, payload) => {
+  try {
+    attachToken()
+    const res = await privateAPI.post(`/governance/${leagueId}/proposal`, payload)
+    if (res?.data?.success) {
+      notification.success({
+        message: 'Proposal created',
+        description: res.data.data.message,
+        duration: 4,
+      })
+      return res.data.data
+    }
+  } catch (err) {
+    notification.error({
+      message: err?.response?.data?.message || 'Failed to create proposal',
+      duration: 3,
+    })
+    return null
+  }
+}
+
 // ═══════════════════════════════════════════════════════════════
 //  INFO & HISTORY
 // ═══════════════════════════════════════════════════════════════

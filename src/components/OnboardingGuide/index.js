@@ -209,6 +209,10 @@ const OnboardingGuide = ({ tabKey }) => {
   const storageKey = `onboarding_seen_${tabKey}`
 
   useEffect(() => {
+    // Don't pop the per-page explanation on phones/small tablets — it's
+    // intrusive on mobile. Desktop still shows it once per tab.
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+    if (isMobile) return
     const seen = localStorage.getItem(storageKey)
     if (!seen) {
       setVisible(true)

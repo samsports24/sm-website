@@ -63,6 +63,31 @@ export const getGlobalGmRankings = async (sport) => {
   }
 }
 
+export const getGmHistory = async (scope) => {
+  try {
+    attachToken()
+    const s = scope === 'global' ? 'global' : 'league'
+    const res = await privateAPI.get(`/ranking/gm-history?scope=${s}`)
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    return null
+  }
+}
+
+export const getGmLevels = async () => {
+  try {
+    attachToken()
+    const res = await privateAPI.get('/ranking/gm-levels')
+    if (res) {
+      return res.data.data
+    }
+  } catch (err) {
+    return null
+  }
+}
+
 export const createNewLeague = async (payload) => {
   try {
     let game = localStorage.getItem('selectedGame')
@@ -102,19 +127,23 @@ export const createNewLeagueFromDashboard = async (payload) => {
         localStorage.setItem('token', res.data.data.token)
         attachToken()
       }
-      // Update user state so team/currentLeague are available for navigation
-      await store.dispatch(getUser())
+      // Suppress the stale x-league-id header so getUser resolves the freshly
+      // created league from the new token, not the old league still in redux.
+      setLeagueSwitching(true)
+      try { await store.dispatch(getUser()) } finally { setLeagueSwitching(false) }
       await getUserLeagues()
       notification.success({
         description: res.data.data.message || 'League created successfully!',
         duration: 2,
       })
+      return { success: true, data: res.data }
     }
   } catch (err) {
     notification.error({
       message: err?.response?.data?.message || 'Server Error',
       duration: 3,
     })
+    return { success: false, message: err?.response?.data?.message || 'Server Error' }
   }
 }
 
@@ -232,18 +261,29 @@ export const updateLeague = async (payload) => {
 export const updateLeagueCommissioner = async (payload) => {
   try {
     attachToken()
-    // Convert to FormData, the backend uses a global multer middleware that
-    // strips req.body when receiving application/json instead of multipart/form-data
-    const formData = new FormData()
-    for (const [key, value] of Object.entries(payload)) {
-      if (value === undefined || value === null) continue
-      if (typeof value === 'object' && !(value instanceof File) && !(value instanceof Blob)) {
-        formData.append(key, JSON.stringify(value))
-      } else {
-        formData.append(key, value)
+    // Settings updates carry no files, so send plain JSON — this keeps booleans
+    // as real booleans and guarantees _id survives (multer only parses multipart,
+    // and a FormData body was intermittently arriving without req.body populated,
+    // which surfaced as a backend "Missing field" error). Only fall back to
+    // FormData if a File/Blob is ever present in the payload.
+    const hasFile = Object.values(payload).some(
+      (v) => (typeof File !== 'undefined' && v instanceof File) || (typeof Blob !== 'undefined' && v instanceof Blob)
+    )
+    let res
+    if (hasFile) {
+      const formData = new FormData()
+      for (const [key, value] of Object.entries(payload)) {
+        if (value === undefined || value === null) continue
+        if (typeof value === 'object' && !(value instanceof File) && !(value instanceof Blob)) {
+          formData.append(key, JSON.stringify(value))
+        } else {
+          formData.append(key, value)
+        }
       }
+      res = await privateAPI.post(`/league/update-league-commissioner`, formData)
+    } else {
+      res = await privateAPI.post(`/league/update-league-commissioner`, payload)
     }
-    const res = await privateAPI.post(`/league/update-league-commissioner`, formData)
     if (res) {
       notification.success({
         description: res.data.data.message,
@@ -325,6 +365,30 @@ export const selectLeague = async (payload, navigate) => {
   }
 }
 
+// On load, if the user is logged in but has no ACTIVE league selected yet they
+// do belong to at least one league, silently activate the first one (swap the
+// token + refresh) so the app doesn't get stuck on "select a league first."
+// No reload/redirect — if an active league already exists this is a no-op.
+export const ensureActiveLeague = async () => {
+  try {
+    if (!localStorage.getItem('token')) return
+    const st = store.getState()
+    if (st?.user?.userDetails?.team?.currentLeague?._id) return // already active
+    attachToken()
+    const res = await privateAPI.get('/league/get-by-user-id')
+    const leagues = res?.data?.data || []
+    const first = Array.isArray(leagues) ? leagues.find((l) => l?._id) : null
+    if (!first) return // user has no leagues — leave them on the select/onboarding flow
+    const selRes = await privateAPI.post('/league/select-league', { leagueId: first._id })
+    const token = selRes?.data?.data?.token
+    if (token) { localStorage.setItem('token', token); attachToken() }
+    // Suppress the stale x-league-id header so getUser resolves the newly
+    // activated league from the fresh token.
+    setLeagueSwitching(true)
+    try { await store.dispatch(getUser()) } finally { setLeagueSwitching(false) }
+  } catch (e) { /* silent — user stays on landing/select screen */ }
+}
+
 export const getHomeLeagues = async () => {
   try {
     const res = await publicAPI.get(`/league/home-leagues`)
@@ -371,9 +435,11 @@ export const joinLeagueFromPlatform = async (payload) => {
         localStorage.setItem('token', res.data.data.token)
         attachToken()
       }
-      // Refresh user state so Header/Dashboard show the team
-      store.dispatch(getUser())
-      getUserLeagues()
+      // Suppress the stale x-league-id header while we refresh, so getUser resolves
+      // the NEW league from the fresh token instead of the old league still in redux.
+      setLeagueSwitching(true)
+      try { await store.dispatch(getUser()) } finally { setLeagueSwitching(false) }
+      await getUserLeagues()
       notification.success({
         description: res.data.data.message,
         duration: 2,

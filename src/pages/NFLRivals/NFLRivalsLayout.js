@@ -20,7 +20,8 @@ const NFLRivalsSideChat = () => {
   const [input, setInput] = useState('')
   const [connected, setConnected] = useState(false)
   const [gifOpen, setGifOpen] = useState(false)
-  const [minimized, setMinimized] = useState(false)
+  // Closed by default — the chat opens only when the user clicks the button.
+  const [minimized, setMinimized] = useState(true)
   const socketRef = useRef(null)
   const chatEndRef = useRef(null)
 
@@ -208,21 +209,25 @@ const NFLRivalsLayout = () => {
         collapsed={sidebarCollapsed}
         onToggle={() => setSidebarCollapsed(prev => !prev)}
       />
+      {/* Mobile floating menu button + backdrop (shown only ≤1024 via CSS). */}
+      <button className="nflr-menu-fab" aria-label="Open menu" onClick={() => setSidebarCollapsed(false)}>☰</button>
+      {!sidebarCollapsed && <div className="nflr-backdrop" onClick={() => setSidebarCollapsed(true)} />}
       <main
         className="nflr-main"
         style={{ marginLeft: sidebarCollapsed ? 80 : 260 }}
       >
-        <div className={'nflr-content-wrap' + (hasJoined ? ' with-chat' : '')}>
+        <div className="nflr-content-wrap">
           <div className="nflr-content-area">
             <Outlet />
           </div>
-          {hasJoined && (
-            <div className="nflr-chat-rail">
-              <NFLRivalsSideChat />
-            </div>
-          )}
         </div>
       </main>
+      {/* Chat is a floating popup at the bottom-right (like soccer), not a rail. */}
+      {hasJoined && (
+        <div className="nflr-chat-float">
+          <NFLRivalsSideChat />
+        </div>
+      )}
     </div>
   )
 }

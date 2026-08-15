@@ -143,36 +143,37 @@
 }
 
 .hdr-btn-buy {
-  font-size: 11px !important;
-  font-weight: 700 !important;
-  padding: 4px 16px !important;
+  font-size: 12.5px !important;
+  font-weight: 800 !important;
+  padding: 9px 22px !important;
   height: auto !important;
-  border-radius: 6px !important;
-  background: linear-gradient(135deg, #8a2be2, #6a1fb5) !important;
+  border-radius: 8px !important;
+  background: #16a34a !important;
   border: none !important;
-  letter-spacing: 0.5px;
-  transition: transform 0.15s, box-shadow 0.15s !important;
+  color: #fff !important;
+  letter-spacing: 0.3px;
+  transition: transform 0.15s, filter 0.15s !important;
 }
 .hdr-btn-buy:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(138, 43, 226, 0.4) !important;
+  filter: brightness(1.08) !important;
 }
 
 .hdr-btn-transfer {
-  font-size: 11px !important;
-  font-weight: 700 !important;
-  padding: 4px 16px !important;
+  font-size: 12.5px !important;
+  font-weight: 800 !important;
+  padding: 9px 22px !important;
   height: auto !important;
-  border-radius: 6px !important;
-  background: rgba(34, 197, 94, 0.15) !important;
-  border: 1px solid #22C55E !important;
-  color: #22C55E !important;
-  letter-spacing: 0.5px;
-  transition: transform 0.15s, box-shadow 0.15s !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  border: 1.5px solid #24d26c !important;
+  color: #24d26c !important;
+  letter-spacing: 0.3px;
+  transition: transform 0.15s, background 0.15s !important;
 }
 .hdr-btn-transfer:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3) !important;
+  background: rgba(36, 210, 108, 0.1) !important;
 }
 
 /* ═══════════════════════════════════════════════
@@ -595,6 +596,24 @@
    RESPONSIVE
    ═══════════════════════════════════════════════ */
 
+/* Cramped desktop / zoomed-in: tighten the top strip so its items stop crowding
+   into each other before they'd have to wrap. Progressive: first shrink gaps,
+   then let the secondary record shrink, then drop the verbose badge text labels
+   (the icons stay, so nothing becomes unclickable). */
+@media (max-width: 1550px) {
+  .hdr-strip { gap: 10px; }
+  .hdr-strip-right { gap: 12px; }
+  .hdr-strip-center { gap: 8px; min-width: 0; flex-shrink: 1; }
+  .hdr-sp-info { gap: 10px; }
+}
+@media (max-width: 1380px) {
+  .hdr-strip-right { gap: 10px; }
+  /* Badges become icon-only to reclaim horizontal room */
+  .hdr-badge-label { display: none; }
+  /* Secondary win/loss record can hide before anything overlaps */
+  .hdr-compact-record { display: none; }
+}
+
 @media (max-width: 1200px) {
   .hdr-strip {
     flex-wrap: wrap;
@@ -609,67 +628,68 @@
   }
 }
 
+/* ── Mobile header: compact bar instead of a tall stack ──
+   Top row stays a single compact line (logo + Available SP + Buy SP + GM rank);
+   the team/nav strip becomes one horizontally-scrollable row. Secondary bits
+   (Total Earned, Transfer, verbose labels) are hidden to fit a phone. */
 @media (max-width: 900px) {
   .hdr-top {
-    flex-direction: column;
-    gap: 10px;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    flex-wrap: nowrap;
   }
-  .hdr-brand {
-    align-self: flex-start;
-  }
-  .hdr-sp-section {
-    justify-content: space-between;
-  }
+  .hdr-brand { align-self: center; flex-shrink: 0; }
+  .hdr-sp-section { gap: 8px; margin-left: auto; min-width: 0; }
+  .hdr-sp-info { gap: 10px; }
+  .hdr-sp-info .hdr-sp-divider { display: none; }
+  .hdr-sp-info > .hdr-sp-row:nth-of-type(2) { display: none; } /* Total Earned */
+  .hdr-btn-transfer { display: none; }                          /* keep Buy SP only */
 
   .hdr-strip {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     gap: 10px;
+    align-items: center;
   }
-  .hdr-strip-left {
-    width: 100%;
-  }
-  .hdr-strip-center {
-    width: 100%;
-    justify-content: flex-start;
-  }
+  .hdr-strip::-webkit-scrollbar { display: none; }
+  .hdr-strip-left,
+  .hdr-strip-center,
   .hdr-strip-right {
-    width: 100%;
+    width: auto;
+    flex-shrink: 0;
+    flex-wrap: nowrap;
     justify-content: flex-start;
-    flex-wrap: wrap;
-    gap: 10px;
   }
 }
 
 @media (max-width: 600px) {
-  .hdr-top {
-    padding: 10px 12px;
-  }
-  .hdr-strip {
-    padding: 8px 12px;
-  }
-  .hdr-brand-icon {
-    height: 22px;
-  }
-  .hdr-brand-text {
-    font-size: 16px;
-    letter-spacing: 1px;
-  }
-  .hdr-team-logo {
-    width: 36px;
-    height: 36px;
-  }
-  .hdr-team-name {
-    font-size: 14px;
-  }
-  .hdr-compact-val {
-    font-size: 14px;
-  }
-  .hdr-sp-val {
-    font-size: 12px;
-  }
-  .hdr-badge-label {
-    display: none;
-  }
+  .hdr-top { padding: 8px 10px; }
+  .hdr-strip { padding: 8px 10px; }
+  .hdr-brand-icon { height: 24px; }
+  .hdr-brand-text { display: none; }                 /* logo only, save width */
+  .hdr-sp-label { display: none; }                   /* show just the SP number */
+  .hdr-sp-val { font-size: 13px; }
+  .hdr-compact-val { font-size: 14px; }
+  .hdr-btn-buy { padding: 6px 12px; font-size: 12px; }
+  .hdr-team-logo { width: 30px; height: 30px; }
+  .hdr-team-name { font-size: 13px; max-width: 130px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hdr-badge-label { display: none; }
 }
+
+/* Slim command bar (Dashboard): ONE row — account items on the left, then the
+   action items (Messages, Notifications, Live Auction, Trades) and GM Rank on the
+   right. Team identity (logo/name/league/record/budget) lives in the Team Hero. */
+.hdr-shell--slim { display: flex !important; flex-direction: row !important; align-items: center; gap: 0; padding: 10px 22px; border-bottom: 1px solid rgba(255,255,255,0.06); background: #0a0d14 !important; }
+.hdr-shell--slim .hdr-top { flex: 1; justify-content: flex-start; gap: 26px; padding: 0; border: none; min-height: 0; }
+/* Separate the Buy SP / Transfer action group (end of .hdr-top) from the
+   Messages/Notifications badges so the bell doesn't look attached to Transfer. */
+.hdr-shell--slim .hdr-strip { width: auto; padding: 0 0 0 20px; margin-left: 12px; border: none; border-left: 1px solid rgba(255,255,255,0.10); min-height: 0; background: transparent; }
+.hdr-shell--slim .hdr-strip-left,
+.hdr-shell--slim .hdr-strip-center,
+.hdr-shell--slim .hdr-deadline-banner { display: none !important; }
+.hdr-shell--slim .hdr-strip-right { padding: 0; }
+.hdr-shell--slim .hdr-gm-rank { margin-left: 14px; }

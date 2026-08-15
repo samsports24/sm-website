@@ -25,6 +25,7 @@ import { isLocked, positions } from '../../config/constants'
 
 import Image from '../../assets/logo2.png'
 import sampointslogo from '../../assets/samcoinlogo.png'
+import TeamLogo from '../TeamLogo'
 
 import { BiRightArrowAlt } from 'react-icons/bi'
 
@@ -284,7 +285,7 @@ const PlayerInterfacePopup = ({ state, closeModal, isModalOpen }) => {
                   <span className="pip-last">{data?.player?.LastName}</span>
                 </h1>
                 {state?.teamLogo && (
-                  <img src={state?.teamLogo} alt="Team" className="pip-team-logo" />
+                  <TeamLogo src={state?.teamLogo} name={data?.player?.Team} size={44} round={false} className="pip-team-logo" />
                 )}
               </div>
               <div className="pip-badges">
@@ -1150,9 +1151,10 @@ const LiveAuctionBid = ({ data, getData, closeModal }) => {
         {/* Top Bid */}
         <div className="pip-auction-topbid">
           <div className="pip-topbid-info">
-            <img
-              src={data?.bidHistory?.find((x) => x?.bid === data?.highestCurrentBid)?.team?.logo}
-              alt=""
+            <TeamLogo
+              team={data?.bidHistory?.find((x) => x?.bid === data?.highestCurrentBid)?.team}
+              size={36}
+              round={false}
               className="pip-topbid-logo"
             />
             <div>
@@ -1225,7 +1227,7 @@ const BidHistoryBox = ({ data, height }) => (
         ?.sort((a, b) => b.bid - a.bid)
         ?.map((v, i) => (
           <div key={i} className="pip-bh-row">
-            <img src={v?.team?.logo} alt="" className="pip-bh-logo" />
+            <TeamLogo team={v?.team} size={22} round={false} className="pip-bh-logo" />
             <div className="pip-bh-cell pip-bh-cell-name">{v?.user?.userName}</div>
             <div className="pip-bh-cell pip-bh-cell-amount">
               {v?.bid && `${v?.bid?.toLocaleString()} SP`}

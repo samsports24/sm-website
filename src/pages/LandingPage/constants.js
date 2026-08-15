@@ -17,6 +17,7 @@ export const SOCCER_LEAGUES = [
   { id: 'fifa.worldq.caf', name: 'World Cup Qualifiers - CAF', emoji: '🌍' },
   { id: 'fifa.worldq.ofc', name: 'World Cup Qualifiers - OFC', emoji: '🌏' },
   { id: 'fifa.friendly', name: 'Friendlies', emoji: '🤝' },
+  { id: 'fifa.friendly.clubs', name: 'Club Friendlies', emoji: '🤝' },
   { id: 'uefa.nations', name: 'UEFA Nations League', emoji: '🇪🇺' },
   // Club competitions
   { id: 'uefa.champions', name: 'Champions League', emoji: '🏆' },
@@ -29,17 +30,20 @@ export const SOCCER_LEAGUES = [
   { id: 'fra.1', name: 'Ligue 1', emoji: '🇫🇷' },
   { id: 'eng.fa', name: 'FA Cup', emoji: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
   { id: 'usa.1', name: 'MLS', emoji: '🇺🇸' },
+  { id: 'pol.1', name: 'Ekstraklasa', emoji: '🇵🇱' },
 ];
 
 // Sport Tabs for Header Navigation
 export const SPORT_TABS = [
-  { key: 'worldcup', emoji: '🏆', label: 'World Cup 2026', sport: 'soccer', league: null, special: 'worldcup' },
+  // { key: 'worldcup', emoji: '🏆', label: 'World Cup 2026', sport: 'soccer', league: null, special: 'worldcup' }, // Hidden — WC 2026 over
   { key: 'soccer', emoji: '⚽', label: 'Soccer', sport: 'soccer', league: null },
   { key: 'standings', emoji: '📊', label: 'Standings', sport: null, league: null, special: 'standings' },
   { key: 'nfl', emoji: '🏈', label: 'A.Football', sport: 'football', league: 'nfl' },
   { key: 'nba', emoji: '🏀', label: 'NBA', sport: 'basketball', league: 'nba' },
+  { key: 'wnba', emoji: '🏀', label: 'WNBA', sport: 'basketball', league: 'wnba' },
   { key: 'nhl', emoji: '🏒', label: 'NHL', sport: 'hockey', league: 'nhl' },
   { key: 'mlb', emoji: '⚾', label: 'MLB', sport: 'baseball', league: 'mlb' },
+  { key: 'f1', emoji: '🏎️', label: 'Formula 1', sport: 'racing', league: 'f1' },
   { key: 'tennis', emoji: '🎾', label: 'Tennis', sport: 'tennis', league: null },
   { key: 'ncaafb', emoji: '🎓', label: 'NCAAFB', sport: 'football', league: 'college-football' },
   { key: 'ncaab', emoji: '🎓', label: 'NCAAB', sport: 'basketball', league: 'mens-college-basketball' },
@@ -401,9 +405,9 @@ export const getStatus = (obj) => {
     return { cls: 'status-unknown', label: 'Unknown', chip: '?', clock: null }
   }
 
-  // In Play / Live
-  if (state === 'in' || rawStatus === 'in_progress' || rawStatus === 'inprogress') {
-    const isHalftime = detail.toLowerCase().includes('halftime') || detail.toLowerCase().includes('half time')
+  // In Play / Live  (ESPN uses 'in'; API-Football normalized uses 'live'/'halftime')
+  if (state === 'in' || state === 'live' || state === 'halftime' || rawStatus === 'in_progress' || rawStatus === 'inprogress') {
+    const isHalftime = state === 'halftime' || detail.toLowerCase().includes('halftime') || detail.toLowerCase().includes('half time')
     return {
       cls: isHalftime ? 'status-halftime' : 'status-live',
       label: isHalftime ? 'HT' : (clock || detail || 'Live'),
@@ -413,8 +417,8 @@ export const getStatus = (obj) => {
     }
   }
 
-  // Pre-game / Scheduled
-  if (state === 'pre' || rawStatus === 'scheduled' || rawStatus === 'notstarted') {
+  // Pre-game / Scheduled  (ESPN 'pre'; API-Football normalized 'scheduled')
+  if (state === 'pre' || state === 'scheduled' || rawStatus === 'scheduled' || rawStatus === 'notstarted') {
     const startTime = obj?.date || obj?.startTime
     return {
       cls: 'status-scheduled',
@@ -425,8 +429,8 @@ export const getStatus = (obj) => {
     }
   }
 
-  // Post-game / Final
-  if (state === 'post' || rawStatus === 'final' || rawStatus === 'finished' || rawStatus === 'completed') {
+  // Post-game / Final  (ESPN 'post'; API-Football normalized 'final')
+  if (state === 'post' || state === 'final' || rawStatus === 'final' || rawStatus === 'finished' || rawStatus === 'completed') {
     // Check for postponed/cancelled in detail
     const lowerDetail = detail.toLowerCase()
     if (lowerDetail.includes('postponed')) {
@@ -444,13 +448,25 @@ export const getStatus = (obj) => {
     }
   }
 
+  // Fallback: a match with both teams' scores set and a kickoff already in the
+  // past is finished, even when the provider returns a missing/odd status. This
+  // keeps the Results/Finished tabs populated when status data is unreliable.
+  const comp0 = obj?.competitions?.[0] || obj
+  const cptrs = comp0?.competitors || []
+  const bothScored = cptrs.length >= 2 &&
+    cptrs.slice(0, 2).every((c) => c && c.score !== undefined && c.score !== null && c.score !== '')
+  const kickoff = obj?.date ? new Date(obj.date).getTime() : null
+  if (bothScored && kickoff && kickoff < Date.now()) {
+    return { cls: 'status-final', label: detail || 'FT', chip: 'FT', clock: null, state: 'final' }
+  }
+
   // Postponed
-  if (rawStatus === 'postponed') {
+  if (state === 'postponed' || rawStatus === 'postponed') {
     return { cls: 'status-postponed', label: 'Postponed', chip: 'PPD', clock: null, state: 'postponed' }
   }
 
   // Cancelled
-  if (rawStatus === 'cancelled' || rawStatus === 'canceled') {
+  if (state === 'cancelled' || rawStatus === 'cancelled' || rawStatus === 'canceled') {
     return { cls: 'status-cancelled', label: 'Cancelled', chip: 'CAN', clock: null, state: 'cancelled' }
   }
 

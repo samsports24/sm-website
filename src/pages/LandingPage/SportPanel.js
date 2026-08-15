@@ -1,5 +1,6 @@
 import React from 'react'
 import MatchCard from './MatchCard'
+import RaceCard from './RaceCard'
 
 const Spinner = () => (
   <div className="ls-spinner">
@@ -31,11 +32,13 @@ const LeagueBlock = ({ name, emoji, events, sport, league, onMatchClick }) => {
     </div>
     <div className="ls-matches">
       {events.map((ev) => (
-        <MatchCard
-          key={ev.id}
-          event={ev}
-          onClick={() => onMatchClick(ev.id, sport, league, name)}
-        />
+        sport === 'racing'
+          ? <RaceCard key={ev.id} event={ev} />
+          : <MatchCard
+              key={ev.id}
+              event={ev}
+              onClick={() => onMatchClick(ev.id, sport, league, name)}
+            />
       ))}
     </div>
   </div>

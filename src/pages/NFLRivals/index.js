@@ -5,18 +5,19 @@ import {
   Button, Spin, notification, Input,
 } from 'antd'
 import {
-  CrownOutlined, TeamOutlined, TrophyOutlined, FireOutlined,
+  TeamOutlined, TrophyOutlined,
   RiseOutlined, SafetyCertificateOutlined,
-  ThunderboltOutlined, BarChartOutlined, EditOutlined, CheckOutlined,
-  StarOutlined,
-  MedicineBoxOutlined,
-  DollarOutlined,
-  WalletOutlined,
+  ThunderboltOutlined, EditOutlined, CheckOutlined,
+  MedicineBoxOutlined, WalletOutlined, RobotOutlined, FireOutlined,
+  ClockCircleOutlined, RightOutlined, ArrowUpOutlined,
+  CheckCircleOutlined, StarFilled,
 } from '@ant-design/icons'
 import { privateAPI, attachToken } from '../../config/constants'
-import nflRivalsLogo from '../../assets/nfl-rivals-logo.svg'
+import nflRivalsLogo from '../../assets/rivals/lor-logo.png'
 import './nfl-rivals.css'
-import { DIVISIONS, DIVISION_COLORS, TROPHY_ICONS } from './rivalsConfig'
+import { DIVISIONS, DIVISION_COLORS } from './rivalsConfig'
+import heroPlayer from '../../assets/rivals/nfl-hero-player.png'
+import aiCoachRobot from '../../assets/rivals/ai-coach-robot.png'
 
 /* ══════════════════════════════════════
    JOIN SPLASH
@@ -29,7 +30,7 @@ const JoinSplash = ({ onJoin, loading }) => {
       <div className="nflr-splash-inner">
         <img
           src={nflRivalsLogo}
-          alt="SAM RIVALS"
+          alt="LEAGUE OF RIVALS"
           style={{ display: 'block', margin: '0 auto 16px', width: 340, height: 'auto' }}
         />
         <p className="nflr-splash-sub">The Ultimate NFL Fantasy Competition</p>
@@ -131,9 +132,18 @@ const NFLRivalsOverview = () => {
   const [season, setSeason] = useState(null)
   const [week, setWeek] = useState(null)
   const [pod, setPod] = useState(null)
+  const [leaderboard, setLeaderboard] = useState([])
+  const [economy, setEconomy] = useState(null)
+  const [trending, setTrending] = useState([])
   const [editingName, setEditingName] = useState(false)
   const [newTeamName, setNewTeamName] = useState('')
   const [savingName, setSavingName] = useState(false)
+  const [now, setNow] = useState(Date.now())
+
+  useEffect(function () {
+    var t = setInterval(function () { setNow(Date.now()) }, 1000)
+    return function () { clearInterval(t) }
+  }, [])
 
   const loadAll = useCallback(async function () {
     try {
@@ -148,10 +158,22 @@ const NFLRivalsOverview = () => {
           privateAPI.get('/nfl-rivals/season'),
           privateAPI.get('/nfl-rivals/week'),
           privateAPI.get('/nfl-rivals/pod'),
+          privateAPI.get('/nfl-rivals/leaderboard'),
+          privateAPI.get('/nfl-rivals/economy'),
+          privateAPI.get('/nfl-rivals/players/search?limit=8&sort=fantasyPointsAvg'),
         ])
         if (results[0].status === 'fulfilled') setSeason(results[0].value.data.data ? results[0].value.data.data.season : null)
         if (results[1].status === 'fulfilled') setWeek(results[1].value.data.data || null)
         if (results[2].status === 'fulfilled') setPod(results[2].value.data.data ? results[2].value.data.data.pod : null)
+        if (results[3].status === 'fulfilled') {
+          var lb = results[3].value.data.data
+          setLeaderboard(lb && lb.leaderboard ? lb.leaderboard : (Array.isArray(lb) ? lb : []))
+        }
+        if (results[4].status === 'fulfilled') setEconomy(results[4].value.data.data || null)
+        if (results[5].status === 'fulfilled') {
+          var pl = results[5].value.data.data
+          setTrending(pl && pl.players ? pl.players : (Array.isArray(pl) ? pl : []))
+        }
       } else {
         setHasJoined(false)
       }
@@ -207,220 +229,456 @@ const NFLRivalsOverview = () => {
   var div = entry ? entry.division : 4
   var divColor = DIVISION_COLORS[div] || '#8b5cf6'
   var stats = (entry && entry.seasonStats) || {}
-  var career = (entry && entry.careerStats) || {}
   var podMembers = (pod && pod.members) || []
   var activeWeek = week ? week.activeWeek : null
-  var totalMatches = (stats.wins || 0) + (stats.draws || 0) + (stats.losses || 0)
+  var weekNum = activeWeek ? activeWeek.week : null
+  var totalWeeks = (season && season.weekCount) || (week && week.season && week.season.weekCount) || 17
+  var seasonName = (season && season.name) || (week && week.season && week.season.name) || (entry && entry.currentSeason) || 'PRE-SEASON'
 
-  var spBalance = ((entry.earnedSamPoints || 0) + (entry.purchasedSamPoints || 0))
-  var spDisplay = spBalance >= 1e6 ? `${(spBalance / 1e6).toFixed(1)}M` : spBalance >= 1e3 ? `${(spBalance / 1e3).toFixed(0)}K` : String(spBalance)
+  // ── identity / standings ──
+  var myUserId = entry && entry.user ? (entry.user._id || entry.user) : null
+  var idOf = function (ref) { return ref ? (ref._id || ref) : null }
+  var isMe = function (ref) { var id = idOf(ref); return myUserId && id && String(id) === String(myUserId) }
+  var sortedMembers = podMembers.slice() // backend already sorts by wins/points
+  var myIdx = sortedMembers.findIndex(function (m) { return isMe(m.user) })
+  var myMember = myIdx >= 0 ? sortedMembers[myIdx] : null
+  var podSize = sortedMembers.length
+  var myRank = null
+  if (leaderboard && leaderboard.length) {
+    var ri = leaderboard.findIndex(function (r) { return isMe(r.user) || (r.userId && myUserId && String(r.userId) === String(myUserId)) })
+    if (ri >= 0) myRank = ri + 1
+  }
+  var placeNum = myIdx >= 0 ? myIdx + 1 : myRank
+  var ordinal = function (n) {
+    if (n == null) return '—'
+    var s = ['th', 'st', 'nd', 'rd']; var v = n % 100
+    return n + (s[(v - 20) % 10] || s[v] || s[0]) + ' Place'
+  }
+  var memberName = function (uid) {
+    var mm = sortedMembers.find(function (m) { return uid && idOf(m.user) && String(idOf(m.user)) === String(uid) })
+    if (mm) return (mm.entry && mm.entry.teamName) || (mm.user && (mm.user.userName || mm.user.username)) || mm.username || 'Rival'
+    return 'Rival'
+  }
+  var memberRecord = function (uid) {
+    var mm = sortedMembers.find(function (m) { return uid && idOf(m.user) && String(idOf(m.user)) === String(uid) })
+    return mm ? ((mm.wins || 0) + '-' + (mm.losses || 0)) : '—'
+  }
+
+  // ── record ──
+  var wins = myMember && myMember.wins != null ? myMember.wins : (stats.wins || 0)
+  var losses = myMember && myMember.losses != null ? myMember.losses : (stats.losses || 0)
+  var recordStr = wins + '-' + losses
+  var pf = myMember && myMember.totalPoints != null ? myMember.totalPoints : (stats.totalPoints || 0)
+
+  // ── fixtures: flatten my matches ──
+  var fixtures = (pod && pod.fixtures) || []
+  var myMatches = []
+  fixtures.forEach(function (fx) {
+    ;(fx.matches || []).forEach(function (mt) {
+      var h = idOf(mt.homeUserId); var a = idOf(mt.awayUserId)
+      var meHome = myUserId && h && String(h) === String(myUserId)
+      var meAway = myUserId && a && String(a) === String(myUserId)
+      if (meHome || meAway) myMatches.push({ matchday: fx.matchday, mt: mt, isHome: meHome, oppId: meHome ? a : h })
+    })
+  })
+  // Points Against (from completed matches)
+  var paComputed = null
+  var completedMatches = myMatches.filter(function (x) { return x.mt.status === 'completed' && (x.mt.homeScore != null || x.mt.awayScore != null) })
+  if (completedMatches.length) {
+    paComputed = 0
+    completedMatches.forEach(function (x) { paComputed += (x.isHome ? (x.mt.awayScore || 0) : (x.mt.homeScore || 0)) })
+  }
+  var paDisplay = paComputed == null ? '—' : String(Math.round(paComputed))
+  var diffDisplay = paComputed == null ? '—' : (function () { var d = Math.round(pf - paComputed); return (d >= 0 ? '+' : '') + d })()
+  // Next unplayed matchup
+  var upcoming = myMatches.filter(function (x) { return x.mt.status !== 'completed' }).sort(function (a, b) { return (a.matchday || 0) - (b.matchday || 0) })
+  var nextX = upcoming[0] || null
+  var oppName = nextX ? memberName(nextX.oppId) : null
+  var oppRecord = nextX ? memberRecord(nextX.oppId) : '—'
+  var fmtDate = function (d) { if (!d) return null; try { return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) } catch (e) { return null } }
+  var nextDateRaw = nextX && season && season.matchdays ? (function () { var md = season.matchdays.find(function (m) { return m.week === nextX.matchday }); return md ? md.startDate : null })() : null
+  var nextDate = fmtDate(nextDateRaw)
+
+  // ── wallet (economy) ──
+  var spBalance = economy ? (economy.earnedSamPoints || 0) : ((entry.earnedSamPoints || 0) + (entry.purchasedSamPoints || 0))
+  var spDisplay = spBalance >= 1e6 ? `${(spBalance / 1e6).toFixed(1)}M` : spBalance >= 1e3 ? `${(spBalance / 1e3).toFixed(0)}K` : String(Math.round(spBalance))
+  var weeklyIncome = economy && economy.currentRewards && economy.currentRewards.win != null ? economy.currentRewards.win : null
+
+  // ── roster position groups ──
+  var rosterGroups = (function () {
+    var g = { QB: 0, RB: 0, WR: 0, TE: 0, OL: 0, DL: 0, LB: 0, DB: 0, ST: 0 }
+    ;(entry.squad || []).forEach(function (s) {
+      var p = String((s && (s.player && s.player.Position)) || (s && (s.position || s.pos)) || '').toUpperCase()
+      if (p === 'QB') g.QB++
+      else if (['RB', 'FB', 'HB'].indexOf(p) >= 0) g.RB++
+      else if (p === 'WR') g.WR++
+      else if (p === 'TE') g.TE++
+      else if (['LT', 'RT', 'LG', 'RG', 'C', 'G', 'OT', 'OL', 'T'].indexOf(p) >= 0) g.OL++
+      else if (['DE', 'DT', 'NT', 'DL', 'EDGE'].indexOf(p) >= 0) g.DL++
+      else if (['ILB', 'OLB', 'MLB', 'LB'].indexOf(p) >= 0) g.LB++
+      else if (['CB', 'S', 'FS', 'SS', 'DB'].indexOf(p) >= 0) g.DB++
+      else if (['K', 'P', 'LS'].indexOf(p) >= 0) g.ST++
+    })
+    return g
+  })()
+  var squadLen = entry.squad ? entry.squad.length : 0
+  var injuredCount = (entry.squad || []).filter(function (s) { return s.player && s.player.isPlayerInjured }).length
+
+  // ── scoring breakdown — all 9 roster position groups, weighted by role ──
+  // Starters score 100%, Bench 50%, Reserves 0% — so the projected total and the
+  // per-position split reflect how the roster actually scores.
+  var scoreColors = {
+    QB: '#8B5CF6', RB: '#4ADE80', WR: '#A78BFA', TE: '#F59E0B', OL: '#38BDF8',
+    DL: '#EF4444', LB: '#EC4899', DB: '#14B8A6', ST: '#FACC15',
+  }
+  var posGroupOf = function (pos) {
+    var p = String(pos || '').toUpperCase()
+    if (p === 'QB') return 'QB'
+    if (['RB', 'FB', 'HB'].indexOf(p) >= 0) return 'RB'
+    if (p === 'WR') return 'WR'
+    if (p === 'TE') return 'TE'
+    if (['LT', 'RT', 'LG', 'RG', 'C', 'G', 'OT', 'OL', 'T'].indexOf(p) >= 0) return 'OL'
+    if (['DE', 'DT', 'NT', 'DL', 'EDGE'].indexOf(p) >= 0) return 'DL'
+    if (['ILB', 'OLB', 'MLB', 'LB'].indexOf(p) >= 0) return 'LB'
+    if (['CB', 'S', 'FS', 'SS', 'DB'].indexOf(p) >= 0) return 'DB'
+    if (['K', 'P', 'LS'].indexOf(p) >= 0) return 'ST'
+    return null
+  }
+  var roleWeight = { starter: 1, bench: 0.5, reserve: 0 }
+  var scoreGroups = { QB: 0, RB: 0, WR: 0, TE: 0, OL: 0, DL: 0, LB: 0, DB: 0, ST: 0 }
+  ;(entry.squad || []).forEach(function (s) {
+    var pl = s.player || {}
+    var grp = posGroupOf(pl.Position || s.position || s.pos)
+    if (!grp) return
+    var w = roleWeight[String(s.role || '').toLowerCase()]
+    if (w === undefined) w = 1
+    var pts = Number(pl.projectedPoints || pl.pointsPerGame || pl.avgPf || pl.fantasyPointsAvg || pl.samPoints || 0) * w
+    if (pts > 0) scoreGroups[grp] += pts
+  })
+  var scoreOrder = ['QB', 'RB', 'WR', 'TE', 'OL', 'DL', 'LB', 'DB', 'ST']
+  var scoreTotal = scoreOrder.reduce(function (a, k) { return a + scoreGroups[k] }, 0)
+  var projTotal = Math.round(scoreTotal)
+  // donut geometry
+  var R = 46; var CIRC = 2 * Math.PI * R; var cumOffset = 0
+  var donutSegs = scoreTotal > 0 ? scoreOrder.filter(function (k) { return scoreGroups[k] > 0 }).map(function (k) {
+    var frac = scoreGroups[k] / scoreTotal
+    var seg = { key: k, color: scoreColors[k], len: frac * CIRC, offset: cumOffset, pct: Math.round(frac * 100), val: Math.round(scoreGroups[k]) }
+    cumOffset += frac * CIRC
+    return seg
+  }) : []
+
+  // ── matchday countdown ──
+  var deadlineRaw = (activeWeek && (activeWeek.endDate || activeWeek.startDate)) || null
+  var cdMs = deadlineRaw ? (new Date(deadlineRaw).getTime() - now) : null
+  var cd = { d: 0, h: 0, m: 0 }
+  if (cdMs && cdMs > 0) { cd.d = Math.floor(cdMs / 86400000); cd.h = Math.floor((cdMs % 86400000) / 3600000); cd.m = Math.floor((cdMs % 3600000) / 60000) }
+  var deadlineDate = fmtDate(deadlineRaw) || '—'
+
+  // ── weekly challenge ──
+  var challengeTarget = 400
+  var challengeCurrent = projTotal || (stats.weekScores && stats.weekScores.length ? Math.round(stats.weekScores[stats.weekScores.length - 1]) : 0) || 0
+
+  var TABS = [
+    { label: 'MY SQUAD', to: '/nfl-rivals/squad', active: true },
+    { label: 'MARKET', to: '/nfl-rivals/search' },
+    { label: 'MATCHDAY', to: '/nfl-rivals/matchday' },
+    { label: 'TRANSFER MARKET', to: '/nfl-rivals/search' },
+    { label: 'AI COACH', to: '/nfl-rivals/ai-coach' },
+  ]
 
   return (
-    <div className="nflr-page">
+    <div className="nflr-page ovr-page">
       {/* ═══ HERO BANNER ═══ */}
-      <div className="rv2-hero" style={{ '--div-glow': divColor }}>
-        <div className="rv2-hero-stripe" style={{ background: `linear-gradient(135deg, ${divColor}, transparent)` }} />
-        <div className="rv2-hero-content">
-          {/* Badge + Identity */}
-          <div className="rv2-hero-left">
-            <div className="rv2-hero-badge" style={{ borderColor: divColor, boxShadow: `0 0 30px ${divColor}40` }}>
-              <CrownOutlined style={{ color: divColor, fontSize: 22 }} />
-              <span className="rv2-hero-badge-num" style={{ color: divColor }}>{div}</span>
+      <div className="ovr-hero">
+        <img src={heroPlayer} alt="" className="ovr-hero-player" />
+        <div className="ovr-hero-inner">
+          <div className="ovr-hero-left">
+            <div className="ovr-hex" title={`Division ${div}`}>
+              <StarFilled className="ovr-hex-star" />
+              <span className="ovr-hex-div">DIVISION</span>
+              <span className="ovr-hex-num">{div}</span>
             </div>
-            <div className="rv2-hero-identity">
-              <div className="rv2-hero-team-row">
+            <div className="ovr-hero-id">
+              <div className="ovr-team-row">
                 {editingName ? (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <>
                     <input
-                      className="rv2-hero-edit-input"
+                      className="ovr-edit-input"
                       value={newTeamName}
                       onChange={function (e) { setNewTeamName(e.target.value) }}
                       onKeyDown={function (e) { if (e.key === 'Enter') handleSaveTeamName() }}
                       maxLength={30} autoFocus
                     />
-                    <CheckOutlined onClick={handleSaveTeamName} style={{ color: divColor, cursor: 'pointer', fontSize: 18 }} />
-                  </div>
+                    <CheckOutlined className="ovr-edit-btn" onClick={handleSaveTeamName} style={{ opacity: savingName ? 0.5 : 1 }} />
+                  </>
                 ) : (
                   <>
-                    <h2 className="rv2-hero-team-name">{entry.teamName || 'MY FRANCHISE'}</h2>
-                    <EditOutlined className="rv2-hero-edit-btn" onClick={function () { setNewTeamName(entry.teamName || ''); setEditingName(true) }} />
+                    <h2 className="ovr-team-name">{entry.teamName || 'MY FRANCHISE'}</h2>
+                    <EditOutlined className="ovr-edit-btn" onClick={function () { setNewTeamName(entry.teamName || ''); setEditingName(true) }} />
                   </>
                 )}
               </div>
-              <h1 className="rv2-hero-division" style={{ color: divColor }}>{entry.divisionName || DIVISIONS[div]}</h1>
-              <div className="rv2-hero-tags">
-                <span className="rv2-tag">{(season && season.name) || (entry && entry.currentSeason) || 'PRE-SEASON'}</span>
-                {pod && <span className="rv2-tag">POD {pod.podNumber}</span>}
-                {activeWeek && <span className="rv2-tag rv2-tag-live">WEEK {activeWeek.week}</span>}
+              <h1 className="ovr-hero-title">{entry.divisionName || DIVISIONS[div]}</h1>
+              <div className="ovr-pills">
+                <span className="ovr-pill">{seasonName} SEASON</span>
+                <span className="ovr-pill">WEEK {weekNum || '—'} OF {totalWeeks}</span>
+                <span className="ovr-pill">12 TEAM PPR</span>
               </div>
             </div>
           </div>
 
-          {/* Stats strip */}
-          <div className="rv2-hero-stats">
-            <div className="rv2-stat rv2-stat-win">
-              <span className="rv2-stat-num">{stats.wins || 0}</span>
-              <span className="rv2-stat-lbl">WIN</span>
+          <div className="ovr-hero-right">
+            {/* CURRENT RECORD */}
+            <div className="ovr-hblock">
+              <div className="ovr-hblock-lbl">Current Record</div>
+              <div className="ovr-rec-main">
+                <span className="ovr-rec-wl">{recordStr}</span>
+                <span className="ovr-rec-place">{ordinal(placeNum)}</span>
+              </div>
+              <div className="ovr-rec-line">
+                <b>{Math.round(pf)}</b> PF &nbsp; <b>{paDisplay}</b> PA &nbsp; <b>{diffDisplay}</b> DIFF
+              </div>
             </div>
-            <div className="rv2-stat rv2-stat-draw">
-              <span className="rv2-stat-num">{stats.draws || 0}</span>
-              <span className="rv2-stat-lbl">DRW</span>
-            </div>
-            <div className="rv2-stat rv2-stat-loss">
-              <span className="rv2-stat-num">{stats.losses || 0}</span>
-              <span className="rv2-stat-lbl">LOSS</span>
-            </div>
-            <div className="rv2-stat-sep" />
-            <div className="rv2-stat rv2-stat-pts">
-              <span className="rv2-stat-num">{(stats.totalPoints || 0).toFixed(1)}</span>
-              <span className="rv2-stat-lbl">PTS</span>
+            {/* NEXT MATCHUP */}
+            <div className="ovr-hblock">
+              <div className="ovr-hblock-lbl">Next Matchup</div>
+              {nextX ? (
+                <>
+                  <div className="ovr-mu-opp">vs {oppName}</div>
+                  <div className="ovr-mu-date">{nextDate || (weekNum ? `Week ${nextX.matchday}` : 'Scheduled')}</div>
+                </>
+              ) : (
+                <>
+                  <div className="ovr-mu-opp">TBD</div>
+                  <div className="ovr-mu-date">No fixture yet</div>
+                </>
+              )}
+              <button className="ovr-mu-btn" onClick={function () { navigate('/nfl-rivals/matchday') }}>View Matchup</button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ═══ QUICK ACTIONS BAR ═══ */}
-      <div className="rv2-quick-bar">
-        <button className="rv2-quick-btn rv2-quick-primary" onClick={() => navigate('/nfl-rivals/squad')}>
-          <TeamOutlined /> {entry && entry.squadValid ? 'MY SQUAD' : 'BUILD SQUAD'}
-        </button>
-        <button className="rv2-quick-btn" onClick={() => navigate('/nfl-rivals/search')}>
-          <ThunderboltOutlined /> MARKET
-        </button>
-        <button className="rv2-quick-btn" onClick={() => navigate('/nfl-rivals/matchday')}>
-          <BarChartOutlined /> MATCHDAY
-        </button>
-        <button className="rv2-quick-btn" onClick={() => navigate('/nfl-rivals/ai-coach')}>
-          <MedicineBoxOutlined /> AI COACH
-        </button>
+      {/* ═══ TABS ═══ */}
+      <div className="ovr-tabs">
+        {TABS.map(function (t) {
+          return (
+            <button key={t.label} className={`ovr-tab${t.active ? ' active' : ''}`} onClick={function () { navigate(t.to) }}>{t.label}</button>
+          )
+        })}
       </div>
 
-      {/* ═══ FEED-STYLE DASHBOARD ═══ */}
-      <div className="rv2-feed">
-        {/* Left column: main cards */}
-        <div className="rv2-feed-main">
-          {/* Featured: Squad status */}
-          <div className="rv2-card-featured" onClick={() => navigate('/nfl-rivals/squad')}>
-            <div className="rv2-card-featured-stripe" />
-            <div className="rv2-card-featured-body">
-              <div className="rv2-card-featured-icon" style={{ background: 'linear-gradient(135deg, #A78BFA, #7c3aed)' }}>
-                <TeamOutlined />
-              </div>
-              <div className="rv2-card-featured-text">
-                <span className="rv2-card-featured-title">Squad</span>
-                <span className="rv2-card-featured-sub">
-                  {entry && entry.squadValid
-                    ? `${entry.squad ? entry.squad.length : 0}/53 · $${((entry.squadValue || 0) / 1e6).toFixed(0)}M cap`
-                    : 'Build your roster to compete'}
-                </span>
-              </div>
-              {!(entry && entry.squadValid) && <span className="rv2-card-featured-cta">GET STARTED</span>}
-            </div>
+      {/* ═══ ROW 1 ═══ */}
+      <div className="ovr-row ovr-row-3">
+        {/* MY SQUAD */}
+        <div className="ovr-card">
+          <div className="ovr-card-hd">
+            <span className="ovr-card-title"><TeamOutlined /> My Squad</span>
+            <span className="ovr-card-link" style={{ cursor: 'default' }}>53-Man Roster</span>
           </div>
-
-          {/* Two-col action grid */}
-          <div className="rv2-action-grid">
-            <div className="rv2-action-card" onClick={() => navigate('/nfl-rivals/pod')}>
-              <div className="rv2-action-icon" style={{ background: 'linear-gradient(135deg, #f97316, #ea580c)' }}><FireOutlined /></div>
-              <span className="rv2-action-title">Pod Standings</span>
-              <span className="rv2-action-sub">{podMembers.length > 0 ? `${podMembers.length} managers` : 'Awaiting placement'}</span>
-            </div>
-            <div className="rv2-action-card" onClick={() => navigate('/nfl-rivals/matchday')}>
-              <div className="rv2-action-icon" style={{ background: 'linear-gradient(135deg, #a855f7, #7c3aed)' }}><BarChartOutlined /></div>
-              <span className="rv2-action-title">Matchday</span>
-              <span className="rv2-action-sub">{activeWeek ? `Week ${activeWeek.week} active` : 'No active week'}</span>
-            </div>
-            <div className="rv2-action-card" onClick={() => navigate('/nfl-rivals/trophies')}>
-              <div className="rv2-action-icon" style={{ background: 'linear-gradient(135deg, #fbbf24, #f59e0b)' }}><TrophyOutlined /></div>
-              <span className="rv2-action-title">Trophies</span>
-              <span className="rv2-action-sub">{entry.trophies && entry.trophies.length > 0 ? `${entry.trophies.length} earned` : 'No trophies yet'}</span>
-            </div>
-            <div className="rv2-action-card" onClick={() => navigate('/nfl-rivals/leaderboard')}>
-              <div className="rv2-action-icon" style={{ background: 'linear-gradient(135deg, #22c55e, #16a34a)' }}><StarOutlined /></div>
-              <span className="rv2-action-title">Leaderboard</span>
-              <span className="rv2-action-sub">Global rankings</span>
-            </div>
+          <div className="ovr-pos-grid">
+            {[['QB', rosterGroups.QB], ['RB', rosterGroups.RB], ['WR', rosterGroups.WR], ['TE', rosterGroups.TE], ['OL', rosterGroups.OL], ['DL', rosterGroups.DL], ['LB', rosterGroups.LB], ['DB', rosterGroups.DB], ['ST', rosterGroups.ST]].map(function (x) {
+              return (
+                <div key={x[0]} className="ovr-pos-cell">
+                  <div className="ovr-pos-num">{x[1]}</div>
+                  <div className="ovr-pos-lbl">{x[0]}</div>
+                </div>
+              )
+            })}
           </div>
+          <div className="ovr-squad-foot">
+            <div className="ovr-foot-stat"><div className="ovr-foot-val">{squadLen}/53</div><div className="ovr-foot-lbl">Players</div></div>
+            <div className="ovr-foot-stat"><div className="ovr-foot-val">${((entry.squadValue || 0) / 1e6).toFixed(1)}M</div><div className="ovr-foot-lbl">Squad Value</div></div>
+            <div className="ovr-foot-stat"><div className={`ovr-foot-val ${entry.squadValid ? 'green' : 'red'}`}>{entry.squadValid ? 'OK' : 'OVER'}</div><div className="ovr-foot-lbl">Cap</div></div>
+          </div>
+          <button className="ovr-btn-purple" onClick={function () { navigate('/nfl-rivals/squad') }}>Manage Squad</button>
         </div>
 
-        {/* Right column: sidebar widgets */}
-        <div className="rv2-feed-side">
-          {/* Wallet widget */}
-          <div className="rv2-widget">
-            <div className="rv2-widget-header">
-              <WalletOutlined style={{ color: '#2dd4bf' }} />
-              <span>Rivals Wallet</span>
-            </div>
-            <div className="rv2-wallet-balance">
-              <span className="rv2-wallet-amount">{spDisplay}</span>
-              <span className="rv2-wallet-unit">SP</span>
-            </div>
-            <button className="rv2-wallet-buy" onClick={() => navigate('/nfl-rivals/buy-sp')}>
-              <DollarOutlined /> Buy SamPoints
-            </button>
+        {/* RIVALS WALLET */}
+        <div className="ovr-card">
+          <div className="ovr-card-hd">
+            <span className="ovr-card-title"><WalletOutlined /> Rivals Wallet</span>
+            <button className="ovr-card-link" onClick={function () { navigate('/nfl-rivals/buy-sp') }}>Add Funds</button>
           </div>
+          <div className="ovr-bal-lbl">Available Balance</div>
+          <div className="ovr-bal-num">{spDisplay} <small>SP</small></div>
+          <div className="ovr-kv"><span className="ovr-kv-k">Weekly Income</span><span className="ovr-kv-v">{weeklyIncome != null ? `${weeklyIncome} SP` : '—'}</span></div>
+          <div className="ovr-kv"><span className="ovr-kv-k">Transfer Budget</span><span className="ovr-kv-v">—</span></div>
+          <div className="ovr-kv"><span className="ovr-kv-k">Pending Bids</span><span className="ovr-kv-v">0</span></div>
+          <div className="ovr-kv"><span className="ovr-kv-k">Won / Lost</span><span className="ovr-kv-v"><span style={{ color: '#4ADE80' }}>{wins}</span> / <span style={{ color: '#EF4444' }}>{losses}</span></span></div>
+          <button className="ovr-card-link ovr-foot-link" onClick={function () { navigate('/nfl-rivals/history') }}>View Transactions ›</button>
+        </div>
 
-          {/* Pod Standings widget */}
-          <div className="rv2-widget">
-            <div className="rv2-widget-header">
-              <FireOutlined style={{ color: '#f97316' }} />
-              <span>Pod Standings</span>
-              <button className="rv2-widget-link" onClick={() => navigate('/nfl-rivals/pod')}>View All</button>
-            </div>
-            {podMembers.length > 0 ? (
-              <div className="rv2-pod-list">
-                {podMembers.slice(0, 5).map(function (m, idx) {
-                  var myUserId = entry ? (entry.user._id || entry.user) : null
-                  var memberId = m.user ? (m.user._id || m.user) : null
-                  var isMe = myUserId && memberId && String(myUserId) === String(memberId)
+        {/* LEAGUE STANDINGS */}
+        <div className="ovr-card">
+          <div className="ovr-card-hd">
+            <span className="ovr-card-title"><TrophyOutlined /> League Standings</span>
+            <button className="ovr-card-link" onClick={function () { navigate('/nfl-rivals/leaderboard') }}>View Full Table</button>
+          </div>
+          <div className="ovr-tbl-head"><span>#</span><span>Team</span><span style={{ textAlign: 'center' }}>W-L-D</span><span style={{ textAlign: 'right' }}>Pts</span></div>
+          {(sortedMembers.length ? sortedMembers : leaderboard).length ? (sortedMembers.length ? sortedMembers : leaderboard).slice(0, 5).map(function (m, idx) {
+            var me = isMe(m.user)
+            var name = (m.entry && m.entry.teamName) || (m.user && (m.user.userName || m.user.username)) || m.username || m.teamName || 'Manager'
+            return (
+              <div key={idx} className={`ovr-tbl-row${me ? ' me' : ''}`}>
+                <span className="ovr-tbl-rank">{idx + 1}</span>
+                <span className="ovr-tbl-team">{name}{me ? ' (You)' : ''}</span>
+                <span className="ovr-tbl-wl">{m.wins || 0}-{m.losses || 0}-{m.draws || 0}</span>
+                <span className="ovr-tbl-pts">{Math.round(m.totalPoints || m.points || 0)}</span>
+              </div>
+            )
+          }) : <div className="ovr-empty">Pod forming — standings appear once managers are placed.</div>}
+          <button className="ovr-card-link ovr-foot-link" onClick={function () { navigate('/nfl-rivals/leaderboard') }}>View Full Standings ›</button>
+        </div>
+      </div>
+
+      {/* ═══ ROW 2 ═══ */}
+      <div className="ovr-row ovr-row-4">
+        {/* MATCHDAY */}
+        <div className="ovr-card">
+          <div className="ovr-card-hd">
+            <span className="ovr-card-title"><ThunderboltOutlined /> Matchday</span>
+            {activeWeek && <span className="ovr-badge ovr-badge-green">Week {weekNum} Active</span>}
+          </div>
+          <div className="ovr-count">
+            <div className="ovr-count-cell"><div className="ovr-count-num">{cd.d}</div><div className="ovr-count-lbl">Days</div></div>
+            <div className="ovr-count-cell"><div className="ovr-count-num">{cd.h}</div><div className="ovr-count-lbl">Hrs</div></div>
+            <div className="ovr-count-cell"><div className="ovr-count-num">{cd.m}</div><div className="ovr-count-lbl">Mins</div></div>
+          </div>
+          <button className="ovr-card-link ovr-foot-link" onClick={function () { navigate('/nfl-rivals/matchday') }}>View Matchday ›</button>
+        </div>
+
+        {/* RECENT ACTIVITY */}
+        <div className="ovr-card">
+          <div className="ovr-card-hd"><span className="ovr-card-title"><ClockCircleOutlined /> Recent Activity</span></div>
+          <div className="ovr-empty" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>No recent activity yet.</div>
+          <button className="ovr-card-link ovr-foot-link" onClick={function () { navigate('/nfl-rivals/history') }}>View All Activity ›</button>
+        </div>
+
+        {/* AI COACH */}
+        <div className="ovr-card ovr-card--aicoach">
+          <img src={aiCoachRobot} alt="" className="ovr-robot-bg" />
+          <div className="ovr-card-hd">
+            <span className="ovr-card-title"><RobotOutlined /> AI Coach</span>
+            <span className="ovr-badge ovr-badge-ghost">Active</span>
+          </div>
+          <div className="ovr-check">
+            {['Lineup Optimization', 'Tactical Advice', 'Player Comparisons', 'Weekly Insights'].map(function (x) {
+              return <div key={x} className="ovr-check-row"><CheckCircleOutlined /> {x}</div>
+            })}
+          </div>
+          <button className="ovr-btn-purple" onClick={function () { navigate('/nfl-rivals/ai-coach') }}>Get Advice</button>
+        </div>
+
+        {/* WEEKLY CHALLENGE */}
+        <div className="ovr-card">
+          <div className="ovr-card-hd">
+            <span className="ovr-card-title"><FireOutlined /> Weekly Challenge</span>
+            <span className="ovr-badge ovr-badge-ghost">Active</span>
+          </div>
+          <div className="ovr-chal-goal">Score 60+ points this Gameweek</div>
+          <div className="ovr-prog"><div className="ovr-prog-bar" style={{ width: `${Math.min(100, (challengeCurrent / challengeTarget) * 100)}%` }} /></div>
+          <div className="ovr-chal-foot"><span>{challengeCurrent} / {challengeTarget}</span><span>Reward: 100 SP</span></div>
+        </div>
+      </div>
+
+      {/* ═══ ROW 3 ═══ */}
+      <div className="ovr-row ovr-row-3">
+        {/* SCORING BREAKDOWN */}
+        <div className="ovr-card">
+          <div className="ovr-card-hd"><span className="ovr-card-title">Scoring Breakdown</span></div>
+          <div className="ovr-donut-wrap">
+            <div className="ovr-donut" style={{ width: 110, height: 110 }}>
+              <svg width="110" height="110" viewBox="0 0 110 110">
+                <circle cx="55" cy="55" r={R} fill="none" stroke="rgba(139,92,246,0.14)" strokeWidth="12" />
+                {donutSegs.map(function (s) {
                   return (
-                    <div key={(m.entry && m.entry._id) || idx} className={`rv2-pod-row ${isMe ? 'rv2-pod-me' : ''}`}>
-                      <span className="rv2-pod-rank">{idx + 1}</span>
-                      <span className="rv2-pod-name">{(m.user && (m.user.userName || m.user.username)) || (m.entry && m.entry.teamName) || m.username || 'Manager'}</span>
-                      <span className="rv2-pod-record">
-                        <span className="rv2-pod-w">{m.wins || 0}</span>
-                        <span className="rv2-pod-sep">-</span>
-                        <span className="rv2-pod-d">{m.draws || 0}</span>
-                        <span className="rv2-pod-sep">-</span>
-                        <span className="rv2-pod-l">{m.losses || 0}</span>
-                      </span>
-                      <span className="rv2-pod-pts">{(m.totalPoints || 0).toFixed(1)}</span>
-                    </div>
+                    <circle key={s.key} cx="55" cy="55" r={R} fill="none" stroke={s.color} strokeWidth="12"
+                      strokeDasharray={`${s.len} ${CIRC - s.len}`} strokeDashoffset={-s.offset}
+                      transform="rotate(-90 55 55)" strokeLinecap="butt" />
                   )
                 })}
+              </svg>
+              <div className="ovr-donut-center">
+                <div className="ovr-donut-total">{projTotal}</div>
+                <div className="ovr-donut-cap">Proj. Pts</div>
               </div>
-            ) : (
-              <div className="rv2-widget-empty">
-                {entry && entry.squadValid ? 'Pod forming — waiting for managers' : 'Build your squad to join a pod'}
-              </div>
-            )}
-          </div>
-
-          {/* AI Coach widget */}
-          <div className="rv2-widget rv2-widget-cta" onClick={() => navigate('/nfl-rivals/ai-coach')}>
-            <MedicineBoxOutlined className="rv2-widget-cta-icon" />
-            <div>
-              <div className="rv2-widget-cta-title">AI Coach</div>
-              <div className="rv2-widget-cta-sub">Get strategy & lineup advice</div>
             </div>
-            <span className="rv2-widget-cta-arrow">›</span>
+            <div className="ovr-legend">
+              {scoreTotal > 0 ? scoreOrder.map(function (k) {
+                var v = Math.round(scoreGroups[k]); var pct = scoreTotal > 0 ? Math.round((scoreGroups[k] / scoreTotal) * 100) : 0
+                return (
+                  <div key={k} className="ovr-legend-row">
+                    <span className="ovr-dot" style={{ background: scoreColors[k] }} />
+                    <span className="ovr-legend-name">{k}</span>
+                    <span className="ovr-legend-val">{v}</span>
+                    <span className="ovr-legend-pct">{pct}%</span>
+                  </div>
+                )
+              }) : <div className="ovr-empty">Build your squad to see projected scoring.</div>}
+            </div>
           </div>
+        </div>
+
+        {/* NEXT MATCHUP */}
+        <div className="ovr-card">
+          <div className="ovr-card-hd"><span className="ovr-card-title">Next Matchup</span></div>
+          <div className="ovr-vs">
+            <div className="ovr-vs-side">
+              <div className="ovr-vs-helmet">🪖</div>
+              <div className="ovr-vs-name">You</div>
+              <div className="ovr-vs-rec">{recordStr}</div>
+            </div>
+            <div className="ovr-vs-mid">VS</div>
+            <div className="ovr-vs-side">
+              <div className="ovr-vs-helmet">🏈</div>
+              <div className="ovr-vs-name">{oppName || 'TBD'}</div>
+              <div className="ovr-vs-rec">{oppRecord}</div>
+            </div>
+          </div>
+          <div className="ovr-proj">Projected <b>{projTotal}</b> vs <b>—</b></div>
+        </div>
+
+        {/* TRENDING PLAYERS */}
+        <div className="ovr-card">
+          <div className="ovr-card-hd">
+            <span className="ovr-card-title"><FireOutlined /> Trending Players</span>
+            <button className="ovr-card-link" onClick={function () { navigate('/nfl-rivals/search') }}>See All</button>
+          </div>
+          {trending && trending.length ? trending.slice(0, 5).map(function (p, i) {
+            return (
+              <div key={p._id || i} className="ovr-trend-row">
+                <div className="ovr-trend-info">
+                  <div className="ovr-trend-name">{p.Name || 'Player'}</div>
+                  <div className="ovr-trend-meta">{(p.Position || '—')} - {(p.Team || '—')}</div>
+                </div>
+                <ArrowUpOutlined className="ovr-trend-arrow up" />
+              </div>
+            )
+          }) : <div className="ovr-empty">No trending players right now.</div>}
+        </div>
+      </div>
+
+      {/* ═══ BOTTOM BAR ═══ */}
+      <div className="ovr-bottom">
+        <div className="ovr-bottom-half">
+          <ClockCircleOutlined />
+          <div>
+            <div className="ovr-bottom-lbl">Week {weekNum || '—'} Deadline</div>
+            <div className="ovr-bottom-val">{deadlineDate}</div>
+          </div>
+        </div>
+        <div className="ovr-bottom-half">
+          <MedicineBoxOutlined style={{ color: injuredCount > 0 ? '#EF4444' : '#A78BFA' }} />
+          <div>
+            <div className="ovr-bottom-lbl">Injury Report</div>
+            <div className="ovr-bottom-val">{injuredCount} player{injuredCount === 1 ? '' : 's'} to monitor</div>
+          </div>
+          <button className="ovr-bottom-link" onClick={function () { navigate('/nfl-rivals/squad') }}><RightOutlined /></button>
         </div>
       </div>
     </div>
   )
 }
-
-/* ── Dashboard Card Component ── */
-const DashCard = ({ icon, iconBg, iconColor, title, value, warn, onClick }) => (
-  <div className="rv-dash-card" onClick={onClick}>
-    <div className="rv-dash-card-icon" style={{ background: iconBg, color: iconColor }}>{icon}</div>
-    <div style={{ flex: 1 }}>
-      <div className="rv-dash-card-title">{title}</div>
-      <div className={`rv-dash-card-value ${warn ? 'warn' : ''}`}>{value}</div>
-    </div>
-    <span className="rv-dash-card-chevron">›</span>
-  </div>
-)
 
 export default NFLRivalsOverview

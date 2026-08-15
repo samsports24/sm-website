@@ -1,0 +1,86 @@
+/* Replace Player modal — matches the supplied design. Green accents on dark. */
+/* Non-blocking overlay: the drawer sits on the right, but the overlay itself
+   lets clicks pass through to the (shrunk) pitch so starters stay clickable. */
+.rp-overlay { position:fixed; inset:0; z-index:5000; background:transparent; pointer-events:none; display:flex; align-items:stretch; justify-content:flex-end; padding:0;
+  --r-green:#24d26c; --r-purple:#22c55e; --r-surface:#0c1018; --r-surface2:#0f141e; --r-border:rgba(255,255,255,0.08); --r-muted:#8a93a6; }
+/* Right-side slide-in drawer */
+.rp-modal { pointer-events:auto; position:relative; width:100%; max-width:min(600px, 58vw); height:100vh; max-height:100vh; overflow-y:auto;
+  background:linear-gradient(180deg,#0d1119,#0a0d14); border:none; border-left:1px solid var(--r-border); border-radius:18px 0 0 18px; padding:24px;
+  color:#f5f7fa; font-family:var(--font-body),-apple-system,sans-serif; box-shadow:-30px 0 80px rgba(0,0,0,.55);
+  animation:rp-slidein .28s cubic-bezier(.22,.61,.36,1); }
+@keyframes rp-slidein { from { transform:translateX(100%); opacity:.4; } to { transform:translateX(0); opacity:1; } }
+/* Always dock beside the pitch (no blocking backdrop) so the smaller field stays visible at every width. */
+@media (max-width:640px){ .rp-modal { border-radius:0; } }
+.rp-x { position:absolute; top:18px; right:18px; width:30px; height:30px; border-radius:8px; border:1px solid var(--r-border); background:transparent; color:var(--r-muted); cursor:pointer; }
+.rp-x:hover { color:#fff; }
+.rp-title { font-family:var(--font-heading),'Rajdhani',sans-serif; font-size:24px; font-weight:800; color:#fff; }
+.rp-subtitle { font-size:13px; color:var(--r-muted); margin-top:4px; }
+.rp-subtitle b { color:#fff; }
+
+/* Current starter */
+.rp-current { display:flex; align-items:center; gap:14px; background:var(--r-surface); border:1px solid var(--r-border); border-radius:14px; padding:14px 16px; margin-top:18px; }
+.rp-current-id { flex:1; min-width:0; }
+.rp-current-name { font-size:16px; font-weight:800; color:#fff; }
+.rp-current-sub { font-size:12px; color:var(--r-muted); margin-top:2px; }
+.rp-pos { font-size:11px; font-weight:800; color:var(--r-purple); background:rgba(34, 197, 94,.16); border-radius:6px; padding:4px 9px; }
+.rp-stat { text-align:center; display:flex; flex-direction:column; gap:2px; }
+.rp-stat span { font-size:9.5px; color:var(--r-muted); text-transform:uppercase; letter-spacing:.4px; }
+.rp-stat b { font-family:var(--font-heading),'Rajdhani',sans-serif; font-size:15px; color:#fff; }
+.rp-ovr { color:var(--r-green) !important; }
+.rp-starter-tag { font-size:11px; font-weight:800; color:#fff; background:rgba(34, 197, 94,.25); border:1px solid rgba(34, 197, 94,.5); border-radius:9px; padding:8px 14px; }
+.rp-arrow { text-align:center; color:var(--r-green); font-size:18px; margin:8px 0; }
+
+/* Tabs */
+.rp-tabs { display:flex; gap:6px; flex-wrap:wrap; }
+.rp-tab { background:var(--r-surface); border:1px solid var(--r-border); color:var(--r-muted); font-size:12.5px; font-weight:700; padding:9px 16px; border-radius:9px; cursor:pointer; }
+.rp-tab--on { background:linear-gradient(135deg,#16a34a,var(--r-green)); color:#04110a; border:none; }
+
+/* Controls */
+.rp-controls { display:flex; gap:8px; margin:14px 0; flex-wrap:wrap; }
+.rp-search { flex:1; min-width:180px; display:flex; align-items:center; gap:8px; background:var(--r-surface); border:1px solid var(--r-border); border-radius:10px; padding:9px 12px; }
+.rp-search input { flex:1; background:transparent; border:none; outline:none; color:#fff; font-size:13px; }
+.rp-pill { display:inline-flex; align-items:center; font-family:inherit; font-size:12.5px; color:var(--r-muted); background:var(--r-surface); border:1px solid var(--r-border); border-radius:10px; padding:9px 14px; cursor:pointer; white-space:nowrap; }
+.rp-pill--on { color:#04110a; background:linear-gradient(135deg,#16a34a,var(--r-green)); border:none; }
+.rp-pill--static { cursor:default; }
+.rp-pill-select { appearance:none; -webkit-appearance:none; -moz-appearance:none; color:#fff; padding-right:14px; }
+.rp-pill-select option { color:#000; }
+
+/* List */
+.rp-list { display:flex; flex-direction:column; gap:8px; }
+.rp-row { display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:var(--r-surface); border:1px solid var(--r-border); border-radius:12px; padding:11px 14px; cursor:pointer; transition:border-color .14s ease, background .14s ease; }
+.rp-row:hover { border-color:rgba(36,210,108,.35); }
+.rp-row--sel { border-color:var(--r-green); background:rgba(36,210,108,.06); }
+.rp-star { color:var(--r-green); font-size:16px; width:16px; }
+.rp-row-id { flex:1; min-width:0; }
+.rp-row-name { display:block; font-size:14px; font-weight:800; color:#fff; }
+.rp-row-sub { display:block; font-size:11px; color:var(--r-muted); }
+.rp-select { font-size:12.5px; font-weight:800; color:var(--r-green); border:1px solid rgba(36,210,108,.5); border-radius:9px; padding:7px 16px; white-space:nowrap; }
+.rp-select--on { background:var(--r-green); color:#04110a; }
+.rp-skel { height:60px; border-radius:12px; background:linear-gradient(90deg,rgba(255,255,255,.05) 25%,rgba(255,255,255,.12) 37%,rgba(255,255,255,.05) 63%); background-size:400px 100%; animation:rpShim 1.2s infinite; }
+@keyframes rpShim { 0%{background-position:-200px 0} 100%{background-position:200px 0} }
+.rp-empty { text-align:center; color:var(--r-muted); font-size:13px; padding:30px 0; }
+
+/* Footer */
+.rp-footer { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:18px; flex-wrap:wrap; }
+.rp-check { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--r-muted); cursor:pointer; }
+.rp-check input { accent-color:var(--r-green); width:16px; height:16px; }
+.rp-footer-btns { display:flex; gap:10px; }
+.rp-btn { padding:12px 22px; border-radius:11px; font-weight:800; font-size:13.5px; cursor:pointer; border:1px solid var(--r-border); }
+.rp-btn--ghost { background:transparent; color:#fff; }
+.rp-btn--go { background:linear-gradient(135deg,#16a34a,var(--r-green)); color:#04110a; border:none; }
+.rp-btn--go:disabled { opacity:.5; cursor:not-allowed; }
+
+@media (max-width:640px){
+  .rp-current { flex-wrap:wrap; }
+  .rp-row .rp-stat { display:none; }
+}
+
+/* Illegal-squad lock — browse allowed, saving disabled */
+.rp-locked{
+  display:flex; align-items:center; gap:8px;
+  margin:12px 0 0; padding:10px 14px;
+  border:1px solid rgba(239,68,68,.45); border-left:4px solid #ef4444;
+  border-radius:10px; background:rgba(239,68,68,.10);
+  color:#fca5a5; font-size:12.5px; font-weight:600; line-height:1.4;
+}
+.rp-btn--go:disabled{ opacity:.5; cursor:not-allowed; }

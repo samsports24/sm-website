@@ -72,6 +72,9 @@ const getPageCategory = (pathname) => {
 const AnnouncementBanner = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [sessionDismissed, setSessionDismissed] = useState(new Set());
+  // Announcements whose image failed to load (e.g. an old dead S3 URL) — hide
+  // them entirely instead of rendering an ugly broken-image bar.
+  const [brokenImgs, setBrokenImgs] = useState(new Set());
   const location = useLocation();
 
   // Only show announcements to authenticated users (not on public landing page)
@@ -123,6 +126,12 @@ const AnnouncementBanner = () => {
     // Page targeting
     const pt = a.pageTarget || "all_pages";
     if (pt !== "all_pages" && pt !== currentPage) return false;
+    // Image-only banner whose image is dead — don't render a broken bar.
+    if (a.imageUrl && brokenImgs.has(a._id)) return false;
+    // Nothing to show — no image and no real text. An empty bar is just a
+    // stray icon + close button, so hide it entirely.
+    const hasText = a.text && a.text.trim() && a.text.trim() !== "(image banner)";
+    if (!a.imageUrl && !hasText) return false;
     return true;
   });
 
@@ -154,6 +163,7 @@ const AnnouncementBanner = () => {
                 <img
                   src={ann.imageUrl}
                   alt={ann.text || "Announcement"}
+                  onError={() => setBrokenImgs((prev) => new Set([...prev, ann._id]))}
                   style={{
                     width: "100%",
                     maxHeight: 120,

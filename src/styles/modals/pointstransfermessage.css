@@ -270,7 +270,7 @@ font-size: 25px;
     font-weight: 700;
     font-size: 14px;
     letter-spacing: 1px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: linear-gradient(135deg, #6366f1, #22c55e);
     border: none;
     color: #fff;
     cursor: pointer;
@@ -408,7 +408,7 @@ font-size: 25px;
 }
 
 .chm-reward-free .chm-reward-icon {
-    color: #a5b4fc;
+    color: #4ade80;
 }
 
 /* Reward list */
@@ -460,7 +460,7 @@ font-size: 25px;
 }
 
 .chm-footer-icon {
-    color: #a5b4fc;
+    color: #4ade80;
     font-size: 14px;
     margin-top: 1px;
     flex-shrink: 0;
@@ -473,7 +473,7 @@ font-size: 25px;
     font-weight: 700;
     font-size: 14px;
     letter-spacing: 1px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: linear-gradient(135deg, #6366f1, #22c55e);
     border: none;
     color: #fff;
     cursor: pointer;

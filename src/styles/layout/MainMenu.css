@@ -3,7 +3,7 @@
    ============================================ */
 
 .sm-sidebar {
-  background: #0D1220;
+  background: transparent;
   height: 68vh;
   padding: 6px;
   display: flex;

@@ -10,10 +10,10 @@
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   min-height: 60vh; gap: 16px; text-align: center;
 }
-.wc-setup h1 { color: #D4AF37; font-size: 32px; margin: 0; }
+.wc-setup h1 { color: #16a34a; font-size: 32px; margin: 0; }
 .wc-setup p { color: rgba(255,255,255,0.5); font-size: 14px; }
 .wc-init-btn {
-  background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+  background: linear-gradient(135deg, #16a34a 0%, #B8860B 100%);
   border: none; color: #000; font-weight: 700; font-size: 15px;
   padding: 12px 32px; border-radius: 8px; cursor: pointer;
   transition: opacity .2s;
@@ -29,7 +29,7 @@
   border: 1px solid rgba(212,175,55,0.2); border-radius: 12px;
   padding: 20px 24px; margin-bottom: 20px;
 }
-.wc-trophy { font-size: 32px; color: #D4AF37; }
+.wc-trophy { font-size: 32px; color: #16a34a; }
 .wc-phase-banner h1 { color: #fff; font-size: 22px; margin: 0; }
 .wc-phase-sub { color: rgba(255,255,255,0.4); font-size: 12px; margin: 4px 0 0; }
 .wc-champion-tag { margin-left: auto; font-size: 14px; font-weight: 700; }
@@ -45,7 +45,7 @@
   border-radius: 8px; cursor: pointer; transition: all .2s;
 }
 .wc-tab-active {
-  background: rgba(212,175,55,0.15); color: #D4AF37;
+  background: rgba(212,175,55,0.15); color: #16a34a;
 }
 
 /* ── Group Cards Grid ── */
@@ -62,7 +62,7 @@
 .wc-group-header {
   display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
 }
-.wc-group-letter { color: #D4AF37; font-size: 16px; font-weight: 700; }
+.wc-group-letter { color: #16a34a; font-size: 16px; font-weight: 700; }
 .wc-group-done { font-size: 10px; }
 
 /* ── Group Table ── */
@@ -86,7 +86,7 @@
   border-left: 3px solid #22c55e;
 }
 .wc-row-third td:first-child {
-  border-left: 3px solid #D4AF37;
+  border-left: 3px solid #16a34a;
 }
 .wc-row-elim td:first-child {
   border-left: 3px solid rgba(255,255,255,0.08);
@@ -107,7 +107,7 @@
 .wc-fix-team:first-child { text-align: right; }
 .wc-fix-team:last-child { text-align: left; }
 .wc-fix-score {
-  font-weight: 700; color: #D4AF37; min-width: 50px; text-align: center;
+  font-weight: 700; color: #16a34a; min-width: 50px; text-align: center;
 }
 
 /* ── Knockout Bracket ── */
@@ -141,7 +141,7 @@
 .wc-match-score { margin-left: auto; font-weight: 700; color: #fff; }
 .wc-pen-tag {
   display: block; text-align: center; font-size: 10px;
-  color: #D4AF37; padding: 2px 0; background: rgba(212,175,55,0.08);
+  color: #16a34a; padding: 2px 0; background: rgba(212,175,55,0.08);
 }
 
 /* ── Third Place Section ── */
@@ -157,7 +157,7 @@
 .wc-all-fixtures { max-width: 700px; margin: 0 auto; }
 .wc-matchday-section { margin-bottom: 24px; }
 .wc-md-title {
-  color: #D4AF37; font-size: 14px; font-weight: 700; margin-bottom: 10px;
+  color: #16a34a; font-size: 14px; font-weight: 700; margin-bottom: 10px;
   padding-bottom: 6px; border-bottom: 1px solid rgba(212,175,55,0.15);
 }
 .wc-fixtures-list { display: flex; flex-direction: column; gap: 8px; }
@@ -178,7 +178,7 @@
 .wc-comm-section h3 { color: #fff; font-size: 16px; margin: 0 0 8px; }
 .wc-comm-hint { color: rgba(255,255,255,0.35); font-size: 12px; margin-bottom: 16px; }
 .wc-comm-group { margin-bottom: 16px; }
-.wc-comm-group h4 { color: #D4AF37; font-size: 13px; font-weight: 700; margin: 0 0 8px; }
+.wc-comm-group h4 { color: #16a34a; font-size: 13px; font-weight: 700; margin: 0 0 8px; }
 .wc-comm-fixture {
   display: flex; align-items: center; gap: 12px;
   padding: 10px 14px; background: rgba(255,255,255,0.03);

@@ -16,6 +16,8 @@ import {
   TeamOutlined,
   ShopOutlined,
   DollarOutlined,
+  FileTextOutlined,
+  PlusOutlined,
 } from '@ant-design/icons'
 import {
   initiateNoConfidence,
@@ -25,12 +27,14 @@ import {
   startElectionVoting,
   transferCommissioner,
   proposeLeaguePause,
+  createProposal,
   getActiveVotes,
   getGovernanceHistory,
   getCommissionerInfo,
 } from '../../redux/actions/governanceActions'
 import { attachToken, privateAPI } from '../../config/constants'
 import { soccerAPI, attachSoccerToken } from '../../soccer/config/constants'
+import TeamLogo from '../../components/TeamLogo'
 
 /* ═══════════════════════════════════════════════════════════
    HELPER, Time remaining
@@ -129,7 +133,7 @@ const CommissionerCard = ({ info, onTransfer, isCommissioner }) => {
    ═══════════════════════════════════════════════════════════ */
 const VoteCard = ({ vote, userId, onCastVote }) => {
   const isNoConf = vote.voteType === 'no_confidence'
-  const isPause = vote.voteType === 'league_pause'
+  const isCustom = vote.voteType === 'custom_proposal'
   const userVote = vote.votes?.find(v => v.user === userId || v.user?._id === userId)
   const hasVoted = !!userVote
 
@@ -137,13 +141,15 @@ const VoteCard = ({ vote, userId, onCastVote }) => {
   const noCount = vote.votes?.filter(v => v.vote === 'no').length || 0
   const abstainCount = vote.votes?.filter(v => v.vote === 'abstain').length || 0
   const total = vote.totalEligibleVoters || 1
-  const threshold = isNoConf ? '50% + 1' : '66%'
+  const threshold = isNoConf ? '50% + 1' : isCustom ? `${Math.round((vote.requiredThreshold || 0.5) * 100)}%` : '66%'
 
   return (
     <div className="wr-gov-card wr-gov-vote-card">
       <div className="wr-gov-card-header">
         {isNoConf ? (
           <><ExclamationCircleOutlined className="wr-gov-card-icon" style={{ color: '#EF4444' }} /> Vote of No Confidence</>
+        ) : isCustom ? (
+          <><FileTextOutlined className="wr-gov-card-icon" style={{ color: '#EAB308' }} /> {vote.title || 'League Proposal'}</>
         ) : (
           <><PauseCircleOutlined className="wr-gov-card-icon" style={{ color: '#EAB308' }} /> League Pause Vote</>
         )}
@@ -151,6 +157,7 @@ const VoteCard = ({ vote, userId, onCastVote }) => {
           <ClockCircleOutlined /> {timeRemaining(vote.votingClosesAt)}
         </span>
       </div>
+      {isCustom && vote.description ? <div className="wr-gov-vote-desc" style={{ fontSize: 12.5, color: '#9aa4b5', margin: '2px 0 10px' }}>{vote.description}</div> : null}
 
       <div className="wr-gov-vote-bar">
         <div className="wr-gov-vote-bar-fill wr-gov-yes" style={{ width: `${(yesCount / total) * 100}%` }} />
@@ -361,7 +368,7 @@ const ActiveSalesSection = () => {
         <div style={{
           textAlign: 'center', padding: '28px 16px',
           background: 'rgba(255,255,255,0.02)', borderRadius: 12,
-          border: '1px solid rgba(110,105,128,0.1)',
+          border: '1px solid rgba(233,231,223,0.1)',
         }}>
           <ShopOutlined style={{ fontSize: 28, color: 'rgba(255,255,255,0.15)', display: 'block', marginBottom: 8 }} />
           <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13 }}>No teams or empires currently for sale</div>
@@ -413,18 +420,18 @@ const ActiveSalesSection = () => {
           return (
             <div key={owner.sellerId} style={{
               background: hasEmpire
-                ? 'linear-gradient(135deg, rgba(245,158,11,0.06) 0%, rgba(20,28,45,0.8) 100%)'
-                : 'rgba(20,28,45,0.8)',
+                ? 'linear-gradient(135deg, rgba(245,158,11,0.06) 0%, #0A0E17 100%)'
+                : '#0A0E17',
               border: hasEmpire
                 ? '1px solid rgba(245,158,11,0.2)'
-                : '1px solid rgba(110,105,128,0.15)',
+                : '1px solid rgba(233,231,223,0.15)',
               borderRadius: 14, overflow: 'hidden',
             }}>
               {/* Owner Header */}
               <div style={{
                 padding: '14px 18px',
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                borderBottom: '1px solid rgba(110,105,128,0.1)',
+                borderBottom: '1px solid rgba(233,231,223,0.1)',
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <div style={{
@@ -473,11 +480,11 @@ const ActiveSalesSection = () => {
                     <div key={t._id || idx} style={{
                       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                       padding: '10px 8px',
-                      borderBottom: idx < owner.teams.length - 1 ? '1px solid rgba(110,105,128,0.08)' : 'none',
+                      borderBottom: idx < owner.teams.length - 1 ? '1px solid rgba(233,231,223,0.08)' : 'none',
                     }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
                         {snap.logo ? (
-                          <img src={snap.logo} alt="" style={{ width: 28, height: 28, borderRadius: 6, objectFit: 'cover' }} />
+                          <TeamLogo src={snap.logo} name={snap.name} size={28} round={false} />
                         ) : (
                           <div style={{
                             width: 28, height: 28, borderRadius: 6,
@@ -587,6 +594,9 @@ const GovernanceSection = () => {
   const [noConfModal, setNoConfModal] = useState(false)
   const [pauseModal, setPauseModal] = useState(false)
   const [transferModal, setTransferModal] = useState({ open: false, transferToId: null })
+  const [proposalModal, setProposalModal] = useState(false)
+  const [proposalForm, setProposalForm] = useState({ title: '', description: '', durationHours: 72 })
+  const [creatingProposal, setCreatingProposal] = useState(false)
 
   const leagueId = league?._id || league
   const userId = user?._id
@@ -610,6 +620,7 @@ const GovernanceSection = () => {
   // Filter vote types
   const noConfVotes = activeVotes?.filter(v => v.voteType === 'no_confidence' && v.status === 'active') || []
   const pauseVotes = activeVotes?.filter(v => v.voteType === 'league_pause' && v.status === 'active') || []
+  const proposalVotes = activeVotes?.filter(v => v.voteType === 'custom_proposal' && v.status === 'active') || []
   const elections = activeVotes?.filter(v =>
     v.voteType === 'commissioner_election' &&
     (v.status === 'nomination_phase' || v.status === 'election_active')
@@ -626,6 +637,20 @@ const GovernanceSection = () => {
   const handleInitiateNoConfidence = () => setNoConfModal(true)
 
   const handleProposePause = () => setPauseModal(true)
+
+  const handleCreateProposal = async () => {
+    if (!proposalForm.title.trim()) { message.error('Enter a question for the proposal'); return }
+    setCreatingProposal(true)
+    const res = await createProposal(leagueId, {
+      title: proposalForm.title, description: proposalForm.description, durationHours: Number(proposalForm.durationHours) || 72,
+    })
+    setCreatingProposal(false)
+    if (res) {
+      setProposalModal(false)
+      setProposalForm({ title: '', description: '', durationHours: 72 })
+      dispatch(getActiveVotes(leagueId))
+    }
+  }
 
   const handleCastVote = async (voteId, vote) => {
     await castGovernanceVote(voteId, vote)
@@ -692,6 +717,13 @@ const GovernanceSection = () => {
           </button>
         )}
         {isCommissioner && (
+          <button className="wr-gov-action-card" onClick={() => setProposalModal(true)}>
+            <FileTextOutlined className="wr-gov-action-icon" style={{ color: '#22C55E' }} />
+            <div className="wr-gov-action-label">Create Proposal</div>
+            <div className="wr-gov-action-desc">Ask the league a yes/no question to vote on.</div>
+          </button>
+        )}
+        {isCommissioner && (
           <button className="wr-gov-action-card" onClick={handleProposePause}>
             <PauseCircleOutlined className="wr-gov-action-icon" style={{ color: '#EAB308' }} />
             <div className="wr-gov-action-label">Propose League Pause</div>
@@ -701,9 +733,12 @@ const GovernanceSection = () => {
       </div>
 
       {/* Active Votes */}
-      {(noConfVotes.length > 0 || pauseVotes.length > 0) && (
+      {(noConfVotes.length > 0 || pauseVotes.length > 0 || proposalVotes.length > 0) && (
         <div className="wr-gov-section">
           <div className="wr-gov-section-title">Active Votes</div>
+          {proposalVotes.map(v => (
+            <VoteCard key={v._id} vote={v} userId={userId} onCastVote={handleCastVote} />
+          ))}
           {noConfVotes.map(v => (
             <VoteCard key={v._id} vote={v} userId={userId} onCastVote={handleCastVote} />
           ))}
@@ -840,6 +875,59 @@ const GovernanceSection = () => {
             </button>
             <button className="wr-gov-modal-btn wr-gov-modal-btn--warning" onClick={async () => { await proposeLeaguePause(leagueId); setPauseModal(false); dispatch(getActiveVotes(leagueId)) }}>
               Propose Pause
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* ═══ CREATE PROPOSAL MODAL ═══ */}
+      <Modal
+        open={proposalModal}
+        onCancel={() => setProposalModal(false)}
+        footer={null}
+        closable={false}
+        centered
+        width={460}
+        wrapClassName="wr-gov-dark-modal"
+      >
+        <div className="wr-gov-modal-inner">
+          <div className="wr-gov-modal-header">
+            <div className="wr-gov-modal-icon-wrap">
+              <FileTextOutlined style={{ color: '#22C55E' }} />
+            </div>
+            <div>
+              <h2 className="wr-gov-modal-title">Create Proposal</h2>
+              <div className="wr-gov-modal-subtitle">LEAGUE-WIDE YES / NO VOTE</div>
+            </div>
+          </div>
+          <div className="wr-gov-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div>
+              <label style={{ fontSize: 12, color: '#9aa4b5', display: 'block', marginBottom: 6 }}>Question</label>
+              <input value={proposalForm.title} maxLength={140} onChange={(e) => setProposalForm((f) => ({ ...f, title: e.target.value }))}
+                placeholder="e.g. Increase the salary cap next season?"
+                style={{ width: '100%', background: '#0b0f18', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10, padding: '11px 14px', color: '#fff', fontSize: 14 }} />
+            </div>
+            <div>
+              <label style={{ fontSize: 12, color: '#9aa4b5', display: 'block', marginBottom: 6 }}>Details (optional)</label>
+              <textarea value={proposalForm.description} maxLength={600} rows={3} onChange={(e) => setProposalForm((f) => ({ ...f, description: e.target.value }))}
+                placeholder="Add context so members can make an informed vote."
+                style={{ width: '100%', background: '#0b0f18', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10, padding: '11px 14px', color: '#fff', fontSize: 13, resize: 'vertical' }} />
+            </div>
+            <div>
+              <label style={{ fontSize: 12, color: '#9aa4b5', display: 'block', marginBottom: 6 }}>Voting window</label>
+              <select value={proposalForm.durationHours} onChange={(e) => setProposalForm((f) => ({ ...f, durationHours: e.target.value }))}
+                style={{ width: '100%', background: '#0b0f18', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10, padding: '11px 14px', color: '#fff', fontSize: 13 }}>
+                <option value={24}>24 hours</option>
+                <option value={48}>48 hours</option>
+                <option value={72}>72 hours</option>
+                <option value={168}>7 days</option>
+              </select>
+            </div>
+          </div>
+          <div className="wr-gov-modal-footer">
+            <button className="wr-gov-modal-btn wr-gov-modal-btn--cancel" onClick={() => setProposalModal(false)}>Cancel</button>
+            <button className="wr-gov-modal-btn wr-gov-modal-btn--warning" disabled={creatingProposal || !proposalForm.title.trim()} onClick={handleCreateProposal}>
+              <PlusOutlined /> {creatingProposal ? 'Creating…' : 'Create Vote'}
             </button>
           </div>
         </div>

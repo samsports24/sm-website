@@ -1,185 +1,52 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Spin, Empty, Tag, Tooltip, Progress } from 'antd'
+import { useNavigate } from 'react-router-dom'
+import { Spin, Empty } from 'antd'
 import {
-  BarChartOutlined, CheckCircleOutlined, ClockCircleOutlined,
-  FireOutlined, TrophyOutlined, SwapOutlined, CrownOutlined,
-  ArrowUpOutlined, ArrowDownOutlined,
+  BarChartOutlined, TrophyOutlined, CalendarOutlined, CrownOutlined,
+  BulbOutlined, RightOutlined, ArrowUpOutlined, ArrowDownOutlined,
 } from '@ant-design/icons'
 import { privateAPI, attachToken } from '../../config/constants'
-import { SEASON_WEEKS } from './rivalsConfig'
 import './nfl-rivals.css'
 
 /* ── Helpers ── */
-const fmt = (n) => n != null ? Number(n).toFixed(1) : '—'
-const dt = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'
+const idOf = (ref) => (ref ? (ref._id || ref) : null)
 
-/* ═══════════════════════════════════════════════════
-   H2H MATCH CARD
-   ═══════════════════════════════════════════════════ */
-const H2HMatchCard = ({ match, userId, expanded, onClick }) => {
-  if (!match) return null
+const monogram = (name) => {
+  const m = (name || '').match(/[a-zA-Z0-9]/)
+  return m ? m[0].toUpperCase() : '?'
+}
 
-  const isHome = String(match.homeUserId) === String(userId) || String(match.homeUserId?._id) === String(userId)
-  const myScore = isHome ? match.homeScore : match.awayScore
-  const oppScore = isHome ? match.awayScore : match.homeScore
-  const myName = isHome
-    ? (match.homeUsername || match.home?.username || match.homeTeamName || 'You')
-    : (match.awayUsername || match.away?.username || match.awayTeamName || 'You')
-  const oppName = isHome
-    ? (match.awayUsername || match.away?.username || match.awayTeamName || 'Opponent')
-    : (match.homeUsername || match.home?.username || match.homeTeamName || 'Opponent')
-  const isCompleted = match.status === 'completed'
-  const isWin = isCompleted && myScore > oppScore
-  const isDraw = isCompleted && myScore === oppScore
-  const isLoss = isCompleted && myScore < oppScore
+const memberName = (m) =>
+  (m && m.user && (m.user.userName || m.user.username)) ||
+  (m && m.entry && m.entry.teamName) ||
+  (m && m.username) || 'Manager'
 
-  const resultColor = isWin ? '#10b981' : isLoss ? '#ef4444' : isDraw ? '#f59e0b' : '#94a3b8'
-  const resultLabel = isWin ? 'WIN' : isLoss ? 'LOSS' : isDraw ? 'DRAW' : 'PENDING'
-  const resultBg = isWin
-    ? 'rgba(16,185,129,0.08)' : isLoss
-    ? 'rgba(239,68,68,0.08)' : isDraw
-    ? 'rgba(245,158,11,0.08)' : 'rgba(148,163,184,0.04)'
-
-  return (
-    <div
-      onClick={onClick}
-      style={{
-        background: resultBg,
-        border: `1px solid ${resultColor}33`,
-        borderRadius: 14,
-        padding: '16px 20px',
-        marginBottom: 10,
-        cursor: isCompleted ? 'pointer' : 'default',
-        transition: 'all .2s',
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ flex: 1, textAlign: 'right', paddingRight: 16 }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: '#e2e8f0' }}>{myName}</div>
-          <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 2 }}>You</div>
-        </div>
-        <div style={{
-          minWidth: 130, textAlign: 'center',
-          background: 'rgba(15,23,42,0.5)', borderRadius: 12, padding: '8px 16px',
-        }}>
-          {isCompleted ? (
-            <>
-              <div style={{
-                fontFamily: "'Barlow Condensed', sans-serif",
-                fontSize: 26, fontWeight: 800, color: resultColor, letterSpacing: 1,
-              }}>
-                {fmt(myScore)} — {fmt(oppScore)}
-              </div>
-              <div style={{
-                fontSize: 10, fontWeight: 800, color: resultColor,
-                textTransform: 'uppercase', letterSpacing: 2, marginTop: 2,
-              }}>
-                {resultLabel}
-              </div>
-            </>
-          ) : (
-            <div style={{ fontSize: 18, fontWeight: 700, color: '#64748b' }}>VS</div>
-          )}
-        </div>
-        <div style={{ flex: 1, paddingLeft: 16 }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: '#e2e8f0' }}>{oppName}</div>
-          <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 2 }}>Opponent</div>
-        </div>
-      </div>
-      {isCompleted && (
-        <div style={{ textAlign: 'center', marginTop: 8 }}>
-          <span style={{ fontSize: 11, color: '#64748b' }}>
-            {expanded ? '▲ Hide details' : '▼ Tap for details'}
-          </span>
-        </div>
-      )}
-    </div>
-  )
+const fmtCountdown = (deadline, now) => {
+  if (!deadline) return '—'
+  const diff = new Date(deadline).getTime() - now
+  if (isNaN(diff)) return '—'
+  if (diff <= 0) return '0d 0h 0m'
+  const d = Math.floor(diff / 86400000)
+  const h = Math.floor((diff % 86400000) / 3600000)
+  const m = Math.floor((diff % 3600000) / 60000)
+  return `${d}d ${h}h ${m}m`
 }
 
 /* ═══════════════════════════════════════════════════
-   POD STANDINGS TABLE
-   ═══════════════════════════════════════════════════ */
-const PodStandingsTable = ({ members, userId }) => {
-  if (!members?.length) return null
-
-  return (
-    <div style={{
-      background: 'rgba(20,28,45,0.6)', border: '1px solid rgba(110,105,128,0.15)',
-      borderRadius: 14, overflow: 'hidden', marginBottom: 20,
-    }}>
-      <div style={{
-        padding: '12px 16px', borderBottom: '1px solid rgba(110,105,128,0.15)',
-        display: 'flex', alignItems: 'center', gap: 8,
-      }}>
-        <TrophyOutlined style={{ color: '#f59e0b' }} />
-        <span style={{ fontSize: 14, fontWeight: 700, color: '#e2e8f0' }}>Pod Standings</span>
-      </div>
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr style={{ borderBottom: '1px solid rgba(110,105,128,0.15)' }}>
-            {['#', 'Manager', 'W', 'D', 'L', 'Pts', 'Total Score'].map(h => (
-              <th key={h} style={{
-                padding: '8px 12px', fontSize: 10, fontWeight: 700, color: '#64748b',
-                textTransform: 'uppercase', letterSpacing: 1, textAlign: h === 'Manager' ? 'left' : 'center',
-              }}>{h}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {members.map((m, idx) => {
-            const isYou = String(m.user?._id || m.user) === String(userId)
-            const zone = idx < 3 ? 'promo' : idx >= members.length - 3 ? 'releg' : 'mid'
-            return (
-              <tr key={m._id || idx} style={{
-                borderBottom: '1px solid rgba(110,105,128,0.08)',
-                background: isYou ? 'rgba(167,139,250,0.06)' : 'transparent',
-              }}>
-                <td style={{
-                  padding: '8px 12px', textAlign: 'center', fontSize: 13, fontWeight: 700,
-                  color: zone === 'promo' ? '#10b981' : zone === 'releg' ? '#ef4444' : '#94a3b8',
-                }}>
-                  {zone === 'promo' && <ArrowUpOutlined style={{ fontSize: 10, marginRight: 2 }} />}
-                  {zone === 'releg' && <ArrowDownOutlined style={{ fontSize: 10, marginRight: 2 }} />}
-                  {idx + 1}
-                </td>
-                <td style={{ padding: '8px 12px', fontSize: 13, fontWeight: isYou ? 700 : 500, color: isYou ? '#A78BFA' : '#e2e8f0', textAlign: 'left' }}>
-                  {m.user?.userName || m.user?.username || m.entry?.teamName || m.username || '—'} {isYou && <Tag color="purple" style={{ fontSize: 9 }}>YOU</Tag>}
-                </td>
-                <td style={{ textAlign: 'center', padding: '8px', fontSize: 13, fontWeight: 600, color: '#10b981' }}>{m.wins || 0}</td>
-                <td style={{ textAlign: 'center', padding: '8px', fontSize: 13, fontWeight: 600, color: '#f59e0b' }}>{m.draws || 0}</td>
-                <td style={{ textAlign: 'center', padding: '8px', fontSize: 13, fontWeight: 600, color: '#ef4444' }}>{m.losses || 0}</td>
-                <td style={{ textAlign: 'center', padding: '8px', fontSize: 13, fontWeight: 800, color: '#e2e8f0' }}>{(m.wins || 0) * 3 + (m.draws || 0)}</td>
-                <td style={{ textAlign: 'center', padding: '8px', fontSize: 13, fontWeight: 600, color: '#94a3b8' }}>{fmt(m.totalPoints)}</td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-      <div style={{ padding: '8px 16px', display: 'flex', gap: 16, borderTop: '1px solid rgba(110,105,128,0.1)' }}>
-        <span style={{ fontSize: 10, color: '#10b981' }}>▲ Promotion zone (Top 3)</span>
-        <span style={{ fontSize: 10, color: '#ef4444' }}>▼ Relegation zone (Bottom 3)</span>
-      </div>
-    </div>
-  )
-}
-
-/* ═══════════════════════════════════════════════════
-   MAIN MATCHDAY VIEW
-   NFL: S1(5wk) + S2(5wk) + S3(4wk) + S4(4wk) = 18wk cycle
+   H2H MATCHDAY VIEW
    ═══════════════════════════════════════════════════ */
 const MatchdayView = () => {
   const token = useSelector(s => s.user.token)
-  const user = useSelector(s => s.user.user)
-  const userId = user?._id
+  const userId = useSelector(s => s.user.userDetails?._id || s.user.user?._id)
+  const navigate = useNavigate()
 
   const [loading, setLoading] = useState(true)
-  const [season, setSeason] = useState(null)
   const [matchdayData, setMatchdayData] = useState(null)
   const [pod, setPod] = useState(null)
-  const [activeWeek, setActiveWeek] = useState(null)
-  const [expandedMatch, setExpandedMatch] = useState(null)
+  const [season, setSeason] = useState(null)
+  const [tab, setTab] = useState('current')
+  const [now, setNow] = useState(Date.now())
 
   useEffect(() => {
     const load = async () => {
@@ -191,281 +58,406 @@ const MatchdayView = () => {
         ])
         const weekData = weekRes.data.data || null
         const podData = podRes.data.data?.pod || null
-        setSeason(weekData?.season || null)
         setMatchdayData(weekData)
         setPod(podData)
-
-        // Default to the active week
-        if (weekData?.activeWeek) {
-          setActiveWeek(weekData.activeWeek.week)
-        } else if (weekData?.matchdays?.length) {
-          const completed = weekData.matchdays.filter(m => m.status === 'completed')
-          setActiveWeek(completed.length ? completed[completed.length - 1].week : weekData.matchdays[0].week)
-        }
+        setSeason(weekData?.season || null)
       } catch (err) { /* ignore */ }
       finally { setLoading(false) }
     }
     load()
   }, [token])
 
-  // All matchdays for this season
-  const matchdays = matchdayData?.matchdays || []
-  const totalWeeks = matchdays.length || (season?.weekCount) || 5
-  const completedCount = matchdays.filter(m => m.status === 'completed').length
-  const progressPct = totalWeeks > 0 ? (completedCount / totalWeeks) * 100 : 0
-
-  // Determine season label (S1-S4)
-  const seasonNumber = season?.seasonNumber || season?.number || null
-  const seasonLabel = season?.name || (seasonNumber ? `S${seasonNumber}` : 'Current Season')
-  const weeksInSeason = seasonNumber && SEASON_WEEKS[seasonNumber] ? SEASON_WEEKS[seasonNumber] : totalWeeks
-
-  // Extract fixtures for the selected week
-  const currentFixtures = useMemo(() => {
-    if (!pod?.fixtures || !activeWeek) return []
-    const mdFix = pod.fixtures.find(f => f.matchday === activeWeek || f.week === activeWeek)
-    return mdFix?.matches || []
-  }, [pod, activeWeek])
-
-  // Find the user's specific match
-  const myMatch = useMemo(() => {
-    return currentFixtures.find(m =>
-      String(m.homeUserId) === String(userId) || String(m.awayUserId) === String(userId) ||
-      String(m.homeUserId?._id) === String(userId) || String(m.awayUserId?._id) === String(userId)
-    )
-  }, [currentFixtures, userId])
+  // Live countdown ticker (cleared on unmount)
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000)
+    return () => clearInterval(id)
+  }, [])
 
   if (loading) return <div className="nflr-loading"><Spin size="large" /></div>
 
   if (!matchdayData && !pod) {
     return (
-      <div className="nflr-page">
+      <div className="nflr-page nmd-root">
         <h2 className="nflr-page-title"><BarChartOutlined /> H2H Matchday</h2>
         <Empty description="No active matchday. Check back when the season starts." image={Empty.PRESENTED_IMAGE_SIMPLE} />
       </div>
     )
   }
 
+  /* ── Derivations ── */
+  const matchdays = matchdayData?.matchdays || []
+  const totalWeeks = matchdays.length || season?.weekCount || 5
+  const completedCount = matchdays.filter(m => m.status === 'completed').length
+  const progressPct = totalWeeks > 0 ? Math.min(100, (completedCount / totalWeeks) * 100) : 0
+
+  const currentWeek = matchdayData?.activeWeek?.week
+    || (completedCount < totalWeeks ? completedCount + 1 : totalWeeks)
+
+  // members sorted by standings (defensive)
+  const members = (pod?.members || []).slice().sort(
+    (a, b) => (b.wins || 0) - (a.wins || 0) || (b.totalPoints || 0) - (a.totalPoints || 0)
+  )
+  const isMe = (m) => userId && idOf(m.user) && String(idOf(m.user)) === String(userId)
+  const myMember = members.find(isMe) || null
+
+  const myWins = myMember ? (myMember.wins || 0) : 0
+  const myDraws = myMember ? (myMember.draws || 0) : 0
+  const myLosses = myMember ? (myMember.losses || 0) : 0
+  const myGames = myWins + myDraws + myLosses
+  const recordPts = myWins * 3 + myDraws
+  const pointsFor = myMember ? (myMember.totalPoints || 0) : 0
+
+  // Points Against = sum of opponent scores from the current user's completed fixtures
+  let pointsAgainst = 0
+  ;(pod?.fixtures || []).forEach(fx => {
+    ;(fx.matches || []).forEach(mt => {
+      const done = mt.status === 'completed' && (mt.homeScore != null || mt.awayScore != null)
+      if (!done) return
+      const h = String(idOf(mt.homeUserId))
+      const a = String(idOf(mt.awayUserId))
+      if (userId && h === String(userId)) pointsAgainst += (mt.awayScore || 0)
+      if (userId && a === String(userId)) pointsAgainst += (mt.homeScore || 0)
+    })
+  })
+
+  const winRate = myGames > 0 ? (myWins / myGames) * 100 : 0
+  const avgFor = myGames > 0 ? pointsFor / myGames : 0
+  const avgAgainst = myGames > 0 ? pointsAgainst / myGames : 0
+
+  // Points leader
+  const anyPoints = members.some(m => (m.totalPoints || 0) > 0)
+  const leader = anyPoints
+    ? members.slice().sort((a, b) => (b.totalPoints || 0) - (a.totalPoints || 0))[0]
+    : (myMember || members[0] || null)
+
+  // Upcoming matchday + deadline
+  const upcoming = matchdays.find(m => m.status === 'active')
+    || matchdays.find(m => m.status === 'pending')
+    || matchdays[matchdays.length - 1]
+    || null
+  const nextWeek = upcoming?.week || currentWeek
+  const deadline = matchdayData?.activeWeek?.deadline
+    || upcoming?.deadline || upcoming?.endDate || upcoming?.startDate || null
+
+  // Division label
+  const divisionName = (pod?.divisionName || (pod?.division ? `Division ${pod.division}` : 'Division'))
+  const podNumber = pod?.podNumber != null ? pod.podNumber : '—'
+
+  // Matchday performance chart
+  const hasScores = myMember && Array.isArray(myMember.matchdayScores) && myMember.matchdayScores.length > 0
+  const yourScores = hasScores ? myMember.matchdayScores.slice(0, totalWeeks) : []
+  const scoreLen = yourScores.length
+  const leagueAvg = []
+  for (let i = 0; i < scoreLen; i++) {
+    let sum = 0; let cnt = 0
+    members.forEach(m => {
+      const arr = m.matchdayScores
+      if (Array.isArray(arr) && arr[i] != null) { sum += arr[i]; cnt += 1 }
+    })
+    leagueAvg.push(cnt ? sum / cnt : 0)
+  }
+
+  const nPts = Math.max(1, totalWeeks)
+  const CW = 640; const CH = 240; const PL = 40; const PR = 20; const PT = 12; const PB = 30
+  const plotW = CW - PL - PR
+  const plotH = CH - PT - PB
+  const yFor = (v) => PT + plotH - (Math.min(100, Math.max(0, v)) / 100) * plotH
+  const xFor = (i) => nPts <= 1 ? PL + plotW / 2 : PL + (i / (nPts - 1)) * plotW
+  const toPoints = (arr) => arr.map((v, i) => `${xFor(i).toFixed(1)},${yFor(v).toFixed(1)}`).join(' ')
+
+  // History: completed fixtures
+  const historyFixtures = (pod?.fixtures || [])
+    .slice()
+    .sort((a, b) => (a.week || a.matchday || 0) - (b.week || b.matchday || 0))
+    .map(fx => ({
+      week: fx.week || fx.matchday,
+      matches: (fx.matches || []).filter(mt => mt.status === 'completed'),
+    }))
+    .filter(fx => fx.matches.length > 0)
+
+  const nameById = {}
+  members.forEach(m => { nameById[String(idOf(m.user))] = memberName(m) })
+
   return (
-    <div className="nflr-page">
-      <h2 className="nflr-page-title"><BarChartOutlined /> H2H Matchday</h2>
-
-      {/* Season progress card */}
-      <div style={{
-        background: 'rgba(20,28,45,0.6)', border: '1px solid rgba(110,105,128,0.15)',
-        borderRadius: 16, padding: 20, marginBottom: 20,
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16,
-      }}>
-        <div>
-          <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: 20, fontWeight: 800, color: '#A78BFA', marginBottom: 4 }}>
-            {seasonLabel}
-            <span style={{ fontSize: 13, fontWeight: 600, color: '#94a3b8', marginLeft: 10 }}>
-              ({weeksInSeason} weeks)
-            </span>
-          </div>
-          <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: 13 }}>
-            {season?.status === 'active' && <Tag color="gold"><FireOutlined /> LIVE</Tag>}
-            {season?.status === 'completed' && <Tag color="green"><CheckCircleOutlined /> Done</Tag>}
-            {pod && (
-              <span style={{ marginLeft: 8 }}>
-                {pod.divisionName || `Division ${pod.division}`} · Pod #{pod.podNumber}
-              </span>
-            )}
-          </div>
+    <div className="nflr-page nmd-root">
+      {/* ══ HEADER ══ */}
+      <div className="nmd-header">
+        <div className="nmd-head-left">
+          <span className="nmd-head-icon"><BarChartOutlined /></span>
+          <h2 className="nmd-title">H2H Matchday</h2>
         </div>
-        <div style={{ minWidth: 220 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-            <span style={{ fontSize: 12, color: '#94a3b8' }}>Season Progress</span>
-            <strong style={{ fontSize: 12, color: '#e2e8f0' }}>{completedCount} / {totalWeeks} Weeks</strong>
-          </div>
-          <Progress percent={progressPct} strokeColor="#A78BFA" showInfo={false} />
+        <div className="nmd-head-right">
+          <select className="nmd-select" value={podNumber} onChange={() => {}}>
+            <option value={podNumber}>{divisionName} - Pod {podNumber}</option>
+          </select>
+          <button className="nmd-icon-btn" title="Calendar" onClick={() => setTab('history')}>
+            <CalendarOutlined />
+          </button>
         </div>
       </div>
 
-      {/* Week selector tabs */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
-        {matchdays.map(md => {
-          const selected = activeWeek === md.week
-          const isActive = md.status === 'active'
-          const isCompleted = md.status === 'completed'
-          return (
-            <button
-              key={md.week}
-              onClick={() => { setActiveWeek(md.week); setExpandedMatch(null) }}
-              style={{
-                padding: '8px 16px', borderRadius: 10,
-                border: selected ? '1px solid #A78BFA' : '1px solid rgba(100,116,139,0.2)',
-                background: selected
-                  ? 'rgba(167,139,250,0.15)'
-                  : isCompleted ? 'rgba(16,185,129,0.05)' : 'rgba(20,28,45,0.6)',
-                color: selected ? '#A78BFA' : isActive ? '#f59e0b' : isCompleted ? '#10b981' : '#64748b',
-                fontSize: 13, fontWeight: 700, cursor: 'pointer',
-                fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 6,
-                transition: 'all .2s',
-              }}
-            >
-              Wk {md.week}
-              {isActive && <span style={{ fontSize: 8, color: '#f59e0b' }}>● LIVE</span>}
-              {isCompleted && <CheckCircleOutlined style={{ fontSize: 12 }} />}
-            </button>
-          )
-        })}
+      {/* ══ TABS ══ */}
+      <div className="nmd-tabs">
+        <button
+          className={`nmd-tab${tab === 'current' ? ' nmd-tab--active' : ''}`}
+          onClick={() => setTab('current')}
+        >
+          Current Matchday
+        </button>
+        <button
+          className={`nmd-tab${tab === 'history' ? ' nmd-tab--active' : ''}`}
+          onClick={() => setTab('history')}
+        >
+          Matchday History
+        </button>
       </div>
 
-      {/* Active week bar */}
-      {activeWeek && (() => {
-        const md = matchdays.find(m => m.week === activeWeek)
-        return md ? (
-          <div style={{
-            background: 'rgba(20,28,45,0.6)', border: '1px solid rgba(110,105,128,0.15)',
-            borderRadius: 14, padding: '12px 20px', marginBottom: 16,
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          }}>
-            <div>
-              <span style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: 16, fontWeight: 800, color: '#e2e8f0' }}>
-                Week {md.week}
-              </span>
-              <span style={{ marginLeft: 10 }}>
-                {md.status === 'active' && <Tag color="gold"><FireOutlined /> LIVE</Tag>}
-                {md.status === 'completed' && <Tag color="green"><CheckCircleOutlined /> Completed</Tag>}
-                {md.status === 'pending' && <Tag color="default"><ClockCircleOutlined /> Upcoming</Tag>}
-              </span>
-            </div>
-            <div style={{ fontSize: 12, color: '#94a3b8' }}>
-              Thu → Mon scoring window
-              {md.startDate && <span style={{ marginLeft: 8 }}>{dt(md.startDate)}</span>}
-              {md.endDate && <span> — {dt(md.endDate)}</span>}
-            </div>
+      {tab === 'history' ? (
+        /* ══ HISTORY ══ */
+        <div className="nmd-panel">
+          <div className="nmd-panel-head">
+            <span className="nmd-panel-title"><CalendarOutlined /> Matchday History</span>
           </div>
-        ) : null
-      })()}
-
-      {/* Your match highlight */}
-      {myMatch && (
-        <div style={{ marginBottom: 20 }}>
-          <h3 style={{
-            fontSize: 14, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase',
-            letterSpacing: 1, marginBottom: 10, display: 'flex', alignItems: 'center', gap: 8,
-          }}>
-            <FireOutlined style={{ color: '#f59e0b' }} />
-            Your Week {activeWeek} Match
-          </h3>
-          <H2HMatchCard
-            match={myMatch}
-            userId={userId}
-            expanded={expandedMatch === 'my'}
-            onClick={() => setExpandedMatch(expandedMatch === 'my' ? null : 'my')}
-          />
-        </div>
-      )}
-
-      {/* All other fixtures */}
-      {currentFixtures.length > 0 && (
-        <div style={{ marginBottom: 20 }}>
-          <h4 style={{
-            fontSize: 12, fontWeight: 700, color: '#64748b', textTransform: 'uppercase',
-            letterSpacing: 1, marginBottom: 10,
-          }}>
-            <SwapOutlined /> All Pod Fixtures
-          </h4>
-          {currentFixtures.map((fix, idx) => {
-            const isMyMatch = String(fix.homeUserId) === String(userId) ||
-              String(fix.awayUserId) === String(userId) ||
-              String(fix.homeUserId?._id) === String(userId) ||
-              String(fix.awayUserId?._id) === String(userId)
-            if (isMyMatch) return null
-
-            const key = `fix-${idx}`
-            return (
-              <H2HMatchCard
-                key={key}
-                match={fix}
-                userId={userId}
-                expanded={expandedMatch === key}
-                onClick={() => setExpandedMatch(expandedMatch === key ? null : key)}
-              />
-            )
-          })}
-        </div>
-      )}
-
-      {currentFixtures.length === 0 && activeWeek && (
-        <div style={{
-          background: 'rgba(20,28,45,0.6)', border: '1px solid rgba(110,105,128,0.15)',
-          borderRadius: 12, padding: 40, textAlign: 'center', marginBottom: 20,
-        }}>
-          <ClockCircleOutlined style={{ fontSize: 24, color: '#64748b', marginBottom: 8 }} />
-          <p style={{ color: '#64748b', fontSize: 13, margin: 0 }}>
-            No fixtures scheduled for this week yet.
-          </p>
-        </div>
-      )}
-
-      {/* Pod standings */}
-      {pod?.members && <PodStandingsTable members={pod.members} userId={userId} />}
-
-      {/* Season overview - week result cards */}
-      {matchdays.length > 0 && (
-        <>
-          <h3 style={{
-            fontSize: 14, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase',
-            letterSpacing: 1, marginBottom: 12, marginTop: 8,
-          }}>
-            <CrownOutlined style={{ color: '#f59e0b', marginRight: 6 }} />
-            Season Overview ({weeksInSeason} weeks)
-          </h3>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: `repeat(${Math.min(matchdays.length, 5)}, 1fr)`,
-            gap: 10,
-          }}>
-            {matchdays.map((md, idx) => {
-              const isActive = md.status === 'active'
-              const isCompleted = md.status === 'completed'
-
-              let myResult = null
-              if (pod?.fixtures) {
-                const mdFix = pod.fixtures.find(f => f.matchday === md.week || f.week === md.week)
-                const match = mdFix?.matches?.find(m =>
-                  String(m.homeUserId) === String(userId) || String(m.awayUserId) === String(userId) ||
-                  String(m.homeUserId?._id) === String(userId) || String(m.awayUserId?._id) === String(userId)
-                )
-                if (match && match.status === 'completed') {
-                  const isHome = String(match.homeUserId) === String(userId) || String(match.homeUserId?._id) === String(userId)
-                  const my = isHome ? match.homeScore : match.awayScore
-                  const opp = isHome ? match.awayScore : match.homeScore
-                  myResult = { my, opp, win: my > opp, draw: my === opp }
-                }
-              }
-
-              return (
-                <div
-                  key={idx}
-                  onClick={() => { setActiveWeek(md.week); setExpandedMatch(null); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
-                  style={{
-                    background: 'rgba(20,28,45,0.6)',
-                    border: activeWeek === md.week ? '1px solid #A78BFA' : '1px solid rgba(110,105,128,0.15)',
-                    borderRadius: 12, padding: 14, textAlign: 'center', cursor: 'pointer',
-                    transition: 'border-color .2s',
-                  }}
-                >
-                  <div style={{ fontSize: 13, fontWeight: 700, color: '#e2e8f0', marginBottom: 4 }}>Wk {md.week}</div>
-                  {isActive && <Tag color="gold" style={{ marginBottom: 4 }}>LIVE</Tag>}
-                  {isCompleted && <Tag color="green" style={{ marginBottom: 4 }}>Done</Tag>}
-                  {md.status === 'pending' && <Tag color="default" style={{ marginBottom: 4 }}>—</Tag>}
-                  {myResult && (
-                    <div style={{
-                      fontSize: 14, fontWeight: 800, marginTop: 4,
-                      color: myResult.win ? '#10b981' : myResult.draw ? '#f59e0b' : '#ef4444',
-                    }}>
-                      {fmt(myResult.my)} — {fmt(myResult.opp)}
-                    </div>
-                  )}
-                  {md.startDate && <div style={{ fontSize: 10, color: '#64748b', marginTop: 4 }}>{dt(md.startDate)}</div>}
+          {historyFixtures.length ? (
+            <div className="nmd-history-list">
+              {historyFixtures.map(fx => (
+                <div key={fx.week} className="nmd-history-week">
+                  <div className="nmd-history-week-title">Matchday {fx.week}</div>
+                  {fx.matches.map((mt, i) => {
+                    const h = String(idOf(mt.homeUserId))
+                    const a = String(idOf(mt.awayUserId))
+                    return (
+                      <div key={i} className="nmd-history-row">
+                        <span className="nmd-history-name">{nameById[h] || 'Manager'}</span>
+                        <span className="nmd-history-score">{(mt.homeScore || 0).toFixed(1)} – {(mt.awayScore || 0).toFixed(1)}</span>
+                        <span className="nmd-history-name nmd-history-name--r">{nameById[a] || 'Manager'}</span>
+                      </div>
+                    )
+                  })}
                 </div>
-              )
-            })}
+              ))}
+            </div>
+          ) : (
+            <div className="nmd-empty">
+              <CalendarOutlined className="nmd-empty-icon" />
+              <div className="nmd-empty-title">No completed matchdays yet</div>
+              <div className="nmd-empty-text">History will appear after the first matchday is played.</div>
+            </div>
+          )}
+        </div>
+      ) : (
+        /* ══ CURRENT MATCHDAY ══ */
+        <div className="nmd-body">
+          <div className="nmd-main">
+            {/* ── CURRENT SEASON CARD ── */}
+            <div className="nmd-panel nmd-season">
+              <div className="nmd-season-head">
+                <div className="nmd-season-title">
+                  Current Season <span className="nmd-season-weeks">({totalWeeks} weeks)</span>
+                </div>
+                <div className="nmd-season-sub">{divisionName.toUpperCase()} - POD {podNumber}</div>
+              </div>
+
+              <div className="nmd-season-stats">
+                <div className="nmd-scell">
+                  <div className="nmd-scell-label">Matchdays</div>
+                  <div className="nmd-scell-val">{currentWeek} / {totalWeeks}</div>
+                </div>
+                <div className="nmd-scell">
+                  <div className="nmd-scell-label">Your Record</div>
+                  <div className="nmd-scell-val">{myWins} - {myDraws} - {myLosses}</div>
+                  <div className="nmd-scell-sub">({recordPts} pts)</div>
+                </div>
+                <div className="nmd-scell">
+                  <div className="nmd-scell-label">Points For</div>
+                  <div className="nmd-scell-val nmd-green">{pointsFor.toFixed(1)}</div>
+                </div>
+                <div className="nmd-scell">
+                  <div className="nmd-scell-label">Points Against</div>
+                  <div className="nmd-scell-val nmd-red">{pointsAgainst.toFixed(1)}</div>
+                </div>
+              </div>
+
+              <div className="nmd-progress">
+                <div className="nmd-progress-top">
+                  <span>Season Progress</span>
+                  <strong>{completedCount} / {totalWeeks} Weeks</strong>
+                </div>
+                <div className="nmd-progress-track">
+                  <div className="nmd-progress-fill" style={{ width: `${progressPct}%` }} />
+                </div>
+              </div>
+            </div>
+
+            {/* ── POD STANDINGS ── */}
+            <div className="nmd-panel">
+              <div className="nmd-panel-head">
+                <span className="nmd-panel-title"><TrophyOutlined /> Pod Standings</span>
+              </div>
+              <div className="nmd-table-wrap">
+                <div className="nmd-table">
+                  <div className="nmd-trow nmd-thead">
+                    <span className="nmd-c-rank">#</span>
+                    <span className="nmd-c-mgr">Manager</span>
+                    <span className="nmd-c-num">W</span>
+                    <span className="nmd-c-num">D</span>
+                    <span className="nmd-c-num">L</span>
+                    <span className="nmd-c-num">Pts</span>
+                    <span className="nmd-c-num">Total Score</span>
+                  </div>
+                  {members.map((m, idx) => {
+                    const me = isMe(m)
+                    const promo = idx < 3
+                    const rele = idx >= members.length - 3 && members.length > 3
+                    const pts = (m.wins || 0) * 3 + (m.draws || 0)
+                    return (
+                      <div
+                        key={idOf(m.user) || idx}
+                        className={`nmd-trow${me ? ' nmd-trow--me' : ''}${promo ? ' nmd-promo' : ''}${rele ? ' nmd-rele' : ''}`}
+                      >
+                        <span className="nmd-c-rank">
+                          {promo && <ArrowUpOutlined className="nmd-rank-ico nmd-green" />}
+                          {rele && <ArrowDownOutlined className="nmd-rank-ico nmd-red" />}
+                          {idx + 1}
+                        </span>
+                        <span className="nmd-c-mgr">
+                          {m.user && m.user.image
+                            ? <img className="nmd-avatar" src={m.user.image} alt="" />
+                            : <span className="nmd-avatar nmd-avatar--mono">{monogram(memberName(m))}</span>}
+                          <span className="nmd-mgr-name">{memberName(m)}</span>
+                          {me && <span className="nmd-you">YOU</span>}
+                        </span>
+                        <span className="nmd-c-num nmd-w">{m.wins || 0}</span>
+                        <span className="nmd-c-num nmd-d">{m.draws || 0}</span>
+                        <span className="nmd-c-num nmd-l">{m.losses || 0}</span>
+                        <span className="nmd-c-num nmd-points">{pts}</span>
+                        <span className="nmd-c-num">{(m.totalPoints || 0).toFixed(1)}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+              <div className="nmd-legend">
+                <span><span className="nmd-legend-sq" style={{ background: '#4ADE80' }} /> Promotion zone (top 3)</span>
+                <span><span className="nmd-legend-sq" style={{ background: '#EF4444' }} /> Relegation zone (bottom 3)</span>
+              </div>
+            </div>
+
+            {/* ── MATCHDAY PERFORMANCE ── */}
+            <div className="nmd-panel">
+              <div className="nmd-panel-head">
+                <span className="nmd-panel-title"><BarChartOutlined /> Matchday Performance</span>
+              </div>
+              {hasScores ? (
+                <>
+                  <div className="nmd-chart-wrap">
+                    <svg viewBox={`0 0 ${CW} ${CH}`} className="nmd-chart" preserveAspectRatio="none">
+                      {[0, 25, 50, 75, 100].map(v => (
+                        <g key={v}>
+                          <line x1={PL} y1={yFor(v)} x2={CW - PR} y2={yFor(v)} stroke="rgba(139,92,246,0.12)" strokeWidth="1" />
+                          <text x={PL - 8} y={yFor(v) + 4} textAnchor="end" className="nmd-axis-txt">{v}</text>
+                        </g>
+                      ))}
+                      {Array.from({ length: nPts }).map((_, i) => (
+                        <text key={i} x={xFor(i)} y={CH - 8} textAnchor="middle" className="nmd-axis-txt">MD{i + 1}</text>
+                      ))}
+                      <polyline fill="none" stroke="#8b93a7" strokeWidth="2" points={toPoints(leagueAvg)} />
+                      <polyline fill="none" stroke="#8B5CF6" strokeWidth="2.5" points={toPoints(yourScores)} />
+                      {yourScores.map((v, i) => (
+                        <circle key={i} cx={xFor(i)} cy={yFor(v)} r="3.5" fill="#A78BFA" />
+                      ))}
+                    </svg>
+                  </div>
+                  <div className="nmd-chart-legend">
+                    <span><span className="nmd-dot" style={{ background: '#8B5CF6' }} /> Your Score</span>
+                    <span><span className="nmd-dot" style={{ background: '#8b93a7' }} /> League Average</span>
+                  </div>
+                </>
+              ) : (
+                <div className="nmd-empty">
+                  <CalendarOutlined className="nmd-empty-icon" />
+                  <div className="nmd-empty-title">No performance data yet</div>
+                  <div className="nmd-empty-text">Data will appear after the first matchday.</div>
+                  <div className="nmd-chart-legend">
+                    <span><span className="nmd-dot" style={{ background: '#8B5CF6' }} /> Your Score</span>
+                    <span><span className="nmd-dot" style={{ background: '#8b93a7' }} /> League Average</span>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        </>
+
+          {/* ══ RIGHT RAIL ══ */}
+          <div className="nmd-rail">
+            {/* Pod Insights */}
+            <div className="nmd-panel">
+              <div className="nmd-panel-head">
+                <span className="nmd-panel-title"><BarChartOutlined /> Pod Insights</span>
+              </div>
+              <div className="nmd-insights">
+                <div className="nmd-winring">
+                  <div className="nmd-ring">
+                    <span className="nmd-ring-val">{Math.round(winRate)}%</span>
+                  </div>
+                  <div className="nmd-ring-label">Win Rate</div>
+                </div>
+                <div className="nmd-insight-rows">
+                  <div className="nmd-insight-row">
+                    <span className="nmd-insight-label">Avg. Points For</span>
+                    <span className="nmd-insight-val nmd-green">{avgFor.toFixed(1)}</span>
+                  </div>
+                  <div className="nmd-insight-row">
+                    <span className="nmd-insight-label">Avg. Points Against</span>
+                    <span className="nmd-insight-val nmd-red">{avgAgainst.toFixed(1)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Points Leader */}
+            <div className="nmd-panel">
+              <div className="nmd-panel-head">
+                <span className="nmd-panel-title"><CrownOutlined /> Points Leader</span>
+              </div>
+              <div className="nmd-leader">
+                {leader && leader.user && leader.user.image
+                  ? <img className="nmd-leader-av" src={leader.user.image} alt="" />
+                  : <span className="nmd-leader-av nmd-avatar--mono">{monogram(memberName(leader))}</span>}
+                <div className="nmd-leader-body">
+                  <div className="nmd-leader-name">{leader ? memberName(leader) : '—'}</div>
+                  <div className="nmd-leader-pts">{(leader ? (leader.totalPoints || 0) : 0).toFixed(1)} PTS</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Upcoming Matchday */}
+            <div className="nmd-panel">
+              <div className="nmd-panel-head">
+                <span className="nmd-panel-title"><CalendarOutlined /> Upcoming Matchday</span>
+              </div>
+              <div className="nmd-upcoming">
+                <div className="nmd-upcoming-week">Matchday {nextWeek}</div>
+                <div className="nmd-upcoming-label">Starts in</div>
+                <div className="nmd-countdown">{fmtCountdown(deadline, now)}</div>
+                <button className="nmd-cta" onClick={() => navigate('/nfl-rivals/pod')}>
+                  View Fixtures
+                </button>
+              </div>
+            </div>
+
+            {/* Matchday Tips */}
+            <div className="nmd-panel">
+              <div className="nmd-panel-head">
+                <span className="nmd-panel-title"><BulbOutlined /> Matchday Tips</span>
+              </div>
+              <button className="nmd-tip-row" onClick={() => navigate('/nfl-rivals/squad')}>
+                <span className="nmd-tip-icon"><BarChartOutlined /></span>
+                <span className="nmd-tip-text">Check your lineup and make sure all players are starting</span>
+                <RightOutlined className="nmd-tip-chev" />
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

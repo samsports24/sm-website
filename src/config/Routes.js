@@ -1,4 +1,4 @@
-import { Routes, Route, BrowserRouter, Outlet, useNavigate, Navigate, useLocation } from 'react-router-dom'
+import { Routes, Route, BrowserRouter, Outlet, useNavigate, Navigate, useLocation, useParams } from 'react-router-dom'
 import PrivateWrapper from './PrivateRoutes'
 import AdminRoute from './AdminRoute'
 import Layout from '../layout/Layout'
@@ -21,9 +21,12 @@ const PageTracker = () => {
 
 // ── Eagerly load only the 404/fallback page ──
 import ComingSoon from '../pages/CommingSoon'
+// ── Referral link handler (public, tiny — eager so /ref/<code> resolves instantly) ──
+import RefRedirect from '../pages/RefRedirect'
 
 // ── Lazy-load LandingPage (heavy component with many sub-widgets) ──
 const LandingPage = lazy(() => import('../pages/LandingPage'))
+const TeamPage = lazy(() => import('../pages/TeamPage'))
 
 // ── Lazy-load everything else ──
 const Login = lazy(() => import('../pages/Login'))
@@ -41,7 +44,9 @@ const EditProfile = lazy(() => import('../pages/EditProfile'))
 const LeagueStandings = lazy(() => import('../pages/LeagueStandings'))
 const Playoff = lazy(() => import('../pages/Playoff'))
 const DepthChart = lazy(() => import('../pages/DepthChart'))
+const StartingXI = lazy(() => import('../pages/StartingXI'))
 const PlayerRoster = lazy(() => import('../pages/PlayerRoster'))
+const Squad = lazy(() => import('../pages/Squad'))
 const PlayerInterface = lazy(() => import('../pages/PlayerInterface2'))
 const TeamSchedule = lazy(() => import('../pages/TeamSchedule'))
 const TeamSetting = lazy(() => import('../pages/TeamSettings'))
@@ -73,9 +78,7 @@ const CounterTrade = lazy(() => import('../pages/CounterTrade'))
 const PublicDraft = lazy(() => import('../pages/Draft/PublicDraft'))
 const AllTransaction = lazy(() => import('../pages/AllTransaction/AllTransaction'))
 const Draft = lazy(() => import('../pages/Draft'))
-const TeamRoster = lazy(() => import('../pages/TeamRoster'))
 const TeamFinancials = lazy(() => import('../pages/TeamFinancials'))
-const LeagueRosters = lazy(() => import('../pages/LeagueRosters'))
 const SelectGame = lazy(() => import('../pages/SelectGame'))
 const SelectLeague = lazy(() => import('../pages/SelectLeague'))
 // Old CreateOrJoinLeague removed, /create-join-league now redirects to /onboarding
@@ -106,7 +109,6 @@ const AllNews = lazy(() => import('../components/RollingNewsFeed/AllNews'))
 const SearchPlayer = lazy(() => import('../pages/SearchPlayer'))
 const Chat = lazy(() => import('../pages/Chat'))
 const PlayoffBracket = lazy(() => import('../pages/Postseason/PlayoffBracket'))
-const WorldCup = lazy(() => import('../pages/WorldCup'))
 const PlayoffStandings = lazy(() => import('../pages/Postseason/PlayoffStandings'))
 const SupplementalDraft = lazy(() => import('../pages/Postseason/SupplementalDraft'))
 const PlayoffDraft = lazy(() => import('../pages/Postseason/PlayoffDraft'))
@@ -114,6 +116,7 @@ const RosterBoard = lazy(() => import('../pages/Postseason/RosterBoard'))
 const RookieDraft = lazy(() => import('../pages/Postseason/RookieDraft'))
 const AICoachWidget = lazy(() => import('../components/AICoachWidget'))
 const WarRoom = lazy(() => import('../pages/WarRoom'))
+const FrontOfficeApp = lazy(() => import('../pages/WarRoom/fo/FrontOfficeApp'))
 const FAQ = lazy(() => import('../pages/FAQ'))
 const Glossary = lazy(() => import('../pages/Glossary'))
 const GMChallenge = lazy(() => import('../pages/GMChallenge'))
@@ -121,6 +124,11 @@ const OnboardingWizard = lazy(() => import('../pages/OnboardingWizard'))
 const SportHub = lazy(() => import('../pages/SportHub'))
 const Messages = lazy(() => import('../pages/Messages'))
 const InviteReview = lazy(() => import('../pages/InviteReview'))
+const JoinByCode = lazy(() => import('../pages/JoinByCode'))
+const Fantasy = lazy(() => import('../pages/Fantasy'))
+const MockDraft = lazy(() => import('../pages/MockDraft'))
+const PlayerValues = lazy(() => import('../pages/PlayerValues'))
+const InjuryReport = lazy(() => import('../pages/InjuryReport'))
 const ScoutReport = lazy(() => import('../pages/ScoutReport'))
 const LiveScore = lazy(() => import('../pages/LiveScore'))
 const Marketing = lazy(() => import('../pages/Marketing'))
@@ -129,6 +137,7 @@ const ArticlesPage = lazy(() => import('../soccer/pages/Articles'))
 // ── Partner Platform ──
 const PartnerSignup = lazy(() => import('../pages/PartnerSignup'))
 const PartnerDashboard = lazy(() => import('../pages/PartnerDashboard'))
+const NflDashboard = lazy(() => import('../pages/NflDashboard'))
 
 // ── Product Marketing Pages ──
 const RivalsPage = lazy(() => import('../pages/Products/RivalsPage'))
@@ -170,6 +179,13 @@ const PageLoader = () => (
 
 /* ── Suspense wrapper shorthand ── */
 const L = ({ children }) => <Suspense fallback={<PageLoader />}>{children}</Suspense>
+
+/* Roster Board is the single home for viewing another team's roster; the legacy
+   /team-roster/:id link now opens Roster Board preselected to that team. */
+const TeamRosterRedirect = () => {
+  const { id } = useParams()
+  return <Navigate to='/roster-board' state={{ teamId: id }} replace />
+}
 
 const Routers = () => {
   const Component = () => {
@@ -227,7 +243,8 @@ const Routers = () => {
 
         {/* Uncommit next line to apply token security */}
         <Route element={<PrivateWrapper />}>
-          <Route path='/dashboard' element={<L><ProfessionalLeague /></L>} />
+          <Route path='/dashboard' element={<L><NflDashboard /></L>} />
+          <Route path='/dashboard-classic' element={<L><ProfessionalLeague /></L>} />
           <Route path='/leagueScore' element={<L><LeagueScore /></L>} />
           <Route path='/game-details' element={<L><GameDetails /></L>} />
           <Route path='/team-setting' element={<L><TeamSetting /></L>} />
@@ -239,9 +256,11 @@ const Routers = () => {
           <Route path='/player-interface/:id' element={<L><PlayerInterface /></L>} />
           <Route path='/professional-league' element={<Navigate to='/dashboard' replace />} />
           <Route path='/all-news' element={<L><AllNews/></L>} />
-          <Route path='/player-roster' element={<L><PlayerRoster /></L>} />
-          <Route path='/team-roster/:id' element={<L><TeamRoster /></L>} />
-          <Route path='/depth-chart' element={<L><DepthChart /></L>} />
+          <Route path='/player-roster' element={<L><Squad /></L>} />
+          <Route path='/player-roster-classic' element={<L><PlayerRoster /></L>} />
+          <Route path='/team-roster/:id' element={<TeamRosterRedirect />} />
+          <Route path='/depth-chart' element={<L><StartingXI /></L>} />
+          <Route path='/depth-chart-classic' element={<L><DepthChart /></L>} />
           <Route path='/team-starters/:teamID' element={<L><DepthChart /></L>} />
           <Route path='/league-standings' element={<L><LeagueStandings /></L>} />
           {/* Canonical path with correct spelling */}
@@ -254,7 +273,7 @@ const Routers = () => {
           <Route path='/team-trade' element={<L><TeamTrade /></L>} />
           <Route path='/counter-trade' element={<L><CounterTrade /></L>} />
           <Route path='/team-financials' element={<L><TeamFinancials /></L>} />
-          <Route path='/league-rosters' element={<L><LeagueRosters /></L>} />
+          <Route path='/league-rosters' element={<Navigate to='/roster-board' replace />} />
           <Route path='/public-draft' element={<L><PublicDraft /></L>} />
           <Route path='/all-transaction' element={<L><AllTransaction /></L>} />
           <Route path='/live-draft' element={<L><Draft /></L>} />
@@ -270,7 +289,6 @@ const Routers = () => {
           <Route path='/playoff-standings' element={<L><PlayoffStandings /></L>} />
           <Route path='/supplemental-draft' element={<L><SupplementalDraft /></L>} />
           <Route path='/playoff-draft' element={<L><PlayoffDraft /></L>} />
-          <Route path='/world-cup' element={<L><WorldCup /></L>} />
           <Route path='/roster-board' element={<L><RosterBoard /></L>} />
           <Route path='/rookie-draft' element={<L><RookieDraft /></L>} />
 
@@ -280,7 +298,9 @@ const Routers = () => {
           <Route path='/schedule' element={<Navigate to='/team-schedule' replace />} />
           <Route path='/roster' element={<Navigate to='/player-roster' replace />} />
 
-          <Route path='/war-room' element={<L><WarRoom /></L>} />
+          <Route path='/war-room' element={<Navigate to='/front-office' replace />} />
+          <Route path='/front-office' element={<L><FrontOfficeApp /></L>} />
+          <Route path='/war-room-classic' element={<L><WarRoom /></L>} />
           <Route path='/gm-challenge' element={<L><GMChallenge /></L>} />
           <Route path='/buy-sam-points' element={<L><BuySampoints /></L>} />
           <Route path='/select-buy-options' element={<L><Payoptions/></L>} />
@@ -335,6 +355,14 @@ const Routers = () => {
         <Route path='/partners' element={<L><PartnerSignup /></L>} />
         <Route path='/partner-dashboard' element={<L><PartnerDashboard /></L>} />
         <Route path='/' element={<L><LandingPage /></L>} />
+        {/* Public Team page — reached by clicking a team logo in Live & Upcoming */}
+        <Route path='/team/:sport/:league/:teamId' element={<L><TeamPage /></L>} />
+        {/* Public — a visitor can read about the games and run a full mock draft
+            against bots before ever creating an account. */}
+        <Route path='/fantasy' element={<L><Fantasy /></L>} />
+        <Route path='/mock-draft' element={<L><MockDraft /></L>} />
+        <Route path='/values' element={<L><PlayerValues /></L>} />
+        <Route path='/injury-report' element={<L><InjuryReport /></L>} />
         <Route path='/articles' element={<L><ArticlesPage /></L>} />
 
         <Route path='/tv' element={<L><PartnerTVDisplay /></L>} />
@@ -351,12 +379,18 @@ const Routers = () => {
         <Route path='/faq' element={<L><FAQ /></L>} />
         <Route path='/glossary' element={<L><Glossary /></L>} />
         <Route path='/select-game' element={<L><SelectGame /></L>} />
+        {/* Referral link: stash code, then redirect to signup (or dashboard if logged in). Public. */}
+        <Route path='/ref/:code' element={<RefRedirect />} />
         <Route path='/onboarding' element={<L><OnboardingWizard /></L>} />
         <Route path='/hub' element={<L><SportHub /></L>} />
         <Route path='/messages' element={<L><Messages /></L>} />
         <Route path='/hub/chat' element={<L><Messages /></L>} />
         <Route path='/hub/messages' element={<L><Messages /></L>} />
         <Route path='/hub/invite/:token' element={<L><InviteReview /></L>} />
+        {/* Join-by-code — destination of the Clubhouse copy-invite link. A
+            logged-in user joins by league CODE without logging out; a logged-out
+            user is bounced to login and returns here (see JoinByCode). */}
+        <Route path='/join/:code' element={<L><JoinByCode /></L>} />
         <Route path='/signup' element={<Navigate to='/select-game' replace />} />
         <Route path='/select-league' element={<Navigate to='/onboarding' replace />} />
         <Route path='/proleague' element={<L><Proleague /></L>} />

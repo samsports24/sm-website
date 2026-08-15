@@ -1,9 +1,9 @@
 /* ─── UNIFIED TYPOGRAPHY SYSTEM ─── */
 :root {
   /* Font Families — same across NFL & Soccer */
-  --font-heading: 'Rajdhani', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-stats: 'Barlow Condensed', 'Rajdhani', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Oxanium', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: 'Oxanium', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-stats: 'Oxanium', -apple-system, BlinkMacSystemFont, sans-serif;
 
   /* Font Sizes */
   --text-xs: 0.75rem;   /* 12px */
@@ -511,21 +511,34 @@ p {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  gap: 8px;
 }
 
 ._buttons_and_pagination ._buttons_group button {
-  padding: 10px 28px;
-  font-size: 15px;
+  padding: 9px 22px;
+  font-size: 13.5px;
   font-style: normal;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1;
-  border: 1px solid gray !important;
-  background-color: transparent !important;
+  letter-spacing: 0.03em;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  background-color: rgba(255, 255, 255, 0.03) !important;
+  color: #fff !important;
   text-transform: uppercase;
-  border-radius: 0px;
+  border-radius: 10px;
+  transition: all 0.15s ease;
 }
 ._buttons_and_pagination ._buttons_group button:hover {
-  background-color: var(--primary) !important;
+  background-color: rgba(34, 197, 94, 0.14) !important;
+  border-color: rgba(34, 197, 94, 0.5) !important;
+  color: #4ADE80 !important;
+}
+/* Open dropdown trigger = clearly active */
+._buttons_and_pagination ._buttons_group .ant-dropdown-open,
+._buttons_and_pagination ._buttons_group .ant-dropdown-open:hover {
+  background-color: rgba(34, 197, 94, 0.2) !important;
+  border-color: #22C55E !important;
+  color: #4ADE80 !important;
 }
 /* -------------------------------------------------------------- */
 
@@ -539,4 +552,141 @@ p {
 
 .grayColor {
   color: gray !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Global mobile safety net (iPhone-friendly baseline for ALL pages)
+   Stops horizontal page scroll and keeps media/tables from forcing
+   the layout wider than the screen. Per-page layouts still get their
+   own responsive polish, but this prevents the worst breakage first.
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 820px), (max-height: 520px) and (orientation: landscape) {
+  html, body, #root { overflow-x: hidden; max-width: 100vw; }
+  img, video, canvas, svg, iframe { max-width: 100%; height: auto; }
+  /* Raw wide tables scroll inside their box instead of stretching the page */
+  table:not(.ant-table-fixed) { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .ant-table-content, .ant-table-body { overflow-x: auto !important; }
+  /* Common wide containers shouldn't exceed the viewport */
+  .container, .content, .page, .wrapper, [class*="_container"] { max-width: 100vw; }
+  pre, code { white-space: pre-wrap; word-break: break-word; }
+}
+@media (max-width: 480px) {
+  html, body, #root { overflow-x: hidden; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GLOBAL RESPONSIVE ENHANCEMENTS  (mobile-only — desktop untouched)
+   Every rule below lives inside a max-width media query, so it only
+   applies at tablet/phone widths and never alters the desktop design.
+   Cross-cutting coverage: overflow, media, flex/grid children, Ant
+   overlays (modal/drawer/dropdown/tooltip/popover/notification),
+   forms, touch targets, footers, and fluid typography.
+   NOTE: the query also matches SHORT LANDSCAPE phones (a landscape phone is
+   wide — up to ~930px — but only ~400px tall, so a width-only query would miss
+   it and it would wrongly get the desktop layout). Matching on short height in
+   landscape ensures landscape phones get the mobile treatment too.
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px), (max-height: 520px) and (orientation: landscape) {
+  /* Long words / URLs / big numbers wrap instead of forcing the page wide */
+  h1, h2, h3, h4, h5, h6, p, span, a, li, td, th, label, button {
+    overflow-wrap: break-word;
+  }
+  /* Flex & grid children must be allowed to shrink below content size,
+     otherwise a single wide child stretches the whole row off-screen */
+  .ant-row > .ant-col, [class*="flex"] > *, [class*="grid"] > * { min-width: 0; }
+
+  /* Media always proportional */
+  img, video, canvas, svg, iframe, picture, source { max-width: 100%; height: auto; }
+
+  /* ── Ant Design overlays fit inside the viewport ── */
+  .ant-modal { max-width: calc(100vw - 16px) !important; margin: 8px auto !important; top: 8px !important; }
+  .ant-modal-content { max-height: calc(100vh - 24px); overflow: auto; }
+  .ant-drawer-content-wrapper { max-width: 100vw !important; }
+  .ant-dropdown, .ant-select-dropdown, .ant-picker-dropdown, .ant-popover { max-width: calc(100vw - 12px) !important; }
+  .ant-tooltip { max-width: 90vw !important; }
+  .ant-notification, .ant-message { max-width: 100vw !important; }
+  .ant-notification-notice { max-width: calc(100vw - 24px) !important; }
+
+  /* ── Forms: full-width, comfortable inputs ── */
+  .ant-form-item, .ant-form-item-control-input, .ant-input-affix-wrapper { width: 100%; }
+  form input:not([type=checkbox]):not([type=radio]):not([type=range]),
+  form select, form textarea,
+  .ant-form .ant-input, .ant-form .ant-select, .ant-form .ant-picker,
+  .ant-form .ant-input-number, .ant-form .ant-input-affix-wrapper {
+    width: 100% !important; max-width: 100%;
+  }
+
+  /* ── Touch targets ≥ 44px on the primary interactive controls ── */
+  .ant-btn { min-height: 44px; }
+  .ant-select-selector, .ant-input, .ant-picker, .ant-input-affix-wrapper { min-height: 44px !important; }
+  .ant-select-selector { display: flex; align-items: center; }
+
+  /* Non-Ant tables scroll inside their box rather than widen the page */
+  table:not(.ant-table-fixed) { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
+
+  /* Footers stack their columns */
+  footer [class*="row"], .footer [class*="row"], [class*="footer"] [class*="col"] { flex-wrap: wrap; }
+}
+
+/* Phones: keep bare headings from overflowing (fluid, bounded sizes). */
+@media (max-width: 480px) {
+  h1 { font-size: clamp(24px, 7vw, 34px); line-height: 1.15; }
+  h2 { font-size: clamp(20px, 6vw, 28px); line-height: 1.2; }
+  h3 { font-size: clamp(17px, 5.2vw, 22px); }
+  .ant-btn { max-width: 100%; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LANDSCAPE PHONES — HEIGHT-AWARE FITTING
+   A landscape phone is only ~360–430px TALL, so anything with a fixed
+   or content-driven height (modals, drawers, dropdowns, the sidebar,
+   full-height heroes) can run off the top/bottom. These rules cap those
+   heights to the viewport and let the inner content scroll, so nothing
+   is cut off or unreachable when the phone is rotated.
+   ═══════════════════════════════════════════════════════════════ */
+@media (orientation: landscape) and (max-height: 520px) {
+  /* Modals: sit near the top and scroll internally within the short height */
+  .ant-modal { top: 6px !important; margin: 6px auto !important; padding-bottom: 6px !important; }
+  .ant-modal-content { max-height: calc(100dvh - 12px); max-height: calc(100vh - 12px); overflow: auto; }
+  .ant-modal-body { max-height: calc(100dvh - 96px); max-height: calc(100vh - 96px); overflow: auto; }
+
+  /* Drawers & their bodies scroll instead of clipping */
+  .ant-drawer-content, .ant-drawer-body { max-height: 100dvh; max-height: 100vh; overflow: auto; }
+
+  /* Menus / selects / date pickers that can be taller than the screen scroll */
+  .ant-dropdown-menu, .ant-select-dropdown .rc-virtual-list-holder,
+  .ant-picker-dropdown, .ant-menu { max-height: 82vh; overflow: auto; }
+
+  /* Full-height sections shouldn't force scroll beyond the viewport */
+  [class*="min-h-screen"], [style*="min-height: 100vh"], [style*="min-height:100vh"] {
+    min-height: 100dvh; min-height: auto;
+  }
+
+  /* Fixed side menus scroll their own contents when the screen is short */
+  .sm-menu, .vertical-layout, [class*="sidebar"], [class*="side-menu"] {
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GLOBAL FLUID SAFETY NET  (ALL viewports & browser-zoom levels)
+   These rules are UNCONDITIONAL (no media query) and desktop-safe.
+   They guarantee that — at any window size or zoom in/out — text wraps
+   inside its container instead of clipping or overflowing, and media
+   never forces the page wider than the screen. Layout-changing rules
+   (min-width:0 on flex/grid children, overflow-x:hidden, touch sizing)
+   stay in the mobile media queries above so the desktop design is
+   unchanged. overflow-wrap:break-word only kicks in when a word/number
+   is longer than its box, so normal text is unaffected.
+   ═══════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; }
+img, video, canvas, svg, picture, source { max-width: 100%; }
+img, video { height: auto; }
+/* Only long, block-level running text needs to hard-wrap. Do NOT include inline
+   elements (span/a/label/b/i) or class-substring selectors here: forcing
+   overflow-wrap + min-width:0 on those collapses flex cards and breaks short
+   UI labels character-by-character (e.g. "Franchi se"). Short labels wrap on
+   whole words naturally and don't need this. */
+h1, h2, h3, h4, h5, h6, p, li, dd, dt, blockquote, figcaption {
+  overflow-wrap: break-word;
 }

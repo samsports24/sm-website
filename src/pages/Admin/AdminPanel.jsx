@@ -489,7 +489,10 @@ const AnalyticsSection = ({ toast }) => {
         <div style={{...card,padding:16}}>
           <div style={{...labelStyle,marginBottom:10}}>New Sign-ups</div>
           <MiniChart items={charts.userGrowth} color={C.purple} labelKey="_id" valueKey="count"/>
-          {charts.userGrowth?.length > 0 && <div style={{fontSize:10,color:C.textDim,marginTop:6}}>Total: {charts.userGrowth.reduce((s,d)=>s+(d.count||0),0)} new users</div>}
+          {/* Authoritative real signup count for the period (same source as the
+              "+N new this period" pill) so this can never diverge into a
+              sessions-sized number. */}
+          <div style={{fontSize:10,color:C.textDim,marginTop:6}}>Total: {(o.newUsers||0).toLocaleString()} new users</div>
         </div>
       </div>
 
@@ -2695,6 +2698,134 @@ const MegaphoneSection = ({ toast }) => {
 };
 
 /* ══════════════════════════════════════════
+   SECTION: Landing Ads (samsports.io adverts)
+   ══════════════════════════════════════════ */
+const LANDING_AD_SLOTS = [
+  { slot:"hero",  title:"Hero Banner",   dims:"1600×680 px", ratio:1600/680, note:"Recommended: 1600×680 px (≈2.35:1), JPG/PNG, ≤2MB" },
+  { slot:"left",  title:"Left Sidebar",  dims:"1000×700 px", ratio:1000/700, note:"Recommended: 1000×700 px (≈1.43:1), JPG/PNG, ≤2MB" },
+  { slot:"right", title:"Right Sidebar", dims:"1000×720 px", ratio:1000/720, note:"Recommended: 1000×720 px (≈1.40:1), JPG/PNG, ≤2MB" },
+];
+
+const LandingAdsSection = ({ toast }) => {
+  const [ads,setAds]=useState({});        // saved ads keyed by slot
+  const [edits,setEdits]=useState({});    // local unsaved edits keyed by slot
+  const [loading,setLoading]=useState(true);
+  const [saving,setSaving]=useState(null);
+
+  const load=useCallback(async()=>{
+    try{
+      setLoading(true);
+      const res=await adminAPI.getLandingAds();
+      const list=res?.data?.data?.ads||res?.data?.ads||[];
+      const map={};list.forEach(a=>{if(a&&a.slot)map[a.slot]=a;});
+      setAds(map);
+    }catch(e){toast("error",e?.response?.data?.message||"Failed to load landing ads");}
+    finally{setLoading(false);}
+  },[toast]);
+  useEffect(()=>{load();},[load]);
+
+  const getVal=(slot)=>{
+    const saved=ads[slot]||{};const e=edits[slot]||{};
+    return {
+      linkUrl: e.linkUrl!==undefined?e.linkUrl:(saved.linkUrl||""),
+      active:  e.active!==undefined?e.active:(saved.active!==false),
+      file:    e.file||null,
+      preview: e.preview||null,
+      fileName:e.fileName||"",
+    };
+  };
+  const patch=(slot,p)=>setEdits(prev=>({...prev,[slot]:{...prev[slot],...p}}));
+
+  const handleFile=(cfg)=>(ev)=>{
+    const file=ev.target.files?.[0];if(!file)return;
+    if(!file.type.startsWith("image/")){toast("error","Please choose an image file");return;}
+    const url=URL.createObjectURL(file);
+    const img=new Image();
+    img.onload=()=>{
+      const r=img.naturalWidth/img.naturalHeight;
+      if(Math.abs(r-cfg.ratio)>0.25){
+        toast("error",`${cfg.title}: image ratio ${r.toFixed(2)} is off from recommended ${cfg.ratio.toFixed(2)} (${cfg.dims}). You can still save, but it may look cropped/stretched.`);
+      }
+      if(file.size>2.5*1024*1024){
+        toast("error",`${cfg.title}: file is ${(file.size/1024/1024).toFixed(1)}MB — larger than the recommended 2.5MB.`);
+      }
+    };
+    img.src=url;
+    patch(cfg.slot,{file,preview:url,fileName:file.name});
+  };
+
+  const save=async(cfg)=>{
+    const v=getVal(cfg.slot);
+    try{
+      setSaving(cfg.slot);
+      const fd=new FormData();
+      fd.append("slot",cfg.slot);
+      fd.append("linkUrl",v.linkUrl||"");
+      fd.append("active",String(v.active));
+      if(v.file)fd.append("pictures",v.file); // field name required by the backend upload middleware
+      await adminAPI.saveLandingAd(fd);
+      toast("success","Ad saved");
+      setEdits(prev=>{const n={...prev};delete n[cfg.slot];return n;});
+      await load();
+    }catch(err){toast("error",err?.response?.data?.message||"Failed to save ad");}
+    finally{setSaving(null);}
+  };
+
+  return (
+    <div>
+      <h2 style={{fontSize:20,fontWeight:800,color:C.white,marginBottom:8,display:"flex",alignItems:"center",gap:8}}><Image size={20} color={C.blue}/>Landing Adverts</h2>
+      <p style={{fontSize:12,color:C.textMuted,margin:"0 0 20px"}}>Upload or replace the three advert images on the samsports.io landing page. Leave the file empty to keep the current image and only update the link or active state.</p>
+      {loading?<div style={{textAlign:"center",padding:40}}><Spinner/></div>:(
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(320px,1fr))",gap:16}}>
+          {LANDING_AD_SLOTS.map(cfg=>{
+            const v=getVal(cfg.slot);
+            const saved=ads[cfg.slot]||{};
+            const previewSrc=v.preview||saved.imageUrl||null;
+            return (
+              <div key={cfg.slot} style={card}>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
+                  <div style={{fontSize:14,fontWeight:800,color:C.white}}>{cfg.title}</div>
+                  <Badge color={v.active?"green":"red"}>{v.active?"Active":"Hidden"}</Badge>
+                </div>
+                <p style={{fontSize:11,color:C.textMuted,margin:"0 0 12px"}}>{cfg.note}</p>
+
+                <div style={{borderRadius:10,overflow:"hidden",border:`1px solid ${C.borderLight}`,marginBottom:12,background:"rgba(51,65,85,0.3)",aspectRatio:String(cfg.ratio),display:"flex",alignItems:"center",justifyContent:"center"}}>
+                  {previewSrc?(
+                    <img src={previewSrc} alt={`${cfg.title} preview`} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
+                  ):(
+                    <span style={{fontSize:11,color:C.textMuted}}>No image set</span>
+                  )}
+                </div>
+
+                <label style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:"12px 14px",border:`2px dashed ${C.borderLight}`,borderRadius:10,cursor:"pointer",color:C.textMuted,fontSize:12,marginBottom:12}}>
+                  <ImagePlus size={16} color={C.textMuted}/>
+                  <span>{v.fileName||"Choose new image"}</span>
+                  <input type="file" accept="image/*" onChange={handleFile(cfg)} style={{display:"none"}}/>
+                </label>
+
+                <div style={{marginBottom:12}}>
+                  <label style={labelStyle}>Link URL (where the ad click goes)</label>
+                  <input type="text" value={v.linkUrl} onChange={e=>patch(cfg.slot,{linkUrl:e.target.value})} placeholder="/select-game or https://…" style={inputStyle}/>
+                </div>
+
+                <label style={{display:"flex",alignItems:"center",gap:8,fontSize:13,color:C.text,marginBottom:14,cursor:"pointer"}}>
+                  <input type="checkbox" checked={v.active} onChange={e=>patch(cfg.slot,{active:e.target.checked})}/>
+                  Active (show on landing page)
+                </label>
+
+                <button onClick={()=>save(cfg)} disabled={saving===cfg.slot} style={{...btn,width:"100%",justifyContent:"center",background:C.blue,color:C.white,opacity:saving===cfg.slot?.6:1}}>
+                  {saving===cfg.slot?<Spinner size={12}/>:<CheckCircle size={13}/>}Save {cfg.title}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* ══════════════════════════════════════════
    SECTION: Credentials Vault
    ══════════════════════════════════════════ */
 const VAULT_PASS_KEY="__sam_vault_pass";
@@ -3058,6 +3189,52 @@ const AuditSection = ({ toast }) => {
       <div style={{display:"flex",gap:8,marginBottom:14}}><div style={{flex:1}}><SearchBar value={filter} onChange={setFilter} placeholder="Filter logs..."/></div><button onClick={()=>loadLogs()} style={{...btn,background:C.bgHover,color:C.white}}><RefreshCw size={13}/>Refresh</button></div>
       <DataTable columns={cols} data={filtered} loading={loading} emptyMsg="No audit logs found"/>
       <p style={{fontSize:11,color:C.textMuted,marginTop:10}}>Every admin action is permanently recorded.</p>
+    </div>
+  );
+};
+
+/* ══════════════════════════════════════════
+   SECTION: SamPoints Log (transfer ledger)
+   ══════════════════════════════════════════ */
+const SamPointsLogSection = ({ toast }) => {
+  const [search,setSearch]=useState("");
+  const [status,setStatus]=useState("");
+  const [rows,setRows]=useState([]);
+  const [total,setTotal]=useState(0);
+  const [page,setPage]=useState(1);
+  const [loading,setLoading]=useState(true);
+  const load=useCallback(async()=>{try{setLoading(true);const d=await adminAPI.getSamPointsTransactions({search:search.trim()||undefined,status:status||undefined,page,limit:50});setRows(d.items||[]);setTotal(d.total||0);}catch{toast("error","Failed to load SamPoints ledger");}finally{setLoading(false);}},[search,status,page,toast]);
+  useEffect(()=>{load();},[load]);
+  const fmt=(n)=>Number(n||0).toLocaleString();
+  const typeColor={transfer_deposit:"green",transfer_withdraw:"amber",transfer_out:"purple",reward:"blue",purchase:"teal",admin_adjust:"red",other:"blue"};
+  const pages=Math.max(1,Math.ceil(total/50));
+  const cols=[
+    {key:"createdAt",label:"Time",render:r=><span style={{fontSize:11}}>{ts(r.createdAt)}</span>},
+    {key:"user",label:"User",render:r=><span style={{fontWeight:600,color:C.white}}>{r.user?.userName||r.user?.email||"—"}</span>},
+    {key:"type",label:"Type",render:r=><Badge color={typeColor[r.type]||"blue"}>{(r.type||"").replace(/_/g," ")}</Badge>},
+    {key:"amount",label:"Amount",render:r=><span style={{fontWeight:700,color:C.amber}}>{fmt(r.amount)} SP</span>},
+    {key:"from",label:"From",render:r=><span style={{fontSize:12,color:C.textMuted}}>{r.fromTeamName||(r.fromSport==="wallet"?"Main wallet":r.fromSport||"—")}</span>},
+    {key:"to",label:"To",render:r=><span style={{fontSize:12,color:C.textMuted}}>{r.toTeamName||(r.toSport==="wallet"?"Main wallet":r.toSport||"—")}</span>},
+    {key:"status",label:"Status",render:r=><Badge color={r.status==="completed"?"green":"red"}>{r.status}</Badge>},
+    {key:"reason",label:"Note",render:r=><span style={{fontSize:11,color:C.textMuted}}>{r.reason||"—"}</span>},
+  ];
+  const statuses=[{id:"",l:"All"},{id:"completed",l:"Completed"},{id:"failed",l:"Failed"}];
+  return (
+    <div>
+      <h2 style={{fontSize:20,fontWeight:800,color:C.white,marginBottom:6,display:"flex",alignItems:"center",gap:8}}><DollarSign size={20} color={C.green}/>SamPoints Log</h2>
+      <p style={{color:C.textMuted,fontSize:13,marginBottom:16}}>Every SamPoints transfer, deposit and withdrawal — completed or failed. {total.toLocaleString()} recorded.</p>
+      <div style={{display:"flex",gap:8,marginBottom:14,flexWrap:"wrap",alignItems:"center"}}>
+        <div style={{flex:1,minWidth:220}}><SearchBar value={search} onChange={(v)=>{setPage(1);setSearch(v);}} placeholder="Search team name or note..."/></div>
+        {statuses.map(s=><button key={s.id} onClick={()=>{setPage(1);setStatus(s.id);}} style={{...btn,background:status===s.id?C.green:C.bgHover,color:status===s.id?C.white:C.textMuted}}>{s.l}</button>)}
+        <button onClick={()=>load()} style={{...btn,background:C.bgHover,color:C.white}}><RefreshCw size={13}/>Refresh</button>
+      </div>
+      <DataTable columns={cols} data={rows} loading={loading} emptyMsg="No SamPoints transactions found"/>
+      {pages>1&&<div style={{display:"flex",gap:8,justifyContent:"center",marginTop:14,alignItems:"center"}}>
+        <button disabled={page<=1} onClick={()=>setPage(p=>Math.max(1,p-1))} style={{...btn,background:C.bgHover,color:C.white,opacity:page<=1?0.5:1}}>Prev</button>
+        <span style={{fontSize:12,color:C.textMuted}}>Page {page} / {pages}</span>
+        <button disabled={page>=pages} onClick={()=>setPage(p=>Math.min(pages,p+1))} style={{...btn,background:C.bgHover,color:C.white,opacity:page>=pages?0.5:1}}>Next</button>
+      </div>}
+      <p style={{fontSize:11,color:C.textMuted,marginTop:10}}>Append-only ledger. Failed rows are attempts where nothing moved — useful for tracing a sent-but-not-received report.</p>
     </div>
   );
 };
@@ -5201,6 +5378,19 @@ const ArticlesSection = ({ toast }) => {
     setGenerating(false);
   };
 
+  const handleTransferNow = async () => {
+    setGenerating(true);
+    try {
+      const res = await adminAPI.generateTransferNow();
+      const r = res?.data?.result;
+      if (r?.generated) toast(`Transfer roundup published: "${r.title}"`, "success");
+      else toast(`No article generated (${r?.reason || "unknown"}). Check server logs.`, "info");
+    } catch (err) {
+      toast(err?.response?.data?.message || "Transfer roundup failed", "error");
+    }
+    setGenerating(false);
+  };
+
   const handleDeleteArticle = (id) => {
     setConfirmModal({
       message: "Permanently delete this SAM Report? This cannot be undone.",
@@ -5804,6 +5994,9 @@ const ArticlesSection = ({ toast }) => {
             </button>
             <button onClick={() => handleBatchGenerate(null)} disabled={generating} style={btn(C.green)}>
               {generating ? <Spinner size={14}/> : <Zap size={14}/>} Generate All
+            </button>
+            <button onClick={handleTransferNow} disabled={generating} style={btn(C.blue)}>
+              {generating ? <Spinner size={14}/> : <Zap size={14}/>} Generate Transfer Roundup Now
             </button>
           </div>
         </div>
@@ -7129,6 +7322,7 @@ const AdminPanel = () => {
     {id:"world_cup",label:"World Cup 2026",icon:Globe},
     {divider:true,label:"FINANCE"},
     {id:"finance",label:"Finance Tracker",icon:DollarSign},
+    {id:"sp_ledger",label:"SamPoints Log",icon:DollarSign},
     {divider:true,label:"OPERATIONS"},
     {id:"pipeline",label:"Data Pipeline",icon:Workflow},
     {id:"megaphone",label:"Megaphone",icon:Megaphone},
@@ -7139,6 +7333,7 @@ const AdminPanel = () => {
     {divider:true,label:"CONTENT"},
     {id:"articles",label:"SAM Reports",icon:FileText},
     {id:"infographics",label:"Infographics",icon:Image},
+    {id:"landing_ads",label:"Landing Ads",icon:Image},
     {divider:true,label:"DEPLOY"},
     {id:"deploy",label:"Deploy & Server",icon:Server},
     {divider:true,label:"SEASONS"},
@@ -7161,6 +7356,7 @@ const AdminPanel = () => {
     case "cl_fantasy": return <CLFantasySection toast={toast}/>;
     case "world_cup": return <WorldCupSection toast={toast}/>;
     case "finance": return <FinanceTrackerSection toast={toast}/>;
+    case "sp_ledger": return <SamPointsLogSection toast={toast}/>;
     case "pipeline": return <DataPipelineSection toast={toast}/>;
     case "megaphone": return <MegaphoneSection toast={toast}/>;
     // case "correction": return <CorrectionSection toast={toast}/>; // disabled until backend is built
@@ -7169,6 +7365,7 @@ const AdminPanel = () => {
     case "audit": return <AuditSection toast={toast}/>;
     case "articles": return <ArticlesSection toast={toast}/>;
     case "infographics": return <InfographicsSection toast={toast}/>;
+    case "landing_ads": return <LandingAdsSection toast={toast}/>;
     case "deploy": return <DeploySection toast={toast}/>;
     case "seasons": return <SeasonManagementSection toast={toast}/>;
     case "partners": return <PartnersSection toast={toast}/>;

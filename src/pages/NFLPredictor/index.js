@@ -6,7 +6,6 @@ import {
   Empty,
   message,
   Tag,
-  Tooltip,
   Card,
 } from 'antd'
 import {
@@ -15,13 +14,13 @@ import {
   CheckCircleFilled,
   TrophyOutlined,
   SaveOutlined,
-  FireOutlined,
   CalendarOutlined,
 } from '@ant-design/icons'
 import { getWeeklyNflSchedule } from '../../redux/actions/leagueActions'
 import { privateAPI, attachToken } from '../../config/constants'
 import Header from '../../components/Header'
 import WeekPagination from '../../components/WeekPagination'
+import TeamLogo from '../../components/TeamLogo'
 import './nfl-predictor.css'
 
 /* ═══ SamPoints per correct NFL prediction ═══ */
@@ -32,15 +31,26 @@ const POINTS = {
 
 /* NFL league ID (API-Sports American Football) */
 const NFL_LEAGUE_ID = 1
-const NFL_SEASON = 2025
 
-/* NFL team logo helper — fallback if not in data */
+// The season we're PREDICTING. This was hardcoded to 2025 — a season that has
+// already been played, so every pick was being filed against finished games.
+// The NFL season is named for the year it starts, and it starts in September:
+// before then, the season you're predicting is this calendar year's.
+const NFL_SEASON = (() => {
+  const now = new Date()
+  return now.getMonth() < 8 ? now.getFullYear() : now.getFullYear()
+})()
+
+/* NFL team logo helper — wants an ABBREVIATION ("kc"), not a team name. */
 const teamLogoUrl = (abbr) =>
-  `https://a.espncdn.com/combiner/i?img=/i/teamlogos/nfl/500/${abbr?.toLowerCase()}.png&w=80&h=80`
+  `https://a.espncdn.com/combiner/i?img=/i/teamlogos/nfl/500/${String(abbr || '').toLowerCase()}.png&w=80&h=80`
 
 const NFLPredictor = () => {
   const dispatch = useDispatch()
-  const SETTING = useSelector((state) => state.setting)
+  // The settings live at state.user.setting. This read `state.setting`, which
+  // does not exist in the root reducer — so SETTING was always undefined, and
+  // the page opened on WEEK 1 every single time, whatever week it actually was.
+  const SETTING = useSelector((state) => state.user?.setting)
   const user = useSelector((state) => state.user?.userDetails)
 
   const [games, setGames] = useState([])
@@ -69,8 +79,19 @@ const NFLPredictor = () => {
             awayTeam: g.AwayTeam,
             homeScore: g.HomeScore,
             awayScore: g.AwayScore,
-            homeLogo: g.HomeLogo || teamLogoUrl(g.HomeTeam),
-            awayLogo: g.AwayLogo || teamLogoUrl(g.AwayTeam),
+            // TWO bugs on these two lines, and together they broke every logo on
+            // every card.
+            //
+            //   1. The field is HomeTeamLogo, not HomeLogo. `g.HomeLogo` was
+            //      always undefined, so the fallback ran every time.
+            //   2. The fallback builds an ESPN url from an ABBREVIATION, but the
+            //      old API-Sports sync stored FULL NAMES. So it produced
+            //      ".../nfl/500/kansas city chiefs.png" — a broken image, always.
+            //
+            // The Tank01 schedule sync now stores codes ("KC"), and this reads
+            // the right field first.
+            homeLogo: g.HomeTeamLogo || g.HomeLogo || teamLogoUrl(g.HomeTeam),
+            awayLogo: g.AwayTeamLogo || g.AwayLogo || teamLogoUrl(g.AwayTeam),
             isFinished: g.Status === 'Final',
             isLive: g.Status === 'InProgress',
           }))
@@ -94,7 +115,7 @@ const NFLPredictor = () => {
     try {
       attachToken()
       const resp = await privateAPI.get(
-        `/predictor/picks?competition=weekly&season=${NFL_SEASON}&leagueId=${NFL_LEAGUE_ID}&matchweek=${currentWeek}`
+        `/predictor/picks?competition=nfl&season=${NFL_SEASON}&leagueId=${NFL_LEAGUE_ID}&matchweek=${currentWeek}`
       )
       const serverPicks = resp.data?.data?.picks || []
       const loaded = {}
@@ -125,7 +146,7 @@ const NFLPredictor = () => {
     ;(async () => {
       try {
         const resp = await privateAPI.get(
-          `/predictor/leaderboard?competition=weekly&season=${NFL_SEASON}&leagueId=${NFL_LEAGUE_ID}&limit=20`
+          `/predictor/leaderboard?competition=nfl&season=${NFL_SEASON}&leagueId=${NFL_LEAGUE_ID}&limit=20`
         )
         setLeaderboard(resp.data?.data?.leaderboard || [])
       } catch {}
@@ -141,20 +162,6 @@ const NFLPredictor = () => {
         return { ...prev, [gameId]: rest }
       }
       return { ...prev, [gameId]: { ...existing, result } }
-    })
-  }
-
-  const setScore = (gameId, side, value) => {
-    const num = value === '' ? null : Math.max(0, parseInt(value) || 0)
-    setPicks(prev => {
-      const existing = prev[gameId] || {}
-      return {
-        ...prev,
-        [gameId]: {
-          ...existing,
-          [side === 'home' ? 'homeScore' : 'awayScore']: num,
-        },
-      }
     })
   }
 
@@ -180,13 +187,30 @@ const NFLPredictor = () => {
         const game = games.find(g => String(g.id) === String(gameIdStr))
         if (!game || game.isFinished || game.isLive) continue
 
+        // No GameKey, no pick. The key IS the game's identity — it's what
+        // settlement matches on. A pick we can't tie back to a fixture can
+        // never be graded, so refusing to save it beats saving a dead one.
+        if (!game.gameKey) {
+          console.warn('[Predictor] game has no GameKey, skipping:', game)
+          continue
+        }
+
         bulkPicks.push({
-          competition: 'weekly',
+          // "nfl", not "weekly". As "weekly" with leagueId 1, these picks were
+          // picked up by the SOCCER settle cron — where league 1 is the World
+          // Cup — which went looking for them among World Cup fixtures, found
+          // nothing, and left every NFL pick unsettled for ever.
+          competition: 'nfl',
           leagueId: NFL_LEAGUE_ID,
           season: NFL_SEASON,
           matchweek: currentWeek,
           pickType: 'match',
-          fixtureId: typeof game.id === 'number' ? game.id : game.gameKey || 0,
+          // Tank01's gameID ("20260910_BUF@KC"). It used to fall back to `0`
+          // when the id wasn't numeric — and it never was — so every pick a user
+          // made carried fixtureId 0. With a unique index on
+          // (user, fixtureId, pickType), only the FIRST pick of the week could
+          // ever be written. The rest collided and were silently dropped.
+          fixtureId: game.gameKey,
           pickResult: pick.result,
           pickHomeScore: pick.homeScore != null ? pick.homeScore : null,
           pickAwayScore: pick.awayScore != null ? pick.awayScore : null,
@@ -291,11 +315,17 @@ const NFLPredictor = () => {
             const actualResult = g.isFinished
               ? (g.homeScore > g.awayScore ? 'home' : 'away')
               : null
+            // A pick is "confirmed" once it's been saved and hasn't been changed
+            // since. In that state we dim the un-picked side so the selection
+            // reads as locked in.
+            const isConfirmed =
+              !!savedPicks[g.id]?.result &&
+              JSON.stringify(picks[g.id]) === JSON.stringify(savedPicks[g.id])
 
             return (
               <div
                 key={g.id}
-                className={`nfl-predictor-game-card ${isLocked ? 'locked' : ''} ${pick.settled && pick.correct ? 'correct' : ''} ${pick.settled && !pick.correct ? 'incorrect' : ''}`}
+                className={`nfl-predictor-game-card ${isLocked ? 'locked' : ''} ${isConfirmed ? 'confirmed' : ''} ${pick.settled && pick.correct ? 'correct' : ''} ${pick.settled && !pick.correct ? 'incorrect' : ''}`}
               >
                 {/* Meta */}
                 <div className="nfl-predictor-game-meta">
@@ -303,6 +333,9 @@ const NFLPredictor = () => {
                   <span>{fmtTime(g.date)}</span>
                   {g.isLive && <Tag color="red">LIVE</Tag>}
                   {g.isFinished && <Tag>FINAL</Tag>}
+                  {isConfirmed && !isLocked && (
+                    <Tag color="green" icon={<CheckCircleFilled />}>Saved</Tag>
+                  )}
                   {pick.settled && pick.correct && (
                     <Tag color="green" icon={<CheckCircleFilled />}>
                       +{(pick.awardedPoints || 0).toLocaleString()} SP
@@ -317,7 +350,7 @@ const NFLPredictor = () => {
                     className={`nfl-predictor-team ${pick.result === 'home' ? 'selected' : ''}`}
                     onClick={() => !isLocked && setResult(g.id, 'home')}
                   >
-                    <img src={g.homeLogo} alt="" className="nfl-predictor-logo" />
+                    <TeamLogo src={g.homeLogo} name={g.homeTeam} size={36} round={false} className="nfl-predictor-logo" style={{ objectFit: 'contain' }} />
                     <span className="nfl-predictor-team-name">{g.homeTeam}</span>
                     {g.isFinished && <span className="nfl-predictor-score">{g.homeScore}</span>}
                   </div>
@@ -336,45 +369,15 @@ const NFLPredictor = () => {
                     className={`nfl-predictor-team away ${pick.result === 'away' ? 'selected' : ''}`}
                     onClick={() => !isLocked && setResult(g.id, 'away')}
                   >
-                    <img src={g.awayLogo} alt="" className="nfl-predictor-logo" />
+                    <TeamLogo src={g.awayLogo} name={g.awayTeam} size={36} round={false} className="nfl-predictor-logo" style={{ objectFit: 'contain' }} />
                     <span className="nfl-predictor-team-name">{g.awayTeam}</span>
                     {g.isFinished && <span className="nfl-predictor-score">{g.awayScore}</span>}
                   </div>
                 </div>
 
-                {/* Exact score bonus */}
-                {!isLocked && pick.result && (
-                  <div className="nfl-predictor-score-inputs">
-                    <Tooltip title="Predict exact score for 50k bonus SamPoints">
-                      <FireOutlined style={{ color: '#f59e0b' }} />
-                    </Tooltip>
-                    <input
-                      type="number"
-                      min="0"
-                      className="nfl-predictor-score-input"
-                      placeholder="0"
-                      value={pick.homeScore != null ? pick.homeScore : ''}
-                      onChange={e => setScore(g.id, 'home', e.target.value)}
-                    />
-                    <span style={{ color: '#64748b', fontWeight: 700 }}>—</span>
-                    <input
-                      type="number"
-                      min="0"
-                      className="nfl-predictor-score-input"
-                      placeholder="0"
-                      value={pick.awayScore != null ? pick.awayScore : ''}
-                      onChange={e => setScore(g.id, 'away', e.target.value)}
-                    />
-                    <span style={{ color: '#64748b', fontSize: 11 }}>Exact score bonus</span>
-                  </div>
-                )}
-
                 {pick.result && !isLocked && (
                   <div className="nfl-predictor-points">
                     <TrophyOutlined /> {POINTS.correct.toLocaleString()} SP
-                    {pick.homeScore != null && pick.awayScore != null && (
-                      <span> + {POINTS.exactScore.toLocaleString()} bonus</span>
-                    )}
                   </div>
                 )}
               </div>
@@ -394,7 +397,7 @@ const NFLPredictor = () => {
             size="large"
             className="nfl-predictor-save-btn"
           >
-            Save {unsavedCount} Prediction{unsavedCount !== 1 ? 's' : ''}
+            Save &amp; Confirm {unsavedCount} Pick{unsavedCount !== 1 ? 's' : ''}
           </Button>
         </div>
       )}

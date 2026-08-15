@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { Modal, Button, Input, Form, Avatar, Rate, Select } from 'antd'
 import SamDatePicker from '../SamDatePicker'
 import { createNewLeagueFromDashboard } from '../../redux'
@@ -149,6 +150,12 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
   const [leagueModeValue, setLeagueModeValue] = useState('full')
   const [draftFormatValue, setDraftFormatValue] = useState('combined')
 
+  // Mid-season start preview: if the NFL regular season is already underway, a
+  // league created now only runs the remaining weeks (backend auto-shortens it).
+  const REG_WEEKS = 18
+  const currentWeek = Number(useSelector((state) => state?.user?.currentWeek)) || 1
+  const remaining = Math.max(REG_WEEKS - currentWeek + 1, 0)
+
   // Support external open/close control (e.g. from OnboardingWizard)
   const isOpen = externalOpen !== undefined ? externalOpen : isModalVisible
 
@@ -193,12 +200,17 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
         formdata.append(key, value)
       }
     })
-    await createNewLeagueFromDashboard(formdata)
+    const result = await createNewLeagueFromDashboard(formdata)
     setLoading(false)
-    if (onSuccess) onSuccess()
-    handleCancel()
-    // Redirect commissioner to setup page so they configure draft date, rules, etc.
-    navigate('/commissioner')
+    // Only close + navigate on a confirmed success. On a backend rejection
+    // (e.g. "too late / fewer than 4 weeks left") leave the modal open so the
+    // error toast keeps its context and the user can adjust.
+    if (result?.success) {
+      if (onSuccess) onSuccess()
+      handleCancel()
+      // Redirect commissioner to setup page so they configure draft date, rules, etc.
+      navigate('/commissioner')
+    }
   }
 
   const handleFile = (file) => {
@@ -358,6 +370,16 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
                 </div>
               </div>
 
+              {currentWeek > 1 && (
+                <div className="cl-midseason-info" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, padding: '10px 14px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ fontSize: 18 }}>&#128197;</span>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#fff' }}>Mid-season start</div>
+                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>Season is in Week {currentWeek}. Your league will run the remaining {remaining} weeks (Week {currentWeek}&ndash;{REG_WEEKS}), then playoffs.</div>
+                  </div>
+                </div>
+              )}
+
               <div className="cl-row-2">
                 <Form.Item
                   name="numberOfTeams"
@@ -366,10 +388,11 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
                   className="cl-flex-1"
                 >
                   <Select placeholder="Choose size" size="large">
-                    <Select.Option value={10}>10 Teams</Select.Option>
-                    <Select.Option value={16}>16 Teams</Select.Option>
-                    <Select.Option value={24}>24 Teams</Select.Option>
-                    <Select.Option value={32}>32 Teams</Select.Option>
+                    {[8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32].map((sz) => (
+                      <Select.Option key={sz} value={sz}>
+                        {sz} Teams{sz < 12 ? ' · no playoffs' : ''}
+                      </Select.Option>
+                    ))}
                   </Select>
                 </Form.Item>
 

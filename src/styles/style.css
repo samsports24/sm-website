@@ -1,6 +1,6 @@
 /* ── Partner White-Label CSS Variables (defaults) ── */
 :root {
-  --partner-primary: #D4A843;
+  --partner-primary: #22c55e;
   --partner-secondary: #141C2D;
   --partner-accent: #22C55E;
   --partner-header-bg: #0A0F1C;
@@ -145,3 +145,21 @@
 
 /* PAGE HOCKEY */
 @import './pages/teamLIne.css';
+
+/* ── Mobile safety net ──────────────────────────────────────────────────────
+   Stops any single over-wide element from forcing the whole page wider than the
+   screen (the "content pushed left, black strip + horizontal scroll" symptom on
+   phones). Wide things that genuinely need to scroll (tables, etc.) keep their
+   own overflow-x:auto on the element itself. */
+html, body, #root { max-width: 100%; }
+@media (max-width: 768px) {
+  html, body, #root { overflow-x: hidden; }
+
+  /* Media never overflows its container on a phone. */
+  img, video, canvas, svg { max-width: 100%; height: auto; }
+
+  /* Wide data tables scroll sideways INSIDE their own box instead of stretching
+     the whole page. Covers Ant Design tables and plain tables. */
+  .ant-table-wrapper, .ant-table-content, .ant-table-body { overflow-x: auto !important; }
+  .table-responsive, .responsive-table { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+}
