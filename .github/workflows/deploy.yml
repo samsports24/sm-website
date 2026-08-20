@@ -35,5 +35,8 @@ jobs:
           cd /opt/samsports/sm-website
           npm install --no-audit --no-fund
           DISABLE_ESLINT_PLUGIN=true CI=false GENERATE_SOURCEMAP=false npm run build
+          # rsync -a keeps the file mode from the Mac. If the OG image lands as
+          # 600, nginx cannot read it and every link preview falls back to blank.
+          chmod 644 build/og-cover-nfl.png 2>/dev/null || true
           nginx -t && systemctl reload nginx
           REMOTE
