@@ -249,7 +249,7 @@ const StepSetupSport = ({ sport, userName, onCreateSuccess, onJoinLeague, onSkip
               <button className="ob-option-card" onClick={() => setMode('join')}>
                 <span className="ob-option-icon">✉️</span>
                 <div className="ob-option-text">
-                  <div className="ob-option-title">Join with League ID</div>
+                  <div className="ob-option-title">Join with a league code</div>
                   <div className="ob-option-desc">Got an invite code? Enter it here</div>
                 </div>
                 <span className="ob-option-chevron">›</span>
@@ -277,7 +277,7 @@ const StepSetupSport = ({ sport, userName, onCreateSuccess, onJoinLeague, onSkip
             />
           </div>
           <div className="ob-form-group">
-            <label>League ID</label>
+            <label>League code</label>
             <input
               className="ob-input"
               placeholder="Enter the league invitation code"

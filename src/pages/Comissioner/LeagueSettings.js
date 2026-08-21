@@ -131,7 +131,7 @@ const LeagueSetting = () => {
           layout='vertical'
           autoComplete='off'
         >
-          <Form.Item label='League ID'>
+          <Form.Item label='League code'>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0,0,0,0.25)', borderRadius: '8px', padding: '8px 12px', border: '1px solid rgba(255,255,255,0.08)' }}>
               <span style={{ color: '#F1F5F9', fontFamily: "'Barlow Condensed', sans-serif", fontSize: '15px', fontWeight: 700, letterSpacing: '1px', flex: 1 }}>
                 {currentLeague?.leagueId || '—'}

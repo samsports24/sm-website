@@ -836,7 +836,7 @@ const GameRulesTab = ({ currentLeague }) => {
       <RuleSection icon={<SettingOutlined />} iconClass='cm-section-icon-blue' title='General Settings'>
         <div className='cm-form-grid'>
           <div className='cm-field'>
-            <label className='cm-field-label'>League ID</label>
+            <label className='cm-field-label'>League code</label>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0,0,0,0.25)', borderRadius: '8px', padding: '8px 12px', border: '1px solid rgba(255,255,255,0.08)' }}>
               <span style={{ color: '#F1F5F9', fontFamily: "'Barlow Condensed', sans-serif", fontSize: '15px', fontWeight: 700, letterSpacing: '1px', flex: 1 }}>
                 {leagueId || '—'}

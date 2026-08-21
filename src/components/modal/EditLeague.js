@@ -278,7 +278,7 @@ const EditLeague = ({ data, isCommissioner = false }) => {
                 <Col xs={24} md={12} xl={8}>
                   <Form.Item
                     name={'leagueId'}
-                    label='League ID'
+                    label='League code'
                     rules={[
                       {
                         required: true,
@@ -286,7 +286,7 @@ const EditLeague = ({ data, isCommissioner = false }) => {
                       },
                     ]}
                   >
-                    <Input placeholder='League ID...' />
+                    <Input placeholder='League code...' />
                   </Form.Item>
                 </Col>
 

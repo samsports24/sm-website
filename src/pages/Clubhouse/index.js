@@ -301,7 +301,7 @@ const Clubhouse = () => {
 
   // ── Client-side share handlers (preserved from previous page) ──
   const shareText = (() => {
-    const lgLabel = lgId ? ` League ID: ${lgId}.` : ''
+    const lgLabel = lgId ? ` League code: ${lgId}.` : ''
     return `Join me on SamSports A.Football!${lgLabel} Build your fantasy football empire!`
   })()
 

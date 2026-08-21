@@ -365,7 +365,7 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
               <div className="cl-league-id-info" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, padding: '10px 14px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 10 }}>
                 <span style={{ fontSize: 18 }}>&#128273;</span>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#fff' }}>League ID</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#fff' }}>League code</div>
                   <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>A unique code (e.g. SAM-A7K3X2) will be auto-generated when you create the league. Share it with friends to invite them.</div>
                 </div>
               </div>

@@ -81,7 +81,7 @@ const JoinLeague = ({ data }) => {
             <Form form={form} layout='vertical' onFinish={onFinish} autoComplete='off'>
               <Row gutter={[30, 10]}>
                 <Col xs={24} md={12}>
-                  <Form.Item name={'id'} label='League ID'>
+                  <Form.Item name={'id'} label='League code'>
                     <Input placeholder={data?.leagueId} disabled />
                   </Form.Item>
                 </Col>
