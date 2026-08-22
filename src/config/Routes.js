@@ -19,6 +19,29 @@ const PageTracker = () => {
   return null
 }
 
+// Capture ?ref=SAMS-XXXXXX from ANY page.
+//
+// /ref/<code> handled this, but it bounces everyone to /select-game, which
+// throws away where they were invited TO. A Rivals invite link is
+// /nfl-rivals?ref=CODE so the person lands on the thing they were invited to
+// play - and that route never touched RefRedirect, so nothing recorded the
+// code. authActions.register reads this key back on signup.
+//
+// First code wins, so a later visit cannot quietly reassign an existing
+// referral.
+const RefCapture = () => {
+  const location = useLocation()
+  useEffect(() => {
+    try {
+      const ref = new URLSearchParams(location.search).get('ref')
+      if (ref && !localStorage.getItem('samsports_ref')) {
+        localStorage.setItem('samsports_ref', ref)
+      }
+    } catch (e) { /* private mode — attribution is best-effort, never fatal */ }
+  }, [location.search])
+  return null
+}
+
 // ── Eagerly load only the 404/fallback page ──
 import ComingSoon from '../pages/CommingSoon'
 // ── Referral link handler (public, tiny — eager so /ref/<code> resolves instantly) ──
@@ -217,6 +240,7 @@ const Routers = () => {
     <BrowserRouter>
     <React.StrictMode>
       <PageTracker />
+      <RefCapture />
       <AnnouncementBanner />
       <UpdateBanner />
       <WhatsNewBanner />

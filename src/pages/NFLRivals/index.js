@@ -10,10 +10,11 @@ import {
   ThunderboltOutlined, EditOutlined, CheckOutlined,
   MedicineBoxOutlined, WalletOutlined, RobotOutlined, FireOutlined,
   ClockCircleOutlined, RightOutlined, ArrowUpOutlined,
-  CheckCircleOutlined, StarFilled,
+  CheckCircleOutlined, StarFilled, UsergroupAddOutlined,
 } from '@ant-design/icons'
 import { privateAPI, attachToken } from '../../config/constants'
 import nflRivalsLogo from '../../assets/rivals/lor-logo.png'
+import NFLRivalsInvite from './NFLRivalsInvite'
 import './nfl-rivals.css'
 import { DIVISIONS, DIVISION_COLORS } from './rivalsConfig'
 import heroPlayer from '../../assets/rivals/nfl-hero-player.png'
@@ -22,8 +23,12 @@ import aiCoachRobot from '../../assets/rivals/ai-coach-robot.png'
 /* ══════════════════════════════════════
    JOIN SPLASH
    ══════════════════════════════════════ */
-const JoinSplash = ({ onJoin, loading }) => {
+const JoinSplash = ({ onJoin, loading, signedOut, onSignup }) => {
   const [teamName, setTeamName] = useState('')
+  // App-level RefCapture stashes the code from an invite link. Saying so is the
+  // difference between "what is this site" and "my mate sent me here".
+  var invitedBy = null
+  try { invitedBy = localStorage.getItem('samsports_ref') } catch (e) { invitedBy = null }
 
   return (
     <div className="nflr-splash">
@@ -34,6 +39,11 @@ const JoinSplash = ({ onJoin, loading }) => {
           style={{ display: 'block', margin: '0 auto 16px', width: 340, height: 'auto' }}
         />
         <p className="nflr-splash-sub">The Ultimate NFL Fantasy Competition</p>
+        {invitedBy ? (
+          <div className="nflr-splash-invited">
+            <UsergroupAddOutlined /> You were invited to play. Create an account to take your pod place.
+          </div>
+        ) : null}
 
         <div className="nflr-splash-features">
           <div className="nflr-feature">
@@ -72,6 +82,7 @@ const JoinSplash = ({ onJoin, loading }) => {
           </div>
         </div>
 
+        {signedOut ? null : (
         <div style={{ maxWidth: 400, margin: '0 auto 24px', textAlign: 'left' }}>
           <label style={{
             display: 'block', fontFamily: "'Rajdhani', sans-serif",
@@ -97,7 +108,15 @@ const JoinSplash = ({ onJoin, loading }) => {
             {teamName.length}/30
           </div>
         </div>
+        )}
 
+        {signedOut ? (
+          // No account yet. Asking for a franchise name first would only lose it
+          // at the signup redirect, so ask for the account and come back here.
+          <Button size="large" onClick={onSignup} className="nflr-gold-btn nflr-join-btn">
+            Create Account &amp; Play
+          </Button>
+        ) : (
         <Button
           size="large"
           onClick={function () {
@@ -113,6 +132,7 @@ const JoinSplash = ({ onJoin, loading }) => {
         >
           Enter RIVALS
         </Button>
+        )}
       </div>
     </div>
   )
@@ -224,7 +244,19 @@ const NFLRivalsOverview = () => {
   }
 
   if (loading) return <div className="nflr-loading"><Spin size="large" /></div>
-  if (!hasJoined) return <JoinSplash onJoin={handleJoin} loading={joining} />
+  if (!hasJoined) return (
+    <JoinSplash
+      onJoin={handleJoin}
+      loading={joining}
+      signedOut={!token}
+      onSignup={function () {
+        // Come back to Rivals after signup, not to the generic dashboard. An
+        // invite that lands people somewhere else is an invite that leaks.
+        try { localStorage.setItem('redirectAfterLogin', '/nfl-rivals') } catch (e) { /* private mode */ }
+        navigate('/select-game')
+      }}
+    />
+  )
 
   var div = entry ? entry.division : 4
   var divColor = DIVISION_COLORS[div] || '#8b5cf6'
@@ -658,6 +690,9 @@ const NFLRivalsOverview = () => {
           }) : <div className="ovr-empty">No trending players right now.</div>}
         </div>
       </div>
+
+      {/* ═══ INVITE ═══ */}
+      <NFLRivalsInvite />
 
       {/* ═══ BOTTOM BAR ═══ */}
       <div className="ovr-bottom">
