@@ -12,6 +12,7 @@ import dayjs from 'dayjs'
 import { IoIosArrowRoundBack } from 'react-icons/io'
 import { authSignupAdvanced } from '../../redux'
 import { serverUrls } from '../../config/constants'
+import LongListSelect from '../../components/LongListSelect'
 
 const SS = {
   page: {
@@ -158,7 +159,7 @@ const NewSignUp = () => {
                 label='Country'
                 rules={[{ required: true, message: 'Required!' }]}
               >
-                <Select
+                <LongListSelect
                   showSearch
                   placeholder='Select Country'
                   optionFilterProp='children'
@@ -187,7 +188,7 @@ const NewSignUp = () => {
                 label='Time Zone'
                 rules={[{ required: true, message: 'Required!' }]}
               >
-                <Select
+                <LongListSelect
                   showSearch
                   placeholder='Select Time Zone'
                   optionFilterProp='children'

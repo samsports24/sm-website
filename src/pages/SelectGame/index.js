@@ -16,6 +16,7 @@ import { IoIosArrowRoundBack } from 'react-icons/io'
 import { jwtDecode } from 'jwt-decode'
 import VerificationcodeModal from '../../components/modal/Verificationcode'
 import { GenerateVerificationCode } from '../../redux/actions/clubhouse'
+import LongListSelect from '../../components/LongListSelect'
 
 const SelectGame = () => {
   const [loading, setLoading] = useState(false)
@@ -318,7 +319,7 @@ const SelectGame = () => {
                       label='Country'
                       rules={[{ required: true, message: 'Required!' }]}
                     >
-                      <Select
+                      <LongListSelect
                         showSearch
                         placeholder='Select your country'
                         optionFilterProp='children'
@@ -338,7 +339,7 @@ const SelectGame = () => {
                         label='State'
                         rules={[{ required: true, message: 'Required!' }]}
                       >
-                        <Select
+                        <LongListSelect
                           showSearch
                           placeholder='Select your state'
                           optionFilterProp='children'
@@ -358,7 +359,7 @@ const SelectGame = () => {
                       label='Time Zone'
                       rules={[{ required: true, message: 'Required!' }]}
                     >
-                      <Select
+                      <LongListSelect
                         showSearch
                         placeholder='Select your timezone'
                         optionFilterProp='children'
