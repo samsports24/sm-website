@@ -7,11 +7,35 @@ import NFLPlayerPopup from '../../components/NFLPlayerPopup/NFLPlayerPopup'
 import PlayerAvatar from '../../components/PlayerAvatar'
 import './nfl-rivals.css'
 
-/* ── Position dropdown options (real API positions) ── */
-const POS_OPTIONS = ['QB', 'RB', 'WR', 'TE', 'OT', 'OG', 'C', 'DE', 'DT', 'LB', 'CB', 'S', 'K', 'P']
+/* ── Position dropdown: every code the roster actually publishes ── */
+const POS_OPTIONS = [
+  'QB', 'RB', 'FB', 'WR', 'TE',
+  'OL', 'OT', 'LT', 'RT', 'OG', 'LG', 'RG', 'C',
+  'DL', 'DE', 'EDGE', 'DT', 'NT',
+  'LB', 'ILB', 'OLB', 'MLB',
+  'CB', 'S', 'FS', 'SS',
+  'K', 'P', 'LS',
+]
 
-/* ── Position pill row (grouped, per mockup) ── */
+/* ── Position pill row (grouped) ── */
 const POS_PILLS = ['All', 'QB', 'RB', 'WR', 'TE', 'OL', 'DL', 'LB', 'CB', 'S', 'K', 'P']
+
+/* ── Second row: the specific codes inside a group ──
+   You cannot search for a left tackle from a row of eleven umbrella terms, and
+   putting all twenty codes in one row would be a wall. Pick OL and the line
+   opens up underneath it. The API takes these directly - "LT" is an exact
+   match, "C" matches centers and never corners. */
+const SUB_PILLS = {
+  OL: ['LT', 'LG', 'C', 'RG', 'RT'],
+  DL: ['DE', 'EDGE', 'DT', 'NT'],
+  LB: ['ILB', 'OLB', 'MLB'],
+  S: ['FS', 'SS'],
+  RB: ['FB'],
+}
+
+/* Which group pill a specific code belongs under, so picking LT keeps OL lit. */
+const GROUP_OF = {}
+Object.keys(SUB_PILLS).forEach(g => SUB_PILLS[g].forEach(code => { GROUP_OF[code] = g }))
 
 /* ── Position color map (mockup palette) ── */
 const PMK_POS_COLOR = {
@@ -22,7 +46,11 @@ const PMK_POS_COLOR = {
 /* ── Fallback colors for granular positions returned by the API ── */
 const POS_COLOR_FALLBACK = {
   OT: '#8B5CF6', OG: '#8B5CF6', C: '#8B5CF6',
-  DE: '#A855F7', DT: '#A855F7',
+  LT: '#8B5CF6', RT: '#8B5CF6', LG: '#8B5CF6', RG: '#8B5CF6', T: '#8B5CF6', G: '#8B5CF6',
+  DE: '#A855F7', DT: '#A855F7', NT: '#A855F7', EDGE: '#A855F7', IDL: '#A855F7',
+  ILB: '#EC4899', OLB: '#EC4899', MLB: '#EC4899',
+  DB: '#38BDF8', FS: '#0EA5E9', SS: '#0EA5E9',
+  FB: '#3B82F6', HB: '#3B82F6', PK: '#F59E0B', LS: '#94A3B8',
 }
 const posColorOf = (pos) => PMK_POS_COLOR[pos] || POS_COLOR_FALLBACK[pos] || '#8b93a7'
 
@@ -364,7 +392,11 @@ const PlayerSearch = () => {
       {/* ── Position pill row ── */}
       <div className="pmk-pills">
         {POS_PILLS.map(pill => {
-          const active = (pill === 'All' && !searchPos) || pill === searchPos
+          // A specific code keeps its group lit, so picking LT does not make the
+          // row look like nothing is selected.
+          const active = (pill === 'All' && !searchPos) ||
+                         pill === searchPos ||
+                         GROUP_OF[searchPos] === pill
           const color = pill === 'All' ? '#A78BFA' : posColorOf(pill)
           return (
             <button
@@ -378,6 +410,38 @@ const PlayerSearch = () => {
           )
         })}
       </div>
+
+      {/* ── Specific codes inside the selected group ── */}
+      {(function () {
+        const group = GROUP_OF[searchPos] || searchPos
+        const subs = SUB_PILLS[group]
+        if (!subs) return null
+        const color = posColorOf(group)
+        return (
+          <div className="pmk-pills pmk-pills-sub">
+            <button
+              className={`pmk-pill pmk-pill-sm${searchPos === group ? ' active' : ''}`}
+              onClick={() => selectPos(group)}
+              style={searchPos === group
+                ? { background: `${color}22`, color, borderColor: `${color}66` }
+                : { color }}
+            >All {group}</button>
+            {subs.map(code => {
+              const on = searchPos === code
+              return (
+                <button
+                  key={code}
+                  className={`pmk-pill pmk-pill-sm${on ? ' active' : ''}`}
+                  onClick={() => selectPos(code)}
+                  style={on
+                    ? { background: `${color}22`, color, borderColor: `${color}66` }
+                    : { color }}
+                >{code}</button>
+              )
+            })}
+          </div>
+        )
+      })()}
 
       {/* ── Body: table + rail ── */}
       <div className="pmk-body">

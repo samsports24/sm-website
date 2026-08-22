@@ -6752,3 +6752,17 @@
   .nflr-invite-btn { width: 38px; }
   .nflr-splash-invited { font-size: 12.5px; padding: 8px 14px; text-align: left; }
 }
+
+/* Second pill row: the specific codes inside the selected group. Slightly
+   smaller and inset so it reads as a refinement of the row above, not a
+   competing set of choices. */
+.pmk-pills-sub {
+  margin-top: -4px;
+  padding-left: 10px;
+  border-left: 2px solid rgba(139,92,246,0.25);
+}
+.pmk-pill-sm {
+  font-size: 11px;
+  padding: 4px 10px;
+  opacity: 0.92;
+}
