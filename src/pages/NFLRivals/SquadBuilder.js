@@ -62,9 +62,40 @@ const POS_COLOR = {
   K: '#F59E0B', P: '#38BDF8',
 }
 
-const OFFENSE_POS = new Set(['QB', 'RB', 'WR', 'TE', 'OL', 'OT', 'OG', 'C', 'G', 'T'])
-const DEFENSE_POS = new Set(['DE', 'DT', 'DL', 'NT', 'LB', 'CB', 'S', 'SS', 'FS'])
-const SPECIAL_POS = new Set(['K', 'P'])
+// Real roster data uses granular position codes. These sets held coarse ones
+// only, so a left tackle was not an offensive lineman and an inside linebacker
+// was not a defender - you could not fill eleven of either, which is the whole
+// squad.
+//
+// Worse, the rejection message asserted the opposite bucket: anything missing
+// from OFFENSE_POS was announced as "a defensive/special teams position", so
+// the app told users that RT and LG were defensive and ILB was offensive.
+// A guess presented as a fact.
+const OFFENSE_POS = new Set([
+  'QB',
+  'RB', 'FB', 'HB',
+  'WR', 'TE',
+  // Offensive line, every way the data spells it
+  'OL', 'OT', 'OG', 'C', 'G', 'T', 'LT', 'RT', 'LG', 'RG',
+])
+const DEFENSE_POS = new Set([
+  // Line
+  'DE', 'DT', 'DL', 'NT', 'EDGE', 'IDL',
+  // Linebackers
+  'LB', 'ILB', 'OLB', 'MLB',
+  // Secondary
+  'CB', 'DB', 'S', 'SS', 'FS',
+])
+const SPECIAL_POS = new Set(['K', 'PK', 'P'])
+
+// What a position actually is, for an honest error message.
+const zoneOf = (pos) => {
+  const p = String(pos || '').toUpperCase()
+  if (OFFENSE_POS.has(p)) return 'an offensive'
+  if (DEFENSE_POS.has(p)) return 'a defensive'
+  if (SPECIAL_POS.has(p)) return 'a special teams'
+  return 'an unrecognised'
+}
 
 const formatValue = (v) => {
   if (!v) return '—'
@@ -249,11 +280,17 @@ const SquadBuilder = () => {
 
     // Position-to-zone validation (bench accepts anyone)
     if (newRole === 'offense_starter' && !OFFENSE_POS.has(movingPos)) {
-      notification.warning({ message: `${movingPos} can't play Offense`, description: `${movingPos} is a defensive/special teams position. Move to Defense, K/P, or Bench.` })
+      notification.warning({
+        message: `${movingPos} can't play Offense`,
+        description: `${movingPos} is ${zoneOf(movingPos)} position. Move to Defense, K/P, or Bench.`,
+      })
       return
     }
     if (newRole === 'defense_starter' && !DEFENSE_POS.has(movingPos)) {
-      notification.warning({ message: `${movingPos} can't play Defense`, description: `${movingPos} is an offensive/special teams position. Move to Offense, K/P, or Bench.` })
+      notification.warning({
+        message: `${movingPos} can't play Defense`,
+        description: `${movingPos} is ${zoneOf(movingPos)} position. Move to Offense, K/P, or Bench.`,
+      })
       return
     }
     if (newRole === 'special_teams' && !SPECIAL_POS.has(movingPos)) {
