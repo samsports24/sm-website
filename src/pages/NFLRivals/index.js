@@ -354,7 +354,25 @@ const NFLRivalsOverview = () => {
     return g
   })()
   var squadLen = entry.squad ? entry.squad.length : 0
-  var injuredCount = (entry.squad || []).filter(function (s) { return s.player && s.player.isPlayerInjured }).length
+  // Counted from the same fields the Injury Report page shows, not from
+  // isPlayerInjured alone.
+  //
+  // isPlayerInjured is a boolean written only by the full Tank01 endpoint sync.
+  // InjuryStatus and the NFL.com game status are refreshed by other jobs on
+  // other schedules, so the two drift - and this tile was reading the one the
+  // Injury Report does not. It sat on "0 players to monitor" while the report
+  // listed players. Any of the three counts now, so the tile can only ever be
+  // as stale as the freshest thing we know.
+  var CLEAR = ['', 'HEALTHY', 'ACTIVE', 'PROBABLE', 'NONE']
+  var injuredCount = (entry.squad || []).filter(function (s) {
+    var p = s.player
+    if (!p) return false
+    if (p.isPlayerInjured) return true
+    var st = String(p.InjuryStatus || '').trim().toUpperCase()
+    if (st && CLEAR.indexOf(st) === -1) return true
+    var gs = String(p.NflGameStatus || '').trim().toUpperCase()
+    return !!gs && CLEAR.indexOf(gs) === -1
+  }).length
 
   // ── scoring breakdown — all 9 roster position groups, weighted by role ──
   // Starters score 100%, Bench 50%, Reserves 0% — so the projected total and the
