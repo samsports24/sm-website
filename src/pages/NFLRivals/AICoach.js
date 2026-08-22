@@ -27,9 +27,22 @@ const UNIT_ICON  = { offense: '🏈', defense: '🛡️', special: '🦶' }
 const UNIT_LABEL = { offense: 'OFFENSE', defense: 'DEFENSE', special: 'SPECIAL TEAMS' }
 
 /* ─── Position helpers ─── */
-const OFFENSE_POS = new Set(['QB','RB','WR','TE','OL','OT','OG','C','G','T'])
-const DEFENSE_POS = new Set(['DE','DT','DL','LB','CB','S','SS','FS'])
-const SPECIAL_POS = new Set(['K','P'])
+// Real roster data is granular. These sets held coarse codes only, so getUnit()
+// returned 'unknown' for every LT, RT, LG, RG, ILB, OLB, MLB, EDGE, NT and IDL
+// on the roster - which is most of both lines and most of the front seven. The
+// coach was reasoning about a squad it could only half see.
+const OFFENSE_POS = new Set([
+  'QB',
+  'RB','FB','HB',
+  'WR','TE',
+  'OL','OT','OG','C','G','T','LT','RT','LG','RG',
+])
+const DEFENSE_POS = new Set([
+  'DE','DT','DL','NT','EDGE','IDL',
+  'LB','ILB','OLB','MLB',
+  'CB','DB','S','SS','FS',
+])
+const SPECIAL_POS = new Set(['K','PK','P','LS'])
 
 const getUnit = (pos) => {
   const p = (pos || '').toUpperCase()

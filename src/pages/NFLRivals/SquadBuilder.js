@@ -56,10 +56,14 @@ const ZONE_SHORT = {
 /* Position → tint color (purple HUD accents) */
 const POS_COLOR = {
   QB: '#EF4444', RB: '#3B82F6', WR: '#22C55E', TE: '#F59E0B',
+  // Every code the roster actually publishes, so a left tackle is not a grey
+  // badge sitting next to a purple guard doing the same job.
   OL: '#8B5CF6', C: '#8B5CF6', G: '#8B5CF6', OG: '#8B5CF6', OT: '#8B5CF6', T: '#8B5CF6',
-  DL: '#A855F7', DE: '#A855F7', DT: '#A855F7', NT: '#A855F7',
-  LB: '#EC4899', CB: '#38BDF8', S: '#0EA5E9', FS: '#0EA5E9', SS: '#0EA5E9',
-  K: '#F59E0B', P: '#38BDF8',
+  LT: '#8B5CF6', RT: '#8B5CF6', LG: '#8B5CF6', RG: '#8B5CF6',
+  DL: '#A855F7', DE: '#A855F7', DT: '#A855F7', NT: '#A855F7', EDGE: '#A855F7', IDL: '#A855F7',
+  LB: '#EC4899', ILB: '#EC4899', OLB: '#EC4899', MLB: '#EC4899',
+  CB: '#38BDF8', DB: '#38BDF8', S: '#0EA5E9', FS: '#0EA5E9', SS: '#0EA5E9',
+  K: '#F59E0B', PK: '#F59E0B', P: '#38BDF8', LS: '#94A3B8',
 }
 
 // Real roster data uses granular position codes. These sets held coarse ones
