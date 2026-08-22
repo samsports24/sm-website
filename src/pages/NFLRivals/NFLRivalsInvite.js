@@ -18,6 +18,7 @@ const NFLRivalsInvite = () => {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [copied, setCopied] = useState(false)
+  const [err, setErr] = useState('')
 
   useEffect(function () {
     var alive = true
@@ -28,8 +29,12 @@ const NFLRivalsInvite = () => {
         var d = (res && res.data && (res.data.data || res.data)) || null
         if (alive) setData(d)
       } catch (e) {
-        // Non-fatal: the rest of the page matters more than a share box.
-        if (alive) setData(null)
+        // Say so. Returning null here meant a missing endpoint rendered as
+        // empty space - the page looked finished and simply had no link on it,
+        // which is how a broken share feature stays broken quietly.
+        if (alive) setErr(e?.response?.status === 404
+          ? 'Invite links are not switched on for this sport yet.'
+          : 'Could not load your invite link. Refresh to try again.')
       } finally {
         if (alive) setLoading(false)
       }
@@ -63,7 +68,16 @@ const NFLRivalsInvite = () => {
   }, [data, copy])
 
   if (loading) return null
-  if (!data || !data.link) return null
+  if (err || !data || !data.link) {
+    return (
+      <div className="nflr-invite nflr-invite-empty">
+        <div className="nflr-invite-hd">
+          <span className="nflr-invite-title"><UsergroupAddOutlined /> Invite</span>
+        </div>
+        <div className="nflr-invite-sub">{err || 'No invite link available yet.'}</div>
+      </div>
+    )
+  }
 
   var reward = data.rewardPerJoin || 0
   var rewardLbl = reward >= 1e6 ? (reward / 1e6).toFixed(1).replace(/\.0$/, '') + 'M' : Math.round(reward / 1e3) + 'K'
