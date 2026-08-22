@@ -6766,3 +6766,25 @@
   padding: 4px 10px;
   opacity: 0.92;
 }
+
+/* ══ INVITE PAGE ══ */
+.nflr-page-hd { margin-bottom: 18px; }
+.nflr-page-hd .nflr-page-title { margin: 0 0 6px; }
+.nflr-page-sub { margin: 0; color: #94a3b8; font-size: 13.5px; line-height: 1.5; max-width: 60ch; }
+.nflr-invite-how {
+  background: linear-gradient(160deg, rgba(24,20,45,0.6), rgba(14,11,26,0.8));
+  border: 1px solid rgba(167,139,250,0.14);
+  border-radius: 16px; padding: 18px 22px; margin-top: 18px;
+}
+.nflr-invite-how h3 {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; color: #e2e8f0; margin: 0 0 12px;
+}
+.nflr-invite-how ol { margin: 0; padding-left: 20px; }
+.nflr-invite-how li { color: #cbd5e1; font-size: 13.5px; line-height: 1.7; }
+.nflr-invite-how li::marker { color: #A78BFA; font-weight: 700; }
+.nflr-invite-note {
+  margin: 14px 0 0; padding-top: 12px;
+  border-top: 1px solid rgba(167,139,250,0.12);
+  color: #94a3b8; font-size: 12.5px; line-height: 1.5;
+}

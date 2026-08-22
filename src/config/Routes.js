@@ -183,6 +183,7 @@ const NFLRivalsLeaderboard = lazy(() => import('../pages/NFLRivals/Leaderboard')
 const NFLRivalsHistory = lazy(() => import('../pages/NFLRivals/SeasonHistory'))
 const NFLRivalsRulesbook = lazy(() => import('../pages/NFLRivals/Rulesbook'))
 const NFLRivalsAICoach = lazy(() => import('../pages/NFLRivals/AICoach'))
+const NFLRivalsInvitePage = lazy(() => import('../pages/NFLRivals/InvitePage'))
 
 const AdminPanel = lazy(() => import('../pages/Admin/AdminPanel'))
 const AdminLogin = lazy(() => import('../pages/Admin/AdminLogin'))
@@ -262,6 +263,7 @@ const Routers = () => {
           <Route path='history' element={<L><NFLRivalsHistory /></L>} />
           <Route path='ai-coach' element={<L><NFLRivalsAICoach /></L>} />
           <Route path='rulesbook' element={<L><NFLRivalsRulesbook /></L>} />
+          <Route path='invite' element={<L><NFLRivalsInvitePage /></L>} />
           <Route path='buy-sp' element={<L><BuySampoints /></L>} />
         </Route>
 

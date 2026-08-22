@@ -15,6 +15,7 @@ import {
   UserOutlined,
   MedicineBoxOutlined,
   QuestionCircleOutlined,
+  UsergroupAddOutlined,
 } from '@ant-design/icons'
 import HowToPlayTour from '../../components/HowToPlayTour'
 import MobileBottomNav from '../../components/MobileBottomNav'
@@ -30,6 +31,7 @@ const NAV_ITEMS = [
   { key: '/nfl-rivals/ai-coach', label: 'AI Coach', icon: <MedicineBoxOutlined />, tour: 'nflr-aicoach' },
   { key: '/nfl-rivals/leaderboard', label: 'Leaderboard', icon: <UserOutlined />, tour: 'nflr-leaderboard' },
   { key: '/nfl-rivals/rulesbook', label: 'Rulesbook', icon: <BookOutlined />, tour: 'nflr-rulesbook' },
+  { key: '/nfl-rivals/invite', label: 'Invite My Friends', icon: <UsergroupAddOutlined />, tour: 'nflr-invite' },
 ]
 
 const NFLR_TOUR = [
@@ -44,6 +46,7 @@ const NFLR_TOUR = [
   { selector: '[data-tour="nflr-leaderboard"]', title: 'Leaderboard', body: 'Global rankings across every manager and division.' },
   { selector: '[data-tour="nflr-rulesbook"]', title: 'Rulesbook', body: 'The full rules: scoring, salary cap, divisions, and promotion and relegation.' },
   { selector: '[data-tour="nflr-aicoach"]', title: 'AI Coach', body: 'Ask the AI coach about your roster, waivers and matchup. It reads your team and answers in plain language.' },
+  { selector: '[data-tour="nflr-invite"]', title: 'Invite My Friends', body: 'Share your link. When someone signs up on it the reward lands in your wallet, and you get a rival worth beating.' },
   { title: 'You are ready', body: 'Fill your roster, set your starters before kickoff, and climb your pod. Reopen this tour any time from How to Play.' },
 ]
 
