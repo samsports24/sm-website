@@ -453,18 +453,41 @@ const Stadium = () => {
   })
 
   const handlecreatestadium = async (stadiumlevelId) => {
+    const leagueId = user?.team?.currentLeague?._id
+    const myTeamId = user?.team?._id
+
+    // Sending a missing teamId meant the server matched a stadium by league
+    // alone, charged the points and wrote the new level onto a row this page
+    // never reads. Refuse before the click gets that far.
+    if (!leagueId || !myTeamId) {
+      notification.error({
+        message: 'Team not loaded yet',
+        description: 'Give the page a second to finish loading, then try again.',
+        duration: 4,
+      })
+      return
+    }
+
     setUpgradeLoading(stadiumlevelId)
     try {
       const payload = {
-        league: user?.team?.currentLeague._id,
+        league: leagueId,
         user: user?._id,
-        teamId: user?.team?._id,
+        teamId: myTeamId,
         season: user?.team?.currentLeague?.season,
         stadiumlevel: stadiumlevelId,
       }
       await createStadium(payload)
     } catch (error) {
+      // createStadium() catches HTTP failures and shows its own notification,
+      // so this only fires for something thrown before the request goes out.
+      // Say so anyway rather than logging to a console nobody has open.
       console.error('Error upgrading stadium:', error)
+      notification.error({
+        message: 'Upgrade failed',
+        description: error?.message || 'The upgrade did not go through.',
+        duration: 5,
+      })
     } finally {
       setUpgradeLoading(null)
     }
