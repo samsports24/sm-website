@@ -192,8 +192,12 @@
   <!-- Google Identity Services (Sign In With Google) -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-  <!-- OneSignal web push SDK (v16). Init happens in src/utils/oneSignal.js. -->
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <!-- OneSignal web push SDK REMOVED. Its service worker intercepted the hub's
+       own API calls in Chrome (empire counts came back 0, no backend requests
+       fired) and broke the soccer app's login. config/App.js now unregisters any
+       stale service worker on boot. Re-enable push later with a worker scoped so
+       it cannot intercept API routes. -->
+  <!-- <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script> -->
 </head>
 
 <body>

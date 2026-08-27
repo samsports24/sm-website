@@ -159,17 +159,22 @@ const SportHub = () => {
       setLeagueCounts(prev => ({ ...prev, football: footballCount }))
     } catch (e) { /* noop */ }
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('token') || localStorage.getItem('authToken')
       if (!token) return
       const res = await axios.get(`${soccerBase()}/api/v1/leagues/my-leagues`, {
-        headers: { Authorization: `Bearer ${token}` }, timeout: 5000,
+        headers: { Authorization: `Bearer ${token}` }, timeout: 15000,
       })
       const data = res?.data?.data
       if (data) {
-        const list = Array.isArray(data) ? data : [...(data.userLeagues || []), ...(data.futureLeagues || [])]
+        const list = Array.isArray(data)
+          ? data
+          : [...(data.userLeagues || []), ...(data.futureLeagues || []), ...(data.leagues || [])]
         setLeagueCounts(prev => ({ ...prev, soccer: list.length }))
       }
-    } catch (e) { /* noop */ }
+    } catch (e) {
+      // Surface it — swallowing this is why the count silently sat at 0.
+      console.warn('[Hub] soccer league count failed:', e?.message)
+    }
   }
 
   // Recent activity — real data from the soccer notifications feed (this account
@@ -368,7 +373,7 @@ const SportHub = () => {
 
             {/* Hero */}
             <section style={S.hero}>
-              <Art name="hero-bg.png" emoji="" style={S.heroBg} fallbackBg="transparent" />
+              <Art name="home-hero.png" emoji="" style={S.heroBg} fallbackBg="transparent" />
               <div style={S.heroScrim} />
               <div style={S.heroLeft}>
                 <div style={S.heroTitleRow}>
@@ -392,7 +397,7 @@ const SportHub = () => {
                   ))}
                 </div>
               </div>
-              <Art name="trophy.png" emoji="🏆" style={S.heroArt} fallbackBg="radial-gradient(circle at 50% 40%, rgba(212,175,55,.25), transparent 65%)" />
+              <Art name="hero-crown.png" emoji="🏆" style={S.heroArt} fallbackBg="radial-gradient(circle at 50% 40%, rgba(212,175,55,.25), transparent 65%)" />
               <div style={S.empireLink} onClick={() => goToFullEmpire('/war-room')}>
                 <div style={S.empireLinkTitle}>🏛️ Full Empire Dashboard</div>
                 <div style={S.empireLinkDesc}>Manage franchises, trade on the Marketplace, vote in Governance.</div>

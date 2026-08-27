@@ -229,6 +229,9 @@ export const createProposal = async (leagueId, payload) => {
  * Get all active governance votes for a league
  */
 export const getActiveVotes = (leagueId) => async (dispatch) => {
+  // No league selected → no request. Firing with an empty id produced
+  // "/governance//active-votes" and a 404 on the hub dashboard.
+  if (!leagueId) return
   try {
     dispatch({ type: GOVERNANCE_TYPES.SET_ACTIVE_VOTES_LOADING, payload: true })
     attachToken()
@@ -248,6 +251,7 @@ export const getActiveVotes = (leagueId) => async (dispatch) => {
  * Get governance vote history
  */
 export const getGovernanceHistory = (leagueId) => async (dispatch) => {
+  if (!leagueId) return
   try {
     attachToken()
     const res = await privateAPI.get(`/governance/${leagueId}/history`)
@@ -263,6 +267,7 @@ export const getGovernanceHistory = (leagueId) => async (dispatch) => {
  * Get commissioner info including AI commissioner status
  */
 export const getCommissionerInfo = (leagueId) => async (dispatch) => {
+  if (!leagueId) return null
   try {
     attachToken()
     const res = await privateAPI.get(`/governance/${leagueId}/commissioner-info`)

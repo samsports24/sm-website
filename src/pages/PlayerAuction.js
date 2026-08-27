@@ -30,6 +30,7 @@ const PlayerAuction = () => {
   const [dismissedAuctions, setDismissedAuctions] = useState(new Set())
   const [dismissingId, setDismissingId] = useState('')
   const [bidModalAuctionId, setBidModalAuctionId] = useState(null)
+  const [howItWorksOpen, setHowItWorksOpen] = useState(true)
 
   const USER = useSelector((state) => state?.user?.userDetails)
   const navigate = useNavigate()
@@ -192,6 +193,85 @@ const PlayerAuction = () => {
               </span>
             </div>
           </div>
+        </div>
+
+        {/* How auctions work */}
+        <div style={{
+          background: 'rgba(20, 28, 45, 0.6)',
+          backdropFilter: 'blur(12px)',
+          border: '1px solid rgba(34, 197, 94, 0.2)',
+          borderRadius: 16,
+          padding: howItWorksOpen ? '18px 22px' : '14px 22px',
+          marginBottom: 20,
+          boxShadow: '0 4px 16px rgba(0,0,0,0.2), inset 0 1px 1px rgba(255,255,255,0.05)',
+        }}>
+          <div
+            onClick={() => setHowItWorksOpen((v) => !v)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              cursor: 'pointer',
+              userSelect: 'none',
+            }}
+          >
+            <div style={{
+              width: 34, height: 34, borderRadius: 8,
+              background: 'rgba(34, 197, 94, 0.1)', border: '1px solid rgba(34, 197, 94, 0.2)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, flexShrink: 0,
+            }}>
+              &#x2139;&#xFE0F;
+            </div>
+            <div style={{ color: '#22C55E', fontSize: 14, fontWeight: 800, fontFamily: "'Rajdhani', sans-serif", letterSpacing: '0.3px', flex: 1 }}>
+              How auctions work
+            </div>
+            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, fontFamily: "'Inter', sans-serif", fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+              {howItWorksOpen ? 'Hide' : 'Show'}
+              <svg
+                width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round'
+                style={{ transform: howItWorksOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }}
+              >
+                <path d='M6 9l6 6 6-6' />
+              </svg>
+            </span>
+          </div>
+
+          {howItWorksOpen && (
+            <ul style={{
+              margin: '14px 0 0 0',
+              padding: 0,
+              listStyle: 'none',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 9,
+            }}>
+              {[
+                'Every auction runs for 24 hours from when it\'s listed (your league can set a different length).',
+                'Bidding is open — everyone sees the current high bid. Bid any amount higher than it; there\'s no fixed increment. You can\'t bid on your own auction.',
+                'Your bid is checked against your SamPoints balance. You can be outbid at any time and you\'ll be notified.',
+                'Anti-snipe: a bid in the last 30 seconds pushes the end time out by 60 seconds, so last-second wars stay fair.',
+                'When time\'s up the highest bid wins (if it meets any reserve the seller set).',
+                'The winner then has 24 hours to pay. If it\'s not paid in time, it\'s auto-charged from your wallet, or relisted if you can\'t cover it.',
+                'On player sales from another manager, a small commission (default 15%) goes to the league prize pool. Transfers complete once approved by the commissioner.',
+              ].map((point, i) => (
+                <li key={i} style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: 10,
+                  color: 'rgba(255,255,255,0.5)',
+                  fontSize: 12,
+                  fontFamily: "'Inter', sans-serif",
+                  lineHeight: '1.5',
+                }}>
+                  <span style={{
+                    width: 5, height: 5, borderRadius: '50%',
+                    background: '#22C55E', flexShrink: 0, marginTop: 6,
+                  }} />
+                  <span>{point}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         {/* Tabs */}

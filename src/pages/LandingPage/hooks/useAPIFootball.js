@@ -179,6 +179,7 @@ export const useSoccerFixtures = (selectedDate = undefined, leagues = AF_LEAGUES
 
   const fetchAll = useCallback(async () => {
     if (disabled) return
+    try {
     const d = selectedDate || new Date()
     const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 
@@ -196,8 +197,12 @@ export const useSoccerFixtures = (selectedDate = undefined, leagues = AF_LEAGUES
       if (cached) {
         leagueResults = cached.leagues || []
       } else {
+        // A hung proxy must not spin the panel forever. Abort after 12s so the
+        // catch runs, the loading flag clears, and the fallback can try.
+        const controller = new AbortController()
+        const timer = setTimeout(() => controller.abort(), 12000)
         try {
-          const res = await fetch(`${PROXY_BASE}/fixtures-by-date?date=${ds}&leagues=${encodeURIComponent(leagueParam)}`)
+          const res = await fetch(`${PROXY_BASE}/fixtures-by-date?date=${ds}&leagues=${encodeURIComponent(leagueParam)}`, { signal: controller.signal })
           if (!res.ok) throw new Error(`HTTP ${res.status}`)
           const json = await res.json()
           leagueResults = json.data?.leagues || []
@@ -205,6 +210,8 @@ export const useSoccerFixtures = (selectedDate = undefined, leagues = AF_LEAGUES
         } catch (err) {
           console.warn('[Fixtures Proxy] Error:', err.message)
           leagueResults = []
+        } finally {
+          clearTimeout(timer)
         }
       }
 
@@ -212,7 +219,12 @@ export const useSoccerFixtures = (selectedDate = undefined, leagues = AF_LEAGUES
       for (const lr of leagueResults) {
         byId[lr.leagueId] = lr.fixtures || []
       }
-      return lgList.map(lg => ({ lg, events: (byId[lg.id] || []).map(normalizeFixture) }))
+      // One malformed fixture must not crash the whole batch (which would leave
+      // the panel loading forever). Skip anything that fails to normalize.
+      return lgList.map(lg => ({
+        lg,
+        events: (byId[lg.id] || []).flatMap(f => { try { return [normalizeFixture(f)] } catch { return [] } }),
+      }))
     }
 
     // ── PHASE 1: Priority leagues (1 batch call) ──
@@ -253,6 +265,14 @@ export const useSoccerFixtures = (selectedDate = undefined, leagues = AF_LEAGUES
           break
         }
       }
+    }
+    } catch (err) {
+      console.warn('[Fixtures] fetchAll failed:', err?.message)
+    } finally {
+      // Guarantee the spinner always ends, even if every fetch above threw or
+      // hung. Whatever we have (matches or none) is shown instead of a forever
+      // "Loading matches..." state.
+      setData(prev => (prev.loading ? { ...prev, loading: false } : prev))
     }
   }, [selectedDate, leagues, disabled])
 

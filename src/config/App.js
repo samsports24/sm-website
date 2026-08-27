@@ -63,14 +63,21 @@ const App = () => {
     }
   }, [authenticatedID, dispatch]);
 
-  // OneSignal web push — init once on mount, then link the signed-in user so the
-  // backend can push draft/auction alerts to them by id.
+  // Boot-time service-worker cleanup (replaces OneSignal push init).
+  //
+  // The OneSignal push service worker was intercepting the hub's own API calls in
+  // Chrome and stopping them from completing — the empire counts came back 0 and
+  // the site made no backend requests at all, while Safari was fine. It's the same
+  // worker that broke the soccer app's login. Push isn't worth the hub not loading
+  // its data. We no longer register OneSignal, and we unregister any stale worker
+  // on boot so every browser self-heals on its next load.
   useEffect(() => {
-    import('../utils/oneSignal').then((m) => {
-      m.initOneSignal()
-      if (authenticatedID) m.linkOneSignalUser(authenticatedID)
-    }).catch(() => {})
-  }, [authenticatedID])
+    if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations()
+        .then((regs) => regs.forEach((r) => r.unregister()))
+        .catch(() => {})
+    }
+  }, [])
 
   useEffect(() => {
     if (theme === 'light') {
