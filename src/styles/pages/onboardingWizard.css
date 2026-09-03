@@ -1271,3 +1271,27 @@
 @media (max-width: 480px) {
   .ob-summary-stats { grid-template-columns: 1fr; }
 }
+
+
+/* ── Invited league (read-only) ──
+   Replaces the "League code" input for someone who arrived on an invite link.
+   They have nothing to type and nothing to look up. */
+.ob-invite-league {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  background: rgba(34, 197, 94, 0.08);
+}
+.ob-invite-league-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+}
+.ob-invite-league-code {
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.6);
+}

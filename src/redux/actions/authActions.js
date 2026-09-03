@@ -25,6 +25,8 @@ export const autoJoinPendingInvite = async ({ teamName, email } = {}) => {
     if (res) {
       localStorage.removeItem('pendingInviteLeague')
       localStorage.removeItem('pendingInviteSport')
+      localStorage.removeItem('pendingInviteLeagueName')
+      localStorage.removeItem('pendingInviteLeagueCode')
       window.location.href = '/dashboard'
       return true
     }

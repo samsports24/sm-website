@@ -128,6 +128,11 @@ const StepSetupSport = ({ sport, userName, onCreateSuccess, onJoinLeague, onSkip
   // (fallback in case the auto-join at finish doesn't complete).
   const _pendingInvite = typeof window !== 'undefined' ? localStorage.getItem('pendingInviteLeague') : ''
   const [mode, setMode] = useState(_pendingInvite ? 'join' : null) // null | 'join'
+  // The NAME of the league they were invited to, stashed by SelectGame from the
+  // invite token. `_pendingInvite` itself is the league's Mongo _id — the thing
+  // the join endpoint needs and the last thing a person should ever be shown.
+  const _pendingInviteName = typeof window !== 'undefined' ? (localStorage.getItem('pendingInviteLeagueName') || '') : ''
+  const _pendingInviteCode = typeof window !== 'undefined' ? (localStorage.getItem('pendingInviteLeagueCode') || '') : ''
   const [teamName, setTeamName] = useState('')
   const [leagueId, setLeagueId] = useState(_pendingInvite || '')
   const [loading, setLoading] = useState(false)
@@ -171,19 +176,35 @@ const StepSetupSport = ({ sport, userName, onCreateSuccess, onJoinLeague, onSkip
           {email && <div className="ob-verify-email">{email}</div>}
         </div>
         <div className="ob-topbar-right">
-          <span className="ob-league-pill">🏆 Fantasy A.Football League</span>
+          <span className="ob-league-pill">🏆 {_pendingInviteName || 'Fantasy A.Football League'}</span>
           <span className="ob-avatar">{initials}</span>
         </div>
       </div>
 
       {/* ── Heading ── */}
       <div className="ob-setup-heading">
-        <h1 className="ob-setup-h1">
-          LET&apos;S GET YOUR LEAGUE <span className="ob-accent">SET UP</span>
-        </h1>
-        <p className="ob-setup-sub">
-          Follow these steps to create your league and start your fantasy journey.
-        </p>
+        {/* An invited manager was being told to "create your league" on the very
+            screen where their league was already waiting. Say what is actually
+            happening, and name it. */}
+        {_pendingInvite ? (
+          <>
+            <h1 className="ob-setup-h1">
+              YOU&apos;RE JOINING <span className="ob-accent">{_pendingInviteName || 'YOUR LEAGUE'}</span>
+            </h1>
+            <p className="ob-setup-sub">
+              Your spot is already reserved. Name your team and you&apos;re in.
+            </p>
+          </>
+        ) : (
+          <>
+            <h1 className="ob-setup-h1">
+              LET&apos;S GET YOUR LEAGUE <span className="ob-accent">SET UP</span>
+            </h1>
+            <p className="ob-setup-sub">
+              Follow these steps to create your league and start your fantasy journey.
+            </p>
+          </>
+        )}
       </div>
 
       {/* ── 5-step progress bar ── */}
@@ -276,15 +297,30 @@ const StepSetupSport = ({ sport, userName, onCreateSuccess, onJoinLeague, onSkip
               onChange={(e) => setTeamName(e.target.value)}
             />
           </div>
-          <div className="ob-form-group">
-            <label>League code</label>
-            <input
-              className="ob-input"
-              placeholder="Enter the league invitation code"
-              value={leagueId}
-              onChange={(e) => setLeagueId(e.target.value)}
-            />
-          </div>
+          {_pendingInvite ? (
+            /* Invited: this field was pre-filled with the league's 24-character
+               Mongo _id under the label "League code" — meaningless, and not the
+               code. Show the league; keep the id in state where it belongs. */
+            <div className="ob-form-group">
+              <label>League</label>
+              <div className="ob-invite-league">
+                <span className="ob-invite-league-name">{_pendingInviteName || 'Your invited league'}</span>
+                {_pendingInviteCode ? (
+                  <span className="ob-invite-league-code">Code {_pendingInviteCode}</span>
+                ) : null}
+              </div>
+            </div>
+          ) : (
+            <div className="ob-form-group">
+              <label>League code</label>
+              <input
+                className="ob-input"
+                placeholder="Enter the league invitation code"
+                value={leagueId}
+                onChange={(e) => setLeagueId(e.target.value)}
+              />
+            </div>
+          )}
           <div className="ob-form-actions">
             <button className="ob-btn-secondary" onClick={() => setMode(null)}>← Back</button>
             <button
@@ -707,6 +743,8 @@ const OnboardingWizard = () => {
       if (isInvite) {
         localStorage.removeItem('pendingInviteLeague')
         localStorage.removeItem('pendingInviteSport')
+        localStorage.removeItem('pendingInviteLeagueName')
+        localStorage.removeItem('pendingInviteLeagueCode')
         notification.success({ message: 'Joined league!', duration: 2 })
         window.location.href = '/dashboard'
         return

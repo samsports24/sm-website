@@ -617,3 +617,50 @@
 .signup_body .ant-select-selector {
   border: 2px solid #fff !important;
 }
+
+
+/* ── Invite banner ──
+   Shown only when someone arrives on a league invite link. It answers the one
+   question the old signup page never answered: which league is this? */
+.sg-invite-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  margin: 18px auto 0;
+  padding: 20px 24px;
+  max-width: 640px;
+  border-radius: 16px;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.65) 0%, rgba(4, 120, 87, 0.45) 100%);
+}
+.sg-invite-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+.sg-invite-league {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #ffffff;
+}
+.sg-invite-code {
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.75);
+}
+.sg-invite-note {
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.65);
+  max-width: 420px;
+}
+@media (max-width: 640px) {
+  .sg-invite-banner { margin: 14px 16px 0; padding: 16px 18px; }
+  .sg-invite-league { font-size: 21px; }
+}

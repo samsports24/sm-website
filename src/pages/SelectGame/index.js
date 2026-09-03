@@ -28,6 +28,10 @@ const SelectGame = () => {
   const [verficationcode, setVerficationcode] = useState(null)
   const [isTokenPresent, setIsTokenPresent] = useState(false)
   const [showStateDropdown, setShowStateDropdown] = useState(false)
+  // Which league this person was invited to. The invite token carries the name
+  // now, so the signup page can say it out loud instead of leaving them to
+  // guess after they've created an account.
+  const [inviteLeague, setInviteLeague] = useState(null)
 
   const [user, setUser] = useState(null)
   useEffect(() => {
@@ -49,6 +53,15 @@ const SelectGame = () => {
       // user is auto-joined after signup/onboarding with no manual code.
       localStorage.setItem('pendingInviteLeague', decodedToken.league)
       localStorage.setItem('pendingInviteSport', 'football')
+      // Name the league. Without this the whole signup was anonymous: someone
+      // clicked "Claim Your Spot", filled in a form, and was dropped into a
+      // league they had never seen named anywhere. Stash it too, so the
+      // onboarding wizard can say the same thing on the next screen.
+      if (decodedToken.leagueName) {
+        setInviteLeague({ name: decodedToken.leagueName, code: decodedToken.leagueCode || '' })
+        localStorage.setItem('pendingInviteLeagueName', decodedToken.leagueName)
+        if (decodedToken.leagueCode) localStorage.setItem('pendingInviteLeagueCode', decodedToken.leagueCode)
+      }
       // Preserve the invite THROUGH auth. This is the signup page, but the person
       // may already have an account (e.g. an older invite link that was baked as a
       // "new user" URL). If they log in via the "Log In" link, bring them straight
@@ -206,6 +219,20 @@ const SelectGame = () => {
             <a href='/login'>Log In</a>
           </div>
         </div>
+
+        {/* ── Invite banner ── */}
+        {inviteLeague && (
+          <div className='sg-invite-banner'>
+            <span className='sg-invite-eyebrow'>You&apos;ve been invited to join</span>
+            <span className='sg-invite-league'>{inviteLeague.name}</span>
+            {inviteLeague.code ? (
+              <span className='sg-invite-code'>League code {inviteLeague.code}</span>
+            ) : null}
+            <span className='sg-invite-note'>
+              Create your account below and we&apos;ll put you straight into this league. There&apos;s no code to enter.
+            </span>
+          </div>
+        )}
 
         {/* ── Hero ── */}
         <div className='sg-hero'>
