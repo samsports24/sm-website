@@ -81,16 +81,38 @@ const FALLBACK_DATA = {
       { label: 'Passing Touchdown', fullScale: 1.0, percentvalue: 1.0000 },
     ],
   },
+  // The real offensive-line table, copied from the sammetrics collection on
+  // 17 Sep 2026. What used to sit here - pancake blocks, QB hurries allowed,
+  // run and pass block win rate - appears in no version of the rule book and
+  // in no feed we buy. Tank01 sends no offensive-line stats at all. It was
+  // showing seven made-up rows to anybody not logged in.
+  //
+  // A lineman is paid a share of what his offence did in front of him,
+  // multiplied by how much of it he was on the field for. The team touchdown
+  // rows are scaled like every other row: he blocked, he did not score. A
+  // touchdown he scores HIMSELF pays a flat 1.00, same as anybody.
   OL: {
     FranchiseTagCost: 25773000, Percentage: 58.7,
     sammetricstats: [
-      { label: 'Pancake Blocks', fullScale: 0.050, percentvalue: 0.0294 },
-      { label: 'Sacks Allowed', fullScale: -0.040, percentvalue: -0.0235 },
-      { label: 'Penalties', fullScale: -0.030, percentvalue: -0.0176 },
-      { label: 'QB Hurries Allowed', fullScale: -0.015, percentvalue: -0.0088 },
-      { label: 'Games Started', fullScale: 0.030, percentvalue: 0.0176 },
-      { label: 'Run Block Win Rate (%)', fullScale: 0.020, percentvalue: 0.0117 },
-      { label: 'Pass Block Win Rate (%)', fullScale: 0.020, percentvalue: 0.0117 },
+      { label: 'Team Rushing Stats', fullScale: 0.014, percentvalue: 0.008218 },
+      { label: 'Team Rushing TD', fullScale: 0.031, percentvalue: 0.018197 },
+      { label: 'Team Passing TD', fullScale: 0.016, percentvalue: 0.009392 },
+      { label: '0 Sacks Given-up', fullScale: 1.866, percentvalue: 1.095342 },
+      { label: '1 Sacks Given-up', fullScale: 1.455, percentvalue: 0.854085 },
+      { label: '2 Sacks Given-up', fullScale: 1.044, percentvalue: 0.612828 },
+      { label: '3 Sacks Given-up', fullScale: 0.496, percentvalue: 0.291152 },
+      { label: '4 Sacks Given-up', fullScale: -0.052, percentvalue: -0.030524 },
+      { label: '5 Sacks Given-up', fullScale: -0.6, percentvalue: -0.3522 },
+      { label: '6 Sacks Given-up', fullScale: -1.148, percentvalue: -0.673876 },
+      { label: '7 Sacks Given-up', fullScale: -1.696, percentvalue: -0.995552 },
+      { label: '8 Sacks Given-up', fullScale: -2.244, percentvalue: -1.317228 },
+      { label: '9 Sacks Given-up', fullScale: -2.792, percentvalue: -1.638904 },
+      { label: '10 Sacks Given-up', fullScale: -3.339, percentvalue: -1.959993 },
+      { label: '11 Sacks Given-up', fullScale: -3.887, percentvalue: -2.281669 },
+      { label: '12 Sacks Given-up', fullScale: -4.435, percentvalue: -2.603345 },
+      { label: '13 Sacks Given-up', fullScale: -4.983, percentvalue: -2.925021 },
+      { label: '14 Sacks Given-up', fullScale: -5.531, percentvalue: -3.246697 },
+      { label: '15 Sacks Given-up', fullScale: -6.079, percentvalue: -3.568373 },
     ],
   },
   DT: {
