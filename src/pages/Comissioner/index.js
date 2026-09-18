@@ -73,6 +73,18 @@ const GLASS_STYLE = {
   boxShadow: '0 4px 16px rgba(0,0,0,0.2), inset 0 1px 1px rgba(255,255,255,0.05)',
 }
 
+// Franchise Pick clubs carry a real 53-man squad and their managers work the
+// free agent pool, so Game Rules is back — roster settings mean something
+// again. Two tabs are still not rendered: Draft, because a manager takes a
+// club rather than drafting one, and Trades, because he does not swap his
+// club's players with a rival's. The Game Rules mode cards are locked in this
+// mode separately, so nobody can click "Full Mode" and silently convert a
+// league out from under everyone in it.
+const EMPTY_HIDDEN = new Set()
+const HIDDEN_TABS_BY_MODE = {
+  franchise_pick: new Set(['trades', 'draft']),
+}
+
 const TABS = [
   { key: 'inbox', labelKey: 'inbox', icon: <InboxOutlined /> },
   { key: 'rules', labelKey: 'gameRules', icon: <SettingOutlined /> },
@@ -198,7 +210,13 @@ const Comissioner = () => {
     )
   }
 
-  const tabItems = TABS.map((tabDef) => ({
+  const hidden = HIDDEN_TABS_BY_MODE[currentLeague?.leagueMode] || EMPTY_HIDDEN
+  const visibleTabs = TABS.filter((t) => !hidden.has(t.key))
+  // If the mode hides whatever tab is currently open, fall back to the first
+  // one that is left rather than rendering an empty panel.
+  const activeTab = visibleTabs.some((t) => t.key === tab) ? tab : (visibleTabs[0]?.key || 'inbox')
+
+  const tabItems = visibleTabs.map((tabDef) => ({
     key: tabDef.key,
     label: (
       <span style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: "'Inter', sans-serif" }}>
@@ -280,7 +298,7 @@ const Comissioner = () => {
             padding: '0',
           }}>
             <Tabs
-              activeKey={tab}
+              activeKey={activeTab}
               onChange={setTab}
               items={tabItems}
               tabBarStyle={{
@@ -859,6 +877,20 @@ const GameRulesTab = ({ currentLeague }) => {
       {/* League Mode & Scoring */}
       <RuleSection n={1} icon={<TrophyOutlined />} iconClass='cm-section-icon-green' title='League Mode' desc='Choose the game format for this league'>
 
+        {leagueMode === 'franchise_pick' ? (
+          /* The mode is set at creation and is not switchable here. The two
+             cards below only offer Full and Offense Only, so a Franchise Pick
+             league would show neither selected and one click would convert it,
+             wiping the premise out from under every manager in it. */
+          <div style={{ padding: '14px 16px', background: 'rgba(34,197,94,0.06)', borderRadius: 10, border: '1px solid rgba(34,197,94,0.25)' }}>
+            <span style={{ fontSize: 13, color: '#22C55E', fontWeight: 700 }}>🏈 Franchise Pick</span>
+            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', margin: '6px 0 0 0', lineHeight: 1.5 }}>
+              Every manager holds one of the 32 real NFL clubs and its 53-man squad, and scores
+              the SAM Metric those players actually put up. Free agency is open; there is no draft
+              and no trading between managers. The league mode cannot be changed after creation.
+            </p>
+          </div>
+        ) : (
         <div className='cm-draft-pick-cards'>
           {[
             {
@@ -899,6 +931,7 @@ const GameRulesTab = ({ currentLeague }) => {
             </div>
           ))}
         </div>
+        )}
 
         {leagueMode === 'offense_only' && (
           <div style={{ marginTop: 20 }}>
@@ -3438,7 +3471,10 @@ const DraftTab = ({ currentLeague }) => {
     setBtnLoading(3)
     try {
       attachToken()
-      const { data } = await privateAPI.post('/draft/random-draft', { leagueId: currentLeagueId })
+      // currentLeagueId does not exist in this scope — this threw a
+      // ReferenceError the moment anyone pressed Random Draft. The tab has
+      // currentLeague, like every other handler in it.
+      const { data } = await privateAPI.post('/draft/random-draft', { leagueId: currentLeague?._id })
       const result = data.data || data
       notification.success({
         message: 'Random Draft Complete',

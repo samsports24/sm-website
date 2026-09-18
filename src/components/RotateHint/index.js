@@ -1,11 +1,31 @@
 import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
+import { isPublicPath } from '../../utils/publicPaths'
 
-// Full-screen overlay shown ONLY on phones held in portrait. The app is built for
-// landscape, so this covers the page and asks the user to rotate, then clears
-// itself automatically once they do. Mirrors the soccer site's RotateBanner so
-// both products behave the same. (Green accent to match NFL branding.)
+// Full-screen overlay shown on phones held in portrait. The draft board, the
+// team sheet and the auction room are built for landscape, so inside the app
+// this earns its place.
+//
+// ── WHY IT NO LONGER COVERS THE PUBLIC PAGES ─────────────────────────────────
+//
+// It was mounted app-wide with no route check, so it covered the landing page
+// too. A stranger opening samsports.io on a phone, held the way phones are
+// held, got a wall instead of the product: inset 0, z-index 100000, body scroll
+// locked, no buttons. One wrote in: "Make me rotate my phone. I can't scroll
+// and I don't see any buttons on this screen. Stuck."
+//
+// That is the signup funnel closed on mobile. Nobody rotates a phone to decide
+// whether to join something; they leave. So every page a stranger can reach is
+// exempt, unconditionally.
+//
+// And nowhere is a dead end any more: even inside the app it can be dismissed,
+// because rotation can be locked for accessibility reasons that have nothing to
+// do with us, and "stuck" is not a state to leave anyone in.
 export default function RotateHint() {
+  const { pathname } = useLocation()
   const [show, setShow] = useState(false)
+  const [dismissed, setDismissed] = useState(false)
+  const blocked = isPublicPath(pathname)
 
   useEffect(() => {
     const mq = window.matchMedia('(orientation: portrait) and (max-width: 920px)')
@@ -23,15 +43,17 @@ export default function RotateHint() {
     }
   }, [])
 
-  // Lock the page behind the overlay while it's up.
+  // Lock the page behind the overlay while it's up. Guarded on the same
+  // conditions as the render: locking the body while rendering nothing is how a
+  // public page ends up frozen with no overlay to explain why.
   useEffect(() => {
-    if (!show) return
+    if (!show || blocked || dismissed) return
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     return () => { document.body.style.overflow = prev }
-  }, [show])
+  }, [show, blocked, dismissed])
 
-  if (!show) return null
+  if (!show || blocked || dismissed) return null
 
   return (
     <div style={{
@@ -65,6 +87,18 @@ export default function RotateHint() {
       <div style={{ color: '#9aa4b6', fontSize: '14px', fontWeight: 500, maxWidth: '300px', lineHeight: 1.5 }}>
         SamSports works best in landscape. Turn your phone sideways to continue.
       </div>
+
+      <button
+        type="button"
+        onClick={() => setDismissed(true)}
+        style={{
+          marginTop: 24, padding: '10px 20px', borderRadius: 8,
+          border: '1px solid rgba(255,255,255,0.22)', background: 'transparent',
+          color: '#cfd6e4', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+        }}
+      >
+        Continue anyway
+      </button>
     </div>
   )
 }

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
+import { isPublicPath } from '../utils/publicPaths'
 
 /**
  * WhatsNewBanner — one-time release-notes panel that appears for each user
@@ -20,6 +22,12 @@ const HIGHLIGHTS = [
 ]
 
 const WhatsNewBanner = () => {
+  // Release notes are for people who already have an account. A first-time
+  // visitor got them over the landing page, on a phone, with a rotate wall
+  // on top. Computed with the other hooks so hook order never changes.
+  const { pathname } = useLocation()
+  const onPublicPage = isPublicPath(pathname)
+
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -35,7 +43,7 @@ const WhatsNewBanner = () => {
     setOpen(false)
   }
 
-  if (!open) return null
+  if (!open || onPublicPage) return null
 
   return (
     <div

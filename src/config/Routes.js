@@ -10,6 +10,7 @@ import DraftCountdownPopup from '../components/DraftCountdownPopup'
 import AnnouncementBanner from '../components/AnnouncementBanner'
 import UpdateBanner from '../components/UpdateBanner'
 import WhatsNewBanner from '../components/WhatsNewBanner'
+import RotateHint from '../components/RotateHint'
 import { trackPageView } from '../utils/analytics'
 
 // Auto-track page views on route change
@@ -113,6 +114,7 @@ const Payoptions = lazy(() => import('../pages/AllTransaction/Payoptions'))
 const Stadium = lazy(() => import('../pages/Stadium'))
 const Clubhouse = lazy(() => import('../pages/Clubhouse'))
 const NFLPredictor = lazy(() => import('../pages/NFLPredictor'))
+const FranchisePick = lazy(() => import('../pages/FranchisePick'))
 const Proleague = lazy(() => import('../pages/Proleague'))
 const Success = lazy(() => import('../pages/Successpayment'))
 const Error = lazy(() => import('../pages/errorpayment'))
@@ -245,6 +247,7 @@ const Routers = () => {
       <AnnouncementBanner />
       <UpdateBanner />
       <WhatsNewBanner />
+      <RotateHint />
       <Suspense fallback={<PageLoader />}>
       <Routes>
         {/* ── Admin Auth ── */}
@@ -308,6 +311,7 @@ const Routers = () => {
           <Route path='/stadium' element={<L><Stadium /></L>} />
           <Route path='/clubhouse' element={<L><Clubhouse /></L>} />
           <Route path='/nfl-predictor' element={<L><NFLPredictor /></L>} />
+          <Route path='/franchise-pick' element={<L><FranchisePick /></L>} />
           <Route path='/chat' element={<L><Chat/></L>} />
 
           {/* Dynasty 32 Postseason Routes */}

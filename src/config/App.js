@@ -10,7 +10,6 @@ import Routes from './Routes'
 import HubChatDock from '../components/PlatformChat/HubChatDock'
 import SamAIChat from '../components/SamAIChat'
 import PasswordChangeModal from '../components/PasswordChangeModal'
-import RotateHint from '../components/RotateHint'
 import { light, dark } from './theme'
 import { getUser } from '../redux'
 import { version, base_url } from './constants'
@@ -21,6 +20,9 @@ import { initErrorReporting } from '../utils/errorReporter'
 import { trackPageView } from '../utils/analytics'
 import { getUserLeagues, ensureActiveLeague } from '../redux/actions/leagueActions'
 // AnnouncementBanner moved inside Routes.js (must be inside BrowserRouter)
+// RotateHint moved there too, and for the same reason: it now reads the path
+// with useLocation to stay off the public pages, and useLocation outside a
+// Router throws - which took the whole app to a blank screen.
 
 // Initialize global error listeners (window.onerror, unhandledrejection)
 initErrorReporting()
@@ -151,7 +153,6 @@ const App = () => {
     {authenticatedID && <HubChatDock />}
     <SamAIChat />
     <PasswordChangeModal />
-    <RotateHint />
     </div>
   </PlayerImagesProvider>)
 }

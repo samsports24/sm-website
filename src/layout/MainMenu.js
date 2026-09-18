@@ -85,6 +85,11 @@ const MainMenu = ({ visible }) => {
   const { pathname } = useLocation()
   // Detect soccer mode from league sport field or URL path
   const leagueSport = user?.team?.currentLeague?.sport || user?.team?.currentLeague?.gameType || ''
+  // Franchise Pick has no roster, no draft and no lineup. The one thing a
+  // manager does is take a club, so that has to be reachable from the menu —
+  // the route existed but nothing pointed at it.
+  const isFranchisePick =
+    (_commLeague?.leagueMode || user?.team?.currentLeague?.leagueMode) === 'franchise_pick'
   const isSoccer = leagueSport === 'soccer' || leagueSport === 'football' || pathname.startsWith('/soccer')
 
   useEffect(() => {
@@ -141,6 +146,7 @@ const MainMenu = ({ visible }) => {
       '/war-room': 'war-room',
       '/front-office': 'war-room',
       '/nfl-predictor': 'nfl-predictor',
+      '/franchise-pick': 'franchise-pick',
       '/faq': 'faq',
     }
 
@@ -277,7 +283,13 @@ const MainMenu = ({ visible }) => {
 
           {isFullAccess && (
             <>
-              {/* War Room, visible even when dormant */}
+              {/* War Room, visible even when dormant.
+                  Franchise Pick keeps this. A club now carries a real 53-man
+                  squad and its manager can work the free agent pool, so the
+                  roster screens all mean something again. The one thing that
+                  still does not exist in this mode is a draft — a manager takes
+                  a club, he does not draft one — so the Draft group below and
+                  the Trade item stay hidden. */}
               <MenuItem id="war-room" icon={<GiCastle />} label={t('frontOffice')} onClick={() => navigate('/front-office')} dataTour="dyn-frontoffice" />
 
               {/* Dormant banner, shown when user sold their empire */}
@@ -302,7 +314,7 @@ const MainMenu = ({ visible }) => {
               {/* Everything below is HIDDEN for dormant users */}
               {!isDormant && (
                 <>
-                  {/* Dashboard */}
+                  {/* Dashboard — kept in every mode, Franchise Pick included. */}
                   <MenuItem id="dashboard" icon={<MdDashboard />} label={t('dashboard')} onClick={() => navigatePath('/dashboard')} dataTour="dyn-dashboard" />
 
                   {/* My Team group */}
@@ -329,19 +341,25 @@ const MainMenu = ({ visible }) => {
                     </div>
                   )}
 
-                  {/* Transactions group */}
+                  {/* Transactions group. Franchise Pick has free agency and IR
+                      but no player trading between managers — a manager holds a
+                      real club, he does not swap its players with a rival. */}
                   <GroupHeader id="transactions" icon={<GiTrade />} label={t('transactions')} isOpen={openGroup === 'transactions'} dataTour="dyn-transactions" />
                   {openGroup === 'transactions' && (
                     <div className="sm-group-items">
-                      <MenuItem id="trade" icon={<GiTrade />} label={t('trade')} onClick={() => navigatePath('/team-trade')} />
+                      {!isFranchisePick && (
+                        <MenuItem id="trade" icon={<GiTrade />} label={t('trade')} onClick={() => navigatePath('/team-trade')} />
+                      )}
                       <MenuItem id="auctions" icon={<RiAuctionLine />} label={t('auctions')} onClick={() => navigatePath('/player-auction')} />
                       <MenuItem id="injuries-reserve" icon={<FaPlusCircle />} label={t('injuredReserve')} onClick={() => navigatePath('/injured-reserve')} />
                     </div>
                   )}
 
                   {/* Draft group */}
-                  <GroupHeader id="draft-group" icon={<RiDraftLine />} label={t('draft')} isOpen={openGroup === 'draft-group'} dataTour="dyn-draft" />
-                  {openGroup === 'draft-group' && (
+                  {!isFranchisePick && (
+                    <GroupHeader id="draft-group" icon={<RiDraftLine />} label={t('draft')} isOpen={openGroup === 'draft-group'} dataTour="dyn-draft" />
+                  )}
+                  {!isFranchisePick && openGroup === 'draft-group' && (
                     <div className="sm-group-items">
                       <MenuItem id="draft" icon={<RiDraftLine />} label={t('draftLive')} onClick={() => navigate('/live-draft')} />
                       <MenuItem id="supplemental-draft" icon={<RiDraftLine />} label={t('supplementalDraft')} onClick={() => navigatePath('/supplemental-draft')} />
@@ -369,6 +387,14 @@ const MainMenu = ({ visible }) => {
                       card was replaced by Keep/Trade/Cut. It DOES need a league
                       (you're ranked against the managers in yours), so it keeps
                       navigatePath(), unlike Mock Draft above. */}
+                  {isFranchisePick && (
+                    <MenuItem
+                      id="franchise-pick"
+                      icon={<GiStarMedal />}
+                      label="My Franchise"
+                      onClick={() => navigatePath('/franchise-pick')}
+                    />
+                  )}
                   <MenuItem id="gm-challenge" icon={<GiStarMedal />} label={t('gmChallenge')} onClick={() => navigatePath('/gm-challenge')} dataTour="dyn-gm" />
                   {/* Keep/Trade/Cut needs NO league and no account — the vote
                       endpoint takes anonymous votes, and volume is the point.

@@ -7,12 +7,23 @@ import { createNewLeagueFromDashboard } from '../../redux'
 import { landingSignup } from '../../config/constants'
 import dayjs from 'dayjs'
 
-const STEPS = [
-  { key: 'mode', label: 'Game Mode', icon: '1' },
-  { key: 'basics', label: 'Basics', icon: '2' },
-  { key: 'draft', label: 'Draft', icon: '3' },
-  { key: 'access', label: 'Publish', icon: '4' },
+// The wizard is not the same length for every mode. Franchise Pick has no
+// draft at all — a manager takes one of the 32 real clubs and that is the whole
+// of his team management — so asking him for a draft type and a draft date is a
+// screen that can only confuse. The step list is therefore derived from the
+// mode, and the numbering follows the list rather than being written into it.
+const ALL_STEPS = [
+  { key: 'mode', label: 'Game Mode' },
+  { key: 'basics', label: 'Basics' },
+  { key: 'draft', label: 'Draft' },
+  { key: 'access', label: 'Publish' },
 ]
+
+// Modes that never draft. Add to this set rather than adding another branch.
+const NO_DRAFT_MODES = new Set(['franchise_pick'])
+
+const stepsForMode = (mode) =>
+  NO_DRAFT_MODES.has(mode) ? ALL_STEPS.filter((s) => s.key !== 'draft') : ALL_STEPS
 
 const LEAGUE_MODES = [
   {
@@ -31,6 +42,25 @@ const LEAGUE_MODES = [
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
     ),
   },
+  {
+    // One club each, no roster, no draft. Deliberately the lightest mode in the
+    // product: a manager who will never maintain a lineup will still pick the
+    // Chiefs, and will still check the table on a Tuesday.
+    value: 'franchise_pick',
+    title: 'Franchise Pick',
+    desc: 'Pick one real NFL team. No roster, no draft — your club\'s week is your week.',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v18"/><path d="M8 7h8M8 12h8M8 17h5"/></svg>
+    ),
+  },
+]
+
+// How a franchise reaches a manager. The commissioner's call, and the only
+// setting this mode has beyond the scoring.
+const PICK_MODES = [
+  { value: 'first_come', title: 'First come, first served', desc: 'A race. One team each, claimed on the board.' },
+  { value: 'random', title: 'Random draw', desc: 'You assign every manager a franchise in one go.' },
+  { value: 'auction', title: 'Auction', desc: 'Franchises go under the hammer.' },
 ]
 
 const SCORING_MODES = [
@@ -150,6 +180,12 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
   const [leagueModeValue, setLeagueModeValue] = useState('full')
   const [draftFormatValue, setDraftFormatValue] = useState('combined')
 
+  const STEPS = stepsForMode(leagueModeValue)
+  // Switching to a shorter mode while standing on a later step would leave the
+  // index past the end of the list. Read a clamped value everywhere below.
+  const stepIndex = Math.min(step, STEPS.length - 1)
+  const currentKey = STEPS[stepIndex].key
+
   // Mid-season start preview: if the NFL regular season is already underway, a
   // league created now only runs the remaining weeks (backend auto-shortens it).
   const REG_WEEKS = 18
@@ -181,9 +217,12 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
   const onFinish = async (values) => {
     if (loading) return
     setLoading(true)
+    // dayjs(undefined) is "now", so a mode that skips the draft step would
+    // silently create a league whose draft is already in the past. Only send
+    // the field when the user actually set it; the backend defaults it.
     const obj = {
       ...values,
-      draftStart: dayjs(values?.draftStart).toISOString(),
+      ...(values?.draftStart ? { draftStart: dayjs(values.draftStart).toISOString() } : {}),
       ...(values?.rookieDraftStart ? { rookieDraftStart: dayjs(values.rookieDraftStart).toISOString() } : {}),
     }
 
@@ -207,9 +246,12 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
     // error toast keeps its context and the user can adjust.
     if (result?.success) {
       if (onSuccess) onSuccess()
+      const wasFranchisePick = values?.leagueMode === 'franchise_pick'
       handleCancel()
-      // Redirect commissioner to setup page so they configure draft date, rules, etc.
-      navigate('/commissioner')
+      // Franchise Pick has nothing to configure — no draft date, no roster
+      // rules — and exactly one thing to do next, which is take a club. Send
+      // the commissioner there. Every other mode still goes to setup.
+      navigate(wasFranchisePick ? '/franchise-pick' : '/commissioner')
     }
   }
 
@@ -220,22 +262,21 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
   }
 
   const nextStep = async () => {
-    const modeFields = leagueModeValue === 'offense_only' ? ['leagueMode', 'scoringMode'] : ['leagueMode']
-    const fieldsPerStep = [
-      modeFields,
-      ['name', 'numberOfTeams', 'leagueLevel'],
-      ['draftType', 'draftStart'],
-      ['leagueType'],
-    ]
+    const fieldsByKey = {
+      mode: leagueModeValue === 'offense_only' ? ['leagueMode', 'scoringMode'] : ['leagueMode'],
+      basics: ['name', 'numberOfTeams', 'leagueLevel'],
+      draft: ['draftType', 'draftStart'],
+      access: ['leagueType'],
+    }
     try {
-      await form.validateFields(fieldsPerStep[step])
-      setStep((s) => Math.min(s + 1, STEPS.length - 1))
+      await form.validateFields(fieldsByKey[currentKey] || [])
+      setStep(Math.min(stepIndex + 1, STEPS.length - 1))
     } catch {
       // validation errors shown inline
     }
   }
 
-  const prevStep = () => setStep((s) => Math.max(s - 1, 0))
+  const prevStep = () => setStep(Math.max(stepIndex - 1, 0))
 
   return (
     <>
@@ -261,7 +302,7 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
           <div className="cl-header">
             <div>
               <h2 className="cl-title">Create League</h2>
-              <p className="cl-subtitle">{STEPS[step].label} &mdash; Step {step + 1} of {STEPS.length}</p>
+              <p className="cl-subtitle">{STEPS[stepIndex].label} &mdash; Step {stepIndex + 1} of {STEPS.length}</p>
             </div>
             <button className="cl-close" onClick={handleCancel}>&times;</button>
           </div>
@@ -269,12 +310,12 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
           {/* Progress Steps */}
           <div className="cl-steps">
             {STEPS.map((s, i) => (
-              <div key={s.key} className={`cl-step ${i === step ? 'cl-step--active' : ''} ${i < step ? 'cl-step--done' : ''}`}>
+              <div key={s.key} className={`cl-step ${i === stepIndex ? 'cl-step--active' : ''} ${i < stepIndex ? 'cl-step--done' : ''}`}>
                 <div className="cl-step-dot">
-                  {i < step ? (
+                  {i < stepIndex ? (
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   ) : (
-                    <span>{s.icon}</span>
+                    <span>{i + 1}</span>
                   )}
                 </div>
                 <span className="cl-step-label">{s.label}</span>
@@ -302,7 +343,7 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
             }}
           >
             {/* Step 1: Game Mode */}
-            <div className="cl-panel" style={{ display: step === 0 ? 'block' : 'none' }}>
+            <div className="cl-panel" style={{ display: currentKey === 'mode' ? 'block' : 'none' }}>
               <Form.Item
                 name="leagueMode"
                 label="League Mode"
@@ -331,8 +372,32 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
                 </Form.Item>
               )}
 
+              {leagueModeValue === 'franchise_pick' && (
+                <Form.Item
+                  name="teamPickMode"
+                  label="How franchises are allocated"
+                  rules={[{ required: true, message: 'Choose how franchises are handed out' }]}
+                  initialValue="first_come"
+                >
+                  <Select placeholder="Choose one" size="large">
+                    {PICK_MODES.map((m) => (
+                      <Select.Option key={m.value} value={m.value}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
+                          <span style={{ fontWeight: 600 }}>{m.title}</span>
+                          <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>{m.desc}</span>
+                        </div>
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              )}
+
               <div className="cl-mode-info" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, padding: '12px 14px', marginTop: 8 }}>
-                {leagueModeValue === 'offense_only' ? (
+                {leagueModeValue === 'franchise_pick' ? (
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', lineHeight: 1.5 }}>
+                    <strong style={{ color: '#fff' }}>Franchise Pick</strong> — every manager takes one of the 32 real NFL clubs, and that is the whole of his team management. No draft, no roster, no lineup. Each week his score is the SAM Metric his club&apos;s players actually scored, so a big week for the Chiefs is a big week for whoever holds them. One club per manager, so a league caps at 32.
+                  </div>
+                ) : leagueModeValue === 'offense_only' ? (
                   <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', lineHeight: 1.5 }}>
                     <strong style={{ color: '#fff' }}>Offense Only</strong>, 11 starters, 30 total players. Draft and roster only include QB, RB, WR, TE, K. 150M SamPoints budget. All auction and poaching rules apply.
                   </div>
@@ -345,7 +410,7 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
             </div>
 
             {/* Step 2: Basics */}
-            <div className="cl-panel" style={{ display: step === 1 ? 'block' : 'none' }}>
+            <div className="cl-panel" style={{ display: currentKey === 'basics' ? 'block' : 'none' }}>
               <Form.Item
                 name="name"
                 label="League Name"
@@ -433,8 +498,13 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
               </Form.Item>
             </div>
 
-            {/* Step 3: Draft */}
-            <div className="cl-panel" style={{ display: step === 2 ? 'block' : 'none' }}>
+            {/* Step 3: Draft.
+                Not rendered at all in a mode that never drafts. Hiding it with
+                CSS would leave its required fields mounted, and antd validates
+                mounted fields on submit — the Create button would fail with an
+                error message on a panel nobody can see. */}
+            {STEPS.some((s) => s.key === 'draft') && (
+            <div className="cl-panel" style={{ display: currentKey === 'draft' ? 'block' : 'none' }}>
               <Form.Item
                 name="draftType"
                 label="Draft Type"
@@ -517,9 +587,10 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
                 />
               </Form.Item>
             </div>
+            )}
 
             {/* Step 4: Access & Publish */}
-            <div className="cl-panel" style={{ display: step === 3 ? 'block' : 'none' }}>
+            <div className="cl-panel" style={{ display: currentKey === 'access' ? 'block' : 'none' }}>
               <Form.Item
                 name="leagueType"
                 label="Visibility"
@@ -549,13 +620,13 @@ const CreateLeague = ({ button, isCommissioner = false, onSuccess, externalOpen,
 
             {/* Navigation Buttons */}
             <div className="cl-nav">
-              {step > 0 && (
+              {stepIndex > 0 && (
                 <Button className="cl-back-btn" onClick={prevStep} size="large">
                   Back
                 </Button>
               )}
               <div className="cl-nav-spacer" />
-              {step < STEPS.length - 1 ? (
+              {stepIndex < STEPS.length - 1 ? (
                 <Button className="cl-next-btn" onClick={nextStep} size="large">
                   Continue
                 </Button>
