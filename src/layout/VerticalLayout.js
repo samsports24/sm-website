@@ -1,4 +1,5 @@
 import React from 'react'
+import { logoutOneSignal } from '../utils/oneSignal'
 import { Button, Layout, Dropdown } from 'antd'
 import account from '../assets/account.svg'
 import MainMenu from './MainMenu'
@@ -34,6 +35,9 @@ const VerticalLayout = ({ children, active }) => {
     localStorage.removeItem('token')
     localStorage.removeItem('userName')
     localStorage.removeItem('userId')
+    // Unlink this browser, so a shared machine does not keep pushing to
+    // somebody who has signed out.
+    logoutOneSignal()
     localStorage.removeItem('week')
     localStorage.removeItem('leagueroom')
     localStorage.removeItem('roomId')

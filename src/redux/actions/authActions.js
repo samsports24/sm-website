@@ -1,4 +1,5 @@
 import { notification } from 'antd'
+import { linkOneSignalUser } from '../../utils/oneSignal'
 import { publicAPI, attachToken, privateAPI, version, base_url } from '../../config/constants'
 import { soccerAPI, attachSoccerToken } from '../../soccer/config/constants'
 import { SET_USER_DETAILS } from '../types/generalTypes'
@@ -96,6 +97,9 @@ export const authSignup = async (payload, navigate, setVerificationState) => {
         // Token now set as httpOnly cookie by backend (XSS-safe)
         localStorage.setItem('userName', resData.user?.userName || resData.user?.name || '')
         localStorage.setItem('userId', resData.user?._id || '')
+        // Link this browser to the signed-in user so the backend can push
+        // by id. Without it a fresh sign-in is not reachable until reload.
+        linkOneSignalUser(localStorage.getItem('userId'))
         attachToken()
       }
       notification.success({
@@ -130,6 +134,9 @@ export const verifyEmailCode = async (userId, code, navigate, sport) => {
       localStorage.setItem('token', resData.token)
       localStorage.setItem('userName', resData.user?.userName || resData.user?.name || '')
       localStorage.setItem('userId', resData.user?._id || '')
+      // Link this browser to the signed-in user so the backend can push
+      // by id. Without it a fresh sign-in is not reachable until reload.
+      linkOneSignalUser(localStorage.getItem('userId'))
       localStorage.removeItem('pendingUserId')
       attachToken()
       if (isSoccer) attachSoccerToken()
@@ -243,6 +250,9 @@ export const authSignupAdvanced = async (payload, navigate, setVerificationState
         // Token now set as httpOnly cookie by backend (XSS-safe)
         localStorage.setItem('userName', resData.user?.userName || resData.user?.name || '')
         localStorage.setItem('userId', resData.user?._id || '')
+        // Link this browser to the signed-in user so the backend can push
+        // by id. Without it a fresh sign-in is not reachable until reload.
+        linkOneSignalUser(localStorage.getItem('userId'))
         attachToken()
         notification.success({
           description: resData.message || 'Account created successfully!',
@@ -310,6 +320,9 @@ export const otpVerification = (otp, navigate) => {
         localStorage.setItem('version', version)
         localStorage.setItem('userName', res.data.data.user.name)
         localStorage.setItem('userId', res.data.data.user._id)
+        // Link this browser to the signed-in user so the backend can push
+        // by id. Without it a fresh sign-in is not reachable until reload.
+        linkOneSignalUser(localStorage.getItem('userId'))
         attachToken()
         dispatch(getUser())
         // dispatch({
@@ -377,6 +390,9 @@ let username=userName
           localStorage.setItem('version', version)
           localStorage.setItem('userName', res.data.data.user.name || res.data.data.user.userName || '')
           localStorage.setItem('userId', res.data.data.user._id)
+          // Link this browser to the signed-in user so the backend can push
+          // by id. Without it a fresh sign-in is not reachable until reload.
+          linkOneSignalUser(localStorage.getItem('userId'))
           dispatch(getUser())
            localStorage.setItem('week', res?.data?.data?.setting?.week)
 
@@ -605,6 +621,9 @@ export const googleLogin = (credential, navigate) => {
         // Token now set as httpOnly cookie by backend (XSS-safe)
         localStorage.setItem('userName', res.data.data.user.name || res.data.data.user.userName)
         localStorage.setItem('userId', res.data.data.user._id)
+        // Link this browser to the signed-in user so the backend can push
+        // by id. Without it a fresh sign-in is not reachable until reload.
+        linkOneSignalUser(localStorage.getItem('userId'))
         dispatch(getUser())
         localStorage.setItem('week', res?.data?.data?.setting?.week)
 
@@ -658,6 +677,9 @@ export const facebookLogin = (accessToken, navigate) => {
         // Token now set as httpOnly cookie by backend (XSS-safe)
         localStorage.setItem('userName', res.data.data.user.name || res.data.data.user.userName)
         localStorage.setItem('userId', res.data.data.user._id)
+        // Link this browser to the signed-in user so the backend can push
+        // by id. Without it a fresh sign-in is not reachable until reload.
+        linkOneSignalUser(localStorage.getItem('userId'))
         dispatch(getUser())
         localStorage.setItem('week', res?.data?.data?.setting?.week)
 

@@ -19,6 +19,7 @@ import { setSocket } from '../redux/actions/socketAction'
 import { initErrorReporting } from '../utils/errorReporter'
 import { trackPageView } from '../utils/analytics'
 import { getUserLeagues, ensureActiveLeague } from '../redux/actions/leagueActions'
+import { initOneSignal } from '../utils/oneSignal'
 // AnnouncementBanner moved inside Routes.js (must be inside BrowserRouter)
 // RotateHint moved there too, and for the same reason: it now reads the path
 // with useLocation to stay off the public pages, and useLocation outside a
@@ -65,20 +66,41 @@ const App = () => {
     }
   }, [authenticatedID, dispatch]);
 
-  // Boot-time service-worker cleanup (replaces OneSignal push init).
+  // Boot: clear the worker that broke the hub, then start push.
   //
-  // The OneSignal push service worker was intercepting the hub's own API calls in
-  // Chrome and stopping them from completing — the empire counts came back 0 and
-  // the site made no backend requests at all, while Safari was fine. It's the same
-  // worker that broke the soccer app's login. Push isn't worth the hub not loading
-  // its data. We no longer register OneSignal, and we unregister any stale worker
-  // on boot so every browser self-heals on its next load.
+  // The old OneSignal worker was registered at the site root, so its scope was
+  // "/" and it sat in front of every request the app made. In Chrome it stopped
+  // the hub's API calls from completing — empire counts came back 0, the site
+  // made no backend requests at all — and it broke the soccer app's login.
+  // Safari was unaffected, which is why it went unnoticed for a while.
+  //
+  // So this used to unregister EVERY service worker on every boot. That healed
+  // the browsers that were stuck, and it is still needed: anybody who loaded the
+  // site before 27 August may still be carrying that root-scoped worker.
+  //
+  // But "unregister everything" cannot stay, because it would also kill the new
+  // one a moment after it registers. So it now removes only workers whose scope
+  // covers the app itself, and leaves anything scoped under /push/ alone. A
+  // worker that cannot control a page the app uses cannot intercept its calls,
+  // which was the whole fault.
+  //
+  // Push is started after that, so the cleanup can never race the registration.
   useEffect(() => {
-    if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations()
-        .then((regs) => regs.forEach((r) => r.unregister()))
-        .catch(() => {})
-    }
+    if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return
+
+    const startPush = () => { try { initOneSignal() } catch (e) { /* never block boot */ } }
+
+    navigator.serviceWorker.getRegistrations()
+      .then((regs) => Promise.all(
+        regs.map((r) => {
+          const scope = (r.scope || '')
+          // Keep the scoped push worker. Remove anything that controls the app.
+          if (scope.includes('/push/')) return Promise.resolve(false)
+          return r.unregister().catch(() => false)
+        })
+      ))
+      .then(startPush)
+      .catch(startPush)
   }, [])
 
   useEffect(() => {

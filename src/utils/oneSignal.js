@@ -10,7 +10,21 @@
 // The App ID is public (it ships in the client bundle regardless), so we default
 // it here — no build-time env var needed. NFL and Soccer share one OneSignal app.
 // An env var still overrides it if you ever point a build at a different app.
-const APP_ID = process.env.REACT_APP_ONESIGNAL_APP_ID || '042e5db5-0ab9-493e-8ddd-63e713ab7588'
+const APP_ID = process.env.REACT_APP_ONESIGNAL_APP_ID || '539b00b9-24ea-49ab-8dd6-dd33c371e574'
+
+// Where the service worker lives, and what it is allowed to control.
+//
+// NOT the site root. At the root the worker's scope is "/" and it sits in front
+// of every request the app makes; in Chrome it swallowed the hub's API calls
+// (empire counts 0, no backend requests at all) and broke the soccer login.
+// Under /push/onesignal/ it controls only pages below that path, which is none,
+// while still receiving push events - the browser hands those to the worker
+// directly rather than through a page.
+//
+// These two must agree with each other and with where the file actually sits in
+// public/. The scope must be at or below the worker's own directory.
+const SW_PATH = 'push/onesignal/OneSignalSDKWorker.js'
+const SW_SCOPE = '/push/onesignal/'
 
 let initPromise = null
 
@@ -29,6 +43,8 @@ export function initOneSignal() {
       try {
         await OneSignal.init({
           appId: APP_ID,
+          serviceWorkerPath: SW_PATH,
+          serviceWorkerParam: { scope: SW_SCOPE },
           allowLocalhostAsSecureOrigin: true,
         })
         // If a user id is already stored, link this device to them.
