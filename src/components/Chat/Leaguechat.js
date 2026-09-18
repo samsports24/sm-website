@@ -1,4 +1,5 @@
 import React from 'react'
+import MomentCard from '../MomentCard'
 import moment from 'moment'
 import { Image } from 'antd'
 
@@ -73,6 +74,24 @@ const Leaguechat = ({ chat, teamid, chatRef }) => {
         const prevMsg = sortedChat[i - 1]
         const sameSender = prevMsg && prevMsg?.sender?._id === message?.sender?._id
         const showAvatar = !sameSender
+
+        // A moment is the league speaking, not a manager. It gets the full
+        // width with no avatar and no sender header - putting a team crest
+        // and a name on it would credit somebody with saying it.
+        if (message?.type === 'moment' && message?.moment) {
+          return (
+            <React.Fragment key={i}>
+              {showDate && (
+                <div className='lc-date-divider'>
+                  <span>{dateLabel}</span>
+                </div>
+              )}
+              <div className='lc-msg-row lc-msg-moment'>
+                <MomentCard msg={message} meId={teamid} />
+              </div>
+            </React.Fragment>
+          )
+        }
 
         return (
           <React.Fragment key={i}>

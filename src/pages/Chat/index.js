@@ -192,12 +192,45 @@ const Chat = () => {
       }
     }
 
+    // ── Moments, live ──────────────────────────────────────────────────
+    //
+    //  The broadcast carries counts only. `mine` is per reader and the server
+    //  will not guess yours, so a count from someone else's tap is merged
+    //  WITHOUT touching whether the pill is lit for you - taking `mine` from
+    //  a broadcast would un-press a button under the reader's own finger.
+    const patch = (id, fn) => {
+      const apply = (list) => list.map((m) => (String(m?._id || m?.id) === String(id) ? fn(m) : m))
+      setSentLeagueMessage((prev) => apply(prev))
+    }
+    const onReaction = ({ id, reactions }) => {
+      if (!id || !Array.isArray(reactions)) return
+      patch(id, (m) => ({
+        ...m,
+        reactions: reactions.map((r) => ({
+          ...r,
+          mine: (m.reactions || []).find((o) => o.emoji === r.emoji)?.mine || false,
+        })),
+      }))
+    }
+    const onComment = ({ id, comment }) => {
+      if (!id || !comment) return
+      patch(id, (m) =>
+        (m.comments || []).some((c) => String(c.id) === String(comment.id))
+          ? m
+          : { ...m, comments: [...(m.comments || []), comment] }
+      )
+    }
+
     socket.on('Message', handleDM)
     socket.on('sendleagueMessage', handleLeague)
+    socket.on('momentReaction', onReaction)
+    socket.on('momentComment', onComment)
 
     return () => {
       socket.off('Message', handleDM)
       socket.off('sendleagueMessage', handleLeague)
+      socket.off('momentReaction', onReaction)
+      socket.off('momentComment', onComment)
       // Do NOT disconnect, the Redux socket is managed globally by App.js
     }
   }, [socket, roomId, leagueroomId, teamid])
