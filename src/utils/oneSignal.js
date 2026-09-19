@@ -23,6 +23,32 @@ const APP_ID = process.env.REACT_APP_ONESIGNAL_APP_ID || '539b00b9-24ea-49ab-8dd
 //
 // These two must agree with each other and with where the file actually sits in
 // public/. The scope must be at or below the worker's own directory.
+// ── CUSTOM CODE, NOT TYPICAL SITE ────────────────────────────────────────
+//
+// OneSignal has two integration modes and they read different configuration:
+//
+//   Typical Site  the dashboard's "Customize service worker paths and
+//                 filenames" fields decide where the worker is. Anything
+//                 passed to init() is IGNORED.
+//   Custom Code   serviceWorkerPath and serviceWorkerParam below decide.
+//                 The dashboard's path fields are IGNORED.
+//
+// Their documentation says it outright: "Mixing the two does not work:
+// dashboard path fields do not apply to Custom Code, and serviceWorkerPath
+// does not apply to Typical Site."
+//
+// We were set up as both. The SDK script is loaded by hand in
+// public/index.html and init() is called here, which is the Custom Code
+// shape, while the dashboard also had the customize fields filled in. On
+// 18 Sep 2026 optIn() and requestPermission() hung forever with no error,
+// while a raw pushManager.subscribe() with the same VAPID key on the same
+// worker succeeded first try - the shape of a page waiting on a worker
+// registration that is not the one it thinks it has.
+//
+// So: this app is CUSTOM CODE. These two constants are the only place the
+// worker's path and scope are set. If somebody ticks "Customize service
+// worker paths" in the dashboard again, it will not take effect and it will
+// make this file look like it is lying. Leave it off.
 const SW_PATH = 'push/onesignal/OneSignalSDKWorker.js'
 const SW_SCOPE = '/push/onesignal/'
 

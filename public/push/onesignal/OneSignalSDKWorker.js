@@ -9,8 +9,10 @@
 // its scope is /push/onesignal/, which controls no page anybody visits, while
 // push still arrives - the browser hands a push event to the worker directly
 // rather than through a page. The path and scope are set in
-// src/utils/oneSignal.js AND in the OneSignal dashboard under Advanced; the
-// dashboard wins unless "customize" is ticked there, which it now is.
+// src/utils/oneSignal.js, and ONLY there. This app is a Custom Code
+// integration, so the dashboard's service worker path fields do not apply and
+// must be left switched off - their own documentation says mixing the two
+// does not work.
 //
 // ── WHY THE EMPTY LISTENER BELOW ─────────────────────────────────────────
 // Subscribing does not happen on the page. The page posts a "Subscribe"
