@@ -16,6 +16,7 @@ import { version, base_url } from './constants'
 import { notification } from 'antd'
 import io from 'socket.io-client'
 import { setSocket } from '../redux/actions/socketAction'
+import { playMoment, installUnlock } from '../services/momentSounds'
 import { initErrorReporting } from '../utils/errorReporter'
 import { trackPageView } from '../utils/analytics'
 import { getUserLeagues, ensureActiveLeague } from '../redux/actions/leagueActions'
@@ -33,6 +34,11 @@ const App = () => {
   const dispatch = useDispatch()
   const socketRef = useRef(null);
   const authenticatedID = localStorage.getItem('userId')
+
+  // A browser will not let the page make noise until somebody has clicked on
+  // it. The first click anywhere unlocks every clip silently, riding on a
+  // gesture they were making anyway.
+  useEffect(() => { installUnlock() }, [])
 
   // Socket.io, single connection lifecycle
   useEffect(() => {
@@ -59,7 +65,24 @@ const App = () => {
     }
     socket.on('reconnect', handleReconnect)
 
+    // ── The noise a touchdown makes ────────────────────────────────────────
+    //
+    //  Hung on the app's one socket rather than on the chat page, because a
+    //  touchdown should be audible from the Squad screen too, not only with
+    //  chat open. "Message" is the door every league message comes through,
+    //  moments included, so this is the one place that hears all of them.
+    //
+    //  Your own message is not news to you; a moment has no sender at all,
+    //  which is the point - nobody owns it, so it sounds for everybody.
+    const onMessage = (msg) => {
+      const from = msg?.sender?._id || msg?.sender
+      if (from && String(from) === String(authenticatedID)) return
+      if (msg?.moment) playMoment(msg.moment)
+    }
+    socket.on('Message', onMessage)
+
     return () => {
+      socket.off('Message', onMessage)
       socket.off('reconnect', handleReconnect)
       socket.disconnect()
       socketRef.current = null
