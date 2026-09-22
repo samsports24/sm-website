@@ -2704,6 +2704,7 @@ const LANDING_AD_SLOTS = [
   { slot:"hero",  title:"Hero Banner",   dims:"1600×680 px", ratio:1600/680, note:"Recommended: 1600×680 px (≈2.35:1), JPG/PNG, ≤2MB" },
   { slot:"left",  title:"Left Sidebar",  dims:"1000×700 px", ratio:1000/700, note:"Recommended: 1000×700 px (≈1.43:1), JPG/PNG, ≤2MB" },
   { slot:"right", title:"Right Sidebar", dims:"1000×720 px", ratio:1000/720, note:"Recommended: 1000×720 px (≈1.40:1), JPG/PNG, ≤2MB" },
+  { slot:"article", title:"In-article (news pages)", dims:"1200×300 px", ratio:1200/300, note:"Shown inside samsports.io articles after paragraph 3, labelled Advertisement. 1200×300 px (4:1), JPG/PNG, ≤2MB. Empty = our own fantasy promo." },
 ];
 
 const LandingAdsSection = ({ toast }) => {
