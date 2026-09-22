@@ -1520,7 +1520,7 @@ const MC_MORE_SPORTS = [
   { key: 'ncaab', emoji: '🎓', label: 'NCAAB' },
 ]
 
-const MatchCenterPanel = ({ leagueGroups, activeSport, onSportChange, onMatchClick, onLeagueClick, onTeamClick }) => {
+const MatchCenterPanel = ({ leagueGroups, activeSport, onSportChange, onMatchClick, onLeagueClick, onTeamClick, onRankingClick }) => {
   const [tab, setTab] = useState('all')
   const [q, setQ] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
@@ -1649,6 +1649,21 @@ const MatchCenterPanel = ({ leagueGroups, activeSport, onSportChange, onMatchCli
             </button>
           ))}
         </div>
+        {/* SAM Ranking. The old per-league widgets carried this button and the
+            Match Centre that replaced them did not, so the top performers
+            popup - the one place the SAM metric is visible on the landing page,
+            for the NFL as well as soccer - had no way in. */}
+        {onRankingClick && (
+          <button
+            onClick={onRankingClick}
+            style={{
+              marginLeft: 'auto', cursor: 'pointer', border: '1px solid rgba(34,197,94,0.35)',
+              background: 'rgba(34,197,94,0.12)', color: '#22C55E', borderRadius: 6,
+              padding: '5px 10px', fontSize: 11, fontWeight: 800, letterSpacing: 0.4,
+              whiteSpace: 'nowrap',
+            }}
+          >⭐ SAM RANKING</button>
+        )}
       </div>
 
       {/* Table */}
@@ -2296,6 +2311,7 @@ export const SportWidgetPanel = ({
   onTeamClick,
 }) => {
   const [popupLeague, setPopupLeague] = useState(null)
+  const [rankingPopup, setRankingPopup] = useState(null)
   const isSoccer = activeSport === 'soccer'
   const isTennis = activeSport === 'tennis'
   const isMultiLeague = isSoccer || isTennis
@@ -2373,6 +2389,7 @@ export const SportWidgetPanel = ({
   }
 
   // Soccer leagues that have SAM ranking data
+  const isNfl = activeSport === 'nfl' || activeSport === 'football' || activeSport === 'ncaafb'
   const SAM_RANKING_LEAGUES = [39, 140, 78, 135, 61] // EPL, La Liga, Bundesliga, Serie A, Ligue 1
   const hasSamRanking = (lg) => {
     if (lg.sport === 'nfl' || lg.sport === 'football') return true
@@ -2393,11 +2410,28 @@ export const SportWidgetPanel = ({
           const ranked = leagueGroups.find(hasSamRanking)
           setPopupLeague(ranked || leagueGroups[0])
         }}
+        onRankingClick={
+          // NFL has one league, so its ranking needs no league at all. Soccer
+          // ranks per competition, so it opens the first one we hold SAM points
+          // for. Any other sport has no SAM ranking and shows no button.
+          isNfl
+            ? () => setRankingPopup({ sport: 'nfl' })
+            : (leagueGroups.find(hasSamRanking)
+              ? () => setRankingPopup({ sport: 'soccer', league: leagueGroups.find(hasSamRanking) })
+              : undefined)
+        }
       />
       {popupLeague && (
         <StandingsPopup
           league={popupLeague}
           onClose={() => setPopupLeague(null)}
+        />
+      )}
+      {rankingPopup && (
+        <TopPerformersPopup
+          league={rankingPopup.league || null}
+          sport={rankingPopup.sport}
+          onClose={() => setRankingPopup(null)}
         />
       )}
     </div>

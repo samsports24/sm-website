@@ -5,6 +5,7 @@ import { authLogin, googleLogin } from '../../redux/actions/authActions'
 import GmRankingWidget from './GmRankingWidget'
 import LeaguesTeamsBrowser from './LeaguesTeamsBrowser'
 import mockdraftPromo from '../../assets/mockdraft-promo.png'
+import { base_url } from '../../config/constants'
 
 /* ── Google Client ID ── */
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID'
@@ -288,11 +289,108 @@ const MockDraftPromo = ({ ad }) => {
   )
 }
 
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   NFL INJURIES — the report exists at /injury-report and was reachable only
+   through the Fantasy menu, two clicks in, so nobody found it. This is the
+   short version: the worst statuses first, with a way through to the full
+   report.
+
+   Source: GET /values/injuries on the NFL backend, which reads the Tank01
+   status and the official NFL.com weekly designation. No new endpoint.
+   ═══════════════════════════════════════════════════════════════════════════ */
+const INJ_COLOR = (status) => {
+  const s = String(status || '').toLowerCase()
+  if (/(^|\b)(out|ir|injured reserve|pup|nfi|suspension)/.test(s)) return '#EF4444'
+  if (s.includes('doubtful')) return '#F97316'
+  if (s.includes('questionable')) return '#F59E0B'
+  return '#94A3B8'
+}
+
+const NflInjuriesWidget = ({ limit = 6 }) => {
+  const navigate = useNavigate()
+  const [rows, setRows] = useState([])
+  const [state, setState] = useState('loading')
+
+  useEffect(() => {
+    let alive = true
+    fetch(`${base_url}/values/injuries`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+      .then((j) => {
+        if (!alive) return
+        const list = (j && (j.players || j.data)) || []
+        setRows(list.slice(0, limit))
+        setState(list.length ? 'ok' : 'empty')
+      })
+      .catch(() => alive && setState('error'))
+    return () => { alive = false }
+  }, [limit])
+
+  // Nothing to show is not a widget. An empty box on the landing page reads as
+  // broken, so it renders nothing at all until there is something to say.
+  if (state === 'loading' || state === 'empty' || state === 'error') return null
+
+  return (
+    <div style={{
+      borderRadius: 16, border: '1px solid rgba(255,255,255,0.08)',
+      background: '#05070c', overflow: 'hidden',
+    }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '12px 14px', borderBottom: '1px solid rgba(255,255,255,0.06)',
+      }}>
+        <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: 0.6, color: '#fff' }}>
+          🏥 NFL INJURY REPORT
+        </span>
+        <button
+          onClick={() => navigate('/injury-report')}
+          style={{
+            border: 'none', background: 'transparent', cursor: 'pointer',
+            color: '#22C55E', fontSize: 11, fontWeight: 700,
+          }}
+        >All →</button>
+      </div>
+      <div>
+        {rows.map((p) => (
+          <div
+            key={p.id || p.name}
+            onClick={() => navigate('/injury-report')}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer',
+              padding: '9px 14px', borderBottom: '1px solid rgba(255,255,255,0.04)',
+            }}
+          >
+            <span style={{
+              width: 3, height: 26, borderRadius: 2, background: INJ_COLOR(p.status),
+            }} />
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div style={{
+                fontSize: 12, fontWeight: 700, color: '#fff',
+                whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+              }}>{p.name}</div>
+              <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.45)' }}>
+                {[p.position, p.team, p.bodyPart].filter(Boolean).join(' · ')}
+              </div>
+            </div>
+            <span style={{
+              fontSize: 10, fontWeight: 800, color: INJ_COLOR(p.status),
+              whiteSpace: 'nowrap',
+            }}>{p.status || 'Unknown'}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const RightSidebar = ({ scorers = [], isAuthenticated, ad }) => {
   return (
     <aside className="ls-sidebar">
       {/* GM Overall Ranking, always visible */}
       <GmRankingWidget />
+
+      {/* NFL injuries, short list into the full report */}
+      <NflInjuriesWidget />
 
       {/* Mock draft — top of the sidebar (or admin-configured advert) */}
       <MockDraftPromo ad={ad} />
