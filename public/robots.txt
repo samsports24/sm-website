@@ -78,7 +78,19 @@ Disallow: /forgot-password
 Disallow: /static/
 Disallow: /api/
 
-# Sitemap
+# Sitemaps
+#
+# This file is the one actually served at the root of samsports.io: only
+# /football/* and /nfl/* reach the SEO server, so the robots.txt that lives
+# beside those pages is never fetched. Everything Google should crawl has to
+# be named here or it is never found.
+#
+# The editorial sitemaps sit under /football because that is where the router
+# that builds them is mounted. /football/sitemap.xml is an index and it points
+# at pages, clubs, players, matches and news, for both sports.
+Sitemap: https://samsports.io/sitemap.xml
+Sitemap: https://samsports.io/football/sitemap.xml
+Sitemap: https://samsports.io/football/news-sitemap.xml
 Sitemap: https://samsports.com/sitemap.xml
 
 # Crawl-delay (be polite)
